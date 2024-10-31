@@ -1,0 +1,5 @@
+#login_form{margin-top:5em;}
+.form_edit input[type='text'], .form_edit input[type='password'] {width:25em;}
+
+#form_Pass_Reminder{width:600px; margin: 0 auto;padding: 2em 0;}
+#form_Pass_Reminder input[type=text]{width:400px;}

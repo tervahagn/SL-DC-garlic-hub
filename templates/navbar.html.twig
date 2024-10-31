@@ -1,0 +1,36 @@
+<nav id="main_navigation">
+	{% if is_granted('ROLE_USER') %}
+	<ul class="menu">
+		<li>
+			<a href="{{ path('player') }}">{{ 'menu.player'|trans({}, 'menu') }}</a>
+		</li>
+		<li>
+			<a href="{{ path('playlist') }}">{{ 'menu.playlists'|trans({}, 'menu') }}</a>
+		</li>
+		<li>
+			<a href="{{ path('mediapool') }}">{{ 'menu.mediapool'|trans({}, 'menu') }}</a>
+		</li>
+	</ul>
+	{% endif %}
+
+	<ul id="language">
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'en_US'}) }}"><img src="./images/flags/24x24/us.png" alt=""></a> |
+		</li>
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'es_ED'}) }}"><img src="./images/flags/24x24/es.png" alt=""></a>
+		</li>
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'fr_FR'}) }}"><img src="./images/flags/24x24/fr.png" alt=""></a>
+		</li>
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'ru_RU'}) }}">D<img src="./images/flags/24x24/ru.png" alt=""></a>
+		</li>
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'de_DE'}) }}"><img src="./images/flags/24x24/de.png" alt=""></a>
+		</li>
+		<li>
+			<a href="{{ path('set_locale', {'locale': 'el_GR'}) }}"><img src="./images/flags/24x24/el.png" alt=""></a>
+		</li>
+	</ul>
+</nav>

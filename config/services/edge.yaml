@@ -1,0 +1,4 @@
+services:
+#    App\Modules\Auth\Services\AuthenticationService:
+#        autowire: true
+#        autoconfigure: true

@@ -1,0 +1,1 @@
+DROP TABLE mfcms_user_main;

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('css/user/login.css') }}">
+{% endblock %}
+
+
+
+{% block body %}
+	<h1>Anmeldung</h1>
+	{% if error %}
+		<div id="error_messages" class="error_messages">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	{% endif %}
+
+	<form id="login_form" action="{{ path('app_login') }}" method="post">
+		<fieldset>
+			<ul class="form_edit">
+				<li id="wrap_username">
+					<label for="login_username">Username/Email:</label>
+					<input type="text" id="login_username" name="username" value="{{ last_username }}" required>
+				</li>
+				<li id="wrap_password">
+					<label for="login_password">Password:</label>
+					<input type="password" id="login_password" name="password" required>
+				</li>
+				<li id="wrap_submit_login">
+					<button type="submit" name="submit" value="Anmelden" id="submit_login">Anmelden</button>
+				</li>
+				<li id="wrap_autologin">
+					<input type="checkbox" name="autologin" value="1" id="autologin" /> <label for="autologin">Angemeldet bleiben</label>
+				</li>
+				<li id="wrap_reminder">
+					<a href="index.php?site=remind_pass" title="reminderlink">» Passwort vergessen?</a>
+				</li>
+
+				<li id="wrap_register">
+					<a href="index.php?site=registration" title="Registrieren">» Registrieren</a>
+				</li>
+			</ul>
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+			<input type="hidden" name="_target_path" value="/player">
+			{# If you want to control the URL the user is redirected to on success
+        <input type="hidden" name="_target_path" value="/account"> #}
+		</fieldset>
+
+	</form>
+{% endblock %}
