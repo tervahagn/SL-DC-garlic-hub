@@ -103,6 +103,9 @@ class MySqliAdapter implements AdapterInterface
 		return $this->fetchRows();
 	}
 
+	/**
+	 * @throws DatabaseException
+	 */
 	public function getSingleValue(string $sql, int|string $offset = 0): mixed
 	{
 		$row = $this->select($sql);
@@ -114,6 +117,9 @@ class MySqliAdapter implements AdapterInterface
 	}
 
 
+	/**
+	 * @throws DatabaseException
+	 */
 	public function show(string $what= 'TABLES', string $table_name = ''): array
 	{
 		if (strtoupper($what) === 'COLUMNS')

@@ -108,7 +108,10 @@ class Sqlite3Adapter implements AdapterInterface
 		return $this->fetchRows();
 	}
 
-	public function getSingleValue(string $sql, int|string $offset = 0): mixed
+	/**
+	 * @throws DatabaseException
+	 */
+	public function getSingleValue(string $sql, int|string $offset = 0): array|int|string
 	{
 		$this->executeQuery($sql);
 		$row = $this->result->fetchArray(SQLITE3_NUM);
@@ -119,6 +122,9 @@ class Sqlite3Adapter implements AdapterInterface
 		return '';
 	}
 
+	/**
+	 * @throws DatabaseException
+	 */
 	public function show(string $what= 'TABLES', string $table_name = ''): array
 	{
 		if (strtoupper($what) === 'COLUMNS')
@@ -194,9 +200,10 @@ class Sqlite3Adapter implements AdapterInterface
 	 * Escapes an unsafe string.
 	 *
 	 * @param string $unsafe
+	 *
 	 * @return string
 	 */
-	public function escapeString($unsafe): string
+	public function escapeString(string $unsafe): string
 	{
 		return $this->db->escapeString($unsafe);
 	}

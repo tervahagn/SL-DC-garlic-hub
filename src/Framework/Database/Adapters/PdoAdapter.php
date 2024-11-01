@@ -132,6 +132,7 @@ class PdoAdapter implements AdapterInterface
 	public function show(string $what= 'TABLES', string $table_name = ''): array
 	{
 		// TODO: Implement showTables() method.
+		return array();
 	}
 
 	/**

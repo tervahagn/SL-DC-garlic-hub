@@ -4,17 +4,19 @@ namespace App\Modules\Auth\Repository;
 
 use App\Framework\Database\Helpers\DataPreparer;
 
+/**
+ * Prepares user data fields for database insertion.
+ */
 class UserMainDataPreparer extends DataPreparer
 {
-
 	/**
-	 * @param array $fields
+	 * Quotes and formats fields based on their type.
 	 *
-	 * @return array
+	 * @param array $fields Data fields to prepare
+	 * @return array Prepared fields for database
 	 */
 	public function prepareForDB(array $fields): array
 	{
-
 		$fields_to_quote = [
 			'UID'       => self::FIELD_TYPE_INTEGER,
 			'company_id'=> self::FIELD_TYPE_INTEGER,
@@ -34,8 +36,7 @@ class UserMainDataPreparer extends DataPreparer
 			'email'     => self::FIELD_TYPE_STRING,
 		];
 
-		foreach ($fields_to_quote as $field => $type)
-		{
+		foreach ($fields_to_quote as $field => $type) {
 			$fields = $this->quoteField($field, $fields, $type);
 		}
 

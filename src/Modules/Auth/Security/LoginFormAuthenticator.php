@@ -35,10 +35,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 		$password = $request->request->get('password', '');
 		$csrfToken = $request->request->get('_csrf_token');
 
-		// CSRF-Token-Überprüfung
-		if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('authenticate', $csrfToken))) {
+		if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('authenticate', $csrfToken)))
 			throw new InvalidCsrfTokenException();
-		}
 
 		return new Passport(
 			new UserBadge($username),
