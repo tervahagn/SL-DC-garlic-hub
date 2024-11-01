@@ -49,7 +49,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
 	{
-		return new RedirectResponse($this->urlGenerator->generate('player')); // Route für Dashboard
+		return new RedirectResponse($this->urlGenerator->generate('home'));
 	}
 
 	protected function getLoginUrl(Request $request): string

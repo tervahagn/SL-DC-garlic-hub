@@ -4,8 +4,6 @@
 	<link rel="stylesheet" href="{{ asset('css/user/login.css') }}">
 {% endblock %}
 
-
-
 {% block body %}
 	<h1>Anmeldung</h1>
 	{% if error %}
@@ -38,10 +36,7 @@
 				</li>
 			</ul>
 			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-			<input type="hidden" name="_target_path" value="/player">
-			{# If you want to control the URL the user is redirected to on success
-        <input type="hidden" name="_target_path" value="/account"> #}
+			<input type="hidden" name="_target_path" value="/">
 		</fieldset>
-
 	</form>
 {% endblock %}

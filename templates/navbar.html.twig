@@ -33,4 +33,20 @@
 			<a href="{{ path('set_locale', {'locale': 'el_GR'}) }}"><img src="./images/flags/24x24/el.png" alt=""></a>
 		</li>
 	</ul>
+
+	{% if is_granted('ROLE_USER') %}
+	<ul id="infobox" class="menu">
+		<li>
+			<span>Angemeldet als: {{ app.user.userIdentifier }}</span>
+			<ul>
+				<li>
+					<a href="index.php?site=useroptions">Einstellungen</a>
+				</li>
+				<li>
+					<a href="/logout">Abmelden</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+	{% endif %}
 </nav>

@@ -28,8 +28,7 @@ class MigrateDatabaseCommand extends Command
 		$this->params = $params;
 		parent::__construct();
 	}
-
-
+	
 	protected function configure(): void
 	{
 		$this->addArgument('version', InputArgument::OPTIONAL, 'Ziel-Migrationsversion');
