@@ -133,7 +133,7 @@ footer
 	margin:           0 auto;
 	text-align:       right;
 	color:            #fff;
-	background-color: #666;
+	background-color: #0070a0;
 	padding:          0 1em;
 	display: flex;
 	align-items: center;
@@ -212,7 +212,7 @@ nav
 {
 	min-width:980px;
 	padding:0;
-	background-color: #666;
+	background-color: #0070a0;
 	display: flex;
 	align-items: center;
 }
@@ -244,56 +244,57 @@ nav
 		margin:          1px;
 		text-decoration: none;
 		background:      no-repeat 100px 100px;
+		font-weight: bold;
+		font-variant: small-caps;
 	}
 
-	.menu ul
+	.dropdown
 	{
-		position:         absolute;
-		z-index:          10;
-		width:            204px;
-		margin:           0 0 0 1em;
-		padding:          3px 0;
-		background-color: #555;
-		border-radius:    6px;
+		position: relative;
+		display: inline-block;
+		margin: 0 3em 0 auto;
+		padding: 0 1em 0 0;
 	}
-
-
-	.menu ul a
+	.dropdown-toggle
 	{
-		padding:       0.5em 0 0.5em 10px;
-		margin:        0;
-		height:        20px;
-		width:         190px;
-		font-weight: normal !important;
+		background-color: #0070a0;
+		color: #fff;
+		padding: 8px 16px;
+		border: none;
+		cursor: pointer;
+		font-size: 16px;
+		display: flex;
+		align-items: center;
 	}
-
-	.menu ul a:hover{ color: #fff; background-color: #000; }
-	nav .menu li > a, nav .menu li > span{font-weight: bold; font-variant: small-caps;}
-	nav .menu ul, nav .menu li:hover .menu ul, nav .menu ul li:hover .menu ul{ display: none;}
-	nav .menu li:hover ul, nav .menu ul li:hover ul, nav .menu ul ul li:hover ul { display: block; }
-
-	nav #language{list-style: none; display:flex; gap:0.5em; justify-content: flex-start;margin:0.5em 0 0 auto; padding: 0 1em 0 0;}
-	nav #language a{ display: block; }
-	nav #language img{ width:24px;}
-
-	nav #infobox
+	.dropdown-toggle:hover {border: none;color: yellow;}
+	.dropdown-toggle img {margin-right: 8px;}
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		background-color: white;
+		min-width: 120px;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+	.dropdown:hover .dropdown-menu {display: block;}
+	.dropdown-item {
+		color: black;
+		padding: 8px 16px;
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+	}
+	.dropdown-item img {margin-right: 8px;}
+	.dropdown-item:hover {background-color: #222; color:#fff;}
+	#infobox
 	{
-		display: block;
-		color:   #fff;
+		position: relative;
+		display: inline-block;
+		margin: 0;
+		padding: 0 1em 0 0;
 	}
 
-	nav #infobox ul
-	{
-		width:250px;
-		margin-left:-4em;
-		list-style:none;
-	}
-	nav #infobox ul li a
-	{
-		width:240px;
-	}
-
-/* CSS Menu Ende */
+/* CSS Menu End */
 
 
 body .loading

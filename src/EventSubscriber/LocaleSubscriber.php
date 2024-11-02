@@ -1,43 +1,78 @@
 <?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 namespace App\EventSubscriber;
 
+use App\Services\LocaleService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Sets the request locale based on session data or a default.
+ * Subscriber that sets the locale for each request based on session data.
+ *
+ * This subscriber listens to the `KernelEvents::REQUEST` event and sets the request's locale
+ * according to the session's stored locale, ensuring consistent language settings for the user.
  */
 class LocaleSubscriber implements EventSubscriberInterface
 {
-	/** @var string Default locale if none is set in session */
-	private $default_locale;
+	/**
+	 * Service for managing locale settings.
+	 *
+	 * @var LocaleService
+	 */
+	private LocaleService $localeService;
 
 	/**
-	 * @param string $default_locale Default locale
+	 * LocaleSubscriber constructor.
+	 *
+	 * @param LocaleService $localeService The locale service for retrieving the current session locale.
 	 */
-	public function __construct(string $default_locale)
+	public function __construct(LocaleService $localeService)
 	{
-		$this->default_locale = $default_locale;
+		$this->localeService = $localeService;
 	}
 
 	/**
-	 * Sets locale for the request from session or default.
+	 * Event handler for the kernel request event.
 	 *
-	 * @param RequestEvent $event The request event
+	 * Sets the locale on the request object based on the session's current locale.
+	 *
+	 * @param RequestEvent $event The current request event.
+	 *
+	 * @return void
 	 */
 	public function onKernelRequest(RequestEvent $event): void
 	{
 		$request = $event->getRequest();
-		$locale  = $request->getSession()->get('_locale', $this->default_locale);
+		$locale  = $this->localeService->getCurrentLocale();
 		$request->setLocale($locale);
 	}
 
 	/**
-	 * Subscribed events and priorities.
+	 * Registers the event listener for the `KernelEvents::REQUEST` event.
 	 *
-	 * @return array Event configuration
+	 * The priority is set to 20, so this subscriber runs early in the request lifecycle.
+	 *
+	 * @return array<string, array<int, mixed>>  array of subscribed events and corresponding methods.
 	 */
 	public static function getSubscribedEvents(): array
 	{

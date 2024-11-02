@@ -2,3 +2,16 @@ menu:
     player: "Player"
     playlists: "Playlisten"
     mediapool: "Medienpool"
+    logged_in_as: "Angemeldet als"
+languages:
+    en_US: Englisch
+    de_DE: Deutsch
+    es_ES: Spanisch
+    el_GR: Griechisch
+    fr_FR: Französisch
+    ru_RU: Russisch
+user:
+    manage_account: "Konto verwalten"
+    logout: "Abmelden"
+footer:
+    legal_notice: "Impressum"

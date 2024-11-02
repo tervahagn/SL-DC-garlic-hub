@@ -18,13 +18,29 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Kernel;
+namespace App\Services;
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
-
-require_once dirname(__DIR__) . '/config/bootstrap.php';
-
-return function (array $context)
+class PerformanceMonitor
 {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
-};
+	private float $startTime;
+
+	public function __construct()
+	{
+		$this->startTime = microtime(true);
+	}
+
+	public function getExecutionTime(): float
+	{
+		return microtime(true) - $this->startTime;
+	}
+
+	public function getMemoryUsage(): string
+	{
+		return number_format(memory_get_usage() / 1024 / 1024, 2) . ' MB';
+	}
+
+	public function getPeakMemoryUsage(): string
+	{
+		return number_format(memory_get_peak_usage() / 1024 / 1024, 2) . ' MB';
+	}
+}

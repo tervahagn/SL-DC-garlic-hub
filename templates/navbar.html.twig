@@ -13,40 +13,33 @@
 	</ul>
 	{% endif %}
 
-	<ul id="language">
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'en_US'}) }}"><img src="./images/flags/24x24/us.png" alt=""></a> |
-		</li>
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'es_ED'}) }}"><img src="./images/flags/24x24/es.png" alt=""></a>
-		</li>
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'fr_FR'}) }}"><img src="./images/flags/24x24/fr.png" alt=""></a>
-		</li>
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'ru_RU'}) }}">D<img src="./images/flags/24x24/ru.png" alt=""></a>
-		</li>
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'de_DE'}) }}"><img src="./images/flags/24x24/de.png" alt=""></a>
-		</li>
-		<li>
-			<a href="{{ path('set_locale', {'locale': 'el_GR'}) }}"><img src="./images/flags/24x24/el.png" alt=""></a>
-		</li>
-	</ul>
+	<div class="dropdown">
+		<div class="dropdown-toggle" id="languageDropdown">
+			<img src="./images/flags/24x24/{{ app.request.locale|slice(0, 2)|lower }}.png" alt="">
+			{{ app.request.locale|slice(0, 2)|upper }}
+		</div>
+		<div class="dropdown-menu" aria-labelledby="languageDropdown">
+			{% for locale, language in {'de_DE': 'Deutsch', 'en_US': 'English', 'fr_FR': 'Français', 'es_ES': 'Español', 'ru_RU': 'Русский'} %}
+				<a class="dropdown-item" href="{{ path('set_locale', {'locale': locale}) }}">
+				<img src="./images/flags/24x24/{{ locale|slice(0, 2)|lower }}.png" alt="{{ language }} flag">
+				{{ language }}
+				</a>
+			{% endfor %}
+		</div>
+	</div>
 
 	{% if is_granted('ROLE_USER') %}
-	<ul id="infobox" class="menu">
+	<ul id="infobox" class="dropdown">
 		<li>
-			<span>Angemeldet als: {{ app.user.userIdentifier }}</span>
-			<ul>
-				<li>
-					<a href="index.php?site=useroptions">Einstellungen</a>
-				</li>
-				<li>
-					<a href="/logout">Abmelden</a>
-				</li>
-			</ul>
+			<div class="dropdown-toggle" type="button" id="languageDropdown">
+				{{ 'menu.logged_in_as'|trans({}, 'menu') }}: {{ app.user.userIdentifier }}
+			</div>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="/user_options">{{ 'user.manage_account'|trans({}, 'menu') }}</a>
+				<a class="dropdown-item" href="/logout">{{ 'user.logout'|trans({}, 'menu') }}</a>
+			</div>
 		</li>
 	</ul>
 	{% endif %}
 </nav>
+

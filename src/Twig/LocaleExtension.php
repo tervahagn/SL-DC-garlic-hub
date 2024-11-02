@@ -18,13 +18,33 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Kernel;
+namespace App\Twig;
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+use App\Services\LocaleService;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-require_once dirname(__DIR__) . '/config/bootstrap.php';
-
-return function (array $context)
+class LocaleExtension extends AbstractExtension
 {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
-};
+	private LocaleService $localeService;
+
+	public function __construct(LocaleService $localeService)
+	{
+		$this->localeService = $localeService;
+	}
+
+	public function getFunctions(): array
+	{
+		return [
+			new TwigFunction('language_dropdown_data', [$this, 'getLanguageDropdownData']),
+		];
+	}
+
+	public function getLanguageDropdownData(): array
+	{
+		return [
+			'currentLocale' => $this->localeService->getCurrentLocale(),
+			'languages' => $this->localeService->getAvailableLanguages(),
+		];
+	}
+}

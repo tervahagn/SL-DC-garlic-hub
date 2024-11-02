@@ -40,7 +40,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # Register AdapterInterface using DBHandler as its implementation
     App\Framework\Database\Adapters\AdapterInterface:
         alias: 'App\Framework\Database\DBHandler'
 
@@ -65,14 +64,24 @@ services:
             $kernel: '@kernel'
             $params: '@parameter_bag'
 
+    App\Services\LocaleService:
+        arguments:
+            $requestStack: '@Symfony\Component\HttpFoundation\RequestStack'
+
+    # Registrierung des LocaleSubscriber als Event-Subscriber
     App\EventSubscriber\LocaleSubscriber:
         arguments:
-            $default_locale: '%kernel.default_locale%'
+            $localeService: '@App\Services\LocaleService'
         tags:
             - { name: kernel.event_subscriber }
+    App\Twig\LocaleExtension:
+        arguments:
+            $localeService: '@App\Services\LocaleService'
+        tags:
+            - { name: twig.extension }
 
-    App\Framework\Services\PerformanceMonitor: ~
-    App\Framework\Twig\PerformanceExtension:
+    App\Services\PerformanceMonitor: ~
+    App\Twig\PerformanceExtension:
         tags: ['twig.extension']
 
 
@@ -89,11 +98,3 @@ services:
             $id_field: 'UID'    # Setze auch das ID-Feld, falls erforderlich
         autowire: true
         autoconfigure: true
-
-#    PDO:
- #       class: PDO
-  #      arguments:
-   #         - 'sqlite:%kernel.project_dir%/var/garlic-hub.sqlite'  # Korrektes DSN-Format für SQLite
-     #       - null  # Benutzername für SQLite nicht erforderlich
-    #        - null  # Passwort für SQLite nicht erforderlich
-     #       - [ PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ]

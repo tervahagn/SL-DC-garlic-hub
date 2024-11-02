@@ -1,0 +1,6 @@
+login:
+    password: "Password"
+    login: "Login"
+    autologin: "Autologin?"
+    register: "Register"
+    reset_password: "Reset password"

@@ -4,6 +4,44 @@ Garlic-Hub is a robust Digital Signage Management Platform designed to handle th
 
 > **Note**: Garlic-Hub is currently in pre-release development.Core functionalities are still under construction, with some modules incomplete or in early testing stages. This version is not yet recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
 
+## Installation
+
+### Prerequisites
+Ensure your environment meets the following requirements:
+- **PHP** 8.1 or higher
+- **Composer** for dependency management
+- **Web Server**: Apache, Nginx, or other PHP-compatible server
+- **Database**: MariaDB or SQLite for smaller deployments (compatible with other SQL databases)
+
+### Step-by-Step Guide
+
+1. **Clone the Repository**
+```bash
+   git clone https://github.com/your-username/garlic-hub.git
+   cd garlic-hub
+```
+### Install PHP Dependencies
+Run Composer to install required PHP packages:
+
+```php
+composer install
+```
+
+### Set Up Environment Variables
+Copy the example environment file and update it as needed:
+
+```bash
+cp .env.example .env
+```
+### Database Setup
+Create and configure the database:
+```bash
+php bin/console app:migrate
+```
+This will create the database and an admin-user
+login: admin
+password: thymian
+
 ## Features (In Development)
 
 The following features are under active development and subject to change as Garlic-Hub progresses toward its first stable release:

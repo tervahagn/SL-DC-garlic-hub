@@ -24,6 +24,9 @@ security:
     access_control:
         - { path: ^/legals, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/set-locale, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/registration, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
 
 

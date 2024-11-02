@@ -18,13 +18,27 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Kernel;
+namespace App\Twig;
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+use App\Services\PerformanceMonitor;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-require_once dirname(__DIR__) . '/config/bootstrap.php';
-
-return function (array $context)
+class PerformanceExtension extends AbstractExtension
 {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
-};
+	private PerformanceMonitor $performanceMonitor;
+
+	public function __construct(PerformanceMonitor $performanceMonitor)
+	{
+		$this->performanceMonitor = $performanceMonitor;
+	}
+
+	public function getFunctions(): array
+	{
+		return [
+			new TwigFunction('execution_time', [$this->performanceMonitor, 'getExecutionTime']),
+			new TwigFunction('memory_usage', [$this->performanceMonitor, 'getMemoryUsage']),
+			new TwigFunction('peak_memory_usage', [$this->performanceMonitor, 'getPeakMemoryUsage']),
+		];
+	}
+}

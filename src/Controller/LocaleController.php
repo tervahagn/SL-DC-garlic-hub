@@ -18,22 +18,30 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Player;
+// src/Controller/LocaleController.php
+namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Services\LocaleService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PlayerController
+class LocaleController extends AbstractController
 {
-	#[Route('/player', name: 'player')]
-	public function Player(): Response
+	private LocaleService $localeService;
+
+	public function __construct(LocaleService $localeService)
 	{
-		return new Response('Welcome to the Player!');
+		$this->localeService = $localeService;
 	}
 
-	#[Route('/player/edit', name: 'player_edit')]
-	public function editPlayer(): Response
+	/**
+	 * @Route("/set_locale/{locale}", name="set_locales")
+	 */
+	public function setLocale(string $locale, Request $request): RedirectResponse
 	{
-		return new Response('Welcome to the Player!');
+		$this->localeService->setLocale($locale);
+		return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('home'));
 	}
 }
