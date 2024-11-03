@@ -3,7 +3,7 @@ strong, b { font-weight: bold; }
 em, i { font-style: italic; }
 img, fieldset{ border: 0;margin:0; padding:0 ;}
 html{height: 100%;}
-body{background-color: #eee;margin:0;padding:0;}
+body, html{;margin:0;padding:0;height: 100%;display: flex;flex-direction: column;}
 a{ text-decoration: none; color: #222222; }
 a:hover{ color:#000;}
 
@@ -36,11 +36,6 @@ button[type=submit]{min-width:150px;}
 button:hover, a.button:hover{color:#000;border: 1px solid #000;}
 .trumbowyg-button-pane button{min-width:0;}
 
-table{ width: 100%;}
-th, td{vertical-align:middle;}
-thead, thead th{ background-color: #666; color: #fff; padding: 1px; font-weight: bold; vertical-align: middle; }
-thead a, .results_header a{ color: #fff; font-weight: bold; }
-thead a:hover{ color: #fff; }
 
 .listing{ border: 0; width: 100%; border-collapse: collapse; }
 .listing tbody tr{ background-color: #efefef; }
@@ -118,9 +113,9 @@ header
 
 main
 {
+	flex: 1;
 	min-width: 980px;
 	padding:1em;
-	min-height: 400px;
 	background-color:#fff;
 	position:  relative;
 }
@@ -129,12 +124,11 @@ main
 
 footer
 {
-	min-width:        980px;
-	margin:           0 auto;
+	box-sizing: border-box;
+	padding:          0 1em;
 	text-align:       right;
 	color:            #fff;
 	background-color: #0070a0;
-	padding:          0 1em;
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
@@ -146,7 +140,6 @@ footer
 		display: flex;
 	}
 	footer *{ color: #fff; }
-	footer pre{ color: #fff; text-align: left; display:flex;}
 
 .message_bar {
 	position:fixed;
@@ -244,7 +237,6 @@ nav
 		margin:          1px;
 		text-decoration: none;
 		background:      no-repeat 100px 100px;
-		font-weight: bold;
 		font-variant: small-caps;
 	}
 
