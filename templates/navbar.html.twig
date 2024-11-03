@@ -15,13 +15,13 @@
 
 	<div class="dropdown">
 		<div class="dropdown-toggle" id="languageDropdown">
-			<img src="./images/flags/24x24/{{ app.request.locale|slice(0, 2)|lower }}.png" alt="">
+			<img src="/images/flags/24x24/{{ app.request.locale|slice(0, 2)|lower }}.png" alt="">
 			{{ app.request.locale|slice(0, 2)|upper }}
 		</div>
 		<div class="dropdown-menu" aria-labelledby="languageDropdown">
 			{% for locale, language in {'de_DE': 'Deutsch', 'en_US': 'English', 'fr_FR': 'Français', 'es_ES': 'Español', 'ru_RU': 'Русский'} %}
 				<a class="dropdown-item" href="{{ path('set_locale', {'locale': locale}) }}">
-				<img src="./images/flags/24x24/{{ locale|slice(0, 2)|lower }}.png" alt="{{ language }} flag">
+				<img src="/images/flags/24x24/{{ locale|slice(0, 2)|lower }}.png" alt="{{ language }} flag">
 				{{ language }}
 				</a>
 			{% endfor %}
