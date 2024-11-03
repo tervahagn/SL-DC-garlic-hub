@@ -20,20 +20,27 @@
 
 namespace App\Modules\Playlist;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PlaylistController
+class PlaylistController extends AbstractController
 {
 	#[Route('/playlists', name: 'playlist')]
 	public function playlists(): Response
 	{
-		return new Response('Welcome to the playlist!');
+		return $this->render('dummy.html.twig', [
+			'DUMMYHEADER' => 'Playlist Overview',
+			'DUMMYTEXT' => 'Welcome to the Playlist overview! ',
+		]);
 	}
 
 	#[Route('/playlists/edit', name: 'playlists_edit')]
 	public function editPlaylist(): Response
 	{
-		return new Response('Welcome to the playlist!');
+		return $this->render('dummy.html.twig', [
+			'DUMMYHEADER' => 'Playlist Edit',
+			'DUMMYTEXT' => 'Welcome to the Playlist edit! ',
+		]);
 	}
 }

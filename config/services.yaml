@@ -64,21 +64,13 @@ services:
             $kernel: '@kernel'
             $params: '@parameter_bag'
 
-    App\Services\LocaleService:
-        arguments:
-            $requestStack: '@Symfony\Component\HttpFoundation\RequestStack'
 
-    # Registrierung des LocaleSubscriber als Event-Subscriber
     App\EventSubscriber\LocaleSubscriber:
         arguments:
-            $localeService: '@App\Services\LocaleService'
+            $requestStack: '@request_stack'
         tags:
             - { name: kernel.event_subscriber }
-    App\Twig\LocaleExtension:
-        arguments:
-            $localeService: '@App\Services\LocaleService'
-        tags:
-            - { name: twig.extension }
+
 
     App\Services\PerformanceMonitor: ~
     App\Twig\PerformanceExtension:

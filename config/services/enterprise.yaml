@@ -1,13 +1,1 @@
 services:
-#    App\Modules\Auth\Services\AuthenticationService:
-#        autowire: true
-#        autoconfigure: true
-
-#    App\Modules\Auth\Services\RegisterService:
-#        autowire: true
-#        autoconfigure: true
-
-#    App\Modules\Auth\Services\TwoFactorService:
-#        autowire: true
-#        autoconfigure: true
-

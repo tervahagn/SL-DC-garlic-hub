@@ -18,61 +18,53 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 namespace App\EventSubscriber;
 
-use App\Services\LocaleService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Subscriber that sets the locale for each request based on session data.
- *
- * This subscriber listens to the `KernelEvents::REQUEST` event and sets the request's locale
- * according to the session's stored locale, ensuring consistent language settings for the user.
+ * The event subscriber reads the locale setting from the session
+ * for each HTTP request and applies it to the current request.
  */
 class LocaleSubscriber implements EventSubscriberInterface
 {
 	/**
-	 * Service for managing locale settings.
-	 *
-	 * @var LocaleService
+	 * @var RequestStack
 	 */
-	private LocaleService $localeService;
+	private RequestStack $requestStack;
 
 	/**
-	 * LocaleSubscriber constructor.
+	 * The RequestStack is injected into the subscriber via dependency injection, providing access
+	 * to the current HTTP session and request.
 	 *
-	 * @param LocaleService $localeService The locale service for retrieving the current session locale.
+	 * @param RequestStack $requestStack
 	 */
-	public function __construct(LocaleService $localeService)
+	public function __construct(RequestStack $requestStack)
 	{
-		$this->localeService = $localeService;
+		$this->requestStack = $requestStack;
 	}
 
 	/**
-	 * Event handler for the kernel request event.
-	 *
-	 * Sets the locale on the request object based on the session's current locale.
-	 *
-	 * @param RequestEvent $event The current request event.
+	 * @param RequestEvent $event
 	 *
 	 * @return void
 	 */
 	public function onKernelRequest(RequestEvent $event): void
 	{
 		$request = $event->getRequest();
-		$locale  = $this->localeService->getCurrentLocale();
-		$request->setLocale($locale);
+		$session = $this->requestStack->getSession();
+
+		if ($session->has('_locale'))
+		{
+			$request->setLocale($session->get('_locale'));
+		}
 	}
 
 	/**
-	 * Registers the event listener for the `KernelEvents::REQUEST` event.
-	 *
-	 * The priority is set to 20, so this subscriber runs early in the request lifecycle.
-	 *
-	 * @return array<string, array<int, mixed>>  array of subscribed events and corresponding methods.
+	 * @return array[]
 	 */
 	public static function getSubscribedEvents(): array
 	{

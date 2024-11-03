@@ -18,33 +18,18 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Twig;
+namespace App\Modules\Mediapool\Controller;
 
-use App\Services\LocaleService;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class LocaleExtension extends AbstractExtension
+class MediaPoolController extends AbstractController
 {
-	private LocaleService $localeService;
-
-	public function __construct(LocaleService $localeService)
+	#[Route('/mediapool/', name: 'mediapool')]
+	public function home(): Response
 	{
-		$this->localeService = $localeService;
+		return $this->render('mediapool/browser.html.twig');
 	}
 
-	public function getFunctions(): array
-	{
-		return [
-			new TwigFunction('language_dropdown_data', [$this, 'getLanguageDropdownData']),
-		];
-	}
-
-	public function getLanguageDropdownData(): array
-	{
-		return [
-			'currentLocale' => $this->localeService->getCurrentLocale(),
-			'languages' => $this->localeService->getAvailableLanguages(),
-		];
-	}
 }

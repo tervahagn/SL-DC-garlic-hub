@@ -20,20 +20,27 @@
 
 namespace App\Modules\Player;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PlayerController
+class PlayerController extends AbstractController
 {
 	#[Route('/player', name: 'player')]
 	public function Player(): Response
 	{
-		return new Response('Welcome to the Player!');
+		return $this->render('dummy.html.twig', [
+			'DUMMYHEADER' => 'Player Overview',
+			'DUMMYTEXT' => 'Welcome to the Player overview! ',
+		]);
 	}
 
 	#[Route('/player/edit', name: 'player_edit')]
 	public function editPlayer(): Response
 	{
-		return new Response('Welcome to the Player!');
+		return $this->render('dummy.html.twig', [
+			'DUMMYHEADER' => 'Player Edit',
+			'DUMMYTEXT' => 'Welcome to the Player edit! ',
+		]);
 	}
 }
