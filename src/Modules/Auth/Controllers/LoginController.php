@@ -18,18 +18,30 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Companies\Controller;
+namespace App\Modules\Auth\Controllers;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class Legals extends AbstractController
+class LoginController extends AbstractController
 {
-	#[Route('/legals', name: 'legals')]
-	public function legals(): Response
+	#[Route('/login', name: 'app_login')]
+	public function login(AuthenticationUtils $authenticationUtils): Response
 	{
-		return $this->render('companies/legals.html.twig');
+		if ($this->getUser())
+			return $this->redirectToRoute('home');
+
+		return $this->render('auth/login.html.twig', [
+			'last_username' =>  $authenticationUtils->getLastUsername(),
+			'error' => $authenticationUtils->getLastAuthenticationError(),
+		]);
+	}
+
+	#[Route('/logout', name: 'app_logout', methods: ['GET'])]
+	public function logout(): void
+	{
+		throw new \Exception('Error: Logout should procceed through the firewall-system.');
 	}
 }

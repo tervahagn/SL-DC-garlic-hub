@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Auth\Repository;
+namespace App\Modules\Auth\Repositories;
 
 use App\Framework\Database\Helpers\DataPreparer;
 
@@ -54,7 +54,8 @@ class UserMainDataPreparer extends DataPreparer
 			'email'     => self::FIELD_TYPE_STRING,
 		];
 
-		foreach ($fields_to_quote as $field => $type) {
+		foreach ($fields_to_quote as $field => $type)
+		{
 			$fields = $this->quoteField($field, $fields, $type);
 		}
 

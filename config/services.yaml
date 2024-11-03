@@ -77,16 +77,16 @@ services:
         tags: ['twig.extension']
 
 
-    App\Modules\Auth\Repository\UserMainDataPreparer:
+    App\Modules\Auth\Repositories\UserMainDataPreparer:
         autowire: true
         autoconfigure: true
 
-    App\Modules\Auth\Repository\UserMain:
+    App\Modules\Auth\Repositories\UserMain:
         arguments:
             $dbh: '@App\Framework\Database\DBHandler'
             $queryBuilder: '@App\Framework\Database\QueryBuilder'
-            $dataPreparer: '@App\Modules\Auth\Repository\UserMainDataPreparer'
-            $table: 'user_main' # Setze den gewünschten Tabellennamen
-            $id_field: 'UID'    # Setze auch das ID-Feld, falls erforderlich
+            $dataPreparer: '@App\Modules\Auth\Repositories\UserMainDataPreparer'
+            $table: 'user_main'
+            $id_field: 'UID'
         autowire: true
         autoconfigure: true

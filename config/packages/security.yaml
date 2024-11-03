@@ -2,7 +2,7 @@ security:
     # Benutzer-Provider und Passwort-Hasher
     providers:
         user_provider:
-            id: App\Modules\Auth\Repository\UserMain
+            id: App\Modules\Auth\Repositories\UserMain
 
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'

@@ -18,12 +18,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Auth\Repository;
+namespace App\Modules\Auth\Repositories;
 
 use App\Framework\BaseRepositories\Sql;
 use App\Framework\Database\DBHandler;
+use App\Framework\Database\Helpers\DataPreparer;
 use App\Framework\Database\QueryBuilder;
-use App\Modules\Auth\Entity\User;
+use App\Modules\Auth\Entities\User;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -40,7 +41,7 @@ class UserMain extends Sql implements UserProviderInterface
 	 * @param string $table Database table name
 	 * @param string $id_field ID field name
 	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, UserMainDataPreparer $dataPreparer, string $table, string $id_field)
+	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer, string $table, string $id_field)
 	{
 		parent::__construct($dbh, $queryBuilder, $dataPreparer, 'user_main', 'UID');
 	}
