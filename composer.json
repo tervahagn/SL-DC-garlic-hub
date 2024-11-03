@@ -7,7 +7,11 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
         "knpuniversity/oauth2-client-bundle": "^2.18",
+        "league/flysystem-bundle": "*",
         "symfony/asset": "7.1.*",
         "symfony/console": "7.1.*",
         "symfony/dotenv": "7.1.*",
@@ -24,11 +28,8 @@
         "symfony/translation": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
         "symfony/validator": "7.1.*",
-        "symfony/yaml": "7.1.*",
-        "ext-mysqli": "*",
-        "ext-pdo": "*",
-	    "ext-sqlite3": "*"
-	},
+        "symfony/yaml": "7.1.*"
+    },
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
