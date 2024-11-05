@@ -7,8 +7,13 @@ header
 	padding:0 1em;
 }
 	header nav	{margin: 0;}
-	header nav #main_menu a {color: #fff; font-variant: all-small-caps; }
-	header nav #main_menu a:hover {text-decoration: none; background-color: #2d3138;}
+	header nav #main_menu a {font-variant: all-small-caps; }
+	header nav #main_menu a:hover {text-decoration: none;}
+	header nav #main_menu strong {color: var(--pico-primary);}
+	[data-theme="dark"] header nav #main_menu a {color: #fff; }
+	[data-theme="dark"] header nav #main_menu a:hover {background-color: #2d3138;}
+	[data-theme="light"] header nav #main_menu a {color: #000;}
+	[data-theme="light"] header nav #main_menu a:hover {background-color: #eee;}
 	header nav #language_select	{margin-right: 1.5em;}
 	header nav #language_select .dropdown ul li	{width:8em;}
 	header nav #language_select	{margin-left: auto;}
