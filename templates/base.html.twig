@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Garlic-Hub{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="/images/logo.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="{{ asset('css/external/remixicon.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="{{ asset('css/external/pico.jade.min.css') }}">
+
         <link rel="stylesheet" href="{{ asset('css/theme-base.css') }}">
         {% block stylesheets %}
         {% endblock %}
@@ -20,20 +25,22 @@
         </main>
 
         <footer>
-          {% if app.environment in ['dev', 'test'] %}
-            <div id="compile_time">
-                {{ execution_time() | number_format(7) }} sec
-                {{ memory_usage() }}
-               {{ peak_memory_usage() }} peak
-            </div>
-            {% endif %}
+            <nav aria-label="Footer Navigation" class="menu_company_legals">
+                <ul>
+                    {% if app.environment in ['dev', 'test'] %}
+                        <li id="compile_time" role="contentinfo">
+                            {{ execution_time() | number_format(7) }} sec
+                            {{ memory_usage() }}
+                            {{ peak_memory_usage() }} peak
+                        </li>
+                    {% endif %}
 
-            <ul class="menu_company_legals">
-                <li>
-                    <a href="/legals">{{ 'footer.legal_notice' | trans({}, 'menu') }}</a>
-                </li>
-            </ul>
+                    <li>
+                        <a href="/legals">{{ 'footer.legal_notice' | trans({}, 'menu') }}</a>
+                    </li>
+                </ul>
+            </nav>
         </footer>
 
     </body>
-</html>
+</>

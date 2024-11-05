@@ -1,6 +1,8 @@
-<nav id="main_navigation">
+<nav>
 	{% if is_granted('ROLE_USER') %}
-	<ul class="menu">
+	<ul id="main_menu">
+		<li><img width="75" src="/images/logo.svg" alt="garlic-hub logo"></li>
+		<li><strong>garlic-hub</strong></li>
 		<li>
 			<a href="{{ path('player') }}">{{ 'menu.player'|trans({}, 'menu') }}</a>
 		</li>
@@ -10,34 +12,45 @@
 		<li>
 			<a href="{{ path('mediapool') }}">{{ 'menu.mediapool'|trans({}, 'menu') }}</a>
 		</li>
+		{% endif %}
 	</ul>
-	{% endif %}
-
-	<div class="dropdown">
-		<div class="dropdown-toggle" id="languageDropdown">
-			<img src="/images/flags/24x24/{{ app.request.locale|slice(0, 2)|lower }}.png" alt="">
-			{{ app.request.locale|slice(0, 2)|upper }}
-		</div>
-		<div class="dropdown-menu" aria-labelledby="languageDropdown">
-			{% for locale, language in {'de_DE': 'Deutsch', 'en_US': 'English', 'fr_FR': 'Français', 'es_ES': 'Español', 'ru_RU': 'Русский'} %}
-				<a class="dropdown-item" href="{{ path('set_locale', {'locale': locale}) }}">
-				<img src="/images/flags/24x24/{{ locale|slice(0, 2)|lower }}.png" alt="{{ language }} flag">
-				{{ language }}
-				</a>
-			{% endfor %}
-		</div>
-	</div>
+	<ul id="language_select">
+		<li>
+			<details class="dropdown">
+				<summary>
+					<img src="/images/flags/24x24/{{ app.request.locale|slice(0, 2)|lower }}.png" alt="">
+					{{ app.request.locale|slice(0, 2)|upper }}
+				</summary>
+				<ul aria-labelledby="languageDropdown">
+					{% for locale, language in {'de_DE': 'Deutsch', 'en_US': 'English', 'fr_FR': 'Français', 'es_ES': 'Español', 'ru_RU': 'Русский'} %}
+						<li>
+							<a href="{{ path('set_locale', {'locale': locale}) }}">
+								<img src="/images/flags/24x24/{{ locale|slice(0, 2)|lower }}.png" alt="{{ language }} flag">
+								{{ language }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</details>
+		</li>
+	</ul>
 
 	{% if is_granted('ROLE_USER') %}
-	<ul id="infobox" class="dropdown">
+	<ul id="infobox">
 		<li>
-			<div class="dropdown-toggle" type="button" id="languageDropdown">
-				{{ 'menu.logged_in_as'|trans({}, 'menu') }}: {{ app.user.userIdentifier }}
-			</div>
-			<div class="dropdown-menu">
-				<a class="dropdown-item" href="/user_options">{{ 'user.manage_account'|trans({}, 'menu') }}</a>
-				<a class="dropdown-item" href="/logout">{{ 'user.logout'|trans({}, 'menu') }}</a>
-			</div>
+			<details class="dropdown">
+				<summary>
+					{{ 'menu.logged_in_as'|trans({}, 'menu') }}: {{ app.user.userIdentifier }}
+				</summary>
+				<ul aria-labelledby="languageDropdown">
+					<li>
+						<a class="dropdown-item" href="/user_options">{{ 'user.manage_account'|trans({}, 'menu') }}</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="/logout">{{ 'user.logout'|trans({}, 'menu') }}</a>
+					</li>
+				</ul>
+			</details>
 		</li>
 	</ul>
 	{% endif %}
