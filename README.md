@@ -33,10 +33,17 @@ Copy the example environment file and update it as needed:
 ```bash
 cp .env.dist .env
 ```
+### Cli Setup
+Create meta db fror cli commands:
+```bash
+php bin/cli.php --update
+```
+Now execute the migration script. 
+
 ### Database Setup
 Create and configure the database:
 ```bash
-php bin/console app:migrate
+php bin/cli.php -s migrate-database
 ```
 This will create the database and an admin-user
 login: admin
