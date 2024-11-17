@@ -5,30 +5,21 @@ namespace App\Framework\Core\Cli;
 use App\Framework\Core\Cli\Metadata\MetadataWriter;
 
 /**
- * Extracts and saves command metadata from PHP files in a directory.
+ * Extracts command metadata from PHP files in a directory.
  */
 class CommandMetadataExtractor
 {
 
-	private MetadataWriter $MetadataWriter;
-
 	/**
-	 * @param MetadataWriter $metadataWriter Metadata writer to save extracted data.
+	 * @param string $commandsDir Path to the directory containing PHP files.
+	 *
+	 * @return array
 	 */
-	public function __construct(MetadataWriter $metadataWriter)
-	{
-		$this->MetadataWriter = $metadataWriter;
-	}
-
-	/**
-	 * @param string $inputDir Path to the directory containing PHP files.
-	 * @return void
-	 */
-	public function extractAndSave(string $inputDir): void
+	public function extract(string $commandsDir): array
 	{
 		$commandData = [];
 		$iterator = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($inputDir, \FilesystemIterator::SKIP_DOTS)
+			new \RecursiveDirectoryIterator($commandsDir, \FilesystemIterator::SKIP_DOTS)
 		);
 
 		foreach ($iterator as $file)
@@ -45,7 +36,7 @@ class CommandMetadataExtractor
 			}
 		}
 
-		$this->MetadataWriter->write($commandData);
+		return $commandData;
 	}
 
 	/**

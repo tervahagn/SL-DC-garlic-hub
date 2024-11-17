@@ -6,36 +6,47 @@ use App\Framework\Exceptions\BaseException;
 
 require_once __DIR__.'/../bootstrap.php';
 
-$system_dir   = __DIR__.'/../';
-$input_dir    = $system_dir . 'src/Commands';
-$meta_filepath  = $system_dir . 'var/command_metadata.json';
-$should_update = in_array('--update', $argv) || !file_exists($meta_filepath);
-
+$systemDir     = __DIR__.'/../';
+$varDir		   = $systemDir . 'var';
+$commandsDir   = $systemDir . 'src/Commands';
+$metaFilepath  = 'command_metadata.json';
+$shouldUpdate  = in_array('--update', $argv) || !file_exists($varDir.'/'.$metaFilepath);
+$metaData      = [];
 try
 {
-	if ($should_update)
+	if ($shouldUpdate)
 	{
-		$extractor = new \App\Framework\Core\Cli\CommandMetadataExtractor(
-			new \App\Framework\Core\Cli\Metadata\MetadataWriter($meta_filepath));
-		$extractor->extractAndSave($input_dir);
+		$adapter    = new \League\Flysystem\Local\LocalFilesystemAdapter($varDir);
+		$filesystem = new \League\Flysystem\Filesystem($adapter);
+		$extractor  = new \App\Framework\Core\Cli\CommandMetadataExtractor();
+		$writer     = new \App\Framework\Core\Cli\Metadata\MetadataWriter($filesystem, $metaFilepath);
+		$metaData   = $extractor->extract($commandsDir);
+		$writer->write($metaData);
+		exit();
 	}
 
 	$CliBase = new CliBase();
 	$CliBase->parseBaseParams();
 
-	$meta_file = json_decode(file_get_contents($meta_filepath), true);
+	if (empty($metaData)) // because --update could ben at the same time
+		$metaData = json_decode(file_get_contents($varDir.'/'.$metaFilepath), true);
+
+	if (is_null($metaData))
+		exit();
 
 	// Show help if --help-Parameter or no site-Parameter
 	if ($CliBase->isHelp() === true || $CliBase->hasSiteParam() === false)
 	{
-		$CliBase->showCliHelp($meta_file);
+		$CliBase->showCliHelp($metaData);
 		exit(0);
 	}
 
 	// execute the command
 	$Dispatcher  = new Dispatcher();
 	$Dispatcher->setCliBase($CliBase);
-	$controller_file = $Dispatcher->dispatchApi($meta_file);
+	$controller_file = $Dispatcher->dispatchApi($metaData);
+
+
 	require_once $controller_file;
 
 }

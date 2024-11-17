@@ -15,8 +15,6 @@ require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-
-
 $ContainerBuilder = new ContainerBuilder();
 $ContainerBuilder->addDefinitions(__DIR__ . '/config/services.php');
 
@@ -46,11 +44,6 @@ try
 	});
 
 	$app->addRoutingMiddleware();
-
-
-
-
-
 }
 catch (Exception $e)
 {
