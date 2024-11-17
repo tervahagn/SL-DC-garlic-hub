@@ -31,7 +31,7 @@ composer install
 Copy the example environment file and update it as needed:
 
 ```bash
-cp .env.example .env
+cp .env.dist .env
 ```
 ### Database Setup
 Create and configure the database:
