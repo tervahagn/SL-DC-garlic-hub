@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{LANG_PAGE_TITLE}}</title>
+	<link rel="icon" href="/images/logo.svg" type="image/svg+xml">
+	<link rel="stylesheet" href="/css/external/remixicon.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark">
+	<link rel="stylesheet" href="/css/external/pico.jade.min.css">
+	<link rel="stylesheet" href="/css/theme-base.css">
+	{{#ADDITIONAL_CSS}}
+	<link rel="stylesheet" href="{{.}}">
+	{{/ADDITIONAL_CSS}}
+</head>
+<body>
+<header>
+	<nav>
+		<ul id="main_menu">
+			<li>
+				<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
+			</li>
+			{{#menu}}
+				<li>
+					<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+				</li>
+			{{/menu}}
+		</ul>
+	</nav>
+</header>
+<main>
+	{{#error_messages}}
+		<div id="error_messages" class="error_messages">{{.}}</div>
+	{{/error_messages}}
+	{{{MAIN_CONTENT}}}
+</main>
+
+<footer>
+	<nav aria-label="Footer Navigation" class="menu_company_legals">
+		<ul>
+			<li id="compile_time">
+				{{ EXECUTION_TIME }} | {{ MEMORY_USAGE }} | {{ PEAK_MEMORY_USAGE }} peak
+			</li>
+			<li>
+				<a href="/legals">{{ LANG_LEGALS }}</a>
+			</li>
+			<li>
+				<a href="/privacy">{{ LANG_PRIVACY }}</a>
+			</li>
+			<li>
+				<a href="/terms">{{ LANG_TERMS }}</a>
+			</li>
+		</ul>
+	</nav>
+</footer>
+
+</body>
+</html>

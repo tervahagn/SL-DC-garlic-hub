@@ -37,7 +37,7 @@ class MySqliAdapter implements AdapterInterface
 	/**
 	 * @var bool
 	 */
-	private bool  $is_transaction = false;
+	private bool  $isTransaction = false;
 	/**
 	 * @var mixed
 	 */
@@ -138,20 +138,20 @@ class MySqliAdapter implements AdapterInterface
 	/**
 	 * @throws DatabaseException
 	 */
-	public function show(string $what= 'TABLES', string $table_name = ''): array
+	public function show(string $what= 'TABLES', string $table = ''): array
 	{
 		if (strtoupper($what) === 'COLUMNS')
 		{
-			if (!empty($table_name))
+			if (!empty($table))
 				throw new DatabaseException('Missing argument table_name');
 
-			$sql = 'SHOW COLUMNS FROM ' . $this->escapeString($table_name) . ')';
+			$sql = 'SHOW COLUMNS FROM ' . $this->escapeString($table) . ')';
 		}
 		else if (strtoupper($what) === 'TABLES')
 		{
 			$sql = 'SHOW TABLES';
-			if (!empty($table_name))
-				$sql .= " WHERE type='table' AND name='" . $table_name . "'";
+			if (!empty($table))
+				$sql .= " WHERE type='table' AND name='" . $table . "'";
 		}
 		else
 			throw new DatabaseException("Invalid argument for show(): " . $what);
@@ -178,13 +178,13 @@ class MySqliAdapter implements AdapterInterface
 	 */
 	public function beginTransaction(): void
 	{
-		if ($this->is_transaction)
+		if ($this->isTransaction)
 			return;
 
 		if (!$this->db->autocommit(false))
 			throw new DatabaseException("Failed to begin transaction: " . $this->db->error, $this->db->errno);
 
-		$this->is_transaction = true;
+		$this->isTransaction = true;
 	}
 
 	/**
@@ -198,7 +198,7 @@ class MySqliAdapter implements AdapterInterface
 			throw new DatabaseException("Failed to commit transaction: " . $this->db->error, $this->db->errno);
 
 		$this->db->autocommit(true);
-		$this->is_transaction = false;
+		$this->isTransaction = false;
 	}
 
 	/**
@@ -212,12 +212,12 @@ class MySqliAdapter implements AdapterInterface
 			throw new DatabaseException("Failed to rollback transaction: " . $this->db->error, $this->db->errno);
 
 		$this->db->autocommit(true);
-		$this->is_transaction = false;
+		$this->isTransaction = false;
 	}
 
 	public function hasActiveTransaction(): bool
 	{
-		return $this->is_transaction;
+		return $this->isTransaction;
 	}
 
 	/**

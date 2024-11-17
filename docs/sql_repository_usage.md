@@ -47,7 +47,7 @@ class UserMain extends Sql
     public function findByUsername(string $username): ?User
     {
         $where = "username = '" . $this->getDataPreparer()->escape($username) . "'";
-        $result = $this->getDbh()->select($this->QueryBuilder->buildSelectQuery('*', $this->getTable(), $where));
+        $result = $this->getDbh()->select($this->queryBuilder->buildSelectQuery('*', $this->getTable(), $where));
         
         return !empty($result) ? new User($result[0]) : null;
     }

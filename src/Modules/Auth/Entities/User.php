@@ -20,27 +20,23 @@
 
 namespace App\Modules\Auth\Entities;
 
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 /**
  * Basic user model with roles and password for authentication.
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User
 {
-	private string $password;
-	private string $username;
+	private int|string $UID;
+	private array $userData;
 	private array $roles;
 
 	/**
-	 * @param string $username User's unique identifier
-	 * @param string $password Hashed password
-	 * @param array $roles User roles
+	 * @param array $userData
+	 * @param array $roles
 	 */
-	public function __construct(string $username, string $password, array $roles = ['ROLE_USER'])
+	public function __construct(array $userData, array $roles = ['ROLE_USER'])
 	{
-		$this->username = $username;
-		$this->password = $password;
+		$this->UID      = $userData['UID'];
+		$this->userData = $userData;
 		$this->roles = $roles;
 	}
 
@@ -51,34 +47,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	 */
 	public function getPassword(): string
 	{
-		return $this->password;
+		return $this->userData['password'];
 	}
 
-	/**
-	 * Gets user roles.
-	 *
-	 * @return array
-	 */
+	public function getUsername(): string
+	{
+		return $this->userData['username'];
+	}
+
+	public function getUID(): int|string
+	{
+		return $this->UID;
+	}
+
 	public function getRoles(): array
 	{
 		return $this->roles;
 	}
 
-	/**
-	 * Clears sensitive data.
-	 */
-	public function eraseCredentials(): void
+	public function getLocale()
 	{
-		// Clear temporary sensitive data if needed
+		return $this->userData['locale'];
 	}
 
-	/**
-	 * Gets the user identifier (username).
-	 *
-	 * @return string
-	 */
-	public function getUserIdentifier(): string
+	public function getCompanyId()
 	{
-		return $this->username;
+		return $this->userData['company_id'];
+	}
+
+	public function getStatus()
+	{
+		return $this->userData['status'];
 	}
 }

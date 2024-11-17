@@ -47,7 +47,7 @@ class MigrateDatabase
 	/**
 	 * @var QueryBuilder
 	*/
-	private QueryBuilder $QueryBuilder;
+	private QueryBuilder $queryBuilder;
 
 	/**
 	 * @var integer
@@ -62,7 +62,7 @@ class MigrateDatabase
 	/**
 	 * @var bool
 	 */
-	private bool $silent_output = false;
+	private bool $isSilentOutput = false;
 
 	/**
 	 * @param DBHandler $dbh
@@ -70,7 +70,7 @@ class MigrateDatabase
 	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder)
 	{
 		$this->setDbh($dbh);
-		$this->QueryBuilder = $queryBuilder;
+		$this->queryBuilder = $queryBuilder;
 	}
 
 	/**
@@ -114,19 +114,19 @@ class MigrateDatabase
 	/**
 	 * @return bool
 	 */
-	public function isSilentOutput(): bool
+	public function isIsSilentOutput(): bool
 	{
-		return $this->silent_output;
+		return $this->isSilentOutput;
 	}
 
 	/**
-	 * @param boolean $silent_output
+	 * @param boolean $silentOutput
 	 *
 	 * @return $this
 	 */
-	public function setSilentOutput(bool $silent_output): MigrateDatabase
+	public function setSilentOutput(bool $silentOutput): MigrateDatabase
 	{
-		$this->silent_output = $silent_output;
+		$this->isSilentOutput = $silentOutput;
 		return $this;
 	}
 
@@ -234,7 +234,7 @@ class MigrateDatabase
 	 */
 	protected function getMigrationVersion(): int
 	{
-		$sql = $this->QueryBuilder->buildSelectQuery($this->fieldName, self::MIGRATION_TABLE_NAME);
+		$sql = $this->queryBuilder->buildSelectQuery($this->fieldName, self::MIGRATION_TABLE_NAME);
 		$result = $this->getDbh()->getSingleValue($sql);
 		$this->version = (int) $result;
 		return $this->version;
@@ -249,7 +249,7 @@ class MigrateDatabase
 	 */
 	protected function setMigrationVersion(int $version): MigrateDatabase
 	{
-		$sql = $this->QueryBuilder->buildUpdateQuery(
+		$sql = $this->queryBuilder->buildUpdateQuery(
 			self::MIGRATION_TABLE_NAME, array($this->fieldName => $version), $this->fieldName .' > 0'
 		);
 		$this->getDbh()->update($sql);
@@ -431,7 +431,7 @@ class MigrateDatabase
 	protected function migrateSql(string $file_name): MigrateDatabase
 	{
 		$sqlContent = file_get_contents($file_name);
-		$sqlArray   = preg_split('/;\s*\n/', $sqlContent, null, PREG_SPLIT_NO_EMPTY);
+		$sqlArray   = preg_split('/;\s*\n/', $sqlContent, -1, PREG_SPLIT_NO_EMPTY);
 		$sql        = 'none yet';
 
 		$this->getDbh()->beginTransaction();
@@ -662,7 +662,7 @@ TXT;
 	 */
 	private function stdOut(string $text): MigrateDatabase
 	{
-		if (!$this->silent_output)
+		if (!$this->isSilentOutput)
 		{
 			echo $text;
 		}

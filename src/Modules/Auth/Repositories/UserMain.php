@@ -24,37 +24,33 @@ use App\Framework\BaseRepositories\Sql;
 use App\Framework\Database\DBHandler;
 use App\Framework\Database\Helpers\DataPreparer;
 use App\Framework\Database\QueryBuilder;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Entities\User;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * Provides user data handling for authentication.
  */
-class UserMain extends Sql implements UserProviderInterface
+class UserMain extends Sql
 {
 	/**
-	 * @param DBHandler $dbh Database handler
-	 * @param QueryBuilder $queryBuilder Query builder
-	 * @param UserMainDataPreparer $dataPreparer Data preparer
-	 * @param string $table Database table name
-	 * @param string $id_field ID field name
+	 * @param DBHandler $dbh
+	 * @param QueryBuilder $queryBuilder
+	 * @param UserMainDataPreparer $dataPreparer
 	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer, string $table, string $id_field)
+	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer)
 	{
 		parent::__construct($dbh, $queryBuilder, $dataPreparer, 'user_main', 'UID');
 	}
 
 	/**
-	 * Reloads user data by identifier.
+	 * @param User $user
 	 *
-	 * @param UserInterface $user The user to refresh
-	 * @return UserInterface
+	 * @return User
+	 * @throws UserException
 	 */
-	public function refreshUser(UserInterface $user): UserInterface
+	public function refreshUser(User $user): User
 	{
-		return $this->loadUserByIdentifier($user->getUserIdentifier());
+		return $this->loadUserByIdentifier($user->getUsername());
 	}
 
 	/**
@@ -69,32 +65,22 @@ class UserMain extends Sql implements UserProviderInterface
 	}
 
 	/**
-	 * Loads a user by their identifier.
+	 * @param string $identifier
 	 *
-	 * @param string $identifier Username identifier
-	 * @return UserInterface
-	 * @throws UserNotFoundException If user is not found
+	 * @return User
+	 * @throws UserException
 	 */
-	public function loadUserByIdentifier(string $identifier): UserInterface
+	public function loadUserByIdentifier(string $identifier): User
 	{
 		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
-		{
 			$where = "email = '$identifier'";
-		}
 		else
-		{
 			$where = "username = '$identifier'";
-		}
 
 		$result = $this->getFirstDataSet($this->findAllBy($where));
-
 		if (empty($result))
-		{
-			$exception = new UserNotFoundException();
-			$exception->setUserIdentifier($identifier);
-			throw $exception;
-		}
+			throw new UserException('User not found.');
 
-		return new User($result['username'], $result['password']); // Adjust to match User class
+		return new User($result);
 	}
 }

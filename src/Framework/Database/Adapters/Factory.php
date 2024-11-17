@@ -22,6 +22,7 @@ namespace App\Framework\Database\Adapters;
 
 use App\Framework\Database\DBHandler;
 use App\Framework\Exceptions\DatabaseException;
+use InvalidArgumentException;
 
 /**
  * Factory for creating database connections with specified adapters.
@@ -50,7 +51,7 @@ class Factory
 	 * @param array $credentials Database connection credentials, including 'db_driver' (e.g., 'MYSQLI', 'SQLITE3').
 	 * @return DBHandler Configured database handler.
 	 * @throws DatabaseException On connection failure.
-	 * @throws \InvalidArgumentException If an unsupported driver is specified.
+	 * @throws InvalidArgumentException If an unsupported driver is specified.
 	 */
 	public static function createConnection(array $credentials): DBHandler
 	{
@@ -58,11 +59,14 @@ class Factory
 
 		$adapter = match($credentials['db_driver'])
 		{
-			// PDO is only a test alternative.
+			// PDO is only a test alternative. Maybe in later times when
+			// it gets complicated it is better to reduce db instructions and build
+			// the different DB-Adapter with PDO commands instead of the native APIs.
+			// or probably not.
 			//'PDO_MYSQL', 'PDO_SQLITE' => new PdoAdapter(),
 			'MYSQLI'  => new MySqliAdapter(),
 			'SQLITE3' => new Sqlite3Adapter(),
-			default => throw new \InvalidArgumentException("Unsupported database driver: {$credentials['db_driver']}"),
+			default => throw new InvalidArgumentException("Unsupported database driver: {$credentials['db_driver']}"),
 		};
 
 		$adapter->connect($credentials);

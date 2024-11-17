@@ -30,17 +30,8 @@ use SQLite3;
  */
 class Sqlite3Adapter implements AdapterInterface
 {
-	/**
-	 * @var SQLite3
-	 */
 	private SQLite3 $db;
-	/**
-	 * @var bool
-	 */
-	private bool  $is_transaction = false;
-	/**
-	 * @var mixed
-	 */
+	private bool  $isTransaction = false;
 	private mixed $result;
 
 	/**
@@ -60,7 +51,7 @@ class Sqlite3Adapter implements AdapterInterface
 		}
 		catch (\Exception $e)
 		{
-			throw new DatabaseException("Connection failed: " . $e->getMessage(), (int)$e->getCode());
+			throw new DatabaseException("Connection failed: " . $e->getMessage(), (int) $e->getCode());
 		}
 	}
 
@@ -143,20 +134,20 @@ class Sqlite3Adapter implements AdapterInterface
 	/**
 	 * @throws DatabaseException
 	 */
-	public function show(string $what= 'TABLES', string $table_name = ''): array
+	public function show(string $what= 'TABLES', string $table = ''): array
 	{
 		if (strtoupper($what) === 'COLUMNS')
 		{
-			if (!empty($table_name))
+			if (!empty($table))
 				throw new DatabaseException('Missing argument table_name');
 
-			$sql = 'PRAGMA table_info (' . $this->escapeString($table_name) . ')';
+			$sql = 'PRAGMA table_info (' . $this->escapeString($table) . ')';
 		}
 		else if (strtoupper($what) === 'TABLES')
 		{
 			$sql = "SELECT name FROM sqlite_master";
-			if (!empty($table_name))
-				$sql .= " WHERE type='table' AND name='" . $table_name . "'";
+			if (!empty($table))
+				$sql .= " WHERE type='table' AND name='" . $table . "'";
 		}
 		else
 			throw new DatabaseException("Invalid argument for show(): " . $what);
@@ -171,7 +162,7 @@ class Sqlite3Adapter implements AdapterInterface
 	 */
 	public function beginTransaction(): void
 	{
-		if ($this->is_transaction) {
+		if ($this->isTransaction) {
 			return;
 		}
 
@@ -179,7 +170,7 @@ class Sqlite3Adapter implements AdapterInterface
 			throw new DatabaseException("Failed to begin transaction: " . $this->db->lastErrorMsg());
 		}
 
-		$this->is_transaction = true;
+		$this->isTransaction = true;
 	}
 
 	/**
@@ -193,7 +184,7 @@ class Sqlite3Adapter implements AdapterInterface
 			throw new DatabaseException("Failed to commit transaction: " . $this->db->lastErrorMsg());
 		}
 
-		$this->is_transaction = false;
+		$this->isTransaction = false;
 	}
 
 	/**
@@ -206,12 +197,12 @@ class Sqlite3Adapter implements AdapterInterface
 		if (!$this->db->exec('ROLLBACK'))
 			throw new DatabaseException("Failed to rollback transaction: " . $this->db->lastErrorMsg());
 
-		$this->is_transaction = false;
+		$this->isTransaction = false;
 	}
 
 	public function hasActiveTransaction(): bool
 	{
-		return $this->is_transaction;
+		return $this->isTransaction;
 	}
 
 	/**

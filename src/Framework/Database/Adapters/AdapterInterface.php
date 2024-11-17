@@ -83,11 +83,12 @@ interface AdapterInterface
 	/**
 	 * Displays database details (e.g., tables, columns).
 	 *
-	 * @param string $what Type of detail to show
-	 * @param string $table_name Optional table name
+	 * @param string $what  Type of detail to show
+	 * @param string $table Optional table name
+	 *
 	 * @return array Result set
 	 */
-	public function show(string $what= 'TABLES', string $table_name = ''): array;
+	public function show(string $what= 'TABLES', string $table = ''): array;
 
 	/**
 	 * Executes a raw SQL query.
@@ -105,7 +106,7 @@ interface AdapterInterface
 	public function escapeString(string $unsafe): string;
 
 	/**
-	 * Checks if a transaction is active.
+	 * Checks if a transaction is in progress.
 	 *
 	 * @return bool
 	 */

@@ -20,8 +20,6 @@
 
 namespace App\Framework\BaseRepositories;
 
-use App\Framework\BaseRepositories\SqlHelperTraits\FindOperationsTrait;
-use App\Framework\BaseRepositories\SqlHelperTraits\TransactionTrait;
 use App\Framework\Database\DBHandler;
 use App\Framework\Database\Helpers\DataPreparer;
 use App\Framework\Database\QueryBuilder;
@@ -37,32 +35,25 @@ abstract class Sql
 	use TransactionTrait;
 	use FindOperationsTrait;
 
-	/**
-	 * @var DBHandler Database handler
-	 */
+	protected string $idField;
 	protected DBHandler $dbh;
-	/**
-	 * @var QueryBuilder
-	 */
-	protected QueryBuilder $QueryBuilder;
-	/**
-	 * @var DataPreparer
-	 */
-	protected DataPreparer $DataPreparer;
+	protected QueryBuilder $queryBuilder;
+	protected DataPreparer $dataPreparer;
 
 	/**
 	 * Constructor
 	 *
 	 * @param DBHandler $dbh Database handler
 	 * @param string $table Table name
-	 * @param string $id_field ID field name
+	 * @param string $idField ID field name
 	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer, string $table, string $id_field)
+	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer, string $table, string $idField)
 	{
 		$this->dbh          = $dbh;
-	 	$this->QueryBuilder = $queryBuilder;
+	 	$this->queryBuilder = $queryBuilder;
+		$this->dataPreparer = $dataPreparer;
 		$this->table        = $table;
-		$this->id_field     = $id_field;
+		$this->idField     = $idField;
 	}
 
 	/**
@@ -78,7 +69,7 @@ abstract class Sql
 
 	public function getDataPreparer(): DataPreparer
 	{
-		return $this->DataPreparer;
+		return $this->dataPreparer;
 	}
 
 	/**
@@ -94,12 +85,12 @@ abstract class Sql
 	/**
 	 * Sets the ID field name.
 	 *
-	 * @param string $id_field ID field name
+	 * @param string $idField ID field name
 	 * @return $this
 	 */
-	protected function setIdField(string $id_field): Sql
+	protected function setIdField(string $idField): Sql
 	{
-		$this->id_field = $id_field;
+		$this->idField = $idField;
 		return $this;
 	}
 
@@ -110,7 +101,7 @@ abstract class Sql
 	 */
 	public function getIdField(): string
 	{
-		return $this->id_field;
+		return $this->idField;
 	}
 
 	/**
@@ -121,27 +112,28 @@ abstract class Sql
 	 */
 	public function insert(array $fields): int
 	{
-		$sql = $this->QueryBuilder->buildInsertQuery($this->getTable(), $this->getDataPreparer()->prepareForDB($fields));
+		$sql = $this->queryBuilder->buildInsertQuery($this->getTable(), $this->getDataPreparer()->prepareForDB($fields));
 		return $this->getDbh()->insert($sql);
 	}
 
 	/**
 	 * Updates a record in the database by ID.
 	 *
-	 * @param int|string $id Record ID
-	 * @param array $ar_fields Fields to update
+	 * @param int|string $id     Record ID
+	 * @param array      $fields Fields to update
+	 *
 	 * @return int Number of affected rows
 	 */
-	public function update(int|string $id, array $ar_fields): int
+	public function update(int|string $id, array $fields): int
 	{
 		// this is required because the id field can be a string or an integer
 		$id_prepare = array($this->getIdField() => $id);
 		$id_cleaned = $this->getDataPreparer()->prepareForDB($id_prepare);
 		$quoted_id  = $id_cleaned[$this->getIdField()];
 
-		$sql = $this->QueryBuilder->buildUpdateQuery(
+		$sql = $this->queryBuilder->buildUpdateQuery(
 			$this->table,
-			$this->getDataPreparer()->prepareForDB($ar_fields),
+			$this->getDataPreparer()->prepareForDB($fields),
 			$this->getIdField() . ' = '. $quoted_id
 		);
 
@@ -157,7 +149,7 @@ abstract class Sql
 	 */
 	public function updateWithWhere(array $fields, string $where): int
 	{
-		$sql = $this->QueryBuilder->buildUpdateQuery(
+		$sql = $this->queryBuilder->buildUpdateQuery(
 			$this->table,
 			$this->getDataPreparer()->prepareForDB($fields),
 			$where
@@ -202,7 +194,7 @@ abstract class Sql
 	 */
 	public function deleteBy(string $where, string $limit = ''): int
 	{
-		$sql = $this->QueryBuilder->buildDeleteQuery(
+		$sql = $this->queryBuilder->buildDeleteQuery(
 			$this->getTable(),
 			$where,
 			$limit

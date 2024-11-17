@@ -87,7 +87,17 @@ public function processOrder(int $userId, array $orderDetails): string
 ## 7. Code Formatting
 
 - **Indentation**: Use 4 spaces per indentation level.
-- **Braces**: Place opening braces `{` on a new line, directly below the control statement or function definition.
+- **Braces**:
+  - Place opening braces `{` on a new line, directly below the control statement or function definition.
+  - **Single-line statements**: For single-line statements following a control structure (`if`, `else`, `while`, etc.), braces `{}` are optional. When omitted, place the statement on a new line directly below the control structure and leave an empty line after it for clarity. Example:
+    ```php
+    if ($condition)
+        executeSingleLineAction();
+
+    // continue with code here
+    ```
+  - Use braces for multi-line statements or to improve readability in complex conditions.
+
 - **Line Length**: Limit lines to 80-120 characters where possible to enhance readability.
 - **Spacing**:
     - Add a single blank line between methods to improve readability.
