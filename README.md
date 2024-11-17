@@ -33,19 +33,12 @@ Copy the example environment file and update it as needed:
 ```bash
 cp .env.dist .env
 ```
-### Cli Setup
-Create meta db fror cli commands:
+### Installer
+Create directories configure the database and more:
 ```bash
-php bin/cli.php --update
+php install.php
 ```
-Now execute the migration script. 
-
-### Database Setup
-Create and configure the database:
-```bash
-php bin/cli.php -s migrate-database
-```
-This will create the database and an admin-user
+The login will be created with the following credentials:
 login: admin
 password: thymian
 
