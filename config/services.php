@@ -1,6 +1,6 @@
 <?php
 
-use App\Framework\Core\Config;
+use App\Framework\Core\Config\Config;
 use App\Framework\Database\Adapters\Factory;
 use App\Framework\Database\DBHandler;
 use App\Framework\Database\QueryBuilder;
@@ -13,11 +13,11 @@ use Slim\Factory\AppFactory;
 $dependencies = [];
 
 $dependencies[App::class]             = Di\factory([AppFactory::class, 'createFromContainer']);
-$dependencies[Config::class]          = DI\factory(function () {return new Config(__DIR__ . '/../config/');});
+$dependencies[Config::class]          = DI\factory(function () {
+	return new Config(new \App\Framework\Core\Config\IniConfigLoader(__DIR__ . '/../config/'));
+});
 $dependencies[Mustache_Engine::class] = DI\factory(function () {
-	return new Mustache_Engine([
-		'loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../templates'),
-	]);
+	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../templates')]);
 });
 $dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
 	return new MustacheAdapter($mustacheEngine);

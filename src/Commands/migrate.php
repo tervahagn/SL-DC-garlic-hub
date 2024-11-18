@@ -14,7 +14,7 @@ use App\Framework\Database\Migration\MigrateDatabase;
 use DI\Container;
 
 /**
- * @var $Config     		App\Framework\Core\Config
+ * @var $Config     		\App\Framework\Core\Config\Config
  * @var $CliBase            CliBase
  * @var $container          Container
  */
@@ -26,7 +26,7 @@ try
 		$container->get(\App\Framework\Database\QueryBuilder::class)
 	);
 	$MigrateDatabase->setSilentOutput(true);
-	$Config = $container->get(\App\Framework\Core\Config::class);
+	$Config = $container->get(\App\Framework\Core\Config\Config::class);
 	$path   = $Config->getConfigPath().'/../migrations/'.$_ENV['APP_PLATFORM_EDITION'].'/';
 	$MigrateDatabase->setMigrationFilePath($path);
 	$MigrateDatabase->execute();

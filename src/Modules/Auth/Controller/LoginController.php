@@ -89,7 +89,8 @@ class LoginController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => 'Garlic Hub - Login',
-				'error_messages' => $error
+				'error_messages' => $error,
+				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [
 				'template' => 'auth/login', // Template-name
