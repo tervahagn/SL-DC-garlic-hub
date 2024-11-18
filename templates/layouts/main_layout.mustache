@@ -20,12 +20,51 @@
 			<li>
 				<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
 			</li>
-			{{#menu}}
+			{{#main_menu}}
 				<li>
 					<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
 				</li>
-			{{/menu}}
+			{{/main_menu}}
 		</ul>
+		<ul id="language_select">
+			<li>
+				<details class="dropdown">
+					<summary>
+						<img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt="">
+						{{CURRENT_LOCALE_UPPER}}
+					</summary>
+					<ul aria-labelledby="languageDropdown">
+						{{#language_select}}
+						<li>
+							<a href="/set_locales/{{LOCALE_LONG}}">
+								<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
+								{{LANGUAGE_NAME}}
+							</a>
+						</li>
+						{{/language_select}}
+					</ul>
+				</details>
+			</li>
+		</ul>
+		{{#user_menu}}
+		<ul id="user_menu">
+			<li>
+				<details class="dropdown">
+					<summary>
+						{{LANG_LOGIN_AS}}: {{USERNAME}}
+					</summary>
+					<ul aria-labelledby="languageDropdown">
+						<li>
+							<a class="dropdown-item" href="/user_options">{{LANG_MANAGE_ACCOUNT}}</a>
+						</li>
+						<li>
+							<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
+						</li>
+					</ul>
+				</details>
+			</li>
+		</ul>
+		{{/user_menu}}
 	</nav>
 </header>
 <main>

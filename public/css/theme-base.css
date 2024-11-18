@@ -17,7 +17,7 @@ header
 	header nav #language_select	{margin-right: 1.5em;}
 	header nav #language_select .dropdown ul li	{width:8em;}
 	header nav #language_select	{margin-left: auto;}
-	header nav #infobox .dropdown {width:15em;}
+	header nav #user_menu .dropdown {width:15em;}
 
 
 main
