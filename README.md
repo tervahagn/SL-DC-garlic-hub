@@ -20,6 +20,13 @@ Ensure your environment meets the following requirements:
    git clone https://github.com/your-username/garlic-hub.git
    cd garlic-hub
 ```
+### For Developer: Install ddev (docker)
+
+Find a docker provider for your Operating System, open a terminal in your IDE. If you like customize the ./ddev/config.yaml file to your needs, but it is not required.
+
+```bash
+ddev start
+```
 ### Install PHP Dependencies
 Run Composer to install required PHP packages:
 
