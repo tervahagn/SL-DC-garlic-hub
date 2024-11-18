@@ -28,15 +28,10 @@ foreach ($requiredDirs as $dir)
 }
 echo "Directory structure and permissions verified.\n";
 
-echo "installing composer dependencies...\n";
-$output = shell_exec('composer install 2>&1');
-echo "<pre>$output</pre>";
-
 echo "create metadata for cli ...\n";
 $output = shell_exec('php bin/cli.php --update 2>&1');
-echo "<pre>$output</pre>";
 
+echo "Migrating database...\n";
+$output = shell_exec('php bin/cli.php --site migrate-database 2>&1');
 
-#echo "Migrating database...\n";
-#$output = shell_exec('php bin/cli.php --site migrate-database 2>&1');
-#echo "<pre>$output</pre>";
+echo "Database created.\n";

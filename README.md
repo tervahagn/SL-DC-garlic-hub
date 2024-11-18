@@ -39,8 +39,8 @@ Create directories configure the database and more:
 php install.php
 ```
 The login will be created with the following credentials:
-login: admin
-password: thymian
+- **login**: admin
+- **password**: thymian
 
 ## Features (In Development)
 
