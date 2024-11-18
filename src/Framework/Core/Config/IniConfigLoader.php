@@ -52,7 +52,7 @@ class IniConfigLoader implements ConfigLoaderInterface
 	 * @return array The parsed configuration data.
 	 * @throws CoreException If the configuration file is missing, unreadable, or invalid.
 	 */
-	public function loadConfig(string $module): array
+	public function load(string $module): array
 	{
 		$fileName = $this->buildConfigFileName($module);
 
@@ -75,6 +75,6 @@ class IniConfigLoader implements ConfigLoaderInterface
 	 */
 	private function buildConfigFileName(string $module): string
 	{
-		return $this->configPath . "config_{$module}.ini";
+		return $this->configPath . "config_$module.ini";
 	}
 }

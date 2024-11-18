@@ -20,6 +20,8 @@
 
 namespace App\Framework\Core\Config;
 
+use App\Framework\Exceptions\CoreException;
+
 /**
  * The Config class manages application configuration settings.
  *
@@ -53,10 +55,12 @@ class Config
 	 *
 	 * Searches for the value in the given module and optional section.
 	 *
-	 * @param string      $key The configuration key to retrieve.
-	 * @param string      $module The name of the module.
+	 * @param string      $key     The configuration key to retrieve.
+	 * @param string      $module  The name of the module.
 	 * @param string|null $section Optional. The section within the module.
+	 *
 	 * @return mixed|null The configuration value or null if not found.
+	 * @throws CoreException
 	 */
 	public function getConfigValue(string $key, string $module, ?string $section = null): mixed
 	{
@@ -73,7 +77,9 @@ class Config
 	 * Retrieves all configuration data for a specific module.
 	 *
 	 * @param string $module The name of the module.
+	 *
 	 * @return array The full configuration data for the module.
+	 * @throws CoreException
 	 */
 	public function getFullConfigDataByModule(string $module): array
 	{
@@ -84,12 +90,14 @@ class Config
 	 * Loads configuration data for a module, caching it for future use.
 	 *
 	 * @param string $module The name of the module.
+	 *
 	 * @return array The cached configuration data for the module.
+	 * @throws CoreException
 	 */
 	private function getConfigForModule(string $module): array
 	{
 		if (!isset($this->configCache[$module])) {
-			$this->configCache[$module] = $this->configLoader->loadConfig($module);
+			$this->configCache[$module] = $this->configLoader->load($module);
 		}
 
 		return $this->configCache[$module];
@@ -101,7 +109,9 @@ class Config
 	 * This method ensures the configuration for the specified modules is cached.
 	 *
 	 * @param array $modules An array of module names to preload.
+	 *
 	 * @return void
+	 * @throws CoreException
 	 */
 	public function preloadModules(array $modules): void
 	{

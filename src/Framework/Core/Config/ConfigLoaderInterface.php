@@ -34,5 +34,5 @@ interface ConfigLoaderInterface
 	 * @return array The configuration data as an associative array.
 	 * @throws CoreException If the configuration file is missing or invalid.
 	 */
-	public function loadConfig(string $module): array;
+	public function load(string $module): array;
 }

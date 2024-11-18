@@ -24,7 +24,7 @@ class TwigAdapter implements AdapterInterface
 {
 	private $twig;
 
-	public function __construct(\Twig\Environmen $twig)
+	public function __construct(\Twig\Environment $twig)
 	{
 		$this->twig = $twig;
 	}
