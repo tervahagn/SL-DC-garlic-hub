@@ -40,7 +40,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	{
 		$session = $request->getAttribute('session');
 
-		$locale = substr($session->get('user')['locale'], 0, 2);
+		$locale = 'en';
 		$layoutData = [
 			'main_menu' => $this->createMainMenu($session),
 			'CURRENT_LOCALE_LOWER' => strtolower($locale),

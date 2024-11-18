@@ -52,7 +52,7 @@ try
 	// This happens because $handler->handle($request) is called last in their process() method.
 	$app->add(new LayoutDataMiddleware());
 
-	$Config     = new Config(new IniConfigLoader(__DIR__.'/config/config.ini'));
+	$Config     = new Config(new IniConfigLoader(__DIR__.'/config/'));
 	$Locales    = new Locales($Config, new \App\Framework\Core\Locales\UrlLocaleExtractor());
 	$Translator = new Translator(
 		$Locales,
