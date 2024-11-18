@@ -18,30 +18,40 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 namespace App\Framework\Middleware;
 
+use App\Framework\Core\Config\Config;
+use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Translate\Translator;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Slim\Flash\Messages;
-use SlimSession\Helper;
 
-class SessionMiddleware implements MiddlewareInterface
+class EnvironmentMiddleware implements MiddlewareInterface
 {
-	private Helper $session;
+	private Config $config;
+	private Locales $locales;
+	private Translator $translator;
 
-	public function __construct(Helper $session)
+	public function __construct(Config $config, Locales $locale, Translator $translator)
 	{
-		$this->session = $session;
+		$this->config = $config;
+		$this->locales = $locale;
+		$this->translator = $translator;
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		$request = $request->withAttribute('session', $this->session);
-		// I know, but I have no better idea as flash needs a working session.
-		// In bootstrap.php it will throw an error when session is not started.
-		$request = $request->withAttribute('flash', new Messages());
+		$this->locales->determineCurrentLocale();
+
+		$request = $request
+			->withAttribute('config', $this->config)
+			->withAttribute('locales', $this->locales)
+			->withAttribute('translator', $this->translator);
 
 		return $handler->handle($request);
 	}
