@@ -28,7 +28,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 use function intl_get_error_message;
 
-class Translate
+class Translator
 {
 	protected Locales $locales;
 	protected TranslationLoaderInterface $loader;

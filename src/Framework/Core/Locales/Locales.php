@@ -43,7 +43,6 @@ class Locales
 
 		$this->availableLocales = $this->loadAvailableLocales();
 		$this->defaultLocale = $this->config->getConfigValue('default_locale', self::CONFIG_MODULE_NAME, 'general');
-		$this->currentLocale = $this->determineCurrentLocale();
 	}
 
 	public function getCurrentLocale(): string
@@ -102,10 +101,10 @@ class Locales
 		return in_array($locale, $this->availableLocales, true);
 	}
 
-	private function determineCurrentLocale(): string
+	public function determineCurrentLocale(): void
 	{
-		$locale = $this->localeExtractor->extractLocale();
-		return $this->isLocaleValid($locale) ? $locale : $this->defaultLocale;
+		$locale = $this->localeExtractor->extractLocale(array_keys($this->availableLocales));
+		$this->currentLocale =  $this->isLocaleValid($locale) ? $locale : $this->defaultLocale;
 	}
 
 	/**
