@@ -16,32 +16,38 @@ use DI\ContainerBuilder;
 use Phpfastcache\Helper\Psr16Adapter;
 use Slim\App;
 use Slim\Middleware\Session;
-
-/* @var App $app */
-require __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-$ContainerBuilder = new ContainerBuilder();
-$ContainerBuilder->addDefinitions(__DIR__ . '/config/services.php');
-$systemDir = realpath(__DIR__);
-$paths = [
-	'systemDir' => $systemDir,
-	'varDir' => $systemDir . '/var',
-	'cacheDir' => $systemDir . '/var/cache',
-	'logDir' => $systemDir . '/var/log',
-	'configDir' => $systemDir . '/config'
-];
-$ContainerBuilder->addDefinitions(['paths' => $paths]);
-
 try
 {
-	$DiContainer     = $ContainerBuilder->build();
-	$app             = $DiContainer->get(App::Class);
+	/* @var App $app */
+	require __DIR__ . '/vendor/autoload.php';
+	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+	$dotenv->load();
 
-	$mustache = new Mustache_Engine([
-		'loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/templates'),
-	]);
+	$containerBuilder = new ContainerBuilder();
+	$systemDir = realpath(__DIR__);
+	$paths = [
+		'systemDir' => $systemDir,
+		'varDir' => $systemDir . '/var',
+		'cacheDir' => $systemDir . '/var/cache',
+		'logDir' => $systemDir . '/var/log',
+		'configDir' => $systemDir . '/config'
+	];
+
+	$containerBuilder->addDefinitions(['paths' => $paths]);
+	$containerBuilder->addDefinitions($systemDir . '/config/services/_default.php');
+	$directoryIterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($systemDir . '/config/services', FilesystemIterator::SKIP_DOTS)
+	);
+
+	foreach ($directoryIterator as $file)
+	{
+		if (fnmatch('*.php', $file->getFilename())) {
+			$containerBuilder->addDefinitions($file->getPathname());
+		}
+	}
+
+	$container     = $containerBuilder->build();
+	$app           = $container->get(App::Class);
 
 	// Middleware section
 	// Be aware that the order of middleware registration matters.
@@ -53,7 +59,7 @@ try
 
 	// The code in these middlewares will execute AFTER the Controllers.
 	// This happens because $handler->handle($request) is called first in their process() method.
-	$app->add(new FinalRenderMiddleware(new MustacheAdapter($mustache)));
+	$app->add(new FinalRenderMiddleware(new MustacheAdapter($container->get(Mustache_Engine::class))));
 
 	require_once __DIR__.'/config/route.php';
 
