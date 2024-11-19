@@ -53,11 +53,23 @@ This document outlines the coding standards and best practices for gralic-hub. F
 
 ## 5. File Names
 
+#### For PHP-Files
+
 - **Style**: `PascalCase`
 - **Convention**: File names should match class names exactly and use PascalCase.
 - **Examples**:
     - `UserService.php`
     - `OrderProcessor.php`
+
+#### For Documentation Files
+
+- **Style**: kebab-case
+- **Convention**: File names for documentation should use kebab-case for better readability and consistency, especially in web-based environments.
+- **Examples**:
+  - `sql-usage.md`
+  - `getting-started.md`
+  - `api-reference.md`
+
 
 ## 6. Function and Parameter Documentation
 

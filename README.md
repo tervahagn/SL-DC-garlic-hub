@@ -81,7 +81,8 @@ Each phase will build on the features of the previous editions, ensuring a smoot
 ## Documentation
 - [Coding Standards](docs%2Fcoding-standards.md)
 - [Exceptions](docs%2Fexceptions.md)
-- [SQL Repository Usage](docs%2Fsql_repository_usage.md)
+- [SQL Repository Usage](docs%2Fsql-repository-usage.md)
+- [CLI.php - Command Line Interface](docs%2Fcli.md)
 - [CLI.php - Command Line Interface](docs%2Fcli.md)
 # Contributing
 Given its early development stage, contributions are highly encouraged. Please note that code changes, features, and documentation are subject to change as the project evolves toward a production-ready state.
