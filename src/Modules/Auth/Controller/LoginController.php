@@ -23,6 +23,7 @@ class LoginController
 
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
@@ -38,20 +39,17 @@ class LoginController
 		try
 		{
 			$params   = (array) $request->getParsedBody();
+			// no need to sanitize here, as we are escaping in DB
 			$username = $params['username'] ?? null;
 			$password = $params['password'] ?? null;
 			$session  = $request->getAttribute('session');
 			$flash    = $request->getAttribute('flash');
-			if (empty($username) || empty($password))
-			{
-				throw new UserException('No username or password.');
-			}
+
 			$user = $this->userMain->loadUserByIdentifier($username);
 
 			if (!password_verify($password, $user->getPassword()))
-			{
 				throw new UserException('Invalid credentials.');
-			}
+
 			/** @var Helper $session */
 			$session->set('user', [
 				'UID' => $user->getUID(),
@@ -83,7 +81,7 @@ class LoginController
 		$flash    = $request->getAttribute('flash');
 		$messages = $flash->getMessages(); // Flash-Nachrichten abholen
 		$error	  = [];
-		if (array_key_exists('error',$messages))
+		if (array_key_exists('error', $messages))
 			$error = $messages['error'];
 
 		$data = [
