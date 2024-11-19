@@ -25,13 +25,15 @@ use App\Framework\Database\QueryBuilder;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Framework\TemplateEngine\TemplateService;
+use App\Modules\Auth\Controller\LoginController;
+use App\Modules\Auth\Repositories\UserMain;
+use App\Modules\Auth\Repositories\UserMainDataPreparer;
 use Slim\App;
 use Slim\Factory\AppFactory;
 
 $dependencies = [];
 
 $dependencies[App::class]             = Di\factory([AppFactory::class, 'createFromContainer']);
-
 $dependencies[Mustache_Engine::class] = DI\factory(function () {
 	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../templates')]);
 });
@@ -41,6 +43,7 @@ $dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $m
 $dependencies[TemplateService::class]  = DI\factory(function (AdapterInterface $adapter) {
 	return new TemplateService($adapter);
 });
+
 $dependencies[QueryBuilder::class]     = DI\factory(function () {return new QueryBuilder();});
 $dependencies[DBHandler::class]        = DI\factory(function () {
 	$credentials = [
@@ -56,5 +59,18 @@ $dependencies[DBHandler::class]        = DI\factory(function () {
 });
 
 $dependencies[\Slim\Flash\Messages::class] = DI\factory(function () {return new \Slim\Flash\Messages();});
+$dependencies[UserMain::class] = DI\factory(function (\Psr\Container\ContainerInterface $container) {
+	$dbh                  = $container->get(DBHandler::class);
+	$queryBuilder         = $container->get(QueryBuilder::class);
+	$userMainDataPreparer = new UserMainDataPreparer($dbh);
+	return new UserMain($dbh, $queryBuilder, $userMainDataPreparer);
+});
+
+// for Auth TOdo: put it in a separate file
+$dependencies[LoginController::class] = DI\factory(function (\Psr\Container\ContainerInterface $container)
+{
+	return new LoginController($container->get(UserMain::class));
+});
+
 
 return $dependencies;
