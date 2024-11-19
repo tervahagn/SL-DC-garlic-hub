@@ -6,3 +6,4 @@
 /vendor/
 /.idea/
 /public/clover
+/.phpunit.cache/
