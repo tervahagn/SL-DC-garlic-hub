@@ -19,7 +19,6 @@
 */
 
 use App\Controller\HomeController;
-use App\Modules\Auth\Controller\LoginController;
 use App\Modules\Auth\Controller\LoginControllerFactory;
 
 /* @var \Slim\App $app */
@@ -37,3 +36,4 @@ $app->get('/logout', function ($request, $response) use ($container)
 {
 	return LoginControllerFactory::create($container)->logout($request, $response);
 });
+

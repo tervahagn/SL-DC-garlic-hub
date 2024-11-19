@@ -19,7 +19,7 @@ CREATE TABLE `user_main` (
 INSERT INTO `user_main`
 (`company_id`, `last_access`, `login_time`, `num_logins`, `created_at`, `status`, `locale`, `session_id`, `username`, `password`, `gender`, `email`, `last_password_change`)
 VALUES
-    (1, CURRENT_TIMESTAMP, NULL, 1, CURRENT_TIMESTAMP, 1, 'en_US', '', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
+    (1, CURRENT_TIMESTAMP, NULL, 0, CURRENT_TIMESTAMP, 3, 'en_US', '', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
 
 CREATE TABLE mediapool_nodes (
     node_id INTEGER PRIMARY KEY AUTOINCREMENT,

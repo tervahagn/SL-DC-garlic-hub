@@ -24,6 +24,15 @@ $dotenv->load();
 
 $ContainerBuilder = new ContainerBuilder();
 $ContainerBuilder->addDefinitions(__DIR__ . '/config/services.php');
+$systemDir = realpath(__DIR__);
+$paths = [
+	'systemDir' => $systemDir,
+	'varDir' => $systemDir . '/var',
+	'cacheDir' => $systemDir . '/var/cache',
+	'logDir' => $systemDir . '/var/log',
+	'configDir' => $systemDir . '/config'
+];
+$ContainerBuilder->addDefinitions(['paths' => $paths]);
 
 try
 {

@@ -19,25 +19,37 @@
 */
 
 use App\Framework\Core\Cli\CliBase;
+use App\Framework\Core\Cli\CommandMetadataExtractor;
 use App\Framework\Core\Cli\Dispatcher;
+use App\Framework\Core\Cli\Metadata\MetadataWriter;
 use App\Framework\Exceptions\BaseException;
+use DI\Container;
+use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 require_once __DIR__.'/../bootstrap.php';
 
-$systemDir     = __DIR__.'/../';
-$varDir		   = $systemDir . 'var';
-$commandsDir   = $systemDir . 'src/Commands';
-$metaFilepath  = 'command_metadata.json';
-$shouldUpdate  = in_array('--update', $argv) || !file_exists($varDir.'/'.$metaFilepath);
-$metaData      = [];
 try
 {
+	/**
+	 * @var $container          Container
+	 */
+	$systemDir     = $container->get('paths')['systemDir'];
+	$varDir        = $container->get('paths')['varDir'];
+	$commandsDir   = $systemDir . 'src/Commands';
+	$metaFilepath  = 'command_metadata.json';
+	$shouldUpdate  = in_array('--update', $argv) || !file_exists($varDir.'/'.$metaFilepath);
+	$metaData      = [];
+
 	if ($shouldUpdate)
 	{
-		$adapter    = new \League\Flysystem\Local\LocalFilesystemAdapter($varDir);
-		$filesystem = new \League\Flysystem\Filesystem($adapter);
-		$extractor  = new \App\Framework\Core\Cli\CommandMetadataExtractor();
-		$writer     = new \App\Framework\Core\Cli\Metadata\MetadataWriter($filesystem, $metaFilepath);
+		$adapter    = new LocalFilesystemAdapter($varDir);
+		$filesystem = new Filesystem($adapter);
+		$extractor  = new CommandMetadataExtractor();
+		$writer     = new MetadataWriter($filesystem, $metaFilepath);
 		$metaData   = $extractor->extract($commandsDir);
 		$writer->write($metaData);
 		exit();
@@ -64,11 +76,14 @@ try
 	$Dispatcher->setCliBase($CliBase);
 	$controller_file = $Dispatcher->dispatchApi($metaData);
 
-
 	require_once $controller_file;
 
 }
-catch (\Exception $e)
+catch (FilesystemException|NotFoundExceptionInterface|ContainerExceptionInterface $e)
+{
+	echo $e->getMessage();
+}
+catch (Exception $e)
 {
 	if ($e instanceof BaseException)
 		echo $e->getMessage();
