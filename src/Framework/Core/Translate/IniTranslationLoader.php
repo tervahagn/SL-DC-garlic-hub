@@ -36,21 +36,19 @@ class IniTranslationLoader implements TranslationLoaderInterface
 	{
 		$filePath = $this->buildFilePath($languageCode, $module);
 
-		if (!file_exists($filePath)) {
+		if (!file_exists($filePath))
 			throw new RuntimeException("Translation file not found: $filePath");
-		}
 
 		$data = parse_ini_file($filePath, true);
 
-		if (!is_array($data)) {
+		if (!is_array($data))
 			throw new RuntimeException("Invalid INI file format: $filePath");
-		}
 
 		return $data;
 	}
 
 	protected function buildFilePath(string $languageCode, string $module): string
 	{
-		return $this->baseDirectory . $languageCode . '/lang_' . $module . '.ini';
+		return $this->baseDirectory . $languageCode . '/' . $module . '.ini';
 	}
 }

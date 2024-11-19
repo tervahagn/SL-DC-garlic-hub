@@ -20,11 +20,14 @@
 
 namespace App\Framework\Middleware;
 
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Slim\Middleware\Session;
+use Psr\SimpleCache\InvalidArgumentException;
 use SlimSession\Helper;
 
 /**
@@ -36,71 +39,89 @@ use SlimSession\Helper;
  */
 class LayoutDataMiddleware implements MiddlewareInterface
 {
+	private Translator $translator;
+	private Helper $session;
+
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		$session = $request->getAttribute('session');
+		$this->session    = $request->getAttribute('session');
+		$this->translator = $request->getAttribute('translator');
 
 		$locale = 'en';
 		$layoutData = [
-			'main_menu' => $this->createMainMenu($session),
+			'main_menu' => $this->createMainMenu(),
 			'CURRENT_LOCALE_LOWER' => strtolower($locale),
 			'CURRENT_LOCALE_UPPER' => strtoupper($locale),
 			'language_select' => $this->createLanguageSelect(),
-			'user_menu' => $this->createUserMenu($session),
+			'user_menu' => $this->createUserMenu(),
 
-			'LANG_LEGALS' => 'Web Legals',
-			'LANG_PRIVACY' => 'Privacy',
-			'LANG_TERMS' => 'Terms'
+			'LANG_LEGAL_NOTICE' => $this->translator->translate('legal_notice', 'menu'),
+			'LANG_PRIVACY' => $this->translator->translate('privacy', 'menu'),
+			'LANG_TERMS' => $this->translator->translate('terms', 'menu')
 		];
 
-		// Daten dem Request hinzufügen
 		$request = $request->withAttribute('layoutData', $layoutData);
-
-		// Weiter zur nächsten Middleware oder zum Handler
 		return $handler->handle($request);
 	}
 
-	private function createMainMenu(Helper $session): array
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	private function createMainMenu(): array
 	{
-		$menu    = [['URL' => '/login', 'LANG_MENU_POINT' => 'Login']];
-		if ($session->exists('user'))
+		if ($this->session->exists('user'))
 		{
-			$menu = [
-				['URL' => '/player', 'LANG_MENU_POINT' => 'Player'],
-				['URL' => '/playlists', 'LANG_MENU_POINT' => 'Playlists'],
-				['URL' => '/mediapool', 'LANG_MENU_POINT' => 'Mediapool']
+			return [
+				['URL' => '/player', 'LANG_MENU_POINT' => $this->translator->translate('player', 'menu')],
+				['URL' => '/playlists', 'LANG_MENU_POINT' => $this->translator->translate('playlists', 'menu')],
+				['URL' => '/mediapool', 'LANG_MENU_POINT' => $this->translator->translate('mediapool', 'menu')]
 			];
 		}
-		return $menu;
+
+		return [['URL' => '/login', 'LANG_MENU_POINT' => $this->translator->translate('login', 'login')]];
 	}
 
-	private function createUserMenu(Helper $session): array
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	private function createUserMenu(): array
 	{
-		$user_menu    = [];
-		if ($session->exists('user'))
-		{
-			$user_menu = [
-				[
-					'LANG_LOGIN_AS' => 'Logged in as',
-					'USERNAME'      => $session->get('user')['username'],
-					'LANG_MANAGE_ACCOUNT' => 'Manage Account',
-					'LANG_LOGOUT' => 'Logout'
-				],
-			];
-		}
-		return $user_menu;
+		if (!$this->session->exists('user') && empty($this->session->get('user')))
+			return [];
+
+		return [
+			[
+				'LANG_LOGIN_AS' => $this->translator->translate('logged_in_as', 'menu'),
+				'USERNAME'      => $this->session->get('user')['username'],
+				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
+				'LANG_LOGOUT' => $this->translator->translate('logout', 'menu')
+			]
+		];
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 */
 	private function createLanguageSelect(): array
 	{
-		return [
-			['LOCALE_LONG' => 'en_US', 'LOCALE_SMALL' => 'en', 'LANGUAGE_NAME' => 'English'],
-			['LOCALE_LONG' => 'de_DE', 'LOCALE_SMALL' => 'de', 'LANGUAGE_NAME' => 'German'],
-			['LOCALE_LONG' => 'es_ES', 'LOCALE_SMALL' => 'es', 'LANGUAGE_NAME' => 'Spanish'],
-			['LOCALE_LONG' => 'el_GR', 'LOCALE_SMALL' => 'el', 'LANGUAGE_NAME' => 'Greek'],
-			['LOCALE_LONG' => 'fr_FR', 'LOCALE_SMALL' => 'fr', 'LANGUAGE_NAME' => 'French'],
-			['LOCALE_LONG' => 'ru_RU', 'LOCALE_SMALL' => 'ru', 'LANGUAGE_NAME' => 'Russian'],
-		];
+		$languages = $this->translator->translateArrayForOptions('languages', 'menu');
+		$ret = [];
+		foreach ($languages as $key  => $value)
+		{
+			$ret[] = ['LOCALE_LONG' => $key, 'LOCALE_SMALL' => substr($key, 0, 2), 'LANGUAGE_NAME' => $value];
+		}
+
+		return $ret;
 	}
 
 

@@ -58,6 +58,37 @@ class Translator
 		return !empty($replacements) ? $this->doReplacements($translation, $replacements) : $translation;
 	}
 
+
+	/**
+	 * we are using an array of translations for various HTMl dropdown (option tags)
+	 *
+	 * @param string $key
+	 * @param string $module
+	 *
+	 * @return  array
+	 * @throws CoreException|InvalidArgumentException
+	 */
+	public function translateArrayForOptions(string $key, string $module): array
+	{
+		try
+		{
+			$language_code      = $this->locales->getLanguageCode();
+			$translation_array  = $this->findTranslation($key, $module, $language_code);
+
+			if (!is_array($translation_array))
+			{
+				throw new FrameworkException('Expected to get an array. Got ' . gettype($translation_array) . ' with key: ' . $key . ' in module ' . $module . ' for language ' . $language_code);
+			}
+
+			return $translation_array;
+		}
+		catch(FrameworkException $e)
+		{
+			/// logger
+			return array();
+		}
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
@@ -77,7 +108,7 @@ class Translator
 	/**
 	 * @throws InvalidArgumentException
 	 */
-	protected function findTranslation(string $key, string $module, string $languageCode): string
+	protected function findTranslation(string $key, string $module, string $languageCode): string|array
 	{
 		$cacheKey = $this->buildCacheKey($languageCode, $module);
 

@@ -1,6 +1,0 @@
-login:
-    password: "Passwort"
-    login: "Anmelden"
-    autologin: "Angemeldet bleiben"
-    register: "Registrieren"
-    reset_password: "Passwort zurücksetzen"
