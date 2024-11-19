@@ -169,6 +169,21 @@ catch (Exception $e)
 - **Inline Comments**: Use inline comments sparingly. Only comment on complex logic or decisions that are not immediately clear.
 - Keep comments up-to-date with any code changes to ensure accuracy.
 
+## 11. Attribute Placement Standards
+
+- **Placement Rule**: Attributes must be placed **after the DocBlock comment**. They should be the first line of code in that block, directly above the method, property, or class they are applied to.
+
+### Example
+```php
+/**
+ * @throws Exception
+ */
+#[Group('units')]
+public function testProcessAddsAttributesAndCallsNextHandler(): void
+{
+    // Method logic
+}
+```
 ## 12. Testing Standards
 
 - Write unit tests for all public methods to validate functionality.

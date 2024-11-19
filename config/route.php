@@ -20,8 +20,9 @@
 
 use App\Controller\HomeController;
 use App\Modules\Auth\Controller\LoginController;
+use Slim\App;
 
-/* @var \Slim\App $app */
+/* @var App $app */
 $container = $app->getContainer();
 $app->get('/', [HomeController::class, 'index']);
 $app->get('/login', [LoginController::class, 'showLogin']);
