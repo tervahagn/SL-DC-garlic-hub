@@ -27,26 +27,50 @@ class HomeController
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
-		if (!$session->exists('user'))
-			return $response->withHeader('Location', '/login')->withStatus(302);
+		if (!$this->isUserLoggedIn($session))
+			return $this->redirectToLogin($response);
 
-		$data = [
+		$data = $this->generateHomePageData($session);
+		$this->writeResponseData($response, $data);
+
+		return $this->setContentType($response);
+	}
+
+
+	private function isUserLoggedIn($session): bool
+	{
+		return $session->exists('user');
+	}
+
+	private function redirectToLogin(ResponseInterface $response): ResponseInterface
+	{
+		return $response->withHeader('Location', '/login')->withStatus(302);
+	}
+
+	private function generateHomePageData($session): array
+	{
+		return [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => 'Garlic Hub - Home'
+				'LANG_PAGE_TITLE' => 'Garlic Hub - Home',
 			],
 			'this_layout' => [
-				'template' => 'home', // Template name
+				'template' => 'home',
 				'data' => [
 					'LANG_PAGE_HEADER' => 'Welcome',
 					'LANG_CONTENT' => 'Yes! This is our starting homepage. And I know is is pretty useless to welcome people here. But hey, it is a start. So, do not overestimate it. At the end it is some more entertaining than this boring Lorem Ipsum text. So, enjoy your stay!',
-					'SHOW_SESSION' => print_r($session->get('user'), true)
-
-				]
-			]
+					'SHOW_SESSION' => print_r($session->get('user'), true),
+				],
+			],
 		];
+	}
 
+	private function writeResponseData(ResponseInterface $response, array $data): void
+	{
 		$response->getBody()->write(serialize($data));
+	}
 
+	private function setContentType(ResponseInterface $response): ResponseInterface
+	{
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
