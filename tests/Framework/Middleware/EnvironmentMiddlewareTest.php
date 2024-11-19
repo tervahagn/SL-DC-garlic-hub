@@ -39,8 +39,7 @@ class EnvironmentMiddlewareTest extends TestCase
 					->willReturn($responseMock);
 
 		$middleware = new EnvironmentMiddleware($configMock, $localesMock, $translatorMock);
-
-		$result = $middleware->process($requestMock, $handlerMock);
+		$result     = $middleware->process($requestMock, $handlerMock);
 
 		$this->assertSame($responseMock, $result);
 	}

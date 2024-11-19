@@ -2,17 +2,18 @@
 
 Garlic-Hub is a robust Digital Signage Management Platform designed to handle the core tasks of a CMS and extend into advanced device management. From single-screen setups to distributed signage networks, Garlic-Hub offers centralized control and flexibility for various signage environments.
 
-> **Note**: Garlic-Hub is currently in pre-release development.Core functionalities are still under construction, with some modules incomplete or in early testing stages. This version is not yet recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
+> **Note**: Garlic-Hub is currently in pre-release development.Core functionalities are still under construction, with some modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
 
 ## Installation
 
 ### Prerequisites
 Ensure your environment meets the following requirements:
-- **PHP** 8.1 or higher
+- **PHP** 8.2 or higher
 - **Composer** for dependency management
 - **Web Server**: Apache, Nginx, or other PHP-compatible server
 - **Database**: MariaDB or SQLite for smaller deployments (compatible with other SQL databases)
-
+- **Docker** (optional) for local development with ddev
+ 
 ### Step-by-Step Guide
 
 1. **Clone the Repository**
@@ -67,16 +68,13 @@ The following features are under active development and subject to change as Gar
 Garlic-Hub is being developed in a phased approach to ensure stability and optimal performance across different usage scenarios. The platform will be rolled out in three primary editions, each tailored to distinct needs:
 
 1. **Edge Edition (Phase 1)**  
-   The first phase focuses on the Edge Edition, designed for single-device deployments or small setups. This edition will feature core CMS functions, including media management and SMIL-based playlist creation, with a lightweight architecture optimized for devices like Raspberry Pi or Android-based media players. The Edge Edition sets the foundation upon which the more comprehensive editions will be built.
-
+   The first phase focuses on the Edge Edition, designed for single-device deployments or small setups. This edition will feature reduced CMS functions, including media management and SMIL-based playlist creation, with a lightweight architecture. Target is to bundle it with garlic-player for IoT devices like Raspberry Pi or Android-based media players. 
 2. **Core Edition (Phase 2)**  
-   The Core Edition is aimed at mid-sized networks, managing up to 20 media players. This phase will introduce extended management features, improved reporting capabilities, and a more robust device management layer, tailored for businesses with small networks and limited hardware.
-
+   The Core Edition is aimed at mid-sized networks or NAS. It will manage up to a limited amount media players. This phase will introduce some more extended management features, improved reporting capabilities, and a more robust device management layer. Core will be tailored for businesses with small networks and limited hardware.
 3. **Enterprise Edition (Phase 3)**  
-   In the final phase, Garlic-Hub will evolve into an enterprise-grade platform, supporting large-scale digital signage networks. The Enterprise Edition will offer advanced features such as full SaaS/on-premise hosting, multi-user access with role-based permissions, and enhanced analytics for real-time insights. This edition will cater to companies needing scalable, comprehensive digital signage solutions for diverse locations.
+   In the final phase, Garlic-Hub will evolve into an enterprise-grade platform, supporting large-scale digital signage networks. The Enterprise Edition will offer advanced features such as full SaaS/on-premise hosting with role-based permissions, and enhanced analytics. This edition will cater to companies needing scalable, comprehensive digital signage solutions for diverse locations.
 
-Each phase will build on the features of the previous editions, ensuring a smooth upgrade path as Garlic-Hub grows into a complete digital signage management solution.
-
+Each phase will build mostly on the features of the previous editions, ensuring a smooth upgrade path as Garlic-Hub grows into a free and modern digital signage management solution based on SMIL multimedia language.
 
 ## Documentation
 - [Coding Standards](docs%2Fcoding-standards.md)

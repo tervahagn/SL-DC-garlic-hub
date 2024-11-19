@@ -58,7 +58,7 @@ try
 	$CliBase = new CliBase();
 	$CliBase->parseBaseParams();
 
-	if (empty($metaData)) // because --update could ben at the same time
+	if (empty($metaData)) // because --update could be at the same time
 		$metaData = json_decode(file_get_contents($varDir.'/'.$metaFilepath), true);
 
 	if (is_null($metaData))

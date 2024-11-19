@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Slim\Psr7\Stream;
 
 /**
  * Middleware that finalizes the response by rendering the layout or template.
@@ -65,12 +66,13 @@ class FinalRenderMiddleware implements MiddlewareInterface
 			$start_time   = $request->getAttribute('start_time');
 			$start_memory = $request->getAttribute('start_memory');
 			$memory_usage = memory_get_usage() - $start_memory;
-			$layoutData['EXECUTION_TIME'] = number_format(microtime(true) - $start_time, 6).'sec';
-			$layoutData['MEMORY_USAGE'] = round($memory_usage / 1024, 2) . ' KB';
+			$layoutData['EXECUTION_TIME']    = number_format(microtime(true) - $start_time, 6).'sec';
+			$layoutData['MEMORY_USAGE']      = round($memory_usage / 1024, 2) . ' KB';
 			$layoutData['PEAK_MEMORY_USAGE'] = round(memory_get_peak_usage() / 1024, 2) . ' KB';
 		}
 
 		$controllerData = @unserialize((string) $response->getBody());
+
 		if ($controllerData === false)
 			return $response->withHeader('Content-Type', 'text/html');
 
@@ -79,7 +81,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$finalContent = $this->templateService->render('layouts/main_layout', array_merge($layoutData,
 			['MAIN_CONTENT' => $mainContent], $controllerData['main_layout']));
 
-		$response = $response->withBody(new \Slim\Psr7\Stream(fopen('php://temp', 'r+')));
+		$response = $response->withBody(new Stream(fopen('php://temp', 'r+')));
 		$response->getBody()->write($finalContent);
 
 		return $response->withHeader('Content-Type', 'text/html');
