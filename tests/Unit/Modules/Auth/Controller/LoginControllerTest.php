@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Modules\Auth\Controller;
+namespace Tests\Unit\Modules\Auth\Controller;
 
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Controller\LoginController;

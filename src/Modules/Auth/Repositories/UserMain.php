@@ -43,28 +43,6 @@ class UserMain extends Sql
 	}
 
 	/**
-	 * @param User $user
-	 *
-	 * @return User
-	 * @throws UserException
-	 */
-	public function refreshUser(User $user): User
-	{
-		return $this->loadUserByIdentifier($user->getUsername());
-	}
-
-	/**
-	 * Checks if this provider supports a given user class.
-	 *
-	 * @param string $class Class name to check
-	 * @return bool
-	 */
-	public function supportsClass(string $class): bool
-	{
-		return $class === User::class;
-	}
-
-	/**
 	 * @param string $identifier
 	 *
 	 * @return User

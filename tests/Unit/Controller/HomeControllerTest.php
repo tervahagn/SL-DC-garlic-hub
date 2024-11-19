@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Controller;
+namespace Tests\Unit\Controller;
 
 use App\Controller\HomeController;
 use PHPUnit\Framework\Attributes\Group;
