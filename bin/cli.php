@@ -39,7 +39,7 @@ try
 	 */
 	$systemDir     = $container->get('paths')['systemDir'];
 	$varDir        = $container->get('paths')['varDir'];
-	$commandsDir   = $systemDir . 'src/Commands';
+	$commandsDir   = $systemDir . '/src/Commands';
 	$metaFilepath  = 'command_metadata.json';
 	$shouldUpdate  = in_array('--update', $argv) || !file_exists($varDir.'/'.$metaFilepath);
 	$metaData      = [];
