@@ -34,7 +34,7 @@ class UrlLocaleExtractor implements LocaleExtractorInterface
 		$locale = $_GET['locale'] ?? $this->defaultLocale;
 
 		// converts "en-us" in "en_US"
-		$locale = str_replace('-', '_', strtolower($locale));
+	 	$locale = str_replace('-', '_', $locale);
 
 		return in_array($locale, $whiteList, true) ? $locale : $this->defaultLocale;
 	}
