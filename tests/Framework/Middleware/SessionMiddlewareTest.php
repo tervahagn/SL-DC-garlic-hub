@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Flash\Messages;
 use SlimSession\Helper;
 
 class SessionMiddlewareTest extends TestCase
