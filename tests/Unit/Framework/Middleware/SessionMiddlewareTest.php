@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Middleware;
+namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Middleware\SessionMiddleware;
 use PHPUnit\Framework\Attributes\Group;

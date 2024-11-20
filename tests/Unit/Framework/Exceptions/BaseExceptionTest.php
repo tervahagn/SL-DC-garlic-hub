@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Exceptions;
+namespace Tests\Unit\Framework\Exceptions;
 
 use App\Framework\Exceptions\BaseException;
 use PHPUnit\Framework\Attributes\Group;

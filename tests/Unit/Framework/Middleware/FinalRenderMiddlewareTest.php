@@ -1,19 +1,17 @@
 <?php
 
-namespace Tests\Framework\Middleware;
+namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\TemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Psr7\Stream;
 
 class FinalRenderMiddlewareTest extends TestCase
 {

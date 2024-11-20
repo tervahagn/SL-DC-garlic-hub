@@ -36,13 +36,16 @@ class Locales
 	private string $defaultLocale;
 	private array $availableLocales;
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
 	public function __construct(Config $config, LocaleExtractorInterface $localeExtractor)
 	{
-		$this->config = $config;
-		$this->localeExtractor = $localeExtractor;
-
+		$this->config           = $config;
+		$this->localeExtractor  = $localeExtractor;
 		$this->availableLocales = $this->loadAvailableLocales();
-		$this->defaultLocale = $this->config->getConfigValue('default_locale', self::CONFIG_MODULE_NAME, 'general');
+		$this->defaultLocale    = $this->config->getConfigValue('default_locale', self::CONFIG_MODULE_NAME, 'general');
 	}
 
 	public function getCurrentLocale(): string
@@ -103,7 +106,7 @@ class Locales
 
 	public function determineCurrentLocale(): void
 	{
-		$locale = $this->localeExtractor->extractLocale(array_keys($this->availableLocales));
+		$locale              = $this->localeExtractor->extractLocale($this->availableLocales);
 		$this->currentLocale =  $this->isLocaleValid($locale) ? $locale : $this->defaultLocale;
 	}
 
@@ -114,11 +117,10 @@ class Locales
 	private function loadAvailableLocales(): array
 	{
 		$locales = $this->config->getFullConfigDataByModule(self::CONFIG_MODULE_NAME);
-		unset($locales['general']); // Entfernt allgemeine Konfigurationen
+		unset($locales['general']); // Remove general configuration like default locale
 
 		if (empty($locales))
 			throw new FrameworkException('No locales configured in the system.');
-
 
 		return array_keys($locales);
 	}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Middleware;
+namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
