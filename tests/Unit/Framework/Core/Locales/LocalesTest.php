@@ -1,0 +1,269 @@
+<?php
+
+namespace Tests\Unit\Framework\Core\Locales;
+use App\Framework\Core\Config\Config;
+use App\Framework\Core\Locales\LocaleExtractorInterface;
+use App\Framework\Core\Locales\Locales;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
+
+class LocalesTest extends TestCase
+{
+	private Config $configMock;
+	private LocaleExtractorInterface $localeExtractorMock;
+
+	/**
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws CoreException
+	 */
+	protected function setUp(): void
+	{
+		$this->configMock          = $this->createMock(Config::class);
+		$this->localeExtractorMock = $this->createMock(LocaleExtractorInterface::class);
+		$this->configMock->method('getFullConfigDataByModule')
+						 ->with('locales')
+						 ->willReturn([
+							 'en_US' => ['language_code' => 'en', 'country_code' => 'US', 'date_format' => "%Y-%m-%d"],
+							 'de_DE' => ['language_code' => 'de', 'country_code' => 'DE', 'date_format' => "%d-%m-%Y"],
+							 'general' => ['default_locale' => 'en_US']
+						 ]);
+	}
+
+	#[Group('units')]
+	public function testGetDefaultLocale(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->with('default_locale', 'locales', 'general')
+						 ->willReturn('en_US');
+
+		$locales = $this->initTestClass();
+		$this->assertSame('en_US', $locales->getDefaultLocale());
+	}
+
+	#[Group('units')]
+	public function testGetAvailableLocales(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->with('default_locale', 'locales', 'general')
+						 ->willReturn('en_US');
+		$locales = $this->initTestClass();
+		$this->assertSame(['en_US', 'de_DE'], $locales->getAvailableLocales());
+	}
+
+	#[Group('units')]
+	public function testIsLocaleValid(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->with('default_locale', 'locales', 'general')
+						 ->willReturn('en_US');
+
+		$locales = $this->initTestClass();
+
+		$this->assertTrue($locales->isLocaleValid('en_US'));
+		$this->assertFalse($locales->isLocaleValid('fr_FR'));
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testDetermineCurrentLocale(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->with('default_locale', 'locales', 'general')
+						 ->willReturn('de_DE');
+
+		$locales = $this->initTestClass();
+		$locales->determineCurrentLocale();
+
+		$this->assertSame('en_US', $locales->getCurrentLocale());
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testDetermineCurrentLocaleFallbackToDefault(): void
+	{
+		// do not use the setUp $localeExtractorMock here
+		$localeExtractorMock = $this->createMock(LocaleExtractorInterface::class);
+		$localeExtractorMock
+			->method('extractLocale')
+			->with(['en_US', 'de_DE'])
+			->willReturn('fr_FR'); // not valid locale
+
+		$this->configMock->method('getConfigValue')
+						 ->with('default_locale', 'locales', 'general')
+						 ->willReturn('en_US');
+
+		$locales = new Locales($this->configMock, $localeExtractorMock);
+		$locales->determineCurrentLocale();
+
+		$this->assertSame('en_US', $locales->getCurrentLocale());
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testGetLanguageCode(): void
+	{
+
+		$this->configMock->method('getConfigValue')
+						 ->willReturnCallback(function($key, $module_name, $section)
+						 {
+							 if ($section === 'general')
+								 return 'en_US';
+
+							 return 'en';
+						});
+
+		$locales = $this->initTestClass();
+		$locales->determineCurrentLocale();
+		$this->assertSame('en', $locales->getLanguageCode());
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testGetCountryCode(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->willReturnCallback(function($key, $module_name, $section)
+						 {
+							 if ($section === 'general')
+								 return 'en_US';
+
+							 return 'US';
+						 });
+
+		$locales = $this->initTestClass();
+
+		$locales->determineCurrentLocale();
+		$this->assertSame('US', $locales->getCountryCode());
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testGetDateFormat(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->willReturnCallback(function($key, $module_name, $section)
+						 {
+							 if ($section === 'general')
+								 return 'en_US';
+
+							 if ($key === 'date_format')
+								 return 'd.m.Y';
+
+							 return '';
+						 });
+
+		$locales = $this->initTestClass();
+
+		$locales->determineCurrentLocale();
+
+		$this->assertSame('d.m.Y', $locales->getDateFormat());
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testGetDateTimeFormat(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->willReturnCallback(function($key, $module_name, $section)
+						 {
+							 if ($section === 'general')
+								 return 'en_US';
+
+							 if ($key === 'date_time_format')
+								 return 'd.m.Y h:i:s';
+
+							 return '';
+						 });
+
+		$locales = $this->initTestClass();
+
+		$locales->determineCurrentLocale();
+
+		$this->assertSame('d.m.Y h:i:s', $locales->getDateTimeFormat());
+	}
+
+
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testLoadAvailableLocalesThrowsExceptionIfEmpty(): void
+	{
+		// do not use setUp ConfigMock here
+		$configMock = $this->createMock(Config::class);
+
+		$configMock->method('getFullConfigDataByModule')
+						 ->with('locales')
+						 ->willReturn(['general' => ['default_locale' => 'en_US']]); // no valid Locale
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('No locales configured in the system.');
+
+		new Locales($configMock, $this->localeExtractorMock);
+	}
+
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testGetConfigValueThrowsExceptionIfMissing(): void
+	{
+		$this->configMock->method('getConfigValue')
+						 ->willReturnCallback(function($key, $module_name, $section)
+						 {
+							 if ($section === 'general')
+								 return 'en_US';
+
+							 return null;
+						 });
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Missing configuration for language_code in locale en_US.');
+
+		$locales = $this->initTestClass();
+		$locales->determineCurrentLocale();
+		$locales->getLanguageCode();
+
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
+	private function initTestClass(): Locales
+	{
+		$this->localeExtractorMock
+			->method('extractLocale')
+			->with(['en_US', 'de_DE'])
+			->willReturn('en_US');
+
+		return new Locales($this->configMock, $this->localeExtractorMock);
+	}
+}
