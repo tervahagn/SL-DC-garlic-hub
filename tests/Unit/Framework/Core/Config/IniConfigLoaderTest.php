@@ -27,7 +27,6 @@ class IniConfigLoaderTest extends TestCase
         $this->assertArrayHasKey('edition', $result);
     }
 
-
     #[Group('units')]
     public function testLoadThrowsExceptionForMissingFile(): void
     {
