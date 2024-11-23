@@ -2,7 +2,7 @@
 require __DIR__ . '/../../vendor/autoload.php';
 $_ENV['APP_ENV'] = 'testing';
 
-$systemDir = realpath(__DIR__);
+$systemDir = realpath(__DIR__.'/../');
 $paths = [
 	'systemDir' => $systemDir,
 	'varDir' => $systemDir . '/var',
@@ -10,3 +10,6 @@ $paths = [
 	'logDir' => $systemDir . '/var/log',
 	'configDir' => $systemDir . '/config'
 ];
+define('_TestLibPath', $systemDir);
+
+define('_UnitTestLibPath', realpath(__DIR__));

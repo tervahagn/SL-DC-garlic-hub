@@ -20,7 +20,7 @@
 
 namespace App\Framework\Core\Translate;
 
-use RuntimeException;
+use App\Framework\Exceptions\FrameworkException;
 
 class IniTranslationLoader implements TranslationLoaderInterface
 {
@@ -37,17 +37,17 @@ class IniTranslationLoader implements TranslationLoaderInterface
 		$filePath = $this->buildFilePath($languageCode, $module);
 
 		if (!file_exists($filePath))
-			throw new RuntimeException("Translation file not found: $filePath");
+			throw new FrameworkException("Translation file not found: $filePath");
 
-		$data = parse_ini_file($filePath, true);
+		$data = @parse_ini_file($filePath, true);
 
 		if (!is_array($data))
-			throw new RuntimeException("Invalid INI file format: $filePath");
+			throw new FrameworkException("Invalid INI file format: $filePath");
 
 		return $data;
 	}
 
-	protected function buildFilePath(string $languageCode, string $module): string
+	private function buildFilePath(string $languageCode, string $module): string
 	{
 		return $this->baseDirectory . $languageCode . '/' . $module . '.ini';
 	}
