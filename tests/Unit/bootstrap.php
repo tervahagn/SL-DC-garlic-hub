@@ -12,4 +12,3 @@ $paths = [
 ];
 define('_TestLibPath', $systemDir);
 
-define('_UnitTestLibPath', realpath(__DIR__));
