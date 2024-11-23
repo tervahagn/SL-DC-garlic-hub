@@ -21,7 +21,7 @@
 namespace Tests\Unit\Framework\Core\Translate;
 
 use App\Framework\Core\Translate\IniTranslationLoader;
-use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\CoreException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +35,7 @@ class IniTranslationLoaderTest extends TestCase
     }
 
     /**
-     * @throws FrameworkException
+     * @throws CoreException
      */
     #[Group('units')]
     public function testLoadForValidFile(): void
@@ -49,7 +49,7 @@ class IniTranslationLoaderTest extends TestCase
     #[Group('units')]
     public function testLoadThrowsExceptionForNonExistentFile()
     {
-        $this->expectException(FrameworkException::class);
+        $this->expectException(CoreException::class);
         $this->expectExceptionMessage('Translation file not found');
         $loader = new IniTranslationLoader($this->baseDirectory);
         $loader->load('en', 'nonexistent');
@@ -58,7 +58,7 @@ class IniTranslationLoaderTest extends TestCase
     #[Group('units')]
     public function testLoadThrowsExceptionForInvalidIniFile()
     {
-        $this->expectException(FrameworkException::class);
+        $this->expectException(CoreException::class);
         $this->expectExceptionMessage('Invalid INI file format');
         $loader = new IniTranslationLoader($this->baseDirectory);
         $loader->load('en', 'invalid');

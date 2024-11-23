@@ -20,7 +20,7 @@
 
 namespace App\Framework\Core\Translate;
 
-use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\CoreException;
 
 class IniTranslationLoader implements TranslationLoaderInterface
 {
@@ -37,12 +37,12 @@ class IniTranslationLoader implements TranslationLoaderInterface
 		$filePath = $this->buildFilePath($languageCode, $module);
 
 		if (!file_exists($filePath))
-			throw new FrameworkException("Translation file not found: $filePath");
+			throw new CoreException("Translation file not found: $filePath");
 
 		$data = @parse_ini_file($filePath, true);
 
 		if (!is_array($data))
-			throw new FrameworkException("Invalid INI file format: $filePath");
+			throw new CoreException("Invalid INI file format: $filePath");
 
 		return $data;
 	}
