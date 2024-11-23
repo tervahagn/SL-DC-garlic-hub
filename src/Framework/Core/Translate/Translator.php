@@ -39,8 +39,8 @@ class Translator
 	public function __construct(Locales $locales, TranslationLoaderInterface $loader, MessageFormatterFactory $messageFormatterFactory, CacheInterface $cache)
 	{
 		$this->locales = $locales;
-		$this->loader = $loader;
-		$this->cache = $cache;
+		$this->loader  = $loader;
+		$this->cache   = $cache;
 
 		$this->MessageFormatterFactory = $messageFormatterFactory;
 	}
@@ -94,10 +94,10 @@ class Translator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function translatePlural(string $key, string $module, int $count, array $replacements = []): string
+	public function translateWithPlural(string $key, string $module, int $count, array $replacements = []): string
 	{
 		$languageCode = $this->locales->getLanguageCode();
-		$translation = $this->findTranslation($key, $module, $languageCode);
+		$translation  = $this->findTranslation($key, $module, $languageCode);
 
 		// Füge die Anzahl zu den Ersetzungen hinzu
 		$replacements['count'] = $count;
