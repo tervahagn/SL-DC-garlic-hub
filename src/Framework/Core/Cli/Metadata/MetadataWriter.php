@@ -52,6 +52,5 @@ class MetadataWriter
 	{
 		$jsonData = json_encode($commandData, JSON_PRETTY_PRINT);
 		$this->filesystem->write($this->output_file, $jsonData);
-		echo "Command metadata written to $this->output_file\n";
 	}
 }
