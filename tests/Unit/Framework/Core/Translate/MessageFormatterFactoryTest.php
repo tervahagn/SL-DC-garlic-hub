@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Core\Translate;
+namespace Tests\Unit\Framework\Core\Translate;
 
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Exceptions\FrameworkException;
