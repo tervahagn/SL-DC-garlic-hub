@@ -88,7 +88,7 @@ abstract class DataPreparer
 			case self::FIELD_TYPE_SET:
 				if (array_key_exists($index, $fields))
 				{
-					$fields[$index] = $this->$this->quoteString(implode(',', array_unique($fields[$index])));
+					$fields[$index] = $this->quoteString(implode(',', array_unique($fields[$index])));
 				}
 				break;
 
