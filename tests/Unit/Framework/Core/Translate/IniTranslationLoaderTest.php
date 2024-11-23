@@ -31,7 +31,7 @@ class IniTranslationLoaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->baseDirectory = getenv('TEST_BASE_DIR') . '/resources/translations/';
+        $this->baseDirectory = getenv('TEST_BASE_DIR') . '/resources/translations_tests/';
     }
 
     /**
