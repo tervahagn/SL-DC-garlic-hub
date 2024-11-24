@@ -50,7 +50,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
 		$this->session    = $request->getAttribute('session');
-		$this->translator = $request->getAttribute('translator');
+        $this->translator = $request->getAttribute('translator');
 
 		$locale = 'en';
 		$layoutData = [
@@ -123,6 +123,4 @@ class LayoutDataMiddleware implements MiddlewareInterface
 
 		return $ret;
 	}
-
-
 }
