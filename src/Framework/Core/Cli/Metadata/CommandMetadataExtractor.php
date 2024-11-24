@@ -18,9 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Core\Cli;
-
-use App\Framework\Core\Cli\Metadata\MetadataWriter;
+namespace App\Framework\Core\Cli\Metadata;
 
 /**
  * Extracts command metadata from PHP files in a directory.
@@ -77,8 +75,12 @@ class CommandMetadataExtractor
 		}
 		catch (\Throwable $e)
 		{
-			echo "Error extracting metadata: " . $e->getMessage() . "\n";
+		//	echo "Error extracting metadata: " . $e->getMessage() . "\n";
 		}
+        finally
+        {
+            restore_error_handler();
+        }
 
 		return $cli_meta;
 	}

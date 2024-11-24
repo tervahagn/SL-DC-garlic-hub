@@ -19,8 +19,8 @@
 */
 
 use App\Framework\Core\Cli\CliBase;
-use App\Framework\Core\Cli\CommandMetadataExtractor;
 use App\Framework\Core\Cli\Dispatcher;
+use App\Framework\Core\Cli\Metadata\CommandMetadataExtractor;
 use App\Framework\Core\Cli\Metadata\MetadataWriter;
 use App\Framework\Exceptions\BaseException;
 use DI\Container;

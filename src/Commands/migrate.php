@@ -19,12 +19,12 @@
 */
 
 $cli_meta = [
-		'command' => 'migrate-database',
-		'description' => 'Executes a database migration.',
-		'usage' => 'cli.php -s migrate-database [-v] || cli.php --site update_feeds [--verbose]',
-		'options' => [
-			'-r, --revision' => 'Set revision number to migrate to'
-		]
+    'command' => 'migrate-database',
+    'description' => 'Executes a database migration.',
+    'usage' => 'cli.php -s migrate-database [-v] || cli.php --site update_feeds [--verbose]',
+    'options' => [
+        '-r, --revision' => 'Set revision number to migrate to'
+    ]
 ];
 
 use App\Framework\Core\Cli\CliBase;
@@ -39,23 +39,23 @@ use DI\Container;
 
 try
 {
-	$MigrateDatabase = new MigrateDatabase(
-		$container->get(\App\Framework\Database\DBHandler::class),
-		$container->get(\App\Framework\Database\QueryBuilder::class)
-	);
+    $MigrateDatabase = new MigrateDatabase(
+        $container->get(\App\Framework\Database\DBHandler::class),
+        $container->get(\App\Framework\Database\QueryBuilder::class)
+    );
 
-	$MigrateDatabase->setSilentOutput(true);
-	$path   = $container->get('paths')['systemDir'].'/migrations/'.$_ENV['APP_PLATFORM_EDITION'].'/';
-	$MigrateDatabase->setMigrationFilePath($path);
-	$MigrateDatabase->execute();
+    $MigrateDatabase->setSilentOutput(true);
+    $path   = $container->get('paths')['systemDir'].'/migrations/'.$_ENV['APP_PLATFORM_EDITION'].'/';
+    $MigrateDatabase->setMigrationFilePath($path);
+    $MigrateDatabase->execute();
 
-	$msg = CliColors::colorizeString('Migration succeed', CliColors::CLI_COLOR_GREEN);
+    $msg = CliColors::colorizeString('Migration succeed', CliColors::CLI_COLOR_GREEN);
 }
 catch (Exception $e)
 {
-	$CliBase->showCliError('Migration failed: ' . $e->getMessage());
+    $CliBase->showCliError('Migration failed: ' . $e->getMessage());
 }
 catch (\Psr\Container\ContainerExceptionInterface $e)
 {
-	echo 'Error: '.$e->getMessage();
+    echo 'Error: '.$e->getMessage();
 }
