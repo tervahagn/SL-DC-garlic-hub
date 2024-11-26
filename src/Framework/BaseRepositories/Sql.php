@@ -20,9 +20,9 @@
 
 namespace App\Framework\BaseRepositories;
 
-use App\Framework\Database\DBHandler;
-use App\Framework\Database\Helpers\DataPreparer;
-use App\Framework\Database\QueryBuilder;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Abstract class Base
@@ -36,69 +36,21 @@ abstract class Sql
 	use FindOperationsTrait;
 
 	protected string $idField;
-	protected DBHandler $dbh;
-	protected QueryBuilder $queryBuilder;
-	protected DataPreparer $dataPreparer;
+	protected Connection $connection;
 
-	/**
-	 * Constructor
-	 *
-	 * @param DBHandler $dbh Database handler
-	 * @param string $table Table name
-	 * @param string $idField ID field name
-	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer, string $table, string $idField)
+	public function __construct(Connection $connection, string $table, string $idField)
 	{
-		$this->dbh          = $dbh;
-	 	$this->queryBuilder = $queryBuilder;
-		$this->dataPreparer = $dataPreparer;
+		$this->connection   = $connection;
 		$this->table        = $table;
 		$this->idField     = $idField;
 	}
 
-	/**
-	 * Gets the database handler.
-	 *
-	 * @return DBHandler
-	 */
-	public function getDbh(): DBHandler
-	{
-		return $this->dbh;
-	}
 
-
-	public function getDataPreparer(): DataPreparer
-	{
-		return $this->dataPreparer;
-	}
-
-	/**
-	 * Gets the table name.
-	 *
-	 * @return string
-	 */
 	public function getTable(): string
 	{
 		return $this->table;
 	}
 
-	/**
-	 * Sets the ID field name.
-	 *
-	 * @param string $idField ID field name
-	 * @return $this
-	 */
-	protected function setIdField(string $idField): Sql
-	{
-		$this->idField = $idField;
-		return $this;
-	}
-
-	/**
-	 * Gets the ID field name.
-	 *
-	 * @return string
-	 */
 	public function getIdField(): string
 	{
 		return $this->idField;
@@ -109,107 +61,121 @@ abstract class Sql
 	 *
 	 * @param array $fields Fields to insert
 	 * @return int Inserted record ID
+	 * @throws Exception
 	 */
 	public function insert(array $fields): int
 	{
-		$sql = $this->queryBuilder->buildInsertQuery($this->getTable(), $this->getDataPreparer()->prepareForDB($fields));
-		return $this->getDbh()->insert($sql);
+		$this->connection->insert($this->getTable(), $fields);
+		return (int)$this->connection->lastInsertId();
 	}
+
 
 	/**
 	 * Updates a record in the database by ID.
 	 *
-	 * @param int|string $id     Record ID
-	 * @param array      $fields Fields to update
+	 * @param int|string $id Record ID
+	 * @param array $fields Fields to update
 	 *
 	 * @return int Number of affected rows
+	 * @throws Exception
 	 */
 	public function update(int|string $id, array $fields): int
 	{
-		// this is required because the id field can be a string or an integer
-		$id_prepare = array($this->getIdField() => $id);
-		$id_cleaned = $this->getDataPreparer()->prepareForDB($id_prepare);
-		$quoted_id  = $id_cleaned[$this->getIdField()];
-
-		$sql = $this->queryBuilder->buildUpdateQuery(
-			$this->table,
-			$this->getDataPreparer()->prepareForDB($fields),
-			$this->getIdField() . ' = '. $quoted_id
-		);
-
-		return $this->getDbh()->update($sql);
+		return $this->connection->update($this->getTable(), $fields,[$this->getIdField() => $id]);
 	}
 
 	/**
 	 * Updates records in the database with a custom WHERE clause.
 	 *
 	 * @param array $fields Fields to update
-	 * @param mixed $where WHERE clause
+	 * @param array $conditions
 	 * @return int Number of affected rows
+	 * @throws Exception
 	 */
-	public function updateWithWhere(array $fields, string $where): int
+	public function updateWithWhere(array $fields, array $conditions): int
 	{
-		$sql = $this->queryBuilder->buildUpdateQuery(
-			$this->table,
-			$this->getDataPreparer()->prepareForDB($fields),
-			$where
-		);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->getTable());
 
-		return $this->getDbh()->update($sql);
+		foreach ($fields as $field => $value)
+		{
+			$queryBuilder->set($field, ":set_$field");
+			$queryBuilder->setParameter("set_$field", $value);
+		}
+
+		foreach ($conditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :cond_$field");
+			$queryBuilder->setParameter("cond_$field", $value);
+		}
+
+		return $queryBuilder->executeStatement();
 	}
 
 	/**
 	 * Deletes a record from the database by ID.
-	 *
-	 * @param int|string $id Record ID
-	 * @param mixed $limit Limit for deletion
-	 * @return int
+	 * @throws Exception
 	 */
-	public function delete(int|string $id, string $limit = null): int
+	public function delete(int|string $id): int
 	{
-		$where = $this->getIdField() . '=' . $id;
-		return $this->deleteBy($where, $limit);
+		return $this->connection->delete($this->getTable(), [$this->getIdField() => $id]);
 	}
 
 	/**
 	 * Deletes records from the database by a specific field.
 	 *
-	 * @param string $field Field name
-	 * @param mixed $value Field value
-	 * @param string $limit Limit for deletion
-	 * @return int
+	 * @throws Exception
 	 */
-	public function deleteByField(string $field, mixed $value, string $limit = ''): int
+	public function deleteByField(string $field, mixed $value): int
 	{
-		$where = $field . '=' . $value;
-		return $this->deleteBy($where, $limit);
+		return $this->connection->delete($this->getTable(), [$field => $value]);
 	}
 
 	/**
 	 * Deletes records from the database with a custom WHERE clause.
-	 *
-	 * @param string $where WHERE clause
-	 * @param string $limit Limit for deletion
-	 * @return int
+	 * @throws Exception
 	 */
-	public function deleteBy(string $where, string $limit = ''): int
+	public function deleteBy(array $conditions): int
 	{
-		$sql = $this->queryBuilder->buildDeleteQuery(
-			$this->getTable(),
-			$where,
-			$limit
-		);
-		return $this->getDbh()->delete($sql);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->delete($this->getTable());
+
+		foreach ($conditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
+		}
+
+		return $queryBuilder->executeStatement();
 	}
 
 	/**
 	 * Shows columns of the table.
 	 *
 	 * @return array Columns data
+	 * @throws Exception
 	 */
 	public function showColumns(): array
 	{
-		return $this->getDbh()->show('COLUMNS', $this->getTable());
+		return $this->connection->createSchemaManager()->listTableColumns($this->getTable());
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function showTables(): array
+	{
+		return $this->connection->createSchemaManager()->listTables();
+	}
+
+	protected function determineConditions(array $conditions, QueryBuilder $queryBuilder): void
+	{
+		foreach ($conditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
+		}
+	}
+
 
 }

@@ -20,76 +20,34 @@
 
 namespace App\Framework\Database\Migration;
 
-use App\Framework\Database\DBHandler;
-use App\Framework\Database\QueryBuilder;
+use App\Framework\BaseRepositories\Sql;
+use Doctrine\DBAL\Connection;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
+use Doctrine\DBAL\Exception;
 
 /**
  * Class MigrateDatabase
  * @package App\Framework\Database\Migration
  */
-class MigrateDatabase
+class MigrateDatabase extends Sql
 {
 
 	const MIGRATION_TABLE_NAME = '_migration_version';
-
-	/**
-	 * @var string
-	 */
 	private string $fieldName = 'version';
-
-	/**
-	 * @var DBHandler
-	 */
-	private DBHandler $dbh;
-
-	/**
-	 * @var QueryBuilder
-	*/
-	private QueryBuilder $queryBuilder;
-
-	/**
-	 * @var integer
-	 */
+	protected Connection $connection;
 	protected int $version = 0;
-
-	/**
-	 * @var string
-	 */
 	private string $migrationFilePath;
-
-	/**
-	 * @var bool
-	 */
 	private bool $isSilentOutput = false;
 
-	/**
-	 * @param DBHandler $dbh
-	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder)
+	public function __construct(Connection $connection)
 	{
-		$this->setDbh($dbh);
-		$this->queryBuilder = $queryBuilder;
+		parent::__construct($connection, self::MIGRATION_TABLE_NAME, 'version');
 	}
 
-	/**
-	 * @return DBHandler
-	 */
-	public function getDbh(): DBHandler
+	public function getConnection(): Connection
 	{
-		return $this->dbh;
-	}
-
-	/**
-	 * @param DBHandler $dbh
-	 * @return $this
-	 */
-	public function setDbh(DBHandler $dbh): MigrateDatabase
-	{
-		$this->dbh = $dbh;
-
-		return $this;
+		return $this->connection;
 	}
 
 	/**
@@ -136,8 +94,7 @@ class MigrateDatabase
 	 * @param int|null $targetVersion
 	 *
 	 * @return  $this
-	 * @throws DatabaseException
-	 * @throws \Exception
+	 * @throws \Exception|Exception
 	 */
 	public function execute(int $targetVersion = null): MigrateDatabase
 	{
@@ -201,12 +158,13 @@ class MigrateDatabase
 	 * checks if migration table is present
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	protected function hasMigrationTable(): bool
 	{
-		$tmp = $this->getDbh()->getConnectionData();
+	// obsolete?	$tmp = $this->getConnectionData();
 
-		$result = $this->getDbh()->show('TABLES', self::MIGRATION_TABLE_NAME );
+		$result = $this->showTables();
 
 		return !empty($result);
 	}
@@ -215,14 +173,14 @@ class MigrateDatabase
 	 * adds the migration table to database
 	 *
 	 * @return $this
+	 * @throws Exception
 	 */
-	protected function createMigrationTable()
+	protected function createMigrationTable(): static
 	{
 		$sql = "CREATE TABLE IF NOT EXISTS `" . self::MIGRATION_TABLE_NAME . "` ( `version` INTEGER NOT NULL PRIMARY KEY)";
-		$this->getDbh()->executeQuery($sql);
+		$this->getConnection()->executeStatement($sql);
 
-		$sql = "INSERT INTO `" . self::MIGRATION_TABLE_NAME . "` (`" . $this->fieldName . "`) VALUES (0)";
-		$this->getDbh()->insert($sql);
+		$this->insert([$this->fieldName => 0]);
 
 		return $this;
 	}
@@ -230,14 +188,14 @@ class MigrateDatabase
 	/**
 	 * gets the current migration version from database
 	 *
-	 * @return int
+	 * @throws Exception
 	 */
 	protected function getMigrationVersion(): int
 	{
-		$sql = $this->queryBuilder->buildSelectQuery($this->fieldName, self::MIGRATION_TABLE_NAME);
-		$result = $this->getDbh()->getSingleValue($sql);
-		$this->version = (int) $result;
-		return $this->version;
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select($this->fieldName)->from($this->table);
+
+		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 
 	/**
@@ -246,13 +204,21 @@ class MigrateDatabase
 	 * @param int $version
 	 *
 	 * @return  $this
+	 * @throws Exception
 	 */
-	protected function setMigrationVersion(int $version): MigrateDatabase
+	protected function updateMigrationVersion(int $version): MigrateDatabase
 	{
-		$sql = $this->queryBuilder->buildUpdateQuery(
-			self::MIGRATION_TABLE_NAME, array($this->fieldName => $version), $this->fieldName .' > 0'
-		);
-		$this->getDbh()->update($sql);
+		$queryBuilder = $this->connection->createQueryBuilder();
+
+		$queryBuilder
+			->update($this->table)
+			->set($this->fieldName, ':value')
+			->where($this->fieldName . ' > :threshold')
+			->setParameter('value', $version)
+			->setParameter('threshold', 0);
+
+		$queryBuilder->executeStatement();
+
 		return $this;
 	}
 
@@ -357,7 +323,7 @@ class MigrateDatabase
 	 * @param   array $ar_file_names
 	 *
 	 * @return  array|MigrateDatabase
-	 * @throws \Exception
+	 * @throws \Exception|Exception
 	 */
 	protected function migrate(int $number, string $direction, array $ar_file_names): array|MigrateDatabase
 	{
@@ -381,27 +347,20 @@ class MigrateDatabase
 
 			$fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-			switch (strtolower($fileExtension))
+			$results = match (strtolower($fileExtension))
 			{
-				case 'sql':
-					$results = $this->migrateSql($fileName);
-					break;
-
-				case 'php':
-					$results = $this->migratePhp($fileName, $direction);
-					break;
-
-				default:
-					throw new \Exception('unknown file extension for file ' . $fileName);
-			}
+				'sql' => $this->migrateSql($fileName),
+				'php' => $this->migratePhp($fileName, $direction),
+				default => throw new \Exception('unknown file extension for file ' . $fileName),
+			};
 
 			if ($direction == 'up')
 			{
-				$this->setMigrationVersion($number);
+				$this->updateMigrationVersion($number);
 			}
 			else
 			{
-				$this->setMigrationVersion($number - 1);
+				$this->updateMigrationVersion($number - 1);
 			}
 		}
 		catch (\Exception $e)
@@ -426,7 +385,7 @@ class MigrateDatabase
 	 *
 	 * @return	$this
 	 *
-	 * @throws DatabaseException
+	 * @throws DatabaseException|Exception
 	 */
 	protected function migrateSql(string $file_name): MigrateDatabase
 	{
@@ -434,7 +393,7 @@ class MigrateDatabase
 		$sqlArray   = preg_split('/;\s*\n/', $sqlContent, -1, PREG_SPLIT_NO_EMPTY);
 		$sql        = 'none yet';
 
-		$this->getDbh()->beginTransaction();
+		$this->getConnection()->beginTransaction();
 
 		try
 		{
@@ -450,18 +409,18 @@ class MigrateDatabase
 						continue;
 					}
 
-					$this->getDbh()->executeQuery($sql);
+					$this->getConnection()->executeQuery($sql);
 				}
 				else
 				{
 					$this->stdOut('SQL statement was empty. Skipping...' . PHP_EOL);
 				}
 			}
-			$this->getDbh()->commitTransaction(true);
+			$this->getConnection()->commit();
 		}
 		catch (\Exception $e)
 		{
-			$this->getDbh()->rollbackTransaction();
+			$this->getConnection()->rollback();
 			$message = $e->getMessage() . ' SQL: ' . $sql;
 			$code = $e->getCode();
 			throw new DatabaseException($message, $code);
@@ -477,25 +436,28 @@ class MigrateDatabase
 	 * @param string $direction
 	 *
 	 * @return  $this
-	 * @throws \Exception
+	 * @throws \Exception|Exception
 	 */
 	protected function migratePhp(string $file_name, string $direction): MigrateDatabase
 	{
 		require_once $file_name;
 
 		$className = $this->getClassFromFileName($file_name);
-		$migration = new $className($this->getDbh());
+		$migration = new $className($this->getConnection());
 
 		try
 		{
-			$this->getDbh()->beginTransaction();
+			$this->getConnection()->beginTransaction();
 			$migration->$direction();
-			$this->getDbh()->commitTransaction();;
+			$this->getConnection()->commit();
 		}
 		catch (\Exception $e)
 		{
-			$this->getDbh()->rollbackTransaction();
+			$this->getConnection()->rollback();
 			throw $e;
+		}
+		catch (Exception $e)
+		{
 		}
 
 		return $this;
@@ -504,15 +466,14 @@ class MigrateDatabase
 	/**
 	 * @param string $fileName
 	 *
-	 * @return mixed
+	 * @return string|array|null
 	 */
-	protected function getClassFromFileName(string $fileName): mixed
+	protected function getClassFromFileName(string $fileName): string|array|null
 	{
-		$className = preg_replace(array(
+		return preg_replace(array(
 			'~^(\d+_)~iUms',
 			'~(\.php)$~iUms'
 		), '', basename($fileName));
-		return $className;
 	}
 
 	/**
@@ -594,7 +555,7 @@ class MigrateDatabase
 	 */
 	protected function stdOutHeader(int $currentVersion, int $targetVersion, string $direction): MigrateDatabase
 	{
-		$db = $this->dbh->getConnectionData();
+		$db = $this->getConnectionData();
 		$text = <<<TXT
 ----- Database migrations ----
 Path:      {$this->migrationFilePath}
@@ -614,6 +575,7 @@ TXT;
 	 * prints the footer of cli
 	 *
 	 * @return $this
+	 * @throws Exception
 	 */
 	protected function stdOutFooter(): MigrateDatabase
 	{
@@ -667,5 +629,21 @@ TXT;
 			echo $text;
 		}
 		return $this;
+	}
+
+	public function getConnectionData(): array
+	{
+		$params = $this->connection->getParams();
+		$driver = $params['driver'] ?? 'unknown';
+
+		// Ermittle Host und Datenbankname
+		$host = $params['host'] ?? 'localhost';
+		$name = $params['dbname'] ?? 'unknown';
+
+		return [
+			'host' => $host,
+			'db_name' => $name,
+			'db_driver' => $driver
+		];
 	}
 }

@@ -20,36 +20,41 @@
 
 namespace App\Framework\BaseRepositories;
 
+use Doctrine\DBAL\Exception;
+
 trait TransactionTrait
 {
 	/**
 	 * Begins a database transaction.
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function beginTransaction(): void
 	{
-		$this->dbh->beginTransaction();
+		$this->connection->beginTransaction();
 	}
 
 	/**
 	 * Commits a database transaction.
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function commitTransaction(): void
 	{
-		$this->dbh->commitTransaction();
+		$this->connection->commit();
 	}
 
 	/**
 	 * Rolls back a database transaction.
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public function rollbackTransaction(): void
 	{
-		$this->dbh->rollbackTransaction();
+		$this->connection->rollback();
 	}
 
 	/**
@@ -59,7 +64,7 @@ trait TransactionTrait
 	 */
 	public function isTransactionActive(): bool
 	{
-		return $this->dbh->hasActiveTransaction();
+		return $this->connection->isTransactionActive();
 	}
 
 }

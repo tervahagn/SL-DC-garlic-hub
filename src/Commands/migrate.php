@@ -39,10 +39,7 @@ use DI\Container;
 
 try
 {
-    $MigrateDatabase = new MigrateDatabase(
-        $container->get(\App\Framework\Database\DBHandler::class),
-        $container->get(\App\Framework\Database\QueryBuilder::class)
-    );
+    $MigrateDatabase = new MigrateDatabase($container->get('SqlConnection'));
 
     $MigrateDatabase->setSilentOutput(true);
     $path   = $container->get('paths')['systemDir'].'/migrations/'.$_ENV['APP_PLATFORM_EDITION'].'/';

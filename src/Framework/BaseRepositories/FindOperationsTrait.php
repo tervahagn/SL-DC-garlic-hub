@@ -20,6 +20,8 @@
 
 namespace App\Framework\BaseRepositories;
 
+use Doctrine\DBAL\Exception;
+
 trait FindOperationsTrait
 {
 
@@ -30,120 +32,160 @@ trait FindOperationsTrait
 	 *
 	 * @param int|string $id Record ID
 	 * @return array Record data
+	 * @throws Exception
 	 */
 	public function findById(int|string $id): array
 	{
-		if (empty($id))
-			return array();
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('COUNT(1)')
+			->from($this->table)
+			->where($this->idField . ' = :id')
+			->setParameter('id', $id);
+		;
 
-		$sql = $this->queryBuilder->buildSelectQuery(
-			$this->table,
-			'*',
-			$this->idField . '=' . $this->dbh->escapeString($id),
-			'',
-			1
-		);
-		$result = $this->dbh->select($sql);
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 
-		return $this->getFirstDataSet($result);
 	}
 
 	/**
 	 * Counts all records in the table.
 	 *
-	 * @return int Number of records
+	 * @throws Exception
 	 */
 	public function countAll(): int
 	{
-		$sql = $this->queryBuilder->buildSelectQuery('COUNT(1)', $this->table);
-		return (int) $this->dbh->getSingleValue($sql);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('COUNT(1)')->from($this->table);
+
+		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 
 	/**
 	 * Counts records in the table with a custom WHERE clause.
-	 *
-	 * @param string $where WHERE clause
-	 * @param string $join JOIN clause
-	 * @param string $group_by GROUP BY clause
-	 * @return int Number of records
+	 * @throws Exception
 	 */
-	public function countAllBy(string $where = '', string $join = '', string $group_by = ''): int
+	public function countAllBy(array $conditions = [], array $join = [], string $groupBy = ''): int
 	{
-		$sql = $this->queryBuilder->buildSelectQuery(
-			'COUNT(1)', $where, $this->table,	$join,'',$group_by
-		);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('COUNT(1)')->from($this->table);
 
-		return (int) $this->dbh->getSingleValue($sql);
+		if (!empty($groupBy))
+			$queryBuilder->groupBy($groupBy);
+
+		foreach ($join as $table => $onCondition)
+		{
+			$queryBuilder->join($this->table, $table, $table, $onCondition);
+		}
+
+		foreach ($conditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
+		}
+
+		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 
 	/**
 	 * Finds records with a custom WHERE clause.
 	 *
-	 * @param string $where WHERE clause
-	 * @param string $join JOIN clause
-	 * @param string $limit LIMIT clause
-	 * @param string $group_by GROUP BY clause
-	 * @param string $order_by ORDER BY clause
-	 * @return array Records data
 	 */
-	public function findAllBy(string $where = '', string $join = '', string $limit = '', string $group_by = '', string $order_by = ''): array
+	public function findAllBy(array $conditions = [], array $join = [], int $limitStart = null,	int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
 	{
-		return $this->findAllByWithFields('*', $where, $join, $limit, $group_by, $order_by);
+		return $this->findAllByWithFields(array('*'), $conditions, $join, $limitStart, $limitShow, $groupBy, $orderBy);
 	}
 
 	/**
 	 * Finds records with specific fields and a custom WHERE clause.
-	 *
-	 * @param string $fields Fields to select
-	 * @param string $where WHERE clause
-	 * @param string $join JOIN clause
-	 * @param string $limit LIMIT clause
-	 * @param string $group_by GROUP BY clause
-	 * @param string $order_by ORDER BY clause
-	 * @return array Records data
 	 */
-	public function findAllByWithFields(string $fields, string $where = '', string $join = '', string $limit = '', string $group_by = '', string $order_by = ''): array
+	public function findAllByWithFields(array $fields, array $conditions = [],array $join = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
 	{
-		$sql = $this->queryBuilder->buildSelectQuery($fields, $this->table, $where, $join, $limit, $group_by, $order_by);
-		return $this->dbh->select($sql);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select(implode(', ', $fields))->from($this->table);
+
+		if (!empty($groupBy))
+			$queryBuilder->groupBy($groupBy);
+
+		if (!empty($orderBy))
+			$queryBuilder->orderBy($orderBy);
+
+		foreach ($join as $table => $onCondition)
+		{
+			$queryBuilder->join($this->table, $table, $table, $onCondition);
+		}
+
+		foreach ($conditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
+		}
+
+		if ($limitStart !== null && $limitShow !== null)
+			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
 	 * Finds records with limits and sorting.
 	 *
-	 * @param int $limit_start Start limit
-	 * @param int $limit_show Number of records to show
-	 * @param string $sort_column Column to sort by
-	 * @param string $sort_order Sort order
-	 * @param string $where WHERE clause
-	 * @return array Records data
+	 * @throws Exception
 	 */
-	public function findAllByWithLimits(int $limit_start, int $limit_show, string $sort_column, string $sort_order, string $where = ''): array
+	public function findAllByWithLimits(int $limitStart, int $limitShow, string $sortColumn, string $sortOrder, array
+	$whereConditions = []): array
 	{
-		$limit    = $this->queryBuilder->buildLimitClause($limit_start, $limit_show);
-		$order_by = $this->table.'.'.$sort_column. ' '.$sort_order;
-		$sql      = $this->queryBuilder->buildSelectQuery(
-			'*', $this->table, $where, '', $limit, '', $order_by
-		);
+		$queryBuilder = $this->connection->createQueryBuilder();
 
-		return $this->dbh->select($sql);
+		$queryBuilder->select('*')->from($this->table);
+
+		if (!empty($orderBy))
+			$queryBuilder->orderBy($orderBy);
+
+		foreach ($whereConditions as $field => $value)
+		{
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
+		}
+
+		if ($limitStart !== null && $limitShow !== null)
+			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
 	 * Finds a single value by a custom WHERE clause.
 	 *
-	 * @param string $field Field to select
-	 * @param string $where WHERE clause
-	 * @param string $join JOIN clause
-	 * @param string $group_by GROUP BY clause
-	 * @param string $order_by ORDER BY clause
-	 * @return string Single value
+	 * @throws Exception
 	 */
-	public function findOneValueBy(string $field, string $where, string $join = '', string $group_by = '', string $order_by = ''): string
-	{
-		$sql = $this->queryBuilder->buildSelectQuery($field, $this->table, $where, $join, '', $group_by, $order_by);
+	public function findOneValueBy(
+		string $field,
+		array $conditions = [],
+		array $join = [],
+		string $groupBy = '',
+		string $orderBy = ''
+	): string {
+		$queryBuilder = $this->connection->createQueryBuilder();
 
-		return $this->dbh->getSingleValue($sql);
+		$queryBuilder->select($field)->from($this->table);
+
+		if (!empty($groupBy))
+			$queryBuilder->groupBy($groupBy);
+
+		if (!empty($orderBy))
+			$queryBuilder->orderBy($orderBy);
+
+		foreach ($join as $table => $onCondition)
+		{
+			$queryBuilder->join($this->table, $table, $table, $onCondition);
+		}
+
+		foreach ($conditions as $column => $value)
+		{
+			$queryBuilder->andWhere("$column = :$column");
+			$queryBuilder->setParameter($column, $value);
+		}
+		return $queryBuilder->fetchOne() ?? '';
 	}
 
 	/**

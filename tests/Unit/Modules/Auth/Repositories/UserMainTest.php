@@ -20,33 +20,37 @@
 
 namespace Tests\Unit\Modules\Auth\Repositories;
 
-use App\Framework\Database\DBHandler;
-use App\Framework\Database\Helpers\DataPreparer;
-use App\Framework\Database\QueryBuilder;
+
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Entities\User;
 use App\Modules\Auth\Repositories\UserMain;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class UserMainTest extends TestCase
 {
-	private DBHandler	 $dbhMock;
+	private Connection	 $connectionMock;
 	private QueryBuilder $queryBuilderMock;
-	private DataPreparer $dataPreparerMock;
+	private Result $resultMock;
 
 	protected function setUp(): void
 	{
-		$this->dbhMock = $this->createMock(DBHandler::class);
+		$this->connectionMock   = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
-		$this->dataPreparerMock = $this->createMock(DataPreparer::class);
+		$this->resultMock       = $this->createMock(Result::class);
 	}
 
 
+	/**
+	 * @throws UserException
+	 */
 	#[Group('units')]
 	public function testLoadUserByIdentifierForValidEmail()
 	{
-		$userMain = new UserMain($this->dbhMock, $this->queryBuilderMock, $this->dataPreparerMock);
+		$userMain = new UserMain($this->connectionMock);
 		$identifier = 'test@example.com';
 		$userData = [
 			'UID' => 1,
@@ -58,13 +62,25 @@ class UserMainTest extends TestCase
 			'status' => 'active'
 		];
 
-		$this->queryBuilderMock->expects($this->once())
-							   ->method('buildSelectQuery')
-							   ->willReturn('query');
-		$this->dbhMock->expects($this->once())
-					  ->method('select')
-					  ->with('query')
-					  ->willReturn([$userData]);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->never())->method('join');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([$userData]);
 
 		$user = $userMain->loadUserByIdentifier($identifier);
 
@@ -75,7 +91,7 @@ class UserMainTest extends TestCase
 	#[Group('units')]
 	public function testLoadUserByIdentifierForValidUsername()
 	{
-		$userMain = new UserMain($this->dbhMock, $this->queryBuilderMock, $this->dataPreparerMock);
+		$userMain = new UserMain($this->connectionMock);
 		$identifier = 'testuser';
 		$userData = [
 			'UID' => 1,
@@ -87,13 +103,25 @@ class UserMainTest extends TestCase
 			'status' => 'active'
 		];
 
-		$this->queryBuilderMock->expects($this->once())
-							   ->method('buildSelectQuery')
-							   ->willReturn('query');
-		$this->dbhMock->expects($this->once())
-					  ->method('select')
-					  ->with('query')
-					  ->willReturn([$userData]);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->never())->method('join');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([$userData]);
 
 		$user = $userMain->loadUserByIdentifier($identifier);
 
@@ -107,18 +135,29 @@ class UserMainTest extends TestCase
 		$this->expectException(UserException::class);
 		$this->expectExceptionMessage('User not found.');
 
-		$userMain = new UserMain($this->dbhMock, $this->queryBuilderMock, $this->dataPreparerMock);
+		$userMain = new UserMain($this->connectionMock);
 
 		$identifier = 'nonexistentuser';
 
-		$this->queryBuilderMock->expects($this->once())
-							   ->method('buildSelectQuery')
-							   ->willReturn('query');
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
 
-		$this->dbhMock->expects($this->once())
-					  ->method('select')
-					  ->with('query')
-					  ->willReturn([]);
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->never())->method('join');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([]);
 
 		$userMain->loadUserByIdentifier($identifier);
 	}

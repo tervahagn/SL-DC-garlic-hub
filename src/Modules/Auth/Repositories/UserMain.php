@@ -21,25 +21,18 @@
 namespace App\Modules\Auth\Repositories;
 
 use App\Framework\BaseRepositories\Sql;
-use App\Framework\Database\DBHandler;
-use App\Framework\Database\Helpers\DataPreparer;
-use App\Framework\Database\QueryBuilder;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Entities\User;
+use Doctrine\DBAL\Connection;
 
 /**
  * Provides user data handling for authentication.
  */
 class UserMain extends Sql
 {
-	/**
-	 * @param DBHandler $dbh
-	 * @param QueryBuilder $queryBuilder
-	 * @param UserMainDataPreparer $dataPreparer
-	 */
-	public function __construct(DBHandler $dbh, QueryBuilder $queryBuilder, DataPreparer $dataPreparer)
+	public function __construct(Connection $connection)
 	{
-		parent::__construct($dbh, $queryBuilder, $dataPreparer, 'user_main', 'UID');
+		parent::__construct($connection,'user_main', 'UID');
 	}
 
 	/**
@@ -51,11 +44,11 @@ class UserMain extends Sql
 	public function loadUserByIdentifier(string $identifier): User
 	{
 		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
-			$where = "email = '$identifier'";
+			$conditions = ['email' => $identifier];
 		else
-			$where = "username = '$identifier'";
+			$conditions = ['username' => $identifier];
 
-		$result = $this->getFirstDataSet($this->findAllBy($where));
+		$result = $this->getFirstDataSet($this->findAllBy($conditions));
 		if (empty($result))
 			throw new UserException('User not found.');
 
