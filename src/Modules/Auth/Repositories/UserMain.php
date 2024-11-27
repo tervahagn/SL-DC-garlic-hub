@@ -24,6 +24,7 @@ use App\Framework\BaseRepositories\Sql;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Entities\User;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 /**
  * Provides user data handling for authentication.
@@ -40,16 +41,21 @@ class UserMain extends Sql
 	 *
 	 * @return User
 	 * @throws UserException
+	 * @throws Exception
 	 */
 	public function loadUserByIdentifier(string $identifier): User
 	{
-		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
-			$conditions = ['email' => $identifier];
-		else
-			$conditions = ['username' => $identifier];
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('*')->from($this->table);
 
-		$result = $this->getFirstDataSet($this->findAllBy($conditions));
-		if (empty($result))
+		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
+			$queryBuilder->where('email = :identifier');
+		else
+			$queryBuilder->where('username = :identifier');
+		$queryBuilder->setParameter('identifier', $identifier);
+
+		$result = $queryBuilder->executeQuery()->fetchAssociative();
+		if (!$result || empty($result))
 			throw new UserException('User not found.');
 
 		return new User($result);

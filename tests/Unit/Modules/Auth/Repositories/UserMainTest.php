@@ -25,6 +25,7 @@ use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Entities\User;
 use App\Modules\Auth\Repositories\UserMain;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
@@ -46,6 +47,7 @@ class UserMainTest extends TestCase
 
 	/**
 	 * @throws UserException
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testLoadUserByIdentifierForValidEmail()
@@ -66,21 +68,15 @@ class UserMainTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 
 		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->never())->method('join');
-		$this->queryBuilderMock->expects($this->never())->method('groupBy');
-		$this->queryBuilderMock->expects($this->never())->method('orderBy');
-		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
-		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
-
+			->willReturn($this->queryBuilderMock); // needed in from because of chained methods
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('email = :identifier');
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('identifier', $identifier);
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
 			->willReturn($this->resultMock);
-		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
-			->willReturn([$userData]);
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
+			->willReturn($userData);
 
 		$user = $userMain->loadUserByIdentifier($identifier);
 
@@ -107,21 +103,15 @@ class UserMainTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 
 		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->never())->method('join');
-		$this->queryBuilderMock->expects($this->never())->method('groupBy');
-		$this->queryBuilderMock->expects($this->never())->method('orderBy');
-		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
-		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
-
+			->willReturn($this->queryBuilderMock); // needed in from because of chained methods
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('username = :identifier');
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('identifier', $identifier);
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
 			->willReturn($this->resultMock);
-		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
-			->willReturn([$userData]);
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
+			->willReturn($userData);
 
 		$user = $userMain->loadUserByIdentifier($identifier);
 
@@ -130,7 +120,7 @@ class UserMainTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testLoadUserByIdentifierThrowsExceptionForInvalidIdentifier()
+	public function testLoadUserByIdentifierThrowsExceptionForInvalidIdentifierWithFalse()
 	{
 		$this->expectException(UserException::class);
 		$this->expectExceptionMessage('User not found.');
@@ -143,22 +133,44 @@ class UserMainTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 
 		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
-			->willReturn($this->queryBuilderMock);
-
-		$this->queryBuilderMock->expects($this->never())->method('join');
-		$this->queryBuilderMock->expects($this->never())->method('groupBy');
-		$this->queryBuilderMock->expects($this->never())->method('orderBy');
-		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
-		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
-
+			->willReturn($this->queryBuilderMock); // needed in from because of chained methods
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('username = :identifier');
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('identifier', $identifier);
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
 			->willReturn($this->resultMock);
-		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
+			->willReturn(false);
+
+		$userMain->loadUserByIdentifier($identifier);
+	}
+
+	#[Group('units')]
+	public function testLoadUserByIdentifierThrowsExceptionForInvalidIdentifierWithEmptyArray()
+	{
+		$this->expectException(UserException::class);
+		$this->expectExceptionMessage('User not found.');
+
+		$userMain = new UserMain($this->connectionMock);
+
+		$identifier = 'nonexistentuser';
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock); // needed in from because of chained methods
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('username = :identifier');
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('identifier', $identifier);
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn([]);
 
 		$userMain->loadUserByIdentifier($identifier);
 	}
+
 }
