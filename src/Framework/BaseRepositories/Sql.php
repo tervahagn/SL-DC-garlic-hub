@@ -32,7 +32,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 abstract class Sql
 {
 
-	use TransactionTrait;
 	use FindOperationsTrait;
 
 	protected string $idField;
