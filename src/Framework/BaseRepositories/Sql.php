@@ -57,10 +57,10 @@ abstract class Sql
 	}
 
 	/**
-	 * Inserts a new record into the database.
+	 * Inserts a new record into the database and returns the new insert id.
 	 *
-	 * @param array $fields Fields to insert
-	 * @return int Inserted record ID
+	 * creates internally a prepared statement
+	 *
 	 * @throws Exception
 	 */
 	public function insert(array $fields): int
@@ -71,24 +71,22 @@ abstract class Sql
 
 
 	/**
-	 * Updates a record in the database by ID.
+	 * Updates a record in the database by ID and returns the affected rows.
 	 *
-	 * @param int|string $id Record ID
-	 * @param array $fields Fields to update
+	 * creates internally a prepared statement
 	 *
-	 * @return int Number of affected rows
 	 * @throws Exception
 	 */
 	public function update(int|string $id, array $fields): int
 	{
-		return $this->connection->update($this->getTable(), $fields,[$this->getIdField() => $id]);
+		return $this->connection->update($this->getTable(), $fields, [$this->getIdField() => $id]);
 	}
 
 	/**
 	 * Updates records in the database with a custom WHERE clause.
 	 *
 	 * @param array $fields Fields to update
-	 * @param array $conditions
+	 * @param array $conditions Conditions to match for where clause
 	 * @return int Number of affected rows
 	 * @throws Exception
 	 */
@@ -105,24 +103,26 @@ abstract class Sql
 
 		foreach ($conditions as $field => $value)
 		{
-			$queryBuilder->andWhere("$field = :cond_$field");
-			$queryBuilder->setParameter("cond_$field", $value);
+			$queryBuilder->andWhere("$field = :$field");
+			$queryBuilder->setParameter($field, $value);
 		}
 
 		return $queryBuilder->executeStatement();
 	}
 
 	/**
-	 * Deletes a record from the database by ID.
+	 * Deletes a record from the database by ID and returns the affected rows.
+	 *
 	 * @throws Exception
 	 */
 	public function delete(int|string $id): int
 	{
-		return $this->connection->delete($this->getTable(), [$this->getIdField() => $id]);
+		return $this->deleteByField($this->getIdField(), $id);
 	}
 
 	/**
-	 * Deletes records from the database by a specific field.
+	 * Deletes records from the database by a specific field and a value.
+	 * Returns the affected rows
 	 *
 	 * @throws Exception
 	 */
@@ -140,32 +140,9 @@ abstract class Sql
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->delete($this->getTable());
 
-		foreach ($conditions as $field => $value)
-		{
-			$queryBuilder->andWhere("$field = :$field");
-			$queryBuilder->setParameter($field, $value);
-		}
+		$this->determineConditions($queryBuilder, $conditions);
 
 		return $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * Shows columns of the table.
-	 *
-	 * @return array Columns data
-	 * @throws Exception
-	 */
-	public function showColumns(): array
-	{
-		return $this->connection->createSchemaManager()->listTableColumns($this->getTable());
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function showTables(): array
-	{
-		return $this->connection->createSchemaManager()->listTables();
 	}
 
 	protected function determineConditions(QueryBuilder $queryBuilder, array $conditions): void

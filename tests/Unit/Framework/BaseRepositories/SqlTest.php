@@ -1,0 +1,252 @@
+<?php
+
+namespace Tests\Unit\Framework\BaseRepositories;
+
+use App\Framework\BaseRepositories\Sql;
+use App\Framework\Exceptions\UserException;
+use App\Modules\Auth\Entities\User;
+use App\Modules\Auth\Repositories\UserMain;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+
+class SqlConcrete extends Sql{}
+class SqlTest extends TestCase
+{
+	private Connection	 $connectionMock;
+	private QueryBuilder $queryBuilderMock;
+	private SqlConcrete $repository;
+	private Result $resultMock;
+
+	protected function setUp(): void
+	{
+		$this->connectionMock   = $this->createMock(Connection::class);
+		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
+		$this->resultMock       = $this->createMock(Result::class);
+		$this->repository       = new SqlConcrete($this->connectionMock, 'table', 'id');
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testInsert()
+	{
+		$fields = [
+			'field1' => 'field 1 value',
+			'field2' => 'field 2 value'
+		];
+		$this->connectionMock->expects($this->once())->method('insert')
+			->with('table', $fields);
+
+		$this->connectionMock->expects($this->once())->method('lastInsertId')
+			->willReturn(1);
+
+		$this->assertEquals(1, $this->repository->insert($fields));
+	}
+
+	#[Group('units')]
+	public function testUpdate()
+	{
+		$fields = [
+			'field1' => 'field 1 value',
+			'field2' => 'field 2 value'
+		];
+		$this->connectionMock->expects($this->once())->method('update')
+			->with('table', $fields, ['id' => 34])
+			->willReturn(2);
+
+		$this->assertEquals(2, $this->repository->update(34, $fields));
+	}
+
+	/**
+	 * @throws UserException
+	 */
+	#[Group('units')]
+	public function testUpdateWithWhere()
+	{
+		$fields = [
+			'field1' => 'field 1 value',
+			'field2' => 'field 2 value'
+		];
+		$conditions = [
+			'condition1' => 'condition 1 value',
+			'condition2' => 'condition 2 value'
+		];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('update')->with('table');
+
+		$this->queryBuilderMock->expects($this->exactly(2))
+			->method('set')
+			->willReturnCallback(function ($field, $param) {
+				$expectedFields = ['field1', 'field2'];
+				$expectedParams = [':set_field1', ':set_field2'];
+				$this->assertContains($field, $expectedFields);
+				$this->assertContains($param, $expectedParams);
+				return $this->queryBuilderMock;
+			});
+
+		$this->queryBuilderMock->expects($this->exactly(2))
+			->method('andWhere')
+			->willReturnCallback(function ($condition) {
+				$expectedConditions = ['condition1 = :condition1', 'condition2 = :condition2'];
+				$this->assertContains($condition, $expectedConditions);
+				return $this->queryBuilderMock;
+			});
+
+		$this->queryBuilderMock->expects($this->exactly(4))
+			->method('setParameter')
+			->willReturnCallback(function ($name, $value) {
+				$expectedNames = ['set_field1', 'set_field2', 'condition1', 'condition2'];
+				$expectedValues = ['field 1 value', 'field 2 value', 'condition 1 value', 'condition 2 value'];
+				$this->assertContains($name, $expectedNames);
+				$this->assertContains($value, $expectedValues);
+				return $this->queryBuilderMock;
+			});
+
+
+		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
+			->willReturn(1);
+
+		$this->assertEquals(1, $this->repository->updateWithWhere($fields, $conditions));
+
+	}
+
+	#[Group('units')]
+	public function testDelete()
+	{
+		$this->connectionMock->expects($this->once())->method('delete')
+			->with('table', ['id' => 36])
+			->willReturn(17);
+
+		$this->assertEquals(17, $this->repository->delete(36));
+	}
+
+	#[Group('units')]
+	public function testDeleteByField()
+	{
+		$this->connectionMock->expects($this->once())->method('delete')
+			->with('table', ['field' => 'value'])
+			->willReturn(94);
+
+		$this->assertEquals(94, $this->repository->deleteByField('field', 'value'));
+	}
+
+	#[Group('units')]
+	public function testDeleteBy()
+	{
+		$conditions = [
+			'condition1' => 'condition1_value',
+			'condition2' => 'condition2_value'
+		];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('delete')->with('table');
+
+		$this->queryBuilderMock->expects($this->exactly(2))
+			->method('andWhere')
+			->willReturnCallback(function ($condition) {
+				$expectedConditions = ['condition1 = :condition1', 'condition2 = :condition2'];
+				$this->assertContains($condition, $expectedConditions);
+				return $this->queryBuilderMock;
+			});
+
+		$this->queryBuilderMock->expects($this->exactly(2))
+			->method('setParameter')
+			->willReturnCallback(function ($name, $value) {
+				$expectedNames = ['condition1', 'condition2'];
+				$expectedValues = ['condition1_value', 'condition2_value'];
+				$this->assertContains($name, $expectedNames);
+				$this->assertContains($value, $expectedValues);
+				return $this->queryBuilderMock;
+			});
+
+
+		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
+			->willReturn(365);
+
+		$this->assertEquals(365, $this->repository->deleteBy($conditions));
+	}
+
+	#[Group('unit s')]
+	public function testLoadUserByIdentifierForValidUsername()
+	{
+		$userMain = new UserMain($this->connectionMock);
+		$identifier = 'testuser';
+		$userData = [
+			'UID' => 1,
+			'username' => 'testuser',
+			'email' => 'test@example.com',
+			'password' => 'hashedpassword',
+			'locale' => 'en_US',
+			'company_id' => 123,
+			'status' => 'active'
+		];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->never())->method('join');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([$userData]);
+
+		$user = $userMain->loadUserByIdentifier($identifier);
+
+		$this->assertInstanceOf(User::class, $user);
+		$this->assertEquals('testuser', $user->getUsername());
+	}
+
+	#[Group('unit s')]
+	public function testLoadUserByIdentifierThrowsExceptionForInvalidIdentifier()
+	{
+		$this->expectException(UserException::class);
+		$this->expectExceptionMessage('User not found.');
+
+		$userMain = new UserMain($this->connectionMock);
+
+		$identifier = 'nonexistentuser';
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('user_main')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->never())->method('join');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([]);
+
+		$userMain->loadUserByIdentifier($identifier);
+	}
+}

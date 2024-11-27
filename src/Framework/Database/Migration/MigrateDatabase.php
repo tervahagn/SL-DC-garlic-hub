@@ -162,8 +162,6 @@ class MigrateDatabase extends Sql
 	 */
 	protected function hasMigrationTable(): bool
 	{
-	// obsolete?	$tmp = $this->getConnectionData();
-
 		$result = $this->showTables();
 
 		return !empty($result);
@@ -631,7 +629,7 @@ TXT;
 		return $this;
 	}
 
-	public function getConnectionData(): array
+	private function getConnectionData(): array
 	{
 		$params = $this->connection->getParams();
 		$driver = $params['driver'] ?? 'unknown';
@@ -645,5 +643,24 @@ TXT;
 			'db_name' => $name,
 			'db_driver' => $driver
 		];
+	}
+
+	/**
+	 * Shows columns of the table.
+	 *
+	 * @return array Columns data
+	 * @throws Exception
+	 */
+	private function showColumns(): array
+	{
+		return $this->connection->createSchemaManager()->listTableColumns($this->getTable());
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function showTables(): array
+	{
+		return $this->connection->createSchemaManager()->listTables();
 	}
 }

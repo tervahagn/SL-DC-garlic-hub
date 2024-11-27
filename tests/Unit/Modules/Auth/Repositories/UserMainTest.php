@@ -44,7 +44,6 @@ class UserMainTest extends TestCase
 		$this->resultMock       = $this->createMock(Result::class);
 	}
 
-
 	/**
 	 * @throws UserException
 	 * @throws Exception
