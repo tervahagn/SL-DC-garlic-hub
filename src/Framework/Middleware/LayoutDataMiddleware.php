@@ -25,8 +25,8 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use SlimSession\Helper;
 

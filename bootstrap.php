@@ -16,6 +16,7 @@ use DI\ContainerBuilder;
 use Phpfastcache\Helper\Psr16Adapter;
 use Slim\App;
 use Slim\Middleware\Session;
+
 try
 {
 	/* @var App $app */

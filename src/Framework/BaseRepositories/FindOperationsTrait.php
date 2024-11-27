@@ -64,7 +64,7 @@ trait FindOperationsTrait
 	 * Counts records in the table with a custom WHERE clause.
 	 * @throws Exception
 	 */
-	public function countAllBy(array $conditions = [], array $join = [], string $groupBy = ''): int
+	public function countAllBy(array $conditions = [], array $joins = [], string $groupBy = ''): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('COUNT(1)')->from($this->table);
@@ -72,16 +72,8 @@ trait FindOperationsTrait
 		if (!empty($groupBy))
 			$queryBuilder->groupBy($groupBy);
 
-		foreach ($join as $table => $onCondition)
-		{
-			$queryBuilder->join($this->table, $table, $table, $onCondition);
-		}
-
-		foreach ($conditions as $field => $value)
-		{
-			$queryBuilder->andWhere("$field = :$field");
-			$queryBuilder->setParameter($field, $value);
-		}
+		$this->determineJoins($queryBuilder, $joins);
+		$this->determineConditions($queryBuilder, $conditions);
 
 		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
@@ -90,15 +82,16 @@ trait FindOperationsTrait
 	 * Finds records with a custom WHERE clause.
 	 *
 	 */
-	public function findAllBy(array $conditions = [], array $join = [], int $limitStart = null,	int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
+	public function findAllBy(array $conditions = [], array $joins = [], int $limitStart = null, int $limitShow =
+	null, string $groupBy = '', string $orderBy = ''): array
 	{
-		return $this->findAllByWithFields(array('*'), $conditions, $join, $limitStart, $limitShow, $groupBy, $orderBy);
+		return $this->findAllByWithFields(array('*'), $conditions, $joins, $limitStart, $limitShow, $groupBy, $orderBy);
 	}
 
 	/**
 	 * Finds records with specific fields and a custom WHERE clause.
 	 */
-	public function findAllByWithFields(array $fields, array $conditions = [],array $join = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
+	public function findAllByWithFields(array $fields, array $conditions = [],array $joins = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select(implode(', ', $fields))->from($this->table);
@@ -109,16 +102,8 @@ trait FindOperationsTrait
 		if (!empty($orderBy))
 			$queryBuilder->orderBy($orderBy);
 
-		foreach ($join as $table => $onCondition)
-		{
-			$queryBuilder->join($this->table, $table, $table, $onCondition);
-		}
-
-		foreach ($conditions as $field => $value)
-		{
-			$queryBuilder->andWhere("$field = :$field");
-			$queryBuilder->setParameter($field, $value);
-		}
+		$this->determineJoins($queryBuilder, $joins);
+		$this->determineConditions($queryBuilder, $conditions);
 
 		if ($limitStart !== null && $limitShow !== null)
 			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
@@ -131,24 +116,16 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findAllByWithLimits(int $limitStart, int $limitShow, string $sortColumn, string $sortOrder, array
-	$whereConditions = []): array
+	public function findAllByWithLimits(int $limitStart, int $limitShow, string $sortColumn, string $sortOrder, array $conditions = []): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 
-		$queryBuilder->select('*')->from($this->table);
+		$queryBuilder->select('*')->from($this->table)
+			->orderBy($sortColumn, $sortOrder);
 
-		if (!empty($orderBy))
-			$queryBuilder->orderBy($orderBy);
+		$this->determineConditions($queryBuilder, $conditions);
 
-		foreach ($whereConditions as $field => $value)
-		{
-			$queryBuilder->andWhere("$field = :$field");
-			$queryBuilder->setParameter($field, $value);
-		}
-
-		if ($limitStart !== null && $limitShow !== null)
-			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+		$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
@@ -158,13 +135,9 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findOneValueBy(
-		string $field,
-		array $conditions = [],
-		array $join = [],
-		string $groupBy = '',
-		string $orderBy = ''
-	): string {
+	public function findOneValueBy(string $field, array $conditions = [], array $joins = [], string $groupBy = '',
+								   string $orderBy = ''): string
+	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 
 		$queryBuilder->select($field)->from($this->table);
@@ -175,16 +148,9 @@ trait FindOperationsTrait
 		if (!empty($orderBy))
 			$queryBuilder->orderBy($orderBy);
 
-		foreach ($join as $table => $onCondition)
-		{
-			$queryBuilder->join($this->table, $table, $table, $onCondition);
-		}
+		$this->determineJoins($queryBuilder, $joins);
+		$this->determineConditions($queryBuilder, $conditions);
 
-		foreach ($conditions as $column => $value)
-		{
-			$queryBuilder->andWhere("$column = :$column");
-			$queryBuilder->setParameter($column, $value);
-		}
 		return $queryBuilder->fetchOne() ?? '';
 	}
 

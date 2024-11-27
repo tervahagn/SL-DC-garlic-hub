@@ -23,8 +23,6 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 
-use Locale;
-
 class Locales
 {
 	const CONFIG_MODULE_NAME = 'locales';

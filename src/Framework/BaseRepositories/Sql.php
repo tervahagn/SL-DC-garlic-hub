@@ -168,12 +168,20 @@ abstract class Sql
 		return $this->connection->createSchemaManager()->listTables();
 	}
 
-	protected function determineConditions(array $conditions, QueryBuilder $queryBuilder): void
+	protected function determineConditions(QueryBuilder $queryBuilder, array $conditions): void
 	{
 		foreach ($conditions as $field => $value)
 		{
 			$queryBuilder->andWhere("$field = :$field");
 			$queryBuilder->setParameter($field, $value);
+		}
+	}
+
+	protected function determineJoins(QueryBuilder $queryBuilder, array $joins): void
+	{
+		foreach ($joins as $table => $onCondition)
+		{
+			$queryBuilder->join($this->table, $table, $table, $onCondition);
 		}
 	}
 

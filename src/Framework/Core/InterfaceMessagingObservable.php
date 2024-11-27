@@ -19,6 +19,7 @@
 */
 
 namespace App\Framework\Core;
+
 /**
  * Interface InterfaceMessagingObservable
  */

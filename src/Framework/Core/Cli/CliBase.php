@@ -19,6 +19,7 @@
 */
 
 namespace App\Framework\Core\Cli;
+
 /**
  * Note:
  * when adding new params, you need to adjust the method self::parseBaseParams()

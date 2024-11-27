@@ -27,8 +27,6 @@ use App\Framework\Exceptions\FrameworkException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionException;
 
 class LocalesTest extends TestCase
 {

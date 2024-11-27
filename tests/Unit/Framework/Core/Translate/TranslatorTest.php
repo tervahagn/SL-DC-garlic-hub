@@ -20,17 +20,16 @@
 
 namespace Tests\Unit\Framework\Core\Translate;
 
-use App\Framework\Core\Translate\Translator;
-use MessageFormatter;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
-
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\TranslationLoaderInterface;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use MessageFormatter;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
