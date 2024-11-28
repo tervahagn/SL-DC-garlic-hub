@@ -45,7 +45,6 @@ try
 	$directoryIterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator($systemDir . '/config/services', FilesystemIterator::SKIP_DOTS)
 	);
-
 	foreach ($directoryIterator as $file)
 	{
 		if (fnmatch('*.php', $file->getFilename())) {
@@ -64,18 +63,17 @@ try
 		$app              = $container->get(Application::class);
 		$commandDirectory = $container->get('paths')['commandDir'];
 
-		$app->add(new \App\Commands\HelloCommand());
-	/*	foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($commandDirectory)) as $file)
+		foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($commandDirectory)) as $file)
 		{
 			if (!$file->isFile() || $file->getExtension() !== 'php')
 				continue;
 
 			$class = 'App\\Commands\\' . $file->getBasename('.php');
 			if (class_exists($class))
-				$app->add(new $class());
+				$app->add($container->get($class));
 
 		}
-	*/
+	echo 'dd';
 	}
 }
 catch (Exception $e)

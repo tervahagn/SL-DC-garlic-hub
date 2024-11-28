@@ -18,6 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use App\Commands\MigrateCommand;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\IniConfigLoader;
 use App\Framework\Core\Locales\Locales;
@@ -25,10 +26,13 @@ use App\Framework\Core\Locales\UrlLocaleExtractor;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Migration\MigrateDatabase;
 use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Modules\Auth\Repositories\UserMain;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
@@ -37,7 +41,6 @@ use Slim\Flash\Messages;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
-
 
 $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
@@ -61,6 +64,16 @@ $dependencies['SqlConnection'] = DI\factory(function () {
 		'driver'   => strtolower($_ENV['DB_MASTER_DRIVER']), // e.g. 'pdo_mysql pdo_sqlite '
 	];
 	return DriverManager::getConnection($connectionParams);
+});
+$dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container) {
+
+	return new Filesystem(new LocalFilesystemAdapter($container->get('paths')['systemDir']));
+});
+$dependencies[MigrateDatabase::class] = DI\factory(function (ContainerInterface $container) {
+	return new MigrateDatabase($container->get('SqlConnection'), $container->get('LocalFileSystem'));
+});
+$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container) {
+	return new MigrateCommand($container->get(MigrateDatabase::class), $container->get('paths'));
 });
 
 $dependencies[Messages::class] = DI\factory(function () {return new Messages();});

@@ -67,12 +67,15 @@ class MigrateDatabaseTest extends TestCase
 		$this->assertFalse($this->migrateDatabase->hasMigrationTable());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateMigrationTable()
 	{
 		$this->connectionMock->expects($this->once())
 			->method('executeStatement')
-			->with($this->stringContains('CREATE TABLE IF NOT EXISTS `_migration_version`'));
+			->with($this->stringContains('CREATE TABLE IF NOT EXISTS '. MigrateDatabase::MIGRATION_TABLE_NAME));
 
 		$this->migrateDatabase->createMigrationTable();
 	}
