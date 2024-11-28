@@ -3,9 +3,6 @@
 namespace Tests\Unit\Framework\BaseRepositories;
 
 use App\Framework\BaseRepositories\Sql;
-use App\Framework\Exceptions\UserException;
-use App\Modules\Auth\Entities\User;
-use App\Modules\Auth\Repositories\UserMain;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -21,6 +18,9 @@ class SqlTest extends TestCase
 	private SqlConcrete $repository;
 	private Result $resultMock;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->connectionMock   = $this->createMock(Connection::class);
@@ -48,6 +48,9 @@ class SqlTest extends TestCase
 		$this->assertEquals(1, $this->repository->insert($fields));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testUpdate()
 	{
@@ -63,7 +66,7 @@ class SqlTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testUpdateWithWhere()
@@ -118,6 +121,9 @@ class SqlTest extends TestCase
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDelete()
 	{
@@ -128,6 +134,9 @@ class SqlTest extends TestCase
 		$this->assertEquals(17, $this->repository->delete(36));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDeleteByField()
 	{
@@ -138,6 +147,9 @@ class SqlTest extends TestCase
 		$this->assertEquals(94, $this->repository->deleteByField('field', 'value'));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDeleteBy()
 	{
