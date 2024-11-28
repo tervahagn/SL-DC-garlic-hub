@@ -18,6 +18,7 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Slim\App;
 use Slim\Middleware\Session;
 use SlimSession\Helper;
+use Symfony\Component\Console\Application;
 
 try
 {
@@ -33,8 +34,10 @@ try
 		'varDir' => $systemDir . '/var',
 		'cacheDir' => $systemDir . '/var/cache',
 		'logDir' => $systemDir . '/var/log',
-		'translationsDir' => $systemDir . '/translations',
-		'configDir' => $systemDir . '/config'
+		'translationDir' => $systemDir . '/translations',
+		'configDir' => $systemDir . '/config',
+		'migrationDir' => $systemDir . '/migrations',
+		'commandDir' => $systemDir . '/src/Commands'
 	];
 
 	$containerBuilder->addDefinitions(['paths' => $paths]);
@@ -55,6 +58,24 @@ try
 	{
 		$middlewareLoader = require __DIR__ . '/config/middleware.php';
 		$app = $middlewareLoader($container, $start_time, $start_memory);
+	}
+	else
+	{
+		$app              = $container->get(Application::class);
+		$commandDirectory = $container->get('paths')['commandDir'];
+
+		$app->add(new \App\Commands\HelloCommand());
+	/*	foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($commandDirectory)) as $file)
+		{
+			if (!$file->isFile() || $file->getExtension() !== 'php')
+				continue;
+
+			$class = 'App\\Commands\\' . $file->getBasename('.php');
+			if (class_exists($class))
+				$app->add(new $class());
+
+		}
+	*/
 	}
 }
 catch (Exception $e)

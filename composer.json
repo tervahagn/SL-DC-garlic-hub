@@ -11,8 +11,8 @@
         "league/flysystem": "^3.29",
       "ext-intl": "*",
         "phpfastcache/phpfastcache": "^9.2",
-      "ext-pdo": "*",
-        "doctrine/dbal": "^4.2"
+        "doctrine/dbal": "^4.2",
+        "symfony/console": "^7.1"
     },
     "autoload": {
         "psr-4": {

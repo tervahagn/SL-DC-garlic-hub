@@ -28,17 +28,21 @@ use App\Framework\Core\Translate\Translator;
 use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\TemplateEngine\TemplateService;
 use App\Modules\Auth\Repositories\UserMain;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
+use Symfony\Component\Console\Application;
 
 $dependencies = [];
 
-$dependencies[App::class]             = Di\factory([AppFactory::class, 'createFromContainer']);
+
+$dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
+$dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
+	return new Application();
+});
 $dependencies[Mustache_Engine::class] = DI\factory(function () {
 	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
 });
@@ -75,7 +79,7 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 $dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {
 	return new Translator(
 		$container->get(Locales::class),
-		new IniTranslationLoader($container->get('paths')['translationsDir']),
+		new IniTranslationLoader($container->get('paths')['translationDir']),
 		new MessageFormatterFactory(),
 		new Psr16Adapter('Files')
 	);

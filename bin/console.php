@@ -18,32 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Core\Cli;
+/**
+ * @var $app Application
+ */
 
-use App\Framework\Core\Cli\CliTable;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
 
-class CliTableTest extends TestCase
-{
-    #[Group('units')]
-    public function testBuildTable(): void
-    {
-        $data = [
-            ['Name', 'Age', 'City'],
-            ['Alice', '30', 'Berlin'],
-            ['Bob', '25', 'Munich'],
-        ];
+$app = require __DIR__ . '/../bootstrap.php';
 
-        $expected = "|Name    |Age   |City     |
------------------------
-|Alice   |30    |Berlin   |
-|Bob     |25    |Munich   |
-";
-
-        $result = CliTable::buildTable($data);
-        $this->assertEquals($expected, $result);
-    }
-
-
-}
+$app->run();

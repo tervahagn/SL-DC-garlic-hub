@@ -18,7 +18,6 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
