@@ -21,6 +21,7 @@
 namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Middleware\FinalRenderMiddleware;
+use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\TemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -34,7 +35,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class FinalRenderMiddlewareTest extends TestCase
 {
 	private FinalRenderMiddleware $middleware;
-	private TemplateService $templateServiceMock;
+	private AdapterInterface $templateServiceMock;
 	private ServerRequestInterface $requestMock ;
 	private ResponseInterface $responseMock;
 	private RequestHandlerInterface $handlerMock;
@@ -45,7 +46,7 @@ class FinalRenderMiddlewareTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->templateServiceMock = $this->createMock(TemplateService::class);
+		$this->templateServiceMock = $this->createMock(AdapterInterface::class);
 		$this->requestMock = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
 		$this->handlerMock = $this->createMock(RequestHandlerInterface::class);
