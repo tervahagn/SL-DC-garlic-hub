@@ -18,11 +18,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use App\Framework\Core\Config\Config;
+use App\Framework\Core\Config\IniConfigLoader;
+use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Locales\UrlLocaleExtractor;
+use App\Framework\Core\Translate\IniTranslationLoader;
+use App\Framework\Core\Translate\MessageFormatterFactory;
+use App\Framework\Core\Translate\Translator;
 use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Framework\TemplateEngine\TemplateService;
 use App\Modules\Auth\Repositories\UserMain;
+use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
@@ -55,5 +63,23 @@ $dependencies[Messages::class] = DI\factory(function () {return new Messages();}
 $dependencies[UserMain::class] = DI\factory(function (ContainerInterface $container) {
 	return new UserMain($container->get('SqlConnection'));
 });
+$dependencies[Config::class] = DI\factory(function (ContainerInterface $container) {
+	return new Config(new IniConfigLoader($container->get('paths')['configDir']));
+});
+$dependencies[Locales::class] = DI\factory(function (ContainerInterface $container) {
+	return new Locales(
+		$container->get(Config::class),
+		new UrlLocaleExtractor()
+	);
+});
+$dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {
+	return new Translator(
+		$container->get(Locales::class),
+		new IniTranslationLoader($container->get('paths')['translationsDir']),
+		new MessageFormatterFactory(),
+		new Psr16Adapter('Files')
+	);
+});
+
 
 return $dependencies;
