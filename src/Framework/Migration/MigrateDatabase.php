@@ -25,6 +25,8 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\FilesystemOperator;
 
 /**
  * Class MigrateDatabase
@@ -32,16 +34,17 @@ use Doctrine\DBAL\Exception;
  */
 class MigrateDatabase extends Sql
 {
-
 	const MIGRATION_TABLE_NAME = '_migration_version';
 	private string $fieldName = 'version';
 	protected Connection $connection;
 	protected int $version = 0;
-	private string $migrationFilePath;
+	private string $migrationFilePath = '';
 	private bool $isSilentOutput = false;
+	private FilesystemOperator $filesystem;
 
-	public function __construct(Connection $connection)
+	public function __construct(Connection $connection, FilesystemOperator $filesystem)
 	{
+		$this->filesystem = $filesystem;
 		parent::__construct($connection, self::MIGRATION_TABLE_NAME, 'version');
 	}
 
@@ -160,7 +163,7 @@ class MigrateDatabase extends Sql
 	 * @return bool
 	 * @throws Exception
 	 */
-	protected function hasMigrationTable(): bool
+	public function hasMigrationTable(): bool
 	{
 		$result = $this->showTables();
 
@@ -173,7 +176,7 @@ class MigrateDatabase extends Sql
 	 * @return $this
 	 * @throws Exception
 	 */
-	protected function createMigrationTable(): static
+	public function createMigrationTable(): static
 	{
 		$sql = "CREATE TABLE IF NOT EXISTS `" . self::MIGRATION_TABLE_NAME . "` ( `version` INTEGER NOT NULL PRIMARY KEY)";
 		$this->getConnection()->executeStatement($sql);
@@ -188,7 +191,7 @@ class MigrateDatabase extends Sql
 	 *
 	 * @throws Exception
 	 */
-	protected function getMigrationVersion(): int
+	public function getMigrationVersion(): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select($this->fieldName)->from($this->table);
@@ -204,7 +207,7 @@ class MigrateDatabase extends Sql
 	 * @return  $this
 	 * @throws Exception
 	 */
-	protected function updateMigrationVersion(int $version): MigrateDatabase
+	public function updateMigrationVersion(int $version): MigrateDatabase
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 
@@ -225,57 +228,55 @@ class MigrateDatabase extends Sql
 	 *
 	 * @return array
 	 * @throws \Exception
+	 * @throws FilesystemException
 	 */
-	protected function getAvailableMigrations(): array
+	public function getAvailableMigrations(): array
 	{
-		$migrationScripts = scandir($this->migrationFilePath);
-		$matches = array();
-		$migrations = array();
-		$highest = 0;
+		$files      = iterator_to_array($this->filesystem->listContents($this->migrationFilePath));
+		$matches    = [];
+		$migrations = [];
+		$highest    = 0;
 
-		foreach ($migrationScripts as $migrationScript)
+		foreach ($files as $file)
 		{
-			if (is_dir($this->migrationFilePath . DIRECTORY_SEPARATOR . $migrationScript) === true)
-			{
+			if ($file['type'] === 'dir')
 				continue;
-			}
-			elseif (preg_match('/^(\d+)_(.*?)(?:\.(up|down)){0,1}(?:\.(sql|php))$/', $migrationScript, $matches))
-			{
-				$number    = (int) $matches[1];
-				$name      = $matches[2];
+
+			// Match file names with the expected pattern
+			if (preg_match('/^(\d+)_(.*?)(?:\.(up|down)){0,1}(?:\.(sql|php))$/', $file['path'], $matches)) {
+				$number = (int) $matches[1];
+				$name = $matches[2];
 				$direction = $matches[3];
 				$extension = $matches[4];
-			}
-			else
-			{
-				throw new \Exception('Wrong migration script name: [' . $migrationScript . ']');
-			}
+			} else
+				throw new \Exception('Wrong migration script name: [' . $file['path'] . ']');
 
+
+			// Check for duplicate migrations
 			if (isset($migrations[$number][$direction]))
-			{
 				throw new \Exception('Migration [' . $number . ' => ' . $direction . '] doubled!');
-			}
 
-			if ($extension == 'php')
+
+			// Assign migration files to the correct direction (up/down)
+			if ($extension === 'php')
 			{
 				$migrations[$number]['up'] = $this->getFileName($number, $direction, $name);
 				$migrations[$number]['down'] = $this->getFileName($number, $direction, $name);
 			}
 			else
-			{
 				$migrations[$number][$direction] = $this->getFileName($number, $direction, $name);
-			}
 
+			// Track the highest migration number
 			if ($highest < $number)
 			{
 				$highest = $number;
 			}
 		}
 
-		return array(
+		return [
 			$highest,
 			$migrations
-		);
+		];
 	}
 
 	/**
