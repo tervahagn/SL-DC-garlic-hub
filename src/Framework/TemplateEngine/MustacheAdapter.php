@@ -20,14 +20,14 @@
 
 namespace App\Framework\TemplateEngine;
 
-class MustacheAdapter extends
-	\App\Framework\TemplateEngine\TemplateService implements AdapterInterface
+class MustacheAdapter implements AdapterInterface
 {
 	private $mustache;
 
 	public function __construct(\Mustache_Engine $mustache)
 	{
 		$this->mustache = $mustache;
+
 	}
 
 	public function render(string $template, array $data = []): string

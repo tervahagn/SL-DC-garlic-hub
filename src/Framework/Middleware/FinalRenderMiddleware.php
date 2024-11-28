@@ -20,7 +20,7 @@
 
 namespace App\Framework\Middleware;
 
-use App\Framework\TemplateEngine\TemplateService;
+use App\Framework\TemplateEngine\AdapterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -33,12 +33,12 @@ use Slim\Psr7\Stream;
  */
 class FinalRenderMiddleware implements MiddlewareInterface
 {
-	private TemplateService $templateService;
+	private AdapterInterface $templateService;
 
 	/**
-	 * @param TemplateService $templateService
+	 * @param AdapterInterface $templateService
 	 */
-	public function __construct(TemplateService $templateService)
+	public function __construct(AdapterInterface $templateService)
 	{
 		$this->templateService = $templateService;
 	}

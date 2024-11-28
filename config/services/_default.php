@@ -37,9 +37,6 @@ $dependencies[Mustache_Engine::class] = DI\factory(function () {
 $dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
 	return new MustacheAdapter($mustacheEngine);
 });
-$dependencies[TemplateService::class]  = DI\factory(function (AdapterInterface $adapter) {
-	return new TemplateService($adapter);
-});
 
 $dependencies['SqlConnection'] = DI\factory(function () {
 	$connectionParams = [
