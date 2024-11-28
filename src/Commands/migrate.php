@@ -29,7 +29,7 @@ $cli_meta = [
 
 use App\Framework\Core\Cli\CliBase;
 use App\Framework\Core\Cli\CliColors;
-use App\Framework\Database\Migration\MigrateDatabase;
+use App\Framework\Migration\MigrateDatabase;
 use DI\Container;
 
 /**

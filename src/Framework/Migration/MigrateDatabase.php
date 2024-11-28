@@ -18,12 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Database\Migration;
+namespace App\Framework\Migration;
 
 use App\Framework\BaseRepositories\Sql;
-use Doctrine\DBAL\Connection;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
 /**
