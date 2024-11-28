@@ -153,11 +153,11 @@ abstract class Sql
 		}
 	}
 
-	protected function determineJoins(QueryBuilder $queryBuilder, array $joins): void
+	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
 	{
 		foreach ($joins as $table => $onCondition)
 		{
-			$queryBuilder->join($this->table, $table, $table, $onCondition);
+			$queryBuilder->leftJoin($this->table, $table, $table, $onCondition);
 		}
 	}
 

@@ -21,6 +21,7 @@
 namespace App\Framework\BaseRepositories;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 trait FindOperationsTrait
 {
@@ -40,11 +41,10 @@ trait FindOperationsTrait
 		$queryBuilder->select('COUNT(1)')
 			->from($this->table)
 			->where($this->idField . ' = :id')
-			->setParameter('id', $id);
+			->setParameter('id', $id)
 		;
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
-
 	}
 
 	/**
@@ -66,21 +66,14 @@ trait FindOperationsTrait
 	 */
 	public function countAllBy(array $conditions = [], array $joins = [], string $groupBy = ''): int
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('COUNT(1)')->from($this->table);
-
-		if (!empty($groupBy))
-			$queryBuilder->groupBy($groupBy);
-
-		$this->determineJoins($queryBuilder, $joins);
-		$this->determineConditions($queryBuilder, $conditions);
-
+		$queryBuilder = $this->buildQuery('COUNT(1)', $conditions, $joins, $groupBy);
 		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 
 	/**
 	 * Finds records with a custom WHERE clause.
 	 *
+	 * @throws Exception
 	 */
 	public function findAllBy(array $conditions = [], array $joins = [], int $limitStart = null, int $limitShow =
 	null, string $groupBy = '', string $orderBy = ''): array
@@ -90,20 +83,12 @@ trait FindOperationsTrait
 
 	/**
 	 * Finds records with specific fields and a custom WHERE clause.
+	 * @throws Exception
 	 */
 	public function findAllByWithFields(array $fields, array $conditions = [],array $joins = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select(implode(', ', $fields))->from($this->table);
-
-		if (!empty($groupBy))
-			$queryBuilder->groupBy($groupBy);
-
-		if (!empty($orderBy))
-			$queryBuilder->orderBy($orderBy);
-
-		$this->determineJoins($queryBuilder, $joins);
-		$this->determineConditions($queryBuilder, $conditions);
+		$fields       = implode(', ', $fields);
+		$queryBuilder = $this->buildQuery($fields, $conditions, $joins,	$groupBy, $orderBy);
 
 		if ($limitStart !== null && $limitShow !== null)
 			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
@@ -116,14 +101,9 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findAllByWithLimits(int $limitStart, int $limitShow, string $sortColumn, string $sortOrder, array $conditions = []): array
+	public function findAllByWithLimits(int $limitStart, int $limitShow, string $orderBy, array $conditions = []): array
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-
-		$queryBuilder->select('*')->from($this->table)
-			->orderBy($sortColumn, $sortOrder);
-
-		$this->determineConditions($queryBuilder, $conditions);
+		$queryBuilder = $this->buildQuery('*', $conditions, [], '', $orderBy);
 
 		$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
 
@@ -138,9 +118,20 @@ trait FindOperationsTrait
 	public function findOneValueBy(string $field, array $conditions = [], array $joins = [], string $groupBy = '',
 								   string $orderBy = ''): string
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder = $this->buildQuery($field, $conditions, $joins, $groupBy, $orderBy);
 
+		return $queryBuilder->fetchOne() ?? '';
+	}
+
+
+	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', string $orderBy = ''):
+	QueryBuilder
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select($field)->from($this->table);
+
+		$this->determineLeftJoins($queryBuilder, $joins);
+		$this->determineConditions($queryBuilder, $conditions);
 
 		if (!empty($groupBy))
 			$queryBuilder->groupBy($groupBy);
@@ -148,24 +139,7 @@ trait FindOperationsTrait
 		if (!empty($orderBy))
 			$queryBuilder->orderBy($orderBy);
 
-		$this->determineJoins($queryBuilder, $joins);
-		$this->determineConditions($queryBuilder, $conditions);
-
-		return $queryBuilder->fetchOne() ?? '';
-	}
-
-	/**
-	 * Gets the first dataset from an array of datasets.
-	 *
-	 * @param array $ar_set Array of datasets
-	 * @return array First dataset
-	 */
-	protected function getFirstDataSet(array $ar_set): array
-	{
-		if (!empty($ar_set))
-			return $ar_set[0];
-
-		return array();
+		return $queryBuilder;
 	}
 
 }
