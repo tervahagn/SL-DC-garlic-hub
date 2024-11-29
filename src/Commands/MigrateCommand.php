@@ -20,8 +20,13 @@
 
 namespace App\Commands;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Migration\MigrateDatabase;
+use App\Framework\Migration\Repository;
+use App\Framework\Migration\Runner;
+use Doctrine\DBAL\Exception;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,13 +39,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class MigrateCommand extends Command
 {
-	private MigrateDatabase $DatabaseMigration;
-	private $paths;
+	private Runner $migrationRunner;
 
-	public function __construct(MigrateDatabase $DatabaseMigration, array $paths)
+	public function __construct(Runner $migrationRunner)
 	{
-		$this->DatabaseMigration = $DatabaseMigration;
-		$this->paths = $paths;
+		$this->migrationRunner = $migrationRunner;
 
 		parent::__construct();
 	}
@@ -55,11 +58,7 @@ class MigrateCommand extends Command
 		$version = $input->getArgument('version');
 		try
 		{
-			$path   = $this->paths['migrationDir'].'/'.$_ENV['APP_PLATFORM_EDITION'].'/';
-
-			$this->DatabaseMigration->setSilentOutput(true);
-			$this->DatabaseMigration->setMigrationFilePath($path);
-			$this->DatabaseMigration->execute();
+			$this->migrationRunner->execute();
 
 			$output->writeln('<info>Migration succeed.</info>');
 		}
@@ -67,6 +66,9 @@ class MigrateCommand extends Command
 		{
 			$output->writeln('<error>Migration failed: ' . $e->getMessage() . '</error>');
 			return Command::FAILURE;
+		}
+		catch (Exception $e)
+		{
 		}
 
 		return Command::SUCCESS;

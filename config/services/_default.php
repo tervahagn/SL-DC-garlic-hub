@@ -27,6 +27,8 @@ use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Migration\MigrateDatabase;
+use App\Framework\Migration\Repository;
+use App\Framework\Migration\Runner;
 use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
@@ -46,43 +48,7 @@ $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromCo
 $dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
 	return new Application();
 });
-$dependencies[Mustache_Engine::class] = DI\factory(function () {
-	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
-});
-$dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
-	return new MustacheAdapter($mustacheEngine);
-});
 
-$dependencies['SqlConnection'] = DI\factory(function () {
-	$connectionParams = [
-		'path'     => $_ENV['DB_MASTER_PATH'], // SQLite needs `path`
-		'dbname'   => $_ENV['DB_MASTER_NAME'],
-		'user'     => $_ENV['DB_MASTER_USER'],
-		'password' => $_ENV['DB_MASTER_PASSWORD'],
-		'host'     => $_ENV['DB_MASTER_HOST'],
-		'port'     => $_ENV['DB_MASTER_PORT'],
-		'driver'   => strtolower($_ENV['DB_MASTER_DRIVER']), // e.g. 'pdo_mysql pdo_sqlite '
-	];
-	return DriverManager::getConnection($connectionParams);
-});
-$dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container) {
-
-	return new Filesystem(new LocalFilesystemAdapter($container->get('paths')['systemDir']));
-});
-$dependencies[MigrateDatabase::class] = DI\factory(function (ContainerInterface $container) {
-	return new MigrateDatabase($container->get('SqlConnection'), $container->get('LocalFileSystem'));
-});
-$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container) {
-	return new MigrateCommand($container->get(MigrateDatabase::class), $container->get('paths'));
-});
-
-$dependencies[Messages::class] = DI\factory(function () {return new Messages();});
-$dependencies[UserMain::class] = DI\factory(function (ContainerInterface $container) {
-	return new UserMain($container->get('SqlConnection'));
-});
-$dependencies[Config::class] = DI\factory(function (ContainerInterface $container) {
-	return new Config(new IniConfigLoader($container->get('paths')['configDir']));
-});
 $dependencies[Locales::class] = DI\factory(function (ContainerInterface $container) {
 	return new Locales(
 		$container->get(Config::class),
@@ -90,12 +56,60 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 	);
 });
 $dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {
+	$translationDir = $container->get(Config::class)->getPaths('translationDir');
 	return new Translator(
 		$container->get(Locales::class),
-		new IniTranslationLoader($container->get('paths')['translationDir']),
+		new IniTranslationLoader($translationDir),
 		new MessageFormatterFactory(),
 		new Psr16Adapter('Files')
 	);
+});
+
+$dependencies[Mustache_Engine::class] = DI\factory(function () {
+	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
+});
+$dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
+	return new MustacheAdapter($mustacheEngine);
+});
+
+$dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container) {
+	$config = $container->get(Config::class);
+	$connectionParams = [
+		'path'     => $config->getEnv('DB_MASTER_PATH'), // SQLite needs `path`
+		'dbname'   => $config->getEnv('DB_MASTER_NAME'),
+		'user'     => $config->getEnv('DB_MASTER_USER'),
+		'password' => $config->getEnv('DB_MASTER_PASSWORD'),
+		'host'     => $config->getEnv('DB_MASTER_HOST'),
+		'port'     => $config->getEnv('DB_MASTER_PORT'),
+		'driver'   => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
+	];
+	return DriverManager::getConnection($connectionParams);
+});
+$dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container) {
+	$systemDir = $container->get(Config::class)->getPaths('systemDir');
+	return new Filesystem(new LocalFilesystemAdapter($systemDir));
+});
+if (php_sapi_name() === 'cli')
+{
+	$dependencies[Repository::class] = DI\factory(function (ContainerInterface $container) {
+		return new Repository($container->get('SqlConnection'));
+	});
+	$dependencies[Runner::class] = DI\factory(function (ContainerInterface $container) {
+
+		$config = $container->get(Config::class);
+		$path   = $config->getPaths('migrationDir').'/'.$config->getEnv('APP_PLATFORM_EDITION').'/';
+		return new Runner(
+			$container->get(Repository::class),
+			new Filesystem(new LocalFilesystemAdapter($path))
+		);
+	});
+	$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container) {
+		return new MigrateCommand($container->get(Runner::class), $container->get(Config::class));
+	});
+}
+$dependencies[Messages::class] = DI\factory(function () {return new Messages();});
+$dependencies[UserMain::class] = DI\factory(function (ContainerInterface $container) {
+	return new UserMain($container->get('SqlConnection'));
 });
 
 

@@ -39,15 +39,29 @@ class Config
 	 * @var array Caches loaded configuration data to reduce redundant loads.
 	 */
 	private array $configCache = [];
+	private array $paths;
+	private array $env;
 
 	/**
 	 * Initializes the Config class with a configuration loader.
 	 *
 	 * @param ConfigLoaderInterface $configLoader The loader responsible for fetching configuration data.
 	 */
-	public function __construct(ConfigLoaderInterface $configLoader)
+	public function __construct(ConfigLoaderInterface $configLoader, array $paths = [], array $env = [])
 	{
 		$this->configLoader = $configLoader;
+		$this->paths        = $paths;
+		$this->env          = $env;
+	}
+
+	public function getEnv(string $key): string
+	{
+		return $this->env[$key] ?? '';
+	}
+
+	public function getPaths(string $key): string
+	{
+		return $this->paths[$key] ?? '';
 	}
 
 	/**

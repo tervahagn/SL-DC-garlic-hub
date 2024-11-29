@@ -27,7 +27,6 @@ try
 	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 	$dotenv->load();
 
-	$containerBuilder = new ContainerBuilder();
 	$systemDir = realpath(__DIR__);
 	$paths = [
 		'systemDir' => $systemDir,
@@ -40,8 +39,16 @@ try
 		'commandDir' => $systemDir . '/src/Commands'
 	];
 
-	$containerBuilder->addDefinitions(['paths' => $paths]);
-	$containerBuilder->addDefinitions($systemDir . '/config/services/_default.php'); // must be first
+	$containerBuilder = new ContainerBuilder();
+	// The Config class has to load first
+	$containerBuilder->addDefinitions([
+		Config::class => new Config(
+			new IniConfigLoader($paths['configDir']),
+			$paths,
+			$_ENV
+		),
+	]);
+	$containerBuilder->addDefinitions($systemDir . '/config/services/_default.php'); // must be the first file
 	$directoryIterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator($systemDir . '/config/services', FilesystemIterator::SKIP_DOTS)
 	);
@@ -61,7 +68,8 @@ try
 	else
 	{
 		$app              = $container->get(Application::class);
-		$commandDirectory = $container->get('paths')['commandDir'];
+		$config           = $container->get(Config::class);
+		$commandDirectory = $config->getPaths('commandDir');
 
 		foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($commandDirectory)) as $file)
 		{

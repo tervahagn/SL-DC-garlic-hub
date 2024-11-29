@@ -27,9 +27,5 @@
         <include>
             <directory>src</directory>
         </include>
-        <exclude>
-            <directory>src/Commands</directory>
-        </exclude>
-
     </source>
 </phpunit>

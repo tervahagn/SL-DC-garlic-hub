@@ -18,9 +18,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require __DIR__ . '/../../vendor/autoload.php';
-$_ENV['APP_ENV'] = 'testing';
+$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../', '.env.test');
+$dotenv->load();
 
-$systemDir = realpath(__DIR__.'/../');
+$systemDir = realpath(__DIR__ . '/tests/');
 $paths = [
 	'systemDir' => $systemDir,
 	'varDir' => $systemDir . '/var',
@@ -30,3 +31,4 @@ $paths = [
 ];
 define('_TestLibPath', $systemDir);
 
+var_dump($_ENV);

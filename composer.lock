@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "546615046c81f0b59fb3f3cbe5403293",
+    "content-hash": "88a744d5840b572053348b77ea23d539",
     "packages": [
         {
             "name": "bryanjhv/slim-session",
@@ -4295,8 +4295,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-intl": "*",
-        "ext-pdo": "*"
+        "ext-intl": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
