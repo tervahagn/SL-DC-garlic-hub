@@ -1,0 +1,3 @@
+includes:
+    - phpstan-src.neon
+    - phpstan-tests.neon

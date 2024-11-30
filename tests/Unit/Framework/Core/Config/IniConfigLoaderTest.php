@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class IniConfigLoaderTest extends TestCase
 {
+	protected string $baseDirectory;
 
     protected function setUp(): void
     {

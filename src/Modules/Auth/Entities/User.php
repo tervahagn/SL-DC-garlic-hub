@@ -26,7 +26,13 @@ namespace App\Modules\Auth\Entities;
 class User
 {
 	private int|string $UID;
+	/**
+	 * @var array<string, mixed>
+	 */
 	private array $userData;
+	/**
+	 * @var array<string, mixed>
+	 */
 	private array $roles;
 
 	/**
@@ -65,17 +71,17 @@ class User
 		return $this->roles;
 	}
 
-	public function getLocale()
+	public function getLocale(): string
 	{
 		return $this->userData['locale'];
 	}
 
-	public function getCompanyId()
+	public function getCompanyId(): int
 	{
 		return $this->userData['company_id'];
 	}
 
-	public function getStatus()
+	public function getStatus(): string
 	{
 		return $this->userData['status'];
 	}

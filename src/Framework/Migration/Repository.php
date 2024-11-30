@@ -28,7 +28,6 @@ use Doctrine\DBAL\Exception;
 class Repository extends Sql
 {
 	const MIGRATION_TABLE_NAME = '_migration_version';
-	private string $fieldName = 'version';
 
 	public function __construct(Connection $connection)
 	{
@@ -71,8 +70,7 @@ class Repository extends Sql
 			$statements = array_filter(array_map('trim', explode(';', $sqlBatch)));
 			foreach ($statements as $statement)
 			{
-				if (!empty($statement))
-					$this->connection->executeStatement($statement);
+				$this->connection->executeStatement($statement);
 			}
 			$this->connection->commit();
 		}

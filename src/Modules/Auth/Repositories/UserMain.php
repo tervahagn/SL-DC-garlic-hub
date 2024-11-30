@@ -55,7 +55,7 @@ class UserMain extends Sql
 		$queryBuilder->setParameter('identifier', $identifier);
 
 		$result = $queryBuilder->executeQuery()->fetchAssociative();
-		if (!$result || empty($result))
+		if (empty($result))
 			throw new UserException('User not found.');
 
 		return new User($result);
