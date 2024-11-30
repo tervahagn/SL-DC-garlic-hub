@@ -30,5 +30,3 @@ $paths = [
 	'configDir' => $systemDir . '/config'
 ];
 define('_TestLibPath', $systemDir);
-
-var_dump($_ENV);

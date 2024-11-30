@@ -20,6 +20,7 @@
 
 namespace App\Commands;
 
+use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Migration\Runner;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
@@ -58,7 +59,6 @@ class MigrateCommand extends Command
 
 		try
 		{
-
 			if ($isRollback)
 				$this->migrationRunner->rollback($version);
 			else
@@ -70,7 +70,7 @@ class MigrateCommand extends Command
 				$output->writeln('<comment>No migrations found to apply.</comment>');
 
 		}
-		catch (Exception $e)
+		catch (Exception | DatabaseException | FilesystemException $e)
 		{
 			$output->writeln('<error>Migration failed: ' . $e->getMessage() . '</error>');
 			return Command::FAILURE;
