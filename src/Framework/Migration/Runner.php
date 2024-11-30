@@ -59,7 +59,8 @@ class Runner
 
 		foreach ($targetMigrations as $version => $file)
 		{
-			if (in_array($version, array_column($appliedMigrations, 'version')))
+			$ar = array_column($appliedMigrations, 'version');
+			if (in_array($version, $ar))
 				continue;
 
 			$this->applyMigration($version, $file);
@@ -73,7 +74,7 @@ class Runner
 	 * @throws DatabaseException
 	 * @throws FilesystemException
 	 */
-	public function rollback(int $targetVersion = 1): void
+	public function rollback(int $targetVersion = null): void
 	{
 		if (!$this->hasMigrationTable())
 			throw new DatabaseException('Migration table not found.');
@@ -102,6 +103,9 @@ class Runner
 		return $this->applied;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function hasMigrationTable(): bool
 	{
 		return !empty($this->migrateRepository->showTables());
@@ -150,6 +154,9 @@ class Runner
 		return $this->determineAvailableTasks();
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	private function determineAvailableRollbacks(): array
 	{
 		return $this->determineAvailableTasks('down');
@@ -168,7 +175,6 @@ class Runner
 			if ($file->isFile() && preg_match('/^(\d+)_.*\.'.$direction.'\.sql$/', $file->path(), $matches))
 				$migrations[(int)$matches[1]] = $file->path();
 		}
-
 		ksort($migrations);
 		return $migrations;
 	}
