@@ -1,13 +1,15 @@
 # Using the Sql Base Repository
 
-The `Sql` abstract class serves as a base for creating repository classes that interact with the database. By extending `Sql`, you can perform common CRUD operations using reusable methods and avoid writing SQL code directly in your repository.
+The `Sql` abstract class serves as a base for creating repository classes that
+interact with the database. By extending `Sql`, you can perform common CRUD 
+operations using reusable methods and avoid writing SQL code directly in your repository.
 
 ## Purpose
 
 The `Sql` class offers:
 - **Transaction Management** via traits like `TransactionTrait`
 - **Reusable CRUD operations** such as `insert`, `update`, `delete`, and `deleteBy`
-- **Flexible Query Building** using the `QueryBuilder` and `DataPreparer` classes
+- **Flexible Query Building** based on doctrine dbal` classes
 
 The goal is to streamline the creation of module-specific repositories by extending `Sql` and defining only the additional methods required for each module.
 
@@ -20,37 +22,48 @@ Let's create a `UserMain` repository by extending `Sql`. This repository will be
 In your `UserMain` repository, extend the `Sql` class and define the table and primary key (`id_field`):
 
 ```php
-namespace App\Modules\User\Repositories;
+namespace App\Modules\Auth\Repositories;
 
 use App\Framework\BaseRepositories\Sql;
-use App\Framework\Database\DBHandler;
-use App\Framework\Database\Helpers\DataPreparer;
-use App\Framework\Database\QueryBuilder;
-use App\Modules\User\Entity\User;
+use App\Framework\Exceptions\UserException;
+use App\Modules\Auth\Entities\User;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
+/**
+ * Provides user data handling for authentication.
+ */
 class UserMain extends Sql
 {
-    public function __construct(
-        DBHandler $dbh,
-        QueryBuilder $queryBuilder,
-        DataPreparer $dataPreparer
-    ) {
-        parent::__construct($dbh, $queryBuilder, $dataPreparer, 'user_main', 'UID');
-    }
+	public function __construct(Connection $connection)
+	{
+		parent::__construct($connection,'user_main', 'UID');
+	}
 
-    /**
-     * Finds a user by their username.
-     *
-     * @param string $username
-     * @return User|null
-     */
-    public function findByUsername(string $username): ?User
-    {
-        $where = "username = '" . $this->getDataPreparer()->escape($username) . "'";
-        $result = $this->getDbh()->select($this->queryBuilder->buildSelectQuery('*', $this->getTable(), $where));
-        
-        return !empty($result) ? new User($result[0]) : null;
-    }
+	/**
+	 * @param string $identifier
+	 *
+	 * @return User
+	 * @throws UserException
+	 * @throws Exception
+	 */
+	public function loadUserByIdentifier(string $identifier): User
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('*')->from($this->table);
+
+		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
+			$queryBuilder->where('email = :identifier');
+		else
+			$queryBuilder->where('username = :identifier');
+		$queryBuilder->setParameter('identifier', $identifier);
+
+		$result = $queryBuilder->executeQuery()->fetchAssociative();
+		if (!$result || empty($result))
+			throw new UserException('User not found.');
+
+		return new User($result);
+	}
 }
 ```
 
@@ -116,4 +129,4 @@ $rowsDeleted = $userMainRepo->deleteByField('email', 'johndoe@example.com');
 
 ```
 ### Summary
-The `Sql class provides a powerful foundation for building repositories with minimal code. By extending it, repositories like `UserMain` gain flexible, reusable CRUD operations and the ability to add custom queries tailored to specific modules. This approach reduces duplication and promotes a clean, modular structure in your application.
+The Sql class provides a foundation for building repositories with minimal code. By extending it, repositories like `UserMain` gain flexible, reusable CRUD operations and the ability to add custom queries tailored to specific modules. This approach reduces duplication and promotes a clean, modular structure in your application.
