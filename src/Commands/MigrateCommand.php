@@ -20,21 +20,18 @@
 
 namespace App\Commands;
 
-use App\Framework\Core\Config\Config;
-use App\Framework\Migration\MigrateDatabase;
-use App\Framework\Migration\Repository;
 use App\Framework\Migration\Runner;
 use Doctrine\DBAL\Exception;
-use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-	name: 'app:migrate-database',
+	name: 'db:migrate',
 	description: 'Executes a database migration.'
 )]
 class MigrateCommand extends Command
@@ -50,27 +47,34 @@ class MigrateCommand extends Command
 
 	protected function configure(): void
 	{
-		$this->addArgument('version', InputArgument::OPTIONAL, 'Ziel-Migrationsversion');
+		$this->addOption('rollback', 'r', InputOption::VALUE_NONE, 'Revert migrations (rollback)');
+		$this->addArgument('version', InputArgument::OPTIONAL, 'Target version for migration');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$version = $input->getArgument('version');
+		$version    = $input->getArgument('version');
+		$isRollback = $input->getOption('rollback');
+
 		try
 		{
-			$this->migrationRunner->execute();
 
-			$output->writeln('<info>Migration succeed.</info>');
+			if ($isRollback)
+				$this->migrationRunner->rollback($version);
+			else
+				$this->migrationRunner->execute($version);
+
+			if ($this->migrationRunner->isApplied())
+				$output->writeln('<info>Migration succeed.</info>');
+			else
+				$output->writeln('<comment>No migrations found to apply.</comment>');
+
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			$output->writeln('<error>Migration failed: ' . $e->getMessage() . '</error>');
 			return Command::FAILURE;
 		}
-		catch (Exception $e)
-		{
-		}
-
 		return Command::SUCCESS;
 	}
 }

@@ -41,7 +41,10 @@ class Repository extends Sql
 	 */
 	public function createMigrationTable(): void
 	{
-		$sql = 'CREATE TABLE IF NOT EXISTS ' . self::MIGRATION_TABLE_NAME . ' (version INTEGER PRIMARY KEY);';
+		$sql = 'CREATE TABLE IF NOT EXISTS ' . self::MIGRATION_TABLE_NAME . ' (
+					version INTEGER PRIMARY KEY,
+					migrated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		);';
 		$this->connection->executeStatement($sql);
 	}
 
@@ -51,9 +54,9 @@ class Repository extends Sql
 	public function getAppliedMigrations(): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select($this->fieldName)->from($this->table);
+		$queryBuilder->select('*')->from($this->table);
 
-		return $queryBuilder->executeQuery()->fetchAllAssociativeIndexed();
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**

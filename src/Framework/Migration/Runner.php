@@ -30,6 +30,8 @@ class Runner
 	private Repository $migrateRepository;
 	private Filesystem $filesystem;
 
+	private bool $applied = false;
+
 	public function __construct(Repository $MigrateRepository, Filesystem $filesystem)
 	{
 		$this->migrateRepository = $MigrateRepository;
@@ -48,34 +50,56 @@ class Runner
 			$this->migrateRepository->createMigrationTable();
 
 		$appliedMigrations   = $this->getAppliedMigrations();
-		$availableMigrations = $this->getAvailableMigrations();
+		$availableMigrations = $this->determineAvailableMigrations();
 
-		$targetMigrations = $targetVersion !== null
+		// Filter all available migrations that are >= target version
+		$targetMigrations = $targetVersion
 			? array_filter($availableMigrations, fn($version) => $version <= $targetVersion)
-			: $availableMigrations;
+			: $availableMigrations; // or apply all available migrations
 
 		foreach ($targetMigrations as $version => $file)
 		{
-			if (in_array($version, $appliedMigrations, true))
+			if (in_array($version, array_column($appliedMigrations, 'version')))
 				continue;
 
 			$this->applyMigration($version, $file);
+
+			$this->applied = true;
 		}
 	}
 
 	/**
 	 * @throws Exception
+	 * @throws DatabaseException
+	 * @throws FilesystemException
 	 */
-	public function revertTo(int $targetVersion): void
+	public function rollback(int $targetVersion = 1): void
 	{
-		$appliedMigrations = $this->getAppliedMigrations();
+		if (!$this->hasMigrationTable())
+			throw new DatabaseException('Migration table not found.');
 
-		foreach (array_reverse($appliedMigrations) as $version)
+		$appliedMigrations = $this->getAppliedMigrations();
+		$availableRollbacks = $this->determineAvailableRollbacks();
+
+		// Filter all available rollbacks that are >= target version
+		$targetRollback = $targetVersion
+			? array_filter($availableRollbacks, fn($version) => $version <= $targetVersion)
+			: $availableRollbacks; // or apply all available rollbacks
+
+		foreach (array_reverse($targetRollback, true) as $version => $file)
 		{
-			if ($version > $targetVersion)
-				$this->revertTo($version);
+			if ($version >= $targetVersion)
+			{
+				$this->rollbackMigration($version, $file);
+				$this->applied = true;
+			}
 
 		}
+	}
+
+	public function isApplied(): bool
+	{
+		return $this->applied;
 	}
 
 	private function hasMigrationTable(): bool
@@ -102,17 +126,16 @@ class Runner
 	 * @throws FilesystemException
 	 * @throws Exception
 	 */
-	private function revertMigration(int $version): void
+	private function rollbackMigration(int $version, string $file): void
 	{
-		$downFile = sprintf('%03d.down.sql', $version);
-		if (!$this->filesystem->fileExists($downFile))
-			throw new DatabaseException("Revert file $downFile not found.");
-
-		$this->applyMigration($version, $downFile);
+		$sql = $this->filesystem->read($file);
+		$this->migrateRepository->applySqlBatch($sql);
+		$this->removeMigrationRecord($version);
 	}
 
 	/**
 	 * @throws Exception
+	 *
 	 */
 	private function getAppliedMigrations(): array
 	{
@@ -122,21 +145,33 @@ class Runner
 	/**
 	 * @throws FilesystemException
 	 */
-	private function getAvailableMigrations(): array
+	private function determineAvailableMigrations(): array
+	{
+		return $this->determineAvailableTasks();
+	}
+
+	private function determineAvailableRollbacks(): array
+	{
+		return $this->determineAvailableTasks('down');
+	}
+
+	/**
+	 * @throws FilesystemException
+	 */
+	private function determineAvailableTasks(string $direction = 'up'): array
 	{
 		$files = $this->filesystem->listContents('', false);
 
 		$migrations = [];
 		foreach ($files as $file)
 		{
-			if ($file->isFile() && preg_match('/^(\d+)\.up\.sql$/', $file->path(), $matches))
+			if ($file->isFile() && preg_match('/^(\d+)_.*\.'.$direction.'\.sql$/', $file->path(), $matches))
 				$migrations[(int)$matches[1]] = $file->path();
 		}
 
 		ksort($migrations);
 		return $migrations;
 	}
-
 	/**
 	 * @throws Exception
 	 */
