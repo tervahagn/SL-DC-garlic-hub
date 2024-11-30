@@ -73,6 +73,18 @@ class RunnerTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testExecuteWithOutMigrationsTable(): void
+	{
+		$this->repositoryMock->method('showTables')
+			->willReturn([]);
+		$this->repositoryMock->expects($this->once())->method('getAppliedMigrations');
+
+		$this->runner->execute();
+
+		$this->assertFalse($this->runner->isApplied());
+	}
+
+	#[Group('units')]
 	public function testExecuteWithoutMigrations(): void
 	{
 		$this->repositoryMock->method('showTables')
@@ -126,4 +138,21 @@ class RunnerTest extends TestCase
 
 		$this->assertTrue($this->runner->isApplied());
 	}
+
+	/**
+	 * @throws FilesystemException
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testRollbackWithOutMigrationsTable(): void
+	{
+		$this->repositoryMock->method('showTables')
+			->willReturn([]);
+
+		$this->expectException(DatabaseException::class);
+		$this->expectExceptionMessage('Migration table not found');
+
+		$this->runner->rollback();
+	}
+
 }
