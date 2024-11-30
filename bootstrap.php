@@ -81,7 +81,6 @@ try
 				$app->add($container->get($class));
 
 		}
-	echo 'dd';
 	}
 }
 catch (Exception $e)
