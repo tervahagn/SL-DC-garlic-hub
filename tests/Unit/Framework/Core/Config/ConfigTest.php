@@ -38,7 +38,7 @@ class ConfigTest extends TestCase
     protected function setUp(): void
     {
         $this->configLoaderMock = $this->createMock(ConfigLoaderInterface::class);
-        $this->config           = new Config($this->configLoaderMock);
+        $this->config           = new Config($this->configLoaderMock, ['key_path' => 'value_path'], ['key_env' => 'value_env']);
     }
 
     /**
@@ -61,7 +61,22 @@ class ConfigTest extends TestCase
         $this->assertEquals($value, $result);
     }
 
-    /**
+	#[Group('units')]
+	public function testGetEnv(): void
+	{
+		$this->assertEquals('value_env', $this->config->getEnv('key_env'));
+		$this->assertEmpty($this->config->getEnv('manamana'));
+	}
+
+	#[Group('units')]
+	public function testGetPaths(): void
+	{
+		$this->assertEquals('value_path', $this->config->getPaths('key_path'));
+		$this->assertEmpty($this->config->getPaths('manamana'));
+
+	}
+
+		/**
      * @throws CoreException
      */
     #[Group('units')]
