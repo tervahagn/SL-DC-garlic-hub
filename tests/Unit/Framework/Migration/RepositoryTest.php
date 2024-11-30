@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Framework\Migration;
 
-use App\Framework\Migration\Repository;
 use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Migration\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+//Todo: Put this in Integrationtests
 class RepositoryTest extends TestCase
 {
 	private Repository $repository;
@@ -17,16 +17,14 @@ class RepositoryTest extends TestCase
 
 	protected function setUp(): void
 	{
-		// Test-Datenbankverbindung mit SQLite
 		$this->connection = DriverManager::getConnection([
 			'driver' => 'pdo_sqlite',
-			'memory' => true, // Nutze eine In-Memory-Datenbank
+			'memory' => true,
 		]);
 
 		// Repository-Instanz initialisieren
 		$this->repository = new Repository($this->connection);
 
-		// Migrationstabelle erstellen
 		$this->repository->createMigrationTable();
 	}
 
@@ -51,7 +49,6 @@ class RepositoryTest extends TestCase
 	#[Group('units')]
 	public function testApplySqlBatch(): void
 	{
-		// SQL-Batch anwenden
 		$sqlBatch = "
             INSERT INTO _migration_version (version) VALUES (1);
             INSERT INTO _migration_version (version) VALUES (2);
@@ -59,7 +56,6 @@ class RepositoryTest extends TestCase
 
 		$this->repository->applySqlBatch($sqlBatch);
 
-		// Daten abrufen und prüfen
 		$appliedMigrations = $this->repository->getAppliedMigrations();
 		$this->assertCount(2, $appliedMigrations);
 
