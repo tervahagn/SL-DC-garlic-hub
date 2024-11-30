@@ -79,7 +79,6 @@ class Runner
 		if (!$this->hasMigrationTable())
 			throw new DatabaseException('Migration table not found.');
 
-		$appliedMigrations = $this->getAppliedMigrations();
 		$availableRollbacks = $this->determineAvailableRollbacks();
 
 		// Filter all available rollbacks that are >= target version

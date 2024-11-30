@@ -6,7 +6,9 @@ use App\Commands\MigrateCommand;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Migration\Runner;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,6 +19,9 @@ class MigrateCommandTest extends TestCase
 	private OutputInterface $outputMock;
 	private MigrateCommand $command;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		// Initialisiere Mocks für alle Tests
@@ -28,6 +33,9 @@ class MigrateCommandTest extends TestCase
 		$this->command = new MigrateCommand($this->runnerMock);
 	}
 
+	/**
+	 * @throws ExceptionInterface
+	 */
 	#[Group('units')]
 	public function testMigrationSuccess(): void
 	{
@@ -52,6 +60,9 @@ class MigrateCommandTest extends TestCase
 		$this->assertSame(0, $result); // Command::SUCCESS
 	}
 
+	/**
+	 * @throws ExceptionInterface
+	 */
 	#[Group('units')]
 	public function testRollbackSuccess(): void
 	{
@@ -76,12 +87,15 @@ class MigrateCommandTest extends TestCase
 		$this->assertSame(0, $result); // Command::SUCCESS
 	}
 
+	/**
+	 * @throws ExceptionInterface
+	 */
 	#[Group('units')]
 	public function testMigrationFailsWithException(): void
 	{
 		$this->runnerMock->expects($this->once())
 			->method('execute')
-			->willThrowException(new \Exception('Test Exception'));
+			->willThrowException(new DatabaseException('Test Exception'));
 
 		$this->inputMock->method('getArgument')
 			->with('version')
@@ -90,20 +104,18 @@ class MigrateCommandTest extends TestCase
 			->with('rollback')
 			->willReturn(false);
 
-		/*
-		 Fix this bullshit
-		this->outputMock->expects($this->once())
+		$this->outputMock->expects($this->once())
 			->method('writeln')
 			->with('<error>Migration failed: Test Exception</error>');
-*/
-	    $this->expectException(\Exception::class);
-    	$this->expectExceptionMessage('Test Exception');
-
 
 		$result = $this->command->run($this->inputMock, $this->outputMock);
+
 		$this->assertSame(1, $result); // Command::FAILURE
 	}
 
+	/**
+	 * @throws ExceptionInterface
+	 */
 	#[Group('units')]
 	public function testNoMigrationsFound(): void
 	{
