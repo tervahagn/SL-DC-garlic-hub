@@ -21,6 +21,7 @@
 use App\Commands\MigrateCommand;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Locales\SessionLocaleExtractor;
 use App\Framework\Core\Locales\UrlLocaleExtractor;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
@@ -43,6 +44,8 @@ use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
+use Slim\Middleware\Session;
+use SlimSession\Helper;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
@@ -57,10 +60,20 @@ $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromCo
 $dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
 	return new Application();
 });
+$dependencies[Session::class] = DI\factory(function () {
+	return new Session([
+		'name' => 'garlic_session',
+		'autorefresh' => true,
+		'lifetime' => '1 hour',
+	]);
+});
+$dependencies[Helper::class] = DI\factory(function () {
+	return new Helper();
+});
 $dependencies[Locales::class] = DI\factory(function (ContainerInterface $container) {
 	return new Locales(
 		$container->get(Config::class),
-		new UrlLocaleExtractor()
+		new SessionLocaleExtractor($container->get(Helper::class))
 	);
 });
 $dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {

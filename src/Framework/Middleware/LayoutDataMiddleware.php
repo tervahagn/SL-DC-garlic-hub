@@ -20,6 +20,7 @@
 
 namespace App\Framework\Middleware;
 
+use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -41,6 +42,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
 	private Helper $session;
+	private Locales $locales;
 
 	/**
 	 * @throws CoreException
@@ -51,8 +53,9 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	{
 		$this->session    = $request->getAttribute('session');
         $this->translator = $request->getAttribute('translator');
+		$this->locales    = $request->getAttribute('locales');
 
-		$locale = 'en';
+		$locale = $this->locales->getLanguageCode();
 		$layoutData = [
 			'main_menu' => $this->createMainMenu(),
 			'CURRENT_LOCALE_LOWER' => strtolower($locale),
@@ -98,10 +101,13 @@ class LayoutDataMiddleware implements MiddlewareInterface
 		if (!$this->session->exists('user') && empty($this->session->get('user')))
 			return [];
 
+		$user     = $this->session->get('user');
+		$username = is_array($user) && array_key_exists('username', $user) ? $user['username'] : '';
+
 		return [
 			[
 				'LANG_LOGIN_AS' => $this->translator->translate('logged_in_as', 'menu'),
-				'USERNAME'      => $this->session->get('user')['username'],
+				'USERNAME'      => $username,
 				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
 				'LANG_LOGOUT' => $this->translator->translate('logout', 'menu')
 			]

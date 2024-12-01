@@ -32,12 +32,21 @@ class IniTranslationLoader implements TranslationLoaderInterface
 		$this->baseDirectory = rtrim($baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function load(string $languageCode, string $module): array
 	{
 		$filePath = $this->buildFilePath($languageCode, $module);
 
 		if (!file_exists($filePath))
-			throw new CoreException("Translation file not found: $filePath");
+		{
+			$filePath = $this->buildFilePath('en', $module);
+			if (!file_exists($filePath))
+			{
+				throw new CoreException("Translation file not found: $filePath");
+			}
+		}
 
 		$data = @parse_ini_file($filePath, true);
 

@@ -26,8 +26,8 @@ use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Middleware\Session;
@@ -40,7 +40,7 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	// Error Middleware
 	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true);
 	$errorMiddleware->setDefaultErrorHandler(function (
-		\Psr\Http\Message\ServerRequestInterface $request,
+		ServerRequestInterface $request,
 		\Throwable $exception,
 		bool $displayErrorDetails
 	) use ($container)
@@ -72,12 +72,8 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	));
 
 	// Session Middleware
-	$app->add(new SessionMiddleware(new Helper()));
-	$app->add(new Session([
-		'name' => 'garlic_session',
-		'autorefresh' => true,
-		'lifetime' => '1 hour',
-	]));
+	$app->add(new SessionMiddleware($container->get(Helper::class)));
+	$app->add($container->get(Session::class));
 
 	// Timing Middleware
 	$app->add(function ($request, $handler) use ($start_time, $start_memory) {

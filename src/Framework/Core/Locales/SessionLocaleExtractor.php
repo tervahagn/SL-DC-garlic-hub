@@ -20,22 +20,25 @@
 
 namespace App\Framework\Core\Locales;
 
-class UrlLocaleExtractor implements LocaleExtractorInterface
+use App\Framework\Core\Locales\LocaleExtractorInterface;
+use SlimSession\Helper;
+
+class SessionLocaleExtractor implements LocaleExtractorInterface
 {
 	private string $defaultLocale;
+	private Helper $helper;
 
-	public function __construct(string $defaultLocale = 'en_US')
+	public function __construct(Helper $helper, string $defaultLocale = 'en')
 	{
+		$this->helper = $helper;
 		$this->defaultLocale = $defaultLocale;
 	}
-
 	public function extractLocale(array $whiteList): string
 	{
-		$locale = $_GET['locale'] ?? $this->defaultLocale;
-
-		// converts "en-us" in "en_US"
-	 	$locale = str_replace('-', '_', $locale);
+		$user = $this->helper->get('user');
+		$locale = is_array($user) && isset($user['locale']) ? $user['locale'] : $this->defaultLocale;
 
 		return in_array($locale, $whiteList, true) ? $locale : $this->defaultLocale;
+
 	}
 }

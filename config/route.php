@@ -19,12 +19,15 @@
 */
 
 use App\Controller\HomeController;
+use App\Framework\Core\Locales\Locales;
 use App\Modules\Auth\Controller\LoginController;
 use Slim\App;
 
 /* @var App $app */
 $container = $app->getContainer();
+
 $app->get('/', [HomeController::class, 'index']);
+$app->get('/set_locales/{locale}', [HomeController::class, 'setLocales']);
 $app->get('/login', [LoginController::class, 'showLogin']);
 $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);

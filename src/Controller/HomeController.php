@@ -20,8 +20,11 @@
 
 namespace App\Controller;
 
+use App\Framework\Core\Locales\Locales;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SlimSession\Helper;
+
 class HomeController
 {
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -34,6 +37,33 @@ class HomeController
 		$this->writeResponseData($response, $data);
 
 		return $this->setContentType($response);
+	}
+
+	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
+	ResponseInterface
+	{
+		$locale  = $args['locale'];
+		// set locale into session
+		/** @var  Helper $session */
+		$session = $request->getAttribute('session');
+		$user    = $session->get('user');
+		if (is_array($user))
+			$user['locale'] = $locale;
+		else
+			$user = ['locale' => $locale];
+		$session->set('user', $user);
+
+		// determine current locale secure because it checks a whitelist
+		// of available locales
+		/** @var  Locales $locales */
+		$locales    = $request->getAttribute('locales');
+		$locales->determineCurrentLocale();
+		$previousUrl = $request->getHeaderLine('Referer') ?: '/';
+
+		return $response
+			->withHeader('Location', $previousUrl)
+			->withStatus(302); // 302: Temporäre Weiterleitung
+
 	}
 
 
