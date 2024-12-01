@@ -21,12 +21,13 @@
 use App\Modules\Auth\Controller\LoginController;
 use App\Modules\Auth\Repositories\UserMain;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 $dependencies = [];
 
 $dependencies[LoginController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new LoginController($container->get(UserMain::class));
+	return new LoginController($container->get(UserMain::class), $container->get(LoggerInterface::class));
 });
 
 
