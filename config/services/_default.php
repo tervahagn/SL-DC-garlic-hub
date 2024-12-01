@@ -20,21 +20,22 @@
 
 use App\Commands\MigrateCommand;
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Config\IniConfigLoader;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\UrlLocaleExtractor;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Migration\MigrateDatabase;
 use App\Framework\Migration\Repository;
 use App\Framework\Migration\Runner;
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Modules\Auth\Repositories\UserMain;
+use Doctrine\DBAL\Logging\Middleware;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use Monolog\Handler\StreamHandler;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
@@ -83,7 +84,14 @@ $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $contai
 		'port'     => $config->getEnv('DB_MASTER_PORT'),
 		'driver'   => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
 	];
-	return DriverManager::getConnection($connectionParams);
+
+	$logger = new \Monolog\Logger('dbal_logger');
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/dbal.log', \Monolog\Level::Debug));
+
+	$dbalConfig = new Configuration();
+	$dbalConfig->setMiddlewares([new Middleware($logger)]);
+
+	return DriverManager::getConnection($connectionParams, $dbalConfig);
 });
 $dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container) {
 	$systemDir = $container->get(Config::class)->getPaths('systemDir');
