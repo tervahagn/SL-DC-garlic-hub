@@ -15,6 +15,7 @@ use App\Framework\Middleware\SessionMiddleware;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use DI\ContainerBuilder;
 use Phpfastcache\Helper\Psr16Adapter;
+use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Middleware\Session;
 use SlimSession\Helper;

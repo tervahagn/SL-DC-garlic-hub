@@ -28,6 +28,7 @@ use App\Framework\Middleware\SessionMiddleware;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Middleware\Session;
 use SlimSession\Helper;
@@ -37,8 +38,21 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	$app = $container->get(App::class);
 
 	// Error Middleware
-	$app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true);
-
+	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true);
+	$errorMiddleware->setDefaultErrorHandler(function (
+		\Psr\Http\Message\ServerRequestInterface $request,
+		\Throwable $exception,
+		bool $displayErrorDetails
+	) use ($container)
+	{
+		$logger = $container->get(LoggerInterface::class);
+		$logger->error('Unhandled exception', [
+			'message' => $exception->getMessage(),
+			'trace' => $exception->getTraceAsString(),
+		]);
+		if ($displayErrorDetails) // only when $_ENV['APP_DEBUG'] is true
+			throw $exception;
+	});
 	// Final Render Middleware (AFTER Controllers)
 	$app->add(new FinalRenderMiddleware(
 		new MustacheAdapter($container->get(Mustache_Engine::class))

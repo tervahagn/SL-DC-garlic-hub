@@ -39,18 +39,24 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
+$dependencies[LoggerInterface::class] = DI\factory(function (ContainerInterface $container) {
+	$logger = new Logger('dbal');
+	$config = $container->get(Config::class);
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/app.log', $config->getLogLevel()));
 
+	return $logger;
+});
 $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
 	return new Application();
 });
-
 $dependencies[Locales::class] = DI\factory(function (ContainerInterface $container) {
 	return new Locales(
 		$container->get(Config::class),
@@ -66,14 +72,12 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 		new Psr16Adapter('Files')
 	);
 });
-
 $dependencies[Mustache_Engine::class] = DI\factory(function () {
 	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
 });
 $dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
 	return new MustacheAdapter($mustacheEngine);
 });
-
 $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container) {
 	$config = $container->get(Config::class);
 	$connectionParams = [
@@ -112,7 +116,7 @@ if (php_sapi_name() === 'cli')
 		);
 	});
 	$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container) {
-		return new MigrateCommand($container->get(Runner::class), $container->get(Config::class));
+		return new MigrateCommand($container->get(Runner::class));
 	});
 }
 $dependencies[Messages::class] = DI\factory(function () {return new Messages();});

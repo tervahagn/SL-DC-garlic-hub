@@ -4,8 +4,10 @@ namespace App\Modules\Auth\Controller;
 
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Repositories\UserMain;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Flash\Messages;
 use SlimSession\Helper;
 
@@ -16,7 +18,7 @@ class LoginController
 	/**
 	 * @param UserMain $userMain
 	 */
-	public function __construct(UserMain $userMain)
+	public function __construct(UserMain $userMain, LoggerInterface $logger)
 	{
 		$this->userMain = $userMain;
 	}
@@ -39,7 +41,7 @@ class LoginController
 		try
 		{
 			$params   = (array) $request->getParsedBody();
-			// no need to sanitize here, as we are escaping in DB
+			// no need to sanitize here, as we are escuse prepared statements in DB
 			$username = $params['username'] ?? null;
 			$password = $params['password'] ?? null;
 			$session  = $request->getAttribute('session');
@@ -63,6 +65,9 @@ class LoginController
 		{
 			$flash->addMessage('error', $e->getMessage());
 			return $this->redirect($response, '/login');
+		}
+		catch (Exception $e)
+		{
 		}
 
 		return $this->redirect($response);
