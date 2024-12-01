@@ -98,28 +98,28 @@ class ConfigTest extends TestCase
     }
 
 	#[Group('units')]
-	public function logLevelIsDebugInDevEnvironment(): void
+	public function testLogLevelIsDebugInDevEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'dev']);
 		$this->assertEquals(Level::Debug, $config->getLogLevel());
 	}
 
 	#[Group('units')]
-	public function logLevelIsInfoInTestEnvironment(): void
+	public function testLogLevelIsInfoInTestEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'test']);
 		$this->assertEquals(Level::Info, $config->getLogLevel());
 	}
 
 	#[Group('units')]
-	public function logLevelIsErrorInProdEnvironment(): void
+	public function testLogLevelIsErrorInProdEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'prod']);
 		$this->assertEquals(Level::Error, $config->getLogLevel());
 	}
 
 	#[Group('units')]
-	public function logLevelIsWarningInUnknownEnvironment(): void
+	public function testLogLevelIsWarningInUnknownEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'unknown']);
 		$this->assertEquals(Level::Warning, $config->getLogLevel());
