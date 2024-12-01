@@ -36,6 +36,7 @@ use Doctrine\DBAL\Logging\Middleware;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
@@ -85,9 +86,8 @@ $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $contai
 		'driver'   => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
 	];
 
-	$logger = new \Monolog\Logger('dbal_logger');
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/dbal.log', \Monolog\Level::Debug));
-
+	$logger = new Logger('dbal');
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/dbal.log', $config->getLogLevel()));
 	$dbalConfig = new Configuration();
 	$dbalConfig->setMiddlewares([new Middleware($logger)]);
 

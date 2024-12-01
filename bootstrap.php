@@ -32,7 +32,7 @@ try
 		'systemDir' => $systemDir,
 		'varDir' => $systemDir . '/var',
 		'cacheDir' => $systemDir . '/var/cache',
-		'logDir' => $systemDir . '/var/log',
+		'logDir' => $systemDir . '/var/logs',
 		'translationDir' => $systemDir . '/translations',
 		'configDir' => $systemDir . '/config',
 		'migrationDir' => $systemDir . '/migrations',

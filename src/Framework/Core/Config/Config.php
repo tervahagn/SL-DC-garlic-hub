@@ -21,6 +21,7 @@
 namespace App\Framework\Core\Config;
 
 use App\Framework\Exceptions\CoreException;
+use Monolog\Level;
 
 /**
  * The Config class manages application configuration settings.
@@ -62,6 +63,17 @@ class Config
 	public function getPaths(string $key): string
 	{
 		return $this->paths[$key] ?? '';
+	}
+
+	public function getLogLevel(): Level
+	{
+		return match ($this->getEnv('APP_ENV'))
+		{
+			'dev' => Level::Debug,
+			'test' => Level::Info,
+			'prod' => Level::Error,
+			default => Level::Warning,
+		};
 	}
 
 	/**

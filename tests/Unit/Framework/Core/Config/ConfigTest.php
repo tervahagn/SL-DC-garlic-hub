@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Core\Config;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\ConfigLoaderInterface;
 use App\Framework\Exceptions\CoreException;
+use Monolog\Level;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,7 @@ class ConfigTest extends TestCase
         $this->configLoaderMock = $this->createMock(ConfigLoaderInterface::class);
         $this->config           = new Config($this->configLoaderMock, ['key_path' => 'value_path'], ['key_env' => 'value_env']);
     }
+
 
     /**
      * @throws CoreException
@@ -95,7 +97,42 @@ class ConfigTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
+	#[Group('units')]
+	public function logLevelIsDebugInDevEnvironment(): void
+	{
+		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'dev']);
+		$this->assertEquals(Level::Debug, $config->getLogLevel());
+	}
+
+	#[Group('units')]
+	public function logLevelIsInfoInTestEnvironment(): void
+	{
+		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'test']);
+		$this->assertEquals(Level::Info, $config->getLogLevel());
+	}
+
+	#[Group('units')]
+	public function logLevelIsErrorInProdEnvironment(): void
+	{
+		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'prod']);
+		$this->assertEquals(Level::Error, $config->getLogLevel());
+	}
+
+	#[Group('units')]
+	public function logLevelIsWarningInUnknownEnvironment(): void
+	{
+		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'unknown']);
+		$this->assertEquals(Level::Warning, $config->getLogLevel());
+	}
+
+	#[Group('units')]
+	public function logLevelIsWarningWhenEnvIsNotSet(): void
+	{
+		$config = new Config($this->configLoaderMock, [], []);
+		$this->assertEquals(Level::Warning, $config->getLogLevel());
+	}
+
+	/**
      * @throws CoreException
      */
     #[Group('units')]
