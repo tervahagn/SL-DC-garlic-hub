@@ -8,12 +8,12 @@ use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Slim\Flash\Messages;
 use SlimSession\Helper;
 
 class LoginController
 {
 	private UserMain $userMain;
+	private LoggerInterface $logger;
 
 	/**
 	 * @param UserMain $userMain
@@ -21,6 +21,7 @@ class LoginController
 	public function __construct(UserMain $userMain, LoggerInterface $logger)
 	{
 		$this->userMain = $userMain;
+		$this->logger   = $logger;
 	}
 
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -64,14 +65,16 @@ class LoginController
 		catch (UserException $e)
 		{
 			$flash->addMessage('error', $e->getMessage());
+			$this->logger->error($e->getMessage());
 			return $this->redirect($response, '/login');
 		}
 		catch (Exception $e)
 		{
+			// Not testable because of overengineered dbal bullshit
+			$this->logger->error($e->getMessage());
 		}
 
 		return $this->redirect($response);
-
 	}
 
 	public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

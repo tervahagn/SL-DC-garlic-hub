@@ -24,29 +24,33 @@ use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\Controller\LoginController;
 use App\Modules\Auth\Entities\User;
 use App\Modules\Auth\Repositories\UserMain;
+use Doctrine\DBAL\Exception\DriverException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Flash\Messages;
 use SlimSession\Helper;
 
 class LoginControllerTest extends TestCase
 {
-	private ServerRequestInterface $request;
-	private ResponseInterface $response;
-	private Helper $session;
+	private ServerRequestInterface $requestMock;
+	private ResponseInterface $responseMock;
+	private Helper $sessionMock;
+	private LoggerInterface $loggerMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->request  = $this->createMock(ServerRequestInterface::class);
-		$this->response = $this->createMock(ResponseInterface::class);
-		$this->session  = $this->createMock(Helper::class);
+		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock = $this->createMock(ResponseInterface::class);
+		$this->sessionMock  = $this->createMock(Helper::class);
+		$this->loggerMock   = $this->createMock(LoggerInterface::class);
 	}
 
 	/**
@@ -55,15 +59,15 @@ class LoginControllerTest extends TestCase
 	#[Group('units')]
 	public function testShowLoginRedirectsToHomeIfUserInSession(): void
 	{
-		$this->request->method('getAttribute')->with('session')->willReturn($this->session);
-		$this->session->method('exists')->with('user')->willReturn(true);
-		$this->response->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
-		$this->response->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('exists')->with('user')->willReturn(true);
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class));
-		$result = $controller->showLogin($this->request, $this->response);
+		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->response, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -73,24 +77,24 @@ class LoginControllerTest extends TestCase
 	public function testShowLoginRendersFormIfUserNotInSession(): void
 	{
 		$flash = $this->createMock(Messages::class);
-		$this->request->method('getAttribute')
-					  ->willReturnOnConsecutiveCalls($this->session, $flash)
+		$this->requestMock->method('getAttribute')
+					  ->willReturnOnConsecutiveCalls($this->sessionMock, $flash)
 		;
-		$this->session->method('exists')->with('user')->willReturn(false);
+		$this->sessionMock->method('exists')->with('user')->willReturn(false);
 
 		$messages = ['error' => 'Invalid credentials.'];
 		$flash->expects($this->once())->method('getMessages')->willReturn($messages);
 
 		$body = $this->createMock(StreamInterface::class);
-		$this->response->method('getBody')->willReturn($body);
+		$this->responseMock->method('getBody')->willReturn($body);
 
 		$body->expects($this->once())->method('write');
-		$this->response->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class));
-		$result = $controller->showLogin($this->request, $this->response);
+		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->response, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -104,17 +108,17 @@ class LoginControllerTest extends TestCase
 		$userMain = $this->createMock(UserMain::class);
 		$user = $this->createMock(User::class);
 
-		$this->request->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password']);
-		$this->request->method('getAttribute')->willReturnOnConsecutiveCalls($this->session, $flash);
+		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password']);
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
 		$userMain->method('loadUserByIdentifier')->with('testuser')->willReturn($user);
 		$user->method('getPassword')->willReturn(password_hash('password', PASSWORD_DEFAULT));
-		$this->response->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
-		$this->response->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($userMain);
-		$result = $controller->login($this->request, $this->response);
+		$controller = new LoginController($userMain, $this->loggerMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->response, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -128,19 +132,20 @@ class LoginControllerTest extends TestCase
 		$userMain = $this->createMock(UserMain::class);
 		$user = $this->createMock(User::class);
 
-		$this->request->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrongpassword']);
-		$this->request->method('getAttribute')->willReturnOnConsecutiveCalls($this->session, $flash);
+		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrongpassword']);
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
 
 		$userMain->method('loadUserByIdentifier')->with('testuser')->willReturn($user);
 		$user->method('getPassword')->willReturn(password_hash('password', PASSWORD_DEFAULT));
 		$flash->expects($this->once())->method('addMessage')->with('error', 'Invalid credentials.');
-		$this->response->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
-		$this->response->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->loggerMock->expects($this->once())->method('error')->with('Invalid credentials.');
 
-		$controller = new LoginController($userMain);
-		$result = $controller->login($this->request, $this->response);
+		$controller = new LoginController($userMain, $this->loggerMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->response, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -149,14 +154,14 @@ class LoginControllerTest extends TestCase
 	#[Group('units')]
 	public function testLogoutRedirectsToLogin(): void
 	{
-		$this->request->method('getAttribute')->with('session')->willReturn($this->session);
-		$this->session->expects($this->once())->method('delete')->with('user');
-		$this->response->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
-		$this->response->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->expects($this->once())->method('delete')->with('user');
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class));
-		$result = $controller->logout($this->request, $this->response);
+		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$result = $controller->logout($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->response, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 }
