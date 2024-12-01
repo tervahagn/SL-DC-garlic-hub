@@ -70,7 +70,7 @@ class LoginController
 		}
 		catch (Exception $e)
 		{
-			// Not testable because of overengineered dbal bullshit
+			// Not tested because of overengineered dbal bullshit
 			$this->logger->error($e->getMessage());
 		}
 
