@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Framework\Middleware;
 
+use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Middleware\LayoutDataMiddleware;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,6 +21,7 @@ class LayoutDataMiddlewareTest extends TestCase
     private ServerRequestInterface $requestMock;
     private RequestHandlerInterface $handlerMock;
     private ResponseInterface $responseMock;
+	private Locales $localesMock;
 
     /**
      * @throws Exception
@@ -30,8 +32,8 @@ class LayoutDataMiddlewareTest extends TestCase
         $this->sessionMock    = $this->createMock(Helper::class);
         $this->requestMock    = $this->createMock(ServerRequestInterface::class);
         $this->handlerMock    = $this->createMock(RequestHandlerInterface::class);
-        $this->responseMock   = $this->createMock(ResponseInterface::class);
-
+		$this->responseMock   = $this->createMock(ResponseInterface::class);
+		$this->localesMock    = $this->createMock(Locales::class);
         $this->middleware = new LayoutDataMiddleware();
     }
 
@@ -46,27 +48,25 @@ class LayoutDataMiddlewareTest extends TestCase
                     return $this->sessionMock;
                 elseif ($attribute === 'translator')
                     return $this->translatorMock;
+				elseif ($attribute === 'locales')
+					return $this->localesMock;
 
                 return null;
             });
 
-        $this->sessionMock
-            ->method('exists')
-            ->with('user')
+        $this->sessionMock->method('exists')->with('user')
             ->willReturn(true);
 
-        $this->sessionMock
-            ->method('get')
-            ->with('user')
+        $this->sessionMock->method('get')->with('user')
             ->willReturn(['username' => 'testuser']);
 
-        $this->translatorMock
-            ->method('translateArrayForOptions')
+        $this->translatorMock->method('translateArrayForOptions')
             ->with('languages', 'menu')
             ->willReturn(['en' => 'English', 'de' => 'German']);
 
-        $this->handlerMock
-            ->method('handle')
+		$this->localesMock->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
+
+		$this->handlerMock->method('handle')
             ->willReturn($this->responseMock);
 
         $result = $this->middleware->process($this->requestMock, $this->handlerMock);
@@ -85,13 +85,13 @@ class LayoutDataMiddlewareTest extends TestCase
                     return $this->sessionMock;
                 elseif ($attribute === 'translator')
                     return $this->translatorMock;
+				elseif ($attribute === 'locales')
+					return $this->localesMock;
 
                 return null;
             });
 
-        $this->sessionMock
-            ->method('exists')
-            ->with('user')
+        $this->sessionMock->method('exists')->with('user')
             ->willReturn(false);
 
         $this->translatorMock
@@ -102,6 +102,8 @@ class LayoutDataMiddlewareTest extends TestCase
                 ['privacy', 'menu', 'Privacy Policy'],
                 ['terms', 'menu', 'Terms'],
             ]);
+
+		$this->localesMock->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
 
         $this->translatorMock
             ->method('translateArrayForOptions')
