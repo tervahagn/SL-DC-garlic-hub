@@ -110,7 +110,39 @@ class HomeControllerTest extends TestCase
 		$controller = new HomeController();
 		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
 		$this->assertSame($this->responseMock, $result);
-
 	}
+
+	#[Group('units')]
+	public function testSetLocalesWithBrokenUSerArray()
+	{
+		$this->requestMock->method('getAttribute')
+			->willReturnCallback(function ($attribute) {
+				switch ($attribute) {
+					case 'session':
+						return $this->sessionMock;
+					case 'locales':
+						return $this->localesMock;
+					default:
+						return null; // Optional: Standardwert, wenn das Attribut nicht erkannt wird
+				}
+			});
+		$this->sessionMock->method('get')->with('user')->willReturn('not_an_array');
+		$this->sessionMock->expects($this->once())->method('set')->with('user', ['locale' => 'de_DE']);
+
+		$this->localesMock->expects($this->once())->method('determineCurrentLocale');
+
+		$previousUrl = 'some/url/line';
+		$this->requestMock->method('getHeaderLine')->with('Referer')->willReturn($previousUrl);
+
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', $previousUrl)
+			->willReturn($this->responseMock);
+
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturn($this->responseMock);
+
+		$controller = new HomeController();
+		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
+		$this->assertSame($this->responseMock, $result);
+	}
+
 
 }
