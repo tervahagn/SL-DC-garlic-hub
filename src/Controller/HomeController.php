@@ -42,16 +42,11 @@ class HomeController
 	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface
 	{
-		$locale  = $args['locale'];
+		$locale  = htmlentities($args['locale'], ENT_QUOTES);
 		// set locale into session
 		/** @var  Helper $session */
 		$session = $request->getAttribute('session');
-		$user    = $session->get('user');
-		if (is_array($user))
-			$user['locale'] = $locale;
-		else
-			$user = ['locale' => $locale];
-		$session->set('user', $user);
+		$session->set('locale', $locale);
 
 		// determine current locale secure because it checks a whitelist
 		// of available locales
@@ -62,7 +57,7 @@ class HomeController
 
 		return $response
 			->withHeader('Location', $previousUrl)
-			->withStatus(302); // 302: Temporäre Weiterleitung
+			->withStatus(302); // 302: forwarding
 
 	}
 
@@ -77,7 +72,7 @@ class HomeController
 		return $response->withHeader('Location', '/login')->withStatus(302);
 	}
 
-	private function generateHomePageData($session): array
+	private function generateHomePageData(Helper $session): array
 	{
 		return [
 			'main_layout' => [

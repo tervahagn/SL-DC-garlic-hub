@@ -35,8 +35,7 @@ class SessionLocaleExtractor implements LocaleExtractorInterface
 	}
 	public function extractLocale(array $whiteList): string
 	{
-		$user = $this->helper->get('user');
-		$locale = is_array($user) && isset($user['locale']) ? $user['locale'] : $this->defaultLocale;
+		$locale = $this->helper->get('locale', $this->defaultLocale);
 
 		return in_array($locale, $whiteList, true) ? $locale : $this->defaultLocale;
 
