@@ -1,0 +1,88 @@
+<?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+namespace App\Framework\User;
+
+class UserEntity
+{
+	private int $UID;
+	private string $username;
+	private array $main;
+	private array $contact;
+	private array $stats;
+	private array $security;
+	private array $acl;
+	private array $vip;
+
+	public function __construct(array $main, array $contact, array $stats, array $security, array $acl, array $vip)
+	{
+		$this->main     = $main;
+		if (array_key_exists('UID', $this->main))
+			$this->UID = $this->main['UID'];
+		if (array_key_exists('username', $this->main))
+			$this->username = $this->main['username'];
+
+		$this->contact  = $contact;
+		$this->stats    = $stats;
+		$this->security = $security;
+		$this->acl      = $acl;
+		$this->vip      = $vip;
+	}
+
+	public function getUID(): int
+	{
+		return $this->UID ?? 0;
+	}
+
+	public function getUsername(): string
+	{
+		return $this->username  ?? 'guest';
+	}
+
+	public function getMain(): array
+	{
+		return $this->main ?? [];
+	}
+
+	public function getContact(): array
+	{
+		return $this->contact ?? [];
+	}
+
+	public function getStats(): array
+	{
+		return $this->stats ?? [];
+	}
+
+	public function getSecurity(): array
+	{
+		return $this->security ?? [];
+	}
+
+	public function getAcl(): array
+	{
+		return $this->acl ?? [];
+	}
+
+	public function getVip(): array
+	{
+		return $this->vip ?? [];
+	}
+}
