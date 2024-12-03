@@ -3,13 +3,11 @@
 namespace App\Modules\Auth;
 
 use App\Framework\Exceptions\UserException;
-use App\Framework\User\UserService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use SlimSession\Helper;
 
 class LoginController
 {

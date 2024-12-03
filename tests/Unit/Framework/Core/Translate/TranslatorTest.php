@@ -27,18 +27,20 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use MessageFormatter;
+use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Slim\Factory\Psr17\Psr17Factory;
 
 class TranslatorTest extends TestCase
 {
     private Translator $translator;
     private Locales $localesMock;
     private TranslationLoaderInterface $loaderMock;
-    private CacheInterface $cacheMock;
+    private Psr16Adapter $cacheMock;
     private MessageFormatterFactory $formatterFactoryMock;
 
     /**
@@ -48,7 +50,7 @@ class TranslatorTest extends TestCase
     {
         $this->localesMock = $this->createMock(Locales::class);
         $this->loaderMock = $this->createMock(TranslationLoaderInterface::class);
-        $this->cacheMock = $this->createMock(CacheInterface::class);
+        $this->cacheMock = $this->createMock(Psr16Adapter::class);
         $this->formatterFactoryMock = $this->createMock(MessageFormatterFactory::class);
 
         $this->translator = new Translator(
