@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Auth\Repositories;
+namespace App\Framework\User\Edge;
 
 use App\Framework\BaseRepositories\Sql;
 use App\Framework\Exceptions\UserException;
@@ -29,7 +29,7 @@ use Doctrine\DBAL\Exception;
 /**
  * Provides user data handling for authentication.
  */
-class UserMain extends Sql
+class UserMainRepository extends Sql
 {
 	public function __construct(Connection $connection)
 	{
