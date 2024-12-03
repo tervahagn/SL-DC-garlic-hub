@@ -23,8 +23,10 @@ namespace App\Framework\Core\Translate;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Helper\Psr16Adapter;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+
 use function intl_get_error_message;
 
 class Translator
@@ -35,7 +37,8 @@ class Translator
 	protected array $translationStack = [];
 	protected MessageFormatterFactory $MessageFormatterFactory;
 
-	public function __construct(Locales $locales, TranslationLoaderInterface $loader, MessageFormatterFactory $messageFormatterFactory, CacheInterface $cache)
+	public function __construct(Locales $locales, TranslationLoaderInterface $loader, MessageFormatterFactory
+	$messageFormatterFactory, Psr16Adapter $cache)
 	{
 		$this->locales = $locales;
 		$this->loader  = $loader;
