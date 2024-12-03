@@ -51,9 +51,9 @@ class LoginController
 			$flash    = $request->getAttribute('flash');
 
 			$userEntity = $this->authService->login($username, $password);
-
-			$session->set('locale', $userEntity->getMain()['locale']);
-			$session->set('user', $userEntity->getMain());
+			$main_data = $userEntity->getMain();
+			$session->set('user', $main_data);
+			$session->set('locale', $main_data['locale']);
 		}
 		catch (UserException $e)
 		{

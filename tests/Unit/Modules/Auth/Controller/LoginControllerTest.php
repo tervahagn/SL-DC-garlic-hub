@@ -21,10 +21,11 @@
 namespace Tests\Unit\Modules\Auth\Controller;
 
 use App\Framework\Exceptions\UserException;
-use App\Modules\Auth\Controller\LoginController;
+use App\Framework\User\Edge\UserMainRepository;
+use App\Framework\User\UserEntity;
+use App\Modules\Auth\AuthService;
 use App\Modules\Auth\Entities\User;
-use App\Modules\Auth\Repositories\UserMain;
-use Doctrine\DBAL\Exception\DriverException;
+use App\Modules\Auth\LoginController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,7 @@ class LoginControllerTest extends TestCase
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
 	private Helper $sessionMock;
+	private AuthService $authServiceMock;
 	private LoggerInterface $loggerMock;
 
 	/**
@@ -47,10 +49,11 @@ class LoginControllerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
-		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock  = $this->createMock(Helper::class);
-		$this->loggerMock   = $this->createMock(LoggerInterface::class);
+		$this->requestMock     = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock    = $this->createMock(ResponseInterface::class);
+		$this->sessionMock     = $this->createMock(Helper::class);
+		$this->authServiceMock = $this->createMock(AuthService::class);
+		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 	}
 
 	/**
@@ -64,7 +67,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -91,7 +94,7 @@ class LoginControllerTest extends TestCase
 		$body->expects($this->once())->method('write');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -105,17 +108,20 @@ class LoginControllerTest extends TestCase
 	public function testLoginRedirectsToHomeOnSuccessfulLogin(): void
 	{
 		$flash = $this->createMock(Messages::class);
-		$userMain = $this->createMock(UserMain::class);
-		$user = $this->createMock(User::class);
+		$userEntity = $this->createMock(UserEntity::class);
 
 		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password']);
 		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
-		$userMain->method('loadUserByIdentifier')->with('testuser')->willReturn($user);
-		$user->method('getPassword')->willReturn(password_hash('password', PASSWORD_DEFAULT));
+		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
+		$main_data = ['locale', 'kl_KL'];
+		$userEntity->method('getMain')->willReturn($main_data);
+
+		$this->sessionMock->expects($this->exactly(2))->method('set');
+
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($userMain, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -128,21 +134,22 @@ class LoginControllerTest extends TestCase
 	#[Group('units')]
 	public function testLoginRedirectsToLoginOnInvalidCredentials(): void
 	{
-		$flash = $this->createMock(Messages::class);
-		$userMain = $this->createMock(UserMain::class);
-		$user = $this->createMock(User::class);
+		$flash      = $this->createMock(Messages::class);
+		$userMain   = $this->createMock(UserMainRepository::class);
+		$userEntity = $this->createMock(UserEntity::class);
 
 		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrongpassword']);
 		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
 
-		$userMain->method('loadUserByIdentifier')->with('testuser')->willReturn($user);
-		$user->method('getPassword')->willReturn(password_hash('password', PASSWORD_DEFAULT));
+		$this->authServiceMock->method('login')->with('testuser', 'wrongpassword')->willThrowException(new UserException('Invalid credentials.'));
+
 		$flash->expects($this->once())->method('addMessage')->with('error', 'Invalid credentials.');
+
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 		$this->loggerMock->expects($this->once())->method('error')->with('Invalid credentials.');
 
-		$controller = new LoginController($userMain, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -159,7 +166,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->createMock(UserMain::class), $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->logout($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
