@@ -18,16 +18,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Modules\Auth\Controller\LoginController;
-use App\Modules\Auth\Repositories\UserMain;
+use App\Framework\User\UserService;
+use App\Modules\Auth\AuthService;
+use App\Modules\Auth\LoginController;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 $dependencies = [];
 
+$dependencies[AuthService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new AuthService($container->get(UserService::class));
+});
 $dependencies[LoginController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new LoginController($container->get(UserMain::class), $container->get(LoggerInterface::class));
+	return new LoginController($container->get(AuthService::class), $container->get(LoggerInterface::class));
 });
 
 
