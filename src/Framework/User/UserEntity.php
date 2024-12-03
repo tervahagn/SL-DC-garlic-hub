@@ -24,6 +24,7 @@ class UserEntity
 {
 	private int $UID;
 	private string $username;
+	private string $locale;
 	private array $main;
 	private array $contact;
 	private array $stats;
@@ -34,26 +35,11 @@ class UserEntity
 	public function __construct(array $main, array $contact, array $stats, array $security, array $acl, array $vip)
 	{
 		$this->main     = $main;
-		if (array_key_exists('UID', $this->main))
-			$this->UID = $this->main['UID'];
-		if (array_key_exists('username', $this->main))
-			$this->username = $this->main['username'];
-
 		$this->contact  = $contact;
 		$this->stats    = $stats;
 		$this->security = $security;
 		$this->acl      = $acl;
 		$this->vip      = $vip;
-	}
-
-	public function getUID(): int
-	{
-		return $this->UID ?? 0;
-	}
-
-	public function getUsername(): string
-	{
-		return $this->username  ?? 'guest';
 	}
 
 	public function getMain(): array

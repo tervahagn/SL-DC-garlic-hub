@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Modules\Auth\Controller;
+namespace App\Modules\Auth;
 
 use App\Framework\Exceptions\UserException;
-use App\Modules\Auth\Repositories\UserMain;
+use App\Framework\User\UserService;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -12,21 +13,21 @@ use SlimSession\Helper;
 
 class LoginController
 {
-	private UserMain $userMain;
+	private AuthService $authService;
 	private LoggerInterface $logger;
 
 	/**
-	 * @param UserMain $userMain
+	 * @param AuthService $authService
+	 * @param LoggerInterface $logger
 	 */
-	public function __construct(UserMain $userMain, LoggerInterface $logger)
+	public function __construct(AuthService $authService, LoggerInterface $logger)
 	{
-		$this->userMain = $userMain;
-		$this->logger   = $logger;
+		$this->authService = $authService;
+		$this->logger      = $logger;
 	}
 
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
@@ -42,25 +43,17 @@ class LoginController
 		try
 		{
 			$params   = (array) $request->getParsedBody();
-			// no need to sanitize here, as we are escuse prepared statements in DB
+			// no need to sanitize here, as we are executing prepared statements in DB
 			$username = $params['username'] ?? null;
 			$password = $params['password'] ?? null;
+
 			$session  = $request->getAttribute('session');
 			$flash    = $request->getAttribute('flash');
 
-			$user = $this->userMain->loadUserByIdentifier($username);
+			$userEntity = $this->authService->login($username, $password);
 
-			if (!password_verify($password, $user->getPassword()))
-				throw new UserException('Invalid credentials.');
-
-			/** @var Helper $session */
-			$session->set('user', [
-				'UID' => $user->getUID(),
-				'username' => $user->getUsername(),
-				'locale' => $user->getLocale(),
-				'company_id' => $user->getCompanyId(),
-				'status' => $user->getStatus(),
-			]);
+			$session->set('locale', $userEntity->getMain()['locale']);
+			$session->set('user', $userEntity->getMain());
 		}
 		catch (UserException $e)
 		{
@@ -70,7 +63,11 @@ class LoginController
 		}
 		catch (Exception $e)
 		{
-			// Not tested because of overengineered dbal bullshit
+			// Not tested because overengineered dbal bullshit exceptions make mocking a pain in ass
+			$this->logger->error($e->getMessage());
+		}
+		catch (PhpfastcacheSimpleCacheException $e)
+		{
 			$this->logger->error($e->getMessage());
 		}
 

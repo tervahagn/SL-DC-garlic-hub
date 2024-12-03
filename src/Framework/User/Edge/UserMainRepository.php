@@ -21,8 +21,6 @@
 namespace App\Framework\User\Edge;
 
 use App\Framework\BaseRepositories\Sql;
-use App\Framework\Exceptions\UserException;
-use App\Modules\Auth\Entities\User;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -36,28 +34,36 @@ class UserMainRepository extends Sql
 		parent::__construct($connection,'user_main', 'UID');
 	}
 
+	public function findById(int|string $id): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('UID, company_id, status, locale')
+			->from($this->table)
+			->where($this->idField . ' = :id')
+			->setParameter('id', $id)
+		;
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
+	}
+
 	/**
 	 * @param string $identifier
 	 *
-	 * @return User
-	 * @throws UserException
+	 * @return array
 	 * @throws Exception
 	 */
-	public function loadUserByIdentifier(string $identifier): User
+	public function findByIdentifier(string $identifier): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('*')->from($this->table);
+		$queryBuilder->select('UID, password, locale')->from($this->table);
 
 		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
 			$queryBuilder->where('email = :identifier');
 		else
 			$queryBuilder->where('username = :identifier');
+
 		$queryBuilder->setParameter('identifier', $identifier);
 
-		$result = $queryBuilder->executeQuery()->fetchAssociative();
-		if (empty($result))
-			throw new UserException('User not found.');
-
-		return new User($result);
+		return $queryBuilder->executeQuery()->fetchAssociative();
 	}
 }

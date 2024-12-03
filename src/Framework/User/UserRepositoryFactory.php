@@ -39,7 +39,8 @@ class UserRepositoryFactory
 
 	public function create(): array
 	{
-		switch ($this->config->getEdition()) {
+		switch ($this->config->getEdition())
+		{
 			case Config::PLATFORM_EDITION_ENTERPRISE:
 				return [
 					'main'     => new Edge\UserMainRepository($this->connection),

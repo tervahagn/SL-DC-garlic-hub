@@ -19,8 +19,7 @@
 */
 
 use App\Controller\HomeController;
-use App\Framework\Core\Locales\Locales;
-use App\Modules\Auth\Controller\LoginController;
+use App\Modules\Auth\LoginController;
 use Slim\App;
 
 /* @var App $app */

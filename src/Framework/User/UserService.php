@@ -20,6 +20,9 @@
 
 namespace App\Framework\User;
 
+use App\Framework\Exceptions\UserException;
+use App\Framework\User\Edge\UserMainRepository;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
@@ -46,11 +49,25 @@ class UserService
 	}
 
 	/**
+	 * @throws UserException
+	 * @throws Exception
+	 */
+	public function findUser($identifier)
+	{
+		/** @var UserMainRepository $usrMainRepository */
+		$usrMainRepository = $this->getUserRepositories()['main'];
+
+		return $usrMainRepository->findByIdentifier($identifier);
+	}
+
+	/**
 	 * Get the current user from cache or database.
 	 *
 	 * @param int $UID
 	 * @return UserEntity
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 */
 	public function getCurrentUser(int $UID): UserEntity
 	{
@@ -79,12 +96,15 @@ class UserService
 		$this->cache->delete($cacheKey);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function collectUserData(int $UID): array
 	{
 		$userData = [];
 		foreach ($this->userRepositories as $key => $repository)
 		{
-			$userData[$key] = $repository->getById($UID);
+			$userData[$key] = $repository->findById($UID);
 		}
 
 		return $userData;
