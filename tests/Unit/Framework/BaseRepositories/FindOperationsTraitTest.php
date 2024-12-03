@@ -40,7 +40,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
 
-		$this->queryBuilderMock->expects($this->once())->method('select')->with('COUNT(1)')
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
 			->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('test_table')
 			->willReturn($this->queryBuilderMock);

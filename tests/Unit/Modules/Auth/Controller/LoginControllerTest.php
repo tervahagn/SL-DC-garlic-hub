@@ -21,10 +21,8 @@
 namespace Tests\Unit\Modules\Auth\Controller;
 
 use App\Framework\Exceptions\UserException;
-use App\Framework\User\Edge\UserMainRepository;
 use App\Framework\User\UserEntity;
 use App\Modules\Auth\AuthService;
-use App\Modules\Auth\Entities\User;
 use App\Modules\Auth\LoginController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -135,13 +133,12 @@ class LoginControllerTest extends TestCase
 	public function testLoginRedirectsToLoginOnInvalidCredentials(): void
 	{
 		$flash      = $this->createMock(Messages::class);
-		$userMain   = $this->createMock(UserMainRepository::class);
-		$userEntity = $this->createMock(UserEntity::class);
 
-		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrongpassword']);
+		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrong_password']);
 		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
 
-		$this->authServiceMock->method('login')->with('testuser', 'wrongpassword')->willThrowException(new UserException('Invalid credentials.'));
+		$this->authServiceMock->method('login')->with('testuser', 'wrong_password')->willThrowException(new
+		UserException('Invalid credentials.'));
 
 		$flash->expects($this->once())->method('addMessage')->with('error', 'Invalid credentials.');
 

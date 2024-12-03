@@ -85,14 +85,11 @@ class HomeControllerTest extends TestCase
 	{
 		$this->requestMock->method('getAttribute')
 			->willReturnCallback(function ($attribute) {
-				switch ($attribute) {
-					case 'session':
-						return $this->sessionMock;
-					case 'locales':
-						return $this->localesMock;
-					default:
-						return null; // Optional: Standardwert, wenn das Attribut nicht erkannt wird
-				}
+				return match ($attribute) {
+					'session' => $this->sessionMock,
+					'locales' => $this->localesMock,
+					default => null,
+				};
 			});
 		$this->sessionMock->method('get')->with('user')->willReturn(['locale' => 'en_US']);
 		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
@@ -117,14 +114,11 @@ class HomeControllerTest extends TestCase
 	{
 		$this->requestMock->method('getAttribute')
 			->willReturnCallback(function ($attribute) {
-				switch ($attribute) {
-					case 'session':
-						return $this->sessionMock;
-					case 'locales':
-						return $this->localesMock;
-					default:
-						return null; // Optional: Standardwert, wenn das Attribut nicht erkannt wird
-				}
+				return match ($attribute) {
+					'session' => $this->sessionMock,
+					'locales' => $this->localesMock,
+					default => null,
+				};
 			});
 		$this->sessionMock->method('get')->with('user')->willReturn('not_an_array');
 		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
