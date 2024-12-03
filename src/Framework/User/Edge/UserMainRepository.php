@@ -55,7 +55,7 @@ class UserMainRepository extends Sql
 	public function findByIdentifier(string $identifier): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('UID, password, locale')->from($this->table);
+		$queryBuilder->select('UID, password, locale, status, company_id')->from($this->table);
 
 		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
 			$queryBuilder->where('email = :identifier');

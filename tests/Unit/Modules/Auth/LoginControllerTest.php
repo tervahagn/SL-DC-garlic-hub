@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Modules\Auth\Controller;
+namespace Tests\Unit\Modules\Auth;
 
 use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserEntity;
@@ -111,7 +111,8 @@ class LoginControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password']);
 		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
 		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
-		$main_data = ['locale', 'kl_KL'];
+
+		$main_data = ['locale' => 'kl_KL'];
 		$userEntity->method('getMain')->willReturn($main_data);
 
 		$this->sessionMock->expects($this->exactly(2))->method('set');
