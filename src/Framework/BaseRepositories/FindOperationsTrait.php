@@ -38,7 +38,7 @@ trait FindOperationsTrait
 	public function findById(int|string $id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('COUNT(1)')
+		$queryBuilder->select('*')
 			->from($this->table)
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id)
