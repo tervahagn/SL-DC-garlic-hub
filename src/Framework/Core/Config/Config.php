@@ -29,7 +29,7 @@ use Monolog\Level;
  * Provides methods to load, cache, and retrieve configuration data for different modules.
  * This class utilizes a ConfigLoaderInterface for flexibility in loading configurations.
  */
-final class Config
+class Config
 {
 	const PLATFORM_EDITION_EDGE = 'edge';
 	const PLATFORM_EDITION_CORE = 'core';
