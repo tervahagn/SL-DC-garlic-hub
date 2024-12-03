@@ -43,6 +43,7 @@ class HomeController
 	ResponseInterface
 	{
 		$locale  = htmlentities($args['locale'], ENT_QUOTES);
+
 		// set locale into session
 		/** @var  Helper $session */
 		$session = $request->getAttribute('session');

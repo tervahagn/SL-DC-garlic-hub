@@ -95,7 +95,7 @@ class HomeControllerTest extends TestCase
 				}
 			});
 		$this->sessionMock->method('get')->with('user')->willReturn(['locale' => 'en_US']);
-		$this->sessionMock->expects($this->once())->method('set')->with('user', ['locale' => 'de_DE']);
+		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
 
 		$this->localesMock->expects($this->once())->method('determineCurrentLocale');
 
@@ -127,7 +127,7 @@ class HomeControllerTest extends TestCase
 				}
 			});
 		$this->sessionMock->method('get')->with('user')->willReturn('not_an_array');
-		$this->sessionMock->expects($this->once())->method('set')->with('user', ['locale' => 'de_DE']);
+		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
 
 		$this->localesMock->expects($this->once())->method('determineCurrentLocale');
 
