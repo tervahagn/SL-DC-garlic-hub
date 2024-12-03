@@ -29,8 +29,12 @@ use Monolog\Level;
  * Provides methods to load, cache, and retrieve configuration data for different modules.
  * This class utilizes a ConfigLoaderInterface for flexibility in loading configurations.
  */
-class Config
+final class Config
 {
+	const PLATFORM_EDITION_EDGE = 'edge';
+	const PLATFORM_EDITION_CORE = 'core';
+	const PLATFORM_EDITION_ENTERPRISE = 'edge';
+
 	/**
 	 * @var ConfigLoaderInterface Handles the loading of configuration files.
 	 */
@@ -58,6 +62,11 @@ class Config
 	public function getEnv(string $key): string
 	{
 		return $this->env[$key] ?? '';
+	}
+
+	public function getEdition(): string
+	{
+		return $this->getEnv('APP_PLATFORM_EDITION') ?? self::PLATFORM_EDITION_EDGE;
 	}
 
 	public function getPaths(string $key): string

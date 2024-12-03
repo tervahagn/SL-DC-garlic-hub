@@ -22,17 +22,18 @@ use App\Commands\MigrateCommand;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
-use App\Framework\Core\Locales\UrlLocaleExtractor;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Migration\Repository;
 use App\Framework\Migration\Runner;
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Modules\Auth\Repositories\UserMain;
+use App\Framework\User\UserEntityFactory;
+use App\Framework\User\UserRepositoryFactory;
+use App\Framework\User\UserService;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
@@ -57,7 +58,7 @@ $dependencies[LoggerInterface::class] = DI\factory(function (ContainerInterface 
 	return $logger;
 });
 $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
-$dependencies[Application::class] = DI\factory(function (ContainerInterface $container) { // symfony console application
+$dependencies[Application::class] = DI\factory(function () { // symfony console application
 	return new Application();
 });
 $dependencies[Session::class] = DI\factory(function () {
@@ -76,13 +77,17 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 		new SessionLocaleExtractor($container->get(Helper::class))
 	);
 });
+$dependencies[Psr16Adapter::class] = DI\factory(function () {
+	return new Psr16Adapter('Files');
+});
+
 $dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {
 	$translationDir = $container->get(Config::class)->getPaths('translationDir');
 	return new Translator(
 		$container->get(Locales::class),
 		new IniTranslationLoader($translationDir),
 		new MessageFormatterFactory(),
-		new Psr16Adapter('Files')
+		$container->get(Psr16Adapter::class)
 	);
 });
 $dependencies[Mustache_Engine::class] = DI\factory(function () {
@@ -133,8 +138,14 @@ if (php_sapi_name() === 'cli')
 	});
 }
 $dependencies[Messages::class] = DI\factory(function () {return new Messages();});
-$dependencies[UserMain::class] = DI\factory(function (ContainerInterface $container) {
-	return new UserMain($container->get('SqlConnection'));
+
+$dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UserService(
+		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
+		new UserEntityFactory($container->get(Config::class)),
+		$container->get(Psr16Adapter::class)
+	);
 });
 
 
