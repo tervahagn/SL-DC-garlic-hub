@@ -15,11 +15,43 @@ CREATE TABLE `user_main` (
     `last_password_change` TIMESTAMP DEFAULT NULL,
     UNIQUE (`email`)
 );
-
 INSERT INTO `user_main`
 (`company_id`, `last_access`, `login_time`, `num_logins`, `created_at`, `status`, `locale`, `session_id`, `username`, `password`, `gender`, `email`, `last_password_change`)
 VALUES
     (1, CURRENT_TIMESTAMP, NULL, 0, CURRENT_TIMESTAMP, 3, 'en_US', '', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
+
+CREATE TABLE oauth_clients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id TEXT UNIQUE NOT NULL,
+    client_secret TEXT DEFAULT NULL,
+    redirect_uri TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO oauth_clients (client_id, client_secret, redirect_uri)
+VALUES ('oauth2-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', 'http://localhost/callback');
+
+CREATE TABLE oauth_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    UID INTEGER NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT DEFAULT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UID) REFERENCES user_main(UID)
+);
+
+CREATE TABLE oauth_authorization_codes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    authorization_code TEXT NOT NULL,
+    client_id TEXT NOT NULL,
+    UID INTEGER NOT NULL,
+    redirect_uri TEXT NOT NULL,
+    scopes TEXT,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UID) REFERENCES user_main(UID) ON DELETE CASCADE
+);
 
 CREATE TABLE mediapool_nodes (
     node_id INTEGER PRIMARY KEY AUTOINCREMENT,
