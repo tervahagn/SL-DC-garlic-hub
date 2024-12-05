@@ -41,8 +41,7 @@ trait FindOperationsTrait
 		$queryBuilder->select('*')
 			->from($this->table)
 			->where($this->idField . ' = :id')
-			->setParameter('id', $id)
-		;
+			->setParameter('id', $id);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}

@@ -53,20 +53,12 @@ class LoginController
 			$session->set('user', $main_data);
 			$session->set('locale', $main_data['locale']);
 		}
-		catch (UserException $e)
+		catch (\Exception | Exception $e)
 		{
+			// dbal exception not tested because overengineered bullshit make mocking a pain in ass
 			$flash->addMessage('error', $e->getMessage());
 			$this->logger->error($e->getMessage());
 			return $this->redirect($response, '/login');
-		}
-		catch (Exception $e)
-		{
-			// Not tested because overengineered dbal bullshit exceptions make mocking a pain in ass
-			$this->logger->error($e->getMessage());
-		}
-		catch (PhpfastcacheSimpleCacheException $e)
-		{
-			$this->logger->error($e->getMessage());
 		}
 
 		return $this->redirect($response);
