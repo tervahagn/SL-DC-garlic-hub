@@ -40,7 +40,7 @@ class UserMainRepository extends Sql
 	 *
 	 * @throws Exception
 	 */
-	public function findById(int|string $id): array
+	final public function findById(int|string $id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('UID, company_id, status, locale')
@@ -48,7 +48,7 @@ class UserMainRepository extends Sql
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id);
 
-		return $queryBuilder->executeQuery()->fetchAllAssociative();
+		return $queryBuilder->executeQuery()->fetchAssociative();
 	}
 
 	/**

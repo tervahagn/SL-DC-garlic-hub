@@ -122,7 +122,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
 			->willReturn($this->resultMock);
 
-		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn($userData);
 
 
