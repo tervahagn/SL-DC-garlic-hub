@@ -71,6 +71,19 @@ class ConfigTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testGetEdition(): void
+	{
+		$config           = new Config($this->configLoaderMock, [], ['APP_PLATFORM_EDITION' => 'enterprise']);
+		$this->assertEquals(Config::PLATFORM_EDITION_ENTERPRISE, $config->getEdition());
+	}
+
+	#[Group('units')]
+	public function testGetEditionDefault(): void
+	{
+		$this->assertEquals(Config::PLATFORM_EDITION_EDGE, $this->config->getEdition());
+	}
+
+	#[Group('units')]
 	public function testGetPaths(): void
 	{
 		$this->assertEquals('value_path', $this->config->getPaths('key_path'));

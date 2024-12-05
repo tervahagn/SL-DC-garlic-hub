@@ -66,7 +66,11 @@ class Config
 
 	public function getEdition(): string
 	{
-		return $this->getEnv('APP_PLATFORM_EDITION') ?? self::PLATFORM_EDITION_EDGE;
+		$edition = $this->getEnv('APP_PLATFORM_EDITION');
+		if (empty($edition))
+			return self::PLATFORM_EDITION_EDGE;
+
+		return $edition;
 	}
 
 	public function getPaths(string $key): string

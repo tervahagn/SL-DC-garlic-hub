@@ -34,14 +34,19 @@ class UserMainRepository extends Sql
 		parent::__construct($connection,'user_main', 'UID');
 	}
 
+	/**
+	 * We do not want to use * as this will transfer user sensitive data
+	 * like passwords, tokens etc.
+	 *
+	 * @throws Exception
+	 */
 	public function findById(int|string $id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('UID, company_id, status, locale')
 			->from($this->table)
 			->where($this->idField . ' = :id')
-			->setParameter('id', $id)
-		;
+			->setParameter('id', $id);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}

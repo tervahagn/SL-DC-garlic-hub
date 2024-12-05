@@ -91,4 +91,43 @@ class UserMainRepositoryTest extends TestCase
 		$this->assertEquals($userData, $userMain->findByIdentifier($identifier));
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFindByIdReturnsResults(): void
+	{
+		$userMain = new UserMainRepository($this->connectionMock);
+		$UID = 123;
+		$userData = [
+			['UID' => 123, 'company_id' => 1, 'status' => 'active', 'locale' => 'en_US'],
+		];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->method('select')
+			->with('UID, company_id, status, locale')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->method('from')->with('user_main')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->method('where')->with('UID = :id')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->method('setParameter')
+			->with('id', $UID);
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn($userData);
+
+
+		$result = $userMain->findById($UID);
+		$this->assertEquals($userData, $result);
+	}
+
 }
