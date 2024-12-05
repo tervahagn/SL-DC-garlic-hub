@@ -20,7 +20,7 @@ INSERT INTO `user_main`
 VALUES
     (1, CURRENT_TIMESTAMP, NULL, 0, CURRENT_TIMESTAMP, 3, 'en_US', '', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
 
-CREATE TABLE oauth_clients (
+CREATE TABLE oauth2_clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id TEXT UNIQUE NOT NULL,
     client_secret TEXT DEFAULT NULL,
@@ -28,10 +28,10 @@ CREATE TABLE oauth_clients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO oauth_clients (client_id, client_secret, redirect_uri)
+INSERT INTO oauth2_clients (client_id, client_secret, redirect_uri)
 VALUES ('oauth2-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', 'http://localhost/callback');
 
-CREATE TABLE oauth_tokens (
+CREATE TABLE oauth2_tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     UID INTEGER NOT NULL,
     access_token TEXT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE oauth_tokens (
     FOREIGN KEY (UID) REFERENCES user_main(UID)
 );
 
-CREATE TABLE oauth_authorization_codes (
+CREATE TABLE oauth2_authorization_codes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     authorization_code TEXT NOT NULL,
     client_id TEXT NOT NULL,
