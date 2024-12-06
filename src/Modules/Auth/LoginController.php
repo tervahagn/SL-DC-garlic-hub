@@ -4,7 +4,7 @@ namespace App\Modules\Auth;
 
 use App\Framework\Exceptions\UserException;
 use Doctrine\DBAL\Exception;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -53,7 +53,7 @@ class LoginController
 			$session->set('user', $main_data);
 			$session->set('locale', $main_data['locale']);
 		}
-		catch (\Exception | Exception $e)
+		catch (\Exception | InvalidArgumentException | Exception $e)
 		{
 			// dbal exception not tested because overengineered bullshit make mocking a pain in ass
 			$flash->addMessage('error', $e->getMessage());
@@ -61,12 +61,17 @@ class LoginController
 			return $this->redirect($response, '/login');
 		}
 
-		return $this->redirect($response);
+		$oauthParams = $session->get('oauth_redirect_params', []);
+		$session->remove('oauth_redirect_params');
+		$redirectUri = '/api/authorize?' . http_build_query($oauthParams);
+		return $this->redirect($response, $redirectUri);
 	}
 
 	public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
+		$user    = $session->get('user');
+		$this->authService->logout($user);
 		$session->delete('user');
 		return $this->redirect($response, '/login');
 	}

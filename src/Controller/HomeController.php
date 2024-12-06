@@ -62,7 +62,6 @@ class HomeController
 
 	}
 
-
 	private function isUserLoggedIn($session): bool
 	{
 		return $session->exists('user');

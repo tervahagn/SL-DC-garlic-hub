@@ -34,6 +34,7 @@ try
 		'varDir' => $systemDir . '/var',
 		'cacheDir' => $systemDir . '/var/cache',
 		'logDir' => $systemDir . '/var/logs',
+		'keysDir' => $systemDir . '/var/keys',
 		'translationDir' => $systemDir . '/translations',
 		'configDir' => $systemDir . '/config',
 		'migrationDir' => $systemDir . '/migrations',
