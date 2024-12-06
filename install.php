@@ -1,6 +1,7 @@
 <?php
 
 use Defuse\Crypto\Key;
+require_once __DIR__ . '/vendor/autoload.php';
 
 try {
 	echo "Starting installation process...\n";
