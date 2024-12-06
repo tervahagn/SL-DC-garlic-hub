@@ -20,6 +20,7 @@
 
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
+use App\Modules\Auth\OAuth2Controller;
 use Slim\App;
 
 /* @var App $app */
@@ -31,3 +32,6 @@ $app->get('/login', [LoginController::class, 'showLogin']);
 $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);
 
+$app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
+$app->get('/api/token', [OAuth2Controller::class, 'authorize']);
+$app->get('/api/userinfo', [OAuth2Controller::class, 'authorize']);

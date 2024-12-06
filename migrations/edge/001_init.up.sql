@@ -23,13 +23,17 @@ VALUES
 CREATE TABLE oauth2_clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id TEXT UNIQUE NOT NULL,
+    client_name TEXT UNIQUE NOT NULL,
     client_secret TEXT DEFAULT NULL,
     redirect_uri TEXT NOT NULL,
+    grant_type TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO oauth2_clients (client_id, client_secret, redirect_uri)
-VALUES ('oauth2-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', 'http://localhost/callback');
+INSERT INTO oauth2_clients (client_id, client_name, client_secret, redirect_uri, grant_type)
+VALUES ('1234567890', 'edge-default-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',
+        'http://localhost/callback',
+        'authorization_code,client_credentials,refresh_token');
 
 CREATE TABLE oauth2_tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,7 +45,7 @@ CREATE TABLE oauth2_tokens (
     FOREIGN KEY (UID) REFERENCES user_main(UID)
 );
 
-CREATE TABLE oauth2_authorization_codes (
+CREATE TABLE oauth2_auth_codes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     authorization_code TEXT NOT NULL,
     client_id TEXT NOT NULL,
@@ -51,6 +55,12 @@ CREATE TABLE oauth2_authorization_codes (
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UID) REFERENCES user_main(UID) ON DELETE CASCADE
+);
+
+CREATE TABLE oauth2_scopes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    scope TEXT NOT NULL UNIQUE,
+    description TEXT DEFAULT NULL
 );
 
 CREATE TABLE mediapool_nodes (
