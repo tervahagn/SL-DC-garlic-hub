@@ -32,7 +32,8 @@ $app->get('/login', [LoginController::class, 'showLogin']);
 $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);
 
-$app->get('/api/token', [OAuth2Controller::class, 'authorize']);
-$app->get('/api/confirm-access', [OAuth2Controller::class, 'confirmAccess']);
+$app->post('/api/token', [OAuth2Controller::class, 'token']);
+$app->get('/api/confirm-access', [OAuth2Controller::class, 'ShowConfirmAccess']);
+$app->post('/api/confirm-access', [OAuth2Controller::class, 'confirmAccess']);
 $app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
 $app->get('/api/userinfo', [OAuth2Controller::class, 'authorize']);

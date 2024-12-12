@@ -21,38 +21,24 @@
 namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
-use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
-use League\OAuth2\Server\CryptKeyInterface;
-use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
-use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
-class TokensRepository extends Sql implements AccessTokenRepositoryInterface
+class ScopeRepository extends Sql implements ScopeRepositoryInterface
 {
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'oauth2_tokens', 'id');
+		parent::__construct($connection,'oauth2_scopes', 'id');
+	}
+	public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
+	{
+		// TODO: Implement getScopeEntityByIdentifier() method.
 	}
 
-	public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, ?string $userIdentifier = null): AccessTokenEntityInterface
+	public function finalizeScopes(array $scopes, string $grantType, ClientEntityInterface $clientEntity, ?string $userIdentifier = null, ?string $authCodeId = null): array
 	{
-		// TODO: Implement getNewToken() method.
-	}
-
-	public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
-	{
-		// TODO: Implement persistNewAccessToken() method.
-	}
-
-	public function revokeAccessToken(string $tokenId): void
-	{
-		// TODO: Implement revokeAccessToken() method.
-	}
-
-	public function isAccessTokenRevoked(string $tokenId): bool
-	{
-		// TODO: Implement isAccessTokenRevoked() method.
+		// TODO: Implement finalizeScopes() method.
 	}
 }

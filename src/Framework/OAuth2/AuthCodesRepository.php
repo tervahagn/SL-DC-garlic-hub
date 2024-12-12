@@ -22,11 +22,33 @@ namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
+use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
-class AuthorizationCodesRepository extends Sql
+class AuthCodesRepository extends Sql implements AuthCodeRepositoryInterface
 {
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'oauth2_authorization_codes', 'id');
+		parent::__construct($connection,'oauth2_auth_codes', 'id');
+	}
+
+	public function getNewAuthCode(): AuthCodeEntityInterface
+	{
+		// TODO: Implement getNewAuthCode() method.
+	}
+
+	public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
+	{
+		// TODO: Implement persistNewAuthCode() method.
+	}
+
+	public function revokeAuthCode(string $codeId): void
+	{
+		// TODO: Implement revokeAuthCode() method.
+	}
+
+	public function isAuthCodeRevoked(string $codeId): bool
+	{
+		// TODO: Implement isAuthCodeRevoked() method.
 	}
 }

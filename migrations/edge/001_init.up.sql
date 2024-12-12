@@ -63,6 +63,13 @@ CREATE TABLE oauth2_scopes (
     description TEXT DEFAULT NULL
 );
 
+CREATE TABLE oauth2_client_consent (
+     UID INT NOT NULL,
+     client_id VARCHAR(255) NOT NULL,
+     consented_at DATETIME NOT NULL,
+     PRIMARY KEY (UID, client_id)
+);
+
 CREATE TABLE mediapool_nodes (
     node_id INTEGER PRIMARY KEY AUTOINCREMENT,
     root_id INTEGER NOT NULL DEFAULT 0,

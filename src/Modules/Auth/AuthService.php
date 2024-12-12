@@ -25,6 +25,7 @@ use App\Framework\User\UserEntity;
 use App\Framework\User\UserService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 class AuthService
 {
@@ -44,6 +45,7 @@ class AuthService
 	 * @throws UserException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	public function login(string $identifier, string $password): UserEntity
 	{
@@ -58,5 +60,14 @@ class AuthService
 		$this->userService->invalidateCache($user_data['UID']);
 
 		return $this->userService->getCurrentUser($user_data['UID']);
+	}
+
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	public function logout(array $user)
+	{
+		$this->userService->invalidateCache($user['UID']);
 	}
 }

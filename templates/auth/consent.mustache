@@ -1,0 +1,14 @@
+<h1>Application Requesting Access</h1>
+<p><strong>Application:</strong>{{CLIENT_NAME}}</p>
+<p><strong>Description:</strong> This app requires access to your profile and activity data.</p>
+<p><strong>Requested Permissions:</strong></p>
+<ul>
+    <li>Read player settings, playlists, media</li>
+    <li>Write player settings, playlists, media</li>
+</ul>
+<form method="POST" action="/authorize">
+    <input type="hidden" name="client_id" value="{{CLIENT_ID}}">
+    <input type="hidden" name="state" value="{{STATE}}">
+    <button type="submit" name="approve" value="yes">Approve</button>
+    <button type="submit" name="approve" value="no">Deny</button>
+</form>
