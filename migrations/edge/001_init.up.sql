@@ -32,28 +32,19 @@ CREATE TABLE oauth2_clients (
 
 INSERT INTO oauth2_clients (client_id, client_name, client_secret, redirect_uri, grant_type)
 VALUES ('1234567890', 'edge-default-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',
-        'http://localhost/callback',
-        'authorization_code,client_credentials,refresh_token');
+        'https://oauth2client.ddev.site/callback.php', 'authorization_code,refresh_token');
 
-CREATE TABLE oauth2_tokens (
+CREATE TABLE oauth2_credentials (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    UID INTEGER NOT NULL,
-    access_token TEXT NOT NULL,
-    refresh_token TEXT DEFAULT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (UID) REFERENCES user_main(UID)
-);
-
-CREATE TABLE oauth2_auth_codes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    authorization_code TEXT NOT NULL,
+    type TEXT NOT NULL, -- 'auth_code', 'access_token', 'refresh_token'
+    token TEXT NOT NULL,
     client_id TEXT NOT NULL,
     UID INTEGER NOT NULL,
-    redirect_uri TEXT NOT NULL,
-    scopes TEXT,
+    redirect_uri TEXT DEFAULT NULL,
+    scopes TEXT DEFAULT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    revoked INTEGER DEFAULT 0,
     FOREIGN KEY (UID) REFERENCES user_main(UID) ON DELETE CASCADE
 );
 
