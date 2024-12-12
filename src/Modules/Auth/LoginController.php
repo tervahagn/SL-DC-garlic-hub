@@ -38,6 +38,7 @@ class LoginController
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		$session  = $request->getAttribute('session');
 		try
 		{
 			$params   = (array) $request->getParsedBody();
@@ -45,7 +46,6 @@ class LoginController
 			$username = $params['username'] ?? null;
 			$password = $params['password'] ?? null;
 
-			$session  = $request->getAttribute('session');
 			$flash    = $request->getAttribute('flash');
 
 			$userEntity = $this->authService->login($username, $password);
@@ -61,10 +61,13 @@ class LoginController
 			return $this->redirect($response, '/login');
 		}
 
+		if (!$session->exists('oauth_redirect_params'))
+			return $this->redirect($response);
+
 		$oauthParams = $session->get('oauth_redirect_params', []);
 		$session->remove('oauth_redirect_params');
-		$redirectUri = '/api/authorize?' . http_build_query($oauthParams);
-		return $this->redirect($response, $redirectUri);
+
+		return $this->redirect($response, '/api/authorize?' . http_build_query($oauthParams));
 	}
 
 	public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

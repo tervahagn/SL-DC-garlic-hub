@@ -21,7 +21,6 @@
 namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
-use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -35,6 +34,9 @@ class ClientsRepository extends Sql implements ClientRepositoryInterface
 		parent::__construct($connection,'oauth2_clients', 'id');
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
 	{
 		$conditions = ['client_id' => $clientIdentifier];
@@ -44,7 +46,6 @@ class ClientsRepository extends Sql implements ClientRepositoryInterface
 	}
 
 	/**
-	 * @throws FrameworkException
 	 * @throws Exception
 	 */
 	public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType = 'authorization_code'): bool
@@ -59,15 +60,6 @@ class ClientsRepository extends Sql implements ClientRepositoryInterface
 			return false;
 
 		return true;
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	private function findByClientId($conditions)
-	{
-
-		return $this->getFirstDataSet($client);
 	}
 
 }

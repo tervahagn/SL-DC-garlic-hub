@@ -49,10 +49,9 @@ class UserService
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
 	 */
-	public function findUser($identifier)
+	public function findUser($identifier): array
 	{
 		/** @var UserMainRepository $usrMainRepository */
 		$usrMainRepository = $this->getUserRepositories()['main'];
@@ -66,7 +65,6 @@ class UserService
 	 * @param int $UID
 	 * @return UserEntity
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws Exception
 	 */
 	public function getCurrentUser(int $UID): UserEntity

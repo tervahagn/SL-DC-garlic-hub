@@ -37,7 +37,7 @@ class ClientEntity implements ClientEntityInterface
 	public function __construct(array $client)
 	{
 		$this->setIdentifier($client['client_id']);
-		$this->redirectUri    = $client['redirect_url'];
+		$this->redirectUri    = $client['redirect_uri'];
 		$this->name           = $client['client_name'];
 		$this->isConfidential = true;
 	}

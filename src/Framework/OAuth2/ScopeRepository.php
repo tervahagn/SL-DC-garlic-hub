@@ -34,11 +34,11 @@ class ScopeRepository extends Sql implements ScopeRepositoryInterface
 	}
 	public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
 	{
-		// TODO: Implement getScopeEntityByIdentifier() method.
+		return null; // currently we do not use scopes
 	}
 
 	public function finalizeScopes(array $scopes, string $grantType, ClientEntityInterface $clientEntity, ?string $userIdentifier = null, ?string $authCodeId = null): array
 	{
-		// TODO: Implement finalizeScopes() method.
+		return []; // currently we do not use scopes
 	}
 }

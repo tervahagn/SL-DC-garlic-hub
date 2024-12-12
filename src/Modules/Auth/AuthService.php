@@ -59,15 +59,24 @@ class AuthService
 
 		$this->userService->invalidateCache($user_data['UID']);
 
-		return $this->userService->getCurrentUser($user_data['UID']);
+		return $this->getCurrentUser($user_data['UID']);
 	}
 
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function logout(array $user)
+	public function logout(array $user): void
 	{
 		$this->userService->invalidateCache($user['UID']);
+	}
+
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function getCurrentUser(int $UID): UserEntity
+	{
+		return $this->userService->getCurrentUser($UID);
 	}
 }

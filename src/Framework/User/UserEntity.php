@@ -20,11 +20,14 @@
 
 namespace App\Framework\User;
 
-class UserEntity
+use League\OAuth2\Server\Entities\UserEntityInterface;
+
+/**
+ * As we use the same entity with OAuth2, we need to implement the UserEntityInterface
+ * from PhpLeage-Oauth2-Server
+ */
+class UserEntity implements UserEntityInterface
 {
-	private int $UID;
-	private string $username;
-	private string $locale;
 	private array $main;
 	private array $contact;
 	private array $stats;
@@ -70,5 +73,10 @@ class UserEntity
 	public function getVip(): array
 	{
 		return $this->vip ?? [];
+	}
+
+	public function getIdentifier(): string
+	{
+		return $this->main['id'] ?? '';
 	}
 }

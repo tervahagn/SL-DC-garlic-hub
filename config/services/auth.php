@@ -22,6 +22,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\OAuth2\AuthCodesRepository;
 use App\Framework\OAuth2\ClientsRepository;
 use App\Framework\OAuth2\OAuth2Service;
+use App\Framework\OAuth2\RefreshTokenRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
 use App\Framework\User\UserService;
@@ -50,10 +51,12 @@ $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $
 	$accessTokenRepository = new TokensRepository($container->get('SqlConnection'));
 	$authCodeRepository    = new AuthCodesRepository($container->get('SqlConnection'));
 	$scopeRepository       = new ScopeRepository($container->get('SqlConnection'));
+	$refreshTokenRepository = new RefreshTokenRepository($container->get('SqlConnection'));
 
 	$config        = $container->get(Config::class);
 	$keysDir       = $config->getPaths('keysDir');
-	$privateKey    = new CryptKey('file:/'.$keysDir.'/private.key');
+	$keyPath  = $keysDir.'/private.key';
+	$privateKey    = new CryptKey($keyPath);
 	$encryptionKey = Key::loadFromAsciiSafeString(file_get_contents($keysDir.'/encryption.key'));
 
 	$server = new AuthorizationServer(
@@ -64,16 +67,22 @@ $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $
 		$encryptionKey
 	);
 
-	$server->enableGrantType(
-		new \League\OAuth2\Server\Grant\ClientCredentialsGrant(),
-		new \DateInterval('PT1H') // 1 day
+	$grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
+		$authCodeRepository,
+		$refreshTokenRepository,
+		new \DateInterval('PT10M') // authorization codes will expire after 10 minutes
 	);
+
+	$grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
+
+	$server->enableGrantType($grant, new \DateInterval('PT1H')); // 1 houer
 	return $server;
 });
+
 $dependencies[OAuth2Controller::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new OAuth2Controller($container->get(AuthService::class),
-		$container->get(OAuth2Service::class),
+	return new OAuth2Controller(
+		$container->get(AuthService::class),
 		$container->get(LoggerInterface::class),
 		$container->get('AuthorizationServer')
 	);

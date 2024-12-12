@@ -22,6 +22,7 @@ namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -29,26 +30,47 @@ class AuthCodesRepository extends Sql implements AuthCodeRepositoryInterface
 {
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'oauth2_auth_codes', 'id');
+		parent::__construct($connection,'oauth2_credentials', 'id');
 	}
 
 	public function getNewAuthCode(): AuthCodeEntityInterface
 	{
-		// TODO: Implement getNewAuthCode() method.
+		return new AuthCodeEntity();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
 	{
-		// TODO: Implement persistNewAuthCode() method.
+		$data = [
+			'type'               => 'auth_code',
+			'token'              => $authCodeEntity->getIdentifier(),
+			'client_id'          => $authCodeEntity->getClient()->getIdentifier(),
+			'UID'                => $authCodeEntity->getUserIdentifier(),
+			'redirect_uri'       => $authCodeEntity->getRedirectUri(),
+			'scopes'             => implode(' ', $authCodeEntity->getScopes()),
+			'expires_at'         => $authCodeEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+			'created_at'         => date('Y-m-d H:i:s')
+		];
+
+		$this->insert($data);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function revokeAuthCode(string $codeId): void
 	{
-		// TODO: Implement revokeAuthCode() method.
+		$this->updateWithWhere(['revoked' => 1], ['token' => $codeId]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function isAuthCodeRevoked(string $codeId): bool
 	{
-		// TODO: Implement isAuthCodeRevoked() method.
+		$revoked = (int) $this->findOneValueBy('revoked', ['token' => $codeId]);
+		return $revoked === 1;
 	}
 }
