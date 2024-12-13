@@ -41,6 +41,4 @@ class ClientEntity implements ClientEntityInterface
 		$this->name           = $client['client_name'];
 		$this->isConfidential = true;
 	}
-
-
 }

@@ -21,6 +21,7 @@
 namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -36,11 +37,14 @@ class ClientsRepository extends Sql implements ClientRepositoryInterface
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
 	{
 		$conditions = ['client_id' => $clientIdentifier];
-		$client = $this->getFirstDataSet($this->findAllBy($conditions));
+		$client     = $this->getFirstDataSet($this->findAllBy($conditions));
+		if (empty($client))
+			throw new FrameworkException('Client not found');
 
 		return new ClientEntity($client);
 	}
