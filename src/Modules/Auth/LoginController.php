@@ -4,10 +4,12 @@ namespace App\Modules\Auth;
 
 use App\Framework\Exceptions\UserException;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use SlimSession\Helper;
 
 class LoginController
 {
@@ -38,6 +40,7 @@ class LoginController
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
 		try
 		{
@@ -65,11 +68,15 @@ class LoginController
 			return $this->redirect($response);
 
 		$oauthParams = $session->get('oauth_redirect_params', []);
-		$session->remove('oauth_redirect_params');
+		$session->delete('oauth_redirect_params');
 
 		return $this->redirect($response, '/api/authorize?' . http_build_query($oauthParams));
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
