@@ -28,6 +28,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -120,12 +121,55 @@ class LoginControllerTest extends TestCase
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->sessionMock->expects($this->once())->method('exists')->with('oauth_redirect_params')->willReturn(false);
+		$this->sessionMock->expects($this->never())->method('get');
+
 
 		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws UserException
+	 */
+	#[Group('units')]
+	public function testLoginRedirectsToApiOnSuccessfulLogin(): void
+	{
+		$flash = $this->createMock(Messages::class);
+		$userEntity = $this->createMock(UserEntity::class);
+
+		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password']);
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
+		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
+
+		$main_data = ['locale' => 'kl_KL'];
+		$userEntity->method('getMain')->willReturn($main_data);
+
+		$this->sessionMock->expects($this->exactly(2))->method('set');
+
+		$this->sessionMock->expects($this->once())->method('exists')->with('oauth_redirect_params')->willReturn(true);
+		$this->sessionMock->expects($this->once())->method('get')->willReturn(['some' => 'stuff']);
+		$this->sessionMock->expects($this->once())->method('delete')->with('oauth_redirect_params');
+
+
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/api/authorize?some=stuff')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+
+
+
+
+		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
+
+		$this->assertSame($this->responseMock, $result);
+	}
+
+
+
+
 
 	/**
 	 * @throws Exception
@@ -155,7 +199,9 @@ class LoginControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @return void
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testLogoutRedirectsToLogin(): void
