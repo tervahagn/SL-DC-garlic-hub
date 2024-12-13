@@ -13,21 +13,26 @@ use PHPUnit\Framework\TestCase;
 class ClientsRepositoryTest extends TestCase
 {
 	private ClientsRepository $repository;
-	private Connection $mockConnection;
 
 	/**
 	 * Wird vor jedem Test ausgeführt.
+	 *
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->mockConnection = $this->createMock(Connection::class);
+		$mockConnection = $this->createMock(Connection::class);
 
 		$this->repository = $this->getMockBuilder(ClientsRepository::class)
-								 ->setConstructorArgs([$this->mockConnection])
+								 ->setConstructorArgs([$mockConnection])
 								 ->onlyMethods(['getFirstDataSet', 'findAllBy'])
 								 ->getMock();
 	}
 
+	/**
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testGetClientEntityReturnsClientEntity(): void
 	{
@@ -61,6 +66,9 @@ class ClientsRepositoryTest extends TestCase
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testValidateClientReturnsTrueWhenValid(): void
 	{
@@ -74,22 +82,28 @@ class ClientsRepositoryTest extends TestCase
 		$this->repository->method('findAllBy')->willReturn([$clientData]);
 		$this->repository->method('getFirstDataSet')->willReturn($clientData);
 
-		$isValid = $this->repository->validateClient('test-client-id', 'client-secret', 'authorization_code');
+		$isValid = $this->repository->validateClient('test-client-id', 'client-secret');
 
 		$this->assertTrue($isValid);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testValidateClientReturnsFalseWhenClientNotFound(): void
 	{
 		$this->repository->method('findAllBy')->willReturn([]);
 		$this->repository->method('getFirstDataSet')->willReturn(null);
 
-		$isValid = $this->repository->validateClient('non-existent-client-id', 'client-secret', 'authorization_code');
+		$isValid = $this->repository->validateClient('non-existent-client-id', 'client-secret');
 
 		$this->assertFalse($isValid);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testValidateClientReturnsFalseWhenSecretDoesNotMatch(): void
 	{
@@ -103,11 +117,14 @@ class ClientsRepositoryTest extends TestCase
 		$this->repository->method('findAllBy')->willReturn([$clientData]);
 		$this->repository->method('getFirstDataSet')->willReturn($clientData);
 
-		$isValid = $this->repository->validateClient('test-client-id', 'wrong-secret', 'authorization_code');
+		$isValid = $this->repository->validateClient('test-client-id', 'wrong-secret');
 
 		$this->assertFalse($isValid);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testValidateClientReturnsFalseWhenGrantTypeDoesNotMatch(): void
 	{
@@ -121,7 +138,7 @@ class ClientsRepositoryTest extends TestCase
 		$this->repository->method('findAllBy')->willReturn([$clientData]);
 		$this->repository->method('getFirstDataSet')->willReturn($clientData);
 
-		$isValid = $this->repository->validateClient('test-client-id', 'client-secret', 'authorization_code');
+		$isValid = $this->repository->validateClient('test-client-id', 'client-secret');
 
 		$this->assertFalse($isValid);
 	}

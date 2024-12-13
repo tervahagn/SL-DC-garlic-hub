@@ -25,7 +25,6 @@ use League\OAuth2\Server\Entities\ScopeEntityInterface;
 
 class ScopeEntity implements ScopeEntityInterface
 {
-
 	/**
 	 * @inheritDoc
 	 */
