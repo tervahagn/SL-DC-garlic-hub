@@ -24,10 +24,10 @@ use Doctrine\DBAL\Exception;
 use InvalidArgumentException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
-use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use SlimSession\Helper;
 
 class OAuth2Controller
 {
@@ -59,7 +59,7 @@ class OAuth2Controller
 		try
 		{
 			$authRequest = $this->authServer->validateAuthorizationRequest($request);
-
+			/**  @var Helper $session */
 			// check if user is logged in
 			$session  = $request->getAttribute('session');
 			if (!$session->exists('user'))
