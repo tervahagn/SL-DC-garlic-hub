@@ -40,7 +40,7 @@ class UserMainRepository extends Sql
 	 *
 	 * @throws Exception
 	 */
-	final public function findById(int|string $id): array
+	public function findById(int|string $id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('UID, company_id, status, locale')
