@@ -10,6 +10,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\InvalidArgumentException;
 
 class AuthServiceTest extends TestCase
 {
@@ -77,19 +78,30 @@ class AuthServiceTest extends TestCase
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testLoginWithNonExistentUser(): void
 	{
 		$identifier = 'nonexistent@example.com';
 		$password   = 'password';
-
-		// Verhalten des UserService simulieren
 		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([]);
 
 		$this->expectException(UserException::class);
 		$this->expectExceptionMessage('Invalid credentials.');
 
 		$this->authServiceMock->login($identifier, $password);
+	}
+
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	#[Group('units')]
+	public function testLogout(): void
+	{
+		$this->userServiceMock->expects($this->once())->method('invalidateCache')->with(45);
+
+		$this->authServiceMock->logout(['UID' => 45]);
 	}
 }
