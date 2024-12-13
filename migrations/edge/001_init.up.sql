@@ -31,8 +31,8 @@ CREATE TABLE oauth2_clients (
 );
 
 INSERT INTO oauth2_clients (client_id, client_name, client_secret, redirect_uri, grant_type)
-VALUES ('1234567890', 'edge-default-client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',
-        'https://oauth2client.ddev.site/callback.php', 'authorization_code,refresh_token');
+VALUES ('edge-default-client', 'The Default Client', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',
+        'https://oauth2client.ddev.site/callback.php', 'authorization_code refresh_token');
 
 CREATE TABLE oauth2_credentials (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

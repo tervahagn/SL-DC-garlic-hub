@@ -23,6 +23,7 @@ namespace App\Modules\Auth;
 use App\Framework\OAuth2\OAuth2Service;
 use App\Framework\User\UserEntity;
 use Doctrine\DBAL\Exception;
+use InvalidArgumentException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
@@ -48,26 +49,13 @@ class OAuth2Controller
 		$this->authServer = $authServer;
 	}
 
-
-	public function token(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
-		try
-		{
-			// return a json token
-			// {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read write"}
-			return $this->authServer->respondToAccessTokenRequest($request, $response);
-		}
-		catch (OAuthServerException $e)
-		{
-			return $e->generateHttpResponse($response);
-		}
-		catch (\Exception $e)
-		{
-			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-			return $response->withStatus(500);
-		}
-	}
-
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface      $response
+	 *
+	 * @return ResponseInterface
+	 * @throws Exception
+	 */
 	public function authorize(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		try
@@ -86,14 +74,14 @@ class OAuth2Controller
 					'state'         => $this->validateState($params['state'] ?? null),
 				];
 				$this->session->set('oauth_redirect_params', $sanitizedParams);
+				// redirect to ath site
 				return $response->withHeader('Location', '/login')->withStatus(302);
 			}
-			// Once the user has logged in set the user on the AuthorizationRequest
+
+			//
 			$user = $this->session->get('user');
 			$authRequest->setUser($this->authService->getCurrentUser($user['UID'])); // an instance of UserEntityInterface
 
-			// At this point you should redirect the user to an authorization page.
-			// This form will ask the user to approve the client and the scopes requested.
 
 			// Once the user has approved or denied the client update the status
 			// (true = approved, false = denied)
@@ -112,9 +100,26 @@ class OAuth2Controller
 			$body = new Stream(fopen('php://temp', 'r+'));
 			$body->write($exception->getMessage());
 			return $response->withStatus(500)->withBody($body);
-
 		}
-		catch (Exception $e) {
+	}
+
+	public function token(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		try
+		{
+			// return a json token
+			// {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read write"}
+			return $this->authServer->respondToAccessTokenRequest($request, $response);
+		}
+		catch (OAuthServerException $e)
+		{
+			return $e->generateHttpResponse($response);
+		}
+		catch (\Exception $e)
+		{
+			// Unknown exception
+			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+			return $response->withStatus(500);
 		}
 	}
 
@@ -140,15 +145,6 @@ class OAuth2Controller
 		$response->getBody()->write(json_encode(['error' => 'access_denied']));
 		return $response->withStatus(403);
 	}
-
-	private function isAccessConfirmed(ServerRequestInterface $request): bool
-	{
-		$session = $request->getAttribute('session');
-		$UID = $session->get('user')['UID'];
-		$clientId = $request->getQueryParams()['client_id'] ?? null;
-	}
-
-
 
 	private function validateResponseType(?string $responseType): string
 	{

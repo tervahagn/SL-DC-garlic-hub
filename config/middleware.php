@@ -34,7 +34,7 @@ use Slim\Middleware\Session;
 use SlimSession\Helper;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App {
-	// App-Instanz aus dem Container abrufen
+
 	$app = $container->get(App::class);
 
 	// Error Middleware
@@ -58,7 +58,6 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		new MustacheAdapter($container->get(Mustache_Engine::class))
 	));
 
-	// Routes laden
 	require_once __DIR__ . '/route.php';
 
 	// Layout Data Middleware (BEFORE Controllers)

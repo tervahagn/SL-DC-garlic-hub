@@ -21,38 +21,146 @@
 namespace App\Framework\OAuth2;
 
 use App\Framework\BaseRepositories\Sql;
-use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
-use League\OAuth2\Server\CryptKeyInterface;
+use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
+use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
-use League\OAuth2\Server\Entities\ScopeEntityInterface;
+use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
+use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
-class TokensRepository extends Sql implements AccessTokenRepositoryInterface
+class TokensRepository extends Sql implements AuthCodeRepositoryInterface, AccessTokenRepositoryInterface, RefreshTokenRepositoryInterface
 {
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'oauth2_tokens', 'id');
+		parent::__construct($connection,'oauth2_credentials', 'id');
+	}
+
+	public function getNewAuthCode(): AuthCodeEntityInterface
+	{
+		return new AuthCodeEntity();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
+	{
+		$data = [
+			'type'               => 'auth_code',
+			'token'              => $authCodeEntity->getIdentifier(),
+			'client_id'          => $authCodeEntity->getClient()->getIdentifier(),
+			'UID'                => $authCodeEntity->getUserIdentifier(),
+			'redirect_uri'       => $authCodeEntity->getRedirectUri(),
+			'scopes'             => implode(' ', $authCodeEntity->getScopes()),
+			'expires_at'         => $authCodeEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+			'created_at'         => date('Y-m-d H:i:s')
+		];
+
+		$this->insert($data);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function revokeAuthCode(string $codeId): void
+	{
+		$this->updateWithWhere(['revoked' => 1], ['token' => $codeId, 'type' => 'auth_code']);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function isAuthCodeRevoked(string $codeId): bool
+	{
+		$revoked = (int) $this->findOneValueBy('revoked', ['token' => $codeId, 'type' => 'auth_code']);
+		return $revoked === 1;
 	}
 
 	public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, ?string $userIdentifier = null): AccessTokenEntityInterface
 	{
-		// TODO: Implement getNewToken() method.
+		$accessToken = new AccessTokenEntity();
+		$accessToken->setClient($clientEntity);
+		$accessToken->setUserIdentifier($userIdentifier);
+		$accessToken->addScope(new ScopeEntity());
+
+		return $accessToken;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
 	{
-		// TODO: Implement persistNewAccessToken() method.
+		$data = [
+			'type'       => 'access_token',
+			'token'      => $accessTokenEntity->getIdentifier(),
+			'client_id'  => $accessTokenEntity->getClient()->getIdentifier(),
+			'UID'        => $accessTokenEntity->getUserIdentifier(),
+			'scopes'     => implode(' ', array_map(fn($scope) => $scope->getIdentifier(), $accessTokenEntity->getScopes())),
+			'expires_at' => $accessTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+			'created_at' => date('Y-m-d H:i:s')
+		];
+
+		$this->insert($data);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function revokeAccessToken(string $tokenId): void
 	{
-		// TODO: Implement revokeAccessToken() method.
+		$this->updateWithWhere(['revoked' => 1], ['token' => $tokenId]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function isAccessTokenRevoked(string $tokenId): bool
 	{
-		// TODO: Implement isAccessTokenRevoked() method.
+		$revoked = (int) $this->findOneValueBy('revoked', ['token' => $tokenId, 'type' => 'access_token']);
+		return $revoked === 1;
+	}
+
+	public function getNewRefreshToken(): ?RefreshTokenEntityInterface
+	{
+		return new RefreshTokenEntity();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
+	{
+		$data = [
+			'type'       => 'refresh_token',
+			'token'      => $refreshTokenEntity->getIdentifier(),
+			'client_id'  => $refreshTokenEntity->getAccessToken()->getClient()->getIdentifier(),
+			'UID'        => $refreshTokenEntity->getAccessToken()->getUserIdentifier(),
+			'scopes'     => implode(' ', array_map(fn($scope) => $scope->getIdentifier(), $refreshTokenEntity->getAccessToken()->getScopes())),
+			'expires_at' => $refreshTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+			'created_at' => date('Y-m-d H:i:s')
+		];
+
+		$this->insert($data);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function revokeRefreshToken(string $tokenId): void
+	{
+		$this->updateWithWhere(['revoked' => 1], ['token' => $tokenId]);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function isRefreshTokenRevoked(string $tokenId): bool
+	{
+		$revoked = (int) $this->findOneValueBy('revoked', ['token' => $tokenId, 'type' => 'refresh_token']);
+		return $revoked === 1;
 	}
 }

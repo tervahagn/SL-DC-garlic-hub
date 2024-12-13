@@ -19,10 +19,7 @@
 */
 
 use App\Framework\Core\Config\Config;
-use App\Framework\OAuth2\AuthCodesRepository;
 use App\Framework\OAuth2\ClientsRepository;
-use App\Framework\OAuth2\OAuth2Service;
-use App\Framework\OAuth2\RefreshTokenRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
 use App\Framework\User\UserService;
@@ -30,6 +27,7 @@ use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use Defuse\Crypto\Key;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use League\OAuth2\Server\AuthorizationServer;
@@ -47,11 +45,9 @@ $dependencies[LoginController::class] = DI\factory(function (ContainerInterface 
 });
 
 $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $container) {
-	$clientRepository      = new ClientsRepository($container->get('SqlConnection'));
-	$accessTokenRepository = new TokensRepository($container->get('SqlConnection'));
-	$authCodeRepository    = new AuthCodesRepository($container->get('SqlConnection'));
-	$scopeRepository       = new ScopeRepository($container->get('SqlConnection'));
-	$refreshTokenRepository = new RefreshTokenRepository($container->get('SqlConnection'));
+	$clientRepository       = new ClientsRepository($container->get('SqlConnection'));
+	$tokensRepository       = new TokensRepository($container->get('SqlConnection'));
+	$scopeRepository        = new ScopeRepository($container->get('SqlConnection'));
 
 	$config        = $container->get(Config::class);
 	$keysDir       = $config->getPaths('keysDir');
@@ -61,21 +57,21 @@ $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $
 
 	$server = new AuthorizationServer(
 		$clientRepository,
-		$accessTokenRepository,
+		$tokensRepository,
 		$scopeRepository,
 		$privateKey,
 		$encryptionKey
 	);
 
-	$grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
-		$authCodeRepository,
-		$refreshTokenRepository,
-		new \DateInterval('PT10M') // authorization codes will expire after 10 minutes
+	$grant = new AuthCodeGrant(
+		$tokensRepository,
+		$tokensRepository,
+		new DateInterval('PT10M') // authorization codes will expire after 10 minutes
 	);
 
-	$grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
+	$grant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
 
-	$server->enableGrantType($grant, new \DateInterval('PT1H')); // 1 houer
+	$server->enableGrantType($grant, new DateInterval('PT1H')); // 1 hour
 	return $server;
 });
 

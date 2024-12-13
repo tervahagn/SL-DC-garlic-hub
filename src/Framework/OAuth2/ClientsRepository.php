@@ -50,14 +50,17 @@ class ClientsRepository extends Sql implements ClientRepositoryInterface
 	 */
 	public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType = 'authorization_code'): bool
 	{
-		$conditions = [
-			'client_id' => $clientIdentifier,
-			'client_secret' => $clientSecret,
-			'grant_type' => $grantType,
-		];
-		$client = $this->getFirstDataSet($this->findAllBy($conditions));
+		$client = $this->getFirstDataSet($this->findAllBy(['client_id' => $clientIdentifier]));
+
 		if (empty($client))
 			return false;
+
+		if (!password_verify($clientSecret, $client['client_secret']))
+			return false;
+
+		if (!str_contains($client['grant_type'], $grantType))
+			return false;
+
 
 		return true;
 	}
