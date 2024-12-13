@@ -63,15 +63,11 @@ $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $
 		$encryptionKey
 	);
 
-	$grant = new AuthCodeGrant(
-		$tokensRepository,
-		$tokensRepository,
-		new DateInterval('PT10M') // authorization codes will expire after 10 minutes
-	);
-
+	// authorization codes will expire after 10 minutes
+	$grant = new AuthCodeGrant($tokensRepository, $tokensRepository, new DateInterval('PT10M'));
 	$grant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
+	$server->enableGrantType($grant, new DateInterval('PT1H')); // Tokens expire after 1 hour
 
-	$server->enableGrantType($grant, new DateInterval('PT1H')); // 1 hour
 	return $server;
 });
 

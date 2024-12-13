@@ -20,12 +20,11 @@
 
 namespace App\Modules\Auth;
 
-use App\Framework\OAuth2\OAuth2Service;
-use App\Framework\User\UserEntity;
 use Doctrine\DBAL\Exception;
 use InvalidArgumentException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -33,7 +32,6 @@ use Psr\Log\LoggerInterface;
 class OAuth2Controller
 {
 	private AuthService $authService;
-	private $session;
 	private LoggerInterface $logger;
 	private AuthorizationServer $authServer;
 
@@ -63,8 +61,8 @@ class OAuth2Controller
 			$authRequest = $this->authServer->validateAuthorizationRequest($request);
 
 			// check if user is logged in
-			$this->session  = $request->getAttribute('session');
-			if (!$this->session->exists('user'))
+			$session  = $request->getAttribute('session');
+			if (!$session->exists('user'))
 			{
 				$params = $request->getQueryParams();
 				$sanitizedParams = [
@@ -73,33 +71,33 @@ class OAuth2Controller
 					'redirect_uri'  => $this->validateRedirectUri($params['redirect_uri'] ?? null),
 					'state'         => $this->validateState($params['state'] ?? null),
 				];
-				$this->session->set('oauth_redirect_params', $sanitizedParams);
+				$session->set('oauth_redirect_params', $sanitizedParams);
 				// redirect to ath site
 				return $response->withHeader('Location', '/login')->withStatus(302);
 			}
 
 			//
-			$user = $this->session->get('user');
+			$user = $session->get('user');
 			$authRequest->setUser($this->authService->getCurrentUser($user['UID'])); // an instance of UserEntityInterface
-
 
 			// Once the user has approved or denied the client update the status
 			// (true = approved, false = denied)
+			// Todo later: Set a confirmation page when handle resource scopes etc.
 			$authRequest->setAuthorizationApproved(true);
 
 			return $this->authServer->completeAuthorizationRequest($authRequest, $response);
 
-		} catch (OAuthServerException $exception) {
-
-			// All instances of OAuthServerException can be formatted into a HTTP response
-			return $exception->generateHttpResponse($response);
-
-		} catch (\Exception $exception) {
-
-			// Unknown exception
-			$body = new Stream(fopen('php://temp', 'r+'));
-			$body->write($exception->getMessage());
-			return $response->withStatus(500)->withBody($body);
+		}
+		catch (OAuthServerException $e)
+		{
+			$this->logger->error($e->getMessage());
+			return $e->generateHttpResponse($response);
+		}
+		catch (\Exception $e)
+		{
+			$this->logger->error($e->getMessage());
+			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+			return $response->withStatus(500);
 		}
 	}
 
@@ -107,48 +105,25 @@ class OAuth2Controller
 	{
 		try
 		{
-			// return a json token
-			// {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read write"}
+			// return a json token {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read write"}
 			return $this->authServer->respondToAccessTokenRequest($request, $response);
 		}
 		catch (OAuthServerException $e)
 		{
+			$this->logger->error($e->getMessage());
 			return $e->generateHttpResponse($response);
 		}
 		catch (\Exception $e)
 		{
-			// Unknown exception
+			$this->logger->error($e->getMessage());
 			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
 			return $response->withStatus(500);
 		}
 	}
 
-	public function confirmAccess(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
-		$params = $request->getParsedBody();
-
-		if (isset($params['approve']) && $params['approve'] === 'yes')
-		{
-			try {
-				return $this->authorizationServer->completeAuthorizationRequest(
-					AuthorizationRequest::fromSession($request), // Lade gespeicherte Anfrage
-					$response
-				);
-			}
-			catch (OAuthServerException $e)
-			{
-				return $e->generateHttpResponse($response);
-			}
-		}
-
-		// Zugriff verweigert
-		$response->getBody()->write(json_encode(['error' => 'access_denied']));
-		return $response->withStatus(403);
-	}
-
 	private function validateResponseType(?string $responseType): string
 	{
-		$allowed = ['code', 'token']; // Beispielhaft erlaubte Werte
+		$allowed = ['code', 'token'];
 		if (!in_array($responseType, $allowed, true))
 			throw new InvalidArgumentException('Invalid response_type');
 
@@ -165,17 +140,17 @@ class OAuth2Controller
 
 	private function validateRedirectUri(?string $redirectUri): string
 	{
-		if (!filter_var($redirectUri, FILTER_VALIDATE_URL)) {
+		if (!filter_var($redirectUri, FILTER_VALIDATE_URL))
 			throw new InvalidArgumentException('Invalid redirect_uri');
-		}
+
 		return $redirectUri;
 	}
 
 	private function validateState(?string $state): string
 	{
-		if (empty($state) || strlen($state) > 255) {
+		if (empty($state) || strlen($state) > 255)
 			throw new InvalidArgumentException('Invalid state');
-		}
+
 		return $state;
 	}
 
