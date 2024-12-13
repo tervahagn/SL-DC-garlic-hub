@@ -31,7 +31,7 @@ class AuthServiceTest extends TestCase
 	 * @throws UserException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testSuccessfulLogin(): void
@@ -56,6 +56,7 @@ class AuthServiceTest extends TestCase
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testLoginWithInvalidCredentials(): void
