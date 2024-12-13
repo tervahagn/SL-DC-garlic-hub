@@ -82,10 +82,10 @@ class AuthServiceTest extends TestCase
 	public function testLoginWithNonExistentUser(): void
 	{
 		$identifier = 'nonexistent@example.com';
-		$password = 'password';
+		$password   = 'password';
 
 		// Verhalten des UserService simulieren
-		$this->userServiceMock->method('findUser')->with($identifier)->willReturn(null);
+		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([]);
 
 		$this->expectException(UserException::class);
 		$this->expectExceptionMessage('Invalid credentials.');

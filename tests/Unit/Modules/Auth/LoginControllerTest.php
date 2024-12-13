@@ -161,6 +161,7 @@ class LoginControllerTest extends TestCase
 	public function testLogoutRedirectsToLogin(): void
 	{
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->expects($this->once())->method('get')->with('user')->willReturn(['UID' => 88]);
 		$this->sessionMock->expects($this->once())->method('delete')->with('user');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();

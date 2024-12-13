@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Framework\User;
 
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -26,13 +27,11 @@ class UserServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-
 		$this->mockRepositoryFactory = $this->createMock(UserRepositoryFactory::class);
-		$this->mockEntityFactory = $this->createMock(UserEntityFactory::class);
-		$this->mockCache = $this->createMock(Psr16Adapter::class);
+		$this->mockEntityFactory     = $this->createMock(UserEntityFactory::class);
+		$this->mockCache             = $this->createMock(Psr16Adapter::class);
 		$this->mockUserMainRepository = $this->createMock(UserMainRepository::class);
-		$this->mockRepositoryFactory
-			->method('create')
+		$this->mockRepositoryFactory->method('create')
 			->willReturn(['main' => $this->mockUserMainRepository]);
 
 		$this->userService = new UserService(
@@ -72,15 +71,21 @@ class UserServiceTest extends TestCase
 		$this->assertEmpty($this->userService->findUser($identifier));
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testGetCurrentUserFromCache(): void
 	{
 		$UID = 1;
 		$cachedData = ['UID' => 1, 'username' => 'testuser'];
 
-		$this->mockCache->method('get')
-			->with("user_$UID")
+		$this->mockCache->method('get')->with("user_$UID")
 			->willReturn($cachedData);
+
+		$this->mockUserMainRepository->expects($this->never())->method('findById');
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
 		$this->mockEntityFactory->method('create')
@@ -100,7 +105,7 @@ class UserServiceTest extends TestCase
 		$this->mockCache->method('get')->with("user_$UID")
 			->willReturn(null);
 
-		$this->mockUserMainRepository->method('findById')->with($UID)
+		$this->mockUserMainRepository->expects($this->once())->method('findById')->with($UID)
 			->willReturn($userData);
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
