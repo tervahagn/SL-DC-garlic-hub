@@ -21,9 +21,8 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldRenderInterface;
 
-class EmailRenderer extends AbstractInputFieldRenderer
+class EmailRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 
 	public function render(FieldInterface $field): string

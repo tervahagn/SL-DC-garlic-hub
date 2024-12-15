@@ -21,8 +21,6 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldRenderInterface;
-
 class AbstractInputFieldRenderer
 {
 	protected array $attributes = [];
