@@ -25,6 +25,6 @@ class TextRenderer extends AbstractInputFieldRenderer
 	public function render(FieldInterface $field): string
 	{
 		$this->field = $field;
-		return '<input type="text" '.  $this->buildAttributes() . '>';
+		return '<input type="text" '.$this->buildAttributes().' aria-describedby = "error_'.$this->field->getId().'">';
 	}
 }

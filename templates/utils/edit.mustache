@@ -5,14 +5,13 @@
 			{{{HIDDEN_HTML_ELEMENT}}}
 			{{/element_hidden}}
 
-			<ul class="form_edit">
 				{{#form_element}}
-				<li id="wrap_{{HTML_ELEMENT_ID}}">
-					<label for="{{HTML_ELEMENT_ID}}">{{LANG_ELEMENT_NAME}} {{ELEMENT_MUST_FIELD}}</label><br />
+				<div class="field-wrapper">
+					<label for="{{HTML_ELEMENT_ID}}">{{LANG_ELEMENT_NAME}} {{ELEMENT_MUST_FIELD}}</label>
 					{{{HTML_ELEMENT}}}
-				</li>
+					<span class="error-message" id="error_{{HTML_ELEMENT_ID}}"></span>
+				</div>
 				{{/form_element}}
-			</ul>
 
 			{{#form_button}}
 			<button type="button" name="{{ELEMENT_BUTTON_NAME}}" id="{{ELEMENT_BUTTON_NAME}}" value="{{LANG_ELEMENT_BUTTON}}">{{LANG_ELEMENT_BUTTON}}</button>

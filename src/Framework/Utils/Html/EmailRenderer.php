@@ -28,6 +28,6 @@ class EmailRenderer extends AbstractInputFieldRenderer implements FieldRenderInt
 	public function render(FieldInterface $field): string
 	{
 		$this->field = $field;
-		return '<input type="email" '.  $this->buildAttributes() . '>';
+		return '<input type="email" '.$this->buildAttributes().' aria-describedby = "error_'.$this->field->getId().'">';
 	}
 }
