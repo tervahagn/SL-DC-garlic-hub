@@ -24,6 +24,8 @@ interface FieldInterface
 {
 	public function getName(): string;
 
+	public function setValidationRules(array $rules): static;
+
 	public function getId(): string;
 
 	public function getValue(): ?string;

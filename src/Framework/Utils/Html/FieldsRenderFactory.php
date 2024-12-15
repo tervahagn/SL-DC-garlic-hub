@@ -27,17 +27,16 @@ class FieldsRenderFactory
 {
 	private array $rendererCache = [];
 
-	public function getRenderer(FieldInterface $field): FieldRenderInterface
+	public function getRenderer(FieldInterface $field): string
 	{
-		if ($field instanceof TextField)
-			return $this->getCachedRenderer(TextRenderer::class);
-
-		if ($field instanceof EmailField)
-			return $this->getCachedRenderer(EmailRenderer::class);
-
-		throw new InvalidArgumentException('Unsupported field type: ' . get_class($field));
-
-
+		return match (true)
+		{
+			$field instanceof TextField => $this->getCachedRenderer(TextRenderer::class)->render($field),
+			$field instanceof EmailField => $this->getCachedRenderer(EmailRenderer::class)->render($field),
+			$field instanceof PasswordField => $this->getCachedRenderer(PasswordRenderer::class)->render($field),
+			$field instanceof CsrfTokenField => $this->getCachedRenderer(CsrfTokenRenderer::class)->render($field),
+			default => throw new InvalidArgumentException('Unsupported field type: ' . get_class($field)),
+		};
 	}
 
 	private function getCachedRenderer(string $rendererClass): FieldRenderInterface

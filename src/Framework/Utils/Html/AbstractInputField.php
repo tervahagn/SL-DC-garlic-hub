@@ -43,6 +43,12 @@ class AbstractInputField implements FieldInterface
 		return $this;
 	}
 
+	public function setValidationRules(array $rules): static
+	{
+		$this->validationRules = $rules;
+		return $this;
+	}
+
 	public function setAttribute(string $name, string $value): self
 	{
 		$this->attributes[$name] = $value;

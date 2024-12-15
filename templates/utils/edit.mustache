@@ -1,20 +1,21 @@
-<form action="{{SITE}}" method="post" enctype="multipart/form-data" id="form_elements_edit">
-	<fieldset>
-		{{#element_hidden}}
-		<input type="hidden" name="{{HIDDEN_ELEMENT_NAME}}" id="{[HIDDEN_ELEMENT_NAME]}" value="{[HIDDEN_ELEMENT_VALUE]}">
-		{{/element_hidden}}
 
-		<ul class="form_edit">
-			{{#form_element}}
-			<li id="wrap_{{HTML_ELEMENT_ID}}">
-				<label for="{{HTML_ELEMENT_ID}}">{{LANG_ELEMENT_NAME}} {{ELEMENT_MUST_FIELD}}</label><br />
-				{{HTML_ELEMENT}}
-			</li>
-			{{/form_element}}
-		</ul>
+	<form action="{{SITE}}" method="post" enctype="multipart/form-data" id="form_elements_edit">
+		<fieldset>
+			{{#element_hidden}}
+			{{{HIDDEN_HTML_ELEMENT}}}
+			{{/element_hidden}}
 
-		{{#form_button}}
-		<button type="button" name="{{ELEMENT_BUTTON_NAME}}" id="{{ELEMENT_BUTTON_NAME}}" value="{[LANG_ELEMENT_BUTTON]}">{[LANG_ELEMENT_BUTTON]}</button>
-		{{/form_button}}
-	</fieldset>
-</form>
+			<ul class="form_edit">
+				{{#form_element}}
+				<li id="wrap_{{HTML_ELEMENT_ID}}">
+					<label for="{{HTML_ELEMENT_ID}}">{{LANG_ELEMENT_NAME}} {{ELEMENT_MUST_FIELD}}</label><br />
+					{{{HTML_ELEMENT}}}
+				</li>
+				{{/form_element}}
+			</ul>
+
+			{{#form_button}}
+			<button type="button" name="{{ELEMENT_BUTTON_NAME}}" id="{{ELEMENT_BUTTON_NAME}}" value="{{LANG_ELEMENT_BUTTON}}">{{LANG_ELEMENT_BUTTON}}</button>
+			{{/form_button}}
+		</fieldset>
+	</form>
