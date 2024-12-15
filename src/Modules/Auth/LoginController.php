@@ -42,6 +42,7 @@ class LoginController
 	{
 		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
+		$flash    = $request->getAttribute('flash');
 		try
 		{
 			$params   = (array) $request->getParsedBody();
@@ -49,7 +50,9 @@ class LoginController
 			$username = $params['username'] ?? null;
 			$password = $params['password'] ?? null;
 
-			$flash    = $request->getAttribute('flash');
+			$csrfToken = $params['csrf_token'] ?? null;
+			if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
+				throw new UserException('CSRF Token mismatch');
 
 			$userEntity = $this->authService->login($username, $password);
 			$main_data = $userEntity->getMain();
@@ -86,6 +89,9 @@ class LoginController
 		return $this->redirect($response, '/login');
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	private function renderForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$flash    = $request->getAttribute('flash');
@@ -93,6 +99,12 @@ class LoginController
 		$error	  = [];
 		if (array_key_exists('error', $messages))
 			$error = $messages['error'];
+
+		$csrfToken = bin2hex(random_bytes(32));
+		$session = $request->getAttribute('session');
+		$session->set('csrf_token', $csrfToken);
+
+		$session = $request->getAttribute('session');
 
 		$data = [
 			'main_layout' => [
@@ -106,7 +118,9 @@ class LoginController
 					'LANG_PAGE_HEADER' => 'Login',
 					'LANG_USERNAME' => 'Username / Email',
 					'LANG_PASSWORD' => 'Password',
-					'LANG_SUBMIT' => 'Login',
+					'CSRF_TOKEN' => $csrfToken,
+					'LANG_SUBMIT' => 'Login'
+
 				]
 			]
 		];

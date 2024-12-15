@@ -5,6 +5,8 @@
 		<input type="text" id="username" name="username" required>
 		<label for="password">{{LANG_PASSWORD}}:</label>
 		<input type="password" id="password" name="password" required>
+		<input type="hidden" name="csrf_token" value="{{CSRF_TOKEN}}">
+
 		<button type="submit">{{LANG_SUBMIT}}</button>
 	</fieldset>
 </form>
