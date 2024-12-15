@@ -18,22 +18,34 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Controller\HomeController;
-use App\Modules\Auth\LoginController;
-use App\Modules\Auth\OAuth2Controller;
-use App\Modules\User\UserOptionsController;
-use Slim\App;
 
-/* @var App $app */
-$container = $app->getContainer();
+namespace App\Framework\Utils\Html;
 
-$app->get('/', [HomeController::class, 'index']);
-$app->get('/set_locales/{locale}', [HomeController::class, 'setLocales']);
-$app->get('/login', [LoginController::class, 'showLogin']);
-$app->post('/login', [LoginController::class, 'login']);
-$app->get('/logout', [LoginController::class, 'logout']);
+use InvalidArgumentException;
 
-$app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
-$app->post('/api/token', [OAuth2Controller::class, 'token']);
+class FieldsRenderFactory
+{
+	private array $rendererCache = [];
 
-$app->get('/user/options', [UserOptionsController::class, 'editUser']);
+	public function getRenderer(FieldInterface $field): FieldRenderInterface
+	{
+		if ($field instanceof TextField)
+			return $this->getCachedRenderer(TextRenderer::class);
+
+		if ($field instanceof EmailField)
+			return $this->getCachedRenderer(EmailRenderer::class);
+
+		throw new InvalidArgumentException('Unsupported field type: ' . get_class($field));
+
+
+	}
+
+	private function getCachedRenderer(string $rendererClass): FieldRenderInterface
+	{
+		if (!isset($this->rendererCache[$rendererClass]))
+			$this->rendererCache[$rendererClass] = new $rendererClass();
+
+
+		return $this->rendererCache[$rendererClass];
+	}
+}

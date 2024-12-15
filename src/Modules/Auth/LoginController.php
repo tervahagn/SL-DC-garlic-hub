@@ -26,6 +26,9 @@ class LoginController
 		$this->logger      = $logger;
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session  = $request->getAttribute('session');
@@ -103,8 +106,6 @@ class LoginController
 		$csrfToken = bin2hex(random_bytes(32));
 		$session = $request->getAttribute('session');
 		$session->set('csrf_token', $csrfToken);
-
-		$session = $request->getAttribute('session');
 
 		$data = [
 			'main_layout' => [

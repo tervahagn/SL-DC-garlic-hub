@@ -1,0 +1,78 @@
+<?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+namespace App\Framework\Utils\Html;
+
+use App\Framework\Utils\Html\FieldRenderInterface;
+
+class AbstractInputFieldRenderer
+{
+	protected array $attributes = [];
+	protected FieldInterface $field;
+
+	protected function buildAttributes(): string
+	{
+		$this->attributes = []; // init if used as cache;
+		$this->addBaseAttributes()->addCustomAttributes()->addValidationAttributes();
+
+		$parts = [];
+		foreach ($this->attributes as $key => $value)
+		{
+			$parts[] = sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value));
+		}
+		return implode(' ', $parts);
+	}
+
+	protected function addBaseAttributes(): static
+	{
+		$this->attributes = [
+			'name'  => $this->field->getName(),
+			'id'    => $this->field->getId(),
+			'value' => $this->field->getValue()
+		];
+
+		return $this;
+	}
+
+	protected function addCustomAttributes(): static
+	{
+		foreach ($this->field->getAttributes() as $name => $value)
+		{
+			$this->attributes[$name] = $value;
+		}
+
+		return $this;
+	}
+
+	protected function addValidationAttributes(): static
+	{
+		foreach ($this->field->getValidationRules() as $rule => $value)
+		{
+			if ($value === true)
+				$this->attributes[$rule] = $rule;
+			else
+				$this->attributes[$rule] = $value;
+		}
+
+		return $this;
+	}
+
+}
