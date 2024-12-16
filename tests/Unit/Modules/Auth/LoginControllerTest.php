@@ -158,9 +158,6 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/api/authorize?some=stuff')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-
-
-
 		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 

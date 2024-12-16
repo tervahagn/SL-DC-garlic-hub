@@ -45,7 +45,7 @@ class AuthMiddleware implements MiddlewareInterface
 		// if public route then skip
 		// todo: check if an anonymous middleware would be more efficient
 		preg_match('~^/([^/]+)~', $request->getUri()->getPath(), $matches);
-		if (in_array($matches[0], $this->publicRoutes, true))
+		if (!isset($matches[0]) || in_array($matches[0], $this->publicRoutes, true))
 			return $handler->handle($request);
 
 		$session = $request->getAttribute('session');
