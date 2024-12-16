@@ -21,6 +21,7 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\Middleware\LayoutDataMiddleware;
@@ -69,6 +70,8 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		$container->get(Locales::class),
 		$container->get(Translator::class)
 	));
+
+	$app->add(new AuthMiddleware());
 
 	// Session Middleware
 	$app->add(new SessionMiddleware($container->get(Helper::class)));
