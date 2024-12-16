@@ -2,7 +2,7 @@
 
 The `Sql` abstract class serves as a base for creating repository classes that
 interact with the database. By extending `Sql`, you can perform common CRUD 
-operations using reusable methods and avoid writing SQL code directly in your repository.
+operations using reusable methods and avoid writing SQL code directly in your repository. It is based on Doctrines Database Abstraction Layer (DBAL) and provides a flexible query builder for creating complex queries.
 
 ## Purpose
 
