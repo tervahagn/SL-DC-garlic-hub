@@ -23,7 +23,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe">';
+		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" aria-describedby="error_user_1">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -43,7 +43,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="email" id="email_input" value="john@example.com" required="required" maxlength="255">';
+		$expected = '<input type="text" name="email" id="email_input" value="john@example.com" required="required" maxlength="255" aria-describedby="error_email_input">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -66,7 +66,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" class="form-control" placeholder="Enter your username">';
+		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" class="form-control" placeholder="Enter your username" aria-describedby="error_user_1">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -89,7 +89,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="password" id="password_input" value="" class="password-input" placeholder="Enter your password" required="required" maxlength="20">';
+		$expected = '<input type="text" name="password" id="password_input" value="" class="password-input" placeholder="Enter your password" required="required" maxlength="20" aria-describedby="error_password_input">';
 		$this->assertSame($expected, $result);
 	}
 }
