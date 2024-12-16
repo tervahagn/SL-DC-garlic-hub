@@ -28,7 +28,7 @@ use Slim\App;
 $container = $app->getContainer();
 
 $app->get('/', [HomeController::class, 'index']);
-$app->get('/set_locales/{locale}', [HomeController::class, 'setLocales']);
+$app->get('/set-locales/{locale}', [HomeController::class, 'setLocales']);
 $app->get('/login', [LoginController::class, 'showLogin']);
 $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);
