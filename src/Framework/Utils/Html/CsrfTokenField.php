@@ -21,9 +21,27 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\AbstractInputField;
+
+use Exception;
 
 class CsrfTokenField extends AbstractInputField
 {
+	/**
+	 * @throws Exception
+	 */
+	public function __construct(array $attributes = [])
+	{
+		$this->setValue($this->generateToken());
+		parent::__construct($attributes);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function generateToken(): string
+	{
+		return bin2hex(random_bytes(32));
+
+	}
 
 }

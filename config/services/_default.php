@@ -34,6 +34,7 @@ use App\Framework\User\UserRepositoryFactory;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
+use App\Framework\Utils\Html\FormBuilder;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -149,8 +150,12 @@ $dependencies[UserService::class] = DI\factory(function (ContainerInterface $con
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[FieldsFactory::class]       = DI\factory(function () {return new FieldsFactory();});
-$dependencies[FieldsRenderFactory::class] = DI\factory(function () {return new FieldsRenderFactory();});
-
+$dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new FormBuilder(
+		new FieldsFactory(),
+		new FieldsRenderFactory()
+	);
+});
 
 return $dependencies;

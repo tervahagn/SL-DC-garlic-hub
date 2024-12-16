@@ -21,25 +21,23 @@
 
 namespace App\Modules\User;
 
-use App\Framework\Utils\Html\FieldsFactory;
-use App\Framework\Utils\Html\FieldsRenderFactory;
+use App\Framework\Utils\Html\FieldType;
+use App\Framework\Utils\Html\FormBuilder;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UserOptionsController
 {
-	private FieldsFactory $fieldsFactory;
-	private FieldsRenderFactory $fieldRenderFactory;
+	private FormBuilder $formBuilder;
 
-	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory)
+	public function __construct(FormBuilder $formBuilder)
 	{
-		$this->fieldsFactory      = $fieldsFactory;
-		$this->fieldRenderFactory = $fieldsRenderFactory;
-
+		$this->formBuilder = $formBuilder;
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function editUser(Request $request, Response $response): Response
 	{
@@ -61,7 +59,7 @@ class UserOptionsController
 			if ($key === 'csrf_token')
 			{
 				$hiddenElements[] = [
-					'HIDDEN_HTML_ELEMENT'        => $this->fieldRenderFactory->getRenderer($element)
+					'HIDDEN_HTML_ELEMENT'        => $this->formBuilder->renderField($element)
 				];
 				continue;
 			}
@@ -70,7 +68,7 @@ class UserOptionsController
 				'HTML_ELEMENT_ID'    => $element->getId(),
 				'LANG_ELEMENT_NAME'  => $element->getName(),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
-				'HTML_ELEMENT'       => $this->fieldRenderFactory->getRenderer($element)
+				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
 		}
 
@@ -102,19 +100,43 @@ class UserOptionsController
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function getUserForm(Request $request): array
 	{
 		$form = [];
 		$rules = ['required' => true, 'minlength' => 8];
-		$form['email'] = $this->fieldsFactory->createEmailField('email')->setValidationRules($rules);
-		$form['password'] = $this->fieldsFactory->createPasswordField('password')->setValidationRules($rules);
-		$form['password_repeat'] = $this->fieldsFactory->createPasswordField('password_repeat')->setValidationRules($rules);
-		$csrfToken = bin2hex(random_bytes(32));
+
+		$form['email'] = $this->formBuilder->createField([
+			'type' => FieldType::EMAIL,
+			'id' => 'email',
+			'name' => 'email',
+			'rules' => $rules,
+			'default_value' => ''
+		]);
+		$form['password'] = $this->formBuilder->createField([
+			'type' => FieldType::PASSWORD,
+			'id' => 'password',
+			'name' => 'password',
+			'rules' => $rules,
+			'default_value' => ''
+		]);
+		$form['password_repeat'] = $this->formBuilder->createField([
+			'type' => FieldType::PASSWORD,
+			'id' => 'password_repeat',
+			'name' => 'password_repeat',
+			'rules' => $rules,
+			'default_value' => ''
+		]);
+
+		$form['csrf_token'] = $this->formBuilder->createField([
+			'type' => FieldType::CSRF,
+			'id' => 'csrf_token',
+			'name' => 'csrf_token',
+		]);
+
 		$session = $request->getAttribute('session');
-		$session->set('csrf_token', $csrfToken);
-		$form['csrf_token'] = $this->fieldsFactory->createCsrfTokenField('csrf_token','csrf_token', $csrfToken);
+		$session->set('csrf_token', $form['csrf_token']->getValue());
 
 		return $form;
 	}

@@ -22,40 +22,27 @@ namespace App\Framework\Utils\Html;
 
 class FieldsFactory
 {
-	public function createTextField($elementId, $elementName = null, $defaultValue = null): TextField
+	public function createTextField(array $attributes): TextField
 	{
-		return new TextField(
-					$elementId,
-					$elementName,
-					$defaultValue
-				);
+		return new TextField($attributes);
 	}
 
-	public function createEmailField($elementId, $elementName = null, $defaultValue = null): EmailField
+	public function createEmailField(array $attributes): EmailField
 	{
-		return new EmailField(
-			$elementId,
-			$elementName,
-			$defaultValue
-		);
+		return new EmailField($attributes);
 	}
 
-	public function createPasswordField($elementId, $elementName = null, $defaultValue = null): PasswordField
+	public function createPasswordField(array $attributes): PasswordField
 	{
-		return new PasswordField(
-			$elementId,
-			$elementName,
-			$defaultValue
-		);
+		return new PasswordField($attributes);
 	}
 
-	public function createCsrfTokenField($elementId, $elementName = null, $defaultValue = null): CsrfTokenField
+	/**
+	 * @throws \Exception
+	 */
+	public function createCsrfTokenField(array $attributes): CsrfTokenField
 	{
-		return new CsrfTokenField(
-			$elementId,
-			$elementName,
-			$defaultValue
-		);
+		return new CsrfTokenField($attributes);
 	}
 
 }

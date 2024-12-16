@@ -30,11 +30,13 @@ class AbstractInputField implements FieldInterface
 	private array $attributes = [];
 	private array $validationRules = [];
 
-	public function __construct(string $id, string $name = null, $defaultValue = null)
+	public function __construct(array $attributes = [])
 	{
-		$this->name         = $name ?? $id;
-		$this->id           = $id;
-		$this->defaultValue = $defaultValue;
+		$this->id              = $attributes['id'];
+		$this->name            = $attributes['name'] ?? $attributes['id'];
+		$this->defaultValue    = $attributes['default_value'] ?? '';
+		$this->validationRules = $attributes['rules'] ?? [];
+		$this->attributes      = $attributes['attributes'] ?? [];
 	}
 
 	public function setValue(string $value): self

@@ -18,18 +18,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-use App\Framework\Utils\Html\FieldsFactory;
-use App\Framework\Utils\Html\FieldsRenderFactory;
+
+use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\User\UserOptionsController;
 use Psr\Container\ContainerInterface;
 $dependencies = [];
 
 $dependencies[UserOptionsController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UserOptionsController(
-		$container->get(FieldsFactory::class),
-		$container->get(FieldsRenderFactory::class)
-	);
+	return new UserOptionsController($container->get(FormBuilder::class));
 });
 
 return $dependencies;

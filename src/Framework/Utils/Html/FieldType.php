@@ -21,13 +21,12 @@
 
 namespace App\Framework\Utils\Html;
 
-
-class EmailRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
+enum FieldType: string
 {
-
-	public function render(FieldInterface $field): string
-	{
-		$this->field = $field;
-		return '<input type="email" '.$this->buildAttributes().' aria-describedby="error_'.$this->field->getId().'">';
-	}
+	case TEXT     = 'text';
+	case NUMBER   = 'number';
+	case DATE     = 'date';
+	case PASSWORD = 'password';
+	case EMAIL    = 'email';
+	case CSRF     = 'csrf';
 }
