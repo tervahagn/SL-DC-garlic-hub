@@ -4,21 +4,8 @@ $start_memory = memory_get_usage();
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\IniConfigLoader;
-use App\Framework\Core\Locales\Locales;
-use App\Framework\Core\Translate\IniTranslationLoader;
-use App\Framework\Core\Translate\MessageFormatterFactory;
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Middleware\EnvironmentMiddleware;
-use App\Framework\Middleware\FinalRenderMiddleware;
-use App\Framework\Middleware\LayoutDataMiddleware;
-use App\Framework\Middleware\SessionMiddleware;
-use App\Framework\TemplateEngine\MustacheAdapter;
 use DI\ContainerBuilder;
-use Phpfastcache\Helper\Psr16Adapter;
-use Psr\Log\LoggerInterface;
 use Slim\App;
-use Slim\Middleware\Session;
-use SlimSession\Helper;
 use Symfony\Component\Console\Application;
 
 try
@@ -27,6 +14,8 @@ try
 	require __DIR__ . '/vendor/autoload.php';
 	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 	$dotenv->load();
+	if ($_ENV['APP_ENV'] === 'dev')
+		require __DIR__ . '/bootstrap_dev.php';
 
 	$systemDir = realpath(__DIR__);
 	$paths = [
