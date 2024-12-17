@@ -20,6 +20,7 @@
 
 namespace App\Framework\Middleware;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
@@ -42,7 +43,6 @@ class LayoutDataMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
 	private Helper $session;
-	private Locales $locales;
 
 	/**
 	 * @throws CoreException
@@ -53,9 +53,11 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	{
 		$this->session    = $request->getAttribute('session');
         $this->translator = $request->getAttribute('translator');
-		$this->locales    = $request->getAttribute('locales');
+		$locales = $request->getAttribute('locales');
 
-		$locale = $this->locales->getLanguageCode();
+		/** @var Config $config */
+		$config = $request->getAttribute('config');
+		$locale = $locales->getLanguageCode();
 		$layoutData = [
 			'main_menu' => $this->createMainMenu(),
 			'CURRENT_LOCALE_LOWER' => strtolower($locale),
@@ -63,6 +65,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 			'language_select' => $this->createLanguageSelect(),
 			'user_menu' => $this->createUserMenu(),
 
+			'APP_NAME' => $config->getEnv('APP_NAME'),
 			'LANG_LEGAL_NOTICE' => $this->translator->translate('legal_notice', 'menu'),
 			'LANG_PRIVACY' => $this->translator->translate('privacy', 'menu'),
 			'LANG_TERMS' => $this->translator->translate('terms', 'menu')
