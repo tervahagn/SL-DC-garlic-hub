@@ -2,6 +2,7 @@
 
 namespace App\Modules\Auth;
 
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -15,6 +16,7 @@ class LoginController
 {
 	private AuthService $authService;
 	private LoggerInterface $logger;
+	private Translator $translator;
 
 	/**
 	 * @param AuthService $authService
@@ -27,10 +29,11 @@ class LoginController
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws \Exception|\Psr\SimpleCache\InvalidArgumentException
 	 */
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		$this->translator = $request->getAttribute('translator');
 		$session  = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
@@ -94,6 +97,7 @@ class LoginController
 
 	/**
 	 * @throws \Exception
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 */
 	private function renderForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -106,21 +110,21 @@ class LoginController
 		$csrfToken = bin2hex(random_bytes(32));
 		$session = $request->getAttribute('session');
 		$session->set('csrf_token', $csrfToken);
-
+		$page_name = $this->translator->translate('login', 'login');
 		$data = [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => 'Garlic Hub - Login',
+				'LANG_PAGE_TITLE' => $page_name,
 				'error_messages' => $error,
 				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [
 				'template' => 'auth/login', // Template-name
 				'data' => [
-					'LANG_PAGE_HEADER' => 'Login',
-					'LANG_USERNAME' => 'Username / Email',
-					'LANG_PASSWORD' => 'Password',
+					'LANG_PAGE_HEADER' => $page_name,
+					'LANG_USERNAME' => $this->translator->translate('username', 'main').' / '.$this->translator->translate('email', 'main'),
+					'LANG_PASSWORD' => $this->translator->translate('password', 'login'),
 					'CSRF_TOKEN' => $csrfToken,
-					'LANG_SUBMIT' => 'Login'
+					'LANG_SUBMIT' => $page_name
 
 				]
 			]
