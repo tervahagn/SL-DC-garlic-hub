@@ -21,15 +21,18 @@
 
 namespace App\Modules\User;
 
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class UserOptionsController
 {
 	private FormBuilder $formBuilder;
+	private Translator $translator;
 
 	public function __construct(FormBuilder $formBuilder)
 	{
@@ -38,10 +41,12 @@ class UserOptionsController
 
 	/**
 	 * @throws Exception
+	 * @throws InvalidArgumentException
 	 */
 	public function editUser(Request $request, Response $response): Response
 	{
-
+		$this->translator = $request->getAttribute('translator');
+		$error = '';
 		if ($request->getMethod() === 'POST')
 		{
 			$postData = $request->getParsedBody();
@@ -66,7 +71,7 @@ class UserOptionsController
 
 			$formElements[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getName(),
+				'LANG_ELEMENT_NAME'  => $this->translator->translate($key, 'user'),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
@@ -74,8 +79,8 @@ class UserOptionsController
 
 		$data = [
 				'main_layout' => [
-					'LANG_PAGE_TITLE' => 'Garlic Hub - UserOptions',
-					'error_messages' => '$error',
+					'LANG_PAGE_TITLE' => $this->translator->translate('options', 'user'),
+					'error_messages' => $error,
 					'ADDITIONAL_CSS' => ['/css/user/options.css']
 				],
 				'this_layout' => [
@@ -88,7 +93,7 @@ class UserOptionsController
 						'form_button' => [
 							[
 								'ELEMENT_BUTTON_NAME' => 'submit',
-								'LANG_ELEMENT_BUTTON' => 'Save'
+								'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
 							]
 					]
 				]
@@ -107,21 +112,21 @@ class UserOptionsController
 		$form = [];
 		$rules = ['required' => true, 'minlength' => 8];
 
-		$form['email'] = $this->formBuilder->createField([
+		$form['edit_email'] = $this->formBuilder->createField([
 			'type' => FieldType::EMAIL,
 			'id' => 'email',
 			'name' => 'email',
 			'rules' => $rules,
 			'default_value' => ''
 		]);
-		$form['password'] = $this->formBuilder->createField([
+		$form['edit_password'] = $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
 			'id' => 'password',
 			'name' => 'password',
 			'rules' => $rules,
 			'default_value' => ''
 		]);
-		$form['password_repeat'] = $this->formBuilder->createField([
+		$form['repeat_password'] = $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
 			'id' => 'password_repeat',
 			'name' => 'password_repeat',
