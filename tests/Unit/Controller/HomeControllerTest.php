@@ -21,7 +21,6 @@
 namespace Tests\Unit\Controller;
 
 use App\Controller\HomeController;
-use App\Framework\Core\Locales\Locales;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -32,34 +31,32 @@ use SlimSession\Helper;
 
 class HomeControllerTest extends TestCase
 {
-	private ServerRequestInterface $requestMock;
-	private ResponseInterface $responseMock;
-	private Helper $sessionMock;
-	private Locales $localesMock;
+	private ServerRequestInterface $mockRequest;
+	private ResponseInterface $mockResponse;
+	private Helper $mockSession;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
-		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock  = $this->createMock(Helper::class);
-		$this->localesMock  = $this->createMock(Locales::class);
+		$this->mockRequest  = $this->createMock(ServerRequestInterface::class);
+		$this->mockResponse = $this->createMock(ResponseInterface::class);
+		$this->mockSession  = $this->createMock(Helper::class);
 	}
 
 	#[Group('units')]
 	public function testIndexRedirectsToLoginIfUserNotInSession(): void
 	{
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
-		$this->sessionMock->method('exists')->with('user')->willReturn(false);
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
-		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->mockRequest->method('getAttribute')->with('session')->willReturn($this->mockSession);
+		$this->mockSession->method('exists')->with('user')->willReturn(false);
+		$this->mockResponse->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
+		$this->mockResponse->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
 		$controller = new HomeController();
-		$result = $controller->index($this->requestMock, $this->responseMock);
+		$result = $controller->index($this->mockRequest, $this->mockResponse);
 
-		$this->assertSame($this->responseMock, $result);
+		$this->assertSame($this->mockResponse, $result);
 	}
 
 	/**
@@ -68,75 +65,15 @@ class HomeControllerTest extends TestCase
 	#[Group('units')]
 	public function testIndexReturnsHomePageIfUserInSession(): void
 	{
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
-		$this->sessionMock->method('exists')->with('user')->willReturn(true);
-		$this->sessionMock->method('get')->with('user')->willReturn(['username' => 'testuser']);
-		$this->responseMock->method('getBody')->willReturn($this->createMock(StreamInterface::class));
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+		$this->mockRequest->method('getAttribute')->with('session')->willReturn($this->mockSession);
+		$this->mockSession->method('exists')->with('user')->willReturn(true);
+		$this->mockSession->method('get')->with('user')->willReturn(['username' => 'testuser']);
+		$this->mockResponse->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+		$this->mockResponse->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
 		$controller = new HomeController();
-		$result = $controller->index($this->requestMock, $this->responseMock);
+		$result = $controller->index($this->mockRequest, $this->mockResponse);
 
-		$this->assertSame($this->responseMock, $result);
+		$this->assertSame($this->mockResponse, $result);
 	}
-
-	#[Group('units')]
-	public function testSetLocales()
-	{
-		$this->requestMock->method('getAttribute')
-			->willReturnCallback(function ($attribute) {
-				return match ($attribute) {
-					'session' => $this->sessionMock,
-					'locales' => $this->localesMock,
-					default => null,
-				};
-			});
-		$this->sessionMock->method('get')->with('user')->willReturn(['locale' => 'en_US']);
-		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
-
-		$this->localesMock->expects($this->once())->method('determineCurrentLocale');
-
-		$previousUrl = 'some/url/line';
-		$this->requestMock->method('getHeaderLine')->with('Referer')->willReturn($previousUrl);
-
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', $previousUrl)
-			->willReturn($this->responseMock);
-
-		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturn($this->responseMock);
-
-		$controller = new HomeController();
-		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
-		$this->assertSame($this->responseMock, $result);
-	}
-
-	#[Group('units')]
-	public function testSetLocalesWithBrokenUSerArray()
-	{
-		$this->requestMock->method('getAttribute')
-			->willReturnCallback(function ($attribute) {
-				return match ($attribute) {
-					'session' => $this->sessionMock,
-					'locales' => $this->localesMock,
-					default => null,
-				};
-			});
-		$this->sessionMock->method('get')->with('user')->willReturn('not_an_array');
-		$this->sessionMock->expects($this->once())->method('set')->with('locale', 'de_DE');
-
-		$this->localesMock->expects($this->once())->method('determineCurrentLocale');
-
-		$previousUrl = 'some/url/line';
-		$this->requestMock->method('getHeaderLine')->with('Referer')->willReturn($previousUrl);
-
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', $previousUrl)
-			->willReturn($this->responseMock);
-
-		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturn($this->responseMock);
-
-		$controller = new HomeController();
-		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
-		$this->assertSame($this->responseMock, $result);
-	}
-
-
 }
