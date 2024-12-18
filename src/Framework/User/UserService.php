@@ -51,6 +51,16 @@ class UserService
 	/**
 	 * @throws Exception
 	 */
+	public function updateUser(int $UID, array $data): int
+	{
+		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
+		return $this->getUserRepositories()['main']->update($UID, $data);
+	}
+
+	/**
+	 * @throws Exception
+	 */
 	public function findUser($identifier): array
 	{
 		/** @var UserMainRepository $usrMainRepository */

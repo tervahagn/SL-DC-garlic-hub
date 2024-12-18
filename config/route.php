@@ -21,7 +21,7 @@
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
-use App\Modules\User\UserOptionsController;
+use App\Modules\User\EditPasswordController;
 use Slim\App;
 
 /* @var App $app */
@@ -36,4 +36,5 @@ $app->get('/logout', [LoginController::class, 'logout']);
 $app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
 $app->post('/api/token', [OAuth2Controller::class, 'token']);
 
-$app->get('/user/options', [UserOptionsController::class, 'editUser']);
+$app->get('/user/edit', [EditPasswordController::class, 'showForm']);
+$app->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);

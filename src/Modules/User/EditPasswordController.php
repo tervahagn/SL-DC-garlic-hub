@@ -22,6 +22,9 @@
 namespace App\Modules\User;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\UserException;
+use App\Framework\User\UserEntity;
+use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Exception;
@@ -29,37 +32,73 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class UserOptionsController
+class EditPasswordController
 {
 	private FormBuilder $formBuilder;
-	private Translator $translator;
+	private UserService $userService;
 
-	public function __construct(FormBuilder $formBuilder)
+	public function __construct(FormBuilder $formBuilder, UserService $userService)
 	{
 		$this->formBuilder = $formBuilder;
+		$this->userService = $userService;
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	public function editPassword(Request $request, Response $response): Response
+	{
+		$flash = $request->getAttribute('flash');
+		try
+		{
+			$this->postActions($request);
+			$flash->addMessage('success', 'User data changed');
+		}
+		catch(UserException $e)
+		{
+			$flash->addMessage('error', $e->getMessage());
+		}
+
+
+		return $response->withHeader('Location', '/user/edit')->withStatus(302);
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException|\Doctrine\DBAL\Exception
 	 */
-	public function editUser(Request $request, Response $response): Response
+	public function showForm(Request $request, Response $response): Response
 	{
-		$this->translator = $request->getAttribute('translator');
-		$error = '';
-		if ($request->getMethod() === 'POST')
+		$translator = $request->getAttribute('translator');
+		$flash    = $request->getAttribute('flash');
+		$messages = $flash->getMessages();
+		$error = [];
+		if (array_key_exists('error', $messages))
 		{
-			$postData = $request->getParsedBody();
+			foreach ($messages['error'] as $message)
 			{
-				// Process valid data here (e.g., save to DB)
-				// $data = $form->getData();
+				$error[] = [
+					'MESSAGE_TYPE' => 'error',
+					'if_error'     => true,
+					'MESSAGE_TEXT' => $message
+				];
 			}
 		}
-
+		if (array_key_exists('success', $messages))
+		{
+			foreach ($messages['success'] as $message)
+			{
+				$error[] = [
+					'MESSAGE_TYPE' => 'success',
+					'if_error'     => false,
+					'MESSAGE_TEXT' => $message
+				];
+			}
+		}
 		$formElements   = [];
 		$hiddenElements = [];
 
-		foreach ($this->getUserForm($request) as $key => $element)
+		foreach ($this->createPasswordForm($request) as $key => $element)
 		{
 			if ($key === 'csrf_token')
 			{
@@ -71,7 +110,7 @@ class UserOptionsController
 
 			$formElements[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $this->translator->translate($key, 'user'),
+				'LANG_ELEMENT_NAME'  => $translator->translate($key, 'user'),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
@@ -79,21 +118,22 @@ class UserOptionsController
 
 		$data = [
 				'main_layout' => [
-					'LANG_PAGE_TITLE' => $this->translator->translate('options', 'user'),
-					'error_messages' => $error,
+					'LANG_PAGE_TITLE' => $translator->translate('options', 'user'),
+					'messages' => $error,
 					'ADDITIONAL_CSS' => ['/css/user/options.css']
 				],
 				'this_layout' => [
 					'template' => 'utils/edit', // Template-name
 					'data' => [
 						'LANG_PAGE_HEADER' => 'User Options',
-						'SITE' => '/user/edit',
+						'SITE' => '/user/edit/password',
 						'element_hidden' => $hiddenElements,
 						'form_element' => $formElements,
 						'form_button' => [
 							[
+								'ELEMENT_BUTTON_TYPE' => 'submit',
 								'ELEMENT_BUTTON_NAME' => 'submit',
-								'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
+								'LANG_ELEMENT_BUTTON' => $translator->translate('save', 'main')
 							]
 					]
 				]
@@ -105,31 +145,50 @@ class UserOptionsController
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws UserException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
-	private function getUserForm(Request $request): array
+	private function postActions(Request $request): void
+	{
+		$session  = $request->getAttribute('session');
+		$postData = $request->getParsedBody();
+		if ($postData['csrf_token'] !== $session->get('csrf_token'))
+			throw new UserException('CSRF Token mismatch');
+
+		if ($postData['edit_password'] !== $postData['repeat_password'])
+			throw new UserException('Password not same');
+
+		if (strlen($postData['edit_password']) < 8)
+			throw new UserException('Password too small');
+		$data = [
+			'password' => $postData['edit_password']
+		];
+		if ($this->userService->updateUser($session->get('user')['UID'], $data) !== 1)
+			throw new UserException('User data could not be changed');
+
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	private function createPasswordForm(Request $request): array
 	{
 		$form = [];
 		$rules = ['required' => true, 'minlength' => 8];
 
-		$form['edit_email'] = $this->formBuilder->createField([
-			'type' => FieldType::EMAIL,
-			'id' => 'email',
-			'name' => 'email',
-			'rules' => $rules,
-			'default_value' => ''
-		]);
 		$form['edit_password'] = $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
-			'id' => 'password',
-			'name' => 'password',
+			'id' => 'edit_password',
+			'name' => 'edit_password',
+			'value' => '',
 			'rules' => $rules,
 			'default_value' => ''
 		]);
 		$form['repeat_password'] = $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
-			'id' => 'password_repeat',
-			'name' => 'password_repeat',
+			'id' => 'repeat_password',
+			'name' => 'repeat_password',
 			'rules' => $rules,
 			'default_value' => ''
 		]);

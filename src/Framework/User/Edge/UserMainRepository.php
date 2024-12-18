@@ -43,7 +43,7 @@ class UserMainRepository extends Sql
 	public function findById(int|string $id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('UID, company_id, status, locale')
+		$queryBuilder->select('UID, company_id, status, locale, email, username')
 			->from($this->table)
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id);

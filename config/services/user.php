@@ -19,14 +19,18 @@
 */
 
 
+use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\User\UserOptionsController;
+use App\Modules\User\EditPasswordController;
 use Psr\Container\ContainerInterface;
 $dependencies = [];
 
-$dependencies[UserOptionsController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UserOptionsController($container->get(FormBuilder::class));
+	return new EditPasswordController(
+		$container->get(FormBuilder::class),
+		$container->get(UserService::class)
+	);
 });
 
 return $dependencies;
