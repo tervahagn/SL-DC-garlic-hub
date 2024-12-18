@@ -48,7 +48,6 @@ class LoginController
 	{
 		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
-		$flash    = $request->getAttribute('flash');
 		try
 		{
 			$params   = (array) $request->getParsedBody();
@@ -68,6 +67,7 @@ class LoginController
 		catch (\Exception | InvalidArgumentException | Exception $e)
 		{
 			// dbal exception not tested because overengineered bullshit make mocking a pain in ass
+			$flash  = $request->getAttribute('flash');
 			$flash->addMessage('error', $e->getMessage());
 			$this->logger->error($e->getMessage());
 			return $this->redirect($response, '/login');
@@ -101,28 +101,15 @@ class LoginController
 	 */
 	private function renderForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$flash    = $request->getAttribute('flash');
-		$messages = $flash->getMessages(); // Flash-Nachrichten abholen
-		$error	  = [];
-		if (array_key_exists('error', $messages))
-		{
-			foreach ($messages['error'] as $message) {
-				$error[] = [
-					'MESSAGE_TYPE' => 'error',
-					'if_error'     => true,
-					'MESSAGE_TEXT' => $message
-				];
-			}
-		}
-
+		$errors    = $this->getErrors($request);
 		$csrfToken = bin2hex(random_bytes(32));
-		$session = $request->getAttribute('session');
+		$session   = $request->getAttribute('session');
 		$session->set('csrf_token', $csrfToken);
 		$page_name = $this->translator->translate('login', 'login');
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
-				'messages' => $error,
+				'messages' => $errors,
 				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [
@@ -147,4 +134,20 @@ class LoginController
 		return $response->withHeader('Location', $route)->withStatus(302);
 	}
 
+	private function getErrors(ServerRequestInterface $request): array
+	{
+		$flash = $request->getAttribute('flash');
+		if (!$flash->hasMessage('error'))
+			return [];
+		$errors = [];
+		foreach ($flash->getMessage('error') as $message)
+		{
+			$errors[] = [
+				'MESSAGE_TYPE' => 'error',
+				'if_error'     => true,
+				'MESSAGE_TEXT' => $message
+			];
+		}
+		return $errors;
+	}
 }
