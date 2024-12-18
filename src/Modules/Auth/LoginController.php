@@ -101,7 +101,6 @@ class LoginController
 	 */
 	private function renderForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$errors    = $this->getErrors($request);
 		$csrfToken = bin2hex(random_bytes(32));
 		$session   = $request->getAttribute('session');
 		$session->set('csrf_token', $csrfToken);
@@ -109,7 +108,7 @@ class LoginController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
-				'messages' => $errors,
+				'messages' => $this->getErrors($request),
 				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [

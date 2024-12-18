@@ -29,6 +29,7 @@ use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -70,31 +71,8 @@ class EditPasswordController
 	public function showForm(Request $request, Response $response): Response
 	{
 		$translator = $request->getAttribute('translator');
-		$flash    = $request->getAttribute('flash');
-		$messages = $flash->getMessages();
-		$error = [];
-		if (array_key_exists('error', $messages))
-		{
-			foreach ($messages['error'] as $message)
-			{
-				$error[] = [
-					'MESSAGE_TYPE' => 'error',
-					'if_error'     => true,
-					'MESSAGE_TEXT' => $message
-				];
-			}
-		}
-		if (array_key_exists('success', $messages))
-		{
-			foreach ($messages['success'] as $message)
-			{
-				$error[] = [
-					'MESSAGE_TYPE' => 'success',
-					'if_error'     => false,
-					'MESSAGE_TEXT' => $message
-				];
-			}
-		}
+
+
 		$formElements   = [];
 		$hiddenElements = [];
 
@@ -119,7 +97,7 @@ class EditPasswordController
 		$data = [
 				'main_layout' => [
 					'LANG_PAGE_TITLE' => $translator->translate('options', 'user'),
-					'messages' => $error,
+					'messages' => $this->getMessages($request),
 					'ADDITIONAL_CSS' => ['/css/user/options.css']
 				],
 				'this_layout' => [
@@ -203,5 +181,34 @@ class EditPasswordController
 		$session->set('csrf_token', $form['csrf_token']->getValue());
 
 		return $form;
+	}
+
+	private function getMessages(ServerRequestInterface $request): array
+	{
+		$flash = $request->getAttribute('flash');
+		$messages = [];
+		if ($flash->hasMessage('error'))
+		{
+			foreach ($flash->getMessage('error') as $message)
+			{
+				$messages[] = [
+					'MESSAGE_TYPE' => 'error',
+					'if_error'     => true,
+					'MESSAGE_TEXT' => $message
+				];
+			}
+		}
+		if ($flash->hasMessage('success'))
+		{
+			foreach ($messages['success'] as $message)
+			{
+				$messages[] = [
+					'MESSAGE_TYPE' => 'success',
+					'if_error'     => false,
+					'MESSAGE_TEXT' => $message
+				];
+			}
+		}
+		return $messages;
 	}
 }
