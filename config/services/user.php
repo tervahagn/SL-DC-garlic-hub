@@ -21,6 +21,7 @@
 
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Psr\Container\ContainerInterface;
 $dependencies = [];
@@ -31,6 +32,11 @@ $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInt
 		$container->get(FormBuilder::class),
 		$container->get(UserService::class)
 	);
+});
+
+$dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new EditLocalesController($container->get(UserService::class));
 });
 
 return $dependencies;

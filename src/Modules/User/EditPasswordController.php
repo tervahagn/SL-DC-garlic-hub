@@ -138,10 +138,8 @@ class EditPasswordController
 
 		if (strlen($postData['edit_password']) < 8)
 			throw new UserException('Password too small');
-		$data = [
-			'password' => $postData['edit_password']
-		];
-		if ($this->userService->updateUser($session->get('user')['UID'], $data) !== 1)
+
+		if ($this->userService->updatePassword($session->get('user')['UID'], $postData['edit_password']) !== 1)
 			throw new UserException('User data could not be changed');
 
 	}

@@ -21,6 +21,7 @@
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
+use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
 
@@ -28,10 +29,10 @@ use Slim\App;
 $container = $app->getContainer();
 
 $app->get('/', [HomeController::class, 'index']);
-$app->get('/set-locales/{locale}', [HomeController::class, 'setLocales']);
 $app->get('/login', [LoginController::class, 'showLogin']);
 $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);
+$app->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
 
 $app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
 $app->post('/api/token', [OAuth2Controller::class, 'token']);

@@ -30,46 +30,13 @@ class HomeController
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
-		if (!$this->isUserLoggedIn($session))
-			return $this->redirectToLogin($response);
+		if (!$session->exists('user'))
+			return $response->withHeader('Location', '/login')->withStatus(302);
 
 		$data = $this->generateHomePageData($session);
 		$this->writeResponseData($response, $data);
 
 		return $this->setContentType($response);
-	}
-
-	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
-	ResponseInterface
-	{
-		$locale  = htmlentities($args['locale'], ENT_QUOTES);
-
-		// set locale into session
-		/** @var  Helper $session */
-		$session = $request->getAttribute('session');
-		$session->set('locale', $locale);
-
-		// determine current locale secure because it checks a whitelist
-		// of available locales
-		/** @var  Locales $locales */
-		$locales    = $request->getAttribute('locales');
-		$locales->determineCurrentLocale();
-		$previousUrl = $request->getHeaderLine('Referer') ?: '/';
-
-		return $response
-			->withHeader('Location', $previousUrl)
-			->withStatus(302); // 302: forwarding
-
-	}
-
-	private function isUserLoggedIn($session): bool
-	{
-		return $session->exists('user');
-	}
-
-	private function redirectToLogin(ResponseInterface $response): ResponseInterface
-	{
-		return $response->withHeader('Location', '/login')->withStatus(302);
 	}
 
 	private function generateHomePageData(Helper $session): array
