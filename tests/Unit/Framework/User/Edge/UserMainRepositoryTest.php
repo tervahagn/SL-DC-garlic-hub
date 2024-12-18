@@ -107,7 +107,7 @@ class UserMainRepositoryTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 
 		$this->queryBuilderMock->method('select')
-			->with('UID, company_id, status, locale')
+			->with('UID, company_id, status, locale, email, username')
 			->willReturnSelf();
 
 		$this->queryBuilderMock->method('from')->with('user_main')
