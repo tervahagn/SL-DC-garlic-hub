@@ -34,6 +34,7 @@ class AbstractInputField implements FieldInterface
 	{
 		$this->id              = $attributes['id'];
 		$this->name            = $attributes['name'] ?? $attributes['id'];
+		$this->value           = $attributes['value'] ?? '';
 		$this->defaultValue    = $attributes['default_value'] ?? '';
 		$this->validationRules = $attributes['rules'] ?? [];
 		$this->attributes      = $attributes['attributes'] ?? [];

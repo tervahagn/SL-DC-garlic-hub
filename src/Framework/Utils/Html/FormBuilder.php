@@ -33,6 +33,9 @@ class FormBuilder
 		$this->fieldsRenderFactory = $fieldsRenderFactory;
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function createField(array $options = []): FieldInterface
 	{
 		switch($options['type'])

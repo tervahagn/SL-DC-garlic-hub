@@ -31,8 +31,8 @@ class CsrfTokenField extends AbstractInputField
 	 */
 	public function __construct(array $attributes = [])
 	{
-		$this->setValue($this->generateToken());
 		parent::__construct($attributes);
+		$this->setValue($this->generateToken());
 	}
 
 	/**
@@ -41,7 +41,6 @@ class CsrfTokenField extends AbstractInputField
 	private function generateToken(): string
 	{
 		return bin2hex(random_bytes(32));
-
 	}
 
 }
