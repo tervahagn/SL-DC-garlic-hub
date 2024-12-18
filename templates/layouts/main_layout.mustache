@@ -14,6 +14,16 @@
 	{{/ADDITIONAL_CSS}}
 </head>
 <body>
+{{#messages}}
+	<div class="message-bar message-bar--{{MESSAGE_TYPE}}">
+		<span>{{MESSAGE_TEXT}}</span>
+		{{#if_error}}
+			<button class="close-button" onclick="this.parentElement.style.display='none';">
+				<i class="ri-close-line"></i>
+			</button>
+		{{/if_error}}
+	</div>
+{{/messages}}
 <header>
 	<nav>
 		<ul id="main_menu">
@@ -55,7 +65,7 @@
 					</summary>
 					<ul aria-labelledby="userDropdown">
 						<li>
-							<a class="dropdown-item" href="/user/options">{{LANG_MANAGE_ACCOUNT}}</a>
+							<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
 						</li>
 						<li>
 							<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
@@ -68,9 +78,6 @@
 	</nav>
 </header>
 <main>
-	{{#error_messages}}
-	<div id="error_messages" class="error_messages">{{.}}</div>
-	{{/error_messages}}
 	{{{MAIN_CONTENT}}}
 </main>
 

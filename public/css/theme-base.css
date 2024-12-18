@@ -95,30 +95,29 @@ footer
 .results_header a:hover{color:#f60;transition: color .25s ease, margin .25s ease;}
 .results * {white-space: nowrap;}
 
-.message_bar {
-	position:fixed;
-	top:50px;
-	left:0;
+.message-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	width:100%;
-	min-height: 36px;
-	display: none;
-	padding:14px 10px 4px 10px;
+	height: 1em;
+	padding:1em;
 	text-align: center;
 	z-index: 100000;
 	font-weight: bold;
 	color: #fff;
 }
-
-.message_error
-{
-	background-color: #cc3f4c;
+.message-bar--success {background-color: green; animation: fade-out 5s forwards;}
+.message-bar--error {background-color: red; }
+.message-bar--info {background-color: blue; }
+@keyframes fade-out {
+	0% { opacity: 1; }
+	80% { opacity: 1; }
+	100% { opacity: 0; display: none; }
 }
+.close-button {background: none;border: none;font-size:1em;cursor: pointer;}
 
-.message_success
-{
-	background-color: #1bbf00;
-}
-
+.close-button i {font-size: 24px;}
 .autocomplete
 {
 	list-style:none;

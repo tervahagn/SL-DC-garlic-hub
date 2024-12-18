@@ -105,7 +105,15 @@ class LoginController
 		$messages = $flash->getMessages(); // Flash-Nachrichten abholen
 		$error	  = [];
 		if (array_key_exists('error', $messages))
-			$error = $messages['error'];
+		{
+			foreach ($messages['error'] as $message) {
+				$error[] = [
+					'MESSAGE_TYPE' => 'error',
+					'if_error'     => true,
+					'MESSAGE_TEXT' => $message
+				];
+			}
+		}
 
 		$csrfToken = bin2hex(random_bytes(32));
 		$session = $request->getAttribute('session');
@@ -114,7 +122,7 @@ class LoginController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
-				'error_messages' => $error,
+				'messages' => $error,
 				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [
