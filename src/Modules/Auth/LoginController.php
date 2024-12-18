@@ -34,7 +34,7 @@ class LoginController
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->translator = $request->getAttribute('translator');
-		$session  = $request->getAttribute('session');
+		$session          = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
 
