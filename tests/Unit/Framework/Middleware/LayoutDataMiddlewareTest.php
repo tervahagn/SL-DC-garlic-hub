@@ -2,8 +2,11 @@
 
 namespace Tests\Unit\Framework\Middleware;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Middleware\LayoutDataMiddleware;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -11,90 +14,107 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use SlimSession\Helper;
 
 class LayoutDataMiddlewareTest extends TestCase
 {
     private LayoutDataMiddleware $middleware;
-    private Translator $translatorMock;
-    private Helper $sessionMock;
-    private ServerRequestInterface $requestMock;
-    private RequestHandlerInterface $handlerMock;
-    private ResponseInterface $responseMock;
-	private Locales $localesMock;
+    private Translator $mockTranslator;
+    private Helper $mockSession;
+	private Config $mockConfig;
+    private ServerRequestInterface $mockRequest;
+    private RequestHandlerInterface $mockHandler;
+    private ResponseInterface $mockResponse;
+	private Locales $mockLocales;
 
     /**
      * @throws Exception
      */
     protected function setUp(): void
     {
-        $this->translatorMock = $this->createMock(Translator::class);
-        $this->sessionMock    = $this->createMock(Helper::class);
-        $this->requestMock    = $this->createMock(ServerRequestInterface::class);
-        $this->handlerMock    = $this->createMock(RequestHandlerInterface::class);
-		$this->responseMock   = $this->createMock(ResponseInterface::class);
-		$this->localesMock    = $this->createMock(Locales::class);
-        $this->middleware = new LayoutDataMiddleware();
+        $this->mockTranslator = $this->createMock(Translator::class);
+        $this->mockSession    = $this->createMock(Helper::class);
+        $this->mockRequest    = $this->createMock(ServerRequestInterface::class);
+        $this->mockHandler    = $this->createMock(RequestHandlerInterface::class);
+		$this->mockResponse   = $this->createMock(ResponseInterface::class);
+		$this->mockLocales    = $this->createMock(Locales::class);
+		$this->mockConfig     = $this->createMock(Config::class);
+        $this->middleware     = new LayoutDataMiddleware();
     }
 
-    #[Group('units')]
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
     public function testProcessWithUserSession(): void
     {
-        $this->requestMock
+        $this->mockRequest
             ->method('getAttribute')
             ->willReturnCallback(function ($attribute)
             {
                 if ($attribute === 'session')
-                    return $this->sessionMock;
+                    return $this->mockSession;
                 elseif ($attribute === 'translator')
-                    return $this->translatorMock;
+                    return $this->mockTranslator;
 				elseif ($attribute === 'locales')
-					return $this->localesMock;
+					return $this->mockLocales;
+				elseif ($attribute === 'config')
+					return $this->mockConfig;
 
                 return null;
             });
 
-        $this->sessionMock->method('exists')->with('user')
+        $this->mockSession->method('exists')->with('user')
             ->willReturn(true);
 
-        $this->sessionMock->method('get')->with('user')
+        $this->mockSession->method('get')->with('user')
             ->willReturn(['username' => 'testuser']);
 
-        $this->translatorMock->method('translateArrayForOptions')
+        $this->mockTranslator->method('translateArrayForOptions')
             ->with('languages', 'menu')
             ->willReturn(['en' => 'English', 'de' => 'German']);
 
-		$this->localesMock->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
+		$this->mockLocales->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
+		$this->mockConfig->expects($this->once())->method('getEnv')->with('APP_NAME')->willReturn('garlic-hub');
+		$this->mockHandler->method('handle')
+            ->willReturn($this->mockResponse);
 
-		$this->handlerMock->method('handle')
-            ->willReturn($this->responseMock);
+        $result = $this->middleware->process($this->mockRequest, $this->mockHandler);
 
-        $result = $this->middleware->process($this->requestMock, $this->handlerMock);
-
-        $this->assertSame($this->responseMock, $result);
+        $this->assertSame($this->mockResponse, $result);
     }
 
-    #[Group('units')]
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
     public function testProcessWithoutUserSession(): void
     {
-        $this->requestMock
+        $this->mockRequest
             ->method('getAttribute')
             ->willReturnCallback(function ($attribute)
             {
                 if ($attribute === 'session')
-                    return $this->sessionMock;
+                    return $this->mockSession;
                 elseif ($attribute === 'translator')
-                    return $this->translatorMock;
+                    return $this->mockTranslator;
 				elseif ($attribute === 'locales')
-					return $this->localesMock;
+					return $this->mockLocales;
+				elseif ($attribute === 'config')
+					return $this->mockConfig;
 
                 return null;
             });
 
-        $this->sessionMock->method('exists')->with('user')
+        $this->mockSession->method('exists')->with('user')
             ->willReturn(false);
 
-        $this->translatorMock
+        $this->mockTranslator
             ->method('translate')
             ->willReturnMap([
                 ['login', 'login', 'Login'],
@@ -103,20 +123,20 @@ class LayoutDataMiddlewareTest extends TestCase
                 ['terms', 'menu', 'Terms'],
             ]);
 
-		$this->localesMock->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
+		$this->mockLocales->expects($this->once())->method('getLanguageCode')->willReturn('en_US');
 
-        $this->translatorMock
+        $this->mockTranslator
             ->method('translateArrayForOptions')
             ->with('languages', 'menu')
             ->willReturn(['en' => 'English', 'de' => 'German']);
 
-        $this->handlerMock
+        $this->mockHandler
             ->method('handle')
-            ->willReturn($this->responseMock);
+            ->willReturn($this->mockResponse);
 
-        $result = $this->middleware->process($this->requestMock, $this->handlerMock);
+        $result = $this->middleware->process($this->mockRequest, $this->mockHandler);
 
-        $this->assertSame($this->responseMock, $result);
+        $this->assertSame($this->mockResponse, $result);
     }
 
 }
