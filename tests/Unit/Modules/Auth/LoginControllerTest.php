@@ -105,9 +105,61 @@ class LoginControllerTest extends TestCase
 
 		$this->mockSession->method('exists')->with('user')->willReturn(false);
 		$this->mockSession->method('set');
+		$this->mockTranslator->expects($this->exactly(4))->method('translate');
 
-		$messages = ['error' => 'Invalid credentials.'];
-		$flash->expects($this->once())->method('getMessages')->willReturn($messages);
+		$messages = [
+			'MESSAGE_TYPE' => 'error',
+			'if_error'     => true,
+			'MESSAGE_TEXT' => 'Invalid credentials.'
+		];
+
+		$flash->expects($this->once())->method('hasMessage')->with('error')->willReturn(true);
+		$flash->expects($this->once())->method('getMessage')->willReturn($messages);
+
+		$body = $this->createMock(StreamInterface::class);
+		$this->mockResponse->method('getBody')->willReturn($body);
+
+		$body->expects($this->once())->method('write');
+		$this->mockResponse->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+
+		$controller = new LoginController($this->mockAuthService, $this->mockLogger);
+		$result = $controller->showLogin($this->mockRequest, $this->mockResponse);
+
+		$this->assertSame($this->mockResponse, $result);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testShowLoginRendersFormIfUserNotInSessionWithoutErrors(): void
+	{
+		$flash = $this->createMock(Messages::class);
+		$this->mockRequest->method('getAttribute')
+						  ->willReturnCallback(function ($param) use ($flash)
+						  {
+							  if ($param === 'translator')
+								  return $this->mockTranslator;
+							  elseif ($param === 'session')
+								  return $this->mockSession;
+							  elseif ($param === 'flash')
+								  return $flash;
+							  return null;
+						  }
+						  );
+
+		$this->mockSession->method('exists')->with('user')->willReturn(false);
+		$this->mockSession->method('set');
+		$this->mockTranslator->expects($this->exactly(4))->method('translate');
+
+		$messages = [
+			'MESSAGE_TYPE' => 'error',
+			'if_error'     => true,
+			'MESSAGE_TEXT' => 'Invalid credentials.'
+		];
+
+		$flash->expects($this->once())->method('hasMessage')->with('error')->willReturn(false);
+		$flash->expects($this->never())->method('getMessage');
 
 		$body = $this->createMock(StreamInterface::class);
 		$this->mockResponse->method('getBody')->willReturn($body);
@@ -143,17 +195,14 @@ class LoginControllerTest extends TestCase
 			return null;
 		});
 		$this->mockSession->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
+		$this->mockSession->expects($this->exactly(2))->method('set');
 
 		$main_data = ['locale' => 'kl_KL'];
 		$userEntity->method('getMain')->willReturn($main_data);
 
-		$this->mockSession->expects($this->exactly(2))->method('set');
 
 		$this->mockResponse->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->mockResponse->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
-		$this->mockSession->expects($this->once())->method('exists')->with('oauth_redirect_params')->willReturn(false);
-		$this->mockSession->expects($this->never())->method('get');
-
 
 		$controller = new LoginController($this->mockAuthService, $this->mockLogger);
 		$result = $controller->login($this->mockRequest, $this->mockResponse);
@@ -236,6 +285,34 @@ class LoginControllerTest extends TestCase
 
 		$this->assertSame($this->mockResponse, $result);
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws UserException
+	 */
+	#[Group('units')]
+	public function testLoginRedirectsToLoginOnTokenMismatch(): void
+	{
+		$flash      = $this->createMock(Messages::class);
+
+		$this->mockRequest->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrong_password', 'csrf_token' => 'token1']);
+		$this->mockRequest->method('getAttribute')->willReturnOnConsecutiveCalls($this->mockSession, $flash);
+		$this->mockSession->expects($this->once())->method('exists')->with('csrf_token')->willReturn(true);
+		$this->mockSession->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
+
+		$flash->expects($this->once())->method('addMessage')->with('error', 'CSRF Token mismatch');
+
+		$this->mockResponse->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
+		$this->mockResponse->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->mockLogger->expects($this->once())->method('error')->with('CSRF Token mismatch');
+
+		$controller = new LoginController($this->mockAuthService, $this->mockLogger);
+		$result = $controller->login($this->mockRequest, $this->mockResponse);
+
+		$this->assertSame($this->mockResponse, $result);
+	}
+
+
 
 	/**
 	 * @return void

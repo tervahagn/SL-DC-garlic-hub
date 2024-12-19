@@ -38,8 +38,30 @@ class LoginController
 		if ($session->exists('user'))
 			return $this->redirect($response);
 
-		return $this->renderForm($request, $response);
-	}
+		$csrfToken = bin2hex(random_bytes(32));
+		$session->set('csrf_token', $csrfToken);
+		$page_name = $this->translator->translate('login', 'login');
+		$data = [
+			'main_layout' => [
+				'LANG_PAGE_TITLE' => $page_name,
+				'messages' => $this->getErrors($request),
+				'ADDITIONAL_CSS' => ['/css/user/login.css']
+			],
+			'this_layout' => [
+				'template' => 'auth/login', // Template-name
+				'data' => [
+					'LANG_PAGE_HEADER' => $page_name,
+					'LANG_USERNAME' => $this->translator->translate('username', 'main').' / '.$this->translator->translate('email', 'main'),
+					'LANG_PASSWORD' => $this->translator->translate('password', 'login'),
+					'CSRF_TOKEN' => $csrfToken,
+					'LANG_SUBMIT' => $page_name
+
+				]
+			]
+		];
+		$response->getBody()->write(serialize($data));
+
+		return $response->withHeader('Content-Type', 'text/html');	}
 
 	/**
 	 * @throws UserException
@@ -93,39 +115,6 @@ class LoginController
 		$this->authService->logout($user);
 		$session->delete('user');
 		return $this->redirect($response, '/login');
-	}
-
-	/**
-	 * @throws \Exception
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 */
-	private function renderForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
-		$csrfToken = bin2hex(random_bytes(32));
-		$session   = $request->getAttribute('session');
-		$session->set('csrf_token', $csrfToken);
-		$page_name = $this->translator->translate('login', 'login');
-		$data = [
-			'main_layout' => [
-				'LANG_PAGE_TITLE' => $page_name,
-				'messages' => $this->getErrors($request),
-				'ADDITIONAL_CSS' => ['/css/user/login.css']
-			],
-			'this_layout' => [
-				'template' => 'auth/login', // Template-name
-				'data' => [
-					'LANG_PAGE_HEADER' => $page_name,
-					'LANG_USERNAME' => $this->translator->translate('username', 'main').' / '.$this->translator->translate('email', 'main'),
-					'LANG_PASSWORD' => $this->translator->translate('password', 'login'),
-					'CSRF_TOKEN' => $csrfToken,
-					'LANG_SUBMIT' => $page_name
-
-				]
-			]
-		];
-		$response->getBody()->write(serialize($data));
-
-		return $response->withHeader('Content-Type', 'text/html');
 	}
 
 	private function redirect(ResponseInterface $response, string $route = '/'): ResponseInterface
