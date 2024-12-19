@@ -12,43 +12,57 @@ use App\Framework\User\UserRepositoryFactory;
 use App\Framework\User\UserEntity;
 use App\Framework\User\Edge\UserMainRepository;
 use Phpfastcache\Helper\Psr16Adapter;
-use App\Framework\Exceptions\UserException;
+use Psr\Cache\InvalidArgumentException;
 
 class UserServiceTest extends TestCase
 {
 	private UserService $userService;
-	private UserRepositoryFactory $repositoryFactoryMock;
 	private UserEntityFactory $entityFactoryMock;
 	private Psr16Adapter $cacheMock;
-	private UserMainRepository $userMainRepositoryMMockk;
+	private UserMainRepository $userMainRepositoryMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->repositoryFactoryMock = $this->createMock(UserRepositoryFactory::class);
+		$repositoryFactoryMock       = $this->createMock(UserRepositoryFactory::class);
 		$this->entityFactoryMock     = $this->createMock(UserEntityFactory::class);
 		$this->cacheMock             = $this->createMock(Psr16Adapter::class);
-		$this->userMainRepositoryMMockk = $this->createMock(UserMainRepository::class);
-		$this->repositoryFactoryMock->method('create')
-			->willReturn(['main' => $this->userMainRepositoryMMockk]);
+		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
+		$repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
 
 		$this->userService = new UserService(
-			$this->repositoryFactoryMock,
+			$repositoryFactoryMock,
 			$this->entityFactoryMock,
 			$this->cacheMock
 		);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdatePassword(): void
+	{
+		$this->userMainRepositoryMock->method('update')->with($this->isInt(), $this->isArray())->willReturn(12);
+
+		$this->assertEquals(12, $this->userService->updatePassword(1, 'hurz'));
+
+	}
+
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindUserSuccess(): void
 	{
 		$identifier = 'test@example.com';
 		$mockUserData = ['UID' => 1, 'username' => 'testuser'];
 
-		// Repository simuliert Rückgabe von User-Daten
-		$this->userMainRepositoryMMockk
+		$this->userMainRepositoryMock
 			->method('findByIdentifier')
 			->with($identifier)
 			->willReturn($mockUserData);
@@ -58,13 +72,16 @@ class UserServiceTest extends TestCase
 		$this->assertEquals($mockUserData, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindUserNotFound(): void
 	{
 		$identifier = 'unknown@example.com';
 
 		// Repository simuliert, dass kein Benutzer gefunden wurde
-		$this->userMainRepositoryMMockk->method('findByIdentifier')
+		$this->userMainRepositoryMock->method('findByIdentifier')
 			->with($identifier)
 			->willReturn([]);
 
@@ -85,7 +102,7 @@ class UserServiceTest extends TestCase
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn($cachedData);
 
-		$this->userMainRepositoryMMockk->expects($this->never())->method('findById');
+		$this->userMainRepositoryMock->expects($this->never())->method('findById');
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
 		$this->entityFactoryMock->method('create')
@@ -96,6 +113,11 @@ class UserServiceTest extends TestCase
 		$this->assertEquals($mockUserEntity, $result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testGetCurrentUserFromDatabase(): void
 	{
@@ -105,7 +127,7 @@ class UserServiceTest extends TestCase
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn(null);
 
-		$this->userMainRepositoryMMockk->expects($this->once())->method('findById')->with($UID)
+		$this->userMainRepositoryMock->expects($this->once())->method('findById')->with($UID)
 			->willReturn($userData);
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
@@ -118,6 +140,10 @@ class UserServiceTest extends TestCase
 		$this->assertEquals($mockUserEntity, $result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	#[Group('units')]
 	public function testInvalidCache(): void
 	{
