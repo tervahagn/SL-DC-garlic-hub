@@ -21,6 +21,7 @@
 namespace App\Framework\Utils\Html;
 
 use App\Framework\Exceptions\FrameworkException;
+use Exception;
 
 class FormBuilder
 {
@@ -35,22 +36,17 @@ class FormBuilder
 
 	/**
 	 * @throws FrameworkException
+	 * @throws Exception
 	 */
 	public function createField(array $options = []): FieldInterface
 	{
-		switch($options['type'])
-		{
-			case FieldType::TEXT:
-				return $this->fieldsFactory->createTextField($options);
-			case FieldType::PASSWORD:
-				return $this->fieldsFactory->createPasswordField($options);
-			case FieldType::EMAIL:
-				return $this->fieldsFactory->createEmailField($options);
-			case FieldType::CSRF:
-				return $this->fieldsFactory->createCsrfTokenField($options);
-			default:
-				throw new FrameworkException('Invalid field type');
-		}
+		return match ($options['type']) {
+			FieldType::TEXT     => $this->fieldsFactory->createTextField($options),
+			FieldType::PASSWORD => $this->fieldsFactory->createPasswordField($options),
+			FieldType::EMAIL    => $this->fieldsFactory->createEmailField($options),
+			FieldType::CSRF     => $this->fieldsFactory->createCsrfTokenField($options),
+			default => throw new FrameworkException('Invalid field type'),
+		};
 	}
 
 	public function renderField(FieldInterface $field): string
