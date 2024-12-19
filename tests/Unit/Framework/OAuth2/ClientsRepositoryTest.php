@@ -21,10 +21,10 @@ class ClientsRepositoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$mockConnection = $this->createMock(Connection::class);
+		$connectionMock = $this->createMock(Connection::class);
 
 		$this->repository = $this->getMockBuilder(ClientsRepository::class)
-								 ->setConstructorArgs([$mockConnection])
+								 ->setConstructorArgs([$connectionMock])
 								 ->onlyMethods(['getFirstDataSet', 'findAllBy'])
 								 ->getMock();
 	}

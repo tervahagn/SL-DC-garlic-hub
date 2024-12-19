@@ -3,11 +3,15 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\CsrfTokenField;
+use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class CsrfTokenFieldTest extends TestCase
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testSetupWithAttributes(): void
 	{
@@ -16,7 +20,7 @@ class CsrfTokenFieldTest extends TestCase
 			'name' => 'csrf_token_name'
 		];
 
-		$csrfTokenField = new \App\Framework\Utils\Html\CsrfTokenField($attributes);
+		$csrfTokenField = new CsrfTokenField($attributes);
 
 		$this->assertSame('csrf_token', $csrfTokenField->getId());
 		$this->assertSame('csrf_token_name', $csrfTokenField->getName());
@@ -24,19 +28,25 @@ class CsrfTokenFieldTest extends TestCase
 		$this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $csrfTokenField->getValue());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTokenIsGeneratedOnEachInstance(): void
 	{
-		$csrfTokenField1 = new \App\Framework\Utils\Html\CsrfTokenField(['id' => 'csrf1']);
-		$csrfTokenField2 = new \App\Framework\Utils\Html\CsrfTokenField(['id' => 'csrf2']);
+		$csrfTokenField1 = new CsrfTokenField(['id' => 'csrf1']);
+		$csrfTokenField2 = new CsrfTokenField(['id' => 'csrf2']);
 
 		$this->assertNotSame($csrfTokenField1->getValue(), $csrfTokenField2->getValue());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTokenHasCorrectLength(): void
 	{
-		$csrfTokenField = new \App\Framework\Utils\Html\CsrfTokenField(['id' => 'csrf']);
+		$csrfTokenField = new CsrfTokenField(['id' => 'csrf']);
 
 		$this->assertSame(64, strlen($csrfTokenField->getValue()));
 	}

@@ -31,9 +31,7 @@ use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
-use Slim\Factory\Psr17\Psr17Factory;
 
 class TranslatorTest extends TestCase
 {
@@ -136,7 +134,12 @@ class TranslatorTest extends TestCase
         $this->assertEquals('5 items', $result);
     }
 
-    #[Group('units')]
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws InvalidArgumentException
+	 */
+	#[Group('units')]
     public function testTranslatePluralReturnsFrameworkException(): void
     {
         $this->localesMock->method('getLanguageCode')->willReturn('en');

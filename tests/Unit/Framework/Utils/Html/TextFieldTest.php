@@ -72,7 +72,7 @@ class TextFieldTest extends TestCase
 	{
 		$textField = new TextField(['id' => 'website']);
 
-		$textField->addValidationRule('url', true);
+		$textField->addValidationRule('url');
 
 		$this->assertSame(['url' => true], $textField->getValidationRules());
 	}

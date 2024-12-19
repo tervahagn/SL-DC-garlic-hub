@@ -11,7 +11,7 @@ use App\Framework\Core\Config\Config;
 
 class UserEntityFactoryTest extends TestCase
 {
-	private Config $mockConfig;
+	private Config $configMock;
 	private UserEntityFactory $factory;
 
 	/**
@@ -19,8 +19,8 @@ class UserEntityFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->mockConfig = $this->createMock(Config::class);
-		$this->factory = new UserEntityFactory($this->mockConfig);
+		$this->configMock = $this->createMock(Config::class);
+		$this->factory = new UserEntityFactory($this->configMock);
 	}
 
 	#[Group('units')]
@@ -35,7 +35,7 @@ class UserEntityFactoryTest extends TestCase
 			'vip' => ['status' => 'gold'],
 		];
 
-		$this->mockConfig
+		$this->configMock
 			->method('getEdition')
 			->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
 
@@ -62,7 +62,7 @@ class UserEntityFactoryTest extends TestCase
 			'vip' => ['status' => 'silver'], // Ignoriert in Core
 		];
 
-		$this->mockConfig
+		$this->configMock
 			->method('getEdition')
 			->willReturn(Config::PLATFORM_EDITION_CORE);
 
@@ -89,7 +89,7 @@ class UserEntityFactoryTest extends TestCase
 			'vip' => ['status' => 'none'], // Ignored in Edge
 		];
 
-		$this->mockConfig
+		$this->configMock
 			->method('getEdition')
 			->willReturn(Config::PLATFORM_EDITION_EDGE);
 

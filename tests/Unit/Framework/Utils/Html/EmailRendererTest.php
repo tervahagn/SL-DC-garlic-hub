@@ -5,10 +5,14 @@ namespace Tests\Unit\Framework\Utils\Html;
 use App\Framework\Utils\Html\EmailRenderer;
 use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class EmailRendererTest extends TestCase
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRenderWithMinimumAttributes(): void
 	{

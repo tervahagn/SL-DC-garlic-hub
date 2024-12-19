@@ -21,8 +21,8 @@ class ScopeRepositoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$mockConnection = $this->createMock(Connection::class);
-		$this->repository = new ScopeRepository($mockConnection);
+		$connectionMock = $this->createMock(Connection::class);
+		$this->repository = new ScopeRepository($connectionMock);
 	}
 
 	#[Group('units')]

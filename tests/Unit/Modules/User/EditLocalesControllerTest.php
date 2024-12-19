@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Modules\User;
 
-use App\Controller\HomeController;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\User\UserService;
 use App\Modules\User\EditLocalesController;
@@ -72,6 +71,9 @@ class EditLocalesControllerTest extends TestCase
 		$this->assertSame($this->mockResponse, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testSetLocalesWithBrokenUserArray()
 	{

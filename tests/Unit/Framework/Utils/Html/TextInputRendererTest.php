@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 class TextInputRendererTest extends TestCase
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRenderWithBasicAttributes(): void
 	{
@@ -27,6 +30,9 @@ class TextInputRendererTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRenderWithValidationRules(): void
 	{
@@ -70,6 +76,9 @@ class TextInputRendererTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRenderWithAllOptions(): void
 	{

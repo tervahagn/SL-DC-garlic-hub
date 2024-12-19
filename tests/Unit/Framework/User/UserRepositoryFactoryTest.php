@@ -16,21 +16,21 @@ use App\Framework\User\Enterprise\UserSecurityRepository;
 
 class UserRepositoryFactoryTest extends TestCase
 {
-	private Config $mockConfig;
-	private Connection $mockConnection;
+	private Config $configMock;
+	private Connection $connectionMock;
 	private UserRepositoryFactory $factory;
 
 	protected function setUp(): void
 	{
-		$this->mockConfig = $this->createMock(Config::class);
-		$this->mockConnection = $this->createMock(Connection::class);
-		$this->factory = new UserRepositoryFactory($this->mockConfig, $this->mockConnection);
+		$this->configMock = $this->createMock(Config::class);
+		$this->connectionMock = $this->createMock(Connection::class);
+		$this->factory = new UserRepositoryFactory($this->configMock, $this->connectionMock);
 	}
 
 	#[Group('units')]
 	public function testCreateEnterpriseEdition(): void
 	{
-		$this->mockConfig->method('getEdition')->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
 
 		$result = $this->factory->create();
 
@@ -56,7 +56,7 @@ class UserRepositoryFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreateCoreEdition(): void
 	{
-		$this->mockConfig->method('getEdition')->willReturn(Config::PLATFORM_EDITION_CORE);
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_CORE);
 
 		$result = $this->factory->create();
 
@@ -79,7 +79,7 @@ class UserRepositoryFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreateEdgeEdition(): void
 	{
-		$this->mockConfig->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
 
 		$result = $this->factory->create();
 

@@ -12,7 +12,6 @@ use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\TextField;
-use PharIo\Manifest\Email;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -97,6 +96,10 @@ class FormBuilderTest extends TestCase
 		$this->assertSame($fieldMock, $field);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCreateCsrfTokenField(): void
 	{

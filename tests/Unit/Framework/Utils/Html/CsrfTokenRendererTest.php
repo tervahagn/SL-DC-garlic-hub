@@ -5,10 +5,14 @@ namespace Tests\Unit\Framework\Utils\Html;
 use App\Framework\Utils\Html\CsrfTokenRenderer;
 use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class CsrfTokenRendererTest extends TestCase
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRenderWithBasicAttributes(): void
 	{

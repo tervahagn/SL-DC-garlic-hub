@@ -35,8 +35,6 @@ class LocalesTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws CoreException
 	 */
 	protected function setUp(): void
 	{
@@ -51,6 +49,10 @@ class LocalesTest extends TestCase
 						 ]);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetDefaultLocale(): void
 	{
@@ -62,6 +64,10 @@ class LocalesTest extends TestCase
 		$this->assertSame('en_US', $locales->getDefaultLocale());
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetAvailableLocales(): void
 	{
@@ -72,6 +78,10 @@ class LocalesTest extends TestCase
 		$this->assertSame(['en_US', 'de_DE'], $locales->getAvailableLocales());
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testIsLocaleValid(): void
 	{

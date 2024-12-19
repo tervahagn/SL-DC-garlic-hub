@@ -35,7 +35,10 @@ class MessageFormatterFactoryTest extends TestCase
         $this->factory = new MessageFormatterFactory();
     }
 
-    #[Group('units')]
+	/**
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
     public function testCreateReturnsMessageFormatter(): void
     {
         $locale = 'en_US';

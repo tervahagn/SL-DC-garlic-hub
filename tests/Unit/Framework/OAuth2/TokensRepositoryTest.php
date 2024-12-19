@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class TokensRepositoryTest extends TestCase
 {
-	private Connection $mockConnection;
+	private Connection $connectionMock;
 	private TokensRepository $repository;
 	private QueryBuilder $queryBuilderMock;
 
@@ -27,8 +27,8 @@ class TokensRepositoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->mockConnection   = $this->createMock(Connection::class);
-		$this->repository       = new TokensRepository($this->mockConnection);
+		$this->connectionMock   = $this->createMock(Connection::class);
+		$this->repository       = new TokensRepository($this->connectionMock);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 	}
 
@@ -54,7 +54,7 @@ class TokensRepositoryTest extends TestCase
 		$datetime_immutable = new DateTimeImmutable('now +1 hour');
 		$mockAuthCodeEntity->method('getExpiryDateTime')->willReturn($datetime_immutable);
 		$mockAuthCodeEntity->method('getScopes')->willReturn([]);
-		$this->mockConnection->expects($this->once())->method('insert')->with('oauth2_credentials',
+		$this->connectionMock->expects($this->once())->method('insert')->with('oauth2_credentials',
 			[
 				'type'         => 'auth_code',
 				'token'        => 'test-auth-code-id',
@@ -66,7 +66,7 @@ class TokensRepositoryTest extends TestCase
 				'created_at'   => date('Y-m-d H:i:s'),
 			]
 		);
-		$this->mockConnection->expects($this->once())->method('lastInsertId');
+		$this->connectionMock->expects($this->once())->method('lastInsertId');
 		$this->repository->persistNewAuthCode($mockAuthCodeEntity);
 		$this->assertTrue(true); // Wenn kein Fehler geworfen wurde, war der Test erfolgreich
 	}
@@ -77,7 +77,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testRevokeAuthCode(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('update')->with('oauth2_credentials');
 		$this->queryBuilderMock->expects($this->once())->method('set')->with('revoked', ':set_revoked');
 
@@ -92,7 +92,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsAuthCodeRevokedReturnsFalse(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
@@ -105,7 +105,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsAuthCodeRevokedReturnsTrue(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
@@ -147,7 +147,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testRevokeAccessToken(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('update')->with('oauth2_credentials');
 		$this->queryBuilderMock->expects($this->once())->method('set')->with('revoked', ':set_revoked');
 
@@ -162,7 +162,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsAccessTokenRevokedReturnsFalse(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
 
 		$result = $this->repository->isAccessTokenRevoked('test-access-token-id');
@@ -175,7 +175,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsAccessTokenRevokedReturnsTrue(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isAccessTokenRevoked('test-access-token-id');
@@ -215,7 +215,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testRevokeRefreshToken(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('update')->with('oauth2_credentials');
 		$this->queryBuilderMock->expects($this->once())->method('set')->with('revoked', ':set_revoked');
 
@@ -230,7 +230,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsRefreshTokenRevokedReturnsFalse(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
 
 		$result = $this->repository->isRefreshTokenRevoked('test-refresh-token-id');
@@ -243,7 +243,7 @@ class TokensRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testIsRefreshTokenRevokedReturnsTrue(): void
 	{
-		$this->mockConnection->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isRefreshTokenRevoked('test-refresh-token-id');

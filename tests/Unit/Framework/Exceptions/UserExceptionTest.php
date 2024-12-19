@@ -21,6 +21,7 @@
 namespace Tests\Unit\Framework\Exceptions;
 
 use App\Framework\Exceptions\UserException;
+use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +41,7 @@ class UserExceptionTest extends TestCase
 	#[Group('units')]
 	public function testUserExceptionConstructorWithPrevious(): void
 	{
-		$previousException = new \Exception('Previous user error');
+		$previousException = new Exception('Previous user error');
 		$exception = new UserException('User error occurred', 400, $previousException);
 
 		$this->assertSame('User', $exception->getModuleName());

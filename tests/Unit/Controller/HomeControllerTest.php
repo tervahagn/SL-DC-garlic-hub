@@ -31,32 +31,32 @@ use SlimSession\Helper;
 
 class HomeControllerTest extends TestCase
 {
-	private ServerRequestInterface $mockRequest;
-	private ResponseInterface $mockResponse;
-	private Helper $mockSession;
+	private ServerRequestInterface $requestMock;
+	private ResponseInterface $responseMock;
+	private Helper $sessionMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->mockRequest  = $this->createMock(ServerRequestInterface::class);
-		$this->mockResponse = $this->createMock(ResponseInterface::class);
-		$this->mockSession  = $this->createMock(Helper::class);
+		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock = $this->createMock(ResponseInterface::class);
+		$this->sessionMock  = $this->createMock(Helper::class);
 	}
 
 	#[Group('units')]
 	public function testIndexRedirectsToLoginIfUserNotInSession(): void
 	{
-		$this->mockRequest->method('getAttribute')->with('session')->willReturn($this->mockSession);
-		$this->mockSession->method('exists')->with('user')->willReturn(false);
-		$this->mockResponse->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
-		$this->mockResponse->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('exists')->with('user')->willReturn(false);
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
 		$controller = new HomeController();
-		$result = $controller->index($this->mockRequest, $this->mockResponse);
+		$result = $controller->index($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->mockResponse, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -65,15 +65,15 @@ class HomeControllerTest extends TestCase
 	#[Group('units')]
 	public function testIndexReturnsHomePageIfUserInSession(): void
 	{
-		$this->mockRequest->method('getAttribute')->with('session')->willReturn($this->mockSession);
-		$this->mockSession->method('exists')->with('user')->willReturn(true);
-		$this->mockSession->method('get')->with('user')->willReturn(['username' => 'testuser']);
-		$this->mockResponse->method('getBody')->willReturn($this->createMock(StreamInterface::class));
-		$this->mockResponse->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('exists')->with('user')->willReturn(true);
+		$this->sessionMock->method('get')->with('user')->willReturn(['username' => 'testuser']);
+		$this->responseMock->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
 		$controller = new HomeController();
-		$result = $controller->index($this->mockRequest, $this->mockResponse);
+		$result = $controller->index($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->mockResponse, $result);
+		$this->assertSame($this->responseMock, $result);
 	}
 }
