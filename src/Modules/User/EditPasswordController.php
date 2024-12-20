@@ -60,7 +60,6 @@ class EditPasswordController
 			$flash->addMessage('error', $e->getMessage());
 		}
 
-
 		return $response->withHeader('Location', '/user/edit')->withStatus(302);
 	}
 
@@ -71,7 +70,6 @@ class EditPasswordController
 	public function showForm(Request $request, Response $response): Response
 	{
 		$translator = $request->getAttribute('translator');
-
 
 		$formElements   = [];
 		$hiddenElements = [];
@@ -133,11 +131,11 @@ class EditPasswordController
 		if ($postData['csrf_token'] !== $session->get('csrf_token'))
 			throw new UserException('CSRF Token mismatch');
 
-		if ($postData['edit_password'] !== $postData['repeat_password'])
-			throw new UserException('Password not same');
-
 		if (strlen($postData['edit_password']) < 8)
 			throw new UserException('Password too small');
+
+		if ($postData['edit_password'] !== $postData['repeat_password'])
+			throw new UserException('Password not same');
 
 		if ($this->userService->updatePassword($session->get('user')['UID'], $postData['edit_password']) !== 1)
 			throw new UserException('User data could not be changed');
