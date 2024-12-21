@@ -47,8 +47,8 @@ class UserRepositoryFactory
 					'acl'      => new Core\UserAclRepository($this->connection),
 					'contact'  => new Core\UserContactRepository($this->connection),
 					'stats'    => new Core\UserStatsRepository($this->connection),
-					'vip'      => new Edge\Enterprise\UserVipRepository($this->connection),
-					'security' => new Edge\Enterprise\UserSecurityRepository($this->connection)
+					'vip'      => new Enterprise\UserVipRepository($this->connection),
+					'security' => new Enterprise\UserSecurityRepository($this->connection)
 				];
 			case Config::PLATFORM_EDITION_CORE:
 				return [
