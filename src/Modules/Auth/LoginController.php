@@ -44,7 +44,6 @@ class LoginController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
-				'messages' => $this->getErrors($request),
 				'ADDITIONAL_CSS' => ['/css/user/login.css']
 			],
 			'this_layout' => [
@@ -122,20 +121,4 @@ class LoginController
 		return $response->withHeader('Location', $route)->withStatus(302);
 	}
 
-	private function getErrors(ServerRequestInterface $request): array
-	{
-		$flash = $request->getAttribute('flash');
-		if (!$flash->hasMessage('error'))
-			return [];
-		$errors = [];
-		foreach ($flash->getMessage('error') as $message)
-		{
-			$errors[] = [
-				'MESSAGE_TYPE' => 'error',
-				'if_error'     => true,
-				'MESSAGE_TEXT' => $message
-			];
-		}
-		return $errors;
-	}
 }

@@ -95,7 +95,6 @@ class EditPasswordController
 		$data = [
 				'main_layout' => [
 					'LANG_PAGE_TITLE' => $translator->translate('options', 'user'),
-					'messages' => $this->getMessages($request),
 					'ADDITIONAL_CSS' => ['/css/user/options.css']
 				],
 				'this_layout' => [
@@ -179,32 +178,5 @@ class EditPasswordController
 		return $form;
 	}
 
-	private function getMessages(ServerRequestInterface $request): array
-	{
-		$flash = $request->getAttribute('flash');
-		$messages = [];
-		if ($flash->hasMessage('error'))
-		{
-			foreach ($flash->getMessage('error') as $message)
-			{
-				$messages[] = [
-					'MESSAGE_TYPE' => 'error',
-					'if_error'     => true,
-					'MESSAGE_TEXT' => $message
-				];
-			}
-		}
-		if ($flash->hasMessage('success'))
-		{
-			foreach ($messages['success'] as $message)
-			{
-				$messages[] = [
-					'MESSAGE_TYPE' => 'success',
-					'if_error'     => false,
-					'MESSAGE_TEXT' => $message
-				];
-			}
-		}
-		return $messages;
-	}
+
 }
