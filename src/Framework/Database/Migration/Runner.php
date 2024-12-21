@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Migration;
+namespace App\Framework\Database\Migration;
 
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Exception;

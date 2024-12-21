@@ -20,7 +20,7 @@
 
 namespace App\Framework\OAuth2;
 
-use App\Framework\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;

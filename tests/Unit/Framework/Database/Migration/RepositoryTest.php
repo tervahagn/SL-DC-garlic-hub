@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Framework\Migration;
+namespace Tests\Unit\Framework\Database\Migration;
 
+use App\Framework\Database\Migration\Repository;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Migration\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\Attributes\Group;

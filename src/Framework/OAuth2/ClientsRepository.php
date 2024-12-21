@@ -20,7 +20,7 @@
 
 namespace App\Framework\OAuth2;
 
-use App\Framework\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;

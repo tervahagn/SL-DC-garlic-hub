@@ -1,16 +1,15 @@
 <?php
 
-namespace Tests\Unit\Framework\Migration;
+namespace Tests\Unit\Framework\Database\Migration;
 
+use App\Framework\Database\Migration\Repository;
+use App\Framework\Database\Migration\Runner;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Migration\Repository;
-use App\Framework\Migration\Runner;
 use Doctrine\DBAL\Exception;
+use League\Flysystem\DirectoryListing;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
-use League\Flysystem\DirectoryListing;
-use League\Flysystem\StorageAttributes;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

@@ -24,11 +24,7 @@ In your `UserMain` repository, extend the `Sql` class and define the table and p
 ```php
 namespace App\Modules\Auth\Repositories;
 
-use App\Framework\BaseRepositories\Sql;
-use App\Framework\Exceptions\UserException;
-use App\Modules\Auth\Entities\User;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
+use App\Framework\Database\BaseRepositories\Sql;use App\Framework\Exceptions\UserException;use App\Modules\Auth\Entities\User;use Doctrine\DBAL\Connection;use Doctrine\DBAL\Exception;
 
 /**
  * Provides user data handling for authentication.
@@ -53,14 +49,14 @@ class UserMain extends Sql
 		$queryBuilder->select('*')->from($this->table);
 
 		if (filter_var($identifier, FILTER_VALIDATE_EMAIL))
-			$queryBuilder->where('email = :identifier');
+			{$queryBuilder->where('email = :identifier');}
 		else
-			$queryBuilder->where('username = :identifier');
+			{$queryBuilder->where('username = :identifier');}
 		$queryBuilder->setParameter('identifier', $identifier);
 
 		$result = $queryBuilder->executeQuery()->fetchAssociative();
 		if (!$result || empty($result))
-			throw new UserException('User not found.');
+			{throw new UserException('User not found.');}
 
 		return new User($result);
 	}

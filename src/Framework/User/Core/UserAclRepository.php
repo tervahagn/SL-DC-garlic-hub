@@ -20,7 +20,7 @@
 
 namespace App\Framework\User\Core;
 
-use App\Framework\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 
 class UserAclRepository extends Sql

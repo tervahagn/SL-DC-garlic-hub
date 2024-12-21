@@ -20,7 +20,7 @@
 
 namespace App\Framework\User\Enterprise;
 
-use App\Framework\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 
 class UserSecurityRepository extends Sql

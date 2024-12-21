@@ -20,8 +20,8 @@
 
 namespace App\Commands;
 
+use App\Framework\Database\Migration\Runner;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Migration\Runner;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\Console\Attribute\AsCommand;

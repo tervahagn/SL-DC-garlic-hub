@@ -3,8 +3,8 @@
 namespace Tests\Unit\Commands;
 
 use App\Commands\MigrateCommand;
+use App\Framework\Database\Migration\Runner;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Migration\Runner;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
