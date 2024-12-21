@@ -1,0 +1,38 @@
+<!-- Left Sidebar with Directories -->
+<aside>
+	<nav aria-label="Directory Structure">
+		<ul>
+			<li>Root</li>
+			<li>Folder 1
+				<ul>
+					<li>Subfolder 1.1</li>
+					<li>Subfolder 1.2</li>
+				</ul>
+			</li>
+			<li>Folder 2</li>
+		</ul>
+	</nav>
+</aside>
+
+<section class="content">
+	<header id="current-path">Current Path: /Root</header>
+
+	<!-- Upload Section -->
+	<section class="upload" aria-labelledby="upload-title">
+		<h2 id="upload-title">Upload Files</h2>
+		<form action="/upload" method="POST" enctype="multipart/form-data">
+			<input type="file" name="media[]" multiple>
+			<button type="submit">Upload</button>
+		</form>
+	</section>
+
+	<!-- Media List Section -->
+	<section class="media-list" aria-labelledby="media-list-title">
+		<h2 id="media-list-title">Media Files</h2>
+		<ul>
+			<li>Image1.jpg</li>
+			<li>Video1.mp4</li>
+			<li>Document1.pdf</li>
+		</ul>
+	</section>
+</section>
