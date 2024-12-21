@@ -65,7 +65,7 @@ abstract class Sql
 	public function insert(array $fields): int
 	{
 		$this->connection->insert($this->getTable(), $fields);
-		return (int)$this->connection->lastInsertId();
+		return (int) $this->connection->lastInsertId();
 	}
 
 
@@ -78,7 +78,7 @@ abstract class Sql
 	 */
 	public function update(int|string $id, array $fields): int
 	{
-		return $this->connection->update($this->getTable(), $fields, [$this->getIdField() => $id]);
+		return (int) $this->connection->update($this->getTable(), $fields, [$this->getIdField() => $id]);
 	}
 
 	/**
@@ -106,7 +106,7 @@ abstract class Sql
 			$queryBuilder->setParameter($field, $value);
 		}
 
-		return $queryBuilder->executeStatement();
+		return (int) $queryBuilder->executeStatement();
 	}
 
 	/**
@@ -127,7 +127,7 @@ abstract class Sql
 	 */
 	public function deleteByField(string $field, mixed $value): int
 	{
-		return $this->connection->delete($this->getTable(), [$field => $value]);
+		return (int) $this->connection->delete($this->getTable(), [$field => $value]);
 	}
 
 	/**
@@ -141,7 +141,7 @@ abstract class Sql
 
 		$this->determineConditions($queryBuilder, $conditions);
 
-		return $queryBuilder->executeStatement();
+		return (int) $queryBuilder->executeStatement();
 	}
 
 	protected function determineConditions(QueryBuilder $queryBuilder, array $conditions): void
@@ -160,6 +160,5 @@ abstract class Sql
 			$queryBuilder->leftJoin($this->table, $table, $table, $onCondition);
 		}
 	}
-
 
 }
