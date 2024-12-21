@@ -2,8 +2,13 @@
 
 namespace Tests\Unit\Modules\User;
 
+use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
+use App\Framework\Utils\Html\CsrfTokenField;
+use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Framework\Utils\Html\PasswordField;
+use App\Framework\Utils\Html\TextField;
 use App\Modules\User\EditPasswordController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -25,6 +30,7 @@ class EditPasswordControllerTest extends TestCase
 	private EditPasswordController $controller;
 	private Helper $sessionMock;
 	private Messages $flashMock;
+	private Translator $translatorMock;
 
 	/**
 	 * @throws Exception
@@ -37,6 +43,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->responseMock    = $this->createMock(Response::class);
 		$this->sessionMock     = $this->createMock(Helper::class);
 		$this->flashMock 	   = $this->createMock(Messages::class);
+		$this->translatorMock  = $this->createMock(Translator::class);
 
 		$this->controller = new EditPasswordController($this->formBuilderMock, $this->userServiceMock);
 	}
@@ -260,17 +267,71 @@ class EditPasswordControllerTest extends TestCase
 	#[Group('units')]
 	public function testShowFormGeneratesResponse(): void
 	{
-		$translatorMock = $this->createMock(stdClass::class);
-		$translatorMock->method('translate')->willReturn('Translated string');
+		$this->requestMock->expects($this->exactly(2))->method('getAttribute')
+			  ->willReturnCallback(function ($attribute)
+			  {
+				  return match ($attribute)
+				  {
+					  'translator' => $this->translatorMock,
+					  'session' => $this->sessionMock,
+					  default => null,
+				  };
+			  });
 
-		$this->requestMock->method('getAttribute')->willReturnMap([
-			['translator', $translatorMock]
-		]);
+		$fields = [
+				'edit_password' => [
+					'type' => FieldType::PASSWORD,
+					'id' => 'edit_password',
+					'name' => 'edit_password',
+					'value' => '',
+					'rules' => ['required' => true, 'minlength' => 8],
+					'default_value' => ''
+				],
+				'repeat_password' => [
+					'type' => FieldType::PASSWORD,
+					'id' => 'repeat_password',
+					'name' => 'repeat_password',
+					'rules' => ['required' => true, 'minlength' => 8],
+					'default_value' => ''
+				],
+				'csrf_token' => [
+					'type' => FieldType::CSRF,
+					'id' => 'csrf_token',
+					'name' => 'csrf_token',
+				]
+		];
+
+		$formFieldsMocks = [
+			'edit_password' => $this->createMock(PasswordField::class),
+			'repeat_password' => $this->createMock(PasswordField::class),
+			'csrf_token' => $this->createMock(CsrfTokenField::class)
+		];
+
+		$this->formBuilderMock->expects($this->exactly(3))->method('createField')
+			->willReturnCallback(function ($param) use ($fields, $formFieldsMocks)
+			{
+				if ($param === $fields['edit_password'])
+					return $formFieldsMocks['edit_password'];
+				else if ($param === $fields['repeat_password'])
+					return $formFieldsMocks['repeat_password'];
+				else if ($param === $fields['csrf_token'])
+					return $formFieldsMocks['csrf_token'];
+				else
+					return null;
+			});
+
+		$formFieldsMocks['csrf_token']->expects($this->once())->method('getValue')->willReturn('valid_token');
+		$this->sessionMock->expects($this->once())->method('set')->with('csrf_token', 'valid_token');
 
 		$this->responseMock->expects($this->once())
-						   ->method('getBody')
-						   ->willReturn($this->createMock(StreamInterface::class));
+			 ->method('getBody')
+			 ->willReturn($this->createMock(StreamInterface::class));
 
+
+		$this->responseMock->expects($this->once())->method('withHeader')
+		     ->with('Content-Type', 'text/html')
+			 ->willReturnSelf()
+		;
 		$response = $this->controller->showForm($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $response);
