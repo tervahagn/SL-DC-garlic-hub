@@ -161,4 +161,19 @@ abstract class Sql
 		}
 	}
 
+	/**
+	 * Secure that return value will be an array
+	 *
+	 * @throws Exception
+	 */
+	protected function fetchAssociative(QueryBuilder $queryBuilder): array
+	{
+		$result =  $queryBuilder->executeQuery()->fetchAssociative();
+
+		if (($result === false))
+			return [];
+
+		return $result;
+	}
+
 }

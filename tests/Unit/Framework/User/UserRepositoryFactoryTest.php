@@ -2,17 +2,17 @@
 
 namespace Tests\Unit\Framework\User;
 
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
-use App\Framework\User\UserRepositoryFactory;
 use App\Framework\Core\Config\Config;
-use Doctrine\DBAL\Connection;
-use App\Framework\User\Edge\UserMainRepository;
 use App\Framework\User\Core\UserAclRepository;
 use App\Framework\User\Core\UserContactRepository;
 use App\Framework\User\Core\UserStatsRepository;
-use App\Framework\User\Enterprise\UserVipRepository;
-use App\Framework\User\Enterprise\UserSecurityRepository;
+use App\Framework\User\Edge\Enterprise\UserSecurityRepository;
+use App\Framework\User\Edge\Enterprise\UserVipRepository;
+use App\Framework\User\Edge\UserMainRepository;
+use App\Framework\User\UserRepositoryFactory;
+use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
 class UserRepositoryFactoryTest extends TestCase
 {
