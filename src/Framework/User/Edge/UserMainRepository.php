@@ -48,7 +48,7 @@ class UserMainRepository extends Sql
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id);
 
-		return $queryBuilder->executeQuery()->fetchAssociative();
+		return $this->fetchAssociative($queryBuilder);
 	}
 
 	/**
@@ -69,6 +69,6 @@ class UserMainRepository extends Sql
 
 		$queryBuilder->setParameter('identifier', $identifier);
 
-		return $queryBuilder->executeQuery()->fetchAssociative();
+		return $this->fetchAssociative($queryBuilder);
 	}
 }
