@@ -17,11 +17,11 @@
 {{#messages}}
 	<div class="message-bar message-bar--{{MESSAGE_TYPE}}">
 		<span>{{MESSAGE_TEXT}}</span>
-		{{#if_error}}
+		{{#has_close_button}}
 			<button class="close-button" onclick="this.parentElement.style.display='none';">
 				<i class="ri-close-line"></i>
 			</button>
-		{{/if_error}}
+		{{/has_close_button}}
 	</div>
 {{/messages}}
 <header>

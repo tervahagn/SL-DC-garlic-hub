@@ -66,6 +66,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 			'user_menu' => $this->createUserMenu(),
 
 			'APP_NAME' => $config->getEnv('APP_NAME'),
+			'messages' => $this->outputFlashMessages($request),
 			'LANG_LEGAL_NOTICE' => $this->translator->translate('legal_notice', 'menu'),
 			'LANG_PRIVACY' => $this->translator->translate('privacy', 'menu'),
 			'LANG_TERMS' => $this->translator->translate('terms', 'menu')
@@ -131,5 +132,23 @@ class LayoutDataMiddleware implements MiddlewareInterface
 		}
 
 		return $ret;
+	}
+
+	private function outputFlashMessages(ServerRequestInterface $request): array
+	{
+		$flash    = $request->getAttribute('flash');
+		$messages = [];
+		// errors have an close button, successes close after 5s (set in css)
+		foreach (['error' => true, 'success' => false] as $type => $hasCloseButton)
+		{
+			if ($flash->hasMessage($type))
+			{
+				foreach ($flash->getMessage($type) as $message)
+				{
+					$messages[] = ['MESSAGE_TYPE' => $type,	'has_close_button' => $hasCloseButton, 'MESSAGE_TEXT' => $message];
+				}
+			}
+		}
+		return $messages;
 	}
 }
