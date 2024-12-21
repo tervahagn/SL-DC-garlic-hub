@@ -30,6 +30,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Slim\Flash\Messages;
 use SlimSession\Helper;
 
 /**
@@ -110,10 +111,10 @@ class LayoutDataMiddleware implements MiddlewareInterface
 
 		return [
 			[
-				'LANG_LOGIN_AS' => $this->translator->translate('logged_in_as', 'menu'),
-				'USERNAME'      => $username,
+				'LANG_LOGIN_AS'       => $this->translator->translate('logged_in_as', 'menu'),
+				'USERNAME'            => $username,
 				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
-				'LANG_LOGOUT' => $this->translator->translate('logout', 'menu')
+				'LANG_LOGOUT'         => $this->translator->translate('logout', 'menu')
 			]
 		];
 	}
@@ -136,6 +137,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 
 	private function outputFlashMessages(ServerRequestInterface $request): array
 	{
+		/** @var Messages $flash */
 		$flash    = $request->getAttribute('flash');
 		$messages = [];
 		// errors have an close button, successes close after 5s (set in css)
