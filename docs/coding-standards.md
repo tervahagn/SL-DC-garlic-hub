@@ -185,7 +185,26 @@ public function testProcessAddsAttributesAndCallsNextHandler(): void
     // Method logic
 }
 ```
-## 12. Testing Standards
+
+## 12. Templates 
+Garlic-hub use mustache templates for rendering views, although there is an option to user plain html and theoretically other template-engines. The template-engine should be used only for [separating of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and must not include any logic. 
+
+The following are the guidelines for writing templates:
+
+- underline instead of camelCase for block names and variables
+- normal variable names in upper case
+- blocks in lower case
+- use `{{#block_name}}` for opening a block and `{{/block_name}}` for closing a block
+### Ecammple
+```html
+{{#main_menu}}
+    <li>
+        <a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+    </li>
+{{/main_menu}} 
+```
+
+## 13. Testing Standards
 
 - Write unit tests for all public methods to validate functionality.
 - Use a consistent naming convention for test methods to improve readability.

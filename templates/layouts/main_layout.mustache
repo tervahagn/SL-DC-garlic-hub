@@ -1,104 +1,110 @@
 <!DOCTYPE html>
 <html data-theme="dark" lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>{{APP_NAME}}: {{LANG_PAGE_TITLE}}</title>
-	<link rel="icon" href="/images/logo.svg" type="image/svg+xml">
-	<link rel="stylesheet" href="/css/external/remixicon.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="color-scheme" content="light dark">
-	<link rel="stylesheet" href="/css/external/pico.jade.min.css">
-	<link rel="stylesheet" href="/css/theme-base.css">
-	{{#ADDITIONAL_CSS}}
-	<link rel="stylesheet" href="{{.}}">
-	{{/ADDITIONAL_CSS}}
-</head>
-<body>
-{{#messages}}
-	<div class="message-bar message-bar--{{MESSAGE_TYPE}}">
-		<span>{{MESSAGE_TEXT}}</span>
-		{{#has_close_button}}
-			<button class="close-button" onclick="this.parentElement.style.display='none';">
-				<i class="ri-close-line"></i>
-			</button>
-		{{/has_close_button}}
-	</div>
-{{/messages}}
-<header>
-	<nav>
-		<ul id="main_menu">
-			<li>
-				<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
-			</li>
-			{{#main_menu}}
+	<head>
+		<meta charset="UTF-8">
+		<title>{{APP_NAME}}: {{LANG_PAGE_TITLE}}</title>
+		<link rel="icon" href="/images/logo.svg" type="image/svg+xml">
+		<link rel="stylesheet" href="/css/external/remixicon.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="color-scheme" content="light dark">
+		<link rel="stylesheet" href="/css/external/pico.jade.min.css">
+		<link rel="stylesheet" href="/css/theme-base.css">
+		{{#additional_css}}
+		<link rel="stylesheet" href="{{.}}">
+		{{/additional_css}}
+		{{#header_scripts}}
+		<script src="{{.}}"></script>
+		{{/header_scripts}}
+	</head>
+	<body>
+	{{#messages}}
+		<div class="message-bar message-bar--{{MESSAGE_TYPE}}">
+			<span>{{MESSAGE_TEXT}}</span>
+			{{#has_close_button}}
+				<button class="close-button" onclick="this.parentElement.style.display='none';">
+					<i class="ri-close-line"></i>
+				</button>
+			{{/has_close_button}}
+		</div>
+	{{/messages}}
+	<header>
+		<nav>
+			<ul id="main_menu">
 				<li>
-					<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+					<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
 				</li>
-			{{/main_menu}}
-		</ul>
-		<ul id="language_select">
-			<li>
-				<details class="dropdown">
-					<summary>
-						<img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt="">
-						{{CURRENT_LOCALE_UPPER}}
-					</summary>
-					<ul aria-labelledby="languageDropdown">
-						{{#language_select}}
-						<li>
-							<a href="/set-locales/{{LOCALE_LONG}}">
-								<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
-								{{LANGUAGE_NAME}}
-							</a>
-						</li>
-						{{/language_select}}
-					</ul>
-				</details>
-			</li>
-		</ul>
-		{{#user_menu}}
-		<ul id="user_menu">
-			<li>
-				<details class="dropdown">
-					<summary>
-						{{LANG_LOGIN_AS}}: {{USERNAME}}
-					</summary>
-					<ul aria-labelledby="userDropdown">
-						<li>
-							<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
-						</li>
-					</ul>
-				</details>
-			</li>
-		</ul>
-		{{/user_menu}}
-	</nav>
-</header>
-<main>
-	{{{MAIN_CONTENT}}}
-</main>
+				{{#main_menu}}
+					<li>
+						<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+					</li>
+				{{/main_menu}}
+			</ul>
+			<ul id="language_select">
+				<li>
+					<details class="dropdown">
+						<summary>
+							<img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt="">
+							{{CURRENT_LOCALE_UPPER}}
+						</summary>
+						<ul aria-labelledby="languageDropdown">
+							{{#language_select}}
+							<li>
+								<a href="/set-locales/{{LOCALE_LONG}}">
+									<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
+									{{LANGUAGE_NAME}}
+								</a>
+							</li>
+							{{/language_select}}
+						</ul>
+					</details>
+				</li>
+			</ul>
+			{{#user_menu}}
+			<ul id="user_menu">
+				<li>
+					<details class="dropdown">
+						<summary>
+							{{LANG_LOGIN_AS}}: {{USERNAME}}
+						</summary>
+						<ul aria-labelledby="userDropdown">
+							<li>
+								<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
+							</li>
+						</ul>
+					</details>
+				</li>
+			</ul>
+			{{/user_menu}}
+		</nav>
+	</header>
+	<main>
+		{{{MAIN_CONTENT}}}
+	</main>
 
-<footer>
-	<nav aria-label="Footer Navigation" class="menu_company_legals">
-		<ul>
-			<li id="compile_time">
-				{{EXECUTION_TIME}} | {{MEMORY_USAGE}} | {{PEAK_MEMORY_USAGE}} peak
-			</li>
-			<li>
-				<a href="/legals">{{LANG_LEGAL_NOTICE}}</a>
-			</li>
-			<li>
-				<a href="/privacy">{{LANG_PRIVACY}}</a>
-			</li>
-			<li>
-				<a href="/terms">{{LANG_TERMS}}</a>
-			</li>
-		</ul>
-	</nav>
-</footer>
+	<footer>
+		<nav aria-label="Footer Navigation" class="menu_company_legals">
+			<ul>
+				<li id="compile_time">
+					{{EXECUTION_TIME}} | {{MEMORY_USAGE}} | {{PEAK_MEMORY_USAGE}} peak
+				</li>
+				<li>
+					<a href="/legals">{{LANG_LEGAL_NOTICE}}</a>
+				</li>
+				<li>
+					<a href="/privacy">{{LANG_PRIVACY}}</a>
+				</li>
+				<li>
+					<a href="/terms">{{LANG_TERMS}}</a>
+				</li>
+			</ul>
+		</nav>
+	</footer>
 
-</body>
+	{{#footer_scripts}}
+	<script src="{{.}}"></script>
+	{{/footer_scripts}}
+	</body>
 </html>

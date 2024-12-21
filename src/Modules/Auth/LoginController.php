@@ -44,7 +44,7 @@ class LoginController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
-				'ADDITIONAL_CSS' => ['/css/user/login.css']
+				'additional_css' => ['/css/user/login.css']
 			],
 			'this_layout' => [
 				'template' => 'auth/login', // Template-name
@@ -60,7 +60,8 @@ class LoginController
 		];
 		$response->getBody()->write(serialize($data));
 
-		return $response->withHeader('Content-Type', 'text/html');	}
+		return $response->withHeader('Content-Type', 'text/html');
+	}
 
 	/**
 	 * @throws UserException

@@ -95,7 +95,7 @@ class EditPasswordController
 		$data = [
 				'main_layout' => [
 					'LANG_PAGE_TITLE' => $translator->translate('options', 'user'),
-					'ADDITIONAL_CSS' => ['/css/user/options.css']
+					'additional_css' => ['/css/user/options.css']
 				],
 				'this_layout' => [
 					'template' => 'utils/edit', // Template-name

@@ -21,11 +21,14 @@
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
+use App\Modules\Mediapool\ShowController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
 
 /* @var App $app */
+/** @phpstan-ignore-next-line */
+assert($app instanceof App);
 $container = $app->getContainer();
 
 $app->get('/', [HomeController::class, 'index']);
@@ -39,3 +42,5 @@ $app->post('/api/token', [OAuth2Controller::class, 'token']);
 
 $app->get('/user/edit', [EditPasswordController::class, 'showForm']);
 $app->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
+
+$app->get('/mediapool', [ShowController::class, 'show']);
