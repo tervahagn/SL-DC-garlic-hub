@@ -6,10 +6,11 @@ This document outlines the coding standards and best practices for gralic-hub. F
 
 ## General Guidelines
 
-- Follow **PSR-1** and **PSR-12** standards for coding style.
+- Follow most of **PSR-12** standards, but use Allman-Style for if/else, try/catch while etc.
 - Use clear, descriptive names for all classes, methods, and variables.
 - Keep code modular, with single-responsibility classes and functions.
-- Ensure all code is properly documented with `phpdoc` comments.
+- Code should be readable and self-explanatory.
+- Ensure code is properly documented with `phpdoc` comments if it is not self explaining.
 
 ---
 
@@ -99,7 +100,7 @@ public function processOrder(int $userId, array $orderDetails): string
 ## 7. Code Formatting
 
 - **Indentation**: Use 4 spaces per indentation level.
-- **Braces**:
+- **Braces in Allman style**:
   - Place opening braces `{` on a new line, directly below the control statement or function definition.
   - **Single-line statements**: For single-line statements following a control structure (`if`, `else`, `while`, etc.), braces `{}` are optional. When omitted, place the statement on a new line directly below the control structure and leave an empty line after it for clarity. Example:
     ```php
@@ -187,9 +188,8 @@ public function testProcessAddsAttributesAndCallsNextHandler(): void
 ## 12. Testing Standards
 
 - Write unit tests for all public methods to validate functionality.
+- Use a consistent naming convention for test methods to improve readability.
 - Use descriptive names for test methods (e.g., `testProcessOrderReturnsConfirmationNumber`) for clarity.
+- Use proper assertions to validate expected results (e.g., `assertEquals`, `assertTrue`, `assertFalse`).
+- End mocked classes with Mock as Suffix (e.g., userRepositoryMock)
 - Ensure tests are isolated and avoid dependencies on external resources (e.g., database, filesystem) for reliable results.
-
-## 13. Coding Style Check:
-
-- Run `phpcs` to check coding standards compliance and `phpcbf` to auto-fix violations where possible.
