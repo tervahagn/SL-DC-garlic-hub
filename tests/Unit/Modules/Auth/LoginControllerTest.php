@@ -100,8 +100,6 @@ class LoginControllerTest extends TestCase
 					return $this->translatorMock;
 				elseif ($param === 'session')
 					return $this->sessionMock;
-				elseif ($param === 'flash')
-					return $flash;
 				return null;
 			}
 		);
@@ -109,15 +107,6 @@ class LoginControllerTest extends TestCase
 		$this->sessionMock->method('exists')->with('user')->willReturn(false);
 		$this->sessionMock->method('set');
 		$this->translatorMock->expects($this->exactly(4))->method('translate');
-
-		$messages = [
-			'MESSAGE_TYPE' => 'error',
-			'if_error'     => true,
-			'MESSAGE_TEXT' => 'Invalid credentials.'
-		];
-
-		$flash->expects($this->once())->method('hasMessage')->with('error')->willReturn(true);
-		$flash->expects($this->once())->method('getMessage')->willReturn($messages);
 
 		$body = $this->createMock(StreamInterface::class);
 		$this->responseMock->method('getBody')->willReturn($body);
@@ -145,8 +134,6 @@ class LoginControllerTest extends TestCase
 								  return $this->translatorMock;
 							  elseif ($param === 'session')
 								  return $this->sessionMock;
-							  elseif ($param === 'flash')
-								  return $flash;
 							  return null;
 						  }
 						  );
@@ -154,9 +141,6 @@ class LoginControllerTest extends TestCase
 		$this->sessionMock->method('exists')->with('user')->willReturn(false);
 		$this->sessionMock->method('set');
 		$this->translatorMock->expects($this->exactly(4))->method('translate');
-
-		$flash->expects($this->once())->method('hasMessage')->with('error')->willReturn(false);
-		$flash->expects($this->never())->method('getMessage');
 
 		$body = $this->createMock(StreamInterface::class);
 		$this->responseMock->method('getBody')->willReturn($body);
