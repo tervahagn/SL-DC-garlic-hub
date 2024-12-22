@@ -1,16 +1,19 @@
-document.addEventListener("DOMContentLoaded", function()
+document.addEventListener("DOMContentLoaded", function(event)
 {
-	let tree = new mar10.Wunderbaum({
-								  id: "my-tree",
-								  element: document.getElementById("categories_list"),
-								  source: [
-									  { title: "Node 1", folder: true, children: [
-											  { title: "Child node 1" },
-											  { title: "Child node 2" }
-										  ]},
-									  { title: "Node 2", folder: true, children: [
-											  { title: "Another child node" }
-										  ]}
-								  ]
-							  });
+	const tree = new mar10.Wunderbaum({
+		element: document.getElementById("mediapool-tree"),
+		source: { url: '/async/mediapool/node/0' },
+		init: (e) => {
+			e.tree.setFocus();
+		},
+		lazyLoad: function (e) {
+			return { url: '/async/mediapool/node/'+ e.node.key, params: { parentKey: e.node.key } };
+		},
+
+		activate: (e) => {
+			alert(`Thank you for activating ${e.node}.`);
+		},
+
+	});
+
 });

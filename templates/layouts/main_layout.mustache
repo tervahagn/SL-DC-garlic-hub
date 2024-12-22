@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>{{APP_NAME}}: {{LANG_PAGE_TITLE}}</title>
 		<link rel="icon" href="/images/logo.svg" type="image/svg+xml">
-		<link rel="stylesheet" href="/css/external/remixicon.css">
+		<link rel="stylesheet" href="/css/external/bootstrap-icons.min.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="color-scheme" content="light dark">
 		<link rel="stylesheet" href="/css/external/pico.jade.min.css">
@@ -103,8 +103,13 @@
 		</nav>
 	</footer>
 
+	{{#footer_modules}}
+	<script type="module">import {{MODULE_NAME}} from "{{MODULE_PATH}}";</script>
+	{{/footer_modules}}
 	{{#footer_scripts}}
-	<script src="{{.}}"></script>
+		<script src="{{.}}"></script>
 	{{/footer_scripts}}
+
+
 	</body>
 </html>
