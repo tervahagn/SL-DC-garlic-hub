@@ -17,6 +17,23 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+use App\Modules\Mediapool\Controller\NodesController;
+use App\Modules\Mediapool\NodesRepository;
+use App\Modules\Mediapool\NodesService;
+use Psr\Container\ContainerInterface;
+
 $dependencies = [];
+$dependencies[NodesService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new NodesService(
+		new NodesRepository($container->get('SqlConnection'))
+	);
+});
+
+$dependencies[NodesController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new NodesController($container->get(NodesService::class));
+});
 
 return $dependencies;

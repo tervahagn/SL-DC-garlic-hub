@@ -24,7 +24,7 @@ use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class MediaNodesRepository extends Sql
+class NodesRepository extends Sql
 {
 	use NestedSetTrait;
 
@@ -51,7 +51,7 @@ class MediaNodesRepository extends Sql
 					rgt,
 					last_updated,
 					create_date,
-					category_name,
+					name,
 					ROUND((rgt - lft - 1) / 2) AS children'];
 		$where = ['node_id' => $node_id];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];

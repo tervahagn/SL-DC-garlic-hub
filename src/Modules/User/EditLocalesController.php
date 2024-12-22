@@ -38,7 +38,6 @@ class EditLocalesController
 	}
 
 	/**
-	 * @throws Exception
 	 */
 	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface

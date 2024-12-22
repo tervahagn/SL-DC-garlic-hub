@@ -96,7 +96,7 @@ VALUES (1, 1, 2, 1, 6, 7, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'widget
 
 -- set admin dir under user
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (2, 0, 2, 1, 2, 3, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
+VALUES (2, 2, 2, 1, 2, 3, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 
 CREATE TABLE mediapool_media (

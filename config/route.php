@@ -21,7 +21,8 @@
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
-use App\Modules\Mediapool\ShowController;
+use App\Modules\Mediapool\Controller\NodesController;
+use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
@@ -44,3 +45,7 @@ $app->get('/user/edit', [EditPasswordController::class, 'showForm']);
 $app->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
 
 $app->get('/mediapool', [ShowController::class, 'show']);
+$app->get('/async/mediapool/node/{parent_id}', [NodesController::class, 'list']);
+$app->post('/async/mediapool/node/{parent_id}', [NodesController::class, 'add']);
+$app->delete('/async/mediapool/node/{node_id}', [NodesController::class, 'delete']);
+$app->patch('/async/mediapool/node/{node_id}', [NodesController::class, 'edit']);
