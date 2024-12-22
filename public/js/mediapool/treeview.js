@@ -9,11 +9,9 @@ document.addEventListener("DOMContentLoaded", function(event)
 		lazyLoad: function (e) {
 			return { url: '/async/mediapool/node/'+ e.node.key, params: { parentKey: e.node.key } };
 		},
-
 		activate: (e) => {
-			alert(`Thank you for activating ${e.node}.`);
-		},
-
+			document.getElementById("current-path").textContent = "/" + e.node.getPath();
+		}
 	});
 
 });

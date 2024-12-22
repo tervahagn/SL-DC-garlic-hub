@@ -37,7 +37,7 @@ class ShowController
 
 		$data = [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => $translator->translate('mediapool', 'main'),
+				'LANG_PAGE_TITLE' => $translator->translate('mediapool', 'menu'),
 				'additional_css' => ['/css/external/bootstrap-icons.min.css', '/css/external/wunderbaum.min.css', '/css/mediapool/overview.css'],
 				'footer_scripts' => ['/js/external/wunderbaum.umd.min.js', '/js/mediapool/treeview.js'],
 				'footer_modules' => ['MODULE_NAME' => 'wunderbaum', 'MODULE_PATH' => 'https://cdn.jsdelivr.net/npm/wunderbaum@0/+esm']

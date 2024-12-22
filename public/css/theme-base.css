@@ -3,7 +3,11 @@
 html{height: 100%;}
 body, html{margin:0;padding:0;height: 100%;display: flex;flex-direction: column;}
 .trumbowyg-button-pane button{min-width:0;}
-
+body>footer,
+body>header,
+body>main {
+	 padding-block:0;
+}
 header
 {
 	padding:0 1em;
@@ -17,11 +21,13 @@ header
 	[data-theme="light"] header nav #main_menu a {color: #000;}
 	[data-theme="light"] header nav #main_menu a:hover {background-color: #eee;}
 	header nav #language_select	{margin-right: 1.5em;}
-	header nav #language_select .dropdown ul li	{width:8em;}
+	header nav #language_select .dropdown ul li	{width:12em;}
 	header nav #language_select	{margin-left: auto;}
 	header nav #user_menu .dropdown {width:15em;}
 
-
+h1{font-size: 1.5em;}
+h2{font-size: 1.2em;}
+h2{font-size: 1.0em;}
 main
 {
 	flex: 1;
