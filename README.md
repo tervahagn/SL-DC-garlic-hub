@@ -8,7 +8,7 @@ Garlic-Hub is a robust Digital Signage Management Platform designed to handle th
 
 ### Prerequisites
 Ensure your environment meets the following requirements:
-- **PHP** 8.2 or higher
+- **PHP** 8.3 or higher
 - **Composer** for dependency management
 - **Web Server**: Apache, Nginx, or other PHP-compatible server
 - **Database**: MariaDB or SQLite for smaller deployments (compatible with other SQL databases)
@@ -50,17 +50,23 @@ The login will be created with the following credentials:
 - **login**: admin
 - **password**: thymian
 
-## Features (In Development)
+## Features
 
 The following features are under active development and subject to change as Garlic-Hub progresses toward its first stable release:
 
+### Currently under Development  for Phase 1
 - **Content Management**: Upload, organize, and schedule multimedia content with a user-friendly media pool and playlist manager.
 - **SMIL-Based Playlists**: Supports creating playlists in the SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players.
+- **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences.
+- **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts.
+- 
+### Planned Features
 - **Device Management**: Remotely manage digital signage players, including configuration, updates, and monitoring.
 - **Real-Time Reporting**: Collect logs from connected media players, generate insightful reports, and monitor system health.
+- **Templating**: SVG and HTML Template-Engine.
+- **Feeds**: Organizing Feeds like RSS and more.
+- **Channels**: Creating automated content based on feeds and templates. 
 - **Flexible Configuration**: Designed to run across multiple device types, such as Raspberry Pi or Android-based media players.
-- **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts.
-- **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences.
 - **Scalable Architecture**: Available in editions tailored to different scales – from local installations to cloud-hosted enterprise solutions.
 
 ## Development Roadmap
