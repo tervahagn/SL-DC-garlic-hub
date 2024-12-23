@@ -40,13 +40,20 @@ body{padding:0 1rem;}
 	header nav{display: flex;gap:1rem;}
 	header nav ul {list-style: none;}
 	header nav .main_menu {display: flex; gap: 1rem;padding:0;align-items: center;justify-items: flex-start}
-	header nav .main_menu ul{position: absolute; z-index: 10; padding: 0 ; background-color: #fff; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);}
+	header nav .main_menu ul
+	{
+		position: absolute;
+		z-index: 10;
+		padding: 0 ;
+		background-color: #fff;
+		box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+	}
 	.main_menu ul a:hover{ color: #fff; background-color: #000; }
 	nav .main_menu li > a, nav .main_menu li > span{font-weight: bold; }
 	nav .main_menu ul, nav .main_menu li:hover .main_menu ul, nav .main_menu ul li:hover .main_menu ul{display: none;}
 	nav .main_menu li:hover ul, nav .main_menu ul li:hover ul, nav .main_menu ul ul li:hover ul {display: block;}
-	#language_select{margin-left:auto;}
-	#language_select div, .main_menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
+	.main_menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
+	.main_menu:last-child{margin-left:auto;}
 
 a{text-decoration: none;}
 h1{font-size: 1.3rem; font-family: var(--gh-font-bold);}

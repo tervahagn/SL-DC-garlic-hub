@@ -28,29 +28,27 @@
 	{{/messages}}
 	<header>
 		<nav>
+			<ul id="language_select" class="main_menu">
+				<li>
+					{{CURRENT_LOCALE_UPPER}}
+					<ul>
+						{{#language_select}}
+							<li>
+								<a href="/set-locales/{{LOCALE_LONG}}" title="{{LOCALE_SMALL}}">{{LANGUAGE_NAME}}</a>
+							</li>
+						{{/language_select}}
+					</ul>
+				</li>
+			</ul>
 			<ul class="main_menu">
 				<li>
 					<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
 				</li>
 				{{#main_menu}}
-				<li>
-					<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
-				</li>
+					<li>
+						<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+					</li>
 				{{/main_menu}}
-			</ul>
-			<ul id="language_select" class="main_menu">
-				<li>
-					<div><img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt=""><span>{{CURRENT_LOCALE_UPPER}}</span></div>
-					<ul>
-						{{#language_select}}
-						<li>
-							<a href="/set-locales/{{LOCALE_LONG}}">
-								<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
-								{{LANGUAGE_NAME}}
-							</a>
-						</li>
-						{{/language_select}}
-					</ul>
 			</ul>
 			{{#user_menu}}
 			<ul class="main_menu">
