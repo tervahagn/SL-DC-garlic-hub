@@ -53,7 +53,8 @@ class LoginController
 					'LANG_USERNAME' => $this->translator->translate('username', 'main').' / '.$this->translator->translate('email', 'main'),
 					'LANG_PASSWORD' => $this->translator->translate('password', 'login'),
 					'CSRF_TOKEN' => $csrfToken,
-					'LANG_SUBMIT' => $page_name
+					'LANG_SUBMIT' => $page_name,
+					'LANG_AUTOLOGIN' => $this->translator->translate('autologin', 'login')
 
 				]
 			]

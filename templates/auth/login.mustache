@@ -1,12 +1,17 @@
-<h1>{{LANG_PAGE_HEADER}}</h1>
 <form id="login_form" method="POST" action="/login">
 	<fieldset>
-		<label for="username">{{LANG_USERNAME}}:</label>
-		<input type="text" id="username" name="username" required>
-		<label for="password">{{LANG_PASSWORD}}:</label>
-		<input type="password" id="password" name="password" required>
+		<legend>{{LANG_PAGE_HEADER}}</legend>
+		<label for="username">{{LANG_USERNAME}}:
+			<input type="text" id="username" name="username" autocomplete="username" maxlength="50" required>
+		</label>
+		<label for="password">{{LANG_PASSWORD}}:
+			<input type="password" id="password" name="password" autocomplete="current-password" maxlength="50" required>
+		</label>
 		<input type="hidden" name="csrf_token" value="{{CSRF_TOKEN}}">
 
 		<button type="submit">{{LANG_SUBMIT}}</button>
+		<label for="autologin">
+			<input type="checkbox" name="autologin" id="autologin"> {{LANG_AUTOLOGIN}}
+		</label>
 	</fieldset>
 </form>

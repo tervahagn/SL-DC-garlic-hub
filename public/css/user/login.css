@@ -4,3 +4,14 @@
 	width:            30em;
 }
 
+#login_form fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 110px 2rem 1rem 3rem;
+	background: transparent url("/images/logo.svg") no-repeat center top+15px;
+	background-size: 250px;
+}
+form label:last-child {display: flex; flex-direction:row; gap:0.5em;margin:1em 0; align-items: center}
+
+

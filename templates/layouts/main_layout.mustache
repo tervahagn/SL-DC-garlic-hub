@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html data-theme="light" lang="en">
+<html lang="{{CURRENT_LOCALE_LOWER}}">
 	<head>
 		<meta charset="UTF-8">
 		<title>{{APP_NAME}}: {{LANG_PAGE_TITLE}}</title>
 		<link rel="icon" href="/images/logo.svg" type="image/svg+xml">
-		<link rel="stylesheet" href="/css/external/bootstrap-icons.min.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="color-scheme" content="light dark">
-		<link rel="stylesheet" href="/css/external/pico.jade.min.css">
+		<link rel="stylesheet" href="/css/external/normalize.css">
+		<link rel="stylesheet" href="/css/external/bootstrap-icons.min.css">
 		<link rel="stylesheet" href="/css/theme-base.css">
 		{{#additional_css}}
 		<link rel="stylesheet" href="{{.}}">
@@ -22,64 +21,53 @@
 			<span>{{MESSAGE_TEXT}}</span>
 			{{#has_close_button}}
 				<button class="close-button" onclick="this.parentElement.style.display='none';">
-					<i class="ri-close-line"></i>
+					<i>&times;</i>
 				</button>
 			{{/has_close_button}}
 		</div>
 	{{/messages}}
 	<header>
 		<nav>
-			<ul id="main_menu">
+			<ul class="main_menu">
 				<li>
 					<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
 				</li>
 				{{#main_menu}}
-					<li>
-						<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
-					</li>
+				<li>
+					<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+				</li>
 				{{/main_menu}}
 			</ul>
-			<ul id="language_select">
+			<ul id="language_select" class="main_menu">
 				<li>
-					<details class="dropdown">
-						<summary>
-							<img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt="">
-							{{CURRENT_LOCALE_UPPER}}
-						</summary>
-						<ul aria-labelledby="languageDropdown">
-							{{#language_select}}
-							<li>
-								<a href="/set-locales/{{LOCALE_LONG}}">
-									<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
-									{{LANGUAGE_NAME}}
-								</a>
-							</li>
-							{{/language_select}}
-						</ul>
-					</details>
-				</li>
+					<div><img src="/images/flags/24x24/{{CURRENT_LOCALE_LOWER}}.png" alt=""><span>{{CURRENT_LOCALE_UPPER}}</span></div>
+					<ul>
+						{{#language_select}}
+						<li>
+							<a href="/set-locales/{{LOCALE_LONG}}">
+								<img src="/images/flags/24x24/{{LOCALE_SMALL}}.png" alt="{{LANGUAGE_NAME}} flag">
+								{{LANGUAGE_NAME}}
+							</a>
+						</li>
+						{{/language_select}}
+					</ul>
 			</ul>
 			{{#user_menu}}
-			<ul id="user_menu">
+			<ul class="main_menu">
 				<li>
-					<details class="dropdown">
-						<summary>
-							{{LANG_LOGIN_AS}}: {{USERNAME}}
-						</summary>
-						<ul aria-labelledby="userDropdown">
-							<li>
-								<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
-							</li>
-						</ul>
-					</details>
+					{{LANG_LOGIN_AS}}: {{USERNAME}}
+					<ul>
+						<li>
+							<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
+						</li>
+						<li>
+							<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
+						</li>
+					</ul>
 				</li>
 			</ul>
 			{{/user_menu}}
 		</nav>
-		<h1>{{LANG_PAGE_TITLE}}</h1>
 	</header>
 	<main>
 		{{{MAIN_CONTENT}}}
