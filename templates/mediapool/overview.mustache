@@ -1,14 +1,29 @@
 <aside>
-	<label>Filter: <input id="tree_filter" type="search" placeholder="Search"></label>
+			<label id="wrap_tree_filter">
+				<input id="tree_filter" type="search" placeholder="Filter"><a class="bi bi-folder-plus" id="addRootFolder"></a>
+			</label>
+
 			<nav aria-label="Directory Structure">
 				<div id="mediapool-tree" class="wb-skeleton wb-initializing wb-fade-expander"></div>
 			</nav>
+
+			<dialog id="editFolderDialog">
+				<form method="dialog">
+					<fieldset>
+						<legend>Erstelle Hauptordner</legend>
+						<label for="folder_name">Ordnername:
+							<input type="text" id="folder_name" name="folder_name" required>
+						</label>
+						<button value="submit" type="submit">Submit</button>
+						<button value="cancel" formnovalidate autofocus>Cancel</button>
+					</fieldset>
+				</form>
+			</dialog>
 		</aside>
 
 		<section class="content">
-			<h2 id="current-path"> / </h2>
-			<div class="upload" aria-labelledby="upload-title">
-					<input type="file" name="media[]" multiple>
+			<div class="upload">
+				<button><i class="bi bi-upload"></i> Upload</button> <strong id="current-path"> / </strong>
 			</div>
 
 			<div class="media-list" aria-labelledby="media-list-title">
