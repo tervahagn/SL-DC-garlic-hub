@@ -238,22 +238,18 @@ class NodesService
 	 */
 	protected function deleteTree(array $node_data): static
 	{
-		$root_id = (int) $node_data['root_id'];
-		$pos_rgt = (int) $node_data['rgt'];
-		$pos_lft = (int) $node_data['lft'];
-
 		try
 		{
 			$this->nodesRepository->beginTransaction();
 
-			$this->nodesRepository->deleteFullTree($root_id, $pos_rgt, $pos_lft);
+			$this->nodesRepository->deleteFullTree($node_data['root_id'], $node_data['rgt'], $node_data['lft']);
 
 			// remove other nodes to to create some space
-			$move = floor(($pos_rgt - $pos_lft) / 2);
+			$move = floor(($node_data['rgt'] - $node_data['lft']) / 2);
 			$move = 2 * (1 + $move);
 
-			$this->nodesRepository->moveNodesToLeftForDeletionWithSteps($root_id, $pos_rgt, $move);
-			$this->nodesRepository->moveNodesToRightForDeletionWithSteps($root_id, $pos_rgt, $move);
+			$this->nodesRepository->moveNodesToLeftForDeletionWithSteps($node_data['root_id'], $node_data['rgt'], $move);
+			$this->nodesRepository->moveNodesToRightForDeletionWithSteps($node_data['root_id'], $node_data['rgt'], $move);
 
 			$this->nodesRepository->commitTransaction();
 		}
@@ -262,7 +258,6 @@ class NodesService
 			$this->nodesRepository->rollbackTransaction();
 			throw new ModuleException('mediapool', 'Delete tree failed because of: '.$e->getMessage());
 		}
-
 
 		return $this;
 	}

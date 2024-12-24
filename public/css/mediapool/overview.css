@@ -78,6 +78,9 @@ dialog
 .context_menu li {
     padding: 8px 20px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .context_menu li:hover {

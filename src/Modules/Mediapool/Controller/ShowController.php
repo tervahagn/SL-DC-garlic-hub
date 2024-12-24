@@ -45,7 +45,13 @@ class ShowController
 			'this_layout' => [
 				'template' => 'mediapool/overview', // Template-name
 				'data' => [
-
+					'LANG_SAVE' => $translator->translate('save', 'main'),
+					'LANG_CANCEL' => $translator->translate('cancel', 'main'),
+					'LANG_FOLDER_NAME' => $translator->translate('folder_name', 'mediapool'),
+					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
+					'LANG_EDIT' => $translator->translate('edit', 'main'),
+					'LANG_ADD_SUBFOLDER' => $translator->translate('add_subfolder', 'mediapool'),
+					'LANG_REMOVE' => $translator->translate('remove', 'main'),
 				]
 			]
 		];

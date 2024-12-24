@@ -11,16 +11,16 @@
 				<button id="close_dialog_button" aria-label="Close">&times;</button>
 				<form method="dialog">
 					<fieldset>
-						<legend>Erstelle Hauptordner</legend>
-						<label for="folder_name">Ordnername:
+						<legend>{{LANG_EDIT_FOLDER}}</legend>
+						<label for="folder_name">{{LANG_FOLDER_NAME}}:
 							<input type="text" id="folder_name" name="folder_name" required>
 						</label>
 						<input type="hidden" id="parent_node_id" name="parent_node_id">
 						<input type="hidden" id="current_node_id" name="current_node_id">
 
 						<div class="dlg_buttons">
-							<button value="submit" type="submit">Speichern</button>
-							<button value="cancel" formnovalidate autofocus>Abbrechen</button>
+							<button value="submit" type="submit">{{LANG_SAVE}}</button>
+							<button value="cancel" formnovalidate autofocus>{{LANG_CANCEL}}</button>
 						</div>
 					</fieldset>
 				</form>
@@ -29,9 +29,15 @@
 
 		<template id="context_menu_tree">
 			<ul class="context_menu">
-				<li id="edit_node">Bearbeiten</li>
-				<li id="add_node">Unterordner Hinzufügen</li>
-				<li id="delete_node">Löschen</li>
+				<li id="edit_node">
+					<i class="bi bi-pencil"></i> {{LANG_EDIT}}
+				</li>
+				<li id="add_node">
+					<i class="bi bi-folder-plus"></i> {{LANG_ADD_SUBFOLDER}}
+				</li>
+				<li id="remove_node">
+					<i class="bi bi-trash"></i> {{LANG_REMOVE}}
+				</li>
 			</ul>
 		</template>
 

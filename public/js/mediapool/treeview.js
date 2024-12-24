@@ -77,8 +77,8 @@ document.addEventListener("DOMContentLoaded", function(event)
 		tree.setActiveNode(node);
 		console.log(node.title, node.key);
 
-		const delete_node = document.getElementById("delete_node");
-		delete_node.addEventListener("click", (event) => {
+		const remove_node = document.getElementById("remove_node");
+		remove_node.addEventListener("click", (event) => {
 			(async () => {
 
 				const apiUrl = "/async/mediapool/node";
