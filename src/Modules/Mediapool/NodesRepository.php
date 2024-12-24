@@ -39,8 +39,8 @@ class NodesRepository extends Sql
 	 */
 	public function getNode(int $node_id): array
 	{
-		$select = ['media_nodes.UID,
-					usr_nickname,
+		$select = [$this->table.'.UID,
+					username,
 					company_id,
 					node_id,
 					is_public,

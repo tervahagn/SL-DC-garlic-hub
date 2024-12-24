@@ -20,16 +20,6 @@ document.addEventListener("DOMContentLoaded", function(event)
 		tree.filterNodes(event.target.value, { mode: "hide" });
 	})
 
-	const tree_element = document.getElementById("mediapool-tree");
-	tree_element.addEventListener("contextmenu", (event) => {
-
-		event.preventDefault();
-
-		const node = mar10.Wunderbaum.getNode(event.target);
-		tree.setActiveNode(node);
-		console.log(node.title);
-	});
-
 	const close_dialog_button = document.getElementById("close_dialog_button");
 	close_dialog_button.addEventListener("click", () => {
 		const dialog = document.getElementById("editFolderDialog");
@@ -72,6 +62,48 @@ document.addEventListener("DOMContentLoaded", function(event)
 	});
 
 	const template_context_menu_tree = document.getElementById('context_menu_tree');
+	const tree_element = document.getElementById("mediapool-tree");
+	tree_element.addEventListener("contextmenu", (event) => {
+		event.preventDefault();
+
+		const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
+		document.querySelectorAll('.context_menu').forEach(el => el.remove());  // remove all rpevious menu
+		menu.style.left = `${event.pageX}px`;
+		menu.style.top = `${event.pageY}px`;
+		document.body.appendChild(menu);
+		document.addEventListener('click', () => menu.remove(), { once: true });
+
+		const node = mar10.Wunderbaum.getNode(event.target);
+		tree.setActiveNode(node);
+		console.log(node.title, node.key);
+
+		const delete_node = document.getElementById("delete_node");
+		delete_node.addEventListener("click", (event) => {
+			(async () => {
+
+				const apiUrl = "/async/mediapool/node";
+				const dataToSend = {"node_id": node.key};
+				const options = {method: 'DELETE',headers: {'Content-Type': 'application/json'},	body: JSON.stringify(dataToSend)}
+
+				const result = await nodesModel.fetchData(apiUrl, options).catch(error => {
+					console.error('Fetch error:', error.message);
+					return null;
+				});
+
+				if (!result || !result.success)
+				{
+					console.error('Error:', result?.error_message || 'Unknown error');
+					return;
+				}
+
+				node.remove();
+			})();
+
+
+		});
+
+	});
+
 
 });
 

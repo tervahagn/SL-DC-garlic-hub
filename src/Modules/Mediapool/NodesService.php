@@ -62,7 +62,6 @@ class NodesService
 		return $nodes;
 	}
 
-
 	/**
 	 * @throws ModuleException
 	 * @throws Exception
@@ -75,6 +74,31 @@ class NodesService
 			$new_node_id =  $this->addSubNode($parent_id, $name);
 
 		return $new_node_id;
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 */
+	public function deleteNode($node_id): int
+	{
+		$node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->getNode($node_id));
+		if (empty($node) )
+			throw new FrameworkException('Can not find a node for node_id ' . $node_id);
+
+		if (!$this->hasRights($node))
+			throw new FrameworkException('No rights to delete node ' . $node_id);
+
+		// get all node_id of the partial tree
+		$deleted_nodes = $this->nodesRepository->findAllSubNodeIdsByRootIdsAndPosition($node['root_id'], $node['rgt'], $node['lft']);
+
+		if ($node['children'] == 0)
+			$this->deleteSingleNode($node);
+		elseif ($node['children'] > 0)
+			$this->deleteTree($node);
+
+		return count($deleted_nodes);
 	}
 
 	private function prepareForWunderbaum(array $node_data): array
@@ -103,6 +127,9 @@ class NodesService
 	{
 		try
 		{
+			if ($this->UID != 1)
+				throw new FrameworkException('No rights to add root node.');
+
 			$node_data = array(
 				'name'              => $name,
 				'parent_id'         => 0,
@@ -134,9 +161,7 @@ class NodesService
 		}
 		catch (\Exception | DatabaseException | FrameworkException $e)
 		{
-			if ($this->nodesRepository->isTransactionActive())
-				$this->nodesRepository->rollbackTransaction();
-
+			$this->nodesRepository->rollbackTransaction();
 			throw new ModuleException('mediapool', 'Add root node failed because of: '.$e->getMessage());
 		}
 	}
@@ -152,6 +177,9 @@ class NodesService
 			$parent_node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->findById($parent_node_id));
 			if ((empty($parent_node)))
 				throw new ModuleException('mediapool', 'Parent node not found');
+
+			if (!$this->hasRights($parent_node))
+				throw new FrameworkException('No rights to add to node ' . $parent_node_id);
 
 			$fields = array(
 					'lft'       => $parent_node['rgt'],
@@ -180,7 +208,66 @@ class NodesService
 		}
 	}
 
-	private function hasRights(array $node)
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	protected function deleteSingleNode(array $node_data): static
+	{
+		try
+		{
+			$this->nodesRepository->beginTransaction();
+
+			$this->nodesRepository->delete($node_data['node_id']);
+			$this->nodesRepository->moveNodesToLeftForDeletion($node_data['root_id'], $node_data['rgt']);
+			$this->nodesRepository->moveNodesToRightForDeletion($node_data['root_id'], $node_data['rgt']);
+
+			$this->nodesRepository->commitTransaction();
+		}
+		catch (Exception $e)
+		{
+			$this->nodesRepository->rollbackTransaction();
+			throw new ModuleException('mediapool', 'delete single node failed because of: '.$e->getMessage());
+		}
+		return $this;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	protected function deleteTree(array $node_data): static
+	{
+		$root_id = (int) $node_data['root_id'];
+		$pos_rgt = (int) $node_data['rgt'];
+		$pos_lft = (int) $node_data['lft'];
+
+		try
+		{
+			$this->nodesRepository->beginTransaction();
+
+			$this->nodesRepository->deleteFullTree($root_id, $pos_rgt, $pos_lft);
+
+			// remove other nodes to to create some space
+			$move = floor(($pos_rgt - $pos_lft) / 2);
+			$move = 2 * (1 + $move);
+
+			$this->nodesRepository->moveNodesToLeftForDeletionWithSteps($root_id, $pos_rgt, $move);
+			$this->nodesRepository->moveNodesToRightForDeletionWithSteps($root_id, $pos_rgt, $move);
+
+			$this->nodesRepository->commitTransaction();
+		}
+		catch (Exception $e)
+		{
+			$this->nodesRepository->rollbackTransaction();
+			throw new ModuleException('mediapool', 'Delete tree failed because of: '.$e->getMessage());
+		}
+
+
+		return $this;
+	}
+
+	private function hasRights(array $node): bool
 	{
 		return ($node['UID'] === $this->UID || $node['is_public'] === 1);
 	}

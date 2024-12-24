@@ -72,8 +72,8 @@ class NodesController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
 		}
 
-		$queryParams = $request->getParsedBody();
-		if (!array_key_exists('name', $queryParams))
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('name', $bodyParams))
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node name is missing']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
@@ -82,15 +82,16 @@ class NodesController
 		try
 		{
 			$parent_id = 0;
-			if (!array_key_exists('parent_id', $queryParams))
-				$parent_id = (int) $queryParams['parent_id'];
+			if (!array_key_exists('parent_id', $bodyParams))
+				$parent_id = (int) $bodyParams['parent_id'];
 
 			$this->nodesService->setUID($this->UID);
-			$node_id = $this->nodesService->addNode($parent_id, $queryParams['name']);
+			$node_id = $this->nodesService->addNode($parent_id, $bodyParams['name']);
+
 			$response->getBody()->write(json_encode(['success' => true, 'data' => ['node_id' => $node_id]]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
-		catch (Exception | FrameworkException | ModuleException $e)
+		catch (Exception | ModuleException $e)
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
@@ -106,9 +107,32 @@ class NodesController
 
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		return $response
-			->withHeader('Content-Type', 'application/json')
-			->withStatus(200);
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		try
+		{
+			$this->nodesService->setUID($this->UID);
+			$count = $this->nodesService->deleteNode($bodyParams['node_id']);
+			$response->getBody()->write(json_encode(['success' => true, 'data' => ['count_deleted_nodes' => $count]]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+		catch (Exception | FrameworkException | ModuleException $e)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
 	}
 
 	private function hasRights(Helper $session): bool
