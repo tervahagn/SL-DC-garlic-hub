@@ -54,6 +54,7 @@ class NodesController
 		}
 
 		$parent_id = (array_key_exists('parent_id', $args)) ? (int) $args['parent_id'] : 0;
+		$this->nodesService->setUID($this->UID);
 		$result = $this->nodesService->getNodes($parent_id);
 
 		$payload = json_encode($result);
@@ -70,8 +71,6 @@ class NodesController
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
 		}
-		$contentType = $request->getHeaderLine('Content-Type');
-		$rawBody = (string) $request->getBody();
 
 		$queryParams = $request->getParsedBody();
 		if (!array_key_exists('name', $queryParams))

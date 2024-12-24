@@ -70,7 +70,6 @@ CREATE TABLE mediapool_nodes (
     lft INTEGER NOT NULL DEFAULT 0,
     rgt INTEGER NOT NULL DEFAULT 0,
     UID INTEGER NOT NULL DEFAULT 0,
-    domain_ids INTEGER NOT NULL,
     is_public INTEGER NOT NULL,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_date TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00',
@@ -80,23 +79,23 @@ CREATE TABLE mediapool_nodes (
 );
 CREATE INDEX idx_mediapool_nodes_root_id ON mediapool_nodes (root_id);
 -- set some default root dirs.
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (1, 0, 1, 1, 1, 8, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'public');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (1, 0, 1, 1, 1, 8, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'public');
 
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (2, 0, 2, 2, 1, 4, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'user');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (2, 0, 2, 2, 1, 4, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'user');
 
 -- set some default dirs under public
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (1, 1, 2, 1, 2, 3, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'images');
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (1, 1, 2, 1, 4, 5, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'videos');
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (1, 1, 2, 1, 6, 7, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'widgets');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (1, 1, 2, 1, 2, 3, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'images');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (1, 1, 2, 1, 4, 5, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'videos');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (1, 1, 2, 1, 6, 7, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'widgets');
 
 -- set admin dir under user
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (2, 2, 2, 1, 2, 3, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
+VALUES (2, 2, 2, 1, 2, 3, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 
 CREATE TABLE mediapool_media (

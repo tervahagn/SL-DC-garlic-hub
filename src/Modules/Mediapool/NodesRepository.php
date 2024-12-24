@@ -43,7 +43,6 @@ class NodesRepository extends Sql
 					usr_nickname,
 					company_id,
 					node_id,
-					domain_ids,
 					is_public,
 					root_id,
 					parent_id,

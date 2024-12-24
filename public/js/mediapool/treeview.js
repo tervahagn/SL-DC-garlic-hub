@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 		event.preventDefault();
 
 		const node = mar10.Wunderbaum.getNode(event.target);
+		tree.setActiveNode(node);
 		console.log(node.title);
 	});
 

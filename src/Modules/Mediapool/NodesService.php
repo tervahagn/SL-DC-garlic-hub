@@ -55,7 +55,8 @@ class NodesService
 		$nodes = [];
 		foreach ($node_data as $node)
 		{
-			$nodes[] = $this->prepareForWunderbaum($node);
+			if ($this->hasRights($node))
+				$nodes[] = $this->prepareForWunderbaum($node);
 		}
 
 		return $nodes;
@@ -65,7 +66,6 @@ class NodesService
 	/**
 	 * @throws ModuleException
 	 * @throws Exception
-	 * @throws FrameworkException
 	 */
 	public function addNode(int $parent_id, string $name): int
 	{
@@ -88,8 +88,7 @@ class NodesService
 			'edit_node'		=> true,
 			'delete_node'	=> true,
 			'UID'			=> $node_data['UID'],
-			'is_public'		=> $node_data['is_public'],
-			'domain_ids'	=> $node_data['domain_ids']
+			'is_public'		=> $node_data['is_public']
 		);
 	}
 
@@ -108,7 +107,6 @@ class NodesService
 				'name'              => $name,
 				'parent_id'         => 0,
 				'root_order'        => 0,
-				'domain_ids'        => '',
 				'is_public'		    => 0,
 				'lft'               => 1,
 				'rgt'               => 2,
@@ -180,5 +178,10 @@ class NodesService
 		{
 			throw new ModuleException('mediapool', 'Add sub node failed because of: '.$e->getMessage());
 		}
+	}
+
+	private function hasRights(array $node)
+	{
+		return ($node['UID'] === $this->UID || $node['is_public'] === 1);
 	}
 }
