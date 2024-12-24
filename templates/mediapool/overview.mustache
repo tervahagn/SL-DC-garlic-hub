@@ -8,18 +8,33 @@
 			</nav>
 
 			<dialog id="editFolderDialog">
+				<button id="close_dialog_button" aria-label="Close">&times;</button>
 				<form method="dialog">
 					<fieldset>
 						<legend>Erstelle Hauptordner</legend>
 						<label for="folder_name">Ordnername:
 							<input type="text" id="folder_name" name="folder_name" required>
 						</label>
-						<button value="submit" type="submit">Submit</button>
-						<button value="cancel" formnovalidate autofocus>Cancel</button>
+						<input type="hidden" id="parent_node_id" name="parent_node_id">
+						<input type="hidden" id="current_node_id" name="current_node_id">
+
+						<div class="dlg_buttons">
+							<button value="submit" type="submit">Speichern</button>
+							<button value="cancel" formnovalidate autofocus>Abbrechen</button>
+						</div>
 					</fieldset>
 				</form>
 			</dialog>
 		</aside>
+
+		<template id="context_menu_tree">
+			<ul class="context_menu">
+				<li data-action="add_node">Hinzufügen</li>
+				<li data-action="edit_node">Bearbeiten</li>
+				<li data-action="delete_node">Löschen</li>
+			</ul>
+		</template>
+
 
 		<section class="content">
 			<div class="upload">

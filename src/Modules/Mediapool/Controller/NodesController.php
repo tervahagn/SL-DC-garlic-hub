@@ -21,14 +21,18 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\NodesService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SlimSession\Helper;
 
 class NodesController
 {
 	private NodesService $nodesService;
+	private int $UID;
 
 	/**
 	 * @param NodesService $nodesService
@@ -43,21 +47,55 @@ class NodesController
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
 		$parent_id = (array_key_exists('parent_id', $args)) ? (int) $args['parent_id'] : 0;
 		$result = $this->nodesService->getNodes($parent_id);
 
 		$payload = json_encode($result);
 		$response->getBody()->write($payload);
-		return $response
-			->withHeader('Content-Type', 'application/json')
-			->withStatus(200);
+
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
+
 
 	public function add(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		return $response
-			->withHeader('Content-Type', 'application/json')
-			->withStatus(200);
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+		$contentType = $request->getHeaderLine('Content-Type');
+		$rawBody = (string) $request->getBody();
+
+		$queryParams = $request->getParsedBody();
+		if (!array_key_exists('name', $queryParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node name is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		try
+		{
+			$parent_id = 0;
+			if (!array_key_exists('parent_id', $queryParams))
+				$parent_id = (int) $queryParams['parent_id'];
+
+			$this->nodesService->setUID($this->UID);
+			$node_id = $this->nodesService->addNode($parent_id, $queryParams['name']);
+			$response->getBody()->write(json_encode(['success' => true, 'data' => ['node_id' => $node_id]]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+		catch (Exception | FrameworkException | ModuleException $e)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
 	}
 
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -74,5 +112,13 @@ class NodesController
 			->withStatus(200);
 	}
 
+	private function hasRights(Helper $session): bool
+	{
+		$ret = $session->exists('user');
+		if ($ret)
+			$this->UID = $session->get('user')['UID'];
+
+		return $ret;
+	}
 
 }

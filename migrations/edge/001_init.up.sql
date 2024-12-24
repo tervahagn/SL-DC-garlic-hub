@@ -84,7 +84,7 @@ INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UI
 VALUES (1, 0, 1, 1, 1, 8, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'public');
 
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)
-VALUES (2, 0, 2, 1, 1, 4, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'user');
+VALUES (2, 0, 2, 2, 1, 4, 1, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'user');
 
 -- set some default dirs under public
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, domain_ids, is_public, last_updated, create_date, name)

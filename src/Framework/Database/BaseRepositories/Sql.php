@@ -31,7 +31,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 abstract class Sql
 {
-
 	use FindOperationsTrait;
 
 	protected string $idField;

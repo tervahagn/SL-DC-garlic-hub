@@ -21,15 +21,25 @@
 
 namespace App\Modules\Mediapool;
 
+use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
+
 
 class NodesService
 {
 	private NodesRepository $nodesRepository;
+	private int $UID;
 
 	public function __construct(NodesRepository $nodesRepository)
 	{
 		$this->nodesRepository = $nodesRepository;
+	}
+
+	public function setUID(int $UID): void
+	{
+		$this->UID = $UID;
 	}
 
 	/**
@@ -51,7 +61,23 @@ class NodesService
 		return $nodes;
 	}
 
-	protected function prepareForWunderbaum(array $node_data): array
+
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	public function addNode(int $parent_id, string $name): int
+	{
+		if ($parent_id === 0)
+			$new_node_id = $this->addRootNode($name);
+		else
+			$new_node_id =  $this->addSubNode($parent_id, $name);
+
+		return $new_node_id;
+	}
+
+	private function prepareForWunderbaum(array $node_data): array
 	{
 		return array(
 			'title'         => $node_data['name'],
@@ -65,5 +91,94 @@ class NodesService
 			'is_public'		=> $node_data['is_public'],
 			'domain_ids'	=> $node_data['domain_ids']
 		);
+	}
+
+	/**
+	 * @param $name
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @throws ModuleException
+	 */
+	private function addRootNode($name): int
+	{
+		try
+		{
+			$node_data = array(
+				'name'              => $name,
+				'parent_id'         => 0,
+				'root_order'        => 0,
+				'domain_ids'        => '',
+				'is_public'		    => 0,
+				'lft'               => 1,
+				'rgt'               => 2,
+				'UID'               => $this->UID,
+				'level'             => 1
+			);
+
+			$this->nodesRepository->beginTransaction();
+			$new_node_id = $this->nodesRepository->insert($node_data);
+
+			if ($new_node_id == 0)
+				throw new FrameworkException('Insert new node failed');
+
+			$update_fields = array(
+				'root_id'       => $new_node_id,
+				'root_order'    => $new_node_id
+			);
+
+			if ($this->nodesRepository->update($new_node_id, $update_fields) === 0)
+				throw new DatabaseException('Update root node failed');
+
+			$this->nodesRepository->commitTransaction();
+
+			return $new_node_id;
+		}
+		catch (\Exception | DatabaseException | FrameworkException $e)
+		{
+			if ($this->nodesRepository->isTransactionActive())
+				$this->nodesRepository->rollbackTransaction();
+
+			throw new ModuleException('mediapool', 'Add root node failed because of: '.$e->getMessage());
+		}
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	public function addSubNode(int $parent_node_id, string $name): int
+	{
+		try
+		{
+			$parent_node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->findById($parent_node_id));
+			if ((empty($parent_node)))
+				throw new ModuleException('mediapool', 'Parent node not found');
+
+			$fields = array(
+					'lft'       => $parent_node['rgt'],
+					'rgt'       => $parent_node['rgt'] + 1,
+					'parent_id' => $parent_node_id,
+					'root_id'   => $parent_node['root_id'],
+					'level'     => $parent_node['level'] + 1,
+					'name'      => $name,
+					'UID'       => $this->UID
+			);
+
+			$this->nodesRepository->moveNodesToLeftForInsert($parent_node['root_id'], $parent_node['rgt']);
+			$this->nodesRepository->moveNodesToRightForInsert($parent_node['root_id'], $parent_node['rgt']);
+
+			$new_node = $this->nodesRepository->insert($fields);
+			if ($new_node == 0)
+				throw new DatabaseException('Insert new sub node failed');
+
+			$this->nodesRepository->commitTransaction();
+
+			return $new_node;
+		}
+		catch (\Exception $e)
+		{
+			throw new ModuleException('mediapool', 'Add sub node failed because of: '.$e->getMessage());
+		}
 	}
 }

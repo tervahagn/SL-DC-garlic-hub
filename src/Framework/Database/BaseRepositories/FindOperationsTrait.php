@@ -122,6 +122,14 @@ trait FindOperationsTrait
 		return $queryBuilder->fetchOne() ?? '';
 	}
 
+	public function getFirstDataSet(array $set)
+	{
+		if (!empty($set) && array_key_exists(0, $set))
+		{
+			return $set[0];
+		}
+		return array();
+	}
 
 	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', string $orderBy = ''):
 	QueryBuilder
@@ -140,12 +148,6 @@ trait FindOperationsTrait
 
 		return $queryBuilder;
 	}
-	protected function getFirstDataSet(array $set)
-	{
-		if (!empty($set) && array_key_exists(0, $set))
-		{
-			return $set[0];
-		}
-		return array();
-	}
+
+
 }

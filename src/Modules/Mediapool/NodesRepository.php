@@ -21,16 +21,17 @@ namespace App\Modules\Mediapool;
 
 use App\Framework\Database\BaseRepositories\NestedSetTrait;
 use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\TransactionsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
 class NodesRepository extends Sql
 {
-	use NestedSetTrait;
+	use NestedSetTrait, TransactionsTrait;
 
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'mediapool_nodes', 'UID');
+		parent::__construct($connection,'mediapool_nodes', 'node_id');
 	}
 
 	/**

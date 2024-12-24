@@ -116,3 +116,41 @@ footer{text-align: right;}
 	.close-button {background: none;border: none;font-size:1rem;cursor: pointer;}
 	.close-button i {font-size: 24px;}
 
+/* Contextmenu */
+
+.vs-context-menu, .vs-context-menu ul ul
+{
+	display:       none;
+	z-index:       1000;
+	position:      absolute;
+	background:    #eee;
+	border:        1px solid #ccc;
+	width:         auto;
+	border-radius: 5px;
+	box-shadow:    1px 1px 3px 1px #888;
+	margin:        0 0 59px 11px;
+}
+.vs-context-menu ul{ list-style: none; padding: 0; margin: 0; }
+.vs-context-menu li{ clear: both; margin: 0; padding: 3px; }
+.vs-context-menu ul li a, .vs-context-menu ul li span
+{
+	display: block;
+	padding: 6px 5px 6px 28px;
+	text-decoration: none;
+	color: #000;
+	background-repeat: no-repeat;
+	background-position: 5px center;
+}
+.vs-context-menu ul li a:hover, .vs-context-menu ul li a:focus { color: #fff; background-color: #666; }
+.vs-context-menu .seperator{ border-bottom: 1px solid #ccc; clear: both; }
+.vs-context-menu ul ul
+{
+	position: absolute;
+	z-index:  1000;
+	margin:   0;
+	left:     40%;
+	padding:  3px 0;
+}
+.vs-context-menu ul ul a { text-decoration: none; color: #000; }
+.vs-context-menu ul ul, .vs-context-menu ul li:hover ul ul, .vs-context-menu ul ul li:hover ul ul { display: none; }
+.vs-context-menu ul li:hover ul, .vs-context-menu ul ul li:hover ul, .vs-context-menu ul ul ul li:hover ul { display: block; }
