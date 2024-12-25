@@ -48,4 +48,4 @@ $app->get('/mediapool', [ShowController::class, 'show']);
 $app->get('/async/mediapool/node[/{parent_id}]', [NodesController::class, 'list']); // parent_id is optional with []
 $app->post('/async/mediapool/node', [NodesController::class, 'add']);
 $app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
-$app->patch('/async/mediapool/node/{node_id}', [NodesController::class, 'edit']);
+$app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
