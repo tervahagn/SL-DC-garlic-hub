@@ -21,9 +21,9 @@
 }
 :root
 {
-	--gh-primary-color: #007a50;
+	--gh-primary-color: #03393a;
 	--gh-primary-text-color: #000;
-	--gh-secondary-text-color: #007a50;
+	--gh-link-text-color: #03393a;
 	--gh-primary-bgcolor: rgba(0, 122, 80, 0.05);
 	--gh-border-radius: 6px;
 	--gh-font-size: 16px;
@@ -56,7 +56,7 @@ body{padding:0 1rem;}
 	.main_menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
 	#user_menu{margin-left:auto;}
 
-a{text-decoration: none;}
+a{text-decoration: none;color: var(--gh-link-text-color);}
 h1{font-size: 1.3rem; font-family: var(--gh-font-bold);}
 h2{font-size: 1.2rem; font-family: var(--gh-font-bold);}
 h3, h4, h5, h6{font-size: 1.0rem; font-family: var(--gh-font-bold);}
