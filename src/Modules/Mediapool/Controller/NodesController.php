@@ -81,14 +81,18 @@ class NodesController
 
 		try
 		{
-			$parent_id = 0;
-			if (!array_key_exists('parent_id', $bodyParams))
-				$parent_id = (int) $bodyParams['parent_id'];
+			$node_id = 0;
+			if (!array_key_exists('node_id', $bodyParams))
+				$node_id = (int) $bodyParams['node_id'];
 
 			$this->nodesService->setUID($this->UID);
-			$node_id = $this->nodesService->addNode($parent_id, $bodyParams['name']);
+			$new_node_id = $this->nodesService->addNode($node_id, $bodyParams['name']);
 
-			$response->getBody()->write(json_encode(['success' => true, 'data' => ['node_id' => $node_id]]));
+			$response->getBody()->write(json_encode([
+				'success' => true,
+				'data' => ['id' => $new_node_id, 'new_name' => $bodyParams['name']]
+				])
+			);
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 		catch (Exception | ModuleException $e)

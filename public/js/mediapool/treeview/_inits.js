@@ -13,10 +13,11 @@ document.addEventListener("DOMContentLoaded", function(event)
 	);
 
 	document.getElementById('addRootFolder').addEventListener('click', () => {
-		treeDialog.setCurrentNode(0);
+		treeDialog.setCurrentNode(null);
 		treeDialog.prepareShow("add_root_folder", lang);
 		treeDialog.show();
 	});
+
 
 	tree_element.addEventListener("contextmenu", (event) => {
 		event.preventDefault();

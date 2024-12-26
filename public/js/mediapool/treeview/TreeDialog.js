@@ -21,7 +21,6 @@ class TreeDialog
     #dialogElement = null;
     #closeElement = null;
     #currentNode  = 0;
-    #currentFolderName = "";
     #action       = "";
     #directoryView = null;
     #nodesModel = null;
@@ -43,20 +42,29 @@ class TreeDialog
     }
 
 
-    setFoldername(folderName)
-    {
-        this.#currentFolderName = folderName;
-        document.getElementById("folder_name").value = folderName;
-    }
-
     prepareShow(action, lang)
     {
         this.#action = action;
         this.#dialogElement.querySelector("legend").textContent = lang[action];
+
+
     }
 
     show()
     {
+        switch (this.#action) {
+            case "add_root_folder":
+            case "add_sub_folder":
+            case "delete_folder":
+                document.getElementById("folder_name").value = "";
+                break;
+            case "edit_folder":
+                document.getElementById("folder_name").value = this.#currentNode.title;
+                break;
+            default:
+                throw new Error("Unknown action for show");
+        }
+
         this.#dialogElement.showModal();
     }
 
@@ -85,15 +93,14 @@ class TreeDialog
                 }
 
                 switch (this.#action) {
+                    case "add_root_folder":
+                        this.#directoryView.addChildren(result.data.id, result.data.new_name);
+                        break;
                     case "add_sub_folder":
                         break;
                     case "edit_folder":
-                        this.#currentNode.setTitle(this.#currentFolderName);
+                        this.#currentNode.setTitle(result.data.new_name);
                         break;
-                    case "delete_folder":
-                        return "DELETE";
-                    default:
-                        throw new Error("Unknown action");
                 }
 
             })();
@@ -106,6 +113,7 @@ class TreeDialog
             throw new Error("no node selected");
 
         switch (this.#action) {
+            case "add_root_folder":
             case "add_sub_folder":
                 return "POST";
             case "edit_folder":
@@ -124,11 +132,12 @@ class TreeDialog
             throw new Error("no node selected");
 
         switch (this.#action) {
+            case "add_root_folder":
+                return {"node_id": 0, "name": document.getElementById("folder_name").value};
             case "add_sub_folder":
-                return {"node_id": this.#currentNode.key , "name": document.getElementById("folder_name").value};
+                return {"node_id": this.#currentNode.key, "name": document.getElementById("folder_name").value};
             case "edit_folder":
-                this.#currentFolderName = document.getElementById("folder_name").value;
-                return {"node_id": this.#currentNode.key , "name": document.getElementById("folder_name").value};
+                return {"node_id": this.#currentNode.key, "name": document.getElementById("folder_name").value};
             case "delete_folder":
                 return {"node_id": this.#currentNode.key };
             default:
