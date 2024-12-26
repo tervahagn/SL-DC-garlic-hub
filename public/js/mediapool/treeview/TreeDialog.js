@@ -94,9 +94,10 @@ class TreeDialog
 
                 switch (this.#action) {
                     case "add_root_folder":
-                        this.#directoryView.addChildren(result.data.id, result.data.new_name);
+                        this.#directoryView.addRootChild(result.data.id, result.data.new_name);
                         break;
                     case "add_sub_folder":
+                        this.#directoryView.addSubChild(this.#currentNode, result.data.id, result.data.new_name);
                         break;
                     case "edit_folder":
                         this.#currentNode.setTitle(result.data.new_name);

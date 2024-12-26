@@ -53,9 +53,14 @@ class DirectoryView
         return node;
     }
 
-    addChildren(key, folder_name)
+    addRootChild(key, folder_name)
     {
         this.#tree.addChildren({ key:  key, title: folder_name, isFolder: true });
+    }
+
+    addSubChild(currentNode, key, folder_name)
+    {
+        currentNode.addChildren({ key:  key, title: folder_name, isFolder: true });
     }
 
 }

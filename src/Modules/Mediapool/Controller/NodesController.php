@@ -82,7 +82,7 @@ class NodesController
 		try
 		{
 			$node_id = 0;
-			if (!array_key_exists('node_id', $bodyParams))
+			if (array_key_exists('node_id', $bodyParams))
 				$node_id = (int) $bodyParams['node_id'];
 
 			$this->nodesService->setUID($this->UID);

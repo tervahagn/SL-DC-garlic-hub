@@ -174,6 +174,7 @@ class NodesService
 	{
 		try
 		{
+			$this->nodesRepository->beginTransaction();
 			$parent_node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->findById($parent_node_id));
 			if ((empty($parent_node)))
 				throw new ModuleException('mediapool', 'Parent node not found');
@@ -185,6 +186,8 @@ class NodesService
 					'lft'       => $parent_node['rgt'],
 					'rgt'       => $parent_node['rgt'] + 1,
 					'parent_id' => $parent_node_id,
+					'root_order'=> 0,
+					'is_public' => 0,
 					'root_id'   => $parent_node['root_id'],
 					'level'     => $parent_node['level'] + 1,
 					'name'      => $name,
@@ -204,6 +207,7 @@ class NodesService
 		}
 		catch (\Exception $e)
 		{
+			$this->nodesRepository->rollBackTransaction();
 			throw new ModuleException('mediapool', 'Add sub node failed because of: '.$e->getMessage());
 		}
 	}
