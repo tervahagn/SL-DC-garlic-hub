@@ -210,6 +210,31 @@ class NodesService
 
 	/**
 	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
+	public function editNode(int $id, string $name): int
+	{
+		try
+		{
+			$node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->getNode($id));
+			if ((empty($node)))
+				throw new ModuleException('mediapool', 'Parent node not found');
+
+			if (!$this->hasRights($node))
+				throw new FrameworkException('No rights to edit node ' . $id);
+
+			return $this->nodesRepository->update($id, ['name' => $name]);
+
+		}
+		catch (Exception | FrameworkException $e)
+		{
+			throw new ModuleException('mediapool', 'delete single node failed because of: '.$e->getMessage());
+		}
+	}
+
+
+	/**
+	 * @throws ModuleException
 	 * @throws Exception
 	 */
 	protected function deleteSingleNode(array $node_data): static

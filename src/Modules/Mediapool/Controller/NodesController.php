@@ -100,9 +100,44 @@ class NodesController
 
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		return $response
-			->withHeader('Content-Type', 'application/json')
-			->withStatus(200);
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('name', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node name is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		if (!array_key_exists('node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		try
+		{
+			$this->nodesService->setUID($this->UID);
+			$count = $this->nodesService->editNode($bodyParams['node_id'], $bodyParams['name']);
+			if ($count === 0)
+				throw new ModuleException('mediapool', 'Edit node failed');
+
+			$response->getBody()->write(json_encode([
+				'success' => true,
+				'data' => ['id' => $bodyParams['node_id'], 'new_name' => $bodyParams['name']]
+				])
+			);
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+		catch (FrameworkException | ModuleException $e)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
 	}
 
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

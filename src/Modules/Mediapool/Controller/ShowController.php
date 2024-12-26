@@ -39,7 +39,14 @@ class ShowController
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $translator->translate('mediapool', 'menu'),
 				'additional_css' => ['/css/external/bootstrap-icons.min.css', '/css/external/wunderbaum.min.css', '/css/mediapool/overview.css'],
-				'footer_scripts' => ['/js/external/wunderbaum.umd.min.js', '/js/mediapool/treeview.js'],
+				'footer_scripts' => [
+					'/js/external/wunderbaum.umd.min.js',
+					'js/mediapool/treeview/ContextMenu.js',
+					'js/mediapool/treeview/NodesModel.js',
+					'js/mediapool/treeview/DirectoryView.js',
+					'js/mediapool/treeview/TreeDialog.js',
+					'/js/mediapool/treeview/_inits.js'
+				],
 				'footer_modules' => ['MODULE_NAME' => 'wunderbaum', 'MODULE_PATH' => 'https://cdn.jsdelivr.net/npm/wunderbaum@0/+esm']
 			],
 			'this_layout' => [
@@ -48,9 +55,10 @@ class ShowController
 					'LANG_SAVE' => $translator->translate('save', 'main'),
 					'LANG_CANCEL' => $translator->translate('cancel', 'main'),
 					'LANG_FOLDER_NAME' => $translator->translate('folder_name', 'mediapool'),
-					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_EDIT' => $translator->translate('edit', 'main'),
-					'LANG_ADD_SUBFOLDER' => $translator->translate('add_subfolder', 'mediapool'),
+					'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool'),
+					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),
+					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
 				]
 			]

@@ -1,6 +1,6 @@
 <aside>
 			<label id="wrap_tree_filter">
-				<input id="tree_filter" type="search" placeholder="Filter"><a class="bi bi-folder-plus" id="addRootFolder"></a>
+				<input id="tree_filter" type="search" placeholder="Filter"><a class="bi bi-folder-plus" id="addRootFolder" title="{{LANG_ADD_ROOT_FOLDER}}"></a>
 			</label>
 
 			<nav aria-label="Directory Structure">
@@ -11,7 +11,7 @@
 				<button id="close_dialog_button" aria-label="Close">&times;</button>
 				<form method="dialog">
 					<fieldset>
-						<legend>{{LANG_EDIT_FOLDER}}</legend>
+						<legend></legend>
 						<label for="folder_name">{{LANG_FOLDER_NAME}}:
 							<input type="text" id="folder_name" name="folder_name" required>
 						</label>
@@ -33,7 +33,7 @@
 					<i class="bi bi-pencil"></i> {{LANG_EDIT}}
 				</li>
 				<li id="add_node">
-					<i class="bi bi-folder-plus"></i> {{LANG_ADD_SUBFOLDER}}
+					<i class="bi bi-folder-plus"></i> {{LANG_ADD_SUB_FOLDER}}
 				</li>
 				<li id="remove_node">
 					<i class="bi bi-trash"></i> {{LANG_REMOVE}}
@@ -53,3 +53,11 @@
 				</figure>
 			</div>
 		</section>
+
+	<script>
+		let lang = {
+            "add_root_folder": "{{LANG_ADD_ROOT_FOLDER}}",
+			"add_sub_folder": "{{LANG_ADD_SUB_FOLDER}}",
+			"edit_folder": "{{LANG_EDIT_FOLDER}}",
+        };
+</script>
