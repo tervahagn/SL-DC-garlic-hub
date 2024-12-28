@@ -38,14 +38,24 @@ class ShowController
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $translator->translate('mediapool', 'menu'),
-				'additional_css' => ['/css/external/bootstrap-icons.min.css', '/css/external/wunderbaum.min.css', '/css/mediapool/overview.css'],
+				'additional_css' => [
+					'/css/external/bootstrap-icons.min.css',
+					'/css/external/wunderbaum.min.css',
+					'/css/mediapool/overview.css',
+					'/css/mediapool/uploads.css'
+				],
 				'footer_scripts' => [
 					'/js/external/wunderbaum.umd.min.js',
+					'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
 					'js/mediapool/treeview/ContextMenu.js',
 					'js/mediapool/treeview/NodesModel.js',
 					'js/mediapool/treeview/DirectoryView.js',
 					'js/mediapool/treeview/TreeDialog.js',
-					'/js/mediapool/treeview/_inits.js'
+					'/js/mediapool/treeview/_inits.js',
+					'/js/mediapool/uploads/UploaderDialog.js',
+//					'/js/mediapool/treeview/DragDropManager.js',
+//					'/js/mediapool/treeview/FilePreviews.js',
+					'/js/mediapool/uploads/_inits.js'
 				],
 				'footer_modules' => ['MODULE_NAME' => 'wunderbaum', 'MODULE_PATH' => 'https://cdn.jsdelivr.net/npm/wunderbaum@0/+esm']
 			],

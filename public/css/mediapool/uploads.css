@@ -1,0 +1,45 @@
+dialog
+{
+    width: 800px;
+
+    border: none;
+    border-radius: var(--gh-border-radius);
+    box-shadow: var(--gh-box-shadow);
+    padding: 0;
+}
+
+dialog nav {display: flex; border-bottom: 1px solid #ccc; background: #f9f9f9;}
+
+dialog nav button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+}
+
+dialog nav button.active {
+    background: #fff;
+    font-weight: bold;
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-content {display: none; padding: 1rem;}
+.tab-content h3 {padding:0;margin:0;}
+
+.tab-content.active {display: block;}
+
+.dialog-footer {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    text-align: right;
+    background: #f9f9f9;
+}
+
+.dialog-footer button {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}

@@ -113,7 +113,8 @@ footer{text-align: right;}
 		80% { opacity: 1; }
 		100% { opacity: 0; display: none; }
 	}
-	.close-button {background: none;border: none;font-size:1rem;cursor: pointer;}
+	.close-button {background: none;border: none;font-size:1rem;cursor: pointer;margin-left:auto;}
+	.close-button:hover {border: none;}
 	.close-button i {font-size: 24px;}
 
 /* Contextmenu */

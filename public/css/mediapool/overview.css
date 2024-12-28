@@ -29,8 +29,8 @@ main
         gap: 0.25rem;
         overflow-y: auto;
     }
-    section.content .upload {display: flex; align-items: center; justify-content: space-between;margin: 0;padding:0;}
-    section.content > strong{font-weight: bold;  margin:0;padding:0;}
+    section.content .upload {justify-content: space-between;margin: 0;padding:0;}
+    section.content > #current-path{font-weight: bold; text-align: right; margin:0;padding:0;}
 
     #wrap_tree_filter{display: flex; gap: 0.5rem; align-items: center;margin-bottom:0.5rem;}
     #wrap_tree_filter > input{width:85%;padding:0.1rem 0.25rem;border-radius: 5px; }
@@ -40,19 +40,10 @@ dialog
     border:0;
     border-radius: var(--gh-border-radius);
     box-shadow: var(--gh-box-shadow);
-    width:400px;
 }
     dialog .dlg_buttons { display: flex;gap: 1rem; margin:1em 0 0 0; }
     dialog::backdrop {background-color:  rgba(0, 122, 80, 0.5);}
-    #close_dialog_button {
-        position: absolute;
-        top: 0;
-        right: 0;
-        background: none;
-        border: none;
-        font-size: 1.5em;
-        cursor: pointer;
-    }
+
 @keyframes pulse {
     0% {
         transform: translate(-50%, -50%) scale(0.5);
@@ -75,14 +66,20 @@ dialog
     box-shadow: var(--gh-box-shadow);
 }
 
-.context_menu li {
-    padding: 8px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    .context_menu li {
+        padding: 8px 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-.context_menu li:hover {
-    background-color: #f0f0f0;
+    .context_menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+#uploadDialog{width:800px;height:800px;}
+
+.filepond--item {
+    width: calc(25% - 0.5em);
 }
