@@ -17,40 +17,36 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class DragDropManager
+export class AbstractPreview
 {
-    dropzone    = null;
-    filePreview = null;
+    #file = null;
 
-    constructor(dropzone, filePreview)
+    constructor(file)
     {
-        this.dropzone    = dropzone;
-        this.filePreview = filePreview;
+        this.#file = file;
     }
 
-    init()
+    getFile() // JS do not know protected classes.
     {
-        this.dropzone.addEventListener('dragover', (e) => this.onDragOver(e));
-        this.dropzone.addEventListener('dragleave', () => this.onDragLeave());
-        this.dropzone.addEventListener('drop', (e) => this.onDrop(e));
+        return this.#file;
     }
 
-    onDragOver(event)
+    extractMetadata()
     {
-        event.preventDefault();
-        this.dropzone.style.borderColor = "#007bff";
+        return {
+            name: this.#file.name,
+            size: this.calculateMegaBytes(),
+            type: this.#file.type,
+        };
     }
 
-    onDragLeave()
+    createPreview()
     {
-        this.dropzone.style.borderColor = "#ccc";
+        throw new Error("createPreview must be implemented");
     }
 
-    onDrop(event)
+    calculateMegaBytes()
     {
-        event.preventDefault();
-        this.dropzone.style.borderColor = "#ccc";
-        const files = event.dataTransfer.files;
-        this.filePreview.handleFiles(files);
+        return (this.#file.size / (1024 * 1024)).toFixed(2) + " MB";
     }
 }

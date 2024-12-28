@@ -17,123 +17,68 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { PreviewFactory } from "./Preview/PreviewFactory.js";
+
 export class FilePreviews
 {
     dropzonePreview = null;
-    fileList         = null;
+    previewFactory  = new PreviewFactory();
+    fileList        = [];
 
-    constructor(dropzonePreview, fileList = [])
+    constructor(dropzonePreview, previewFactory)
     {
         this.dropzonePreview = dropzonePreview;
-        this.fileList = fileList;
+        this.previewFactory = previewFactory;
     }
 
     handleFiles(files)
     {
         Array.from(files).forEach(file => {
-            if (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/") || file.type.startsWith("application/pdf"))
+            try
             {
+                const previewHandler = this.previewFactory.create(file);
+                const metadata       = previewHandler.extractMetadata(file);
+                const previewElement = previewHandler.createPreview(file);
+                previewElement.className = "previewElement";
+
+                const previewContainer = this.createPreviewContainer(metadata, previewElement, file);
+                this.dropzonePreview.appendChild(previewContainer);
                 this.fileList.push(file);
-                this.previewFile(file);
             }
-            else
+            catch (error)
             {
                 alert(`${file.name} not supported.`);
             }
         });
     }
 
-    previewFile(file)
+    createPreviewContainer(metadata, previewElement, file)
     {
-        const previewContainer = document.createElement("div");
-        previewContainer.className = "previewContainer";
-        const previewElement   = this.#determinePreviewElement(file.type);
-        previewElement.className = "previewElement";
+        const container     = document.createElement("div");
+        container.className = "previewContainer";
 
-        // Schließen-Button hinzufügen
+        // Tooltip
+        const tooltip     = document.createElement("div");
+        tooltip.className = "tooltip";
+        tooltip.innerHTML = `${metadata.name}<br> (${metadata.size})`;
+        container.appendChild(tooltip);
+        container.addEventListener("mouseenter", () => {tooltip.style.visibility = "visible";});
+        container.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
+
+        // Close button
         const closeButton = document.createElement("button");
         closeButton.className = "closeButton";
         closeButton.textContent = "×";
-
-
         closeButton.addEventListener("click", () => {
             const index = this.fileList.indexOf(file);
             if (index > -1) {
                 this.fileList.splice(index, 1);
             }
-            previewContainer.remove();
+            container.remove();
         });
 
-        previewContainer.appendChild(closeButton);
-
-        // Tooltip hinzufügen
-        const tooltip = document.createElement("div");
-        tooltip.className = "tooltip";
-        tooltip.innerHTML = `${file.name}<br> (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
-        previewContainer.addEventListener("mouseenter", () => {tooltip.style.visibility = "visible";});
-        previewContainer.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
-        previewContainer.appendChild(tooltip);
-
-        if (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/"))
-        {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewElement.src = e.target.result;
-                if (file.type.startsWith("video/") || file.type.startsWith("audio/"))
-                    previewElement.controls = true;
-            };
-            reader.readAsDataURL(file);
-        }
-        else if (file.type.startsWith("application/pdf"))
-        {
-            this.renderPDF(file, previewElement);
-            previewContainer.appendChild(previewElement);
-        }
-
-        previewContainer.appendChild(previewElement);
-
-        this.dropzonePreview.appendChild(previewContainer);
+        container.appendChild(closeButton);
+        container.appendChild(previewElement);
+        return container;
     }
-
-    renderPDF(file, canvas)
-    {
-        const reader = new FileReader();
-        reader.onload = function (e)
-        {
-            const pdfData = new Uint8Array(e.target.result);
-
-            pdfjsLib.getDocument(pdfData).promise.then((pdf) => {
-                pdf.getPage(1).then((page) => {
-                    const viewport = page.getViewport({ scale: 0.5 });
-                    const context = canvas.getContext("2d");
-
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
-
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport,
-                    };
-                    page.render(renderContext);
-                });
-            });
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    #determinePreviewElement(file_type)
-    {
-        if (file_type.startsWith("image/"))
-            return document.createElement("img");
-        else if (file_type.startsWith("video/"))
-            return document.createElement("video");
-        else if (file_type.startsWith("audio/"))
-            return document.createElement("audio");
-        else if (file_type === "application/pdf")
-            return document.createElement("canvas");
-        else
-            return document.createElement("div");
-
-    }
-
 }

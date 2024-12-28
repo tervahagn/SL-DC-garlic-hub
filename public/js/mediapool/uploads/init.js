@@ -20,6 +20,7 @@
 import { UploaderDialog } from "./UploaderDialog.js";
 import { FilePreviews } from "./FilePreviews.js";
 import { DragDropManager } from "./DragDropManager.js";
+import { PreviewFactory } from "./Preview/PreviewFactory.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -33,11 +34,13 @@ document.addEventListener("DOMContentLoaded", function()
 
     const filePreviews = new FilePreviews(
         document.getElementById('dropzone-preview'),
+        new PreviewFactory()
     )
     const dragDropManager = new DragDropManager(
         document.getElementById('dropzone'),
         filePreviews
     );
+    dragDropManager.init();
 
 //    const fileUploader = new FileUploader('#dragDropTab .upload-button', dragDropManager.fileList);
 
