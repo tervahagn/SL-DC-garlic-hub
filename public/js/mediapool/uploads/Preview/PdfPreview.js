@@ -19,6 +19,10 @@
 
 import { AbstractPreview } from "./AbstractPreview.js";
 
+/**
+ * We are using pdf.js version 3.9 because from version 4.0 upwards it seems that an absurd 1 MB worker is required in addition.
+ * For creating a thumbnail 3.9 with 312 KB is good enough.
+ */
 export class PdfPreview extends AbstractPreview
 {
 
@@ -32,7 +36,7 @@ export class PdfPreview extends AbstractPreview
             const pdfData = new Uint8Array(e.target.result);
             const pdf     = await pdfjsLib.getDocument(pdfData).promise;
 
-            const page     = await pdf.getPage(1); // Render nur die erste Seite
+            const page     = await pdf.getPage(1); // Renders only first page
             const viewport = page.getViewport({ scale: 1 });
 
             canvas.width  = viewport.width;

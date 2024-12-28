@@ -46,7 +46,7 @@ class ShowController
 				],
 				'footer_scripts' => [
 					'/js/external/wunderbaum.umd.min.js',
-					'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+					'/js/external/pdf.min.js',
 					'js/mediapool/treeview/ContextMenu.js',
 					'js/mediapool/treeview/NodesModel.js',
 					'js/mediapool/treeview/DirectoryView.js',
