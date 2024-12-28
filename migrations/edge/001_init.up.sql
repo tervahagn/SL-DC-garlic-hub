@@ -26,9 +26,9 @@ CREATE TABLE `user_acl` (
     `module` VARCHAR(20) DEFAULT NULL,
     FOREIGN KEY (`UID`) REFERENCES `user_main` (`UID`) ON DELETE CASCADE
 );
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'mediapool');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'player');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'playlists');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'mediapool');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'player');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'playlists');
 
 CREATE TABLE oauth2_clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
