@@ -90,9 +90,12 @@
 		</nav>
 	</footer>
 
+	<script type="module">
 	{{#footer_modules}}
-	<script type="module">import {{MODULE_NAME}} from "{{MODULE_PATH}}";</script>
+		import "{{ESM_PATH}}";
 	{{/footer_modules}}
+	</script>
+
 	{{#footer_scripts}}
 		<script src="{{.}}"></script>
 	{{/footer_scripts}}

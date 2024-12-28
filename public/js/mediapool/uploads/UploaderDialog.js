@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class UploaderDialog
+export class UploaderDialog
 {
     #dialog = null;
     #openButton = null;
@@ -31,9 +31,14 @@ class UploaderDialog
         this.#closeButton  = closeButton;
         this.#closeElement = closeDialogButton;
 
+    }
+
+    init()
+    {
         this.#initEvents();
         this.#initTabSwitching();
     }
+
 
     #initEvents()
     {

@@ -16,7 +16,8 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-class FilePreviews
+
+export class FilePreviews
 {
     dropzonePreview = null;
     fileList         = null;
@@ -37,7 +38,7 @@ class FilePreviews
             }
             else
             {
-                alert(`${file.name} wird nicht unterstützt.`);
+                alert(`${file.name} not supported.`);
             }
         });
     }
