@@ -47,7 +47,7 @@
 			<dialog id="uploaderDialog">
 				<button id="closeUploadDialog" class="close-button"  aria-label="Close">&times;</button>
 				<nav class="tab-header">
-					<button class="tab-button active" data-tab="dragDropTab">Drag'n Drop</button>
+					<button class="tab-button active" data-tab="dragDropTab">Upload</button>
 					<button class="tab-button" data-tab="linkTab">Link</button>
 					<button class="tab-button" data-tab="webcamTab">Webcam</button>
 					<button class="tab-button" data-tab="screencastTab">Screencast</button>
@@ -56,12 +56,12 @@
 
 				<section class="tab-content active" id="dragDropTab">
 					<h3>Drag and Drop</h3>
-					<p>Ziehen Sie Dateien hierher, um sie hochzuladen</p>
-					<p class="dropzone" style="border: 2px dashed #ccc; padding: 1em; margin:1em 0 0 0; text-align: center;">
+					<div>Ziehen Sie Dateien hierher, um sie hochzuladen</div>
+					<p id="dropzone">
 						Dropzone
 					</p>
-					<div class="dropzone-preview" style="margin-top: 20px; display: flex; flex-wrap: wrap;"></div>
-					<button class="upload-button" style="margin-top: 20px;">Hochladen</button>
+					<div id="dropzone-preview"></div>
+					<button class="upload-button">Hochladen</button>
 				</section>
 
 				<section class="tab-content" id="linkTab">
@@ -90,10 +90,9 @@
 					<div style="margin-top: 10px;">Bildervorschau hier...</div>
 				</section>
 
-				<!-- Dialog Footer -->
-				<div class="dialog-footer">
+				<footer>
 					<button id="closeDialog">{{LANG_CANCEL}}</button>
-				</div>
+				</footer>
 			</dialog>
 
 			<h2 id="current-path"> / </h2>

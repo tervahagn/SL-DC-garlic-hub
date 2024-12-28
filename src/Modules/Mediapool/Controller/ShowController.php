@@ -53,8 +53,9 @@ class ShowController
 					'js/mediapool/treeview/TreeDialog.js',
 					'/js/mediapool/treeview/_inits.js',
 					'/js/mediapool/uploads/UploaderDialog.js',
-//					'/js/mediapool/treeview/DragDropManager.js',
-//					'/js/mediapool/treeview/FilePreviews.js',
+					'/js/mediapool/uploads/DragDropManager.js',
+					'/js/mediapool/uploads/FilePreviews.js',
+//					'/js/mediapool/uploads/FileUploader.js',
 					'/js/mediapool/uploads/_inits.js'
 				],
 				'footer_modules' => ['MODULE_NAME' => 'wunderbaum', 'MODULE_PATH' => 'https://cdn.jsdelivr.net/npm/wunderbaum@0/+esm']

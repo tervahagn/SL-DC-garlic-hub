@@ -24,42 +24,20 @@ document.addEventListener("DOMContentLoaded", function(event)
         document.getElementById('closeDialog'),
         document.getElementById("closeUploadDialog")
     );
-  /*  const dragDropManager = new DragDropManager('#dragDropTab .dropzone', '#dragDropTab .dropzone-preview');
-    const fileUploader = new FileUploader('#dragDropTab .upload-button', dragDropManager.fileList);
-*/
+    const filePreviews = new FilePreviews(
+        document.getElementById('dropzone-preview'),
+    )
+    const dragDropManager = new DragDropManager(
+        document.getElementById('dropzone'),
+        filePreviews
+    );
 
-/*
-    const dialog            = document.getElementById('uploaderDialog');
-    const openUploadDialog  = document.getElementById('openUploadDialog');
-    const closeDialogButton = document.getElementById('closeDialog');
+//    const fileUploader = new FileUploader('#dragDropTab .upload-button', dragDropManager.fileList);
 
-    openUploadDialog.addEventListener('click', () => {
-        dialog.showModal();
-    });
 
-    closeDialogButton.addEventListener('click', () => {
-        dialog.close();
-    });
 
-    // Tab switching
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Deactivate all tabs
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            // Activate the selected tab
-            button.classList.add('active');
-            const targetTab = document.getElementById(button.dataset.tab);
-            targetTab.classList.add('active');
-        });
-    });
-*/
    /*****************************************************************************/
-
+/*
     const dropzone = document.querySelector("#dragDropTab .dropzone");
     const fileList = [];
 
@@ -231,6 +209,6 @@ document.addEventListener("DOMContentLoaded", function(event)
         reader.readAsArrayBuffer(file);
     }
 
-
+*/
 });
 
