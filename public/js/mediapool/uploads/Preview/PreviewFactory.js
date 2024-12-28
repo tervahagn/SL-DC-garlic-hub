@@ -48,7 +48,7 @@ export class PreviewFactory
         }
  */       else
         {
-            throw new Error("Unsupported file type");
+            throw new Error("Unsupported file type: " + file.type);
         }
     }
 }

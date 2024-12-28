@@ -47,7 +47,7 @@ export class FilePreviews
             }
             catch (error)
             {
-                alert(`${file.name} not supported.`);
+                alert(`${file.name} not supported.` + error);
             }
         });
     }

@@ -21,9 +21,13 @@ import { AbstractPreview } from "./AbstractPreview.js";
 
 export class ImagePreview extends AbstractPreview
 {
+    #allowedFormats = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
 
     createPreview()
     {
+        if (!this.#allowedFormats.includes(this.getFile().type))
+            throw new Error(`\nUnsupported file format: ${this.getFile().type}`);
+
         const img = document.createElement("img");
         const reader = new FileReader();
         reader.onload = (e) => {
