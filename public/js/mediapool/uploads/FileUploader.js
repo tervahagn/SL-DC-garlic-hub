@@ -17,12 +17,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class FileUploader {
-    constructor(uploadButtonSelector, fileList) {
+export class FileUploader
+{
+    constructor(uploadButtonSelector, fileList)
+    {
         this.uploadButton = document.querySelector(uploadButtonSelector);
         this.fileList = fileList;
-
-        this.init();
     }
 
     init()
@@ -41,7 +41,7 @@ class FileUploader {
         const formData = new FormData();
         this.fileList.forEach(file => formData.append("files[]", file));
 
-        fetch("/upload", {
+        fetch("/mediapool/upload", {
             method: "POST",
             body: formData,
         })

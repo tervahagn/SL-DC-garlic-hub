@@ -31,6 +31,11 @@ export class FilePreviews
         this.previewFactory = previewFactory;
     }
 
+    getFileList()
+    {
+        return this.fileList;
+    }
+
     handleFiles(files)
     {
         Array.from(files).forEach(file => {

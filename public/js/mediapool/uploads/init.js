@@ -21,6 +21,7 @@ import { UploaderDialog } from "./UploaderDialog.js";
 import { FilePreviews } from "./FilePreviews.js";
 import { DragDropManager } from "./DragDropManager.js";
 import { PreviewFactory } from "./Preview/PreviewFactory.js";
+import { FileUploader } from "./FileUploader.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -42,7 +43,13 @@ document.addEventListener("DOMContentLoaded", function()
     );
     dragDropManager.init();
 
-//    const fileUploader = new FileUploader('#dragDropTab .upload-button', dragDropManager.fileList);
+    const fileUploader = new FileUploader(
+        '#dragDropTab .upload-button',
+        filePreviews.getFileList()
+    );
+    fileUploader.init();
+
+
 
 
 });
