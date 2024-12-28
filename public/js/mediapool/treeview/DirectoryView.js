@@ -23,7 +23,7 @@ class DirectoryView
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI =  '/async/mediapool/node/';
 
-    constructor(tree_element)
+    constructor(tree_element, current_path)
     {
         this.#tree = new mar10.Wunderbaum({
             debugLevel: DirectoryView.DEBUG_LEVEL,
@@ -33,6 +33,7 @@ class DirectoryView
             lazyLoad: function (e){
                 return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
              },
+            activate: (e) => {current_path.innerText = "/" + e.node.getPath()},
             filter: {autoApply: true, mode: "hide"},
         });
     }

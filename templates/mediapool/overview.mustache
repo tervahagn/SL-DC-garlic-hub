@@ -8,7 +8,7 @@
 			</nav>
 
 			<dialog id="editFolderDialog">
-				<button id="close_dialog_button" aria-label="Close">&times;</button>
+				<button id="closeEditDialog" class="close-button" aria-label="Close">&times;</button>
 				<form method="dialog">
 					<fieldset>
 						<legend></legend>
@@ -28,26 +28,78 @@
 					</fieldset>
 				</form>
 			</dialog>
+			<template id="context_menu_tree">
+				<ul class="context_menu">
+					<li id="edit_node">
+						<i class="bi bi-pencil"></i> {{LANG_EDIT}}
+					</li>
+					<li id="add_node">
+						<i class="bi bi-folder-plus"></i> {{LANG_ADD_SUB_FOLDER}}
+					</li>
+					<li id="remove_node">
+						<i class="bi bi-trash"></i> {{LANG_REMOVE}}
+					</li>
+				</ul>
+			</template>
 		</aside>
 
-		<template id="context_menu_tree">
-			<ul class="context_menu">
-				<li id="edit_node">
-					<i class="bi bi-pencil"></i> {{LANG_EDIT}}
-				</li>
-				<li id="add_node">
-					<i class="bi bi-folder-plus"></i> {{LANG_ADD_SUB_FOLDER}}
-				</li>
-				<li id="remove_node">
-					<i class="bi bi-trash"></i> {{LANG_REMOVE}}
-				</li>
-			</ul>
-		</template>
-
-
 		<section class="content">
+			<dialog id="uploaderDialog">
+				<button id="closeUploadDialog" class="close-button"  aria-label="Close">&times;</button>
+				<nav class="tab-header">
+					<button class="tab-button active" data-tab="dragDropTab">Drag'n Drop</button>
+					<button class="tab-button" data-tab="linkTab">Link</button>
+					<button class="tab-button" data-tab="webcamTab">Webcam</button>
+					<button class="tab-button" data-tab="screencastTab">Screencast</button>
+					<button class="tab-button" data-tab="unsplashTab">Unsplash</button>
+				</nav>
+
+				<section class="tab-content active" id="dragDropTab">
+					<h3>Drag and Drop</h3>
+					<p>Ziehen Sie Dateien hierher, um sie hochzuladen</p>
+					<p class="dropzone" style="border: 2px dashed #ccc; padding: 1em; margin:1em 0 0 0; text-align: center;">
+						Dropzone
+					</p>
+					<div class="dropzone-preview" style="margin-top: 20px; display: flex; flex-wrap: wrap;"></div>
+					<button class="upload-button" style="margin-top: 20px;">Hochladen</button>
+				</section>
+
+				<section class="tab-content" id="linkTab">
+					<h3>Link Upload</h3>
+					<p>Geben Sie die URL des Mediums ein:</p>
+					<input type="text" placeholder="https://example.com/media.jpg" style="width: 100%; padding: 10px;">
+				</section>
+
+				<section class="tab-content" id="webcamTab">
+					<h3>Webcam</h3>
+					<p>Nehmen Sie ein Bild oder Video mit Ihrer Webcam auf:</p>
+					<video id="webcamPreview" autoplay style="width: 100%; border: 1px solid #ccc;"></video>
+					<button id="capturePhoto">Capture Photo</button>
+				</section>
+
+				<section class="tab-content" id="screencastTab">
+					<h3>Screencast</h3>
+					<p>Zeichnen Sie Ihren Bildschirm auf:</p>
+					<button id="startScreencast">Start Screencast</button>
+				</section>
+
+				<section class="tab-content" id="unsplashTab">
+					<h3>Unsplash Integration</h3>
+					<p>Suchen Sie nach Bildern:</p>
+					<input type="text" placeholder="Suchbegriff" style="width: 100%; padding: 10px;">
+					<div style="margin-top: 10px;">Bildervorschau hier...</div>
+				</section>
+
+				<!-- Dialog Footer -->
+				<div class="dialog-footer">
+					<button id="closeDialog">{{LANG_CANCEL}}</button>
+				</div>
+			</dialog>
+
+			<h2 id="current-path"> / </h2>
+
 			<div class="upload">
-				<button><i class="bi bi-upload"></i> Upload</button> <strong id="current-path"> / </strong>
+				<button id="openUploadDialog"><i class="bi bi-upload"></i> Uploader</button>
 			</div>
 
 			<div class="media-list" aria-labelledby="media-list-title">

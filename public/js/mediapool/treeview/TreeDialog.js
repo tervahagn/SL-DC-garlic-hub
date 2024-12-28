@@ -46,8 +46,6 @@ class TreeDialog
     {
         this.#action = action;
         this.#dialogElement.querySelector("legend").textContent = lang[action];
-
-
     }
 
     show()
@@ -145,7 +143,6 @@ class TreeDialog
                 throw new Error("Unknown action");
         }
     }
-
 
     #addCancelEvent()
     {

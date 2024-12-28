@@ -2,12 +2,15 @@ document.addEventListener("DOMContentLoaded", function(event)
 {
 	let nodesModel     = new NodesModel();
 	const tree_element = document.getElementById("mediapool-tree");
-	let directoryView  = new DirectoryView(tree_element);
+	let directoryView  = new DirectoryView(
+		tree_element,
+		document.getElementById("current-path")
+	);
 	directoryView.addFilter(document.getElementById("tree_filter"));
 
 	let treeDialog = new TreeDialog(
 		document.getElementById('editFolderDialog'),
-		document.getElementById("close_dialog_button"),
+		document.getElementById("closeEditDialog"),
 		directoryView,
 		nodesModel
 	);
