@@ -30,7 +30,7 @@ class FilePreviews
     handleFiles(files)
     {
         Array.from(files).forEach(file => {
-            if (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("application/pdf"))
+            if (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/") || file.type.startsWith("application/pdf"))
             {
                 this.fileList.push(file);
                 this.previewFile(file);
@@ -73,12 +73,12 @@ class FilePreviews
         previewContainer.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
         previewContainer.appendChild(tooltip);
 
-        if (file.type.startsWith("image/") || file.type.startsWith("video/"))
+        if (file.type.startsWith("image/") || file.type.startsWith("video/") || file.type.startsWith("audio/"))
         {
             const reader = new FileReader();
             reader.onload = (e) => {
                 previewElement.src = e.target.result;
-                if (file.type.startsWith("video/"))
+                if (file.type.startsWith("video/") || file.type.startsWith("audio/"))
                     previewElement.controls = true;
             };
             reader.readAsDataURL(file);
@@ -126,6 +126,8 @@ class FilePreviews
             return document.createElement("img");
         else if (file_type.startsWith("video/"))
             return document.createElement("video");
+        else if (file_type.startsWith("audio/"))
+            return document.createElement("audio");
         else if (file_type === "application/pdf")
             return document.createElement("canvas");
         else
