@@ -20,6 +20,16 @@ INSERT INTO `user_main`
 VALUES
     (1, CURRENT_TIMESTAMP, NULL, 0, CURRENT_TIMESTAMP, 3, 'en_US', '', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
 
+CREATE TABLE `user_acl` (
+    `UID` INTEGER,
+    `acl` INTEGER NOT NULL DEFAULT 0,
+    `module` VARCHAR(20) DEFAULT NULL,
+    FOREIGN KEY (`UID`) REFERENCES `user_main` (`UID`) ON DELETE CASCADE
+);
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'mediapool');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'player');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 16, 'playlists');
+
 CREATE TABLE oauth2_clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id TEXT UNIQUE NOT NULL,
