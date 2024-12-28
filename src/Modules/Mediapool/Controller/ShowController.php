@@ -46,14 +46,13 @@ class ShowController
 				],
 				'footer_scripts' => [
 					'/js/external/wunderbaum.umd.min.js',
-					'/js/external/pdf.min.js',
 					'js/mediapool/treeview/ContextMenu.js',
 					'js/mediapool/treeview/NodesModel.js',
 					'js/mediapool/treeview/DirectoryView.js',
 					'js/mediapool/treeview/TreeDialog.js',
 					'/js/mediapool/treeview/_inits.js',
 				],
-				'footer_modules' => ['ESM_PATH' => '/js/mediapool/uploads/init.js']
+				'footer_modules' => ['/js/mediapool/uploads/init.js']
 			],
 			'this_layout' => [
 				'template' => 'mediapool/overview', // Template-name

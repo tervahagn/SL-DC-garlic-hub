@@ -18,14 +18,11 @@
 */
 
 import { AbstractPreview } from "./AbstractPreview.js";
+import * as pdfjsLib from "/js/external/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/js/external/pdf.worker.min.mjs";
 
-/**
- * We are using pdf.js version 3.9 because from version 4.0 upwards it seems that an absurd 1 MB worker is required in addition.
- * For creating a thumbnail 3.9 with 312 KB is good enough.
- */
 export class PdfPreview extends AbstractPreview
 {
-
     createPreview()
     {
         const canvas = document.createElement("canvas");
