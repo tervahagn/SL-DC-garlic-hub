@@ -21,7 +21,6 @@ export class TreeDialog
 {
     #dialogElement = null;
     #closeElement = null;
-    #currentNode  = null;
     #action       = "";
     #directoryView = null;
     #nodesModel = null;
@@ -103,7 +102,7 @@ export class TreeDialog
 
     #determineMethod()
     {
-        if (this.#directoryView.getActiveNodeId()  === 0)
+        if (this.#directoryView.getActiveNodeId()  === 0 && this.#action !== "add_root_folder")
             throw new Error("no node selected");
 
         switch (this.#action) {
@@ -117,12 +116,11 @@ export class TreeDialog
             default:
                 throw new Error("Unknown action");
         }
-
     }
 
     #determineDataToSend()
     {
-        if (this.#directoryView.getActiveNodeId()  === 0)
+        if (this.#directoryView.getActiveNodeId()  === 0 && this.#action !== "add_root_folder")
             throw new Error("no node selected");
 
         switch (this.#action) {

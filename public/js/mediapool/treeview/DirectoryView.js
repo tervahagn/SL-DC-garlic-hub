@@ -26,6 +26,7 @@ export class DirectoryView
     static DEBUG_LEVEL= 3;
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI =  '/async/mediapool/node/';
+    #activeNode = null;
 
     constructor(tree_element, current_path)
     {
@@ -39,7 +40,9 @@ export class DirectoryView
                 return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
              },
             activate: (e) => {
-                current_path.innerText = "/" + e.node.getPath();
+                current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
+                document.getElementById("openUploadDialog").disabled = false;
+                this.#activeNode = e.node;
             },
             filter: {autoApply: true, mode: "hide"},
         });
@@ -75,17 +78,27 @@ export class DirectoryView
 
     setActiveTitle(title)
     {
-        this.#tree.getActiveNode().title = title;
+        if (this.#activeNode === null)
+            throw new Error("No active node");
+
+        this.#activeNode.title = title;
+        this.#activeNode.update();
     }
 
     getActiveTitle()
     {
-        return this.#tree.getActiveNode().title;
+        if (this.#activeNode === null)
+            return "";
+
+        return this.#activeNode.title;
     }
 
     getActiveNodeId()
     {
-        return this.#tree.getActiveNode().key;
+        if (this.#activeNode === null)
+            return 0;
+
+        return this.#activeNode.key;
     }
 
     setActiveNodeFromEventTarget(event_target)
