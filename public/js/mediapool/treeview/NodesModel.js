@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class NodesModel
+export class NodesModel
 {
     async fetchData(url, options = {})
     {

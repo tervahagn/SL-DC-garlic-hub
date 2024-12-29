@@ -16,7 +16,10 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-class DirectoryView
+
+import { ContextMenu } from "./ContextMenu.js";
+
+export class DirectoryView
 {
     #tree = null;
     #tree_element = null;

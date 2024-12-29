@@ -1,3 +1,8 @@
+import { NodesModel } from "./NodesModel.js";
+import { DirectoryView } from "./DirectoryView.js";
+import { TreeDialog } from "./TreeDialog.js";
+
+
 document.addEventListener("DOMContentLoaded", function(event)
 {
 	let nodesModel     = new NodesModel();
