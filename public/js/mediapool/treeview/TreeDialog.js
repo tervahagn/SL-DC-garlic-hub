@@ -21,7 +21,7 @@ export class TreeDialog
 {
     #dialogElement = null;
     #closeElement = null;
-    #currentNode  = 0;
+    #currentNode  = null;
     #action       = "";
     #directoryView = null;
     #nodesModel = null;
@@ -58,7 +58,7 @@ export class TreeDialog
                 document.getElementById("folder_name").value = "";
                 break;
             case "edit_folder":
-                document.getElementById("folder_name").value = this.#currentNode.title;
+                document.getElementById("folder_name").value = this.#directoryView.getActiveTitle();
                 break;
             default:
                 throw new Error("Unknown action for show");
@@ -96,10 +96,10 @@ export class TreeDialog
                         this.#directoryView.addRootChild(result.data.id, result.data.new_name);
                         break;
                     case "add_sub_folder":
-                        this.#directoryView.addSubChild(this.#currentNode, result.data.id, result.data.new_name);
+                        this.#directoryView.addSubChild(result.data.id, result.data.new_name);
                         break;
                     case "edit_folder":
-                        this.#currentNode.setTitle(result.data.new_name);
+                        this.#directoryView.setActiveTitle(result.data.new_name);
                         break;
                 }
 
@@ -109,7 +109,7 @@ export class TreeDialog
 
     #determineMethod()
     {
-        if (this.#currentNode  === 0)
+        if (this.#directoryView.getActiveNodeId()  === 0)
             throw new Error("no node selected");
 
         switch (this.#action) {
@@ -128,18 +128,18 @@ export class TreeDialog
 
     #determineDataToSend()
     {
-        if (this.#currentNode  === 0)
+        if (this.#directoryView.getActiveNodeId()  === 0)
             throw new Error("no node selected");
 
         switch (this.#action) {
             case "add_root_folder":
                 return {"node_id": 0, "name": document.getElementById("folder_name").value};
             case "add_sub_folder":
-                return {"node_id": this.#currentNode.key, "name": document.getElementById("folder_name").value};
+                return {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
             case "edit_folder":
-                return {"node_id": this.#currentNode.key, "name": document.getElementById("folder_name").value};
+                return {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
             case "delete_folder":
-                return {"node_id": this.#currentNode.key };
+                return {"node_id": this.#directoryView.getActiveNodeId() };
             default:
                 throw new Error("Unknown action");
         }

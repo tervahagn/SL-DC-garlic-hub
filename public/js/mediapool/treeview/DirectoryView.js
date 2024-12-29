@@ -38,7 +38,9 @@ export class DirectoryView
             lazyLoad: function (e){
                 return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
              },
-            activate: (e) => {current_path.innerText = "/" + e.node.getPath()},
+            activate: (e) => {
+                current_path.innerText = "/" + e.node.getPath();
+            },
             filter: {autoApply: true, mode: "hide"},
         });
     }
@@ -71,6 +73,21 @@ export class DirectoryView
         });
     }
 
+    setActiveTitle(title)
+    {
+        this.#tree.getActiveNode().title = title;
+    }
+
+    getActiveTitle()
+    {
+        return this.#tree.getActiveNode().title;
+    }
+
+    getActiveNodeId()
+    {
+        return this.#tree.getActiveNode().key;
+    }
+
     setActiveNodeFromEventTarget(event_target)
     {
         // getNode is static for some reason
@@ -85,9 +102,10 @@ export class DirectoryView
         this.#tree.addChildren({ key:  key, title: folder_name, isFolder: true });
     }
 
-    addSubChild(currentNode, key, folder_name)
+    addSubChild(key, folder_name)
     {
-        currentNode.addChildren({ key:  key, title: folder_name, isFolder: true });
+        this.#tree.getActiveNode().addChildren({ key:  key, title: folder_name, isFolder: true });
     }
+
 
 }
