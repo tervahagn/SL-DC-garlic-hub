@@ -37,12 +37,6 @@ export class TreeDialog
         this.#addSaveEvent();
     }
 
-    setCurrentNode(node)
-    {
-        this.#currentNode = node;
-    }
-
-
     prepareShow(action, lang)
     {
         this.#action = action;

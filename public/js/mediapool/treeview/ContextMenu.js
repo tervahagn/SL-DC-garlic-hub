@@ -42,7 +42,6 @@ export class ContextMenu
     addEditEvent(editNodeElement, currentTreeNode, lang)
     {
         editNodeElement.addEventListener("click", () => {
-            this.#treeDialog.setCurrentNode(currentTreeNode);
             this.#treeDialog.prepareShow("edit_folder", lang);
             this.#treeDialog.show();
         });
@@ -51,7 +50,6 @@ export class ContextMenu
     addAddEvent(addNodeElement, currentTreeNode, lang)
     {
         addNodeElement.addEventListener("click", () => {
-            this.#treeDialog.setCurrentNode(currentTreeNode);
             this.#treeDialog.prepareShow("add_sub_folder", lang);
             this.#treeDialog.show();
         });
