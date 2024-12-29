@@ -66,7 +66,7 @@ dialog
         {
             width: 150px;
             height:150px;
-            object-fit: contain;
+            object-fit: cover;
             border: 1px solid #ccc;
             border-radius: var(--gh-border-radius);
         }
