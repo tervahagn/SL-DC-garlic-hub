@@ -20,8 +20,9 @@
 
 use App\Framework\Core\Config\Config;
 use App\Modules\Mediapool\Controller\NodesController;
-use App\Modules\Mediapool\NodesRepository;
-use App\Modules\Mediapool\NodesService;
+use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Mediapool\Repositories\NodesRepository;
+use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
@@ -54,6 +55,17 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 		new Filesystem(new LocalFilesystemAdapter($mediapool_dir)),
 		new ImageManager(new Driver())
 	);
+});
+
+$dependencies[UploadService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UploadController($container->get(NodesService::class));
+});
+
+
+$dependencies[UploadController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UploadController($container->get(NodesService::class));
 });
 
 

@@ -23,7 +23,7 @@ namespace App\Modules\Mediapool\Controller;
 
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Mediapool\NodesService;
+use App\Modules\Mediapool\Services\NodesService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

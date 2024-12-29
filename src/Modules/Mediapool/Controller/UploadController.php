@@ -21,7 +21,9 @@
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Modules\Mediapool\MediaService;
+use App\Modules\Mediapool\Services\MediaService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class UploadController
 {
@@ -36,4 +38,8 @@ class UploadController
 	}
 
 
+	public function upload(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+
+	}
 }

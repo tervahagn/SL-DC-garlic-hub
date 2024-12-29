@@ -19,11 +19,12 @@
 */
 
 
-namespace App\Modules\Mediapool;
+namespace App\Modules\Mediapool\Services;
 
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Exception;
 
 

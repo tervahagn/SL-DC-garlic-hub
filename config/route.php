@@ -23,6 +23,7 @@ use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
+use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
@@ -49,3 +50,5 @@ $app->get('/async/mediapool/node[/{parent_id}]', [NodesController::class, 'list'
 $app->post('/async/mediapool/node', [NodesController::class, 'add']);
 $app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
 $app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
+
+$app->post('/mediapool/upload', [UploadController::class, 'upload']);

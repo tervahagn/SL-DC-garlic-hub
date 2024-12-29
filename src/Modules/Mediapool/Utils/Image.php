@@ -27,8 +27,6 @@ use League\Flysystem\Filesystem;
 
 class Image extends AbstractMediaHandler
 {
-	private Config $config;
-	private Filesystem $fileSystem;
 	private ImageManagerInterface $imageManager;
 
 	/**

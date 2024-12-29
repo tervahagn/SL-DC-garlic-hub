@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Mediapool;
+namespace App\Modules\Mediapool\Services;
 
 class MediaService
 {
