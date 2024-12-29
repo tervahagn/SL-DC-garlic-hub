@@ -48,8 +48,7 @@ class ShowController
 					'/js/external/wunderbaum.umd.min.js'
 				],
 				'footer_modules' => [
-					'/js/mediapool/treeview/init.js',
-					'/js/mediapool/uploads/init.js'
+					'/js/mediapool/init.js'
 				]
 			],
 			'this_layout' => [
