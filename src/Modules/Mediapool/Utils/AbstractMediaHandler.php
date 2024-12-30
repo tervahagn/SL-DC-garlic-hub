@@ -23,11 +23,18 @@ namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use League\Flysystem\Filesystem;
+use Slim\Psr7\UploadedFile;
 
 abstract class AbstractMediaHandler
 {
 	protected Config $config;
 	protected Filesystem $filesystem;
+	protected int $thumbWidth;
+	protected int $thumbHeight;
+	protected string $thumbPath;
+	protected string $uploadPath;
+	protected string $originalPath;
+	protected string $previewPath;
 
 	/**
 	 * @param Config     $config
@@ -37,7 +44,16 @@ abstract class AbstractMediaHandler
 	{
 		$this->config = $config;
 		$this->filesystem = $filesystem;
+
+		$this->thumbWidth   = $this->config->getConfigValue('thumb_width', 'mediapool', 'dimensions');
+		$this->thumbHeight  = $this->config->getConfigValue('thumb_height', 'mediapool', 'dimensions');
+		$this->uploadPath   = $this->config->getConfigValue('uploads', 'mediapool', 'directories');
+		$this->thumbPath    = $this->config->getConfigValue('thumbnails', 'mediapool', 'directories');
+		$this->originalPath = $this->config->getConfigValue('original', 'mediapool', 'directories');
+		$this->previewPath  = $this->config->getConfigValue('previews', 'mediapool', 'directories');
 	}
+
+	abstract public function createThumbnail(array $file);
 
 
 }

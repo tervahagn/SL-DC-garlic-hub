@@ -17,43 +17,65 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { DirectoryView } from "../treeview/DirectoryView.js";
+
 export class FileUploader
 {
-    constructor(uploadButtonSelector, fileList)
+    #directoryView = null;
+    #filePreviews  = null;
+    #fetchClient   = null;
+
+    constructor(directoryView, filePreviews, fechClient)
     {
-        this.uploadButton = document.querySelector(uploadButtonSelector);
-        this.fileList = fileList;
+        this.#filePreviews  = filePreviews;
+        this.#directoryView = directoryView;
+        this.#fetchClient   = fechClient;
     }
 
-    init()
+    initFileUpload(uploadButtonElement)
     {
-        this.uploadButton.addEventListener('click', () => this.uploadFiles());
+        uploadButtonElement.addEventListener('click', () => this.uploadFiles());
     }
 
     uploadFiles()
     {
-        if (this.fileList.length === 0)
+
+        const fileList = this.#filePreviews.getFileList();
+        if (fileList.length === 0)
         {
             alert("Keine Dateien zum Hochladen ausgewählt!");
             return;
         }
 
-        const formData = new FormData();
-        this.fileList.forEach(file => formData.append("files[]", file));
+        if (this.#directoryView.getActiveNodeId() === 0)
+        {
+            alert("Choose a directory first.");
+            return;
+        }
 
-        fetch("/mediapool/upload", {
-            method: "POST",
-            body: formData,
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert("Dateien erfolgreich hochgeladen!");
-                    this.fileList.length = 0; // Liste leeren
-                    document.querySelector("#dragDropTab .dropzone-preview").innerHTML = ""; // Vorschau leeren
-                } else {
-                    alert("Fehler beim Hochladen.");
-                }
-            })
-            .catch(error => console.error("Fehler:", error));
+        (async () => {
+
+            const formData = new FormData();
+            fileList.forEach(file => formData.append("files[]", file));
+            formData.append("node_id", this.#directoryView.getActiveNodeId());
+
+            const apiUrl     = '/async/mediapool/upload';
+            const options    = {method: "POST", body: formData }
+
+            const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+                console.error('Fetch error:', error.message);
+                return null;
+            });
+
+            if (!result || !result.success)
+            {
+                console.error('Error:', result?.error_message || 'Unknown error');
+                return;
+            }
+
+
+        })();
+
+
     }
 }

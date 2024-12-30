@@ -80,6 +80,9 @@ dialog
 
 #uploadDialog{width:800px;height:800px;}
 
-.filepond--item {
-    width: calc(25% - 0.5em);
+#openUploadDialog:disabled
+{
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
 }

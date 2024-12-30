@@ -21,25 +21,64 @@
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Mediapool\Services\UploadService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SlimSession\Helper;
 
 class UploadController
 {
-	private MediaService $mediaService;
+	private UploadService $uploadService;
+	private int $UID = 0;
 
-	/**
-	 * @param MediaService $mediaService
-	 */
-	public function __construct(MediaService $mediaService)
+	public function __construct(UploadService $uploadService)
 	{
-		$this->mediaService = $mediaService;
+		$this->uploadService = $uploadService;
 	}
 
 
 	public function upload(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+		$uploadedFiles = $request->getUploadedFiles();
+		$bodyParams    = $request->getParsedBody();
 
+		if (!array_key_exists('node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$node_id = (int) $bodyParams['node_id'];
+		if ($node_id === 0)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		if (empty($uploadedFiles['files']) || !is_array($uploadedFiles['files']))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'no files']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$this->uploadService->uploadMediaToQueue($node_id, $this->UID, $uploadedFiles['files']);
+
+
+		return $response->withHeader('Content-Type', 'text/html');
+
+	}
+
+	private function hasRights(Helper $session): bool
+	{
+		$ret = $session->exists('user');
+		if ($ret)
+			$this->UID = $session->get('user')['UID'];
+
+		return $ret;
 	}
 }

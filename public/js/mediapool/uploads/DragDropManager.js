@@ -50,7 +50,7 @@ export class DragDropManager
     {
         event.preventDefault();
         this.dropzone.style.borderColor = "#ccc";
-        const files = event.dataTransfer.files;
+        const files =  Array.from(event.dataTransfer.files);
         this.filePreview.handleFiles(files);
     }
 }

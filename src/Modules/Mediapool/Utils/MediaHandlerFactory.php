@@ -36,30 +36,23 @@ class MediaHandlerFactory
 	 * @param Config     $config
 	 * @param Filesystem $fileSystem
 	 */
-	public function __construct(Config $config,
-		Filesystem $fileSystem,
-		ImageManagerInterface $imageManager
-
-	)
+	public function __construct(Config $config, Filesystem $fileSystem,	ImageManagerInterface $imageManager)
 	{
 		$this->config = $config;
 		$this->fileSystem = $fileSystem;
 		$this->imageManager = $imageManager;
 	}
 
-	public function createHandler(string $file_type): AbstractMediaHandler
+	public function createHandler(string $mimeType): AbstractMediaHandler
 	{
-		switch ($file_type)
+		return match (true)
 		{
-			case 'video':
-				return new Video($this->config, $this->fileSystem);
-			case 'pdf':
-				return new Pdf($this->config, $this->fileSystem);
-			case 'image':
-				return new Image($this->config, $this->fileSystem, $this->imageManager);
-			default:
-				throw new \InvalidArgumentException('Unknown file type');
-		}
+			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imageManager),
+			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, ''),
+			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem),
+			default => throw new \InvalidArgumentException('Unknown file type'),
+		};
+
 	}
 
 

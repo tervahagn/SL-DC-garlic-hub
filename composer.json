@@ -17,7 +17,8 @@
       "ext-openssl": "*",
         "defuse/php-encryption": "^2.4",
         "slim/http": "^1.4",
-        "intervention/image": "^3.10"
+        "intervention/image": "^3.10",
+        "ramsey/uuid": "^4.7"
     },
     "autoload": {
         "psr-4": {

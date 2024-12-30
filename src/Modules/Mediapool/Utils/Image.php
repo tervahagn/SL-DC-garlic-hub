@@ -29,11 +29,6 @@ class Image extends AbstractMediaHandler
 {
 	private ImageManagerInterface $imageManager;
 
-	/**
-	 * @param Config                $config
-	 * @param Filesystem            $fileSystem
-	 * @param ImageManagerInterface $imageManager
-	 */
 	public function __construct(Config $config, Filesystem $fileSystem, ImageManagerInterface $imageManager)
 	{
 		$this->imageManager = $imageManager;
@@ -41,4 +36,13 @@ class Image extends AbstractMediaHandler
 	}
 
 
-}
+	public function createThumbnail(array $file)
+	{
+		$image = $this->imageManager->read($this->uploadPath.$file['checksum'].'.'.$file['extension']);
+
+		$image->scaleDown($this->thumbWidth, $this->thumbHeight);
+
+		// Thumbnail speichern
+		$image->save($destinationPath);
+
+	}

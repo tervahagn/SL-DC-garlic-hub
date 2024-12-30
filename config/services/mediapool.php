@@ -21,8 +21,11 @@
 use App\Framework\Core\Config\Config;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
+use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Services\NodesService;
+use App\Modules\Mediapool\Services\UploadService;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
@@ -48,7 +51,7 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 
 	/** @var Config $config */
 	$mediapool_dir = $config->getPaths('systemDir').
-		'/'.$container->getConfigValue('uploads', 'mediapool', 'directories');
+		'/'.$config->getConfigValue('uploads', 'mediapool', 'directories');
 
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
@@ -59,13 +62,16 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 
 $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UploadController($container->get(NodesService::class));
+	return new UploadService(
+		$container->get(MediaHandlerFactory::class),
+		new FilesRepository($container->get('SqlConnection')),
+		new QueueRepository($container->get('SqlConnection')),
+	);
 });
-
 
 $dependencies[UploadController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UploadController($container->get(NodesService::class));
+	return new UploadController($container->get(UploadService::class));
 });
 
 

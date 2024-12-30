@@ -7,6 +7,7 @@ import { FilePreviews } from "./uploads/FilePreviews.js";
 import { DragDropManager } from "./uploads/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
 import { FileUploader } from "./uploads/FileUploader.js";
+import { FetchClient } from "../core/FetchClient.js";
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
@@ -27,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function(event)
 	directoryView.addContextMenu(nodesModel, treeDialog, lang);
 
 	document.getElementById('addRootFolder').addEventListener('click', () => {
-		treeDialog.setCurrentNode(null);
 		treeDialog.prepareShow("add_root_folder", lang);
 		treeDialog.show();
 	});
@@ -53,10 +53,11 @@ document.addEventListener("DOMContentLoaded", function(event)
 	dragDropManager.init();
 
 	const fileUploader = new FileUploader(
-		'#dragDropTab .upload-button',
-		filePreviews.getFileList()
+		directoryView,
+		filePreviews,
+		new FetchClient()
 	);
-	fileUploader.init();
+	fileUploader.initFileUpload(document.getElementById("startFilesUpload"));
 
 });
 

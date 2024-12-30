@@ -50,5 +50,4 @@ $app->get('/async/mediapool/node[/{parent_id}]', [NodesController::class, 'list'
 $app->post('/async/mediapool/node', [NodesController::class, 'add']);
 $app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
 $app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
-
-$app->post('/mediapool/upload', [UploadController::class, 'upload']);
+$app->post('/async/mediapool/upload', [UploadController::class, 'upload']);

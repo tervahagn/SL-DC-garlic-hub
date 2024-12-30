@@ -113,7 +113,7 @@ CREATE TABLE mediapool_files (
      UID INTEGER NOT NULL DEFAULT 0,
      upload_time TIMESTAMP NOT NULL,
      filename TEXT NOT NULL DEFAULT '', -- Original file name
-     filetype TEXT NOT NULL DEFAULT '',
+     extension varchar(5) NOT NULL DEFAULT '',
      checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
      mimetype VARCHAR(50) NOT NULL,
      metadata TEXT DEFAULT NULL, --json encoded metadata
@@ -126,16 +126,16 @@ CREATE INDEX idx_mediapool_mimetype ON mediapool_files (mimetype);
 CREATE INDEX idx_mediapool_deleted ON mediapool_files (deleted);
 
 CREATE TABLE mediapool_queue (
-       queue_id INTEGER PRIMARY KEY AUTOINCREMENT,
+       queue_id CHAR(36) PRIMARY KEY, -- UUID as Text field
        convert_id INTEGER NOT NULL DEFAULT 0,
        node_id INTEGER NOT NULL DEFAULT 0,
        status INTEGER NOT NULL DEFAULT 0, -- for processing status
        UID INTEGER NOT NULL DEFAULT 0,
        upload_time TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       filetype TEXT NOT NULL DEFAULT '',
        filename TEXT NOT NULL DEFAULT '',
-       filesize INTEGER NOT NULL DEFAULT 0,
-       mime_type VARCHAR(50) NOT NULL,
+       extension varchar(5) NOT NULL DEFAULT '',
+       checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
+       mimetype VARCHAR(50) NOT NULL,
        metadata TEXT DEFAULT NULL, --json encoded metadata
        convert_values TEXT DEFAULT NULL,
        error_text TEXT DEFAULT NULL,

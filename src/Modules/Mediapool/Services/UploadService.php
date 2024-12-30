@@ -24,6 +24,8 @@ namespace App\Modules\Mediapool\Services;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
+use Doctrine\DBAL\Exception;
+use Ramsey\Uuid\Uuid;
 
 class UploadService
 {
@@ -39,8 +41,44 @@ class UploadService
 	public function __construct(MediaHandlerFactory $mediaHandlerFactory, FilesRepository $mediaRepository,	QueueRepository $queueRepository)
 	{
 		$this->mediaHandlerFactory = $mediaHandlerFactory;
-		$this->mediaRepository = $mediaRepository;
-		$this->queueRepository = $queueRepository;
+		$this->mediaRepository     = $mediaRepository;
+		$this->queueRepository     = $queueRepository;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function uploadMediaToQueue(int $node_id, int $UID, array $uploadedFiles): void
+	{
+		foreach ($uploadedFiles as $uploadedFile)
+		{
+			/** @var \Psr\Http\Message\UploadedFileInterface $uploadedFile */
+			$fileInfo = pathinfo($uploadedFile->getClientFilename());
+
+			$fileData = [
+				'queue_id'  => Uuid::uuid4()->toString(),
+				'node_id'   => $node_id,
+				'status'    => 0,
+				'UID'       => $UID,
+				'filename'  => $fileInfo['basename'],
+				'extension' => $fileInfo['extension'],
+				'mimetype'  => $uploadedFile->getClientMediaType(),
+				'metadata'  => json_encode(['size' => $uploadedFile->getSize()])
+			];
+
+			$this->queueRepository->insert($fileData);
+		}
+	}
+
+	public function processQueue(): void
+	{
+		$queue = $this->queueRepository->findAllBy();
+
+		foreach ($queue as $file)
+		{
+			$mediaHandler = $this->mediaHandlerFactory->createHandler($file['mimetype']);
+			$mediaHandler->createThumbnail($file);
+		}
 	}
 
 
