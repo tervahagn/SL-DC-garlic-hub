@@ -24,62 +24,68 @@ namespace App\Modules\Mediapool\Services;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
+use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use Doctrine\DBAL\Exception;
+use League\Flysystem\FilesystemException;
+use Psr\Http\Message\UploadedFileInterface;
 use Ramsey\Uuid\Uuid;
 
 class UploadService
 {
 	private MediaHandlerFactory $mediaHandlerFactory;
 	private FilesRepository $mediaRepository;
-	private QueueRepository $queueRepository;
+	private MimeTypeDetector $mimeTypeDetector;
 
 	/**
 	 * @param MediaHandlerFactory $mediaHandlerFactory
 	 * @param FilesRepository     $mediaRepository
-	 * @param QueueRepository     $queueRepository
 	 */
-	public function __construct(MediaHandlerFactory $mediaHandlerFactory, FilesRepository $mediaRepository,	QueueRepository $queueRepository)
+	public function __construct(MediaHandlerFactory $mediaHandlerFactory, FilesRepository $mediaRepository, MimeTypeDetector $mimeTypeDetector)
 	{
 		$this->mediaHandlerFactory = $mediaHandlerFactory;
 		$this->mediaRepository     = $mediaRepository;
-		$this->queueRepository     = $queueRepository;
+		$this->mimeTypeDetector    = $mimeTypeDetector;
 	}
 
 	/**
 	 * @throws Exception
 	 */
-	public function uploadMediaToQueue(int $node_id, int $UID, array $uploadedFiles): void
+	public function uploadMedia(int $node_id, int $UID, array $uploadedFiles): void
 	{
 		foreach ($uploadedFiles as $uploadedFile)
 		{
-			/** @var \Psr\Http\Message\UploadedFileInterface $uploadedFile */
-			$fileInfo = pathinfo($uploadedFile->getClientFilename());
+			try
+			{
+				$mediaHandler = $this->mediaHandlerFactory->createHandler($uploadedFile->getClientMediaType());
+				$mediaHandler->checkFileBeforeUpload($uploadedFile);
+				$uploadPath   = $mediaHandler->upload($uploadedFile);
+				$mediaHandler->checkFileAfterUpload($uploadedFile);
+				$newFilename  = $mediaHandler->determineNewFilename($uploadPath);
 
-			$fileData = [
-				'queue_id'  => Uuid::uuid4()->toString(),
-				'node_id'   => $node_id,
-				'status'    => 0,
-				'UID'       => $UID,
-				'filename'  => $fileInfo['basename'],
-				'extension' => $fileInfo['extension'],
-				'mimetype'  => $uploadedFile->getClientMediaType(),
-				'metadata'  => json_encode(['size' => $uploadedFile->getSize()])
-			];
+				$fileInfo    = pathinfo($uploadedFile->getClientFilename());
+				$filePath    = $fileInfo['dirname']. '/'.$newFilename.'.'.$fileInfo['extension'];
+				$mediaHandler->createThumbnail($filePath);
 
-			$this->queueRepository->insert($fileData);
+				$fileData = [
+					'media_id'  => Uuid::uuid4()->toString(),
+					'node_id'   => $node_id,
+					'UID'       => $UID,
+					'checksum'  => $newFilename,
+					'mimetype'  => $this->mimeTypeDetector->detectFromFile($filePath),
+					'metadata'  => json_encode([
+						'size'       => $mediaHandler->getFileSize(),
+						'dimensions' => $mediaHandler->getDimensions()])
+				];
+
+				$this->mediaRepository->insert($fileData);
+			}
+			catch(\Exception | FilesystemException $e)
+			{
+
+			}
 		}
 	}
 
-	public function processQueue(): void
-	{
-		$queue = $this->queueRepository->findAllBy();
-
-		foreach ($queue as $file)
-		{
-			$mediaHandler = $this->mediaHandlerFactory->createHandler($file['mimetype']);
-			$mediaHandler->createThumbnail($file);
-		}
-	}
 
 
 

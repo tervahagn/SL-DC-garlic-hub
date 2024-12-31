@@ -18,7 +18,9 @@
         "defuse/php-encryption": "^2.4",
         "slim/http": "^1.4",
         "intervention/image": "^3.10",
-        "ramsey/uuid": "^4.7"
+        "ramsey/uuid": "^4.7",
+      "ext-http": "*",
+      "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {

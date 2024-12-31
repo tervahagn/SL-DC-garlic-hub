@@ -46,11 +46,21 @@ document.addEventListener("DOMContentLoaded", function(event)
 		document.getElementById('dropzone-preview'),
 		new PreviewFactory()
 	)
+	const dropzone = document.getElementById('dropzone');
 	const dragDropManager = new DragDropManager(
-		document.getElementById('dropzone'),
+		dropzone,
 		filePreviews
 	);
 	dragDropManager.init();
+
+	dropzone.addEventListener('click', () => fileInput.click());
+	const fileInput = document.getElementById('fileInput');
+	fileInput.addEventListener('change', (event) => {
+		const files = event.target.files;
+		console.log('Hochgeladene Dateien:', files);
+		filePreviews.handleFiles(files);
+	});
+
 
 	const fileUploader = new FileUploader(
 		directoryView,

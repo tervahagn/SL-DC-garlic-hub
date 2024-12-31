@@ -108,12 +108,10 @@ VALUES (2, 2, 2, 1, 2, 3, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 CREATE TABLE mediapool_files (
      media_id CHAR(36) PRIMARY KEY, -- UUID as Text field
-     node_id INTEGER NOT NULL DEFAULT 0,
+     node_id INTEGER NOT NULL,
      deleted INTEGER NOT NULL DEFAULT 0,
      UID INTEGER NOT NULL DEFAULT 0,
-     upload_time TIMESTAMP NOT NULL,
-     filename TEXT NOT NULL DEFAULT '', -- Original file name
-     extension varchar(5) NOT NULL DEFAULT '',
+     upload_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
      checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
      mimetype VARCHAR(50) NOT NULL,
      metadata TEXT DEFAULT NULL, --json encoded metadata
@@ -125,20 +123,4 @@ CREATE INDEX idx_mediapool_node_id ON mediapool_files (node_id);
 CREATE INDEX idx_mediapool_mimetype ON mediapool_files (mimetype);
 CREATE INDEX idx_mediapool_deleted ON mediapool_files (deleted);
 
-CREATE TABLE mediapool_queue (
-       queue_id CHAR(36) PRIMARY KEY, -- UUID as Text field
-       convert_id INTEGER NOT NULL DEFAULT 0,
-       node_id INTEGER NOT NULL DEFAULT 0,
-       status INTEGER NOT NULL DEFAULT 0, -- for processing status
-       UID INTEGER NOT NULL DEFAULT 0,
-       upload_time TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       filename TEXT NOT NULL DEFAULT '',
-       extension varchar(5) NOT NULL DEFAULT '',
-       checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
-       mimetype VARCHAR(50) NOT NULL,
-       metadata TEXT DEFAULT NULL, --json encoded metadata
-       convert_values TEXT DEFAULT NULL,
-       error_text TEXT DEFAULT NULL,
-       gearman_handle varchar(100) DEFAULT NULL,
-       gearman_status INTEGER DEFAULT NULL
-);
+

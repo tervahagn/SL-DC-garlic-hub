@@ -27,6 +27,7 @@ use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
+use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\ImageManager;
 use League\Flysystem\Filesystem;
@@ -65,7 +66,7 @@ $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $c
 	return new UploadService(
 		$container->get(MediaHandlerFactory::class),
 		new FilesRepository($container->get('SqlConnection')),
-		new QueueRepository($container->get('SqlConnection')),
+		new MimeTypeDetector()
 	);
 });
 
