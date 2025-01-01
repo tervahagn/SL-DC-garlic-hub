@@ -37,11 +37,11 @@ $dependencies = [];
 
 $dependencies[AuthService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new AuthService($container->get(UserService::class));
+	return new AuthService($container->get(UserService::class), $container->get('ModuleLogger'));
 });
 $dependencies[LoginController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new LoginController($container->get(AuthService::class), $container->get(LoggerInterface::class));
+	return new LoginController($container->get(AuthService::class));
 });
 
 $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $container) {
@@ -75,7 +75,6 @@ $dependencies[OAuth2Controller::class] = DI\factory(function (ContainerInterface
 {
 	return new OAuth2Controller(
 		$container->get(AuthService::class),
-		$container->get(LoggerInterface::class),
 		$container->get('AuthorizationServer')
 	);
 });

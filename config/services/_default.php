@@ -53,10 +53,17 @@ use SlimSession\Helper;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
-$dependencies[LoggerInterface::class] = DI\factory(function (ContainerInterface $container) {
-	$logger = new Logger('dbal');
+$dependencies['ModuleLogger'] = DI\factory(function (ContainerInterface $container) {
+	$logger = new Logger('modules');
 	$config = $container->get(Config::class);
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/app.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/module.log', $config->getLogLevel()));
+
+	return $logger;
+});
+$dependencies['FrameworkLogger'] = DI\factory(function (ContainerInterface $container) {
+	$logger = new Logger('modules');
+	$config = $container->get(Config::class);
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/framework.log', $config->getLogLevel()));
 
 	return $logger;
 });

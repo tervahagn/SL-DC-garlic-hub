@@ -26,15 +26,18 @@ use App\Framework\User\UserService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class AuthService
 {
 	private UserService $userService;
 	private string $errorMessage;
+	private LoggerInterface $logger;
 
-	public function __construct(UserService $userService)
+	public function __construct(UserService $userService, LoggerInterface $logger)
 	{
 		$this->userService = $userService;
+		$this->logger      = $logger;
 	}
 
 	public function getErrorMessage(): string
@@ -54,6 +57,12 @@ class AuthService
 		if (empty($user_data) || !password_verify($password, $user_data['password']))
 		{
 			$this->errorMessage = 'Invalid credentials.';
+			$this->logger->error('Login failed', [
+				'username' => $identifier,
+				'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+				'time' => date('Y-m-d H:i:s'),
+				'reason' => 'Invalid credentials.',
+			]);
 			return null;
 		}
 
