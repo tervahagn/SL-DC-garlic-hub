@@ -2,14 +2,11 @@
 
 namespace App\Modules\Auth;
 
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Exceptions\UserException;
-use Doctrine\DBAL\Exception;
+use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use SlimSession\Helper;
 
 class LoginController
@@ -25,7 +22,7 @@ class LoginController
 	}
 
 	/**
-	 * @throws \Exception|\Psr\SimpleCache\InvalidArgumentException
+	 * @throws Exception|\Psr\SimpleCache\InvalidArgumentException
 	 */
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -60,36 +57,41 @@ class LoginController
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
+
 	/**
-	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
-		try
-		{
-			$params   = (array) $request->getParsedBody();
-			// no need to sanitize here, as we are executing prepared statements in DB
-			$username = $params['username'] ?? null;
-			$password = $params['password'] ?? null;
+		$params   = (array) $request->getParsedBody();
+		// no need to sanitize here, as we are executing prepared statements in DB
+		$username = $params['username'] ?? null;
+		$password = $params['password'] ?? null;
 
-			$csrfToken = $params['csrf_token'] ?? null;
-			if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
-				throw new UserException('CSRF Token mismatch');
-
-			$userEntity = $this->authService->login($username, $password);
-			$main_data = $userEntity->getMain();
-			$session->set('user', $main_data);
-			$session->set('locale', $main_data['locale']);
-		}
-		catch (\Exception | InvalidArgumentException | Exception $e)
+		$csrfToken = $params['csrf_token'] ?? null;
+		if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
 		{
-			// dbal exception not tested because overengineered bullshit make mocking a pain in ass
 			$flash  = $request->getAttribute('flash');
-			$flash->addMessage('error', $e->getMessage());
+			$flash->addMessage('error', 'Invalid CSRF token');
 			return $this->redirect($response, '/login');
 		}
+
+		$userEntity = $this->authService->login($username, $password);
+		if ($userEntity === null)
+		{
+			$flash  = $request->getAttribute('flash');
+			$flash->addMessage('error', $this->authService->getErrorMessage());
+			return $this->redirect($response, '/login');
+		}
+
+		$main_data = $userEntity->getMain();
+		$session->set('user', $main_data);
+		$session->set('locale', $main_data['locale']);
+
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
