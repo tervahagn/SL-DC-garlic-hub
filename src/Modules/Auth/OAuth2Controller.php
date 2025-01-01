@@ -32,18 +32,15 @@ use SlimSession\Helper;
 class OAuth2Controller
 {
 	private AuthService $authService;
-	private LoggerInterface $logger;
 	private AuthorizationServer $authServer;
 
 	/**
 	 * @param AuthService $auth2Service
-	 * @param LoggerInterface $logger
 	 * @param AuthorizationServer $authServer
 	 */
-	public function __construct(AuthService $auth2Service, LoggerInterface $logger, AuthorizationServer $authServer)
+	public function __construct(AuthService $auth2Service, AuthorizationServer $authServer)
 	{
 		$this->authService = $auth2Service;
-		$this->logger = $logger;
 		$this->authServer = $authServer;
 	}
 
@@ -90,12 +87,10 @@ class OAuth2Controller
 		}
 		catch (OAuthServerException $e)
 		{
-			$this->logger->error($e->getMessage());
 			return $e->generateHttpResponse($response);
 		}
 		catch (\Exception $e)
 		{
-			$this->logger->error($e->getMessage());
 			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
 			return $response->withStatus(500);
 		}
@@ -110,12 +105,10 @@ class OAuth2Controller
 		}
 		catch (OAuthServerException $e)
 		{
-			$this->logger->error($e->getMessage());
 			return $e->generateHttpResponse($response);
 		}
 		catch (\Exception $e)
 		{
-			$this->logger->error($e->getMessage());
 			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
 			return $response->withStatus(500);
 		}

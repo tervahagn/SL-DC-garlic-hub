@@ -15,17 +15,13 @@ use SlimSession\Helper;
 class LoginController
 {
 	private AuthService $authService;
-	private LoggerInterface $logger;
-	private Translator $translator;
 
 	/**
 	 * @param AuthService $authService
-	 * @param LoggerInterface $logger
 	 */
-	public function __construct(AuthService $authService, LoggerInterface $logger)
+	public function __construct(AuthService $authService)
 	{
 		$this->authService = $authService;
-		$this->logger      = $logger;
 	}
 
 	/**
@@ -33,14 +29,14 @@ class LoginController
 	 */
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->translator = $request->getAttribute('translator');
+		$translator = $request->getAttribute('translator');
 		$session          = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
 
 		$csrfToken = bin2hex(random_bytes(32));
 		$session->set('csrf_token', $csrfToken);
-		$page_name = $this->translator->translate('login', 'login');
+		$page_name = $translator->translate('login', 'login');
 		$data = [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $page_name,
@@ -50,11 +46,11 @@ class LoginController
 				'template' => 'auth/login', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $page_name,
-					'LANG_USERNAME' => $this->translator->translate('username', 'main').' / '.$this->translator->translate('email', 'main'),
-					'LANG_PASSWORD' => $this->translator->translate('password', 'login'),
+					'LANG_USERNAME' => $translator->translate('username', 'main').' / '. $translator->translate('email', 'main'),
+					'LANG_PASSWORD' => $translator->translate('password', 'login'),
 					'CSRF_TOKEN' => $csrfToken,
 					'LANG_SUBMIT' => $page_name,
-					'LANG_AUTOLOGIN' => $this->translator->translate('autologin', 'login')
+					'LANG_AUTOLOGIN' => $translator->translate('autologin', 'login')
 
 				]
 			]
@@ -92,7 +88,6 @@ class LoginController
 			// dbal exception not tested because overengineered bullshit make mocking a pain in ass
 			$flash  = $request->getAttribute('flash');
 			$flash->addMessage('error', $e->getMessage());
-			$this->logger->error($e->getMessage());
 			return $this->redirect($response, '/login');
 		}
 
