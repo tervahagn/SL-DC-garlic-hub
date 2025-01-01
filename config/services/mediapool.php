@@ -48,15 +48,9 @@ $dependencies[NodesController::class] = DI\factory(function (ContainerInterface 
 
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
 {
-	$config = $container->get(Config::class);
-
-	/** @var Config $config */
-	$mediapool_dir = $config->getPaths('systemDir').
-		'/'.$config->getConfigValue('uploads', 'mediapool', 'directories');
-
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
-		new Filesystem(new LocalFilesystemAdapter($mediapool_dir)),
+		$container->get('LocalFileSystem'),
 		new ImageManager(new Driver())
 	);
 });
@@ -66,7 +60,8 @@ $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $c
 	return new UploadService(
 		$container->get(MediaHandlerFactory::class),
 		new FilesRepository($container->get('SqlConnection')),
-		new MimeTypeDetector()
+		new MimeTypeDetector(),
+		$container->get('ModuleLogger')
 	);
 });
 

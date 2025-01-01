@@ -59,7 +59,7 @@ abstract class AbstractMediaHandler
 		$this->thumbHeight  = $this->config->getConfigValue('thumb_height', 'mediapool', 'dimensions');
 		$this->uploadPath   = $this->config->getConfigValue('uploads', 'mediapool', 'directories');
 		$this->thumbPath    = $this->config->getConfigValue('thumbnails', 'mediapool', 'directories');
-		$this->originalPath = $this->config->getConfigValue('original', 'mediapool', 'directories');
+		$this->originalPath = $this->config->getConfigValue('originals', 'mediapool', 'directories');
 		$this->previewPath  = $this->config->getConfigValue('previews', 'mediapool', 'directories');
 	}
 
@@ -79,8 +79,8 @@ abstract class AbstractMediaHandler
 
 	public function upload(UploadedFileInterface $uploadedFile): string
 	{
-		$targetPath = $this->originalPath .'/'. $uploadedFile->getClientFilename();
-		$uploadedFile->moveTo($targetPath);
+		$targetPath = '/'. $this->originalPath .'/'. $uploadedFile->getClientFilename();
+		$uploadedFile->moveTo($this->getAbsolutePath($targetPath));
 
 		return $targetPath;
 	}
@@ -104,6 +104,20 @@ abstract class AbstractMediaHandler
 		return $hash;
 	}
 
+	public function rename(string $oldFilePath, string $filehash): string
+	{
+		$fileInfo    = pathinfo($oldFilePath);
+		$newFilePath = $fileInfo['dirname']. '/'.$filehash.'.'.$fileInfo['extension'];
+		$this->filesystem->move($oldFilePath, $newFilePath);
+
+		return $newFilePath;
+	}
+
+	public function getAbsolutePath(string $filePath): string
+	{
+		return $this->config->getPaths('systemDir') . $filePath;
+	}
+
 	protected function codeToMessage(int $code): string
 	{
 		return match ($code)
@@ -123,4 +137,5 @@ abstract class AbstractMediaHandler
 	{
 		return round($bytes / (1024 ** 2), 2);
 	}
+
 }

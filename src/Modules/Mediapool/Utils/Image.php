@@ -29,6 +29,16 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
 
+/**
+ * Class Image provides methods to handle image files
+ *
+ * We use flyimage for file operations with systemDir as base
+ * and Intervention image for image manipulations
+ *
+ * Be aware that flystem requires "relative" path while
+ * intervention image expects an absolute path.
+ *
+ */
 class Image extends AbstractMediaHandler
 {
 	private ImageManagerInterface $imageManager;
@@ -69,7 +79,7 @@ class Image extends AbstractMediaHandler
 		if ($this->fileSize > $this->maxImageSize)
 			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max image size.');
 
-		$this->image = $this->imageManager->read($filePath);
+		$this->image = $this->imageManager->read($this->getAbsolutePath($filePath));
 		if ($this->image->width() > $this->maxWidth)
 			throw new ModuleException('mediapool', 'After Upload Check:  Image width '.$this->image->width().' exceeds maximum.');
 
@@ -84,7 +94,9 @@ class Image extends AbstractMediaHandler
 		$this->image->scaleDown($this->thumbWidth, $this->thumbHeight);
 
 		$fileInfo = pathinfo($filePath);
-		$this->image->save($this->thumbPath.'/'.$fileInfo['basename']);
+		$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
+		$this->image->save($thumbPath);
 	}
+
 
 }

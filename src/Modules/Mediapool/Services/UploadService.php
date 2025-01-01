@@ -28,6 +28,7 @@ use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class UploadService
@@ -35,16 +36,18 @@ class UploadService
 	private MediaHandlerFactory $mediaHandlerFactory;
 	private FilesRepository $mediaRepository;
 	private MimeTypeDetector $mimeTypeDetector;
+	private LoggerInterface $logger;
 
 	/**
 	 * @param MediaHandlerFactory $mediaHandlerFactory
 	 * @param FilesRepository     $mediaRepository
 	 */
-	public function __construct(MediaHandlerFactory $mediaHandlerFactory, FilesRepository $mediaRepository, MimeTypeDetector $mimeTypeDetector)
+	public function __construct(MediaHandlerFactory $mediaHandlerFactory, FilesRepository $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	{
 		$this->mediaHandlerFactory = $mediaHandlerFactory;
 		$this->mediaRepository     = $mediaRepository;
 		$this->mimeTypeDetector    = $mimeTypeDetector;
+		$this->logger              = $logger;
 	}
 
 	/**
@@ -59,19 +62,20 @@ class UploadService
 				$mediaHandler = $this->mediaHandlerFactory->createHandler($uploadedFile->getClientMediaType());
 				$mediaHandler->checkFileBeforeUpload($uploadedFile);
 				$uploadPath   = $mediaHandler->upload($uploadedFile);
-				$mediaHandler->checkFileAfterUpload($uploadedFile);
-				$newFilename  = $mediaHandler->determineNewFilename($uploadPath);
+				$fileHash     = $mediaHandler->determineNewFilename($uploadPath);
+				$originalPath = $mediaHandler->rename($uploadPath, $fileHash);
 
-				$fileInfo    = pathinfo($uploadedFile->getClientFilename());
-				$filePath    = $fileInfo['dirname']. '/'.$newFilename.'.'.$fileInfo['extension'];
-				$mediaHandler->createThumbnail($filePath);
+				$mediaHandler->checkFileAfterUpload($originalPath);
+				$mediaHandler->createThumbnail($originalPath);
+
+				$absoluteFilePath = $mediaHandler->getAbsolutePath($originalPath);
 
 				$fileData = [
 					'media_id'  => Uuid::uuid4()->toString(),
 					'node_id'   => $node_id,
 					'UID'       => $UID,
-					'checksum'  => $newFilename,
-					'mimetype'  => $this->mimeTypeDetector->detectFromFile($filePath),
+					'checksum'  => $fileHash,
+					'mimetype'  => $this->mimeTypeDetector->detectFromFile($absoluteFilePath),
 					'metadata'  => json_encode([
 						'size'       => $mediaHandler->getFileSize(),
 						'dimensions' => $mediaHandler->getDimensions()])
@@ -81,7 +85,7 @@ class UploadService
 			}
 			catch(\Exception | FilesystemException $e)
 			{
-
+				$this->logger->error('UploadService Error: '.$e->getMessage());
 			}
 		}
 	}

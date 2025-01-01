@@ -16,12 +16,19 @@ try {
 		__DIR__ . '/public/var/mediapool/originals',
 	];
 
-	foreach ($requiredDirs as $dir) {
-		if (!is_dir($dir)) {
+	foreach ($requiredDirs as $dir)
+	{
+		if (!is_dir($dir))
+		{
 			echo "Creating directory: $dir\n";
 			if (!mkdir($dir, 0775, true) && !is_dir($dir))
 				die("Error: Unable to create directory: $dir\n");
-		} else
+
+		//	if (!chown($dir, 'www-data') || !chgrp($dir, 'www-data'))
+		//		die("Error: Unable to set owner/group to www-data for directory: $dir\n");
+
+		}
+		else
 			echo "Directory already exists: $dir\n";
 	}
 

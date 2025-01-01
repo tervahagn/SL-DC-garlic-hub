@@ -22,6 +22,7 @@
 namespace App\Modules\Mediapool\Controller;
 
 use App\Modules\Mediapool\Services\UploadService;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SlimSession\Helper;
@@ -37,6 +38,9 @@ class UploadController
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	public function upload(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
@@ -66,7 +70,7 @@ class UploadController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$this->uploadService->uploadMediaToQueue($node_id, $this->UID, $uploadedFiles['files']);
+		$this->uploadService->uploadMedia($node_id, $this->UID, $uploadedFiles['files']);
 
 
 		return $response->withHeader('Content-Type', 'text/html');
