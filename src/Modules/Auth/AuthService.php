@@ -30,32 +30,32 @@ use Psr\Cache\InvalidArgumentException;
 class AuthService
 {
 	private UserService $userService;
+	private string $errorMessage;
 
 	public function __construct(UserService $userService)
 	{
 		$this->userService = $userService;
 	}
 
+	public function getErrorMessage(): string
+	{
+		return $this->errorMessage;
+	}
+
 	/**
-	 * Verifiziert die Anmeldedaten eines Benutzers.
-	 *
-	 * @param string $identifier
-	 * @param string $password
-	 * @return UserEntity
-	 * @throws UserException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function login(string $identifier, string $password): UserEntity
+	public function login(string $identifier, string $password): ?UserEntity
 	{
 		$user_data = $this->userService->findUser($identifier);
 
-		if (empty($user_data))
-			throw new UserException('Invalid credentials.');
-
-		if (!password_verify($password, $user_data['password']))
-			throw new UserException('Invalid credentials.');
+		if (empty($user_data) || !password_verify($password, $user_data['password']))
+		{
+			$this->errorMessage = 'Invalid credentials.';
+			return null;
+		}
 
 		$this->userService->invalidateCache($user_data['UID']);
 

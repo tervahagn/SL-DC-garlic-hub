@@ -68,6 +68,7 @@ class LoginController
 		/** @var Helper $session */
 		$session  = $request->getAttribute('session');
 		$params   = (array) $request->getParsedBody();
+		$flash    = $request->getAttribute('flash');
 		// no need to sanitize here, as we are executing prepared statements in DB
 		$username = $params['username'] ?? null;
 		$password = $params['password'] ?? null;
@@ -75,7 +76,6 @@ class LoginController
 		$csrfToken = $params['csrf_token'] ?? null;
 		if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
 		{
-			$flash  = $request->getAttribute('flash');
 			$flash->addMessage('error', 'Invalid CSRF token');
 			return $this->redirect($response, '/login');
 		}
@@ -83,7 +83,6 @@ class LoginController
 		$userEntity = $this->authService->login($username, $password);
 		if ($userEntity === null)
 		{
-			$flash  = $request->getAttribute('flash');
 			$flash->addMessage('error', $this->authService->getErrorMessage());
 			return $this->redirect($response, '/login');
 		}
@@ -91,7 +90,6 @@ class LoginController
 		$main_data = $userEntity->getMain();
 		$session->set('user', $main_data);
 		$session->set('locale', $main_data['locale']);
-
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
