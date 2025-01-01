@@ -12,6 +12,8 @@ try {
 		__DIR__ . '/var/logs',
 		__DIR__ . '/var/keys',
 		__DIR__ . '/public/var/mediapool',
+		__DIR__ . '/public/var/mediapool/thumbs',
+		__DIR__ . '/public/var/mediapool/originals',
 	];
 
 	foreach ($requiredDirs as $dir) {
