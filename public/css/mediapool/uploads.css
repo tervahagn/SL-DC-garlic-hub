@@ -91,3 +91,15 @@ dialog
         color: #666;
         cursor: not-allowed;
     }
+
+    #progressContainer
+    {
+        width: 100%;
+        background: #e0e0e0;
+        margin: 1em 0;
+        position: absolute;
+        z-index: 1000;
+        bottom: 0;
+        opacity: 0.8;
+    }
+    #progressBar {width: 0;padding:0.25em; background: #4caf50; height: 100%; text-align: center; color: white;}

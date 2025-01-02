@@ -24,7 +24,7 @@ export class FilePreviews
     dropzonePreview = null;
     startFileUpload = null;
     previewFactory  = new PreviewFactory();
-    fileList        = [];
+    fileList        = {};
 
     constructor(dropzonePreview, startFileUpload, previewFactory)
     {
@@ -46,12 +46,13 @@ export class FilePreviews
             {
                 const previewHandler = this.previewFactory.create(file);
                 const metadata       = previewHandler.extractMetadata(file);
-                const previewElement = previewHandler.createPreview(file);
+                const previewElement = previewHandler.createPreview();
                 previewElement.className = "previewElement";
 
-                const previewContainer = this.createPreviewContainer(metadata, previewElement, file);
+                const id = crypto.randomUUID();
+                this.fileList[id] = file;
+                const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
                 this.dropzonePreview.appendChild(previewContainer);
-                this.fileList.push(file);
                 this.startFileUpload.disabled = false;
             }
             catch (error)
@@ -61,7 +62,7 @@ export class FilePreviews
         });
     }
 
-    createPreviewContainer(metadata, previewElement, file)
+    createPreviewContainer(metadata, previewElement, id)
     {
         const container     = document.createElement("div");
         container.className = "previewContainer";
@@ -78,18 +79,23 @@ export class FilePreviews
         const closeButton = document.createElement("button");
         closeButton.className = "closeButton";
         closeButton.textContent = "×";
+
+        container.setAttribute('data-preview-id', id);
         closeButton.addEventListener("click", () => {
-            const index = this.fileList.indexOf(file);
-            if (index > -1) {
-                this.fileList.splice(index, 1);
-            }
-            container.remove();
-            if (this.fileList.length === 0)
-                this.startFileUpload.disabled = true;
+            this.removeFromPreview(id);
         });
 
         container.appendChild(closeButton);
         container.appendChild(previewElement);
         return container;
+    }
+
+    removeFromPreview(id)
+    {
+        delete this.fileList[id];
+        document.querySelector(`[data-preview-id="${id}"]`).remove();
+
+        if (Object.keys(this.fileList).length === 0)
+            this.startFileUpload.disabled = true;
     }
 }

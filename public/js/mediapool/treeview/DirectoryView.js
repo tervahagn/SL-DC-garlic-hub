@@ -46,14 +46,12 @@ export class DirectoryView
                     node = e.tree.findKey(key);
                     await node.setExpanded(true);
                 }
-               await node.setActive();
+                await node.setActive();
             },
             selectMode: "single",
             lazyLoad: function (e){
                 return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
              },
-            click: (e) => {
-            },
             activate: (e) => {
                 current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
                 document.getElementById("openUploadDialog").disabled = false;
