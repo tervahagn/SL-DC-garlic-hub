@@ -75,23 +75,27 @@ export class FileUploader
                     this.#fetchClient.initUploadWithProgress();
                     let xhr = this.#fetchClient.getUploadProgressHandle();
                     this.#filePreviews.setUploadHandler(xhr, id);
-                    const result = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+                    const results = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
                         progressBar.style.display = "block";
                         progressBar.style.width = progress + "%";
                         progressBar.textContent = Math.round(progress) + "%";
                     });
 
-                    if (!result || !result.success) {
-                        console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
-                    } else {
-                        console.log('File uploaded successfully:', file.name);
-                        this.#filePreviews.removeFromPreview(id);
+                    for (const result of results)
+                    {
+                        if (!result || !result.success)
+                            console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
+                         else {
+                            console.log('File uploaded successfully:', file.name);
+                            this.#filePreviews.removeFromPreview(id);
+                        }
                     }
+
                 }
                 catch(error)
                 {
                     if (error.message === 'Upload aborted.')
-                        console.log('Upload abgebrochen für Datei:', file.name);
+                        console.log('Upload aborted for file:', file.name);
                     else
                         console.log('Upload failed for file:', file.name, error);
                 }

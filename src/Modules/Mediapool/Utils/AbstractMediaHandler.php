@@ -84,7 +84,7 @@ abstract class AbstractMediaHandler
 
 	public function upload(UploadedFileInterface $uploadedFile): string
 	{
-		$targetPath = '/'. $this->originalPath .'/'. $uploadedFile->getClientFilename();
+		$targetPath = strtolower('/'. $this->originalPath .'/'. $uploadedFile->getClientFilename());
 		$uploadedFile->moveTo($this->getAbsolutePath($targetPath));
 
 		return $targetPath;
@@ -108,6 +108,7 @@ abstract class AbstractMediaHandler
 
 		return $hash;
 	}
+
 	public function determineNewFilePath(string $oldFilePath, string $filehash): string
 	{
 		$fileInfo    = pathinfo($oldFilePath);

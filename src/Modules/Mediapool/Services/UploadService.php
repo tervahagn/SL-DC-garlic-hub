@@ -62,6 +62,7 @@ class UploadService
 	 */
 	public function uploadMedia(int $node_id, int $UID, array $uploadedFiles): array
 	{
+		$ret = [];
 		foreach ($uploadedFiles as $uploadedFile)
 		{
 			try
@@ -85,12 +86,14 @@ class UploadService
 								'size'       => $mediaHandler->getFileSize(),
 								'dimensions' => $mediaHandler->getDimensions()]
 					);
+					$extension = pathinfo($newFilePath, PATHINFO_EXTENSION);
 				}
 				else
 				{
 					$mediaHandler->removeUploadedFile($uploadPath);
-					$mimetype = $dataSet['mimetype'];
-					$metadata = $dataSet['metadata'];
+					$mimetype  = $dataSet['mimetype'];
+					$metadata  = $dataSet['metadata'];
+					$extension = $dataSet['extension'];
 				}
 
 				$fileData = [
@@ -103,14 +106,15 @@ class UploadService
 					'filename'  => $uploadedFile->getClientFilename(),
 				];
 				$this->mediaRepository->insert($fileData);
-				return ['success' => true, 'message' => $uploadedFile->getClientFilename().' successful uploaded'];
+				$ret[] = ['success' => true, 'message' => $uploadedFile->getClientFilename().' successful uploaded'];
 			}
 			catch(\Exception | FilesystemException $e)
 			{
 				$this->logger->error('UploadService Error: '.$e->getMessage());
-				return ['success' => false, 'error_message' => $e->getMessage()];
+				$ret[] = ['success' => false, 'error_message' => $e->getMessage()];
 			}
 		}
+		return $ret;
 	}
 
 
