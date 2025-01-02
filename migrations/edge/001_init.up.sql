@@ -117,6 +117,7 @@ CREATE TABLE mediapool_files (
      metadata TEXT DEFAULT NULL, --json encoded metadata
      tags TEXT DEFAULT NULL,
      filename TEXT DEFAULT NULL,
+     extension varchar(10) DEFAULT NULL,
      media_description TEXT DEFAULT NULL
 );
 
