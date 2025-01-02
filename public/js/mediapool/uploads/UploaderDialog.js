@@ -30,7 +30,7 @@ export class UploaderDialog
         this.#openButton   = openButton;
         this.#closeButton  = closeButton;
         this.#closeElement = closeDialogButton;
-
+        this.#openButton.disabled  = true;
     }
 
     init()
