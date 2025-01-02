@@ -40,7 +40,13 @@ dialog
     {
         display: inline-block;
         position: relative;
-
+    }
+    .previewContainerError
+    {
+        background-color: red;
+        border: 1px solid red;
+        display: inline-block;
+        position: relative;
     }
         .tooltip
         {

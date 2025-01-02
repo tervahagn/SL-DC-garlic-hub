@@ -55,12 +55,12 @@ export class FileUploader
         (async () => {
             for (const [id, file] of Object.entries(fileList))
             {
+                // maybe some files in the queue where deleted.
+                let container = document.querySelector(`[data-preview-id="${id}"]`);
+                if (!container)
+                    continue;
                 try
                 {
-                    // maybe some files in the queue where deleted.
-                    let container = document.querySelector(`[data-preview-id="${id}"]`);
-                    if (!container)
-                        continue;
 
                     this.#disableActions();
                     const formData = new FormData();
@@ -85,10 +85,8 @@ export class FileUploader
                     {
                         if (!result || !result.success)
                             console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
-                         else {
-                            console.log('File uploaded successfully:', file.name);
+                        else
                             this.#filePreviews.removeFromPreview(id);
-                        }
                     }
 
                 }
@@ -97,7 +95,10 @@ export class FileUploader
                     if (error.message === 'Upload aborted.')
                         console.log('Upload aborted for file:', file.name);
                     else
+                    {
                         console.log('Upload failed for file:', file.name, error);
+                        container.className = "previewContainerError";
+                    }
                 }
                 finally
                 {
