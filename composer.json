@@ -19,8 +19,7 @@
       "slim/http": "^1.4",
       "intervention/image": "^3.10",
       "ramsey/uuid": "^4.7",
-      "ext-fileinfo": "*",
-    "char0n/ffmpeg-php": "^3.2"
+      "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {
