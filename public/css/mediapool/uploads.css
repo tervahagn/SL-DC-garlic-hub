@@ -85,3 +85,9 @@ dialog
             cursor: pointer;
         }
 
+    #startFilesUpload:disabled
+    {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+    }

@@ -42,8 +42,10 @@ document.addEventListener("DOMContentLoaded", function(event)
 	);
 	uploaderDialog.init();
 
+	const startFileUpload = document.getElementById("startFilesUpload");
 	const filePreviews = new FilePreviews(
 		document.getElementById('dropzone-preview'),
+		startFileUpload,
 		new PreviewFactory()
 	)
 	const dropzone = document.getElementById('dropzone');
@@ -67,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 		filePreviews,
 		new FetchClient()
 	);
-	fileUploader.initFileUpload(document.getElementById("startFilesUpload"));
+	fileUploader.initFileUpload(startFileUpload);
 
 });
 

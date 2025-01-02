@@ -22,13 +22,16 @@ import { PreviewFactory } from "./Preview/PreviewFactory.js";
 export class FilePreviews
 {
     dropzonePreview = null;
+    startFileUpload = null;
     previewFactory  = new PreviewFactory();
     fileList        = [];
 
-    constructor(dropzonePreview, previewFactory)
+    constructor(dropzonePreview, startFileUpload, previewFactory)
     {
         this.dropzonePreview = dropzonePreview;
-        this.previewFactory = previewFactory;
+        this.previewFactory  = previewFactory;
+        this.startFileUpload = startFileUpload;
+        this.startFileUpload.disabled = true;
     }
 
     getFileList()
@@ -49,6 +52,7 @@ export class FilePreviews
                 const previewContainer = this.createPreviewContainer(metadata, previewElement, file);
                 this.dropzonePreview.appendChild(previewContainer);
                 this.fileList.push(file);
+                this.startFileUpload.disabled = false;
             }
             catch (error)
             {
@@ -80,6 +84,8 @@ export class FilePreviews
                 this.fileList.splice(index, 1);
             }
             container.remove();
+            if (this.fileList.length === 0)
+                this.startFileUpload.disabled = true;
         });
 
         container.appendChild(closeButton);
