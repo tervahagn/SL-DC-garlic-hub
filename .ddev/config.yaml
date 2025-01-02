@@ -17,6 +17,8 @@ web_environment:
     - XDEBUG_CONFIG=client_host=host.docker.internal
     - XDEBUG_CLIENT_PORT=9003
 corepack_enable: false
+webimage_extra_packages:
+    - ffmpeg
 
 # Key features of DDEV's config.yaml:
 

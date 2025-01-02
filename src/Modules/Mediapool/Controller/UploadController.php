@@ -70,11 +70,10 @@ class UploadController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$this->uploadService->uploadMedia($node_id, $this->UID, $uploadedFiles['files']);
+		$succeed = $this->uploadService->uploadMedia($node_id, $this->UID, $uploadedFiles['files']);
 
-
-		return $response->withHeader('Content-Type', 'text/html');
-
+		$response->getBody()->write(json_encode($succeed));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
 	private function hasRights(Helper $session): bool

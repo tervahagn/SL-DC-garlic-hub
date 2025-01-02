@@ -36,7 +36,7 @@ class ScopeEntity implements ScopeEntityInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function jsonSerialize(): mixed
+	public function jsonSerialize(): string|false
 	{
 		return json_encode([]);
 	}

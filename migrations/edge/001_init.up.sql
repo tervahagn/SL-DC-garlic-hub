@@ -116,10 +116,12 @@ CREATE TABLE mediapool_files (
      mimetype VARCHAR(50) NOT NULL,
      metadata TEXT DEFAULT NULL, --json encoded metadata
      tags TEXT DEFAULT NULL,
+     filename TEXT DEFAULT NULL,
      media_description TEXT DEFAULT NULL
 );
 
 CREATE INDEX idx_mediapool_node_id ON mediapool_files (node_id);
+CREATE INDEX idx_mediapool_checksum ON mediapool_files (checksum);
 CREATE INDEX idx_mediapool_mimetype ON mediapool_files (mimetype);
 CREATE INDEX idx_mediapool_deleted ON mediapool_files (deleted);
 

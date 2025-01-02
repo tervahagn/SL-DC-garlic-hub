@@ -20,11 +20,13 @@
 
 namespace App\Framework\TemplateEngine;
 
+use Mustache_Engine;
+
 class MustacheAdapter implements AdapterInterface
 {
-	private $mustache;
+	private Mustache_Engine $mustache;
 
-	public function __construct(\Mustache_Engine $mustache)
+	public function __construct(Mustache_Engine $mustache)
 	{
 		$this->mustache = $mustache;
 

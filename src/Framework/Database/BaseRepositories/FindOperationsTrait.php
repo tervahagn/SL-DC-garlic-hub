@@ -47,6 +47,15 @@ trait FindOperationsTrait
 	}
 
 	/**
+	 * @throws Exception
+	 */
+	public function findFirstBy(array $conditions = []): array
+	{
+		return $this->getFirstDataSet($this->findAllByWithFields(['*'], $conditions));
+	}
+
+
+	/**
 	 * Counts all records in the table.
 	 *
 	 * @throws Exception

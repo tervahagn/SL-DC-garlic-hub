@@ -23,6 +23,7 @@ namespace App\Framework\Core\Translate;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -51,6 +52,7 @@ class Translator
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function translate(string $key, string $module, array $replacements = []): string
 	{
@@ -68,7 +70,7 @@ class Translator
 	 * @param string $module
 	 *
 	 * @return  array
-	 * @throws CoreException|InvalidArgumentException
+	 * @throws CoreException|InvalidArgumentException|PhpfastcacheSimpleCacheException
 	 */
 	public function translateArrayForOptions(string $key, string $module): array
 	{
@@ -94,7 +96,7 @@ class Translator
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
 	 */
 	public function translateWithPlural(string $key, string $module, int $count, array $replacements = []): string
 	{
@@ -109,6 +111,7 @@ class Translator
 
 	/**
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	protected function findTranslation(string $key, string $module, string $languageCode): string|array
 	{

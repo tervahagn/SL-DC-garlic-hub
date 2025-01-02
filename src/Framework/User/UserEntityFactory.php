@@ -36,15 +36,11 @@ class UserEntityFactory
 
 	public function create(mixed $userData): UserEntity
 	{
-		switch ($this->config->getEdition())
+		return match ($this->config->getEdition())
 		{
-			case Config::PLATFORM_EDITION_ENTERPRISE:
-				return new UserEntity($userData['main'], $userData['contact'], $userData['stats'], $userData['security'], $userData['acl'], $userData['vip']);
-			case Config::PLATFORM_EDITION_CORE:
-				return new UserEntity($userData['main'], $userData['contact'], $userData['stats'], [], $userData['acl'], []);
-			case Config::PLATFORM_EDITION_EDGE:
-			default:
-				return new UserEntity($userData['main'], [], [], [], [],[]);
-		}
+			Config::PLATFORM_EDITION_ENTERPRISE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], $userData['security'], $userData['acl'], $userData['vip']),
+			Config::PLATFORM_EDITION_CORE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], [], $userData['acl'], []),
+			default => new UserEntity($userData['main'], [], [], [], [], []),
+		};
 	}
 }

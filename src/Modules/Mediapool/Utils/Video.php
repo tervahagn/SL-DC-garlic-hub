@@ -22,93 +22,41 @@
 namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\ImageManagerInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
+use Psr\Http\Message\UploadedFileInterface;
 
 class Video extends AbstractMediaHandler
 {
-	private string $ffmpegPath;
+	private int $maxVideoSize;
 
-	public function __construct(Config $config, Filesystem $filesystem, string $ffmpegPath)
+	/**
+	 * @throws CoreException
+	 */
+	public function __construct(Config $config, Filesystem $filesystem,  string $ffmpegPath)
 	{
-		$this->ffmpegPath = $ffmpegPath;
 		parent::__construct($config, $filesystem);
+		$this->maxVideoSize = $this->config->getConfigValue('videos', 'mediapool', 'max_file_sizes');
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	private function getVideoResolution(string $videoPath): array
+
+	public function checkFileBeforeUpload(UploadedFileInterface $uploadedFile): void
 	{
-		$command = sprintf(
-			'%s -i %s 2>&1',
-			escapeshellcmd($this->ffmpegPath),
-			escapeshellarg($videoPath)
-		);
-
-		exec($command, $output, $returnVar);
-
-		if ($returnVar !== 1)
-		{
-			throw new ModuleException("Fehler beim Lesen der Videodaten: " . implode("\n", $output));
-		}
-
-		foreach ($output as $line) {
-			if (preg_match('/Stream.*Video.* (\d{2,})x(\d{2,})/', $line, $matches)) {
-				return [(int)$matches[1], (int)$matches[2]]; // [width, height]
-			}
-		}
-
-		throw new ModuleException("Auflösung konnte nicht ermittelt werden.");
+		// TODO: Implement checkFileBeforeUpload() method.
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws FilesystemException
-	 */
-	public function createThumbnail(string $videoPath, string $thumbnailPath, int $timeInSeconds = 1): array
+	public function checkFileAfterUpload(string $filePath): void
 	{
-		if (!file_exists($videoPath))
-		{
-			throw new ModuleException('mediapool', "Das Video '$videoPath' existiert nicht.");
-		}
+		// TODO: Implement checkFileAfterUpload() method.
+	}
 
-		$resolution = $this->getVideoResolution($videoPath);
-
-		// Temporäre Datei für das Thumbnail
-		$tempThumbnail = sys_get_temp_dir() . '/' . uniqid('thumb_') . '.jpg';
-
-		$command = sprintf(
-			'%s -i %s -ss %d -vframes 1 -q:v 2 -vf scale=%d:%d %s 2>&1',
-			escapeshellcmd($this->ffmpegPath),
-			escapeshellarg($videoPath),
-			$timeInSeconds,
-			$resolution[0],
-			$resolution[1],
-			escapeshellarg($tempThumbnail)
-		);
-
-		exec($command, $output, $returnVar);
-
-		if ($returnVar !== 0)
-		{
-			throw new ModuleException('mediapool',"Fehler beim Erstellen des Thumbnails: " . implode("\n", $output));
-		}
-
-		// Thumbnail in Flysystem speichern
-		$thumbnailContent = file_get_contents($tempThumbnail);
-		if ($thumbnailContent === false)
-		{
-			throw new ModuleException('mediapool', "Fehler beim Lesen des generierten Thumbnails.");
-		}
-
-		$this->filesystem->write($thumbnailPath, $thumbnailContent);
-
-		// Temporäre Datei löschen
-		unlink($tempThumbnail);
-
-		return $resolution;
+	public function createThumbnail(string $filePath)
+	{
+		// TODO: Implement createThumbnail() method.
 	}
 }

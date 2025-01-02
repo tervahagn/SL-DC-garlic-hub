@@ -25,10 +25,10 @@ use Doctrine\DBAL\Connection;
 
 class UserAclRepository extends Sql
 {
-	const USER_MODULE_ADMIN = 'module_admin';
-	const USER_SUB_ADMIN = 'sub_admin';
-	const USER_EDITOR = 'editor';
-	const USER_VIEWER = 'viewer';
+	const string USER_MODULE_ADMIN = 'module_admin';
+	const string USER_SUB_ADMIN = 'sub_admin';
+	const string USER_EDITOR = 'editor';
+	const string USER_VIEWER = 'viewer';
 
 	public function __construct(Connection $connection)
 	{

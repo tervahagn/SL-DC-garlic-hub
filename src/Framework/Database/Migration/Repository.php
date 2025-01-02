@@ -27,7 +27,7 @@ use Doctrine\DBAL\Exception;
 
 class Repository extends Sql
 {
-	const MIGRATION_TABLE_NAME = '_migration_version';
+	const string MIGRATION_TABLE_NAME = '_migration_version';
 
 	public function __construct(Connection $connection)
 	{

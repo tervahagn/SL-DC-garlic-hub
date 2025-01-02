@@ -31,9 +31,9 @@ use Monolog\Level;
  */
 class Config
 {
-	const PLATFORM_EDITION_EDGE = 'edge';
-	const PLATFORM_EDITION_CORE = 'core';
-	const PLATFORM_EDITION_ENTERPRISE = 'enterprise';
+	const string PLATFORM_EDITION_EDGE = 'edge';
+	const string PLATFORM_EDITION_CORE = 'core';
+	const string PLATFORM_EDITION_ENTERPRISE = 'enterprise';
 
 	/**
 	 * @var ConfigLoaderInterface Handles the loading of configuration files.

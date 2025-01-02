@@ -21,7 +21,6 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldInterface;
 
 class EmailField extends AbstractInputField
 {

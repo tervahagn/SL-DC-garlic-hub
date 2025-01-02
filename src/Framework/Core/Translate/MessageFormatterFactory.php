@@ -21,6 +21,7 @@
 namespace App\Framework\Core\Translate;
 
 use App\Framework\Exceptions\FrameworkException;
+use IntlException;
 use MessageFormatter;
 
 class MessageFormatterFactory
@@ -34,7 +35,7 @@ class MessageFormatterFactory
 		{
 			return new MessageFormatter($locale, $pattern);
 		}
-		catch (\IntlException $e)
+		catch (IntlException $e)
 		{
 			throw new FrameworkException('MessageFormatter instantiation error: ' . $e->getMessage());
 		}

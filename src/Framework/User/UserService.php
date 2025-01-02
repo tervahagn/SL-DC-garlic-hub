@@ -20,7 +20,6 @@
 
 namespace App\Framework\User;
 
-use App\Framework\Exceptions\UserException;
 use App\Framework\User\Edge\UserMainRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

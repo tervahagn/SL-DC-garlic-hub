@@ -21,15 +21,12 @@
 
 namespace App\Modules\User;
 
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
-use App\Framework\User\UserEntity;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\SimpleCache\InvalidArgumentException;
 

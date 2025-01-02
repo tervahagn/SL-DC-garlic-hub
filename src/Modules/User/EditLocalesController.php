@@ -23,7 +23,6 @@ namespace App\Modules\User;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\User\UserService;
-use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SlimSession\Helper;

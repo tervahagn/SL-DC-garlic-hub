@@ -52,30 +52,41 @@ export class FileUploader
             alert("Choose a directory first.");
             return;
         }
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
 
         (async () => {
+            for (const file of fileList) {
+                const formData = new FormData();
+                formData.append("files[]", file);
+                formData.append("node_id", this.#directoryView.getActiveNodeId());
 
-            const formData = new FormData();
-            fileList.forEach(file => formData.append("files[]", file));
-            formData.append("node_id", this.#directoryView.getActiveNodeId());
+                const apiUrl = '/async/mediapool/upload';
+                const options = { method: "POST", body: formData };
 
-            const apiUrl     = '/async/mediapool/upload';
-            const options    = {method: "POST", body: formData }
+                const result = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+                    progressBar.style.width = progress + '%';
+                    progressBar.textContent = Math.round(progress) + '%';
+                });
 
-            const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
-                console.error('Fetch error:', error.message);
-                return null;
-            });
+/*
+                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+                    console.error('Fetch error for file:', file.name, error.message);
+                    return null;
+                });
+*/
 
-            if (!result || !result.success)
-            {
-                console.error('Error:', result?.error_message || 'Unknown error');
-                return;
+
+                if (!result || !result.success)
+                {
+                    console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
+                }
+                else
+                {
+                    console.log('File uploaded successfully:', file.name);
+                }
             }
-
-
         })();
-
 
     }
 }

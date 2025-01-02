@@ -25,10 +25,10 @@ class AbstractInputField implements FieldInterface
 {
 	private string $name;
 	private string $id;
-	private ?string $value = null;
+	private ?string $value;
 	private ?string $defaultValue;
-	private array $attributes = [];
-	private array $validationRules = [];
+	private array $attributes;
+	private array $validationRules;
 
 	public function __construct(array $attributes = [])
 	{

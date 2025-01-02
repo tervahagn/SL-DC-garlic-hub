@@ -34,6 +34,50 @@ export class FetchClient
             return await response.text();
     }
 
+
+    async uploadWithProgress(url, options = {}, onProgress)
+    {
+        const xhr = new XMLHttpRequest();
+
+        return new Promise((resolve, reject) => {
+            xhr.open(options.method, url, true);
+
+            // Track upload progress
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable && onProgress)
+                {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    onProgress(percentComplete);
+                }
+            };
+
+            // Handle response
+            xhr.onload = () => {
+                const response = {
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    text: () => Promise.resolve(xhr.responseText),
+                    json: () => Promise.resolve(JSON.parse(xhr.responseText))
+                };
+
+                if (xhr.status >= 200 && xhr.status < 300)
+                {
+                    resolve(response.json());
+                }
+                else
+                {
+                    reject(new Error(`HTTP-Error: ${xhr.status}`));
+                }
+            };
+
+            // Handle errors
+            xhr.onerror = () => reject(new Error('Network error occurred.'));
+
+            xhr.send(options.body);
+        });
+    }
+
+
     #checkResponse(response)
     {
         if (response.status === 401)

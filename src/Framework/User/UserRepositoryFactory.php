@@ -29,7 +29,8 @@ class UserRepositoryFactory
 	private Connection $connection;
 
 	/**
-	 * @param Config $config
+	 * @param Config     $config
+	 * @param Connection $connection
 	 */
 	public function __construct(Config $config, Connection $connection)
 	{
@@ -39,29 +40,25 @@ class UserRepositoryFactory
 
 	public function create(): array
 	{
-		switch ($this->config->getEdition())
+		return match ($this->config->getEdition())
 		{
-			case Config::PLATFORM_EDITION_ENTERPRISE:
-				return [
-					'main'     => new Edge\UserMainRepository($this->connection),
-					'acl'      => new Core\UserAclRepository($this->connection),
-					'contact'  => new Core\UserContactRepository($this->connection),
-					'stats'    => new Core\UserStatsRepository($this->connection),
-					'vip'      => new Enterprise\UserVipRepository($this->connection),
-					'security' => new Enterprise\UserSecurityRepository($this->connection)
-				];
-			case Config::PLATFORM_EDITION_CORE:
-				return [
-					'main'     => new Edge\UserMainRepository($this->connection),
-					'acl'      => new Core\UserAclRepository($this->connection),
-					'contact'  => new Core\UserContactRepository($this->connection),
-					'stats'    => new Core\UserStatsRepository($this->connection)
-				];
-			case Config::PLATFORM_EDITION_EDGE:
-			default:
-				return [
-					'main'     => new Edge\UserMainRepository($this->connection)
-				];
-		}
+			Config::PLATFORM_EDITION_ENTERPRISE => [
+				'main'     => new Edge\UserMainRepository($this->connection),
+				'acl'      => new Core\UserAclRepository($this->connection),
+				'contact'  => new Core\UserContactRepository($this->connection),
+				'stats'    => new Core\UserStatsRepository($this->connection),
+				'vip'      => new Enterprise\UserVipRepository($this->connection),
+				'security' => new Enterprise\UserSecurityRepository($this->connection)
+			],
+			Config::PLATFORM_EDITION_CORE => [
+				'main'    => new Edge\UserMainRepository($this->connection),
+				'acl'     => new Core\UserAclRepository($this->connection),
+				'contact' => new Core\UserContactRepository($this->connection),
+				'stats'   => new Core\UserStatsRepository($this->connection)
+			],
+			default => [
+				'main' => new Edge\UserMainRepository($this->connection)
+			],
+		};
 	}
 }

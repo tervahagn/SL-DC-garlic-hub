@@ -21,10 +21,10 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -49,6 +49,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
@@ -81,6 +82,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function createMainMenu(): array
 	{
@@ -99,7 +101,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
 	 */
 	private function createUserMenu(): array
 	{
@@ -121,7 +123,7 @@ class LayoutDataMiddleware implements MiddlewareInterface
 
 	/**
 	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException|PhpfastcacheSimpleCacheException
 	 */
 	private function createLanguageSelect(): array
 	{

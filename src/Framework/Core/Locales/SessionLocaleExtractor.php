@@ -20,7 +20,6 @@
 
 namespace App\Framework\Core\Locales;
 
-use App\Framework\Core\Locales\LocaleExtractorInterface;
 use SlimSession\Helper;
 
 class SessionLocaleExtractor implements LocaleExtractorInterface

@@ -25,7 +25,7 @@ use App\Framework\Exceptions\FrameworkException;
 
 class Locales
 {
-	const CONFIG_MODULE_NAME = 'locales';
+	const string CONFIG_MODULE_NAME = 'locales';
 
 	private Config $config;
 	private LocaleExtractorInterface $localeExtractor;

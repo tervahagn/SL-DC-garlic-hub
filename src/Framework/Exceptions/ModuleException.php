@@ -20,6 +20,8 @@
 
 namespace App\Framework\Exceptions;
 
+use Exception;
+
 /**
  * ModuleException
  *
@@ -35,9 +37,9 @@ class ModuleException extends BaseException
 	 * @param string          $module_name The name of the module where the exception occurred.
 	 * @param string          $message     The exception message.
 	 * @param int             $code        The exception code.
-	 * @param \Exception|null $previous    Previous exception for chaining.
+	 * @param Exception|null $previous    Previous exception for chaining.
 	 */
-	public function __construct(string $module_name, $message = '', $code = 0, \Exception $previous = null)
+	public function __construct(string $module_name, $message = '', $code = 0, Exception $previous = null)
 	{
 		$this->setModuleName($module_name);
 		parent::__construct($message, $code, $previous);

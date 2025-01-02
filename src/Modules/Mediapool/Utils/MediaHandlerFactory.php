@@ -48,7 +48,7 @@ class MediaHandlerFactory
 		return match (true)
 		{
 			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imageManager),
-			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, ''),
+			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, $this->imageManager, ''),
 			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem),
 			default => throw new \InvalidArgumentException('Unknown file type'),
 		};

@@ -51,9 +51,16 @@ class UploadService
 	}
 
 	/**
+	 * Upload Media and insert them into database. The filename is an sh256 hash of the file
+	 *
+	 * if this method finds an media already uploaded it will create only an entry into the database
+	 * and delete the new uploaded file.
+	 *
+	 * media_id is a UUID to make it more difficult to guess
+	 *
 	 * @throws Exception
 	 */
-	public function uploadMedia(int $node_id, int $UID, array $uploadedFiles): void
+	public function uploadMedia(int $node_id, int $UID, array $uploadedFiles): array
 	{
 		foreach ($uploadedFiles as $uploadedFile)
 		{
@@ -63,29 +70,45 @@ class UploadService
 				$mediaHandler->checkFileBeforeUpload($uploadedFile);
 				$uploadPath   = $mediaHandler->upload($uploadedFile);
 				$fileHash     = $mediaHandler->determineNewFilename($uploadPath);
-				$originalPath = $mediaHandler->rename($uploadPath, $fileHash);
+				$dataSet      = $this->mediaRepository->findFirstBy(['checksum' => $fileHash]);
 
-				$mediaHandler->checkFileAfterUpload($originalPath);
-				$mediaHandler->createThumbnail($originalPath);
+				if (empty($dataSet))
+				{
+					$newFilePath  = $mediaHandler->determineNewFilePath($uploadPath, $fileHash);
+					$mediaHandler->rename($uploadPath, $newFilePath);
+					$mediaHandler->checkFileAfterUpload($newFilePath);
+					$mediaHandler->createThumbnail($newFilePath);
 
-				$absoluteFilePath = $mediaHandler->getAbsolutePath($originalPath);
+					$absoluteFilePath = $mediaHandler->getAbsolutePath($newFilePath);
+					$mimetype         = $this->mimeTypeDetector->detectFromFile($absoluteFilePath);
+					$metadata         = json_encode([
+								'size'       => $mediaHandler->getFileSize(),
+								'dimensions' => $mediaHandler->getDimensions()]
+					);
+				}
+				else
+				{
+					$mediaHandler->removeUploadedFile($uploadPath);
+					$mimetype = $dataSet['mimetype'];
+					$metadata = $dataSet['metadata'];
+				}
 
 				$fileData = [
 					'media_id'  => Uuid::uuid4()->toString(),
 					'node_id'   => $node_id,
 					'UID'       => $UID,
 					'checksum'  => $fileHash,
-					'mimetype'  => $this->mimeTypeDetector->detectFromFile($absoluteFilePath),
-					'metadata'  => json_encode([
-						'size'       => $mediaHandler->getFileSize(),
-						'dimensions' => $mediaHandler->getDimensions()])
+					'mimetype'  => $mimetype,
+					'metadata'  => $metadata,
+					'filename'  => $uploadedFile->getClientFilename(),
 				];
-
 				$this->mediaRepository->insert($fileData);
+				return ['success' => true, 'message' => $uploadedFile->getClientFilename().' successful uploaded'];
 			}
 			catch(\Exception | FilesystemException $e)
 			{
 				$this->logger->error('UploadService Error: '.$e->getMessage());
+				return ['success' => false, 'error_message' => $e->getMessage()];
 			}
 		}
 	}

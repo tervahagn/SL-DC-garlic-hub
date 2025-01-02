@@ -73,6 +73,11 @@ abstract class AbstractMediaHandler
 		return $this->fileSize;
 	}
 
+	public function exists(string $filePath): bool
+	{
+		return $this->filesystem->fileExists($filePath);
+	}
+
 	abstract public function checkFileBeforeUpload(UploadedFileInterface $uploadedFile): void;
 	abstract public function checkFileAfterUpload(string $filePath): void;
 	abstract public function createThumbnail(string $filePath);
@@ -103,14 +108,20 @@ abstract class AbstractMediaHandler
 
 		return $hash;
 	}
-
-	public function rename(string $oldFilePath, string $filehash): string
+	public function determineNewFilePath(string $oldFilePath, string $filehash): string
 	{
 		$fileInfo    = pathinfo($oldFilePath);
-		$newFilePath = $fileInfo['dirname']. '/'.$filehash.'.'.$fileInfo['extension'];
-		$this->filesystem->move($oldFilePath, $newFilePath);
+		return $fileInfo['dirname']. '/'.$filehash.'.'.$fileInfo['extension'];
+	}
 
-		return $newFilePath;
+	public function removeUploadedFile(string $filePath): void
+	{
+		$this->filesystem->delete($filePath);
+	}
+
+	public function rename(string $oldFilePath, string $newFilePath): void
+	{
+		$this->filesystem->move($oldFilePath, $newFilePath);
 	}
 
 	public function getAbsolutePath(string $filePath): string

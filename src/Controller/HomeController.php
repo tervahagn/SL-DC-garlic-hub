@@ -20,7 +20,6 @@
 
 namespace App\Controller;
 
-use App\Framework\Core\Locales\Locales;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SlimSession\Helper;

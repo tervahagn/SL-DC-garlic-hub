@@ -20,6 +20,8 @@
 
 namespace App\Framework\Utils\Html;
 
+use Exception;
+
 class FieldsFactory
 {
 	public function createTextField(array $attributes): TextField
@@ -38,7 +40,7 @@ class FieldsFactory
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function createCsrfTokenField(array $attributes): CsrfTokenField
 	{
