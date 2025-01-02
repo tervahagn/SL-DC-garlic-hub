@@ -19,15 +19,17 @@
 
 export class FileUploader
 {
-    #directoryView = null;
-    #filePreviews  = null;
-    #fetchClient   = null;
+    #directoryView  = null;
+    #filePreviews   = null;
+    #fetchClient    = null;
+    #uploaderDialog = null;
 
-    constructor(directoryView, filePreviews, fechClient)
+    constructor(directoryView, filePreviews, uploaderDialog, fetchClient)
     {
-        this.#filePreviews  = filePreviews;
-        this.#directoryView = directoryView;
-        this.#fetchClient   = fechClient;
+        this.#filePreviews   = filePreviews;
+        this.#directoryView  = directoryView;
+        this.#uploaderDialog = uploaderDialog;
+        this.#fetchClient    = fetchClient;
     }
 
     initFileUpload(uploadButtonElement)
@@ -53,39 +55,79 @@ export class FileUploader
         (async () => {
             for (const [id, file] of Object.entries(fileList))
             {
-                const formData = new FormData();
-                formData.append("files[]", file);
-                formData.append("node_id", this.#directoryView.getActiveNodeId());
-
-                const apiUrl = '/async/mediapool/upload';
-                const options = { method: "POST", body: formData };
-
-                // create Progressbar
-                let container = document.querySelector(`[data-preview-id="${id}"]`);
-                let progressContainer = document.createElement('div');
-                progressContainer.id = "progressContainer";
-                let progressBar = document.createElement('div');
-                progressBar.id = "progressBar";
-                progressContainer.appendChild(progressBar);
-                container.appendChild(progressContainer);
-
-                const result = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
-                    progressBar.style.display = "block";
-                    progressBar.style.width = progress + "%";
-                    progressBar.textContent = Math.round(progress) + "%";
-                });
-
-                if (!result || !result.success)
+                try
                 {
-                    console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
+                    // maybe some files in the queue where deleted.
+                    let container = document.querySelector(`[data-preview-id="${id}"]`);
+                    if (!container)
+                        continue;
+
+                    this.#disableActions();
+                    const formData = new FormData();
+                    formData.append("files[]", file);
+                    formData.append("node_id", this.#directoryView.getActiveNodeId());
+
+                    const apiUrl   = '/async/mediapool/upload';
+                    const options  = {method: "POST", body: formData};
+
+                    const progressBar = this.#createProgressbar(container);
+
+                    this.#fetchClient.initUploadWithProgress();
+                    let xhr = this.#fetchClient.getUploadProgressHandle();
+                    this.#filePreviews.setUploadHandler(xhr, id);
+                    const result = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+                        progressBar.style.display = "block";
+                        progressBar.style.width = progress + "%";
+                        progressBar.textContent = Math.round(progress) + "%";
+                    });
+
+                    if (!result || !result.success) {
+                        console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
+                    } else {
+                        console.log('File uploaded successfully:', file.name);
+                        this.#filePreviews.removeFromPreview(id);
+                    }
                 }
-                else
+                catch(error)
                 {
-                    console.log('File uploaded successfully:', file.name);
-                    this.#filePreviews.removeFromPreview(id);
+                    if (error.message === 'Upload aborted.')
+                        console.log('Upload abgebrochen für Datei:', file.name);
+                    else
+                        console.log('Upload failed for file:', file.name, error);
                 }
+                finally
+                {
+                    this.#enableActions()
+                }
+
             }
         })();
-
     }
+
+    #createProgressbar(container)
+    {
+        let progressContainer = document.createElement('div');
+        progressContainer.id = "progressContainer";
+        let progressBar = document.createElement('div');
+        progressBar.id = "progressBar";
+        progressContainer.appendChild(progressBar);
+        container.appendChild(progressContainer);
+
+        return progressBar;
+    }
+
+    #disableActions()
+    {
+        this.#uploaderDialog.disableActions();
+        this.#filePreviews.disableActions();
+        document.getElementById("linkTab").disabled = true;
+    }
+
+    #enableActions()
+    {
+        this.#uploaderDialog.enableActions();
+        this.#filePreviews.enableActions();
+        document.getElementById("linkTab").disabled = false;
+    }
+
 }

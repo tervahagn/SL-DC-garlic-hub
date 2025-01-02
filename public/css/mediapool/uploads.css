@@ -85,7 +85,7 @@ dialog
             cursor: pointer;
         }
 
-    #startFilesUpload:disabled
+    #startFilesUpload:disabled, #closeUploadDialog:disabled, #closeDialog:disabled
     {
         background-color: #ccc;
         color: #666;

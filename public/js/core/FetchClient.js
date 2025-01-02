@@ -19,6 +19,8 @@
 
 export class FetchClient
 {
+    #xhr = null;
+
     async fetchData(url, options = {})
     {
         const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json' } };
@@ -34,16 +36,31 @@ export class FetchClient
             return await response.text();
     }
 
+    initUploadWithProgress()
+    {
+        this.#xhr = new XMLHttpRequest();
+    }
+
+    destroyUploadWithProgress()
+    {
+        this.#xhr = null;
+    }
+
+    getUploadProgressHandle()
+    {
+        return this.#xhr;
+    }
 
     async uploadWithProgress(url, options = {}, onProgress)
     {
-        const xhr = new XMLHttpRequest();
+        if (this.#xhr === null)
+            throw new Error('Call initUploadWithProgress() first.');
 
         return new Promise((resolve, reject) => {
-            xhr.open(options.method, url, true);
+            this.#xhr.open(options.method, url, true);
 
             // Track upload progress
-            xhr.upload.onprogress = (event) => {
+            this.#xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable && onProgress)
                 {
                     const percentComplete = (event.loaded / event.total) * 100;
@@ -52,28 +69,26 @@ export class FetchClient
             };
 
             // Handle response
-            xhr.onload = () => {
+            this.#xhr.onload = () => {
                 const response = {
-                    status: xhr.status,
-                    statusText: xhr.statusText,
-                    text: () => Promise.resolve(xhr.responseText),
-                    json: () => Promise.resolve(JSON.parse(xhr.responseText))
+                    status: this.#xhr.status,
+                    statusText: this.#xhr.statusText,
+                    text: () => Promise.resolve(this.#xhr.responseText),
+                    json: () => Promise.resolve(JSON.parse(this.#xhr.responseText))
                 };
 
-                if (xhr.status >= 200 && xhr.status < 300)
-                {
+                if (this.#xhr.status >= 200 && this.#xhr.status < 300)
                     resolve(response.json());
-                }
                 else
-                {
-                    reject(new Error(`HTTP-Error: ${xhr.status}`));
-                }
+                    reject(new Error(`HTTP-Error: ${this.#xhr.status}`));
+
             };
 
             // Handle errors
-            xhr.onerror = () => reject(new Error('Network error occurred.'));
+            this.#xhr.onerror = () => reject(new Error('Network error occurred.'));
+            this.#xhr.onabort = () => reject(new Error('Upload aborted.'));
 
-            xhr.send(options.body);
+            this.#xhr.send(options.body);
         });
     }
 

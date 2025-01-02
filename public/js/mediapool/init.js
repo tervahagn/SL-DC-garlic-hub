@@ -59,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function(event)
 	const fileInput = document.getElementById('fileInput');
 	fileInput.addEventListener('change', (event) => {
 		const files = event.target.files;
-		console.log('Hochgeladene Dateien:', files);
 		filePreviews.handleFiles(files);
 	});
 
@@ -67,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 	const fileUploader = new FileUploader(
 		directoryView,
 		filePreviews,
+		uploaderDialog,
 		new FetchClient()
 	);
 	fileUploader.initFileUpload(startFileUpload);

@@ -23,6 +23,7 @@ export class UploaderDialog
     #openButton = null;
     #closeButton = null;
     #closeElement = null;
+    #disableEscape = false;
 
     constructor(dialog, openButton, closeButton, closeDialogButton)
     {
@@ -37,8 +38,26 @@ export class UploaderDialog
     {
         this.#initEvents();
         this.#initTabSwitching();
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && this.#disableEscape)
+                event.preventDefault();
+        });
     }
 
+    enableActions()
+    {
+        this.#closeButton.disabled  = false;
+        this.#closeElement.disabled = false;
+        this.#disableEscape         = false;
+    }
+
+    disableActions()
+    {
+        this.#closeButton.disabled  = true;
+        this.#closeElement.disabled = true;
+        this.#disableEscape         = true;
+    }
 
     #initEvents()
     {

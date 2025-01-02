@@ -25,6 +25,8 @@ export class FilePreviews
     startFileUpload = null;
     previewFactory  = new PreviewFactory();
     fileList        = {};
+    #xhrUpload      = null;
+    #upload_id      = null;
 
     constructor(dropzonePreview, startFileUpload, previewFactory)
     {
@@ -37,6 +39,22 @@ export class FilePreviews
     getFileList()
     {
         return this.fileList;
+    }
+
+    enableActions()
+    {
+        this.startFileUpload.disabled = false;
+    }
+
+    disableActions()
+    {
+        this.startFileUpload.disabled = true;
+    }
+
+    setUploadHandler(xhr, id)
+    {
+        this.#xhrUpload = xhr;
+        this.#upload_id = id;
     }
 
     handleFiles(files)
@@ -53,7 +71,7 @@ export class FilePreviews
                 this.fileList[id] = file;
                 const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
                 this.dropzonePreview.appendChild(previewContainer);
-                this.startFileUpload.disabled = false;
+                this.enableActions();
             }
             catch (error)
             {
@@ -92,10 +110,15 @@ export class FilePreviews
 
     removeFromPreview(id)
     {
+        if (this.#xhrUpload !== null && this.#upload_id === id)
+            this.#xhrUpload.abort();
+
         delete this.fileList[id];
         document.querySelector(`[data-preview-id="${id}"]`).remove();
 
+
         if (Object.keys(this.fileList).length === 0)
-            this.startFileUpload.disabled = true;
+            this.disableActions();
+
     }
 }
