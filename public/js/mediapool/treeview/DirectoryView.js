@@ -35,14 +35,32 @@ export class DirectoryView
             debugLevel: DirectoryView.DEBUG_LEVEL,
             element: this.#tree_element,
             source: { url: DirectoryView.SOURCE_URI },
+            init: async (e) => {
+                if (localStorage.getItem('parent_list') === null)
+                    return;
+
+                const parentList = localStorage.getItem('parent_list').split(",");
+                let node = null;
+                for (const key of parentList)
+                {
+                    node = e.tree.findKey(key);
+                    await node.setExpanded(true);
+                }
+               await node.setActive();
+            },
             selectMode: "single",
             lazyLoad: function (e){
                 return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
              },
+            click: (e) => {
+            },
             activate: (e) => {
                 current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
                 document.getElementById("openUploadDialog").disabled = false;
                 this.#activeNode = e.node;
+                const parentList = e.node.getParentList(false, true);
+                let keyList = parentList.map(parent => parent.key);
+                localStorage.setItem('parent_list', keyList);
             },
             filter: {autoApply: true, mode: "hide"},
         });
