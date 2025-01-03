@@ -30,6 +30,7 @@ class MediaHandlerFactory
 {
 	private Config $config;
 	private Filesystem $fileSystem;
+	private ZipFilesystemFactory $zipFilesystemFactory;
 	private ImagickFactory $imagickFactory;
 
 	/**
@@ -37,11 +38,12 @@ class MediaHandlerFactory
 	 * @param Filesystem     $fileSystem
 	 * @param ImagickFactory $imagickFactory
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem,	ImagickFactory $imagickFactory)
+	public function __construct(Config $config, Filesystem $fileSystem,	ZipFilesystemFactory $zipFilesystemFactory, ImagickFactory $imagickFactory)
 	{
-		$this->config = $config;
-		$this->fileSystem = $fileSystem;
-		$this->imagickFactory = $imagickFactory;
+		$this->config               = $config;
+		$this->fileSystem           = $fileSystem;
+		$this->zipFilesystemFactory = $zipFilesystemFactory;
+		$this->imagickFactory       = $imagickFactory;
 	}
 
 	/**
@@ -54,6 +56,10 @@ class MediaHandlerFactory
 			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
 			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
 			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
+			$mimeType === 'application/widget' =>  new Widget($this->config,
+				$this->fileSystem,
+				$this->zipFilesystemFactory,
+				$this->imagickFactory->createImagick()),
 			default => throw new InvalidArgumentException('Unknown file type'),
 		};
 

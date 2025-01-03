@@ -21,6 +21,7 @@ import { ImagePreview } from "./ImagePreview.js";
 import { VideoPreview } from "./VideoPreview.js";
 import { AudioPreview } from "./AudioPreview.js";
 import { PdfPreview } from "./PdfPreview.js";
+import { WidgetPreview } from "./WidgetPreview.js";
 
 export class PreviewFactory
 {
@@ -42,11 +43,11 @@ export class PreviewFactory
         {
             return new PdfPreview(file);
         }
-/*        else if (file.type === "application/zip")
+        else if (file.type === "application/wgt" || file.type === "application/widget" || file.tye === "application/zip")
         {
-            return new ZipPreview(file);
+            return new WidgetPreview(file);
         }
- */       else
+        else
         {
             throw new Error("Unsupported file type: " + file.type);
         }

@@ -45,7 +45,8 @@ class ShowController
 					'/css/mediapool/uploads.css'
 				],
 				'footer_scripts' => [
-					'/js/external/wunderbaum.umd.min.js'
+					'/js/external/wunderbaum.umd.min.js',
+					'/js/external/jszip.min.js'
 				],
 				'footer_modules' => [
 					'/js/mediapool/init.js'

@@ -44,6 +44,9 @@ $dependencies[NodesController::class] = DI\factory(function (ContainerInterface 
 
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
 {
+	$adapter = new ZipArchiveAdapter($zipPath);
+	$filesystem = new Filesystem($adapter);
+
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
 		$container->get('LocalFileSystem'),
