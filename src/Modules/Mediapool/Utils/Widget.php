@@ -23,8 +23,11 @@ namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Widget\ConfigXML;
 use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -34,17 +37,18 @@ class Widget extends AbstractMediaHandler
 	private int $maxDownloadSize;
 	private ZipFilesystemFactory $zipFilesystemFactory;
 	private Imagick $imagick;
-
+	private ConfigXML $configXML;
 
 	/**
 	 * @throws CoreException
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem, ZipFilesystemFactory $zipFilesystemFactory, Imagick $imagick)
+	public function __construct(Config $config, Filesystem $fileSystem, ZipFilesystemFactory $zipFilesystemFactory, Imagick $imagick, ConfigXML $configXML)
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->zipFilesystemFactory = $zipFilesystemFactory;
 		$this->imagick              = $imagick;
+		$this->configXML            = $configXML;
 		$this->maxDownloadSize      = $this->config->getConfigValue('download', 'mediapool', 'max_file_sizes');
 	}
 
@@ -76,21 +80,28 @@ class Widget extends AbstractMediaHandler
 	}
 
 	/**
-	 * @throws \ImagickException
 	 * @throws FilesystemException
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 * @throws ImagickException
 	 */
 	public function createThumbnail(string $filePath): void
 	{
-		$zipFilesystem = $this->zipFilesystemFactory->create($filePath);
-
-		if ($zipFilesystem->fileExists('icon.png'))
+		$zipFilesystem = $this->zipFilesystemFactory->create($this->getAbsolutePath($filePath));
+		if ($zipFilesystem->fileExists('config.xml'))
 		{
-			$imageContent = $zipFilesystem->read('icon.png');
+			$configContent = $zipFilesystem->read('config.xml');
+			$this->configXML->load($configContent)->parseBasic();
+		}
+
+		if ($zipFilesystem->fileExists($this->configXML->getIcon()))
+		{
+			$imageContent = $zipFilesystem->read($this->configXML->getIcon());
 			$this->imagick->readImageBlob($imageContent);
 			$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 
 			$fileInfo = pathinfo($filePath);
-			$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename']. '.jpg';
+			$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename']. '.'.pathinfo($this->configXML->getIcon(), PATHINFO_EXTENSION);
 			$this->imagick->writeImage($thumbPath);
 		}
 	}

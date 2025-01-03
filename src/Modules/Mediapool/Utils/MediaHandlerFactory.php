@@ -23,6 +23,7 @@ namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Utils\Widget\ConfigXML;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 
@@ -59,7 +60,9 @@ class MediaHandlerFactory
 			$mimeType === 'application/widget' =>  new Widget($this->config,
 				$this->fileSystem,
 				$this->zipFilesystemFactory,
-				$this->imagickFactory->createImagick()),
+				$this->imagickFactory->createImagick(),
+				new ConfigXML()
+			),
 			default => throw new InvalidArgumentException('Unknown file type'),
 		};
 
