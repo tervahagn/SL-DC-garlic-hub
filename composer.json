@@ -19,8 +19,9 @@
       "slim/http": "^1.4",
       "intervention/image": "^3.10",
       "ramsey/uuid": "^4.7",
-      "ext-fileinfo": "*"
-    },
+      "ext-fileinfo": "*",
+    "ext-imagick": "*"
+  },
     "autoload": {
         "psr-4": {
             "App\\": "src/"

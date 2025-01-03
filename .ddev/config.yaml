@@ -19,6 +19,8 @@ web_environment:
 corepack_enable: false
 webimage_extra_packages:
     - ffmpeg
+    - imagemagick
+    - libmagickwand-dev
 
 # Key features of DDEV's config.yaml:
 
