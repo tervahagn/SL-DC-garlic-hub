@@ -28,6 +28,8 @@ use App\Modules\Mediapool\Services\UploadService;
 use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
+use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
+use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -44,12 +46,11 @@ $dependencies[NodesController::class] = DI\factory(function (ContainerInterface 
 
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
 {
-	$adapter = new ZipArchiveAdapter($zipPath);
-	$filesystem = new Filesystem($adapter);
 
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
 		$container->get('LocalFileSystem'),
+		new ZipFilesystemFactory(),
 		new ImagickFactory()
 	);
 });
