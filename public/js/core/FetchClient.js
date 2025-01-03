@@ -74,7 +74,18 @@ export class FetchClient
                     status: this.#xhr.status,
                     statusText: this.#xhr.statusText,
                     text: () => Promise.resolve(this.#xhr.responseText),
-                    json: () => Promise.resolve(JSON.parse(this.#xhr.responseText))
+                    json: () => {
+                        return new Promise((resolve, reject) => {
+                            try
+                            {
+                                resolve(JSON.parse(this.#xhr.responseText));
+                            }
+                            catch (error)
+                            {
+                                reject(new Error("JSON Parse Error: " + error.message));
+                            }
+                        });
+                    }
                 };
 
                 if (this.#xhr.status >= 200 && this.#xhr.status < 300)

@@ -99,6 +99,7 @@ export class FileUploader
                         console.log('Upload failed for file:', file.name, error);
                         container.className = "previewContainerError";
                     }
+                    this.#enableActions()
                 }
                 finally
                 {
