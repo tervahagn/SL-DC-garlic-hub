@@ -25,8 +25,6 @@ export class WidgetPreview extends AbstractPreview
     {
         const img = document.createElement("img");
         img.src = "./images/widget.png";
-
-        // Asynchrone Verarbeitung starten
         this.processZip(img);
 
         return img;
@@ -36,20 +34,23 @@ export class WidgetPreview extends AbstractPreview
     async processZip(img)
     {
         const zip = new JSZip();
-
         try
         {
             const zipContent = await zip.loadAsync(this.getFile());
 
-            // Überprüfen, ob die Datei "icon.png" existiert
-            if (zipContent.files["icon.png"]) {
-                const blob = await zipContent.files["icon.png"].async("blob");
+            const targetFile = zipContent.files["icon.png"]
+                ? "icon.png" : zipContent.files["icon.jpg"]
+                    ? "icon.jpg" : null;
+
+            if (targetFile)
+            {
+                const blob = await zipContent.files[targetFile].async("blob");
                 img.src = URL.createObjectURL(blob); // Bildquelle aktualisieren
-            } else {
-                console.warn("icon.png nicht gefunden. Platzhalter bleibt.");
             }
-        } catch (error) {
-            console.error("Fehler beim Verarbeiten der ZIP-Datei:", error.message);
+        }
+        catch (error)
+        {
+            console.error("Error in zip-process:", error.message);
         }
     }
 

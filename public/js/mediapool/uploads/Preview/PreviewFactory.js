@@ -43,7 +43,7 @@ export class PreviewFactory
         {
             return new PdfPreview(file);
         }
-        else if (file.type === "application/wgt" || file.type === "application/widget" || file.tye === "application/zip")
+        else if (file.type === "application/wgt" || file.type === "application/widget")
         {
             return new WidgetPreview(file);
         }
