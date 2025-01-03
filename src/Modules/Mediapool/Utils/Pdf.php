@@ -24,6 +24,8 @@ namespace App\Modules\Mediapool\Utils;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -31,12 +33,12 @@ use Psr\Http\Message\UploadedFileInterface;
 class Pdf extends AbstractMediaHandler
 {
 	private int $maxDocumentSize;
-	private \Imagick $imagick;
+	private Imagick $imagick;
 
 	/**
 	 * @throws CoreException
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem, \Imagick $imagick)
+	public function __construct(Config $config, Filesystem $fileSystem, Imagick $imagick)
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
@@ -74,7 +76,7 @@ class Pdf extends AbstractMediaHandler
 	}
 
 	/**
-	 * @throws \ImagickException
+	 * @throws ImagickException
 	 */
 	public function createThumbnail(string $filePath): void
 	{

@@ -22,35 +22,39 @@
 namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Interfaces\ImageManagerInterface;
+use App\Framework\Exceptions\CoreException;
+use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 
 class MediaHandlerFactory
 {
 	private Config $config;
 	private Filesystem $fileSystem;
-	private ImageManagerInterface $imageManager;
+	private ImagickFactory $imagickFactory;
 
 	/**
-	 * @param Config     $config
-	 * @param Filesystem $fileSystem
+	 * @param Config         $config
+	 * @param Filesystem     $fileSystem
+	 * @param ImagickFactory $imagickFactory
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem,	ImageManagerInterface $imageManager)
+	public function __construct(Config $config, Filesystem $fileSystem,	ImagickFactory $imagickFactory)
 	{
 		$this->config = $config;
 		$this->fileSystem = $fileSystem;
-		$this->imageManager = $imageManager;
+		$this->imagickFactory = $imagickFactory;
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function createHandler(string $mimeType): AbstractMediaHandler
 	{
 		return match (true)
 		{
-			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imageManager),
-			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, $this->imageManager, ''),
-			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem, new \Imagick()),
-			default => throw new \InvalidArgumentException('Unknown file type'),
+			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
+			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
+			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
+			default => throw new InvalidArgumentException('Unknown file type'),
 		};
 
 	}

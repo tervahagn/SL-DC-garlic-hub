@@ -23,15 +23,11 @@ use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
-use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
+use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
-use Intervention\Image\Drivers\Imagick\Driver;
-use Intervention\Image\ImageManager;
-use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -51,7 +47,7 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
 		$container->get('LocalFileSystem'),
-		new ImageManager(new Driver())
+		new ImagickFactory()
 	);
 });
 

@@ -20,8 +20,8 @@
 
 namespace App\Modules\Mediapool\Utils;
 
+use App\Framework\Exceptions\ModuleException;
 use finfo;
-use http\Exception\RuntimeException;
 use InvalidArgumentException;
 
 class MimeTypeDetector
@@ -38,6 +38,9 @@ class MimeTypeDetector
 		finfo_close($this->finfo);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function detectFromFile(string $filePath): string
 	{
 		if (!file_exists($filePath)) {
@@ -46,12 +49,15 @@ class MimeTypeDetector
 
 		$mimeType = finfo_file($this->finfo, $filePath);
 		if ($mimeType === false)
-			throw new RuntimeException("MIME-Type for '$filePath' could not be detected.");
+			throw new ModuleException('mediapool', "MIME-Type for '$filePath' could not be detected.");
 
 
 		return $mimeType;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function detectFromStream($stream): string
 	{
 		if (!is_resource($stream) || get_resource_type($stream) !== 'stream')
@@ -59,12 +65,12 @@ class MimeTypeDetector
 
 		$content = stream_get_contents($stream, -1, 0);
 		if ($content === false)
-			throw new RuntimeException('Stream was not readable');
+			throw new ModuleException('mediapool','Stream was not readable');
 
 
 		$mimeType = finfo_buffer($this->finfo, $content);
 		if ($mimeType === false)
-			throw new RuntimeException('MIME-Type could not be detected from stream');
+			throw new ModuleException('mediapool', 'MIME-Type could not be detected from stream');
 
 		return $mimeType;
 	}

@@ -22,9 +22,10 @@
 namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\Interfaces\ImageManagerInterface;
+use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -32,24 +33,26 @@ use Psr\Http\Message\UploadedFileInterface;
 /**
  * Class Image provides methods to handle image files
  *
- * We use flyimage for file operations with systemDir as base
+ * We use flysystem for file operations with systemDir as base
  * and Intervention image for image manipulations
  *
- * Be aware that flystem requires "relative" path while
+ * Be aware that flysystem requires "relative" path while
  * intervention image expects an absolute path.
  *
  */
 class Image extends AbstractMediaHandler
 {
-	private ImageManagerInterface $imageManager;
+	private Imagick $imagick;
 	private int $maxImageSize;
-	private ImageInterface $image;
 
-	public function __construct(Config $config, Filesystem $fileSystem, ImageManagerInterface $imageManager)
+	/**
+	 * @throws CoreException
+	 */
+	public function __construct(Config $config, Filesystem $fileSystem, Imagick $imagick)
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
-		$this->imageManager = $imageManager;
+		$this->imagick      = $imagick;
 		$this->maxImageSize = $this->config->getConfigValue('images', 'mediapool', 'max_file_sizes');
 	}
 
@@ -69,6 +72,7 @@ class Image extends AbstractMediaHandler
 	/**
 	 * @throws ModuleException
 	 * @throws FilesystemException
+	 * @throws ImagickException
 	 */
 	public function checkFileAfterUpload(string $filePath): void
 	{
@@ -79,23 +83,26 @@ class Image extends AbstractMediaHandler
 		if ($this->fileSize > $this->maxImageSize)
 			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max image size.');
 
-		$this->image = $this->imageManager->read($this->getAbsolutePath($filePath));
-		if ($this->image->width() > $this->maxWidth)
-			throw new ModuleException('mediapool', 'After Upload Check:  Image width '.$this->image->width().' exceeds maximum.');
+		$this->imagick->readImage($this->getAbsolutePath($filePath));
+		if ($this->imagick->getImageWidth() > $this->maxWidth)
+			throw new ModuleException('mediapool', 'After Upload Check:  Image width '.$this->imagick->getImageWidth().' exceeds maximum.');
 
-		if ($this->image->height() > $this->maxHeight)
-			throw new ModuleException('mediapool', 'After Upload Check:  Image height '.$this->image->height().' exceeds maximum.');
+		if ($this->imagick->getImageHeight() > $this->maxHeight)
+			throw new ModuleException('mediapool', 'After Upload Check:  Image height '.$this->imagick->getImageHeight().' exceeds maximum.');
 
-		$this->dimensions = ['width' => $this->image->width(), 'height' => $this->image->height()];
+		$this->dimensions = ['width' => $this->imagick->getImageWidth(), 'height' => $this->imagick->getImageHeight()];
 	}
 
+	/**
+	 * @throws ImagickException
+	 */
 	public function createThumbnail(string $filePath): void
 	{
-		$this->image->scaleDown($this->thumbWidth, $this->thumbHeight);
+		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 
 		$fileInfo = pathinfo($filePath);
 		$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
-		$this->image->save($thumbPath);
+		$this->imagick->writeImage($thumbPath);
 	}
 
 

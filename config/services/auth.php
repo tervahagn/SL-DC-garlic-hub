@@ -29,7 +29,6 @@ use App\Modules\Auth\OAuth2Controller;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 

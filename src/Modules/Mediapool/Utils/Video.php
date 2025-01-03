@@ -7,7 +7,8 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use Exception;
-use Intervention\Image\Interfaces\ImageManagerInterface;
+use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -38,17 +39,17 @@ class Video extends AbstractMediaHandler
 	protected string $audioQuality     = '';
 	protected string $destinationFile  = '';
 	protected array $mediaProperties   = [];
-	private ImageManagerInterface $imageManager;
+	private Imagick $imagick;
 	private int $maxVideoSize;
 
 	/**
 	 * @throws CoreException
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem, ImageManagerInterface $imageManager)
+	public function __construct(Config $config, Filesystem $fileSystem, Imagick $imagick)
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
-		$this->imageManager = $imageManager;
+		$this->imagick     = $imagick;
 		$this->maxVideoSize = $this->config->getConfigValue('images', 'mediapool', 'max_file_sizes');
 	}
 
@@ -92,6 +93,7 @@ class Video extends AbstractMediaHandler
 	/**
 	 * @throws FilesystemException
 	 * @throws FrameworkException
+	 * @throws ImagickException
 	 */
 	public function createThumbnail(string $filePath): void
 	{
@@ -102,11 +104,9 @@ class Video extends AbstractMediaHandler
 		$this->filesystem->move($vidcapPath, $thumbPath);
 
 		$absolutePath = $this->getAbsolutePath($thumbPath);
-		$image = $this->imageManager->read($absolutePath);
-		$image->scaleDown($this->thumbWidth, $this->thumbHeight);
-
-		$image->save($absolutePath);
-
+		$this->imagick->readImage($absolutePath);
+		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
+		$this->imagick->writeImage($absolutePath);
 	}
 
 	/**
@@ -130,7 +130,7 @@ class Video extends AbstractMediaHandler
 
 		$this->probeFile($this->getAbsolutePath($filePath));
 	}
-
+/*
 	public function saveAsTheora(string $destination): static
 	{
 		$this->options = $this->setVideoCodec('libtheora');
@@ -203,12 +203,12 @@ class Video extends AbstractMediaHandler
 		$this->destinationFile     = $destination . '.ogg';
 		return $this;
 	}
-
+*/
 	/**
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function convertVideo(): static
+/*	public function convertVideo(): static
 	{
 		if ($this->mediaProperties['video_codec'] == '')
 		{
@@ -216,12 +216,12 @@ class Video extends AbstractMediaHandler
 		}
 		return $this->prepareConvertingFile();
 	}
-
+*/
 	/**
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function convertAudio(): static
+/*	public function convertAudio(): static
 	{
 		if ($this->mediaProperties['audio_codec'] == '')
 		{
@@ -229,7 +229,7 @@ class Video extends AbstractMediaHandler
 		}
 		return $this->prepareConvertingFile();
 	}
-
+*/
 	/**
 	 * @throws  FrameworkException
 	 * @throws  Exception|FilesystemException
@@ -253,6 +253,7 @@ class Video extends AbstractMediaHandler
 		return $vidcapPath;
 	}
 
+	/*
 	public function scaleHeight(int $height): static
 	{
 		$width       = round($this->mediaProperties['width'] / ($this->mediaProperties['height'] / $height));
@@ -277,7 +278,7 @@ class Video extends AbstractMediaHandler
 		$this->audioQuality = ' -ar ' . $frequency . ' -ab ' . $bitrate . 'k';
 		return $this;
 	}
-
+*/
 	/**
 	 * @throws CoreException
 	 */
@@ -356,7 +357,7 @@ class Video extends AbstractMediaHandler
 	 * @throws FrameworkException
 	 * @throws CoreException
 	 */
-	protected function prepareConvertingFile(): static
+/*	protected function prepareConvertingFile(): static
 	{
 		$ffmpeg_thread_param = $this->config->getConfigValue('thread_usage_ffmpeg_param', 'video');
 
@@ -371,7 +372,7 @@ class Video extends AbstractMediaHandler
 
 		return $this->callBinary($command);
 	}
-
+*/
 	/**
 	 * @throws  FrameworkException
 	 * @throws  Exception
@@ -387,10 +388,10 @@ class Video extends AbstractMediaHandler
 
 		return $this;
 	}
-
+/*
 	private function setVideoCodec(string $convert_codec): string
 	{
 		return ' -vcodec '.$convert_codec;
 	}
-
+*/
 }
