@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ContextMenu } from "./ContextMenu.js";
+import { ContextMenuTreeView } from "./ContextMenuTreeView.js";
 
 export class DirectoryView
 {
@@ -84,7 +84,7 @@ export class DirectoryView
             const currentTreeNode = this.setActiveNodeFromEventTarget(event.target);
 
             const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
-            let contextMenu    = new ContextMenu(menu, nodesModel, treeDialog);
+            let contextMenu    = new ContextMenuTreeView(menu, nodesModel, treeDialog);
             contextMenu.show(event);
 
             const editNodeElement = document.getElementById("edit_node");

@@ -21,11 +21,12 @@ export class MediaList
 {
     #mediaListElement = null;
     #templateElement = null;
-    constructor(mediaListElement, templateElement)
+    #contextMenuMediaFactory = null
+    constructor(mediaListElement, templateElement, contextMenuMediaFactory)
     {
-        this.#templateElement = templateElement;
-
-        this.#mediaListElement = mediaListElement;
+        this.#templateElement         = templateElement;
+        this.#mediaListElement        = mediaListElement;
+        this.#contextMenuMediaFactory = contextMenuMediaFactory;
     }
 
     render(data)
@@ -46,6 +47,7 @@ export class MediaList
     #addMediaToList(media)
     {
         const mediaItem = this.#createMediaItem(media);
+        this.#addContextMenu(mediaItem);
         this.#mediaListElement.appendChild(mediaItem);
     }
 
@@ -77,6 +79,31 @@ export class MediaList
         }
         return clone.querySelector('.media-item');
     }
+
+    #addContextMenu(mediaItem)
+    {
+
+        mediaItem.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+
+            let contextMenu    = this.#contextMenuMediaFactory.createMenu();
+            contextMenu.show(event);
+
+
+            /*            const currentTreeNode = this.setActiveNodeFromEventTarget(event.target);
+
+                        const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
+
+                        const editNodeElement = document.getElementById("edit_node");
+                        contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
+
+                        const removeMediaElement = document.getElementById("remove_node");
+                        contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
+
+             */
+        });
+    }
+
 
     #detectMediaType(mimetype)
     {

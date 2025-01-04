@@ -136,24 +136,10 @@ dialog
             line-height:0;
         }
 
-        .media-item figure .media-menu
-        {
-            position: absolute;
-            z-index:100;
-            top: 5px;
-            right: 5px;
-            font-size: 1.4em;
-            text-align: center;
-            background-color: #fff;
-            padding:0;
-            margin:0;
-            line-height:0;
-            border:1px solid #ccc;
-            border-radius: var(--gh-border-radius);
-        }
         .media-item figure .media-menu:hover
         {
             cursor: pointer;
+            border:1px solid #000;
         }
 
     .media-info
