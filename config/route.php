@@ -21,6 +21,7 @@
 use App\Controller\HomeController;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
+use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
@@ -51,3 +52,4 @@ $app->post('/async/mediapool/node', [NodesController::class, 'add']);
 $app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
 $app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
 $app->post('/async/mediapool/upload', [UploadController::class, 'upload']);
+$app->get('/async/mediapool/media/{node_id}', [MediaController::class, 'list']);

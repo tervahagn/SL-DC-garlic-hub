@@ -37,7 +37,6 @@ class UploadController
 		$this->uploadService = $uploadService;
 	}
 
-
 	/**
 	 * @throws Exception
 	 */

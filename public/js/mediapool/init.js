@@ -8,14 +8,22 @@ import { DragDropManager } from "./uploads/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
 import { FileUploader } from "./uploads/FileUploader.js";
 import { FetchClient } from "../core/FetchClient.js";
+import { MediaList } from "./media/MediaList.js";
+import { MediaService } from "./media/MediaService.js";
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
-	// treview section
-	let nodesModel     = new NodesModel();
+	// treeview section
+	let nodesModel    = new NodesModel();
+	let fetchClient   = new FetchClient();
+	let mediaService  = new MediaService(fetchClient);
+	let mediaList     = new MediaList(document.getElementById("media-list"), document.getElementById('media-template'));
+
 	let directoryView  = new DirectoryView(
 		document.getElementById("mediapool-tree"),
-		document.getElementById("current-path")
+		document.getElementById("current-path"),
+		mediaList,
+		mediaService
 	);
 	directoryView.addFilter(document.getElementById("tree_filter"));
 
@@ -62,14 +70,14 @@ document.addEventListener("DOMContentLoaded", function(event)
 		filePreviews.handleFiles(files);
 	});
 
-
 	const fileUploader = new FileUploader(
 		directoryView,
 		filePreviews,
 		uploaderDialog,
-		new FetchClient()
+		fetchClient
 	);
 	fileUploader.initFileUpload(startFileUpload);
+
 
 });
 

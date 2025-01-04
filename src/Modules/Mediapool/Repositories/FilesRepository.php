@@ -23,11 +23,25 @@ namespace App\Modules\Mediapool\Repositories;
 
 use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class FilesRepository extends Sql
 {
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'mediapool_files', 'media_id');
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function findAllByNodeId(int $node_id): array
+	{
+		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'media_description'];
+		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
+		$where      = ['node_id' => $node_id, 'deleted' => 0];
+		$order_by   = 'media_id DESC';
+
+		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
 	}
 }

@@ -104,5 +104,6 @@ class Widget extends AbstractMediaHandler
 			$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename']. '.'.pathinfo($this->configXML->getIcon(), PATHINFO_EXTENSION);
 			$this->imagick->writeImage($thumbPath);
 		}
+		// we will show a standard thumbnail for the widget in
 	}
 }

@@ -21,17 +21,21 @@ import { ContextMenu } from "./ContextMenu.js";
 
 export class DirectoryView
 {
-    #tree = null;
-    #tree_element = null;
-    static DEBUG_LEVEL= 3;
+    #tree               = null;
+    #tree_element       = null;
+    static DEBUG_LEVEL  = 0;
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI =  '/async/mediapool/node/';
-    #activeNode = null;
+    #activeNode         = null;
+    #mediaList          = null;
+    #mediaService       = null;
 
-    constructor(tree_element, current_path)
+    constructor(tree_element, current_path, mediaList, mediaService)
     {
         this.#tree_element = tree_element;
-        this.#tree = new mar10.Wunderbaum({
+        this.#mediaList    = mediaList;
+        this.#mediaService = mediaService;
+        this.#tree         = new mar10.Wunderbaum({
             debugLevel: DirectoryView.DEBUG_LEVEL,
             element: this.#tree_element,
             source: { url: DirectoryView.SOURCE_URI },
@@ -56,9 +60,11 @@ export class DirectoryView
                 current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
                 document.getElementById("openUploadDialog").disabled = false;
                 this.#activeNode = e.node;
+
                 const parentList = e.node.getParentList(false, true);
                 let keyList = parentList.map(parent => parent.key);
                 localStorage.setItem('parent_list', keyList);
+                this.#loadMediaInDirectory(e.node.key);
             },
             filter: {autoApply: true, mode: "hide"},
         });
@@ -136,5 +142,18 @@ export class DirectoryView
         this.#tree.getActiveNode().addChildren({ key:  key, title: folder_name, isFolder: true });
     }
 
+    async #loadMediaInDirectory(key)
+    {
+        try
+        {
+            const results = await this.#mediaService.loadMedia(key);
+            const data = JSON.parse(results);
 
+            this.#mediaList.render(data.media_list);
+        }
+        catch (err)
+        {
+            console.error("Error loading media:", err.message);
+        }
+    }
 }

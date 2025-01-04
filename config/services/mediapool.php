@@ -19,10 +19,12 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
+use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
 use App\Modules\Mediapool\Utils\ImagickFactory;
@@ -46,7 +48,6 @@ $dependencies[NodesController::class] = DI\factory(function (ContainerInterface 
 
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
 {
-
 	return new MediaHandlerFactory(
 		$container->get(Config::class),
 		$container->get('LocalFileSystem'),
@@ -70,5 +71,18 @@ $dependencies[UploadController::class] = DI\factory(function (ContainerInterface
 	return new UploadController($container->get(UploadService::class));
 });
 
+$dependencies[MediaService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new MediaService(
+		new FilesRepository($container->get('SqlConnection')),
+		$container->get('ModuleLogger')
+	);
+});
+
+
+$dependencies[MediaController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new MediaController($container->get(MediaService::class));
+});
 
 return $dependencies;

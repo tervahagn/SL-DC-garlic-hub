@@ -21,7 +21,28 @@
 
 namespace App\Modules\Mediapool\Services;
 
+use App\Modules\Mediapool\Repositories\FilesRepository;
+use Doctrine\DBAL\Exception;
+use Psr\Log\LoggerInterface;
+
 class MediaService
 {
+	private FilesRepository $mediaRepository;
+	private LoggerInterface $logger;
+
+	public function __construct(FilesRepository $mediaRepository, LoggerInterface $logger)
+	{
+		$this->mediaRepository = $mediaRepository;
+		$this->logger = $logger;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function listMediaBy(int $node_id): array
+	{
+		return $this->mediaRepository->findAllByNodeId($node_id);
+	}
+
 
 }

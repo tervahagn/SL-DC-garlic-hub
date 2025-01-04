@@ -118,6 +118,7 @@ CREATE TABLE mediapool_files (
      tags TEXT DEFAULT NULL,
      filename TEXT DEFAULT NULL,
      extension varchar(10) DEFAULT NULL,
+     thumb_extension varchar(10) DEFAULT NULL,
      media_description TEXT DEFAULT NULL
 );
 

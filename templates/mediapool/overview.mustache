@@ -102,11 +102,23 @@
 				<button id="openUploadDialog" disabled><i class="bi bi-upload"></i> Uploader</button>
 			</div>
 
-			<div class="media-list" aria-labelledby="media-list-title">
-				<figure>
-					<figcaption>Image1.jpg</figcaption>
-				</figure>
+			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
 			</div>
+			<template id="media-template">
+				<article class="media-item">
+					<figure>
+						<img src="" alt="Media Thumbnail">
+						<figcaption class="media-info">
+							<p>Filename: <span class="media-filename">example.jpg</span></p>
+							<p>MIME-Type: <span class="media-mimetype">image/jpeg</span></p>
+						</figcaption>
+					</figure>
+					<div class="media-overlay">
+						<p>Meta Info</p>
+					</div>
+				</article>
+			</template>
+
 		</section>
 
 	<script>
