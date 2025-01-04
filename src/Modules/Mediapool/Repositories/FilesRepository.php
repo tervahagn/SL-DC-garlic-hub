@@ -37,10 +37,10 @@ class FilesRepository extends Sql
 	 */
 	public function findAllByNodeId(int $node_id): array
 	{
-		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'media_description'];
+		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension',  'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = ['node_id' => $node_id, 'deleted' => 0];
-		$order_by   = 'media_id DESC';
+		$order_by   = 'upload_time DESC';
 
 		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
 	}

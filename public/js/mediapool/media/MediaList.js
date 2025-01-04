@@ -34,7 +34,7 @@ export class MediaList
 
         data.forEach((media) => {
 
-            this.#addMediaToList(media.filename, media.mimetype, media.checksum);
+            this.#addMediaToList(media);
         });
     }
 
@@ -43,28 +43,85 @@ export class MediaList
         document.getElementById("file-uploader").style.display = show ? "block" : "none";
     }
 
-    #addMediaToList(filename, mimetype, checksum)
+    #addMediaToList(media)
     {
-        const imageUrl = "/var/mediapool/thumbs/"+checksum+".jpg";
-        const mediaItem = this.#createMediaItem(filename, mimetype, imageUrl);
+        const mediaItem = this.#createMediaItem(media);
         this.#mediaListElement.appendChild(mediaItem);
     }
 
-    #createMediaItem(filename, mimetype, imageUrl)
+    #createMediaItem(media)
     {
-
         const clone = this.#templateElement.content.cloneNode(true);
 
-        const mediaItem = clone.querySelector('.media-item');
+        clone.querySelector('.media-type-icon').classList.add(this.#detectMediaType(media.mimetype));
+
         const img = clone.querySelector('img');
-        const filenameElement = clone.querySelector('.media-filename');
-        const mimetypeElement = clone.querySelector('.media-mimetype');
+        img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
+        img.alt = 'Thumbnail: ' + media.filename;
 
-        img.src = imageUrl;
-        img.alt = `Thumbnail for ${filename}`;
-        filenameElement.textContent = filename;
-        mimetypeElement.textContent = mimetype;
+        clone.querySelector('.media-filename').textContent = media.filename;
+        clone.querySelector('.media-filesize').textContent = this.#formatBytes(media.metadata.size);
+        clone.querySelector('.media-mimetype').textContent = media.mimetype;
 
-        return mediaItem;
+        const dimensionsElement = clone.querySelector('.media-dimensions');
+        if (media.metadata.dimensions !== undefined && Object.keys(media.metadata.dimensions).length > 0 )
+        {
+            dimensionsElement.textContent = media.metadata.dimensions.width + "x" + media.metadata.dimensions.height;
+            dimensionsElement.parentElement.style.display = "block";
+        }
+        const durationElement = clone.querySelector('.media-duration');
+        if (media.metadata.duration !== undefined && media.metadata.duration > 0 )
+        {
+            durationElement.textContent = this.#formatSeconds(media.metadata.duration);
+            durationElement.parentElement.style.display = "block";
+        }
+        return clone.querySelector('.media-item');
+    }
+
+    #detectMediaType(mimetype)
+    {
+        let mediatype = "file";
+        const first = mimetype.split('/')[0]
+
+        if (first === "audio")
+            return "bi-music-note";
+        else if (first === "video")
+            return "bi-film";
+        else if (first === "image")
+            return "bi-image";
+
+        switch(mimetype.split('/')[1])
+        {
+            case "pdf":
+                return "bi-pdf";
+            case "zip":
+            case "widget":
+            case "wgt":
+                return "bi-file-zip";
+
+        }
+
+        return "bi-file-earmark";
+    }
+
+    #formatBytes(bytes)
+    {
+        if (bytes >= 1073741824)  // 1 GB
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+         else if (bytes >= 1048576)  // 1 MB
+            return (bytes / 1048576).toFixed(2) + ' MB';
+         else if (bytes >= 1024)  // 1 KB
+            return (bytes / 1024).toFixed(2) + ' KB';
+         else
+            return bytes + ' Bytes'; // less 1 KB
+    }
+
+    #formatSeconds(seconds)
+    {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 }
