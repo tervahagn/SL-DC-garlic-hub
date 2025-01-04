@@ -26,6 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use Imagick;
 use ImagickException;
+use ImagickPixel;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -81,11 +82,16 @@ class Pdf extends AbstractMediaHandler
 	{
 		$this->imagick->setResolution(150, 150); // DPI
 		$this->imagick->readImage($this->getAbsolutePath($filePath) . '[0]');
-		$this->imagick->setImageFormat('jpg');
 
+		// some pdf will show a black image if the alpha channel is not removed
+		$this->imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+		//$this->imagick->setImageBackgroundColor('white'); // probably needed let's test
+
+		$this->imagick->setImageFormat('jpg');
 		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 		$fileInfo = pathinfo($filePath);
 		$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename']. '.jpg';
 		$this->imagick->writeImage($thumbPath);
+
 	}
 }

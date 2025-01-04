@@ -93,7 +93,7 @@ export class MediaList
         switch(mimetype.split('/')[1])
         {
             case "pdf":
-                return "bi-pdf";
+                return "bi-filetype-pdf";
             case "zip":
             case "widget":
             case "wgt":
