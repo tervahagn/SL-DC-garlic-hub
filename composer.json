@@ -20,7 +20,7 @@
       "ramsey/uuid": "^4.7",
       "ext-fileinfo": "*",
     "ext-imagick": "*",
-    "league/flysystem-ziparchive": "^3.29",
+    "league/flysystem-ziparchive": "^3.29"
   },
     "autoload": {
         "psr-4": {
