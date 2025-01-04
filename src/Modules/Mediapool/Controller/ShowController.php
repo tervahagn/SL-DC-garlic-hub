@@ -55,15 +55,24 @@ class ShowController
 			'this_layout' => [
 				'template' => 'mediapool/overview', // Template-name
 				'data' => [
+					'LANG_DRAG_AND_DROP' => $translator->translate('drag_and_drop', 'mediapool'),
+					'LANG_INSERT_FILES_HERE' => $translator->translate('insert_files_here', 'mediapool'),
+					'LANG_START_UPLOAD' => $translator->translate('start_upload', 'mediapool'),
 					'LANG_SAVE' => $translator->translate('save', 'main'),
-					'LANG_CANCEL' => $translator->translate('cancel', 'main'),
+					'LANG_CLOSE' => $translator->translate('close', 'main'),
 					'LANG_FOLDER_NAME' => $translator->translate('name', 'main'),
 					'LANG_IS_PUBLIC' => $translator->translate('is_public', 'main'),
 					'LANG_EDIT' => $translator->translate('edit', 'main'),
+					'LANG_DOWNLOAD' => $translator->translate('download', 'main'),
 					'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool'),
 					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),
 					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
+					'LANG_FILENAME' => $translator->translate('filename', 'mediapool'),
+					'LANG_MIMETYPE' => $translator->translate('mimetype', 'mediapool'),
+					'LANG_FILESIZE' => $translator->translate('filesize', 'mediapool'),
+					'LANG_DIMENSIONS' => $translator->translate('dimensions', 'mediapool'),
+					'LANG_MEDIA_DURATION' => $translator->translate('media_duration', 'mediapool'),
 				]
 			]
 		];

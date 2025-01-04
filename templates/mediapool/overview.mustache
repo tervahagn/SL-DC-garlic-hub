@@ -55,13 +55,13 @@
 				</nav>
 
 				<section class="tab-content active" id="dragDropTab">
-					<h3>Drag and Drop</h3>
+					<h3>{{LANG_DRAG_AND_DROP}}</h3>
 					<p id="dropzone">
-						Dateien hier hineinziehen oder klicken, um auszuwählen.
+						{{LANG_INSERT_FILES_HERE}}
 						<input type="file" id="fileInput" style="display: none;" multiple>
 					</p>
 					<div id="dropzone-preview"></div>
-					<button id="startFilesUpload" class="upload-button">Hochladen starten</button>
+					<button id="startFilesUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<section class="tab-content" id="linkTab">
@@ -92,7 +92,7 @@
 				</section>
 
 				<footer>
-					<button id="closeDialog">{{LANG_CANCEL}}</button>
+					<button id="closeDialog">{{LANG_CLOSE}}</button>
 				</footer>
 			</dialog>
 
@@ -108,24 +108,26 @@
 				<article class="media-item">
 					<figure>
 						<i class="media-type-icon bi"></i>
-						<i class="media-menu bi bi-three-dots"></i>
 						<img src="" alt="Media Thumbnail">
 						<figcaption class="media-info">
-							<p>Filename: <span class="media-filename">example.jpg</span></p>
-							<p>MIME-Type: <span class="media-mimetype">image/jpeg</span></p>
-							<p>Filesize: <span class="media-filesize">0</span></p>
-							<p style="display: none">Dimensions: <span class="media-dimensions">0</span></p>
-							<p style="display: none">Duration: <span class="media-duration">0</span></p>
+							<p>{{LANG_FILENAME}}: <span class="media-filename">example.jpg</span></p>
+							<p>{{LANG_MIMETYPE}}: <span class="media-mimetype">image/jpeg</span></p>
+							<p>{{LANG_FILESIZE}}: <span class="media-filesize">0</span></p>
+							<p style="display: none">{{LANG_DIMENSIONS}}: <span class="media-dimensions">100x100</span></p>
+							<p style="display: none">{{LANG_MEDIA_DURATION}}: <span class="media-duration">00:00:00</span></p>
 						</figcaption>
 					</figure>
 				</article>
 			</template>
 			<template id="context_menu_media">
 				<ul class="context_menu">
-					<li id="edit_node">
+					<li id="edit_media">
 						<i class="bi bi-pencil"></i> {{LANG_EDIT}}
 					</li>
-					<li id="remove_node">
+					<li id="download_media">
+						<i class="bi bi-download"></i> {{LANG_DOWNLOAD}}
+					</li>
+					<li id="remove_media">
 						<i class="bi bi-trash"></i> {{LANG_REMOVE}}
 					</li>
 				</ul>
