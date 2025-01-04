@@ -84,9 +84,11 @@ class UploadService
 					$mimetype         = $this->mimeTypeDetector->detectFromFile($absoluteFilePath);
 					$metadata         = json_encode([
 								'size'       => $mediaHandler->getFileSize(),
-								'dimensions' => $mediaHandler->getDimensions()]
+								'dimensions' => $mediaHandler->getDimensions(),
+								'duration'   => $mediaHandler->getDuration()]
 					);
 					$extension = pathinfo($newFilePath, PATHINFO_EXTENSION);
+					$thumbExtension = $mediaHandler->getThumbExtension();
 				}
 				else
 				{
@@ -94,6 +96,7 @@ class UploadService
 					$mimetype  = $dataSet['mimetype'];
 					$metadata  = $dataSet['metadata'];
 					$extension = $dataSet['extension'];
+					$thumbExtension = $dataSet['thumb_extension'];
 				}
 
 				$fileData = [
@@ -104,6 +107,8 @@ class UploadService
 					'mimetype'  => $mimetype,
 					'metadata'  => $metadata,
 					'filename'  => $uploadedFile->getClientFilename(),
+					'extension' => $extension,
+					'thumb_extension' => $thumbExtension
 				];
 				$this->mediaRepository->insert($fileData);
 				$ret[] = ['success' => true, 'message' => $uploadedFile->getClientFilename().' successful uploaded'];

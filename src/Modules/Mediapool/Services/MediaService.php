@@ -41,7 +41,14 @@ class MediaService
 	 */
 	public function listMediaBy(int $node_id): array
 	{
-		return $this->mediaRepository->findAllByNodeId($node_id);
+		$result = $this->mediaRepository->findAllByNodeId($node_id);
+
+		foreach ($result as &$media)
+		{
+			$media['metadata'] = json_decode($media['metadata'], true);
+		}
+
+		return $result;
 	}
 
 

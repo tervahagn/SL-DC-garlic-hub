@@ -42,6 +42,8 @@ abstract class AbstractMediaHandler
 	protected string $previewPath;
 	protected array $dimensions = [];
 	protected int $fileSize;
+	protected string $thumbExtension = 'jpg';
+	protected int $duration = 0;
 
 	/**
 	 * @param Config     $config
@@ -66,6 +68,17 @@ abstract class AbstractMediaHandler
 	public function getDimensions(): array
 	{
 		return $this->dimensions;
+	}
+
+	public function getDuration(): int
+	{
+		return $this->duration;
+	}
+
+
+	public function getThumbExtension(): string
+	{
+		return $this->thumbExtension;
 	}
 
 	public function getFileSize(): int

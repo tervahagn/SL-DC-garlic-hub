@@ -346,11 +346,12 @@ class Video extends AbstractMediaHandler
 			}
 		}
 
-		$this->mediaProperties['start_time'] =  (string) $meta_data->format->start_time;
-		$this->mediaProperties['duration']   =  (string) $meta_data->format->duration;
-		$this->mediaProperties['filename']   =  (string) $meta_data->format->filename;
-		$this->mediaProperties['filesize']   =  (int) $meta_data->format->size;
-		$this->mediaProperties['container']  =  (string) $meta_data->format->format_name;
+		$this->mediaProperties['start_time'] = (string) $meta_data->format->start_time;
+		$this->mediaProperties['duration']   = (string) $meta_data->format->duration;
+		$this->duration                      = (int) $meta_data->format->duration;
+		$this->mediaProperties['filename']   = (string) $meta_data->format->filename;
+		$this->mediaProperties['filesize']   = (int) $meta_data->format->size;
+		$this->mediaProperties['container']  = (string) $meta_data->format->format_name;
 	}
 
 	/**
