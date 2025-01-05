@@ -14,10 +14,10 @@ import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
-	// treeview section
 	let nodesModel    = new NodesModel();
 	let fetchClient   = new FetchClient();
 	let mediaService  = new MediaService(fetchClient);
+
 	let mediaList     = new MediaList(
 		document.getElementById("media-list"),
 		document.getElementById('media-template'),
@@ -44,8 +44,6 @@ document.addEventListener("DOMContentLoaded", function(event)
 		treeDialog.prepareShow("add_root_folder", lang);
 		treeDialog.show();
 	});
-
-	// upload section
 
 	const uploaderDialog = new UploaderDialog(
 		document.getElementById('uploaderDialog'),

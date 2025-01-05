@@ -41,11 +41,13 @@ class ShowController
 				'additional_css' => [
 					'/css/external/bootstrap-icons.min.css',
 					'/css/external/wunderbaum.min.css',
+					'/css/external/glightbox.min.css',
 					'/css/mediapool/overview.css',
 					'/css/mediapool/uploads.css'
 				],
 				'footer_scripts' => [
 					'/js/external/wunderbaum.umd.min.js',
+					'/js/external/glightbox.min.js',
 					'/js/external/jszip.min.js'
 				],
 				'footer_modules' => [
@@ -68,6 +70,7 @@ class ShowController
 					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),
 					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
+					'LANG_OWNER' => $translator->translate('owner', 'main'),
 					'LANG_FILENAME' => $translator->translate('filename', 'mediapool'),
 					'LANG_MIMETYPE' => $translator->translate('mimetype', 'mediapool'),
 					'LANG_FILESIZE' => $translator->translate('filesize', 'mediapool'),

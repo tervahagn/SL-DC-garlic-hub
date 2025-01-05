@@ -104,19 +104,31 @@
 
 			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
 			</div>
+			<dialog id="image-dialog">
+				<figure>
+					<img id="dialog-image" src="" alt="Full Image">
+					<figcaption id="image-caption">Bildbeschreibung</figcaption>
+				</figure>
+				<button id="close-button">Close</button>
+			</dialog>
 			<template id="media-template">
 				<article class="media-item">
-					<figure>
-						<i class="media-type-icon bi"></i>
-						<img src="" alt="Media Thumbnail">
-						<figcaption class="media-info">
-							<p>{{LANG_FILENAME}}: <span class="media-filename">example.jpg</span></p>
-							<p>{{LANG_MIMETYPE}}: <span class="media-mimetype">image/jpeg</span></p>
-							<p>{{LANG_FILESIZE}}: <span class="media-filesize">0</span></p>
-							<p style="display: none">{{LANG_DIMENSIONS}}: <span class="media-dimensions">100x100</span></p>
-							<p style="display: none">{{LANG_MEDIA_DURATION}}: <span class="media-duration">00:00:00</span></p>
-						</figcaption>
-					</figure>
+					<a href="" class="glightbox"
+					   data-glightbox="descPosition: left; zoomable: true;"
+					>
+						<figure>
+							<i class="media-type-icon bi"></i>
+								<img src="" alt="Media Thumbnail">
+							<figcaption class="media-info">
+								<p>{{LANG_FILENAME}}: <span class="media-filename">example.jpg</span></p>
+								<p>{{LANG_OWNER}}: <span class="media-owner">image/jpeg</span></p>
+								<p>{{LANG_MIMETYPE}}: <span class="media-mimetype">image/jpeg</span></p>
+								<p>{{LANG_FILESIZE}}: <span class="media-filesize">0</span></p>
+								<p style="display: none">{{LANG_DIMENSIONS}}: <span class="media-dimensions">100x100</span></p>
+								<p style="display: none">{{LANG_MEDIA_DURATION}}: <span class="media-duration">00:00:00</span></p>
+							</figcaption>
+						</figure>
+					</a>
 				</article>
 			</template>
 			<template id="context_menu_media">
