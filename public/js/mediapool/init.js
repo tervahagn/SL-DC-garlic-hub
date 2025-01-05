@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 	let mediaList     = new MediaList(
 		document.getElementById("media-list"),
 		document.getElementById('media-template'),
-		new ContextMenuMediaFactory(document.getElementById('context_menu_media'), null, null)
+		new ContextMenuMediaFactory(document.getElementById('context_menu_media'), fetchClient, null)
 	);
 
 	let directoryView  = new DirectoryView(

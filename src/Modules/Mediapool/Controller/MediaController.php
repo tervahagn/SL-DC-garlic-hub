@@ -21,6 +21,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Mediapool\Services\MediaService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -37,6 +38,9 @@ class MediaController
 		$this->mediaService = $mediaService;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
@@ -52,9 +56,33 @@ class MediaController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$media_list = $this->mediaService->listMediaBy($node_id);
+		$media_list = $this->mediaService->listMedia($node_id);
 		$response->getBody()->write(json_encode(['success' => true, 'media_list' => $media_list]));
 
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('media_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$this->mediaService->setUID($this->UID);
+		$count = $this->mediaService->deleteMedia($bodyParams['media_id']);
+		$response->getBody()->write(json_encode(['success' => true, 'data' => ['deleted_media' => $count]]));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

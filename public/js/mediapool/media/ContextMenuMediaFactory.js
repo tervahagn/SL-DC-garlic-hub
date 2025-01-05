@@ -22,13 +22,13 @@ import { ContextMenuMedia } from "./ContextMenuMedia.js";
 export class ContextMenuMediaFactory
 {
     #menuElement = null;
-    #mediaModel  = null;
+    #fetchClient = null;
     #mediaDialog = null;
 
-    constructor(menuElement, mediaModel, mediaDialog)
+    constructor(menuElement, fetchClient, mediaDialog)
     {
         this.#menuElement = menuElement;
-        this.#mediaModel  = mediaModel;
+        this.#fetchClient  = fetchClient;
         this.#mediaDialog = mediaDialog;
     }
 
@@ -36,7 +36,7 @@ export class ContextMenuMediaFactory
     {
         return new ContextMenuMedia(
             this.#menuElement.content.cloneNode(true).firstElementChild,
-            this.#mediaModel,
+            this.#fetchClient,
             this.#mediaDialog
         );
     }

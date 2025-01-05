@@ -56,7 +56,7 @@ export class MediaList
         const clone = this.#templateElement.content.cloneNode(true);
 
         clone.querySelector('.media-type-icon').classList.add(this.#detectMediaType(media.mimetype));
-
+        clone.querySelector('.media-item').setAttribute('data-media-id', media.media_id);
         const img = clone.querySelector('img');
         img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
         img.alt = 'Thumbnail: ' + media.filename;
@@ -82,25 +82,15 @@ export class MediaList
 
     #addContextMenu(mediaItem)
     {
-
         mediaItem.addEventListener("contextmenu", (event) => {
             event.preventDefault();
 
-            let contextMenu    = this.#contextMenuMediaFactory.createMenu();
+            const contextMenu    = this.#contextMenuMediaFactory.createMenu();
             contextMenu.show(event);
 
+            const removeMediaMenu = document.getElementById("remove_media");
 
-            /*            const currentTreeNode = this.setActiveNodeFromEventTarget(event.target);
-
-                        const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
-
-                        const editNodeElement = document.getElementById("edit_node");
-                        contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
-
-                        const removeMediaElement = document.getElementById("remove_node");
-                        contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
-
-             */
+            contextMenu.addRemoveEvent(removeMediaMenu, mediaItem);
         });
     }
 

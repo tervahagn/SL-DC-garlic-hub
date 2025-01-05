@@ -53,3 +53,5 @@ $app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
 $app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
 $app->post('/async/mediapool/upload', [UploadController::class, 'upload']);
 $app->get('/async/mediapool/media/{node_id}', [MediaController::class, 'list']);
+$app->post('/async/mediapool/media', [MediaController::class, 'add']);
+$app->delete('/async/mediapool/media', [MediaController::class, 'delete']);

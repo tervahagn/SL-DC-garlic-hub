@@ -20,14 +20,14 @@
 export class ContextMenuMedia
 {
     #menuElement = null;
-    #mediaModel  = null;
-    #treeDialog  = null;
+    #fetchClient = null;
+    #mediaDialog  = null;
 
-    constructor(menuElement, nodesModel, treeDialog)
+    constructor(menuElement, fetchClient, treeDialog)
     {
         this.#menuElement = menuElement;
-        this.#mediaModel  = nodesModel;
-        this.#treeDialog  = treeDialog;
+        this.#fetchClient = fetchClient;
+        this.#mediaDialog = treeDialog;
     }
 
     show(event)
@@ -38,42 +38,43 @@ export class ContextMenuMedia
         document.body.appendChild(this.#menuElement);
         document.addEventListener('click', () => this.#menuElement.remove(), {once: true});
     }
-/*
-    addEditEvent(editNodeElement, currentTreeNode, lang)
+
+    addEditEvent(editMediaMenuElement, currentMediaId, lang)
     {
-        editNodeElement.addEventListener("click", () => {
-            this.#treeDialog.prepareShow("edit_folder", lang);
-            this.#treeDialog.show();
+        editMediaMenuElement.addEventListener("click", () => {
+            this.#mediaDialog.prepareShow("edit_media", lang);
+            this.#mediaDialog.show();
         });
     }
 
-    addRemoveEvent(removeNodeElement, currentTreeNode)
+    addRemoveEvent(editMediaMenuElement, currentMedia)
     {
-        removeNodeElement.addEventListener("click", () => {
+        editMediaMenuElement.addEventListener("click", () => {
             (async () => {
 
-                const apiUrl = "/async/mediapool/node";
-                const dataToSend = {"node_id": currentTreeNode.key};
+                const apiUrl = "/async/mediapool/media";
+                const dataToSend = {"media_id": currentMedia.getAttribute('data-media-id')};
                 const options = {
                     method: 'DELETE',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(dataToSend)
                 }
 
-                const result = await this.mediaModel.fetchData(apiUrl, options).catch(error => {
+                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
                     console.error('Fetch error:', error.message);
                     return null;
                 });
 
-                if (!result || !result.success) {
-                    console.error('Error:', result?.error_message || 'Unknown error');
+                let result_obj = JSON.parse(result);
+                if (!result_obj || !result_obj.success)
+                {
+                    console.error('Error:', result_obj?.error_message || 'Unknown error');
                     return;
                 }
 
-                currentTreeNode.remove();
+                currentMedia.remove();
             })();
         });
     }
 
- */
 }

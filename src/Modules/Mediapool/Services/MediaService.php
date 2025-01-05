@@ -29,6 +29,7 @@ class MediaService
 {
 	private FilesRepository $mediaRepository;
 	private LoggerInterface $logger;
+	private int $UID;
 
 	public function __construct(FilesRepository $mediaRepository, LoggerInterface $logger)
 	{
@@ -36,10 +37,15 @@ class MediaService
 		$this->logger = $logger;
 	}
 
+	public function setUID(int $UID): void
+	{
+		$this->UID = $UID;
+	}
+
 	/**
 	 * @throws Exception
 	 */
-	public function listMediaBy(int $node_id): array
+	public function listMedia(int $node_id): array
 	{
 		$result = $this->mediaRepository->findAllByNodeId($node_id);
 
@@ -51,5 +57,15 @@ class MediaService
 		return $result;
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function deleteMedia(string $media_id): int
+	{
+		$field     = ['deleted' => 1];
+		$condition = ['media_id' => $media_id];
+
+		return $this->mediaRepository->updateWithWhere($field, $condition);
+	}
 
 }
