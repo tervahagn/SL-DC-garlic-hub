@@ -11,17 +11,26 @@ import { FetchClient } from "../core/FetchClient.js";
 import { MediaList } from "./media/MediaList.js";
 import { MediaService } from "./media/MediaService.js";
 import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
+import { MediaDialog } from "./media/MediaDialog.js";
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
 	let nodesModel    = new NodesModel();
 	let fetchClient   = new FetchClient();
 	let mediaService  = new MediaService(fetchClient);
+	let mediaDialog   = new MediaDialog(
+		document.getElementById('editMediaDialog'),
+		document.getElementById("closeEditMediaDialog"),
+		fetchClient
+	)
 
 	let mediaList     = new MediaList(
 		document.getElementById("media-list"),
 		document.getElementById('media-template'),
-		new ContextMenuMediaFactory(document.getElementById('context_menu_media'), fetchClient, null)
+		new ContextMenuMediaFactory(
+			document.getElementById('context_menu_media'),
+			fetchClient,
+			mediaDialog)
 	);
 
 	let directoryView  = new DirectoryView(

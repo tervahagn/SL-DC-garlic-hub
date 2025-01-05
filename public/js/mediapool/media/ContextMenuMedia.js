@@ -23,11 +23,11 @@ export class ContextMenuMedia
     #fetchClient = null;
     #mediaDialog  = null;
 
-    constructor(menuElement, fetchClient, treeDialog)
+    constructor(menuElement, fetchClient, mediaDialog)
     {
         this.#menuElement = menuElement;
         this.#fetchClient = fetchClient;
-        this.#mediaDialog = treeDialog;
+        this.#mediaDialog = mediaDialog;
     }
 
     show(event)
@@ -42,18 +42,11 @@ export class ContextMenuMedia
     addEditEvent(editMediaMenuElement, currentMediaId, lang)
     {
         editMediaMenuElement.addEventListener("click", () => {
-            this.#mediaDialog.prepareShow("edit_media", lang);
+     //       this.#mediaDialog.prepareShow("edit_media", lang);
             this.#mediaDialog.show();
         });
     }
 
-    addEditEvent(editMediaMenuElement, currentTreeNode, lang)
-    {
-        editNodeElement.addEventListener("click", () => {
-            this.#treeDialog.prepareShow("edit_folder", lang);
-            this.#treeDialog.show();
-        });
-    }
     addRemoveEvent(removeMediaMenuElement, currentMedia)
     {
         removeMediaMenuElement.addEventListener("click", () => {

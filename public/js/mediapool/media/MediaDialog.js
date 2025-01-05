@@ -25,11 +25,10 @@ export class MediaDialog
     #mediaElement = null;
     #fetchClient = null;
 
-    constructor(dialog_element, close_element, mediaElement, fetchClient)
+    constructor(dialog_element, close_element, fetchClient)
     {
         this.#dialogElement = dialog_element;
         this.#closeElement  = close_element;
-        this.#mediaElement  = mediaElement;
         this.#fetchClient   = fetchClient;
 
         this.#addCancelEvent();
@@ -56,12 +55,12 @@ export class MediaDialog
                 return;
 
             (async () => {
-                const method     = this.#determineMethod();
-                const apiUrl     = '/async/mediapool/node';
-                const dataToSend = this.#determineDataToSend();
+                const method     = "POST";
+                const apiUrl     = "/async/mediapool/media/";
+                const dataToSend = ""; //this.#determineDataToSend();
                 const options    = {method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
 
-                const result = await this.#nodesModel.fetchData(apiUrl, options).catch(error => {
+                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
                     console.error('Fetch error:', error.message);
                     return null;
                 });
@@ -72,18 +71,7 @@ export class MediaDialog
                     return;
                 }
 
-                switch (this.#action) {
-                    case "add_root_folder":
-                        this.#directoryView.addRootChild(result.data.id, result.data.new_name);
-                        break;
-                    case "add_sub_folder":
-                        this.#directoryView.addSubChild(result.data.id, result.data.new_name);
-                        break;
-                    case "edit_folder":
-                        this.#directoryView.setActiveTitle(result.data.new_name);
-                        break;
-                }
-
+                // change DOM
             })();
         });
     }

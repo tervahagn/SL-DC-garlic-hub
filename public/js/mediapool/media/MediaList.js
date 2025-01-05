@@ -110,9 +110,8 @@ export class MediaList
             const contextMenu    = this.#contextMenuMediaFactory.createMenu();
             contextMenu.show(event);
 
-            const removeMediaMenu = document.getElementById("remove_media");
-
-            contextMenu.addRemoveEvent(removeMediaMenu, mediaItem);
+            contextMenu.addRemoveEvent(document.getElementById("remove_media"), mediaItem);
+            contextMenu.addEditEvent(document.getElementById("edit_media"), mediaItem);
         });
     }
 
