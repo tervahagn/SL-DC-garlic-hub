@@ -42,9 +42,11 @@ export class MediaList
                 css: "/css/external/plyr.css",
                 js: "/js/external/plyr.js"
             },
-            touchNavigation: true,
+            width: "90vw",
+            height: "90vh",
             loop: false,
             autoplayVideos: true
+
         });
 
     }

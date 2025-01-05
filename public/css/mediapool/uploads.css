@@ -1,6 +1,7 @@
-dialog
+#uploaderDialog
 {
-    width: 800px;
+    width: 50vw;
+    min-height:600px;
     border: none;
     border-radius: var(--gh-border-radius);
     box-shadow: var(--gh-box-shadow);
@@ -25,13 +26,15 @@ dialog
     .tab-content h3 {padding:0;margin:0;}
     .tab-content.active {display: block;}
 
-    dialog footer {padding: 1em; border-top: 1px solid #ccc; text-align: right; background: #f9f9f9; }
-
-    .dialog-footer button {
-        padding: 5px 10px;
-        font-size: 14px;
-        cursor: pointer;
+    dialog footer
+    {
+        padding: 1em;
+        border-top: 1px solid #ccc;
+        text-align: right;
+        background: #f9f9f9;
     }
+
+    .dialog-footer button {padding: 5px 10px; font-size: 14px; cursor: pointer;}
 
     #dropzone{border: 2px dashed #ccc; padding: 1em; margin:1em 0 0 0; text-align: center;}
     #dropzone-preview{display:flex; flex-wrap: wrap; gap:1rem;margin:1em 0;}
