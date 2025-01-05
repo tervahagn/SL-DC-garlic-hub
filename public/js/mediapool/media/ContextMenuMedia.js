@@ -47,9 +47,16 @@ export class ContextMenuMedia
         });
     }
 
-    addRemoveEvent(editMediaMenuElement, currentMedia)
+    addEditEvent(editMediaMenuElement, currentTreeNode, lang)
     {
-        editMediaMenuElement.addEventListener("click", () => {
+        editNodeElement.addEventListener("click", () => {
+            this.#treeDialog.prepareShow("edit_folder", lang);
+            this.#treeDialog.show();
+        });
+    }
+    addRemoveEvent(removeMediaMenuElement, currentMedia)
+    {
+        removeMediaMenuElement.addEventListener("click", () => {
             (async () => {
 
                 const apiUrl = "/async/mediapool/media";

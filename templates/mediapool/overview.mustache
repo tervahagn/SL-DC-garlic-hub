@@ -66,8 +66,9 @@
 
 				<section class="tab-content" id="linkTab">
 					<h3>Link Upload</h3>
-					<p>Geben Sie die URL des Mediums ein:</p>
-					<input type="text" placeholder="https://example.com/media.jpg" style="width: 100%; padding: 10px;">
+					<label>Geben Sie die URL des Mediums ein:
+						<input type="text" placeholder="https://example.com/media.jpg" style="width: 100%; padding: 10px;">
+					</label>
 					<button id="startExternalFilesUpload" class="upload-button">Hochladen starten</button>
 				</section>
 
@@ -86,8 +87,9 @@
 
 				<section class="tab-content" id="unsplashTab">
 					<h3>Unsplash Integration</h3>
-					<p>Suchen Sie nach Bildern:</p>
-					<input type="text" placeholder="Suchbegriff" style="width: 100%; padding: 10px;">
+					<label>Suchen Sie nach Bildern:
+						<input type="text" placeholder="Suchbegriff" style="width: 100%; padding: 10px;">
+					</label>
 					<div style="margin-top: 10px;">Bildervorschau hier...</div>
 				</section>
 
@@ -104,18 +106,32 @@
 
 			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
 			</div>
-			<dialog id="image-dialog">
-				<figure>
-					<img id="dialog-image" src="" alt="Full Image">
-					<figcaption id="image-caption">Bildbeschreibung</figcaption>
-				</figure>
-				<button id="close-button">Close</button>
+			<dialog id="editMediaDialog">
+				<button id="closeEditDialog" class="close-button" aria-label="Close">&times;</button>
+				<form method="dialog">
+					<fieldset>
+						<legend></legend>
+						<label for="edit-filename">{{LANG_FILENAME}}:
+							<input type="text" id="edit-filename" name="edit-filename">
+						</label>
+						<label for="edit-meta-description">{{LANG_META_DESCRIPTION}}:
+							<textarea id="edit-meta-description" name="edit-meta-description">
+							</textarea>
+						</label>
+
+						<input type="hidden" id="media_id" name="media_id">
+
+						<div class="dlg_buttons">
+							<button value="submit" type="submit">{{LANG_SAVE}}</button>
+							<button value="cancel" formnovalidate autofocus>{{LANG_CANCEL}}</button>
+						</div>
+					</fieldset>
+				</form>
 			</dialog>
 			<template id="media-template">
 				<article class="media-item">
 					<a href="" class="glightbox"
-					   data-glightbox="descPosition: left; zoomable: true;"
-					>
+					   data-glightbox="descPosition: left; zoomable: true;">
 						<figure>
 							<i class="media-type-icon bi"></i>
 								<img src="" alt="Media Thumbnail">
@@ -136,9 +152,9 @@
 					<li id="edit_media">
 						<i class="bi bi-pencil"></i> {{LANG_EDIT}}
 					</li>
-					<li id="download_media">
+					<!--<li id="download_media">
 						<i class="bi bi-download"></i> {{LANG_DOWNLOAD}}
-					</li>
+					</li> -->
 					<li id="remove_media">
 						<i class="bi bi-trash"></i> {{LANG_REMOVE}}
 					</li>
