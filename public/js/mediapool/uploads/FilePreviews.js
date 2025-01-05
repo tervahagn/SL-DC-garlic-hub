@@ -88,7 +88,7 @@ export class FilePreviews
         // Tooltip
         const tooltip     = document.createElement("div");
         tooltip.className = "tooltip";
-        tooltip.innerHTML = `${metadata.name}<br> (${metadata.size})`;
+        tooltip.innerHTML = `${metadata.name}<br> ${metadata.size}<br /> ${metadata.type}`
         container.appendChild(tooltip);
         container.addEventListener("mouseenter", () => {tooltip.style.visibility = "visible";});
         container.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
