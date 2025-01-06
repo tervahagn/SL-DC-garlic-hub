@@ -114,7 +114,7 @@ export class FileUploader
     {
         let progressContainer = document.createElement('div');
         progressContainer.id = "progressContainer";
-        let progressBar = document.createElement('div');
+        let progressBar = document.createElement('progress');
         progressBar.id = "progressBar";
         progressContainer.appendChild(progressBar);
         container.appendChild(progressContainer);
