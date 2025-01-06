@@ -76,14 +76,22 @@ export class FetchClient
                     text: () => Promise.resolve(this.#xhr.responseText),
                     json: () => {
                         return new Promise((resolve, reject) => {
-                            try
+                            const responseText = this.#xhr.responseText;
+
+                            if (this.#isJSON(responseText))
                             {
-                                resolve(JSON.parse(this.#xhr.responseText));
+                                try
+                                {
+                                    resolve(JSON.parse(responseText));
+                                }
+                                catch (error)
+                                {
+                                    reject(new Error("JSON Parse Error: " + error.message));
+                                }
                             }
-                            catch (error)
-                            {
-                                reject(new Error("JSON Parse Error: " + error.message));
-                            }
+                            else
+                                reject(new Error("Response is not JSON: " + responseText));
+
                         });
                     }
                 };
@@ -103,6 +111,18 @@ export class FetchClient
         });
     }
 
+    #isJSON(str)
+    {
+        try
+        {
+            JSON.parse(str);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     #checkResponse(response)
     {
