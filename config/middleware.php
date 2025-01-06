@@ -33,19 +33,44 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Middleware\Session;
+use Slim\Psr7\Response;
 use SlimSession\Helper;
 
-return function (ContainerInterface $container, $start_time, $start_memory): App {
+return function (ContainerInterface $container, $start_time, $start_memory): App
+{
 
 	/** @var App $app */
 	$app = $container->get(App::class);
+
+	set_error_handler(function ($errno, $errstr, $errfile, $errline)
+	{
+		if (!(error_reporting() & $errno)) // ignore errors when suppressed via @
+			return false;
+
+		throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+	});
+
+	register_shutdown_function(function () use ($container) {
+		$error = error_get_last();
+		if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR]))
+		{
+			$logger = $container->get('AppLogger');
+			$logger->error('Fatal Error', $error);
+
+			http_response_code(200);
+			echo json_encode([
+				'success' => false,
+				'error_message' => 'A critical error occurred. Please try again later.'
+			]);
+		}
+	});
 
 	// Error Middleware
 	$errorMiddleware = $app->addErrorMiddleware(
 		$_ENV['APP_DEBUG'],
 		true,
 		true,
-		$container->get('AppLogger')
+		//$container->get('AppLogger')
 	);
 	$errorMiddleware->setDefaultErrorHandler(function (
 		ServerRequestInterface $request,
@@ -58,18 +83,23 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 			'message' => $exception->getMessage(),
 			'trace' => $exception->getTraceAsString(),
 		]);
-		if ($displayErrorDetails) // only when $_ENV['APP_DEBUG'] is true
-			throw $exception;
+
+		$response = new Response();
+		$response->getBody()->write(json_encode(['success' => false, 'error_message' => $exception->getMessage()]));
+		return $response->withStatus(200);
 	});
-	// Final Render Middleware (AFTER Controllers)
-	$app->add(new FinalRenderMiddleware(
-		new MustacheAdapter($container->get(Mustache_Engine::class))
-	));
+
+	// Final Render Middleware (AFTER UI-Controllers)
+	if (!str_contains($_SERVER['REQUEST_URI'], 'async') && !str_contains($_SERVER['REQUEST_URI'], 'api'))
+		$app->add($container->get(FinalRenderMiddleware::class));
+	else
+		$app->add(function ($request, $handler)	{return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
 
 	require_once __DIR__ . '/route.php';
 
-	// Layout Data Middleware (BEFORE Controllers)
-	$app->add(new LayoutDataMiddleware());
+	// Layout Data Middleware (BEFORE UI-Controllers)  SLIM midddleware order is vice versa
+	if (!str_contains($_SERVER['REQUEST_URI'], 'async') && !str_contains($_SERVER['REQUEST_URI'], 'api'))
+		$app->add(new LayoutDataMiddleware());
 
 	// Environment Middleware
 	$app->add(new EnvironmentMiddleware(

@@ -53,12 +53,6 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	{
 		$response = $handler->handle($request);
 
-		// If it's an API route, return the response without template rendering
-		if (str_starts_with($request->getUri()->getPath(), '/api'))
-		{
-			return $response;
-		}
-
 		$layoutData   = $request->getAttribute('layoutData', []);
 
 		if ($_ENV['APP_DEBUG'])

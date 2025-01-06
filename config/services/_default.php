@@ -27,6 +27,7 @@ use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
+use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Framework\User\UserEntityFactory;
@@ -44,7 +45,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
@@ -53,54 +53,64 @@ use SlimSession\Helper;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
-$dependencies['ModuleLogger'] = DI\factory(function (ContainerInterface $container) {
+$dependencies['ModuleLogger'] = DI\factory(function (ContainerInterface $container)
+{
 	$logger = new Logger('modules');
 	$config = $container->get(Config::class);
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/module.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/module.log', $config->getLogLevel()));
 
 	return $logger;
 });
-$dependencies['FrameworkLogger'] = DI\factory(function (ContainerInterface $container) {
+$dependencies['FrameworkLogger'] = DI\factory(function (ContainerInterface $container)
+{
 	$logger = new Logger('modules');
 	$config = $container->get(Config::class);
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/framework.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/framework.log', $config->getLogLevel()));
 
 	return $logger;
 });
-$dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container) {
+$dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container)
+{
 	$logger = new Logger('app');
 	$config = $container->get(Config::class);
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/framework.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/framework.log', $config->getLogLevel()));
 
 	return $logger;
 });
-
-
-$dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
-$dependencies[Application::class] = DI\factory(function () { // symfony console application
+$dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new FinalRenderMiddleware(new MustacheAdapter($container->get(Mustache_Engine::class)));
+});
+$dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
+$dependencies[Application::class] = DI\factory(function ()
+{ // symfony console application
 	return new Application();
 });
-$dependencies[Session::class] = DI\factory(function () {
+$dependencies[Session::class] = DI\factory(function ()
+{
 	return new Session([
 		'name' => 'garlic_session',
 		'autorefresh' => true,
 		'lifetime' => '1 hour',
 	]);
 });
-$dependencies[Helper::class] = DI\factory(function () {
+$dependencies[Helper::class] = DI\factory(function ()
+{
 	return new Helper();
 });
-$dependencies[Locales::class] = DI\factory(function (ContainerInterface $container) {
+$dependencies[Locales::class] = DI\factory(function (ContainerInterface $container)
+{
 	return new Locales(
 		$container->get(Config::class),
 		new SessionLocaleExtractor($container->get(Helper::class))
 	);
 });
-$dependencies[Psr16Adapter::class] = DI\factory(function () {
+$dependencies[Psr16Adapter::class] = DI\factory(function ()
+{
 	return new Psr16Adapter('Files');
 });
-
-$dependencies[Translator::class] = DI\factory(function (ContainerInterface $container) {
+$dependencies[Translator::class] = DI\factory(function (ContainerInterface $container)
+{
 	$translationDir = $container->get(Config::class)->getPaths('translationDir');
 	return new Translator(
 		$container->get(Locales::class),
@@ -109,54 +119,64 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[Mustache_Engine::class] = DI\factory(function () {
+$dependencies[Mustache_Engine::class] = DI\factory(function ()
+{
 	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
 });
-$dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine) {
+$dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine)
+{
 	return new MustacheAdapter($mustacheEngine);
 });
-$dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container) {
+$dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container)
+{
 	$config = $container->get(Config::class);
 	$connectionParams = [
-		'path'     => $config->getEnv('DB_MASTER_PATH'), // SQLite needs `path`
-		'dbname'   => $config->getEnv('DB_MASTER_NAME'),
-		'user'     => $config->getEnv('DB_MASTER_USER'),
+		'path' => $config->getEnv('DB_MASTER_PATH'), // SQLite needs `path`
+		'dbname' => $config->getEnv('DB_MASTER_NAME'),
+		'user' => $config->getEnv('DB_MASTER_USER'),
 		'password' => $config->getEnv('DB_MASTER_PASSWORD'),
-		'host'     => $config->getEnv('DB_MASTER_HOST'),
-		'port'     => $config->getEnv('DB_MASTER_PORT'),
-		'driver'   => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
+		'host' => $config->getEnv('DB_MASTER_HOST'),
+		'port' => $config->getEnv('DB_MASTER_PORT'),
+		'driver' => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
 	];
 
 	$logger = new Logger('dbal');
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/dbal.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/dbal.log', $config->getLogLevel()));
 	$dbalConfig = new Configuration();
 	$dbalConfig->setMiddlewares([new Middleware($logger)]);
 
 	return DriverManager::getConnection($connectionParams, $dbalConfig);
 });
-$dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container) {
+$dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container)
+{
 	$systemDir = $container->get(Config::class)->getPaths('systemDir');
 	return new Filesystem(new LocalFilesystemAdapter($systemDir));
 });
 if (php_sapi_name() === 'cli')
 {
-	$dependencies[Repository::class] = DI\factory(function (ContainerInterface $container) {
+	$dependencies[Repository::class] = DI\factory(function (ContainerInterface $container)
+	{
 		return new Repository($container->get('SqlConnection'));
 	});
-	$dependencies[Runner::class] = DI\factory(function (ContainerInterface $container) {
+	$dependencies[Runner::class] = DI\factory(function (ContainerInterface $container)
+	{
 
 		$config = $container->get(Config::class);
-		$path   = $config->getPaths('migrationDir').'/'.$config->getEnv('APP_PLATFORM_EDITION').'/';
+		$path = $config->getPaths('migrationDir') . '/' . $config->getEnv('APP_PLATFORM_EDITION') . '/';
 		return new Runner(
 			$container->get(Repository::class),
 			new Filesystem(new LocalFilesystemAdapter($path))
 		);
 	});
-	$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container) {
+	$dependencies[MigrateCommand::class] = DI\factory(function (ContainerInterface $container)
+	{
 		return new MigrateCommand($container->get(Runner::class));
 	});
 }
-$dependencies[Messages::class] = DI\factory(function () {return new Messages();});
+$dependencies[Messages::class] = DI\factory(function ()
+{
+	return new Messages();
+});
 
 $dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -166,7 +186,7 @@ $dependencies[UserService::class] = DI\factory(function (ContainerInterface $con
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FormBuilder::class] = DI\factory(function ()
 {
 	return new FormBuilder(
 		new FieldsFactory(),
