@@ -39,17 +39,25 @@ try
 			$_ENV
 		),
 	]);
+
 	$containerBuilder->addDefinitions($systemDir . '/config/services/_default.php'); // must be the first file
 	$directoryIterator = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator($systemDir . '/config/services', FilesystemIterator::SKIP_DOTS)
 	);
 	foreach ($directoryIterator as $file)
 	{
-		if (fnmatch('*.php', $file->getFilename())) {
+		if (fnmatch('*.php', $file->getFilename()))
+		{
 			$containerBuilder->addDefinitions($file->getPathname());
 		}
 	}
 	$container     = $containerBuilder->build();
+	if ($container->get(Config::class)->getEnv('APP_DEBUG'))
+	{
+		ini_set('display_errors', '0');
+		ini_set('log_errors', '1');
+		error_reporting(E_ALL);
+	}
 
 	if (php_sapi_name() !== 'cli')
 	{
