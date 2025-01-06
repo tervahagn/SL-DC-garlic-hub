@@ -27,6 +27,7 @@ use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
 use App\Framework\TemplateEngine\MustacheAdapter;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -36,17 +37,23 @@ use SlimSession\Helper;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App {
 
+	/** @var App $app */
 	$app = $container->get(App::class);
 
 	// Error Middleware
-	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true);
+	$errorMiddleware = $app->addErrorMiddleware(
+		$_ENV['APP_DEBUG'],
+		true,
+		true,
+		$container->get('AppLogger')
+	);
 	$errorMiddleware->setDefaultErrorHandler(function (
 		ServerRequestInterface $request,
 		\Throwable $exception,
 		bool $displayErrorDetails
 	) use ($container)
 	{
-		$logger = $container->get(LoggerInterface::class);
+		$logger = $container->get('AppLogger');
 		$logger->error('Unhandled exception', [
 			'message' => $exception->getMessage(),
 			'trace' => $exception->getTraceAsString(),

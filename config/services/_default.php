@@ -67,6 +67,15 @@ $dependencies['FrameworkLogger'] = DI\factory(function (ContainerInterface $cont
 
 	return $logger;
 });
+$dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container) {
+	$logger = new Logger('app');
+	$config = $container->get(Config::class);
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir').'/framework.log', $config->getLogLevel()));
+
+	return $logger;
+});
+
+
 $dependencies[App::class]         = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function () { // symfony console application
 	return new Application();
