@@ -57,7 +57,7 @@ class MediaHandlerFactory
 			str_starts_with($mimeType, 'image/') => new Image($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
 			str_starts_with($mimeType, 'video/') => new Video($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
 			$mimeType === 'application/pdf' =>  new Pdf($this->config, $this->fileSystem, $this->imagickFactory->createImagick()),
-			$mimeType === 'application/widget' =>  new Widget($this->config,
+			$mimeType === 'application/widget' || $mimeType === 'application/octet-stream' =>  new Widget($this->config,
 				$this->fileSystem,
 				$this->zipFilesystemFactory,
 				$this->imagickFactory->createImagick(),
