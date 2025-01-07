@@ -48,6 +48,11 @@ class UploadController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
 		}
 		$uploadedFiles = $request->getUploadedFiles();
+		if (empty($uploadedFiles))
+		{
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
 		$bodyParams    = $request->getParsedBody();
 
 		if (!array_key_exists('node_id', $bodyParams))

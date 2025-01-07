@@ -50,7 +50,7 @@ class Video extends AbstractMediaHandler
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->imagick     = $imagick;
-		$this->maxVideoSize = $this->config->getConfigValue('images', 'mediapool', 'max_file_sizes');
+		$this->maxVideoSize = $this->config->getConfigValue('video', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

@@ -73,7 +73,7 @@ $dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container)
 {
 	$logger = new Logger('app');
 	$config = $container->get(Config::class);
-	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/framework.log', $config->getLogLevel()));
+	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/app.log', $config->getLogLevel()));
 
 	return $logger;
 });

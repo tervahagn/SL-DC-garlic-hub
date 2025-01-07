@@ -70,37 +70,33 @@ export class FetchClient
 
             // Handle response
             this.#xhr.onload = () => {
+                const responseText = this.#xhr.responseText;
+
                 const response = {
                     status: this.#xhr.status,
                     statusText: this.#xhr.statusText,
-                    text: () => Promise.resolve(this.#xhr.responseText),
-                    json: () => {
-                        return new Promise((resolve, reject) => {
-                            const responseText = this.#xhr.responseText;
-
-                            if (this.#isJSON(responseText))
-                            {
-                                try
-                                {
-                                    resolve(JSON.parse(responseText));
-                                }
-                                catch (error)
-                                {
-                                    reject(new Error("JSON Parse Error: " + error.message));
-                                }
-                            }
-                            else
-                                reject(new Error("Response is not JSON: " + responseText));
-
-                        });
-                    }
+                    text: () => Promise.resolve(responseText),
+                    json: () => new Promise((resolve, reject) => {
+                        try
+                        {
+                            resolve(JSON.parse(responseText));
+                        }
+                        catch (error)
+                        {
+                            reject(new Error(`JSON Parse Error: ${error.message}`));
+                        }
+                    })
                 };
 
                 if (this.#xhr.status >= 200 && this.#xhr.status < 300)
-                    resolve(response.json());
+                {
+                    if (this.#isJSON(responseText))
+                        resolve(response.json());
+                     else
+                        reject(new Error(responseText));
+                }
                 else
-                    reject(new Error(`HTTP-Error: ${this.#xhr.status}`));
-
+                    reject(new Error("HTTP-Error: " + this.#xhr.status));
             };
 
             // Handle errors

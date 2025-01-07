@@ -96,7 +96,7 @@ export class FileUploader
                         console.log('Upload aborted for file:', file.name);
                     else
                     {
-                        console.log('Upload failed for file:', file.name, '\n', error);
+                        console.log('Upload failed for file:', file.name, '\n', error.message);
                         container.className = "previewContainerError";
                     }
                     this.#enableActions()

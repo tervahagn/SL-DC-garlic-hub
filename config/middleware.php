@@ -26,11 +26,8 @@ use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
-use App\Framework\TemplateEngine\MustacheAdapter;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\Middleware\Session;
 use Slim\Psr7\Response;
@@ -50,19 +47,24 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 	});
 
-	register_shutdown_function(function () use ($container) {
-		$error = error_get_last();
-		if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR]))
-		{
-			$logger = $container->get('AppLogger');
-			$logger->error('Fatal Error', $error);
 
+	register_shutdown_function(function () use ($container)
+	{
+		$error = error_get_last();
+		if (is_null($error))
+			return;
+
+		if (str_contains($_SERVER['REQUEST_URI'], 'async'))
+		{
 			http_response_code(200);
-			echo json_encode([
-				'success' => false,
-				'error_message' => 'A critical error occurred. Please try again later.'
-			]);
-		}
+			$logger = $container->get('AppLogger');
+			$logger->error($error['message']);
+			throw new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+/*
+			$response = new Response();
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $error['message']]));
+			return $response->withStatus(200);
+*/		}
 	});
 
 	// Error Middleware
@@ -70,8 +72,9 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		$_ENV['APP_DEBUG'],
 		true,
 		true,
-		//$container->get('AppLogger')
+	//	$container->get('AppLogger')
 	);
+
 	$errorMiddleware->setDefaultErrorHandler(function (
 		ServerRequestInterface $request,
 		\Throwable $exception,
@@ -79,10 +82,7 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	) use ($container)
 	{
 		$logger = $container->get('AppLogger');
-		$logger->error('Unhandled exception', [
-			'message' => $exception->getMessage(),
-			'trace' => $exception->getTraceAsString(),
-		]);
+		$logger->error('Unhandled exception', ['message' => $exception->getMessage(), 'trace' => $exception->getTraceAsString()]);
 
 		$response = new Response();
 		$response->getBody()->write(json_encode(['success' => false, 'error_message' => $exception->getMessage()]));
