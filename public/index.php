@@ -18,6 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// phpinfo();
 $app = require __DIR__ . '/../config/bootstrap.php';
 
 $app->run();

@@ -9,6 +9,7 @@ CREATE TABLE `user_main` (
     `locale` CHAR(5) DEFAULT NULL,
     `username` CHAR(50) DEFAULT '',
     `password` CHAR(60) DEFAULT NULL,
+    `session_id` VARCHAR(60) DEFAULT NULL,
     `gender` VARCHAR(10) DEFAULT NULL,
     `email` VARCHAR(100) NOT NULL DEFAULT '',
     `last_password_change` TIMESTAMP DEFAULT NULL,
