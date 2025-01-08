@@ -34,7 +34,7 @@ try
 	// The Config class has to load first
 	$containerBuilder->addDefinitions([
 		Config::class => new Config(
-			new IniConfigLoader($paths['configDir']),
+			new IniConfigLoader($paths['configDir'].'/settings'),
 			$paths,
 			$_ENV
 		),
