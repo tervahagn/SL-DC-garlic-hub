@@ -24,8 +24,11 @@ use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
+use Slim\Exception\HttpMethodNotAllowedException;
+use Slim\Exception\HttpNotFoundException;
 
 
 set_error_handler(/**
@@ -38,38 +41,51 @@ set_error_handler(/**
 	throw new \ErrorException($errorString, 0, $errNumber, $errorFile, $errorLine);
 });
 
-/*
- * maybe useful for later
-register_shutdown_function(function () use ($container)
+/**
+ * @var ContainerInterface $container
+ * @var App $app
+ */
+$app                 = $container->get(App::class);
+$logger              = $container->get('AppLogger');
+$errorMiddleware     = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true, $container->get('AppLogger'));
+$defaultErrorHandler = $errorMiddleware->getDefaultErrorHandler();
+
+/**
+ * @throws DependencyException
+ * @throws NotFoundException
+ * @throws ContainerExceptionInterface
+ * @throws NotFoundExceptionInterface
+ */
+$myErrorHandler = function (
+	ServerRequestInterface $request,
+	Throwable $exception,
+	bool $displayErrorDetails,
+	bool $logErrors,
+	bool $logErrorDetails
+) use ($app, $defaultErrorHandler): ResponseInterface
 {
-	$error = error_get_last();
-	if (is_null($error))
-		return;
-});
-*/
+	$path = $request->getUri()->getPath();
 
-	/** @var ContainerInterface $container */
-	$app    = $container->get(App::class);
-	$logger = $container->get('AppLogger');
-
-	/**
-	 * @throws DependencyException
-	 * @throws NotFoundException
-	 * @throws ContainerExceptionInterface
-	 * @throws NotFoundExceptionInterface
-	 */
-	$myErrorHandler = function(ServerRequestInterface $request,	\Throwable $exception) use ($app, $logger)
+	if (str_starts_with($path, '/api') || str_starts_with($path, '/async'))
 	{
-		$logger->error($exception->getMessage());
-		$route = $app->getRouteCollector()->getRouteParser()->current();
-		if (str_contains($route, 'async'))
-			$payload = ['success' => false, 'error_message' => $exception->getMessage()];
-		else
-			$payload = ['error_message' => $exception->getMessage()];
-
 		$response = $app->getResponseFactory()->createResponse();
-		return $response->getBody()->write(json_encode($payload));
-	};
+		$response->withHeader('Content-Type', 'application/json');
 
-	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true, $container->get('AppLogger'));
-	$errorMiddleware->setDefaultErrorHandler($myErrorHandler);
+		[$status, $error] = match (true) {
+			$exception instanceof Slim\Exception\HttpNotFoundException => [404, 'Route not found'],
+			$exception instanceof Slim\Exception\HttpMethodNotAllowedException => [405, 'Method not allowed'],
+			$exception instanceof DomainException => [400, 'Domain-specific error'],
+			default => [500, 'Internal Server Error'],
+		};
+		$response->getBody()->write(json_encode([
+			'error' => $error,
+			'message' => $displayErrorDetails ? $exception->getMessage() : 'An unexpected error occurred',
+		]));
+		return $response->withStatus($status);
+	}
+
+	// for normal Web UI operations
+	return $defaultErrorHandler->__invoke($request, $exception, $displayErrorDetails, $logErrors, $logErrorDetails);
+};
+
+$errorMiddleware->setDefaultErrorHandler($myErrorHandler);

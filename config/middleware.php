@@ -23,11 +23,8 @@ use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
-use App\Framework\Middleware\FinalRenderMiddleware;
-use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Slim\Middleware\Session;
 use SlimSession\Helper;
@@ -36,10 +33,6 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 {
 	/** @var App $app */
 	$app = $container->get(App::class);
-
-	require __DIR__ . '/error_handling.php'; // call error middleware First in last out
-
-
 
 	require_once __DIR__ . '/route.php';
 
@@ -51,8 +44,6 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	));
 
 	$app->add(new AuthMiddleware());
-
-	// Session Middleware
 	$app->add(new SessionMiddleware($container->get(Helper::class)));
 	$app->add($container->get(Session::class));
 
@@ -63,9 +54,9 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		return $handler->handle($request);
 	});
 
-	// Routing Middleware
 	$app->addRoutingMiddleware();
 
-	// App zurückgeben
+	require __DIR__ . '/error_handling.php'; // call error middleware as last
+
 	return $app;
 };

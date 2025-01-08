@@ -37,7 +37,8 @@ use Slim\Routing\RouteCollectorProxy;
 assert($app instanceof App);
 $container = $app->getContainer();
 
-$app->group('', function (RouteCollectorProxy $group) {
+$app->group('', function (RouteCollectorProxy $group)
+{
 	$group->get('/', [HomeController::class, 'index']);
 	$group->get('/login', [LoginController::class, 'showLogin']);
 	$group->post('/login', [LoginController::class, 'login']);
@@ -49,11 +50,10 @@ $app->group('', function (RouteCollectorProxy $group) {
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
-})->add($container->get(FinalRenderMiddleware::class))
-	->add(new LayoutDataMiddleware());
+})->add($container->get(FinalRenderMiddleware::class))->add(new LayoutDataMiddleware());
 
-
-$app->group('/api', function (RouteCollectorProxy $group) {
+$app->group('/api', function (RouteCollectorProxy $group)
+{
 	$group->get('/authorize', [OAuth2Controller::class, 'authorize']);
 	$group->post('/token', [OAuth2Controller::class, 'token']);
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
