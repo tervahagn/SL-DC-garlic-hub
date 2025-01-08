@@ -30,7 +30,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Slim\Middleware\Session;
-use Slim\Psr7\Response;
 use SlimSession\Helper;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App
@@ -67,39 +66,28 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 */		}
 	});
 
-	// Error Middleware
-	$errorMiddleware = $app->addErrorMiddleware(
-		$_ENV['APP_DEBUG'],
-		true,
-		true,
-	//	$container->get('AppLogger')
-	);
-
-	$errorMiddleware->setDefaultErrorHandler(function (
-		ServerRequestInterface $request,
-		\Throwable $exception,
-		bool $displayErrorDetails
-	) use ($container)
+	$myErrorHandler = function(ServerRequestInterface $request, \Throwable $exception,	bool $details, bool
+	$logErrors, bool $logErrorDetails) use ($container)
 	{
 		$logger = $container->get('AppLogger');
-		$logger->error('Unhandled exception', ['message' => $exception->getMessage(), 'trace' => $exception->getTraceAsString()]);
+		$logger->error($exception->getMessage());
 
-		$response = new Response();
-		$response->getBody()->write(json_encode(['success' => false, 'error_message' => $exception->getMessage()]));
-		return $response->withStatus(200);
-	});
+		$app = $container->get(App::class);
+		$route = $app->getRouteCollector()->getRouteParser()->current();
+		if (str_contains($_SERVER['REQUEST_URI'], 'async'))
+		$payload = ['success' => false, 'error_message' => $exception->getMessage()];
 
-	// Final Render Middleware (AFTER UI-Controllers)
-	if (!str_contains($_SERVER['REQUEST_URI'], 'async') && !str_contains($_SERVER['REQUEST_URI'], 'api'))
-		$app->add($container->get(FinalRenderMiddleware::class));
-	else
-		$app->add(function ($request, $handler)	{return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
+		$response = $app->getResponseFactory()->createResponse();
+		return $response->getBody()->write(json_encode($payload));
+	};
+
+		// Error Middleware
+	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true,true, $container->get('AppLogger'));
+	$errorMiddleware->setDefaultErrorHandler($myErrorHandler);
+	//require __DIR__ . '/../config/errorhandling.php';
+
 
 	require_once __DIR__ . '/route.php';
-
-	// Layout Data Middleware (BEFORE UI-Controllers)  SLIM midddleware order is vice versa
-	if (!str_contains($_SERVER['REQUEST_URI'], 'async') && !str_contains($_SERVER['REQUEST_URI'], 'api'))
-		$app->add(new LayoutDataMiddleware());
 
 	// Environment Middleware
 	$app->add(new EnvironmentMiddleware(

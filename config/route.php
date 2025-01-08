@@ -19,6 +19,8 @@
 */
 
 use App\Controller\HomeController;
+use App\Framework\Middleware\FinalRenderMiddleware;
+use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use App\Modules\Mediapool\Controller\MediaController;
@@ -35,26 +37,27 @@ use Slim\Routing\RouteCollectorProxy;
 assert($app instanceof App);
 $container = $app->getContainer();
 
-$app->get('/', [HomeController::class, 'index']);
-$app->get('/login', [LoginController::class, 'showLogin']);
-$app->post('/login', [LoginController::class, 'login']);
-$app->get('/logout', [LoginController::class, 'logout']);
-$app->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
+$app->group('', function (RouteCollectorProxy $group) {
+	$group->get('/', [HomeController::class, 'index']);
+	$group->get('/login', [LoginController::class, 'showLogin']);
+	$group->post('/login', [LoginController::class, 'login']);
+	$group->get('/logout', [LoginController::class, 'logout']);
+	$group->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
+
+	$group->get('/user/edit', [EditPasswordController::class, 'showForm']);
+	$group->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
+
+	$group->get('/mediapool', [ShowController::class, 'show']);
+
+})->add($container->get(FinalRenderMiddleware::class))
+	->add(new LayoutDataMiddleware());
+
 
 $app->group('/api', function (RouteCollectorProxy $group) {
 	$group->get('/authorize', [OAuth2Controller::class, 'authorize']);
 	$group->post('/token', [OAuth2Controller::class, 'token']);
-});
+})->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
 
-$app->get('/user/edit', [EditPasswordController::class, 'showForm']);
-$app->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
-$app->group('/api', function (RouteCollectorProxy $group)
-{
-	$group->get('/user/edit', [EditPasswordController::class, 'showForm']);
-	$group->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
-});
-
-$app->get('/mediapool', [ShowController::class, 'show']);
 $app->group('/async', function (RouteCollectorProxy $group)
 {
 	$group->get('/mediapool/node[/{parent_id}]', [NodesController::class, 'list']); // parent_id is optional with []
@@ -65,4 +68,4 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/mediapool/media/{node_id}', [MediaController::class, 'list']);
 	$group->post('/mediapool/media', [MediaController::class, 'add']);
 	$group->delete('/mediapool/media', [MediaController::class, 'delete']);
-});
+})->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
