@@ -79,13 +79,10 @@ $dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container)
 });
 $dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FinalRenderMiddleware(new MustacheAdapter($container->get(Mustache_Engine::class)));
+	return new FinalRenderMiddleware($container->get(AdapterInterface::class));
 });
 $dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
-$dependencies[Application::class] = DI\factory(function ()
-{ // symfony console application
-	return new Application();
-});
+$dependencies[Application::class] = DI\factory(function (){ return new Application();}); // symfony console app
 $dependencies[Session::class] = DI\factory(function ()
 {
 	return new Session([
@@ -94,10 +91,7 @@ $dependencies[Session::class] = DI\factory(function ()
 		'lifetime' => '1 hour',
 	]);
 });
-$dependencies[Helper::class] = DI\factory(function ()
-{
-	return new Helper();
-});
+$dependencies[Helper::class] = DI\factory(function (){return new Helper();});
 $dependencies[Locales::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Locales(
@@ -105,10 +99,7 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 		new SessionLocaleExtractor($container->get(Helper::class))
 	);
 });
-$dependencies[Psr16Adapter::class] = DI\factory(function ()
-{
-	return new Psr16Adapter('Files');
-});
+$dependencies[Psr16Adapter::class] = DI\factory(function (){return new Psr16Adapter('Files');});
 $dependencies[Translator::class] = DI\factory(function (ContainerInterface $container)
 {
 	$translationDir = $container->get(Config::class)->getPaths('translationDir');
@@ -119,12 +110,9 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[Mustache_Engine::class] = DI\factory(function ()
+$dependencies[AdapterInterface::class] = DI\factory(function ()
 {
-	return new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
-});
-$dependencies[AdapterInterface::class] = DI\factory(function (Mustache_Engine $mustacheEngine)
-{
+	$mustacheEngine = new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
 	return new MustacheAdapter($mustacheEngine);
 });
 $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container)

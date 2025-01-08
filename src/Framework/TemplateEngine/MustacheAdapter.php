@@ -29,7 +29,6 @@ class MustacheAdapter implements AdapterInterface
 	public function __construct(Mustache_Engine $mustache)
 	{
 		$this->mustache = $mustache;
-
 	}
 
 	public function render(string $template, array $data = []): string
