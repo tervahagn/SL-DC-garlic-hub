@@ -28,6 +28,7 @@ use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
 
 /* @var App $app */
 /** @phpstan-ignore-next-line */
@@ -40,18 +41,28 @@ $app->post('/login', [LoginController::class, 'login']);
 $app->get('/logout', [LoginController::class, 'logout']);
 $app->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
 
-$app->get('/api/authorize', [OAuth2Controller::class, 'authorize']);
-$app->post('/api/token', [OAuth2Controller::class, 'token']);
+$app->group('/api', function (RouteCollectorProxy $group) {
+	$group->get('/authorize', [OAuth2Controller::class, 'authorize']);
+	$group->post('/token', [OAuth2Controller::class, 'token']);
+});
 
 $app->get('/user/edit', [EditPasswordController::class, 'showForm']);
 $app->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
+$app->group('/api', function (RouteCollectorProxy $group)
+{
+	$group->get('/user/edit', [EditPasswordController::class, 'showForm']);
+	$group->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
+});
 
 $app->get('/mediapool', [ShowController::class, 'show']);
-$app->get('/async/mediapool/node[/{parent_id}]', [NodesController::class, 'list']); // parent_id is optional with []
-$app->post('/async/mediapool/node', [NodesController::class, 'add']);
-$app->delete('/async/mediapool/node', [NodesController::class, 'delete']);
-$app->patch('/async/mediapool/node', [NodesController::class, 'edit']);
-$app->post('/async/mediapool/upload', [UploadController::class, 'upload']);
-$app->get('/async/mediapool/media/{node_id}', [MediaController::class, 'list']);
-$app->post('/async/mediapool/media', [MediaController::class, 'add']);
-$app->delete('/async/mediapool/media', [MediaController::class, 'delete']);
+$app->group('/async', function (RouteCollectorProxy $group)
+{
+	$group->get('/mediapool/node[/{parent_id}]', [NodesController::class, 'list']); // parent_id is optional with []
+	$group->post('/mediapool/node', [NodesController::class, 'add']);
+	$group->delete('/mediapool/node', [NodesController::class, 'delete']);
+	$group->patch('/mediapool/node', [NodesController::class, 'edit']);
+	$group->post('/mediapool/upload', [UploadController::class, 'upload']);
+	$group->get('/mediapool/media/{node_id}', [MediaController::class, 'list']);
+	$group->post('/mediapool/media', [MediaController::class, 'add']);
+	$group->delete('/mediapool/media', [MediaController::class, 'delete']);
+});
