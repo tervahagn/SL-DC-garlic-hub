@@ -11,13 +11,13 @@ use Symfony\Component\Console\Application;
 try
 {
 	/* @var App $app */
-	require __DIR__ . '/vendor/autoload.php';
-	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+	$systemDir = realpath(__DIR__. '/../');
+	require  $systemDir.'/vendor/autoload.php';
+	$dotenv = Dotenv\Dotenv::createImmutable($systemDir);
 	$dotenv->load();
 	if ($_ENV['APP_ENV'] === 'dev')
 		require __DIR__ . '/bootstrap_dev.php';
 
-	$systemDir = realpath(__DIR__);
 	$paths = [
 		'systemDir' => $systemDir,
 		'varDir' => $systemDir . '/var',
@@ -55,7 +55,7 @@ try
 
 	if (php_sapi_name() !== 'cli')
 	{
-		$middlewareLoader = require __DIR__ . '/config/middleware.php';
+		$middlewareLoader = require $systemDir.'/config/middleware.php';
 		$app = $middlewareLoader($container, $start_time, $start_memory);
 	}
 	else
