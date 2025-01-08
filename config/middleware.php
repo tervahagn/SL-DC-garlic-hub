@@ -34,57 +34,11 @@ use SlimSession\Helper;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App
 {
-
 	/** @var App $app */
 	$app = $container->get(App::class);
 
-	set_error_handler(function ($errno, $errstr, $errfile, $errline)
-	{
-		if (!(error_reporting() & $errno)) // ignore errors when suppressed via @
-			return false;
+	require __DIR__ . '/error_handling.php'; // call error middleware First in last out
 
-		throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-	});
-
-
-	register_shutdown_function(function () use ($container)
-	{
-		$error = error_get_last();
-		if (is_null($error))
-			return;
-
-		if (str_contains($_SERVER['REQUEST_URI'], 'async'))
-		{
-			http_response_code(200);
-			$logger = $container->get('AppLogger');
-			$logger->error($error['message']);
-			throw new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
-/*
-			$response = new Response();
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $error['message']]));
-			return $response->withStatus(200);
-*/		}
-	});
-
-	$myErrorHandler = function(ServerRequestInterface $request, \Throwable $exception,	bool $details, bool
-	$logErrors, bool $logErrorDetails) use ($container)
-	{
-		$logger = $container->get('AppLogger');
-		$logger->error($exception->getMessage());
-
-		$app = $container->get(App::class);
-		$route = $app->getRouteCollector()->getRouteParser()->current();
-		if (str_contains($_SERVER['REQUEST_URI'], 'async'))
-		$payload = ['success' => false, 'error_message' => $exception->getMessage()];
-
-		$response = $app->getResponseFactory()->createResponse();
-		return $response->getBody()->write(json_encode($payload));
-	};
-
-		// Error Middleware
-	$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true,true, $container->get('AppLogger'));
-	$errorMiddleware->setDefaultErrorHandler($myErrorHandler);
-	//require __DIR__ . '/../config/errorhandling.php';
 
 
 	require_once __DIR__ . '/route.php';
