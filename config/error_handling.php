@@ -18,28 +18,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-use DI\DependencyException;
-use DI\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
-use Slim\Exception\HttpMethodNotAllowedException;
-use Slim\Exception\HttpNotFoundException;
 
-
-set_error_handler(/**
- * @throws ErrorException
- */ function ($errNumber, $errorString, $errorFile, $errorLine)
+set_error_handler(/** @throws ErrorException */ function ($errNumber, $errorString, $errorFile, $errorLine)
 {
 	if (!(error_reporting() & $errNumber)) 	// ignore errors when suppressed via @
 		return false;
 
-	throw new \ErrorException($errorString, 0, $errNumber, $errorFile, $errorLine);
+	throw new ErrorException($errorString, 0, $errNumber, $errorFile, $errorLine);
 });
+
 
 /**
  * @var ContainerInterface $container
@@ -50,12 +41,6 @@ $logger              = $container->get('AppLogger');
 $errorMiddleware     = $app->addErrorMiddleware($_ENV['APP_DEBUG'], true, true, $container->get('AppLogger'));
 $defaultErrorHandler = $errorMiddleware->getDefaultErrorHandler();
 
-/**
- * @throws DependencyException
- * @throws NotFoundException
- * @throws ContainerExceptionInterface
- * @throws NotFoundExceptionInterface
- */
 $myErrorHandler = function (
 	ServerRequestInterface $request,
 	Throwable $exception,
