@@ -50,6 +50,7 @@ class UploadController
 		$uploadedFiles = $request->getUploadedFiles();
 		if (empty($uploadedFiles))
 		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'No files to upload.']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
