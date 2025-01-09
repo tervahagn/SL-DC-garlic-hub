@@ -19,6 +19,7 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Helper\Cookie;
 use App\Framework\OAuth2\ClientsRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
@@ -36,7 +37,11 @@ $dependencies = [];
 
 $dependencies[AuthService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new AuthService($container->get(UserService::class), $container->get('ModuleLogger'));
+	return new AuthService(
+		$container->get(UserService::class),
+		$container->get(Cookie::class),
+		$container->get('ModuleLogger')
+	);
 });
 $dependencies[LoginController::class] = DI\factory(function (ContainerInterface $container)
 {

@@ -27,6 +27,8 @@ use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
+use App\Framework\Helper\Cookie;
+use App\Framework\Helper\Crypt;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
@@ -88,10 +90,18 @@ $dependencies[Session::class] = DI\factory(function ()
 	return new Session([
 		'name' => 'garlic_session',
 		'autorefresh' => true,
-		'lifetime' => '1 hour',
+		'lifetime' => 0,
+		'secure' => true,
+		'httponly' => true,
 	]);
 });
 $dependencies[Helper::class] = DI\factory(function (){return new Helper();});
+$dependencies[Crypt::class] = DI\factory(function (){return new Crypt();});
+$dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Cookie($container->get(Crypt::class));
+});
+
 $dependencies[Locales::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Locales(

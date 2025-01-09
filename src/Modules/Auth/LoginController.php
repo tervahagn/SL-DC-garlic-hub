@@ -2,6 +2,8 @@
 
 namespace App\Modules\Auth;
 
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Helper\Cookie;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
@@ -27,11 +29,14 @@ class LoginController
 	public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$translator = $request->getAttribute('translator');
-		$session          = $request->getAttribute('session');
+		$session    = $request->getAttribute('session');
 		if ($session->exists('user'))
 			return $this->redirect($response);
 
 		$csrfToken = bin2hex(random_bytes(32));
+		/** @var Cookie $cookie */
+		$cookie    = $request->getAttribute('cookie');
+		$cookie->createCookie('csrf_token', $csrfToken, new \DateTime('+1 hours'));
 		$session->set('csrf_token', $csrfToken);
 		$page_name = $translator->translate('login', 'login');
 		$data = [
@@ -62,6 +67,7 @@ class LoginController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -74,7 +80,12 @@ class LoginController
 		$password = $params['password'] ?? null;
 
 		$csrfToken = $params['csrf_token'] ?? null;
-		if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
+		/** @var Cookie $cookie */
+		$cookie    = $request->getAttribute('cookie');
+		var_dump(gettype($csrfToken)); // Prüfen, ob es ein String ist
+		var_dump(gettype($cookie->getCookie('csrf_token')));
+
+		if(!$cookie->hasCookie('csrf_token') || $cookie->getCookie('csrf_token') !== $csrfToken)
 		{
 			$flash->addMessage('error', 'Invalid CSRF token');
 			return $this->redirect($response, '/login');
@@ -90,6 +101,9 @@ class LoginController
 		$main_data = $userEntity->getMain();
 		$session->set('user', $main_data);
 		$session->set('locale', $main_data['locale']);
+
+		if (array_key_exists('autologin', $params))
+			$this->authService->createAutologinCookie($main_data['UID'], Helper::id());
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
