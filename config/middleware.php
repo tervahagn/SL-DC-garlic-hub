@@ -21,6 +21,7 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Helper\Cookie;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
@@ -44,7 +45,7 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	));
 
 	$app->add(new AuthMiddleware());
-	$app->add(new SessionMiddleware($container->get(Helper::class)));
+	$app->add(new SessionMiddleware($container->get(Helper::class), $container->get(Cookie::class)));
 	$app->add($container->get(Session::class));
 
 	// Timing Middleware
