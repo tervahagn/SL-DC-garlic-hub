@@ -24,6 +24,6 @@
 
 use Symfony\Component\Console\Application;
 
-$app = require __DIR__ . '/../bootstrap.php';
+$app = require __DIR__ . '/../config/bootstrap.php';
 
 $app->run();

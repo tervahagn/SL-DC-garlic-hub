@@ -22,6 +22,7 @@
 namespace App\Modules\User;
 
 use App\Framework\Exceptions\UserException;
+use App\Framework\Helper\Cookie;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
@@ -124,7 +125,10 @@ class EditPasswordController
 	{
 		$session  = $request->getAttribute('session');
 		$postData = $request->getParsedBody();
-		if ($postData['csrf_token'] !== $session->get('csrf_token'))
+		/** @var Cookie $cookie */
+		$cookie    = $request->getAttribute('cookie');
+
+		if ($postData['csrf_token'] !== $cookie->getCookie('csrf_token'))
 			throw new UserException('CSRF Token mismatch');
 
 		if (strlen($postData['edit_password']) < 8)

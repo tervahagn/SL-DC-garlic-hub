@@ -1,7 +1,6 @@
 <?php
 $start_time   = microtime(true);
 $start_memory = memory_get_usage();
-session_set_cookie_params(0); // Nur bis Browser geschlossen wird
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\IniConfigLoader;

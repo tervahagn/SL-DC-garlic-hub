@@ -82,8 +82,6 @@ class LoginController
 		$csrfToken = $params['csrf_token'] ?? null;
 		/** @var Cookie $cookie */
 		$cookie    = $request->getAttribute('cookie');
-		var_dump(gettype($csrfToken)); // Prüfen, ob es ein String ist
-		var_dump(gettype($cookie->getCookie('csrf_token')));
 
 		if(!$cookie->hasCookie('csrf_token') || $cookie->getCookie('csrf_token') !== $csrfToken)
 		{

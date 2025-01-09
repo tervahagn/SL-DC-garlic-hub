@@ -21,17 +21,20 @@
 namespace App\Framework\Utils\Html;
 
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Helper\Cookie;
 use Exception;
 
 class FormBuilder
 {
 	private FieldsFactory $fieldsFactory;
 	private FieldsRenderFactory $fieldsRenderFactory;
+	private Cookie $cookie;
 
-	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory)
+	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory, Cookie $cookie)
 	{
-		$this->fieldsFactory = $fieldsFactory;
+		$this->fieldsFactory       = $fieldsFactory;
 		$this->fieldsRenderFactory = $fieldsRenderFactory;
+		$this->cookie              = $cookie;
 	}
 
 	/**
@@ -44,7 +47,7 @@ class FormBuilder
 			FieldType::TEXT     => $this->fieldsFactory->createTextField($options),
 			FieldType::PASSWORD => $this->fieldsFactory->createPasswordField($options),
 			FieldType::EMAIL    => $this->fieldsFactory->createEmailField($options),
-			FieldType::CSRF     => $this->fieldsFactory->createCsrfTokenField($options),
+			FieldType::CSRF     => $this->fieldsFactory->createCsrfTokenField($options, $this->cookie),
 			default => throw new FrameworkException('Invalid field type'),
 		};
 	}

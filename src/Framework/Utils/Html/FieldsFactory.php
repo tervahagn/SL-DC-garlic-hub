@@ -20,6 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
+use App\Framework\Helper\Cookie;
 use Exception;
 
 class FieldsFactory
@@ -42,9 +43,9 @@ class FieldsFactory
 	/**
 	 * @throws Exception
 	 */
-	public function createCsrfTokenField(array $attributes): CsrfTokenField
+	public function createCsrfTokenField(array $attributes, Cookie $cookie): CsrfTokenField
 	{
-		return new CsrfTokenField($attributes);
+		return new CsrfTokenField($attributes, $cookie);
 	}
 
 }

@@ -89,10 +89,11 @@ $dependencies[Session::class] = DI\factory(function ()
 {
 	return new Session([
 		'name' => 'garlic_session',
-		'autorefresh' => true,
-		'lifetime' => 0,
-		'secure' => true,
-		'httponly' => true,
+		'lifetime' => '1 minutes',
+		'autorefresh' => false,
+		'samesite' => 'Strict',
+		'secure' => false,
+		'httponly' => false,
 	]);
 });
 $dependencies[Helper::class] = DI\factory(function (){return new Helper();});
@@ -184,11 +185,12 @@ $dependencies[UserService::class] = DI\factory(function (ContainerInterface $con
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[FormBuilder::class] = DI\factory(function ()
+$dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FormBuilder(
 		new FieldsFactory(),
-		new FieldsRenderFactory()
+		new FieldsRenderFactory(),
+		$container->get(Cookie::class)
 	);
 });
 
