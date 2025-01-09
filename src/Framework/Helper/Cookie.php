@@ -21,6 +21,7 @@
 namespace App\Framework\Helper;
 
 use App\Framework\Exceptions\FrameworkException;
+use DateTime;
 
 class Cookie
 {
@@ -34,7 +35,7 @@ class Cookie
 	/**
 	 * @throws  FrameworkException
 	 */
-	public function getCookie($cookie_name): bool|array|null
+	public function getHashedCookie($cookie_name): ?array
 	{
 		if (!array_key_exists($cookie_name, $_COOKIE))
 			return null;
@@ -44,10 +45,29 @@ class Cookie
 	}
 
 
+	public function getCookie($cookie_name): ?string
+	{
+		if (!array_key_exists($cookie_name, $_COOKIE))
+			return null;
+
+		$tmp = $_COOKIE[$cookie_name];
+
+		return $tmp;
+	}
+
+	public function createCookie(string $name, string $content, DateTime $expire): void
+	{
+		$expire  = $expire->getTimestamp();
+		$result  = setcookie($name, $content, $expire, '/', '', true, true);
+
+		if ($result === false)
+			throw new FrameworkException('Cookie failed to set.');
+	}
+
 	/**
 	 * @throws FrameworkException
 	 */
-	public function createCookie(string $name, array $contents, \DateTime $expire): void
+	public function createHashedCookie(string $name, array $contents, DateTime $expire): void
 	{
 		$expire  = $expire->getTimestamp();
 		$content = $this->hashContent($contents);
@@ -79,7 +99,7 @@ class Cookie
 	/**
 	 * @throws  FrameworkException
 	 */
-	private function validateAndUnpackContent(string $raw_content):array | bool
+	private function validateAndUnpackContent(string $raw_content):array
 	{
 		[$content, $checksum] = unserialize($raw_content);
 
@@ -89,6 +109,10 @@ class Cookie
 		if (!hash_equals($checksum, $this->crypt->createSha256Hash($content)))
 			throw new FrameworkException('Possible cookie manipulation detected. Checksum does of ' . $checksum . ' does not match');
 
-		return unserialize($content);
+		$ret =  unserialize($content);
+		if ($ret === false)
+			return [];
+
+		return $ret;
 	}
 }

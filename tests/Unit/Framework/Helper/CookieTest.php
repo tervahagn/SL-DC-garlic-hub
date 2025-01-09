@@ -34,7 +34,7 @@ class CookieTest extends TestCase
 
 		$this->expectOutputRegex('/.*/'); // Prevent PHP warnings from setcookie()
 
-		$this->cookie->createCookie('test_cookie', $contents, $expire);
+		$this->cookie->createHashedCookie('test_cookie', $contents, $expire);
 
 		$this->assertTrue(true); // If no exception is thrown, the test passes.
 	}
@@ -49,7 +49,7 @@ class CookieTest extends TestCase
 
 		$_COOKIE['test_cookie'] = $serializedContent;
 
-		$result = $this->cookie->getCookie('test_cookie');
+		$result = $this->cookie->getHashedCookie('test_cookie');
 
 		$this->assertIsArray($result);
 		$this->assertEquals($contents, $result);
@@ -58,7 +58,7 @@ class CookieTest extends TestCase
 	#[Group('units')]
 	public function testGetCookieNotExists(): void
 	{
-		$result = $this->cookie->getCookie('nonexistent_cookie');
+		$result = $this->cookie->getHashedCookie('nonexistent_cookie');
 
 		$this->assertNull($result);
 	}
@@ -95,6 +95,6 @@ class CookieTest extends TestCase
 		$this->expectException(FrameworkException::class);
 		$this->expectExceptionMessage('Possible cookie manipulation detected.');
 
-		$this->cookie->getCookie('test_cookie');
+		$this->cookie->getHashedCookie('test_cookie');
 	}
 }

@@ -20,6 +20,7 @@
 
 namespace App\Framework\Middleware;
 
+use App\Framework\Helper\Cookie;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -30,15 +31,18 @@ use SlimSession\Helper;
 class SessionMiddleware implements MiddlewareInterface
 {
 	private Helper $session;
+	private Cookie $cookie;
 
-	public function __construct(Helper $session)
+	public function __construct(Helper $session, Cookie $cookie)
 	{
 		$this->session = $session;
+		$this->cookie  = $cookie;
 	}
 
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
 		$request = $request->withAttribute('session', $this->session);
+		$request = $request->withAttribute('cookie', $this->cookie);
 		// I know, but I have no better idea as flash needs a working session.
 		// In bootstrap.php it will throw an error when session is not started.
 		$request = $request->withAttribute('flash', new Messages());
