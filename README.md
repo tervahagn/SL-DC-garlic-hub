@@ -18,7 +18,7 @@ Ensure your environment meets the following requirements:
 
 1. **Clone the Repository**
 ```bash
-   git clone https://github.com/your-username/garlic-hub.git
+   git clone https://github.com/sagiadinos/garlic-hub.git
    cd garlic-hub
 ```
 ### For Developer: Install ddev (docker)
