@@ -34,9 +34,6 @@ class LoginController
 			return $this->redirect($response);
 
 		$csrfToken = bin2hex(random_bytes(32));
-		/** @var Cookie $cookie */
-		$cookie    = $request->getAttribute('cookie');
-		$cookie->createCookie('csrf_token', $csrfToken, new \DateTime('+1 hours'));
 		$session->set('csrf_token', $csrfToken);
 		$page_name = $translator->translate('login', 'login');
 		$data = [
@@ -80,10 +77,8 @@ class LoginController
 		$password = $params['password'] ?? null;
 
 		$csrfToken = $params['csrf_token'] ?? null;
-		/** @var Cookie $cookie */
-		$cookie    = $request->getAttribute('cookie');
 
-		if(!$cookie->hasCookie('csrf_token') || $cookie->getCookie('csrf_token') !== $csrfToken)
+		if(!$session->exists('csrf_token') || $session->get('csrf_token') !== $csrfToken)
 		{
 			$flash->addMessage('error', 'Invalid CSRF token');
 			return $this->redirect($response, '/login');

@@ -181,7 +181,7 @@ $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $con
 	return new FormBuilder(
 		new FieldsFactory(),
 		new FieldsRenderFactory(),
-		$container->get(Cookie::class)
+		$container->get(SessionStorage::class)
 	);
 });
 

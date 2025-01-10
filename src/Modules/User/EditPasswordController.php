@@ -125,10 +125,8 @@ class EditPasswordController
 	{
 		$session  = $request->getAttribute('session');
 		$postData = $request->getParsedBody();
-		/** @var Cookie $cookie */
-		$cookie    = $request->getAttribute('cookie');
 
-		if ($postData['csrf_token'] !== $cookie->getCookie('csrf_token'))
+		if ($postData['csrf_token'] !== $session->get('csrf_token'))
 			throw new UserException('CSRF Token mismatch');
 
 		if (strlen($postData['edit_password']) < 8)
@@ -172,9 +170,6 @@ class EditPasswordController
 			'id' => 'csrf_token',
 			'name' => 'csrf_token',
 		]);
-
-		$session = $request->getAttribute('session');
-		$session->set('csrf_token', $form['csrf_token']->getValue());
 
 		return $form;
 	}
