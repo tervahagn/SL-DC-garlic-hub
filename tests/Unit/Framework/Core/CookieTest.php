@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Framework\Helper;
+namespace Tests\Unit\Framework\Core;
 
-use App\Framework\Helper\Cookie;
-use App\Framework\Helper\Crypt;
+use App\Framework\Core\Cookie;
+use App\Framework\Core\Crypt;
 use App\Framework\Exceptions\FrameworkException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;

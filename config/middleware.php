@@ -19,9 +19,9 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Cookie;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Helper\Cookie;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
@@ -58,6 +58,9 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	$app->addRoutingMiddleware();
 
 	require __DIR__ . '/error_handling.php'; // call error middleware as last
+	ini_set('session.cookie_lifetime', 0);
+
+	$tmp = ini_get('session.cookie_lifetime');
 
 	return $app;
 };

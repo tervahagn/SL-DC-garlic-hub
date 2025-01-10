@@ -19,7 +19,7 @@
 */
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Helper\Cookie;
+use App\Framework\Core\Cookie;
 use App\Framework\OAuth2\ClientsRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
@@ -28,10 +28,10 @@ use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use Defuse\Crypto\Key;
-use League\OAuth2\Server\Grant\AuthCodeGrant;
-use Psr\Container\ContainerInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
+use Psr\Container\ContainerInterface;
 
 $dependencies = [];
 

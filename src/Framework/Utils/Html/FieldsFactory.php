@@ -20,7 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Helper\Cookie;
+use App\Framework\Core\Cookie;
 use Exception;
 
 class FieldsFactory

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Framework\Helper;
+namespace App\Framework\Core;
 
 use Exception;
 

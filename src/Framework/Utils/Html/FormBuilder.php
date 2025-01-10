@@ -20,8 +20,8 @@
 
 namespace App\Framework\Utils\Html;
 
+use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Helper\Cookie;
 use Exception;
 
 class FormBuilder

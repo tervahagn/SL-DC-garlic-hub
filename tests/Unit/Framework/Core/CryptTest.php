@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Framework\Helper;
+namespace Tests\Unit\Framework\Core;
 
-use App\Framework\Helper\Crypt;
+use App\Framework\Core\Crypt;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

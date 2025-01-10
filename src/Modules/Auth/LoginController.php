@@ -2,8 +2,8 @@
 
 namespace App\Modules\Auth;
 
+use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Helper\Cookie;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;

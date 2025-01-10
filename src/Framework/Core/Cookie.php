@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Helper;
+namespace App\Framework\Core;
 
 use App\Framework\Exceptions\FrameworkException;
 use DateTime;

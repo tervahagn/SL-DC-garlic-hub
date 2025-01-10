@@ -20,9 +20,9 @@
 
 namespace App\Modules\Auth;
 
+use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
-use App\Framework\Helper\Cookie;
 use App\Framework\User\UserEntity;
 use App\Framework\User\UserService;
 use DateTime;
