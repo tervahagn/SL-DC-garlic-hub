@@ -20,6 +20,8 @@
 
 use App\Commands\MigrateCommand;
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Cookie;
+use App\Framework\Core\Crypt;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
 use App\Framework\Core\Translate\IniTranslationLoader;
@@ -27,8 +29,6 @@ use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
-use App\Framework\Helper\Cookie;
-use App\Framework\Helper\Crypt;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
@@ -89,12 +89,14 @@ $dependencies[Session::class] = DI\factory(function ()
 {
 	return new Session([
 		'name' => 'garlic_session',
-		'lifetime' => '1 minutes',
-		'autorefresh' => false,
+		'lifetime' => '20 minutes',
+		'autorefresh' => true,
 		'samesite' => 'Strict',
-		'secure' => false,
-		'httponly' => false,
+		'secure' => true,
+		'httponly' => true,
+		'ini_settings' => ['session.cookie_lifetime' => 0]
 	]);
+
 });
 $dependencies[Helper::class] = DI\factory(function (){return new Helper();});
 $dependencies[Crypt::class] = DI\factory(function (){return new Crypt();});
