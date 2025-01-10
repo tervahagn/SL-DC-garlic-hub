@@ -32,6 +32,8 @@ class Cookie
 		$this->crypt = $crypt;
 	}
 
+
+
 	/**
 	 * @throws  FrameworkException
 	 */

@@ -22,10 +22,10 @@
 namespace App\Modules\User;
 
 use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\User\UserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class EditLocalesController
 {
@@ -44,7 +44,7 @@ class EditLocalesController
 		$locale  = htmlentities($args['locale'], ENT_QUOTES);
 
 		// set locale into session
-		/** @var  Helper $session */
+		/** @var  SessionStorage $session */
 		$session = $request->getAttribute('session');
 		$session->set('locale', $locale);
 

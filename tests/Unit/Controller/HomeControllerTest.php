@@ -21,19 +21,19 @@
 namespace Tests\Unit\Controller;
 
 use App\Controller\HomeController;
+use App\Framework\Core\Session\SessionStorage;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use SlimSession\Helper;
 
 class HomeControllerTest extends TestCase
 {
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
-	private Helper $sessionMock;
+	private SessionStorage $sessionMock;
 
 	/**
 	 * @throws Exception
@@ -42,7 +42,7 @@ class HomeControllerTest extends TestCase
 	{
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock  = $this->createMock(Helper::class);
+		$this->sessionMock  = $this->createMock(SessionStorage::class);
 	}
 
 	#[Group('units')]

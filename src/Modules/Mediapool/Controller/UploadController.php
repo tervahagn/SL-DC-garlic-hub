@@ -21,11 +21,11 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\Session\SessionStorage;
 use App\Modules\Mediapool\Services\UploadService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class UploadController
 {
@@ -81,7 +81,7 @@ class UploadController
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
-	private function hasRights(Helper $session): bool
+	private function hasRights(SessionStorage $session): bool
 	{
 		$ret = $session->exists('user');
 		if ($ret)

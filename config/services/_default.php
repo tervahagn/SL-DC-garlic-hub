@@ -24,6 +24,8 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
+use App\Framework\Core\Session\SessionManager;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
@@ -50,8 +52,6 @@ use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
-use Slim\Middleware\Session;
-use SlimSession\Helper;
 use Symfony\Component\Console\Application;
 
 $dependencies = [];
@@ -85,20 +85,14 @@ $dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInte
 });
 $dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (){ return new Application();}); // symfony console app
-$dependencies[Session::class] = DI\factory(function ()
+$dependencies[Messages::class] = DI\factory(function ()
 {
-	return new Session([
-		'name' => 'garlic_session',
-		'lifetime' => '20 minutes',
-		'autorefresh' => true,
-		'samesite' => 'Strict',
-		'secure' => true,
-		'httponly' => true,
-		'ini_settings' => ['session.cookie_lifetime' => 0]
-	]);
-
+	$sessionManager = new SessionManager();
+	$sessionManager->start();
+	return new Messages();
 });
-$dependencies[Helper::class] = DI\factory(function (){return new Helper();});
+$dependencies[SessionStorage::class] = DI\factory(function (){return new SessionStorage();});
+
 $dependencies[Crypt::class] = DI\factory(function (){return new Crypt();});
 $dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -109,7 +103,7 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 {
 	return new Locales(
 		$container->get(Config::class),
-		new SessionLocaleExtractor($container->get(Helper::class))
+		new SessionLocaleExtractor($container->get(SessionStorage::class))
 	);
 });
 $dependencies[Psr16Adapter::class] = DI\factory(function (){return new Psr16Adapter('Files');});
@@ -174,11 +168,6 @@ if (php_sapi_name() === 'cli')
 		return new MigrateCommand($container->get(Runner::class));
 	});
 }
-$dependencies[Messages::class] = DI\factory(function ()
-{
-	return new Messages();
-});
-
 $dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UserService(

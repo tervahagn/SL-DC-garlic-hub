@@ -21,6 +21,7 @@
 
 namespace App\Framework\Middleware;
 
+use App\Framework\Core\Session\SessionStorage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -48,8 +49,8 @@ class AuthMiddleware implements MiddlewareInterface
 		if (!isset($matches[0]) || in_array($matches[0], $this->publicRoutes, true))
 			return $handler->handle($request);
 
+		/** @var SessionStorage $session */
 		$session = $request->getAttribute('session');
-
 		if (!$session->exists('user'))
 		{
 			$response = new Response();

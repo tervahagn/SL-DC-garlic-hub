@@ -21,14 +21,14 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
 use Psr\Container\ContainerInterface;
 use Slim\App;
-use Slim\Middleware\Session;
-use SlimSession\Helper;
+use Slim\Flash\Messages;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App
 {
@@ -45,8 +45,10 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	));
 
 	$app->add(new AuthMiddleware());
-	$app->add(new SessionMiddleware($container->get(Helper::class), $container->get(Cookie::class)));
-	$app->add($container->get(Session::class));
+	$app->add(new SessionMiddleware(
+		$container->get(SessionStorage::class),
+		$container->get(Messages::class),
+		$container->get(Cookie::class)));
 
 	// Timing Middleware
 	$app->add(function ($request, $handler) use ($start_time, $start_memory) {
@@ -58,9 +60,6 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 	$app->addRoutingMiddleware();
 
 	require __DIR__ . '/error_handling.php'; // call error middleware as last
-	ini_set('session.cookie_lifetime', 0);
-
-	$tmp = ini_get('session.cookie_lifetime');
 
 	return $app;
 };

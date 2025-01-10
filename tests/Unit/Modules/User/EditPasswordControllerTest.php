@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Modules\User;
 
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Html\PasswordField;
-use App\Framework\Utils\Html\TextField;
 use App\Modules\User\EditPasswordController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -18,8 +18,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use SlimSession\Helper;
-use stdClass;
 
 class EditPasswordControllerTest extends TestCase
 {
@@ -28,7 +26,7 @@ class EditPasswordControllerTest extends TestCase
 	private Request $requestMock;
 	private Response $responseMock;
 	private EditPasswordController $controller;
-	private Helper $sessionMock;
+	private SessionStorage $sessionMock;
 	private Messages $flashMock;
 	private Translator $translatorMock;
 
@@ -41,7 +39,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->userServiceMock = $this->createMock(UserService::class);
 		$this->requestMock     = $this->createMock(Request::class);
 		$this->responseMock    = $this->createMock(Response::class);
-		$this->sessionMock     = $this->createMock(Helper::class);
+		$this->sessionMock     = $this->createMock(SessionStorage::class);
 		$this->flashMock 	   = $this->createMock(Messages::class);
 		$this->translatorMock  = $this->createMock(Translator::class);
 

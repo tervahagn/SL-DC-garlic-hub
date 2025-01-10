@@ -21,13 +21,13 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\NodesService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class NodesController
 {
@@ -174,7 +174,7 @@ class NodesController
 
 	}
 
-	private function hasRights(Helper $session): bool
+	private function hasRights(SessionStorage $session): bool
 	{
 		$ret = $session->exists('user');
 		if ($ret)

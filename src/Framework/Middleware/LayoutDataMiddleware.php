@@ -21,6 +21,7 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -31,7 +32,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
-use SlimSession\Helper;
 
 /**
  * The LayoutDataMiddleware class adds common layout data
@@ -43,7 +43,7 @@ use SlimSession\Helper;
 class LayoutDataMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
-	private Helper $session;
+	private SessionStorage $session;
 
 	/**
 	 * @throws CoreException

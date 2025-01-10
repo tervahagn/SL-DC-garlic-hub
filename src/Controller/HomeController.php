@@ -20,9 +20,9 @@
 
 namespace App\Controller;
 
+use App\Framework\Core\Session\SessionStorage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class HomeController
 {
@@ -38,7 +38,7 @@ class HomeController
 		return $this->setContentType($response);
 	}
 
-	private function generateHomePageData(Helper $session): array
+	private function generateHomePageData(SessionStorage $session): array
 	{
 		return [
 			'main_layout' => [

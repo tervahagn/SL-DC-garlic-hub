@@ -3,6 +3,7 @@
 namespace Tests\Unit\Modules\User;
 
 use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\User\UserService;
 use App\Modules\User\EditLocalesController;
 use PHPUnit\Framework\Attributes\Group;
@@ -10,13 +11,12 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class EditLocalesControllerTest extends TestCase
 {
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
-	private Helper $sessionMock;
+	private SessionStorage $sessionMock;
 	private Locales $localesMock;
 	private UserService $userServiceMock;
 
@@ -27,14 +27,11 @@ class EditLocalesControllerTest extends TestCase
 	{
 		$this->requestMock     = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock    = $this->createMock(ResponseInterface::class);
-		$this->sessionMock     = $this->createMock(Helper::class);
+		$this->sessionMock     = $this->createMock(SessionStorage::class);
 		$this->localesMock     = $this->createMock(Locales::class);
 		$this->userServiceMock = $this->createMock(UserService::class);
 	}
 
-	/**
-	 * @throws \Doctrine\DBAL\Exception
-	 */
 	#[Group('units')]
 	public function testSetLocales()
 	{
@@ -71,9 +68,6 @@ class EditLocalesControllerTest extends TestCase
 		$this->assertSame($this->responseMock, $result);
 	}
 
-	/**
-	 * @throws \Doctrine\DBAL\Exception
-	 */
 	#[Group('units')]
 	public function testSetLocalesWithBrokenUserArray()
 	{

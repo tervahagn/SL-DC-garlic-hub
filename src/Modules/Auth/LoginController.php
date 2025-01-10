@@ -3,13 +3,13 @@
 namespace App\Modules\Auth;
 
 use App\Framework\Core\Cookie;
+use App\Framework\Core\Session\SessionStorage;
 use App\Framework\Exceptions\FrameworkException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SlimSession\Helper;
 
 class LoginController
 {
@@ -71,7 +71,7 @@ class LoginController
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		/** @var Helper $session */
+		/** @var SessionStorage $session */
 		$session  = $request->getAttribute('session');
 		$params   = (array) $request->getParsedBody();
 		$flash    = $request->getAttribute('flash');
@@ -101,7 +101,7 @@ class LoginController
 		$session->set('locale', $main_data['locale']);
 
 		if (array_key_exists('autologin', $params))
-			$this->authService->createAutologinCookie($main_data['UID'], Helper::id());
+			$this->authService->createAutologinCookie($main_data['UID'], SessionStorage::id());
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);

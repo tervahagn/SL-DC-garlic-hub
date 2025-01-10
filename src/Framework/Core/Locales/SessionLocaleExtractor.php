@@ -20,14 +20,14 @@
 
 namespace App\Framework\Core\Locales;
 
-use SlimSession\Helper;
+use App\Framework\Core\Session\SessionStorage;
 
 class SessionLocaleExtractor implements LocaleExtractorInterface
 {
 	private string $defaultLocale;
-	private Helper $helper;
+	private SessionStorage $helper;
 
-	public function __construct(Helper $helper, string $defaultLocale = 'en')
+	public function __construct(SessionStorage $helper, string $defaultLocale = 'en')
 	{
 		$this->helper = $helper;
 		$this->defaultLocale = $defaultLocale;
