@@ -29,11 +29,9 @@ use App\Framework\Exceptions\FrameworkException;
  */
 class Session
 {
-	const string SESSION_NAME = 'GhSid';
-
-	public function __construct()
+	public function __construct(string $sessionName = 'GhSid')
 	{
-		session_name(self::SESSION_NAME);
+		session_name($sessionName);
 	}
 
 	public function start(array $options = []): void
