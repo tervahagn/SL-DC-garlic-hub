@@ -20,6 +20,8 @@
 
 namespace Tests\Unit\Framework\Middleware;
 
+use App\Framework\Core\Cookie;
+use App\Framework\Core\Session;
 use App\Framework\Middleware\SessionMiddleware;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -27,40 +29,47 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use SlimSession\Helper;
+use Slim\Flash\Messages;
 
 class SessionMiddlewareTest extends TestCase
 {
-	/**
-	 * @throws Exception
-	 */
-	#[Group('units')]
-	public function testProcessAddsSessionAndFlashAttributesToRequest(): void
+	private Session $sessionMock;
+	private Cookie $cookieMock;
+	private Messages $flashMock;
+	private RequestHandlerInterface $handlerMock;
+	private ServerRequestInterface $requestMock;
+
+	protected function setUp(): void
 	{
-		session_start(); // Todo-> Put this shit to integration tests or find a way to not new Messages
-		$sessionMock = $this->createMock(Helper::class);
-		$requestMock = $this->createMock(ServerRequestInterface::class);
+		$this->sessionMock = $this->createMock(Session::class);
+		$this->cookieMock = $this->createMock(Cookie::class);
+		$this->flashMock = $this->createMock(Messages::class);
+		$this->handlerMock = $this->createMock(RequestHandlerInterface::class);
+		$this->requestMock = $this->createMock(ServerRequestInterface::class);
+	}
+
+	#[Group('units')]
+	public function testProcessAddsAttributesToRequest(): void
+	{
+		$middleware = new SessionMiddleware($this->sessionMock, $this->flashMock, $this->cookieMock);
+
+		// Simulate the `withAttribute` method for the request mock
+		$this->requestMock
+			->method('withAttribute')
+			->willReturnSelf();
+
+		// Expect the handler to handle the request
 		$responseMock = $this->createMock(ResponseInterface::class);
-		$handlerMock = $this->createMock(RequestHandlerInterface::class);
+		$this->handlerMock
+			->expects($this->once())
+			->method('handle')
+			->with($this->requestMock)
+			->willReturn($responseMock);
 
-		// Mock the `withAttribute` method to ensure attributes are added
-		$requestMock->expects($this->exactly(2))
-					->method('withAttribute')
-		         	->willReturnCallback(fn($key, $value) => $requestMock);
+		// Execute the middleware
+		$result = $middleware->process($this->requestMock, $this->handlerMock);
 
-
-		// Ensure the handler's `handle` method is called with the modified request
-		$handlerMock->expects($this->once())
-					->method('handle')
-					->with($requestMock)
-					->willReturn($responseMock);
-
-		$middleware = new SessionMiddleware($sessionMock);
-		$result = $middleware->process($requestMock, $handlerMock);
-
-		// Assert that the response from the handler is returned unchanged
+		// Assert the returned response is as expected
 		$this->assertSame($responseMock, $result);
-
-		session_destroy();
 	}
 }
