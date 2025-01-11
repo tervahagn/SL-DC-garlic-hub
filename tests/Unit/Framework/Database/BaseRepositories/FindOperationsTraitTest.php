@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Framework\BaseRepositories;
+namespace Tests\Unit\Framework\Database\BaseRepositories;
 
 use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
