@@ -20,7 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use Exception;
 
@@ -28,9 +28,9 @@ class FormBuilder
 {
 	private FieldsFactory $fieldsFactory;
 	private FieldsRenderFactory $fieldsRenderFactory;
-	private SessionStorage $session;
+	private Session $session;
 
-	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory, SessionStorage $session)
+	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory, Session $session)
 	{
 		$this->fieldsFactory       = $fieldsFactory;
 		$this->fieldsRenderFactory = $fieldsRenderFactory;

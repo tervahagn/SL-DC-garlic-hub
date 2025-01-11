@@ -21,7 +21,7 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Cookie;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,11 +30,11 @@ use Slim\Flash\Messages;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-	private SessionStorage $session;
+	private Session $session;
 	private Cookie $cookie;
 	private Messages $flash;
 
-	public function __construct(SessionStorage $session, Messages $flash, Cookie $cookie)
+	public function __construct(Session $session, Messages $flash, Cookie $cookie)
 	{
 		$this->session = $session;
 		$this->cookie  = $cookie;

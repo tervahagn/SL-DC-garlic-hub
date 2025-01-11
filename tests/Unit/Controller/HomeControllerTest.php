@@ -21,7 +21,7 @@
 namespace Tests\Unit\Controller;
 
 use App\Controller\HomeController;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ class HomeControllerTest extends TestCase
 {
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
-	private SessionStorage $sessionMock;
+	private Session $sessionMock;
 
 	/**
 	 * @throws Exception
@@ -42,7 +42,7 @@ class HomeControllerTest extends TestCase
 	{
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock  = $this->createMock(SessionStorage::class);
+		$this->sessionMock  = $this->createMock(Session::class);
 	}
 
 	#[Group('units')]

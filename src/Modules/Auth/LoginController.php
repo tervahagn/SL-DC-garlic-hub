@@ -3,7 +3,7 @@
 namespace App\Modules\Auth;
 
 use App\Framework\Core\Cookie;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -68,7 +68,7 @@ class LoginController
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		/** @var SessionStorage $session */
+		/** @var Session $session */
 		$session  = $request->getAttribute('session');
 		$params   = (array) $request->getParsedBody();
 		$flash    = $request->getAttribute('flash');
@@ -96,7 +96,7 @@ class LoginController
 		$session->set('locale', $main_data['locale']);
 
 		if (array_key_exists('autologin', $params))
-			$this->authService->createAutologinCookie($main_data['UID'], SessionStorage::id());
+			$this->authService->createAutologinCookie($main_data['UID'], Session::id());
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
@@ -110,13 +110,21 @@ class LoginController
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
 	 */
 	public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var Session $session */
 		$session = $request->getAttribute('session');
 		$user    = $session->get('user');
 		$this->authService->logout($user);
 		$session->delete('user');
+
+		/** @var Cookie $cookie */
+		$cookie = $request->getAttribute('cookie');
+		$cookie->deleteCookie(AuthService::COOKIE_NAME_AUTO_LOGIN);
+		$session->regenerateID(); // for more security
+
 		return $this->redirect($response, '/login');
 	}
 

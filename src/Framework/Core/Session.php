@@ -18,11 +18,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Core\Session;
+namespace App\Framework\Core;
+
 
 use App\Framework\Exceptions\FrameworkException;
 
-class SessionManager
+/**
+ * Let's ignore single responsibility here and put session management and
+ * storage in one class.
+ */
+class Session
 {
 	const string SESSION_NAME = 'GhSid';
 
@@ -47,27 +52,6 @@ class SessionManager
 		session_start($settings);
 	}
 
-	public function getSessionConfig(): array
-	{
-		return [
-			'name' => session_name(),
-			'lifetime' => ini_get('session.cookie_lifetime'),
-			'path' => ini_get('session.cookie_path'),
-			'domain' => ini_get('session.cookie_domain'),
-			'secure' => ini_get('session.cookie_secure'),
-			'httponly' => ini_get('session.cookie_httponly'),
-			'samesite' => ini_get('session.cookie_samesite'),
-		];
-	}
-
-	public function isActive(): bool
-	{
-		return session_status() === PHP_SESSION_ACTIVE;
-	}
-
-	/**
-	 * @throws FrameworkException
-	 */
 	public function regenerateID(): void
 	{
 		if (session_status() !== PHP_SESSION_ACTIVE)
@@ -77,13 +61,38 @@ class SessionManager
 		setcookie(session_name(), session_id(), ini_get("session.cookie_lifetime"), "/");
 	}
 
-	public function destroy(): void
+
+	public function get(string $key): null|string|array
 	{
-		if (session_status() === PHP_SESSION_ACTIVE)
-		{
-			session_unset();
-			session_destroy();
-		}
+		return $this->exists($key) ? $_SESSION[$key] : null;
 	}
 
+	public function set(string $key, string|array $value): void
+	{
+		$_SESSION[$key] = $value;
+	}
+
+	public function delete($key): void
+	{
+		if ($this->exists($key))
+			unset($_SESSION[$key]);
+	}
+
+	public function clear(): void
+	{
+		$_SESSION = [];
+	}
+
+	public function exists(string $key): bool
+	{
+		return array_key_exists($key, $_SESSION);
+	}
+
+	public static function id(bool $new = false): false|string
+	{
+		if ($new && session_id())
+			session_regenerate_id(true);
+
+		return session_id() ?: '';
+	}
 }

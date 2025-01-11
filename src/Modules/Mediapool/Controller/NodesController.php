@@ -21,7 +21,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\NodesService;
@@ -174,7 +174,7 @@ class NodesController
 
 	}
 
-	private function hasRights(SessionStorage $session): bool
+	private function hasRights(Session $session): bool
 	{
 		$ret = $session->exists('user');
 		if ($ret)

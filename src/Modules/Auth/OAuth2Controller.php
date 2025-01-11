@@ -20,7 +20,7 @@
 
 namespace App\Modules\Auth;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use Doctrine\DBAL\Exception;
 use InvalidArgumentException;
 use League\OAuth2\Server\AuthorizationServer;
@@ -56,7 +56,7 @@ class OAuth2Controller
 		try
 		{
 			$authRequest = $this->authServer->validateAuthorizationRequest($request);
-			/**  @var SessionStorage $session */
+			/**  @var Session $session */
 			// check if user is logged in
 			$session  = $request->getAttribute('session');
 			if (!$session->exists('user'))

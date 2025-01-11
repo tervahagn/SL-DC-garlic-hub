@@ -20,7 +20,7 @@
 
 namespace App\Controller;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -38,7 +38,7 @@ class HomeController
 		return $this->setContentType($response);
 	}
 
-	private function generateHomePageData(SessionStorage $session): array
+	private function generateHomePageData(Session $session): array
 	{
 		return [
 			'main_layout' => [

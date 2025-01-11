@@ -20,7 +20,7 @@
 
 namespace Tests\Unit\Modules\Auth;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserEntity;
@@ -42,7 +42,7 @@ class LoginControllerTest extends TestCase
 	private Translator $translatorMock;
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
-	private SessionStorage $sessionMock;
+	private Session $sessionMock;
 	private AuthService $authServiceMock;
 	private LoggerInterface $loggerMock;
 
@@ -54,7 +54,7 @@ class LoginControllerTest extends TestCase
 		$this->translatorMock  = $this->createMock(Translator::class);
 		$this->requestMock     = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock    = $this->createMock(ResponseInterface::class);
-		$this->sessionMock     = $this->createMock(SessionStorage::class);
+		$this->sessionMock     = $this->createMock(Session::class);
 		$this->authServiceMock = $this->createMock(AuthService::class);
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 	}

@@ -20,7 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use Exception;
 
 class FieldsFactory
@@ -43,7 +43,7 @@ class FieldsFactory
 	/**
 	 * @throws Exception
 	 */
-	public function createCsrfTokenField(array $attributes, SessionStorage $session): CsrfTokenField
+	public function createCsrfTokenField(array $attributes, Session $session): CsrfTokenField
 	{
 		return new CsrfTokenField($attributes, $session);
 	}

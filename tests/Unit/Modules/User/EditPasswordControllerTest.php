@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Modules\User;
 
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\CsrfTokenField;
@@ -26,7 +26,7 @@ class EditPasswordControllerTest extends TestCase
 	private Request $requestMock;
 	private Response $responseMock;
 	private EditPasswordController $controller;
-	private SessionStorage $sessionMock;
+	private Session $sessionMock;
 	private Messages $flashMock;
 	private Translator $translatorMock;
 
@@ -39,7 +39,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->userServiceMock = $this->createMock(UserService::class);
 		$this->requestMock     = $this->createMock(Request::class);
 		$this->responseMock    = $this->createMock(Response::class);
-		$this->sessionMock     = $this->createMock(SessionStorage::class);
+		$this->sessionMock     = $this->createMock(Session::class);
 		$this->flashMock 	   = $this->createMock(Messages::class);
 		$this->translatorMock  = $this->createMock(Translator::class);
 

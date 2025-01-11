@@ -21,7 +21,7 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -43,7 +43,7 @@ use Slim\Flash\Messages;
 class LayoutDataMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
-	private SessionStorage $session;
+	private Session $session;
 
 	/**
 	 * @throws CoreException

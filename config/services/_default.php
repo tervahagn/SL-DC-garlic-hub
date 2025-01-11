@@ -24,8 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
-use App\Framework\Core\Session\SessionManager;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
@@ -85,14 +84,13 @@ $dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInte
 });
 $dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (){ return new Application();}); // symfony console app
-$dependencies[Messages::class] = DI\factory(function ()
+$dependencies[Session::class] = DI\factory(function ()
 {
-	$sessionManager = new SessionManager();
-	$sessionManager->start();
-	return new Messages();
+	$session = new Session();
+	$session->start();
+	return $session;
 });
-$dependencies[SessionStorage::class] = DI\factory(function (){return new SessionStorage();});
-
+$dependencies[Messages::class] = DI\factory(function (){return new Messages();});
 $dependencies[Crypt::class] = DI\factory(function (){return new Crypt();});
 $dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -103,7 +101,7 @@ $dependencies[Locales::class] = DI\factory(function (ContainerInterface $contain
 {
 	return new Locales(
 		$container->get(Config::class),
-		new SessionLocaleExtractor($container->get(SessionStorage::class))
+		new SessionLocaleExtractor($container->get(Session::class))
 	);
 });
 $dependencies[Psr16Adapter::class] = DI\factory(function (){return new Psr16Adapter('Files');});
@@ -181,7 +179,7 @@ $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $con
 	return new FormBuilder(
 		new FieldsFactory(),
 		new FieldsRenderFactory(),
-		$container->get(SessionStorage::class)
+		$container->get(Session::class)
 	);
 });
 

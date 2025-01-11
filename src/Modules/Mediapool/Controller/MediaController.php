@@ -21,8 +21,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Framework\Core\Session\SessionStorage;
-use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Core\Session;
 use App\Modules\Mediapool\Services\MediaService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -86,7 +85,7 @@ class MediaController
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
-	private function hasRights(SessionStorage $session): bool
+	private function hasRights(Session $session): bool
 	{
 		$ret = $session->exists('user');
 		if ($ret)

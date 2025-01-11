@@ -21,11 +21,12 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Locales\Locales;
-use App\Framework\Core\Session\SessionStorage;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
+use App\Modules\Auth\AuthService;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Flash\Messages;
@@ -44,9 +45,9 @@ return function (ContainerInterface $container, $start_time, $start_memory): App
 		$container->get(Translator::class)
 	));
 
-	$app->add(new AuthMiddleware());
+	$app->add(new AuthMiddleware($container->get(AuthService::class)));
 	$app->add(new SessionMiddleware(
-		$container->get(SessionStorage::class),
+		$container->get(Session::class),
 		$container->get(Messages::class),
 		$container->get(Cookie::class)));
 

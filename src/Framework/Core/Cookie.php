@@ -32,8 +32,6 @@ class Cookie
 		$this->crypt = $crypt;
 	}
 
-
-
 	/**
 	 * @throws  FrameworkException
 	 */
@@ -82,7 +80,7 @@ class Cookie
 	public function deleteCookie(string $name): void
 	{
 		// cheap way to delete a cookie without knowing its details
-		setcookie($name, '', 1);
+		setcookie($name, '', time() - 3600, '/');
 	}
 
 	public function hasCookie(string $name): bool
