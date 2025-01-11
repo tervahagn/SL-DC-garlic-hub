@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Core\Session;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\EmailField;
 use App\Framework\Utils\Html\FieldsFactory;
@@ -64,7 +65,7 @@ class FieldsFactoryTest extends TestCase
 	{
 		$attributes = ['id' => 'csrf_token', 'name' => 'csrf_token_name'];
 
-		$field = $this->fieldsFactory->createCsrfTokenField($attributes);
+		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(Session::class));
 
 		$this->assertInstanceOf(CsrfTokenField::class, $field);
 		$this->assertSame('csrf_token', $field->getId());
