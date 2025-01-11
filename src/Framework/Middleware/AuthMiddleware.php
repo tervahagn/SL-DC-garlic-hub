@@ -105,6 +105,7 @@ class AuthMiddleware implements MiddlewareInterface
 		else
 			return $handler->handle($request);
 	}
+
 	private function respondNonAuth(string $path, ServerRequestInterface $request, RequestHandlerInterface $handler):	ResponseInterface
 	{
 		$response = new Response();
