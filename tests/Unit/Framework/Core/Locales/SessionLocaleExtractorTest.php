@@ -4,6 +4,7 @@ namespace Tests\Unit\Framework\Core\Locales;
 
 use App\Framework\Core\Locales\LocaleExtractorInterface;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
+use App\Framework\Core\Session;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,7 @@ use SlimSession\Helper;
 
 class SessionLocaleExtractorTest extends TestCase
 {
-	private Helper $sessionMock;
+	private Session $sessionMock;
 	private LocaleExtractorInterface $localeExtractor;
 
 	/**
@@ -20,7 +21,7 @@ class SessionLocaleExtractorTest extends TestCase
 	#[Group('units')]
 	protected function setUp(): void
 	{
-		$this->sessionMock = $this->createMock(Helper::class);
+		$this->sessionMock = $this->createMock(Session::class);
 		$this->localeExtractor = new SessionLocaleExtractor($this->sessionMock, 'en_US');
 	}
 
