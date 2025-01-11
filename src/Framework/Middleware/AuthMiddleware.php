@@ -66,7 +66,7 @@ class AuthMiddleware implements MiddlewareInterface
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
 		// check for public route and skip authentication
-		preg_match('~^/([^/]+)~', $request->getUri()->getPath(), $matches);
+		preg_match('~^/([^/]*)~', $request->getUri()->getPath(), $matches);
 		if (!isset($matches[1]) || in_array($matches[1], $this->publicRoutes, true))
 			return $handler->handle($request);
 
