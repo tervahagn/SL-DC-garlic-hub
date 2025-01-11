@@ -4,10 +4,12 @@ namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Middleware\LayoutDataMiddleware;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -16,13 +18,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
-use SlimSession\Helper;
 
 class LayoutDataMiddlewareTest extends TestCase
 {
     private LayoutDataMiddleware $middleware;
     private Translator $translatorMock;
-    private Helper $sessionMock;
+    private Session $sessionMock;
 	private Config $configMock;
     private ServerRequestInterface $requestMock;
     private RequestHandlerInterface $handlerMock;
@@ -36,7 +37,7 @@ class LayoutDataMiddlewareTest extends TestCase
     protected function setUp(): void
     {
         $this->translatorMock = $this->createMock(Translator::class);
-        $this->sessionMock    = $this->createMock(Helper::class);
+        $this->sessionMock    = $this->createMock(Session::class);
         $this->requestMock    = $this->createMock(ServerRequestInterface::class);
         $this->handlerMock    = $this->createMock(RequestHandlerInterface::class);
 		$this->responseMock   = $this->createMock(ResponseInterface::class);
@@ -49,7 +50,7 @@ class LayoutDataMiddlewareTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
     public function testProcessWithUserSession(): void
@@ -97,7 +98,7 @@ class LayoutDataMiddlewareTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
     public function testProcessWithoutUserSession(): void
@@ -154,7 +155,7 @@ class LayoutDataMiddlewareTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testProcessWithMessage(): void

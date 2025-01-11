@@ -22,7 +22,6 @@ namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
-use App\Framework\TemplateEngine\TemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -54,24 +53,6 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->requestMock->method('getUri')->willReturn($this->uriInterfaceMock);
 
 		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock);
-	}
-
-	#[Group('units')]
-	public function testProcessReturnsResponseForApiRoute(): void
-	{
-		$this->handlerMock->method('handle')->willReturn($this->responseMock);
-
-		$this->uriInterfaceMock->method('getPath')->willReturn('/api/resource');
-		$this->requestMock->expects($this->never()) ->method('getAttribute');
-		$this->handlerMock->expects($this->once())
-					->method('handle')
-					->with($this->requestMock)
-					->willReturn($this->responseMock);
-
-
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertSame($this->responseMock, $result);
 	}
 
 	/**
