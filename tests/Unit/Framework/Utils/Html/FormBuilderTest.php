@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\EmailField;
@@ -21,18 +22,20 @@ class FormBuilderTest extends TestCase
 	private FieldsFactory       $fieldsFactoryMock;
 	private FieldsRenderFactory $fieldsRenderFactoryMock;
 	private FormBuilder         $formBuilder;
+	private Session 			$sessionMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->fieldsFactoryMock = $this->createMock(FieldsFactory::class);
+		$this->fieldsFactoryMock       = $this->createMock(FieldsFactory::class);
 		$this->fieldsRenderFactoryMock = $this->createMock(FieldsRenderFactory::class);
-
-		$this->formBuilder = new FormBuilder(
+		$this->sessionMock             = $this->createMock(Session::class);
+		$this->formBuilder             = new FormBuilder(
 			$this->fieldsFactoryMock,
-			$this->fieldsRenderFactoryMock
+			$this->fieldsRenderFactoryMock,
+			$this->sessionMock
 		);
 	}
 
