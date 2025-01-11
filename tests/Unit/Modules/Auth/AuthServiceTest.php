@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Modules\Auth;
 
+use App\Framework\Core\Cookie;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserEntity;
 use App\Framework\User\UserService;
@@ -11,11 +13,14 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class AuthServiceTest extends TestCase
 {
-	private AuthService $authServiceMock;
+	private AuthService $authService;
 	private UserService $userServiceMock;
+	private Cookie $cookieMock;
+	private LoggerInterface $loggerMock;
 
 	/**
 	 * @throws Exception
@@ -23,77 +28,160 @@ class AuthServiceTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->userServiceMock = $this->createMock(UserService::class);
+		$this->cookieMock      = $this->createMock(Cookie::class);
+		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 
-		$this->authServiceMock = new AuthService($this->userServiceMock);
+		$this->authService = new AuthService(
+			$this->userServiceMock,
+			$this->cookieMock,
+			$this->loggerMock
+		);
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws UserException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testLoginSuccess(): void
+	{
+		$identifier = 'user@example.com';
+		$password = 'correct_password';
+		$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+		$userData = [
+			'UID' => 1,
+			'password' => $hashedPassword,
+			'status' => UserService::USER_STATUS_REGULAR,
+		];
+
+		$this->userServiceMock->method('findUser')->with($identifier)->willReturn($userData);
+		$userEntityMock = $this->createMock(UserEntity::class);
+		$this->userServiceMock->method('getCurrentUser')->with(1)->willReturn($userEntityMock);
+
+		$userEntity = $this->authService->login($identifier, $password);
+
+		$this->assertInstanceOf(UserEntity::class, $userEntity);
+		$this->assertEmpty($this->authService->getErrorMessage());
+	}
+
+	#[Group('units')]
+	public function testLoginInvalidCredentials(): void
+	{
+		$identifier = 'user@example.com';
+		$password = 'wrong_password';
+
+		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([
+			'UID' => 1,
+			'password' => password_hash('correct_password', PASSWORD_BCRYPT),
+		]);
+
+		$userEntity = $this->authService->login($identifier, $password);
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('Invalid credentials.', $this->authService->getErrorMessage());
+	}
+
+	#[Group('units')]
+	public function testLoginUserDeleted(): void
+	{
+		$identifier = 'deleted@example.com';
+		$password = 'irrelevant_password';
+
+		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([
+			'UID' => 1,
+			'password' => password_hash($password, PASSWORD_BCRYPT),
+			'status' => UserService::USER_STATUS_DELETED,
+		]);
+
+		$userEntity = $this->authService->login($identifier, $password);
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('login//account_deleted', $this->authService->getErrorMessage());
 	}
 
 	/**
 	 * @throws UserException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception|InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testSuccessfulLogin(): void
+	public function testLoginByCookieSuccess(): void
 	{
-		$identifier = 'test@example.com';
-		$password = 'correct_password';
-		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-		$userData = ['UID' => 1, 'password' => $hashedPassword];
-
+		$cookiePayload = ['UID' => 1, 'sid' => 'valid_session'];
 		$userEntityMock = $this->createMock(UserEntity::class);
 
-		// Verhalten des UserService simulieren
-		$this->userServiceMock->method('findUser')->with($identifier)->willReturn($userData);
-		$this->userServiceMock->method('getCurrentUser')->with($userData['UID'])->willReturn($userEntityMock);
+		$this->cookieMock->method('hasCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn(true);
+		$this->cookieMock->method('getHashedCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn($cookiePayload);
 
-		$result = $this->authServiceMock->login($identifier, $password);
+		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
+		$this->userServiceMock->method('getCurrentUser')->with(1)->willReturn($userEntityMock);
 
-		$this->assertInstanceOf(UserEntity::class, $result);
-		$this->assertEquals($userEntityMock, $result);
+		$userEntity = $this->authService->loginByCookie();
+
+		$this->assertInstanceOf(UserEntity::class, $userEntity);
+	}
+
+	#[Group('units')]
+	public function testLoginByCookieNoCookie(): void
+	{
+		$this->cookieMock->method('hasCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn(false);
+
+		$userEntity = $this->authService->loginByCookie();
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('No cookie for autologin was found.', $this->authService->getErrorMessage());
 	}
 
 	/**
+	 * @throws Exception
+	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
-	public function testLoginWithInvalidCredentials(): void
+	public function testLoginSilentSuccess(): void
 	{
-		$identifier = 'test@example.com';
-		$password = 'wrong_password';
-		$hashedPassword = password_hash('correct_password', PASSWORD_DEFAULT);
-		$userData = ['UID' => 1, 'password' => $hashedPassword];
+		$UID = 1;
+		$sessionId = 'valid_session';
+		$userEntityMock = $this->createMock(UserEntity::class);
 
-		// Verhalten des UserService simulieren
-		$this->userServiceMock->method('findUser')->with($identifier)->willReturn($userData);
+		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
 
-		$this->expectException(UserException::class);
-		$this->expectExceptionMessage('Invalid credentials.');
+		$this->userServiceMock->method('getCurrentUser')->with($UID)->willReturn($userEntityMock);
 
-		$this->authServiceMock->login($identifier, $password);
+		$userEntity = $this->authService->loginSilent($UID, $sessionId);
+
+		$this->assertInstanceOf(UserEntity::class, $userEntity);
+		$this->assertEmpty($this->authService->getErrorMessage());
 	}
-
 
 	/**
+	 * @throws Exception
+	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
-	public function testLoginWithNonExistentUser(): void
+	public function testLoginSilentUserLocked(): void
 	{
-		$identifier = 'nonexistent@example.com';
-		$password   = 'password';
-		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([]);
+		$UID = 1;
+		$sessionId = 'valid_session';
+		$userEntityMock = $this->createMock(UserEntity::class);
 
-		$this->expectException(UserException::class);
-		$this->expectExceptionMessage('Invalid credentials.');
+		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_LOCKED]);
 
-		$this->authServiceMock->login($identifier, $password);
+		$this->userServiceMock->method('getCurrentUser')->with($UID)->willReturn($userEntityMock);
+
+		$userEntity = $this->authService->loginSilent($UID, $sessionId);
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('login//account_locked', $this->authService->getErrorMessage());
 	}
-
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -103,6 +191,6 @@ class AuthServiceTest extends TestCase
 	{
 		$this->userServiceMock->expects($this->once())->method('invalidateCache')->with(45);
 
-		$this->authServiceMock->logout(['UID' => 45]);
+		$this->authService->logout(['UID' => 45]);
 	}
 }

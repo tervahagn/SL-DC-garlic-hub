@@ -37,7 +37,7 @@ class AuthService
 	const string AUTOLOGIN_EXPIRE = '+28 days';
 	private UserService $userService;
 	private Cookie $cookie;
-	private string $errorMessage;
+	private string $errorMessage = '';
 	private LoggerInterface $logger;
 
 	public function __construct(UserService $userService, Cookie $cookie, LoggerInterface $logger)
