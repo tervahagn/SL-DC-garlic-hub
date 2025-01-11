@@ -29,9 +29,6 @@ class HomeController
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
-		if (!$session->exists('user'))
-			return $response->withHeader('Location', '/login')->withStatus(302);
-
 		$data = $this->generateHomePageData($session);
 		$this->writeResponseData($response, $data);
 

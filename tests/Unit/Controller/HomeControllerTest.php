@@ -42,28 +42,16 @@ class HomeControllerTest extends TestCase
 	{
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock  = $this->createMock(Session::class);
-	}
-
-	#[Group('units')]
-	public function testIndexRedirectsToLoginIfUserNotInSession(): void
-	{
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
-		$this->sessionMock->method('exists')->with('user')->willReturn(false);
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
-		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
-
-		$controller = new HomeController();
-		$result = $controller->index($this->requestMock, $this->responseMock);
-
-		$this->assertSame($this->responseMock, $result);
+		$this->sessionMock  = $this->getMockBuilder(Session::class)
+			->disableOriginalConstructor()
+			->getMock();
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testIndexReturnsHomePageIfUserInSession(): void
+	public function testIndexReturnsHomePage(): void
 	{
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('exists')->with('user')->willReturn(true);
