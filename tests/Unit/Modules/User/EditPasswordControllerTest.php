@@ -265,13 +265,12 @@ class EditPasswordControllerTest extends TestCase
 	#[Group('units')]
 	public function testShowFormGeneratesResponse(): void
 	{
-		$this->requestMock->expects($this->exactly(2))->method('getAttribute')
+		$this->requestMock->expects($this->exactly(1))->method('getAttribute')
 			  ->willReturnCallback(function ($attribute)
 			  {
 				  return match ($attribute)
 				  {
 					  'translator' => $this->translatorMock,
-					  'session' => $this->sessionMock,
 					  default => null,
 				  };
 			  });
@@ -318,8 +317,6 @@ class EditPasswordControllerTest extends TestCase
 					return null;
 			});
 
-		$formFieldsMocks['csrf_token']->expects($this->once())->method('getValue')->willReturn('valid_token');
-		$this->sessionMock->expects($this->once())->method('set')->with('csrf_token', 'valid_token');
 
 		$this->responseMock->expects($this->once())
 			 ->method('getBody')
