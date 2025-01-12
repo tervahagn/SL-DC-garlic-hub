@@ -20,8 +20,10 @@
 
 namespace Tests\Unit\Modules\Auth;
 
+use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserEntity;
 use App\Modules\Auth\AuthService;
@@ -44,7 +46,6 @@ class LoginControllerTest extends TestCase
 	private ResponseInterface $responseMock;
 	private Session $sessionMock;
 	private AuthService $authServiceMock;
-	private LoggerInterface $loggerMock;
 
 	/**
 	 * @throws Exception
@@ -59,14 +60,13 @@ class LoginControllerTest extends TestCase
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 	}
 
-
 	/**
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws Exception|\Psr\SimpleCache\InvalidArgumentException
 	 */
 	#[Group('units')]
-	public function testShowLoginRedirectsToHomeIfUserInSession(): void
+	public function testShowLoginRendersForm(): void
 	{
-		$this->requestMock->expects($this->exactly(2))->method('getAttribute')
+		$this->requestMock->method('getAttribute')
 			->willReturnCallback(function ($param)
 			{
 				if ($param === 'translator')
@@ -76,37 +76,8 @@ class LoginControllerTest extends TestCase
 				return null;
 			}
 		);
-		$this->sessionMock->method('exists')->with('user')->willReturn(true);
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
-		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
-		$result = $controller->showLogin($this->requestMock, $this->responseMock);
-
-		$this->assertSame($this->responseMock, $result);
-	}
-
-	/**
-	 * @throws Exception|\Psr\SimpleCache\InvalidArgumentException
-	 */
-	#[Group('units')]
-	public function testShowLoginRendersFormIfUserNotInSession(): void
-	{
-		$flash = $this->createMock(Messages::class);
-		$this->requestMock->method('getAttribute')
-			->willReturnCallback(function ($param) use ($flash)
-			{
-				if ($param === 'translator')
-					return $this->translatorMock;
-				elseif ($param === 'session')
-					return $this->sessionMock;
-				return null;
-			}
-		);
-
-		$this->sessionMock->method('exists')->with('user')->willReturn(false);
-		$this->sessionMock->method('set');
-		$this->translatorMock->expects($this->exactly(4))->method('translate');
+		$this->translatorMock->expects($this->exactly(5))->method('translate');
 
 		$body = $this->createMock(StreamInterface::class);
 		$this->responseMock->method('getBody')->willReturn($body);
@@ -114,41 +85,7 @@ class LoginControllerTest extends TestCase
 		$body->expects($this->once())->method('write');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
-		$result = $controller->showLogin($this->requestMock, $this->responseMock);
-
-		$this->assertSame($this->responseMock, $result);
-	}
-
-	/**
-	 * @throws Exception|\Psr\SimpleCache\InvalidArgumentException
-	 */
-	#[Group('units')]
-	public function testShowLoginRendersFormIfUserNotInSessionWithoutErrors(): void
-	{
-		$flash = $this->createMock(Messages::class);
-		$this->requestMock->method('getAttribute')
-						  ->willReturnCallback(function ($param) use ($flash)
-						  {
-							  if ($param === 'translator')
-								  return $this->translatorMock;
-							  elseif ($param === 'session')
-								  return $this->sessionMock;
-							  return null;
-						  }
-						  );
-
-		$this->sessionMock->method('exists')->with('user')->willReturn(false);
-		$this->sessionMock->method('set');
-		$this->translatorMock->expects($this->exactly(4))->method('translate');
-
-		$body = $this->createMock(StreamInterface::class);
-		$this->responseMock->method('getBody')->willReturn($body);
-
-		$body->expects($this->once())->method('write');
-		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
-
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -156,7 +93,10 @@ class LoginControllerTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToHomeOnSuccessfulLogin(): void
@@ -185,7 +125,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -193,7 +133,10 @@ class LoginControllerTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToApiOnSuccessfulLogin(): void
@@ -231,7 +174,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/api/authorize?some=stuff')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -240,7 +183,10 @@ class LoginControllerTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToLoginOnInvalidCredentials(): void
@@ -249,19 +195,20 @@ class LoginControllerTest extends TestCase
 
 		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'wrong_password', 'csrf_token' => 'token']);
 		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
-		$this->sessionMock->expects($this->once())->method('exists')->with('csrf_token')->willReturnSelf();
+		$this->sessionMock->expects($this->once())->method('exists')->with('csrf_token')->willReturn(true);
 		$this->sessionMock->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
 
-		$this->authServiceMock->method('login')->with('testuser', 'wrong_password')->willThrowException(new
-		UserException('Invalid credentials.'));
+		$this->authServiceMock->method('login')
+			->with('testuser', 'wrong_password')
+			->willReturn(null);
+		$this->authServiceMock->method('getErrorMessage')->willReturn('Invalid credentials.');
 
 		$flash->expects($this->once())->method('addMessage')->with('error', 'Invalid credentials.');
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid credentials.');
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -269,7 +216,10 @@ class LoginControllerTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToLoginOnTokenMismatch(): void
@@ -281,35 +231,49 @@ class LoginControllerTest extends TestCase
 		$this->sessionMock->expects($this->once())->method('exists')->with('csrf_token')->willReturn(true);
 		$this->sessionMock->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
 
-		$flash->expects($this->once())->method('addMessage')->with('error', 'CSRF Token mismatch');
+		$flash->expects($this->once())->method('addMessage')->with('error', 'Invalid CSRF token');
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
-		$this->loggerMock->expects($this->once())->method('error')->with('CSRF Token mismatch');
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
 	}
 
 
-
 	/**
 	 * @return void
-	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testLogoutRedirectsToLogin(): void
 	{
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$cookieMock = $this->createMock(Cookie::class);
+
+		$this->requestMock->method('getAttribute')
+			->willReturnCallback(function ($param) use ($cookieMock)
+			{
+				if ($param === 'cookie')
+					return $cookieMock;
+				elseif ($param === 'session')
+					return $this->sessionMock;
+				return null;
+			}
+			);
 		$this->sessionMock->expects($this->once())->method('get')->with('user')->willReturn(['UID' => 88]);
 		$this->sessionMock->expects($this->once())->method('delete')->with('user');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock, $this->loggerMock);
+		$cookieMock->method('deleteCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN);
+		$this->sessionMock->expects($this->once())->method('regenerateID');
+
+		$controller = new LoginController($this->authServiceMock);
 		$result = $controller->logout($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);

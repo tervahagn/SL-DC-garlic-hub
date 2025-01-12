@@ -5,6 +5,7 @@ namespace App\Modules\Auth;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\UserException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
@@ -30,8 +31,6 @@ class LoginController
 	{
 		$translator = $request->getAttribute('translator');
 		$session    = $request->getAttribute('session');
-		if ($session->exists('user'))
-			return $this->redirect($response);
 
 		$csrfToken = bin2hex(random_bytes(32));
 		$session->set('csrf_token', $csrfToken);
@@ -61,10 +60,14 @@ class LoginController
 
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws UserException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function login(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -101,7 +104,7 @@ class LoginController
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
 
-		$oauthParams = $session->get('oauth_redirect_params', []);
+		$oauthParams = $session->get('oauth_redirect_params');
 		$session->delete('oauth_redirect_params');
 
 		return $this->redirect($response, '/api/authorize?' . http_build_query($oauthParams));
