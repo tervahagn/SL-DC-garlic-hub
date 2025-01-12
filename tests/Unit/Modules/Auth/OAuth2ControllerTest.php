@@ -20,7 +20,6 @@ class OAuth2ControllerTest extends TestCase
 {
 	private OAuth2Controller $controller;
 	private AuthService $authServiceMock;
-	private LoggerInterface $loggerMock;
 	private AuthorizationServer $authServerMock;
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
@@ -31,12 +30,11 @@ class OAuth2ControllerTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->authServiceMock = $this->createMock(AuthService::class);
-		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 		$this->authServerMock  = $this->createMock(AuthorizationServer::class);
 		$this->requestMock     = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock    = $this->createMock(ResponseInterface::class);
 
-		$this->controller = new OAuth2Controller($this->authServiceMock, $this->loggerMock);
+		$this->controller = new OAuth2Controller($this->authServiceMock, $this->authServerMock);
 	}
 
 	/**
@@ -75,12 +73,11 @@ class OAuth2ControllerTest extends TestCase
 		$this->authServerMock->expects($this->once())->method('validateAuthorizationRequest')
 			->willThrowException(new OAuthServerException('error dam dam', 123, 'error'));
 
-		$this->loggerMock->expects($this->once())->method('error')->with('error dam dam');
-
 		$this->responseMock->expects($this->once())->method('withStatus')->with(400);
 		$this->responseMock->expects($this->once())->method('withHeader')->willReturnSelf();
 
-		$this->controller->authorize($this->requestMock, $this->responseMock);
+		$response = $this->controller->authorize($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	/**
@@ -93,7 +90,6 @@ class OAuth2ControllerTest extends TestCase
 		$this->authServerMock->expects($this->once())->method('validateAuthorizationRequest')
 							 ->willThrowException(new \Exception('unknown bum bum'));
 
-		$this->loggerMock->expects($this->once())->method('error')->with('unknown bum bum');
 
 		$mockStreamInterface = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())->method('getBody')->willReturn($mockStreamInterface);
@@ -153,7 +149,6 @@ class OAuth2ControllerTest extends TestCase
 		$this->authServerMock->expects($this->once())->method('respondToAccessTokenRequest')
 							 ->willThrowException(new OAuthServerException('bäm', 123, 'error'));
 
-		$this->loggerMock->expects($this->once())->method('error')->with('bäm');
 
 		$this->responseMock->expects($this->once())->method('withStatus')->with(400);
 		$this->responseMock->expects($this->once())->method('withHeader')->willReturnSelf();
@@ -170,7 +165,6 @@ class OAuth2ControllerTest extends TestCase
 		$this->authServerMock->expects($this->once())->method('respondToAccessTokenRequest')
 							 ->willThrowException(new \Exception('unknown double bäm'));
 
-		$this->loggerMock->expects($this->once())->method('error')->with('unknown double bäm');
 
 		$mockStreamInterface = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())->method('getBody')->willReturn($mockStreamInterface);
@@ -195,7 +189,6 @@ class OAuth2ControllerTest extends TestCase
 		$params = ['response_type' => 'unknown', 'client_id' => '123', 'redirect_uri' => 'https://example.com', 'state' => '123'];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid response_type');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
@@ -215,7 +208,6 @@ class OAuth2ControllerTest extends TestCase
 		$params = ['response_type' => 'code', 'client_id' => '', 'redirect_uri' => 'https://example.com', 'state' => '123'];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid client_id');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
@@ -237,7 +229,6 @@ class OAuth2ControllerTest extends TestCase
 				   'redirect_uri' => 'https://example.com', 'state' => '123'];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid client_id');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
@@ -257,7 +248,6 @@ class OAuth2ControllerTest extends TestCase
 		$params = ['response_type' => 'code', 'client_id' => '122', 'redirect_uri' => 'http//example.com', 'state' => '123'];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid redirect_uri');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
@@ -277,7 +267,6 @@ class OAuth2ControllerTest extends TestCase
 		$params = ['response_type' => 'code', 'client_id' => '122', 'redirect_uri' => 'https://example.com', 'state' => ''];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid state');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
@@ -299,7 +288,6 @@ class OAuth2ControllerTest extends TestCase
 		];
 
 		$this->requestMock->method('getQueryParams')->willReturn($params);
-		$this->loggerMock->expects($this->once())->method('error')->with('Invalid state');
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
