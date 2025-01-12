@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class SqlConcreteTrait extends Sql{}
 class FindOperationsTraitTest extends TestCase
 {
-	private Connection	 $connectionMock;
+	private Connection $connectionMock;
 	private QueryBuilder $queryBuilderMock;
 	private SqlConcreteTrait $repository;
 	private Result $resultMock;
@@ -24,10 +24,39 @@ class FindOperationsTraitTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->connectionMock   = $this->createMock(Connection::class);
+		$this->connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
-		$this->resultMock       = $this->createMock(Result::class);
-		$this->repository       = new SqlConcreteTrait($this->connectionMock, 'test_table', 'test_id');
+		$this->resultMock = $this->createMock(Result::class);
+		$this->repository = new SqlConcreteTrait($this->connectionMock, 'test_table', 'test_id');
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testGetFirstByWithEmpty()
+	{
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('test_table')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->never())->method('leftJoin');
+		$this->queryBuilderMock->expects($this->never())->method('andWhere');
+		$this->queryBuilderMock->expects($this->never())->method('setParameter');
+		$this->queryBuilderMock->expects($this->never())->method('groupBy');
+		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
+		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([]);
+
+		$this->assertEquals([], $this->repository->findFirstBy([]));
 	}
 
 	/**
@@ -52,9 +81,9 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn($this->resultMock);
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
-			->willReturn([array(1,2)]);
+			->willReturn([array(1, 2)]);
 
-		$this->assertEquals([array(1,2)], $this->repository->findById($id));
+		$this->assertEquals([array(1, 2)], $this->repository->findById($id));
 	}
 
 	/**
@@ -87,11 +116,11 @@ class FindOperationsTraitTest extends TestCase
 	public function testCountAllBy()
 	{
 		$conditions = ['test_id' => 888];
-		$joins      = [
+		$joins = [
 			'test_table2' => 'test_table2.test_id = test_table.test_id',
 			'test_table3' => 'test_table3.test_id = test_table.test_id'
 		];
-		$groupBy    = 'test_table.test_id';
+		$groupBy = 'test_table.test_id';
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -102,14 +131,18 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->exactly(count($joins)))
 			->method('leftJoin')
-			->willReturnCallback(function ($mainTable, $joinTable, $alias, $onCondition) use ($joins) {
+			->willReturnCallback(function ($mainTable, $joinTable, $alias, $onCondition) use ($joins)
+			{
 				foreach ($joins as $expectedTable => $expectedCondition)
 				{
-					if ($mainTable === 'test_table' &&
-							$joinTable === $expectedTable &&
-								$alias === $expectedTable &&
-									$onCondition === $expectedCondition)
-						return $this->queryBuilderMock; // For method chaining
+					if (
+						$mainTable === 'test_table' &&
+						$joinTable === $expectedTable &&
+						$alias === $expectedTable &&
+						$onCondition === $expectedCondition)
+					{
+						return $this->queryBuilderMock;
+					} // For method chaining
 
 				}
 				throw new InvalidArgumentException("Unexpected join parameters: $mainTable, $joinTable, $alias, $onCondition");
@@ -168,14 +201,14 @@ class FindOperationsTraitTest extends TestCase
 			'test_id' => 4711,
 			'test_username' => 'Horst Erwin Günther Günzel'
 		];
-		$joins      = [
+		$joins = [
 			'test_user_table1' => 'test_user_table2.test_id = test_table.test_id',
 			'test_user_group_table3' => 'test_user_group_table3.test_id = test_table.test_id'
 		];
-		$groupBy    = 'test_table.test_id';
-		$orderBy    = 'test_table.username ASC';
+		$groupBy = 'test_table.test_id';
+		$orderBy = 'test_table.username ASC';
 		$limitStart = 10;
-		$limitShow  = 20;
+		$limitShow = 20;
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -186,25 +219,31 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->exactly(count($joins)))
 			->method('leftJoin')
-			->willReturnCallback(function ($mainTable, $joinTable, $alias, $onCondition) use ($joins) {
+			->willReturnCallback(function ($mainTable, $joinTable, $alias, $onCondition) use ($joins)
+			{
 				foreach ($joins as $expectedTable => $expectedCondition)
 				{
-					if ($mainTable === 'test_table' && $joinTable === $expectedTable &&
+					if (
+						$mainTable === 'test_table' && $joinTable === $expectedTable &&
 						$alias === $expectedTable && $onCondition === $expectedCondition)
-						return $this->queryBuilderMock; // For method chaining
+					{
+						return $this->queryBuilderMock;
+					} // For method chaining
 
 				}
 				throw new InvalidArgumentException("Unexpected join parameters: $mainTable, $joinTable, $alias, $onCondition");
 			});
 		$this->queryBuilderMock->expects($this->exactly(count($conditions)))
 			->method('andWhere')
-			->willReturnCallback(function ($condition) {
+			->willReturnCallback(function ($condition)
+			{
 				$expectedConditions = ['test_id = :test_id', 'test_username = :test_username'];
 				$this->assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->exactly(count($conditions)))->method('setParameter')
-			->willReturnCallback(function ($name, $value) {
+			->willReturnCallback(function ($name, $value)
+			{
 				$expectedNames = ['test_id', 'test_username'];
 				$expectedValues = [4711, 'Horst Erwin Günther Günzel'];
 				$this->assertContains($name, $expectedNames);
@@ -265,7 +304,7 @@ class FindOperationsTraitTest extends TestCase
 	public function testFindAllByWithLimits()
 	{
 		$limitStart = 1;
-		$limitShow  = 20;
+		$limitShow = 20;
 		$orderBy = 'test_table.username ASC';
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
@@ -350,4 +389,16 @@ class FindOperationsTraitTest extends TestCase
 		$this->assertEquals('', $this->repository->findOneValueBy('none'));
 	}
 
+
+	#[Group('units')]
+	public function testGetFirstDataset()
+	{
+		// if empty
+		$this->assertEmpty($this->repository->getFirstDataSet([]));
+
+		//with data
+		$data = ['first', 'second', 'third'];
+		$this->assertEquals('first', $this->repository->getFirstDataSet($data));
+
+	}
 }
