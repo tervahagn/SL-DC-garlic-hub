@@ -8,6 +8,7 @@ use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserEntity;
 use App\Framework\User\UserService;
 use App\Modules\Auth\AuthService;
+use DateTime;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -102,6 +103,24 @@ class AuthServiceTest extends TestCase
 		$this->assertEquals('login//account_deleted', $this->authService->getErrorMessage());
 	}
 
+	#[Group('units')]
+	public function testLoginUserNotActive(): void
+	{
+		$identifier = 'deleted@example.com';
+		$password = 'irrelevant_password';
+
+		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([
+			'UID' => 1,
+			'password' => password_hash($password, PASSWORD_BCRYPT),
+			'status' => UserService::USER_STATUS_REGISTERED,
+		]);
+
+		$userEntity = $this->authService->login($identifier, $password);
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('login//account_inactive', $this->authService->getErrorMessage());
+	}
+
 	/**
 	 * @throws UserException
 	 * @throws Exception
@@ -136,6 +155,25 @@ class AuthServiceTest extends TestCase
 		$this->assertNull($userEntity);
 		$this->assertEquals('No cookie for autologin was found.', $this->authService->getErrorMessage());
 	}
+
+	#[Group('units')]
+	public function testLoginByCookieNoUID(): void
+	{
+		$cookiePayload = ['UID' => 0, 'sid' => 'valid_session'];
+		$userEntityMock = $this->createMock(UserEntity::class);
+
+		$this->cookieMock->method('hasCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn(true);
+		$this->cookieMock->method('getHashedCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn($cookiePayload);
+
+		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
+		$this->userServiceMock->method('getCurrentUser')->with(1)->willReturn($userEntityMock);
+
+		$userEntity = $this->authService->loginByCookie();
+
+		$this->assertNull($userEntity);
+		$this->assertEquals('No valid UID found.', $this->authService->getErrorMessage());
+	}
+
 
 	/**
 	 * @throws Exception
@@ -182,6 +220,23 @@ class AuthServiceTest extends TestCase
 		$this->assertNull($userEntity);
 		$this->assertEquals('login//account_locked', $this->authService->getErrorMessage());
 	}
+
+	/**
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testCreateAutologinCookie(): void
+	{
+		$payload = ['UID' => 45, 'sid' => 'the_session_id'];
+		$this->cookieMock->expects($this->once())->method('createHashedCookie')
+			->with(
+				AuthService::COOKIE_NAME_AUTO_LOGIN,
+				$payload,
+				$this->anything());
+
+		$this->authService->createAutologinCookie(45, 'the_session_id');
+	}
+
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException

@@ -99,7 +99,7 @@ class LoginControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testLoginRedirectsToHomeOnSuccessfulLogin(): void
+	public function testLoginSuccessfulLogin(): void
 	{
 		$flash = $this->createMock(Messages::class);
 		$userEntity = $this->createMock(UserEntity::class);
@@ -120,6 +120,7 @@ class LoginControllerTest extends TestCase
 
 		$main_data = ['locale' => 'kl_KL'];
 		$userEntity->method('getMain')->willReturn($main_data);
+		$this->authServiceMock->expects($this->never())->method('createAutologinCookie');
 
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
@@ -130,6 +131,52 @@ class LoginControllerTest extends TestCase
 
 		$this->assertSame($this->responseMock, $result);
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testLoginCreateAutologin(): void
+	{
+		$flash = $this->createMock(Messages::class);
+		$userEntity = $this->createMock(UserEntity::class);
+
+		$this->requestMock->method('getParsedBody')->willReturn([
+			'username' => 'testuser',
+			'password' => 'password',
+			'autologin' => '1',
+			'csrf_token' => 'token'
+		]);
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
+		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
+		$this->sessionMock->expects($this->exactly(2))->method('exists')->willReturnCallback(function ($attribute)
+		{
+			if ($attribute === 'csrf_token')
+				return true;
+			elseif ($attribute === 'oauth_redirect_params')
+				return false;
+			return null;
+		});
+		$this->sessionMock->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
+		$this->sessionMock->expects($this->exactly(2))->method('set');
+
+		$this->authServiceMock->expects($this->once())->method('createAutologinCookie');
+		$main_data = ['locale' => 'kl_KL', 'UID' => 1];
+		$userEntity->method('getMain')->willReturn($main_data);
+
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+
+		$controller = new LoginController($this->authServiceMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
+
+		$this->assertSame($this->responseMock, $result);
+	}
+
 
 	/**
 	 * @throws Exception

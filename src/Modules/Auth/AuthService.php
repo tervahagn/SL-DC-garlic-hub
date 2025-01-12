@@ -101,7 +101,7 @@ class AuthService
 		$UID = (int) $cookie_payload['UID'];
 		if ($UID < 1)
 		{
-			$this->errorMessage = 'No valid UID found';
+			$this->errorMessage = 'No valid UID found.';
 			return null;
 		}
 
