@@ -83,13 +83,15 @@ class MediaService
 	/**
 	 * @throws Exception
 	 */
-	public function cloneMedia(string $media_id): string
+	public function cloneMedia(string $media_id): array
 	{
 		$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($media_id));
 		$dataSet['media_id'] = Uuid::uuid4()->toString();
 		$dataSet['UID']      = $this->UID;
 
-		return $this->mediaRepository->insert($dataSet);
+		$uuid = $this->mediaRepository->insert($dataSet);
+
+		return $dataSet;
 	}
 
 }

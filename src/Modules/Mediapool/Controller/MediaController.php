@@ -135,8 +135,8 @@ class MediaController
 		}
 
 		$this->mediaService->setUID($this->UID);
-		$new_media_id = $this->mediaService->cloneMedia($bodyParams['media_id']);
-		$response->getBody()->write(json_encode(['success' => true, 'new_media_id' => $new_media_id]));
+		$new_media = $this->mediaService->cloneMedia($bodyParams['media_id']);
+		$response->getBody()->write(json_encode(['success' => true, 'new_media' => $new_media]));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

@@ -47,7 +47,7 @@ export class ContextMenuMedia
         });
     }
 
-    addCloneEvent(cloneMediaMenuElement, currentMedia, lang)
+    addCloneEvent(cloneMediaMenuElement, currentMedia, callback)
     {
         cloneMediaMenuElement.addEventListener("click", () => {
             (async () => {
@@ -68,9 +68,8 @@ export class ContextMenuMedia
                     return;
                 }
 
-                const newMedia = currentMedia.cloneNode(true);
-                newMedia.setAttribute("data-media-id",result_obj.new_media_id);
-                currentMedia.parentNode.appendChild(newMedia);
+                callback(result_obj.new_media);
+
             })();
         });
     }
