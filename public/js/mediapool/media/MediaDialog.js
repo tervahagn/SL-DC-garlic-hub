@@ -76,8 +76,6 @@ export class MediaDialog
         });
     }
 
-
-
     #addCancelEvent()
     {
         this.#closeElement.addEventListener("click", () => {
