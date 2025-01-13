@@ -75,12 +75,64 @@ class MediaController
 		$bodyParams = $request->getParsedBody();
 		if (!array_key_exists('media_id', $bodyParams))
 		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'media id is missing']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
 		$this->mediaService->setUID($this->UID);
 		$count = $this->mediaService->deleteMedia($bodyParams['media_id']);
+		$response->getBody()->write(json_encode(['success' => true, 'data' => ['deleted_media' => $count]]));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
+
+	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('media_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'media id is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$this->mediaService->setUID($this->UID);
+		$count = $this->mediaService->moveMedia($bodyParams['media_id'], $bodyParams['node_id']);
+		$response->getBody()->write(json_encode(['success' => true, 'data' => ['deleted_media' => $count]]));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function copy(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('media_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'media id is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$this->mediaService->setUID($this->UID);
+		$count = $this->mediaService->copyMedia($bodyParams['media_id']);
 		$response->getBody()->write(json_encode(['success' => true, 'data' => ['deleted_media' => $count]]));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}

@@ -68,4 +68,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/mediapool/media/{node_id}', [MediaController::class, 'list']);
 	$group->post('/mediapool/media', [MediaController::class, 'add']);
 	$group->delete('/mediapool/media', [MediaController::class, 'delete']);
+	$group->post('/mediapool/media/move', [MediaController::class, 'move']);
+	$group->post('/mediapool/media/copy', [MediaController::class, 'copy']);
+
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
