@@ -22,6 +22,7 @@
 namespace App\Modules\Mediapool\Services;
 
 use App\Modules\Mediapool\Repositories\FilesRepository;
+use Ramsey\Uuid\Uuid;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
@@ -66,6 +67,29 @@ class MediaService
 		$condition = ['media_id' => $media_id];
 
 		return $this->mediaRepository->updateWithWhere($field, $condition);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function moveMedia(string $media_id, int $node_id): int
+	{
+		$condition = ['media_id' => $media_id];
+		$field     = ['node_id'  => $node_id];
+
+		return $this->mediaRepository->updateWithWhere($field, $condition);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function copyMedia(string $media_id): int
+	{
+		$dataSet             = $this->mediaRepository->findById($media_id);
+		$dataSet['media_id'] = Uuid::uuid4()->toString();
+		$dataSet['UID']      = $this->UID;
+
+		return $this->mediaRepository->insert($dataSet);
 	}
 
 }

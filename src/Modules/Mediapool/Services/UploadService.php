@@ -22,12 +22,10 @@
 namespace App\Modules\Mediapool\Services;
 
 use App\Modules\Mediapool\Repositories\FilesRepository;
-use App\Modules\Mediapool\Repositories\QueueRepository;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
