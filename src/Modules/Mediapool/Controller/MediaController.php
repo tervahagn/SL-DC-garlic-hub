@@ -85,6 +85,9 @@ class MediaController
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
@@ -116,7 +119,7 @@ class MediaController
 	/**
 	 * @throws Exception
 	 */
-	public function copy(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function clone(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
 		{
@@ -132,8 +135,8 @@ class MediaController
 		}
 
 		$this->mediaService->setUID($this->UID);
-		$count = $this->mediaService->copyMedia($bodyParams['media_id']);
-		$response->getBody()->write(json_encode(['success' => true, 'data' => ['deleted_media' => $count]]));
+		$new_media_id = $this->mediaService->cloneMedia($bodyParams['media_id']);
+		$response->getBody()->write(json_encode(['success' => true, 'new_media_id' => $new_media_id]));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

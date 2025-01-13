@@ -61,10 +61,10 @@ abstract class Sql
 	 *
 	 * @throws Exception
 	 */
-	public function insert(array $fields): int
+	public function insert(array $fields): int|string
 	{
 		$this->connection->insert($this->getTable(), $fields);
-		return (int) $this->connection->lastInsertId();
+		return $this->connection->lastInsertId();
 	}
 
 

@@ -39,13 +39,42 @@ export class ContextMenuMedia
         document.addEventListener('click', () => this.#menuElement.remove(), {once: true});
     }
 
-    addEditEvent(editMediaMenuElement, currentMediaId, lang)
+    addEditEvent(editMediaMenuElement, currentMedia, lang)
     {
         editMediaMenuElement.addEventListener("click", () => {
      //       this.#mediaDialog.prepareShow("edit_media", lang);
             this.#mediaDialog.show();
         });
     }
+
+    addCloneEvent(cloneMediaMenuElement, currentMedia, lang)
+    {
+        cloneMediaMenuElement.addEventListener("click", () => {
+            (async () => {
+
+                const apiUrl = "/async/mediapool/media/clone";
+                const dataToSend = {"media_id": currentMedia.getAttribute('data-media-id')};
+                const options = {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+
+                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+                    console.error('Fetch error:', error.message);
+                    return null;
+                });
+
+                let result_obj = JSON.parse(result);
+                if (!result_obj || !result_obj.success)
+                {
+                    console.error('Error:', result_obj?.error_message || 'Unknown error');
+                    return;
+                }
+
+                const newMedia = currentMedia.cloneNode(true);
+                newMedia.setAttribute("data-media-id",result_obj.new_media_id);
+                currentMedia.parentNode.appendChild(newMedia);
+            })();
+        });
+    }
+
 
     addRemoveEvent(removeMediaMenuElement, currentMedia)
     {

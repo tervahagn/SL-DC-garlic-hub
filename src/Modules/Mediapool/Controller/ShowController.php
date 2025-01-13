@@ -66,6 +66,7 @@ class ShowController
 					'LANG_FOLDER_NAME' => $translator->translate('name', 'main'),
 					'LANG_IS_PUBLIC' => $translator->translate('is_public', 'main'),
 					'LANG_EDIT' => $translator->translate('edit', 'main'),
+					'LANG_CLONE' => $translator->translate('clone', 'main'),
 					'LANG_DOWNLOAD' => $translator->translate('download', 'main'),
 					'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool'),
 					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),

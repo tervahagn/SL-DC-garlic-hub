@@ -120,6 +120,7 @@ export class MediaList
 
             contextMenu.addRemoveEvent(document.getElementById("remove_media"), mediaItem);
             contextMenu.addEditEvent(document.getElementById("edit_media"), mediaItem);
+            contextMenu.addCloneEvent(document.getElementById("clone_media"), mediaItem);
         });
     }
 
