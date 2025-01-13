@@ -129,22 +129,22 @@
 				</form>
 			</dialog>
 			<template id="media-template">
-				<article class="media-item">
-					<a href="" class="glightbox"
-					   data-glightbox="descPosition: left; zoomable: true;">
-						<figure>
-							<i class="media-type-icon bi"></i>
-								<img src="" alt="Media Thumbnail">
-							<figcaption class="media-info">
-								<p>{{LANG_FILENAME}}: <span class="media-filename">example.jpg</span></p>
-								<p>{{LANG_OWNER}}: <span class="media-owner">image/jpeg</span></p>
-								<p>{{LANG_MIMETYPE}}: <span class="media-mimetype">image/jpeg</span></p>
-								<p>{{LANG_FILESIZE}}: <span class="media-filesize">0</span></p>
-								<p style="display: none">{{LANG_DIMENSIONS}}: <span class="media-dimensions">100x100</span></p>
-								<p style="display: none">{{LANG_MEDIA_DURATION}}: <span class="media-duration">00:00:00</span></p>
-							</figcaption>
-						</figure>
-					</a>
+				<article class="media-item" draggable="true">
+					<figure draggable="false">
+						<i class="media-type-icon bi" draggable="false"></i>
+						<a href="" class="glightbox media-view-icon bi-eye bi"
+						   data-glightbox="descPosition: left; zoomable: true;" draggable="false">
+						</a>
+						<img src="" alt="Media Thumbnail" draggable="false">
+						<figcaption class="media-info" draggable="false">
+							<p>{{LANG_FILENAME}}: <span class="media-filename">example.jpg</span></p>
+							<p>{{LANG_OWNER}}: <span class="media-owner">image/jpeg</span></p>
+							<p>{{LANG_MIMETYPE}}: <span class="media-mimetype">image/jpeg</span></p>
+							<p>{{LANG_FILESIZE}}: <span class="media-filesize">0</span></p>
+							<p style="display: none">{{LANG_DIMENSIONS}}: <span class="media-dimensions">100x100</span></p>
+							<p style="display: none">{{LANG_MEDIA_DURATION}}: <span class="media-duration">00:00:00</span></p>
+						</figcaption>
+					</figure>
 				</article>
 			</template>
 			<template id="context_menu_media">

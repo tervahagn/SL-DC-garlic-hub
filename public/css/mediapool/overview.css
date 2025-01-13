@@ -90,7 +90,7 @@ dialog
 .media-grid
 {
     display:grid;
-    grid-template-columns: repeat(auto-fill, 200px);
+    grid-template-columns: repeat(auto-fill, 250px);
     gap: 1em;
     padding: 1em;
     box-sizing: border-box;
@@ -136,6 +136,20 @@ dialog
             line-height:0;
         }
 
+        .media-item figure .media-view-icon
+        {
+            position: absolute;
+            z-index:100;
+            bottom: 5px;
+            right:35px;
+            font-size: 1.4em;
+            text-align: center;
+            background-color: #eee;
+            padding:0;
+            margin:0;
+            line-height:0;
+        }
+
         .media-item figure .media-menu:hover
         {
             cursor: pointer;
@@ -160,3 +174,12 @@ dialog
             .media-info p {margin:0;padding:0;}
 
     .media-item:hover .media-info {opacity: 1;}
+
+[draggable="true"]
+{
+    cursor: grab;
+}
+
+[draggable="true"]:active {
+    cursor: grabbing; /* Zeigt an, dass das Element gerade gezogen wird */
+}
