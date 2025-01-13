@@ -11,6 +11,7 @@ import { FetchClient } from "../core/FetchClient.js";
 import { MediaList } from "./media/MediaList.js";
 import { MediaService } from "./media/MediaService.js";
 import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
+import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
 
 document.addEventListener("DOMContentLoaded", function(event)
@@ -26,11 +27,8 @@ document.addEventListener("DOMContentLoaded", function(event)
 
 	let mediaList     = new MediaList(
 		document.getElementById("media-list"),
-		document.getElementById('media-template'),
-		new ContextMenuMediaFactory(
-			document.getElementById('context_menu_media'),
-			fetchClient,
-			mediaDialog)
+		new MediaFactory(document.getElementById('media-template'), fetchClient),
+        new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, fetchClient),
 	);
 
 	let directoryView  = new DirectoryView(

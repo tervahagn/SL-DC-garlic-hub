@@ -17,27 +17,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ContextMenuMedia } from "./ContextMenuMedia.js";
+import { Media } from "./Media.js";
 
-export class ContextMenuMediaFactory
+export class MediaFactory
 {
     #templateElement = null;
     #fetchClient = null;
-    #mediaDialog = null;
 
-    constructor(templateElement, mediaDialog, fetchClient)
+    constructor(templateElement, fetchClient)
     {
         this.#templateElement = templateElement;
-        this.#mediaDialog = mediaDialog;
-        this.#fetchClient  = fetchClient;
+        this.#fetchClient = fetchClient;
     }
 
     create()
     {
-        return new ContextMenuMedia(
-            this.#templateElement.content.cloneNode(true).firstElementChild,
-            this.#fetchClient,
-            this.#mediaDialog
-        );
+        return new Media(this.#templateElement.content.cloneNode(true), this.#fetchClient);
     }
 }
