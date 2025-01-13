@@ -67,11 +67,50 @@ export class DirectoryView
                 this.#loadMediaInDirectory(e.node.key);
             },
             filter: {autoApply: true, mode: "hide"},
+            dnd: {
+                effectAllowed: "all",
+                dropEffectDefault: "move",
+                preventNonNodes: false,
+                preventForeignNodes: false,
+                dragStart: (e) => {
+                      e.event.dataTransfer.effectAllowed = "all";
+                    return true;
+                },
+                dragOver: (e) => {
+                    return true;
+                },
+                dragLeave: (e) => {
+                    return true;
+                },
+                dragEnter: (e) => {
+                    return ["before", "after", "appendChild"];
+                },
+                drop: (e) => {
+
+                    if (e.sourceNode === null) // media drag'nDrop
+                    {
+                        const mediaId = e.event.dataTransfer.getData("data-media-id");
+                        if (mediaId === null || mediaId === undefined)
+                            throw DOMException("mediaId is not defined")
+
+                        this.#mediaService.moveMedia(mediaId, e.node.key);
+                        this.#mediaList.deleteMediaDomBy(mediaId);
+                    }
+                    else
+                    {
+                        e.sourceNode.moveTo(e.node, e.suggestedDropMode);
+                    }
+                },
+            },
         });
     }
 
     addFilter(tree_filter)
     {
+        // prevent a drag into this field
+        tree_filter.addEventListener('dragover', (event) => event.preventDefault());
+        tree_filter.addEventListener('drop', (event) => event.preventDefault());
+
         tree_filter.addEventListener("input", (event) => {
             this.#tree.filterNodes(event.target.value, { mode: "hide" });
         })

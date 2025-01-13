@@ -48,7 +48,13 @@ export class MediaList
             autoplayVideos: true
 
         });
+    }
 
+    deleteMediaDomBy(dataMediaId)
+    {
+        const element = document.querySelector(`[data-media-id="${dataMediaId}"]`);
+        if (element)
+            element.remove();
     }
 
     toggleUploader(show)
@@ -71,7 +77,7 @@ export class MediaList
         clone.querySelector(".media-item").setAttribute("data-media-id", media.media_id);
         const img = clone.querySelector("img");
         img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
-        img.alt = "image";//"Thumbnail: " + media.filename;
+        img.alt = "Thumbnail: " + media.filename;
 
         const a = clone.querySelector("a");
         a.href  = "/var/mediapool/originals/"+media.checksum+"." + media.extension;
@@ -86,7 +92,6 @@ export class MediaList
         clone.querySelector(".media-filename").textContent = media.filename;
         clone.querySelector(".media-filesize").textContent = this.#formatBytes(media.metadata.size);
         clone.querySelector(".media-mimetype").textContent = media.mimetype;
-
         const dimensionsElement = clone.querySelector(".media-dimensions");
         if (media.metadata.dimensions !== undefined && Object.keys(media.metadata.dimensions).length > 0 )
         {
@@ -104,6 +109,9 @@ export class MediaList
 
     #addContextMenu(mediaItem)
     {
+        mediaItem.addEventListener("dragstart", (event) => {
+            event.dataTransfer.setData("data-media-id", mediaItem.getAttribute("data-media-id")); // Speichere es im dataTransfer
+        });
         mediaItem.addEventListener("contextmenu", (event) => {
             event.preventDefault();
 

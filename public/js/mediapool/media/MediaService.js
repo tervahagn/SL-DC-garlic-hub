@@ -21,6 +21,8 @@ export class MediaService
 {
     fetchClient       = null;
     static MEDIALIST_URI = '/async/mediapool/media/';
+    static MEDIAMOVE_URI = '/async/mediapool/media/move';
+    static MEDIACOPY_URI = '/async/mediapool/media/copy';
 
     constructor(fetchClient)
     {
@@ -37,4 +39,31 @@ export class MediaService
 
         return data;
     }
+
+    async moveMedia(mediaId, nodeId)
+    {
+        const url  = MediaService.MEDIAMOVE_URI;
+        const dataToSend  = {"media_id": mediaId, "node_id": nodeId};
+        const options= {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+        const data = await this.fetchClient.fetchData(url, options);
+
+        if (data.error)
+            throw new Error(data.error_text);
+
+        return data;
+    }
+
+    async copyMedia(mediaId)
+    {
+        const url  = MediaService.MEDIACOPY_URI;
+        const dataToSend  = {"media_id": mediaId};
+        const options= {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+        const data = await this.fetchClient.fetchData(url);
+
+        if (data.error)
+            throw new Error(data.error_text);
+
+        return data;
+    }
+
 }
