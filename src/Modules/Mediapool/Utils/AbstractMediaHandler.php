@@ -22,11 +22,11 @@
 namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
-use Slim\Psr7\UploadedFile;
 
 abstract class AbstractMediaHandler
 {
@@ -46,8 +46,9 @@ abstract class AbstractMediaHandler
 	protected int $duration = 0;
 
 	/**
-	 * @param Config     $config
+	 * @param Config $config
 	 * @param Filesystem $filesystem
+	 * @throws CoreException
 	 */
 	public function __construct(Config $config, Filesystem $filesystem)
 	{
@@ -86,6 +87,9 @@ abstract class AbstractMediaHandler
 		return $this->fileSize;
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	public function exists(string $filePath): bool
 	{
 		return $this->filesystem->fileExists($filePath);
@@ -125,14 +129,23 @@ abstract class AbstractMediaHandler
 	public function determineNewFilePath(string $oldFilePath, string $filehash): string
 	{
 		$fileInfo    = pathinfo($oldFilePath);
-		return $fileInfo['dirname']. '/'.$filehash.'.'.$fileInfo['extension'];
+		// normalize jpeg to jpg
+		$ext = str_replace('jpeg', 'jpg', $fileInfo['extension']);
+
+		return $fileInfo['dirname']. '/'.$filehash.'.'.$ext;
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	public function removeUploadedFile(string $filePath): void
 	{
 		$this->filesystem->delete($filePath);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	public function rename(string $oldFilePath, string $newFilePath): void
 	{
 		$this->filesystem->move($oldFilePath, $newFilePath);
