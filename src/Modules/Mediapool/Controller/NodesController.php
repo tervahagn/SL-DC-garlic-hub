@@ -63,7 +63,6 @@ class NodesController
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
-
 	public function add(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
@@ -143,6 +142,54 @@ class NodesController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 	}
+
+	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('src_node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Source node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		if (!array_key_exists('target_node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Target node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		if (!array_key_exists('target_region', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Target region is 
+			missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		try
+		{
+			$this->nodesService->setUID($this->UID);
+			$count = $this->nodesService->moveNode(
+				$bodyParams['src_node_id'],
+				$bodyParams['target_node_id'],
+				$bodyParams['target_region']
+			);
+			$response->getBody()->write(json_encode(['success' => true, 'data' => ['count_deleted_nodes' => $count]]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+		catch (Exception | FrameworkException | ModuleException $e)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+	}
+
 
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

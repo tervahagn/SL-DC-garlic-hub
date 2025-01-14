@@ -79,12 +79,26 @@ class NodesService
 
 	/**
 	 * @throws Exception
+	 */
+	public function moveNode(int $srcNodeId, int $targetNodeId, string $targetRegion): int
+	{
+		$regions = ['before', 'after', 'appendChild'];
+		if (!in_array($targetRegion, $regions))
+			return 0;
+
+		$this->nodesRepository->moveNode($srcNodeId, $targetNodeId, $targetRegion);
+
+		return 1;
+	}
+
+	/**
+	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 */
 	public function deleteNode($node_id): int
 	{
-		$node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->getNode($node_id));
+		$node = $this->nodesRepository->getNode($node_id);
 		if (empty($node) )
 			throw new FrameworkException('Can not find a node for node_id ' . $node_id);
 
@@ -221,7 +235,7 @@ class NodesService
 	{
 		try
 		{
-			$node = $this->nodesRepository->getFirstDataSet($this->nodesRepository->getNode($id));
+			$node = $this->nodesRepository->getNode($id);
 			if ((empty($node)))
 				throw new ModuleException('mediapool', 'Parent node not found');
 

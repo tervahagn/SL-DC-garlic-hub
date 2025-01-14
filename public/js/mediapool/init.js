@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function(event)
 		document.getElementById("mediapool-tree"),
 		document.getElementById("current-path"),
 		mediaList,
-		mediaService
+		mediaService,
+        fetchClient
 	);
 	directoryView.addFilter(document.getElementById("tree_filter"));
 

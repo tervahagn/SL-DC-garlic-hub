@@ -29,12 +29,14 @@ export class DirectoryView
     #activeNode         = null;
     #mediaList          = null;
     #mediaService       = null;
+    #fetchClient        = null;
 
-    constructor(tree_element, current_path, mediaList, mediaService)
+    constructor(tree_element, current_path, mediaList, mediaService, fetchClient)
     {
         this.#tree_element = tree_element;
         this.#mediaList    = mediaList;
         this.#mediaService = mediaService;
+        this.#fetchClient  = fetchClient;
         this.#tree         = new mar10.Wunderbaum({
             debugLevel: DirectoryView.DEBUG_LEVEL,
             element: this.#tree_element,
@@ -72,6 +74,7 @@ export class DirectoryView
                 dropEffectDefault: "move",
                 preventNonNodes: false,
                 preventForeignNodes: false,
+                preventVoidMoves: false,
                 dragStart: (e) => {
                       e.event.dataTransfer.effectAllowed = "all";
                     return true;
@@ -98,7 +101,7 @@ export class DirectoryView
                     }
                     else
                     {
-                        e.sourceNode.moveTo(e.node, e.suggestedDropMode);
+                        this.#moveNodeTo(e);
                     }
                 },
             },
@@ -194,5 +197,26 @@ export class DirectoryView
         {
             console.error("Error loading media:", err.message);
         }
+    }
+
+    async #moveNodeTo(e)
+    {
+        const apiUrl     = "/async/mediapool/node/move";
+        const dataToSend = {"src_node_id": e.sourceNode.key, "target_node_id": e.node.key, "target_region": e.suggestedDropMode};
+        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+
+        const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+            console.error('Fetch error:', error.message);
+            return null;
+        });
+
+        let result_obj = JSON.parse(result);
+        if (!result_obj || !result_obj.success)
+        {
+            console.error('Error:', result_obj?.error_message || 'Unknown error');
+            return;
+        }
+
+        e.sourceNode.moveTo(e.node, e.suggestedDropMode);
     }
 }

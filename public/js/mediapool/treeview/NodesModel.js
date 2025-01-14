@@ -19,7 +19,7 @@
 
 export class NodesModel
 {
-    async fetchData(url, options = {})
+   async fetchData(url, options = {})
     {
         try
         {
@@ -38,4 +38,5 @@ export class NodesModel
             throw error;
         }
     }
+
 }
