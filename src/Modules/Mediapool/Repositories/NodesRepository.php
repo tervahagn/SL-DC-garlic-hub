@@ -56,7 +56,7 @@ class NodesRepository extends Sql
 		$where = ['node_id' => $node_id];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
 
-		return $this->findAllByWithFields($select, $where, $join, 0, 1);
+		return  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join, 0, 1));
 	}
 
 }
