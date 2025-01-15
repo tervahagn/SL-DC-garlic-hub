@@ -292,8 +292,8 @@ class NodesService
 			$move = floor(($node_data['rgt'] - $node_data['lft']) / 2);
 			$move = 2 * (1 + $move);
 
-			$this->nodesRepository->moveNodesToLeftForDeletionWithSteps($node_data['root_id'], $node_data['rgt'], $move);
-			$this->nodesRepository->moveNodesToRightForDeletionWithSteps($node_data['root_id'], $node_data['rgt'], $move);
+			$this->nodesRepository->moveNodesToLeftForDeletion($node_data['root_id'], $node_data['rgt'], $move);
+			$this->nodesRepository->moveNodesToRightForDeletion($node_data['root_id'], $node_data['rgt'], $move);
 
 			$this->nodesRepository->commitTransaction();
 		}
