@@ -1,6 +1,7 @@
 # Custom Exception Classes Documentation
 
-This document outlines the purpose and usage of the custom Exception classes in the application. These classes extend `BaseException`, which provides a flexible structure for managing errors across various modules in the framework. Each exception class represents a specific category of errors, allowing for targeted handling and logging.
+This document outlines the purpose and usage of the custom exception classes in the application. These classes 
+extend `BaseException`, which provides a flexible structure for managing errors across various modules in the framework. Each exception class represents a specific category of errors, allowing for targeted handling and logging.
 
 ---
 
