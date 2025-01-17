@@ -20,10 +20,16 @@
 
 namespace App\Framework\Database\BaseRepositories;
 
+use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
 
 trait NestedSetTrait
 {
+	const string REGION_BEFORE = 'before';
+	const string REGION_AFTER = 'after';
+	const string REGION_APPENDCHILD = 'appendChild';
+
 	/**
 	 * @throws Exception
 	 */
@@ -42,7 +48,6 @@ trait NestedSetTrait
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
-
 	/**
 	 * @throws Exception
 	 */
@@ -50,17 +55,16 @@ trait NestedSetTrait
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('FLOOR((n.rgt-n.lft)/2) AS children, n.*, u.company_id')
-					 ->from($this->table, 'n')
-					 ->leftJoin('n', $this->table,'p','n.root_id = p.root_id')
-					 ->leftJoin('n','user_name','u','n.UID = u.UID')
-					 ->where('n.root_id = :root_id')
-					 ->andWhere('n.lft BETWEEN p.lft AND p.rgt')
-		 			 ->setParameter('root_id', $root_id)
-					 ->groupBy('n.lft');
+			->from($this->table, 'n')
+			->leftJoin('n', $this->table,'p','n.root_id = p.root_id')
+			->leftJoin('n','user_name','u','n.UID = u.UID')
+			->where('n.root_id = :root_id')
+			->andWhere('n.lft BETWEEN p.lft AND p.rgt')
+			->setParameter('root_id', $root_id)
+			->groupBy('n.lft');
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
-
 
 	/**
 	 * @throws Exception
@@ -69,13 +73,14 @@ trait NestedSetTrait
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('*, FLOOR((rgt-lft)/2) AS children')
-					 ->from($this->table)
-					 ->leftJoin($this->table,
-						 'user_main',
-						 'user_main',
-						 $this->table.'.UID = user_main.UID')
-					 ->where('parent_id = :id')
-					 ->setParameter('id', $node_id);
+			->from($this->table)
+			->leftJoin($this->table,
+				'user_main',
+				'user_main',
+				$this->table.'.UID = user_main.UID')
+			->where('parent_id = :id')
+			->orderBy('lft ASC', )
+			->setParameter('id', $node_id);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
@@ -87,9 +92,9 @@ trait NestedSetTrait
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('root_id, rgt, lft')
-					 ->from($this->table)
-					 ->where('node_id = :node_id')
-					 ->setParameter('node_id', $node_id);
+			->from($this->table)
+			->where('node_id = :node_id')
+			->setParameter('node_id', $node_id);
 
 
 		$node_data   = $queryBuilder->executeQuery()->fetchAllAssociative();
@@ -99,8 +104,8 @@ trait NestedSetTrait
 
 		$queryBuilder2 = $this->connection->createQueryBuilder();
 		$queryBuilder2->select('node_id, category_name')
-					 ->from($this->table)
-					 ->where('root_id = ' . (int) $node_data[0]['root_id']. ' AND (lft BETWEEN '.$node_data[0]['lft'].' AND '.$node_data[0]['rgt']);
+			->from($this->table)
+			->where('root_id = ' . (int) $node_data[0]['root_id']. ' AND (lft BETWEEN '.$node_data[0]['lft'].' AND '.$node_data[0]['rgt']);
 
 
 		return $queryBuilder2->executeQuery()->fetchAllAssociative();
@@ -113,95 +118,11 @@ trait NestedSetTrait
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('root_id, rgt, lft')
-					 ->from($this->table)
-					 ->where('node_id = :node_id')
-					 ->setParameter('node_id', $node_id);
+			->from($this->table)
+			->where('node_id = :node_id')
+			->setParameter('node_id', $node_id);
 
 		return $this->fetchAssociative($queryBuilder);
-	}
-
-	/**
-	 * moves existing nodes out of the way for inserting new nodes
-	 *
-	 * @throws Exception
-	 */
-	public function moveNodesToLeftForInsert(int $root_id, int $position): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
-					 ->set('lft', 'lft + 2')
-					 ->where('root_id = :root_id')
-					 ->andWhere('lft > :position')
-					 ->setParameter('root_id', $root_id)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * moves existing nodes out of the way for inserting new nodes
-	 *
-	 * @throws Exception
-	 */
-	public function moveNodesToRightForInsert(int $root_id, int $position): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
-					 ->set('rgt', 'rgt + 2')
-					 ->where('root_id = :root_id')
-					 ->andWhere('rgt >= :position')
-					 ->setParameter('root_id', $root_id)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function moveNodesToRightForDeletion(int $root_id, int $position): int
-	{
-		return $this->moveNodesToRightForDeletionWithSteps($root_id, $position, 2);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function moveNodesToLeftForDeletion(int $root_id, int $position): int
-	{
-		return $this->moveNodesToLeftForDeletionWithSteps($root_id, $position, 2);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function moveNodesToLeftForDeletionWithSteps(int $root_id, int $position, int $steps): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
-					 ->set('lft', 'lft - '.$steps)
-					 ->where('root_id = :root_id')
-					 ->andWhere('lft > :position')
-					 ->setParameter('root_id', $root_id)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function moveNodesToRightForDeletionWithSteps(int $root_id, int $position, int $steps): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
-					 ->set('rgt', 'rgt - '.$steps)
-					 ->where('root_id = :root_id')
-					 ->andWhere('rgt > :position')
-					 ->setParameter('root_id', $root_id)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
 	}
 
 	/**
@@ -214,13 +135,13 @@ trait NestedSetTrait
 		$queryBuilder = $this->connection->createQueryBuilder();
 
 		$queryBuilder->select('node_id')
-					 ->from($this->table)
-					 ->where('root_id = :root_id')
-					 ->andWhere('lft >= :node_lft')
-					 ->andWhere('rgt <= :node_rgt')
-					 ->setParameter('root_id', $root_id)
-					 ->setParameter('node_lft', $node_lft)
-					 ->setParameter('node_rgt', $node_rgt);
+			->from($this->table)
+			->where('root_id = :root_id')
+			->andWhere('lft >= :node_lft')
+			->andWhere('rgt <= :node_rgt')
+			->setParameter('root_id', $root_id)
+			->setParameter('node_lft', $node_lft)
+			->setParameter('node_rgt', $node_rgt);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
@@ -240,4 +161,195 @@ trait NestedSetTrait
 
 		return (int) $queryBuilder->executeStatement();
 	}
+
+
+	/**
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	public function moveNode(int $sourceId, int $targetId, string $region): void
+	{
+		try
+		{
+			$this->connection->beginTransaction();
+			$movedNode = $this->getNode($sourceId);
+			$targetNode = $this->getNode($targetId);
+
+			$diff_level = $this->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
+			$newLgtPos  = $this->determineLgtPositionByRegion($region, $targetNode);
+			$width      = $movedNode['rgt'] - $movedNode['lft'] + 1;
+
+			// https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
+			// enhanced for including multiple trees with different root_id's in datatable
+
+			// create some space in target
+			$this->moveNodesToRightForInsert($targetNode['root_id'], $newLgtPos, $width);
+			$this->moveNodesToLeftForInsert($targetNode['root_id'], $newLgtPos, $width);
+
+			$i = $this->moveSubTree($movedNode, $targetNode, $newLgtPos, $width, $diff_level);
+			if ($i === 0)
+				throw new FrameworkException($movedNode['name']. ' cannot be moved via '.$region.' of '. $targetNode['name']);
+
+			$this->update($sourceId, ['parent_id' => $this->determineParentIdByRegion($region, $targetNode)]);
+
+			// close source space if not a root node
+			if ($movedNode['parent_id'] !== 0)
+			{
+				$this->moveNodesToRightForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
+				$this->moveNodesToLeftForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
+			}
+
+
+			$this->connection->commit();
+		}
+		catch (Exception $e)
+		{
+			$this->connection->rollBack();
+			throw new DatabaseException('Moving nodes failed: '.$e->getMessage());
+		}
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function moveSubTree(array $movedNode, array $targetNode, int $newLgtPos, int $width, int $diffLevel):	int
+	{
+		$distance = $newLgtPos - $movedNode['lft'];
+		$tmpPos   = $movedNode['lft'];
+		if ($distance < 0 && $movedNode['root_id'] === $targetNode['root_id'])
+		{
+			$distance -= $width;
+			$tmpPos   += $width;
+		}
+
+		$queryBuilder = $this->connection->createQueryBuilder();
+
+		$queryBuilder->update($this->table)
+			->set('lft', 'lft + :distance')
+			->set('rgt', 'rgt + :distance')
+			->set('level', 'level + :diff_level')
+			->set('root_id', ':target_root_id')
+			->where('root_id = :moved_root_id')
+			->andWhere('lft >= :tmpPos')
+			->andWhere('rgt < :tmpPos + :width')
+			->setParameter('distance', $distance)
+			->setParameter('diff_level', $diffLevel)
+			->setParameter('target_root_id', $targetNode['root_id'])
+			->setParameter('moved_root_id', $movedNode['root_id'])
+			->setParameter('tmpPos', $tmpPos)
+			->setParameter('width', $width)
+		;
+
+		return (int) $queryBuilder->executeStatement();
+	}
+
+
+	/**
+	 * moves existing nodes out of the way for inserting new nodes
+	 *
+	 * @throws Exception
+	 */
+	public function moveNodesToRightForInsert(int $root_id, int $position, int $width = 2): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->table)
+					 ->set('lft', 'lft + :steps')
+					 ->where('root_id = :root_id')
+					 ->andWhere('lft >= :position')
+					 ->setParameter('steps', $width)
+					 ->setParameter('root_id', $root_id)
+					 ->setParameter('position', $position);
+
+		return (int) $queryBuilder->executeStatement();
+	}
+
+	public function moveNodesToLeftForInsert(int $root_id, int $position, int $width = 2): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->table)
+			->set('rgt', 'rgt + :steps')
+			->where('root_id = :root_id')
+			->andWhere('rgt >= :position')
+			->setParameter('steps', $width)
+			->setParameter('root_id', $root_id)
+			->setParameter('position', $position);
+
+		return (int) $queryBuilder->executeStatement();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function moveNodesToLeftForDeletion(int $root_id, int $position, int $width = 2): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->table)
+					 ->set('lft', 'lft - '.$width)
+					 ->where('root_id = :root_id')
+					 ->andWhere('lft > :position')
+					 ->setParameter('root_id', $root_id)
+					 ->setParameter('position', $position);
+
+		return (int) $queryBuilder->executeStatement();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function moveNodesToRightForDeletion(int $root_id, int $position, int $width = 2): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->table)
+					 ->set('rgt', 'rgt - '.$width)
+					 ->where('root_id = :root_id')
+					 ->andWhere('rgt > :position')
+					 ->setParameter('root_id', $root_id)
+					 ->setParameter('position', $position);
+
+		return (int) $queryBuilder->executeStatement();
+	}
+
+	protected function determineLgtPositionByRegion(string $region, array $node): int
+	{
+		switch ($region)
+		{
+			case self::REGION_BEFORE:
+				// if target position is before a node, newpos = left position of this node
+				$newLgtPos = $node['lft'];
+				break;
+			case self::REGION_APPENDCHILD:
+				// if target position is into a node (as a child), newpos = left position of this node + 1
+				$newLgtPos = $node['lft'] + 1;
+				break;
+			case self::REGION_AFTER:
+				// if target position is after a node, newpos = right position of this node + 1
+				$newLgtPos = $node['rgt'] + 1;
+				break;
+			default:
+				throw new FrameworkException('Unknown region: '.$region );
+		}
+		return $newLgtPos;
+	}
+
+	protected function calculateDiffLevelByRegion(string $region, int $movedLevel, int $targetLevel): int
+	{
+		$diffLevel = $targetLevel - $movedLevel;
+
+		if ($region === self::REGION_APPENDCHILD)
+		{
+			$diffLevel++;
+		}
+
+		return $diffLevel;
+	}
+
+	protected function determineParentIdByRegion(string $region, array $node): int
+	{
+		if ($region !== self::REGION_APPENDCHILD)
+			return $node['parent_id'];
+
+		return $node['node_id'];
+
+	}
+
 }
