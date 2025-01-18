@@ -77,6 +77,7 @@ CREATE TABLE mediapool_nodes (
     parent_id INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL,
     root_order INTEGER NOT NULL,
+    is_user_folder INTEGER NOT NULL DEFAULT 0,
     lft INTEGER NOT NULL DEFAULT 0,
     rgt INTEGER NOT NULL DEFAULT 0,
     UID INTEGER NOT NULL DEFAULT 0,
@@ -92,8 +93,9 @@ CREATE INDEX idx_mediapool_nodes_root_id ON mediapool_nodes (root_id);
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
 VALUES (1, 0, 1, 1, 1, 10, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'public');
 
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated,  create_date, name)
- VALUES (2, 0, 1, 2, 1, 4, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'user');
+INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, is_user_folder,
+                            lft, rgt, UID, is_public, last_updated, create_date, name)
+ VALUES (2, 0, 1, 2, 1, 1, 4, 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 -- set some default dirs under public
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
@@ -104,10 +106,6 @@ INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UI
 VALUES (1, 1, 2, 1, 6, 7, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'widgets');
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
 VALUES (1, 1, 2, 1, 8, 9, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'firmware');
-
--- set admin dir under user
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, is_public, last_updated, create_date, name)
- VALUES (2, 2, 2, 1, 2, 3, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 CREATE TABLE mediapool_files (
      media_id CHAR(36) PRIMARY KEY, -- UUID as Text field
