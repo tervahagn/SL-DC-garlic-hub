@@ -29,4 +29,25 @@ class UserVipRepository extends Sql
 	{
 		parent::__construct($connection,'user_security', 'UID');
 	}
+
+
+	public function findOneAclByUIDModuleAndDataNum(int $UID, string $module, int $data_num): int
+	{
+	/*	$field = 'acl';
+		$where = 'UID = ' . (int) $UID . ' AND module = ' . $this->quoteString($module) . ' AND data_num = ' . $data_num;
+		return $this->findOneValueBy($field, $where);
+	*/
+	}
+
+	/**
+	 * "Active" means all entries with an ACL value > 0
+	 */
+	public function findAllActiveDataNumsByUIDModule(int $UID, string $module): array
+	{
+		/*
+		$field = 'data_num';
+		$where = 'UID = ' . (int) $UID . ' AND module = ' . $this->quoteString($module);
+		return $this->findAllByWithFields($field, $where);
+		*/
+	}
 }
