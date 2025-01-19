@@ -1,8 +1,28 @@
 <?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\User\Edge\UserMainRepository;
 use App\Framework\User\Enterprise\UserVipRepository;
 use App\Framework\User\UserEntity;
 
@@ -15,150 +35,106 @@ use App\Framework\User\UserEntity;
  */
 abstract class AbstractAclValidator
 {
+	const string GLOBAL_ACLS = 'GlobalACLs';
+
 	const int USER_STATUS_DEFAULT_USER 	= 1;
 	const int USER_STATUS_ADMIN_USER	= 2;
-	const string CONFIG_ACL_SECTION_GLOBAL     = 'GlobalACLs';
-	const string CONFIG_ACL_SECTION_SUB_ADMIN  = 'LocalSubAdminACLs';
-	const string CONFIG_ACL_SECTION_EDITOR     = 'LocalEditorACLs';
-	const string CONFIG_ACL_SECTION_VIEWER     = 'LocalViewerACLs';
-	protected string $moduleName;
-	protected UserEntity $userEntity;
-	protected UserVipRepository $userVipRepository;
+	protected readonly string $moduleName;
+	protected readonly UserEntity $userEntity;
+	protected readonly UserMainRepository $userMainRepository;
+	protected readonly UserVipRepository $userVipRepository;
+	protected readonly Config $config;
 
-	protected Config $config;
+	private array $cache = [];
 
-	private bool $is_subadmin_editable = false;
-	private bool $is_subadmin_editable_cached = false;
-	private bool $is_editor_editable = false;
-	private bool $is_editor_editable_cached = false;
-	private bool $is_editor_usable = false;
-	private bool $is_editor_usable_cached = false;
-
-	public function __construct(string $module, UserEntity $user, UserVipRepository $userVip, Config $config)
+	public function __construct(string $moduleName, UserEntity $user, UserMainRepository $userMainRepository, UserVipRepository $userVip, Config $config)
 	{
-		$this->moduleName        = $module;
-		$this->userEntity        = $user;
-		$this->userVipRepository = $userVip;
-		$this->config            = $config;
+		$this->moduleName         = $moduleName;
+		$this->userEntity         = $user;
+		$this->userVipRepository  = $userVip;
+		$this->userMainRepository = $userMainRepository;
+		$this->config             = $config;
 	}
 
 	abstract public function getAclNameModuleAdmin();
 	abstract public function getAclNameSubAdmin();
-	abstract public function getAclNameEditor();
 	abstract public function getSubAdminUserModuleName();
-	abstract public function getLocalSubAdminAccessName();
-	abstract public function getEditorUserModuleName();
-	abstract public function getLocalEditorUserUseName();
-	abstract public function getLocalEditorUserEditName();
+	abstract public function getAclNameEditor();
+	abstract public function getAclNameViewer();
+	abstract public function getEditorModuleName();
+	abstract public function getViewerModuleName();
 
-	public function isUserModuleAdmin(): bool
+	/**
+	 * @throws CoreException
+	 */
+	public function isModuleAdmin(): bool
 	{
-		return $this->validateAcl($this->getConfig()->getConfigValue($this->getAclNameModuleAdmin(), $this->getModuleName(), self::CONFIG_ACL_SECTION_GLOBAL));
+		return $this->hasGlobalAcl($this->getAclNameModuleAdmin());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isUserSubAdmin(): bool
+	public function isSubAdmin(): bool
 	{
-		return $this->validateAcl($this->getConfig()->getConfigValue($this->getAclNameSubAdmin(), $this->getModuleName(), self::CONFIG_ACL_SECTION_GLOBAL));
+		return $this->hasGlobalAcl($this->getAclNameSubAdmin());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isUserEditor(): bool
+	public function isEditor(): bool
 	{
-		return $this->validateAcl($this->getConfig()->getConfigValue($this->getAclNameEditor(), $this->getModuleName(), self::CONFIG_ACL_SECTION_GLOBAL));
+		return $this->hasGlobalAcl($this->getAclNameEditor());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isUserContentEditableForSubAdmin($owner_uid): bool
+	public function isViewer(): bool
 	{
-		if (empty($owner_uid) || !$this->isUserSubAdmin())
+		return $this->hasGlobalAcl($this->getAclNameViewer());
+	}
+
+
+	/**
+	 * @throws CoreException
+	 */
+	public function isUnitEditable(int|string $unit_id): bool
+	{
+		if (empty($unit_id) || !$this->isEditor())
 			return false;
 
-		if ($this->is_subadmin_editable_cached)
-			return $this->is_subadmin_editable;
+		return $this->getCachedResult("isEditorEditable_$unit_id", function () use ($unit_id) {
+			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
+				$this->userEntity->getMain()['UID'],
+				$this->getEditorModuleName(),
+				$unit_id
+			);
 
-		$local_acl	= $this->getUserVipRepository()->findOneAclByUIDModuleAndDataNum(
-			$this->userEntity->getMain()['UID'],
-			$this->getSubAdminUserModuleName(),
-			$this->getUserEntity()->getUserMainModel()->findCompanyIdByUID($owner_uid)
-		);
-
-		$edit_access = $this->getConfig()->getConfigValue(
-			$this->getLocalSubAdminAccessName(),
-			$this->getModuleName(),
-			self::CONFIG_ACL_SECTION_SUB_ADMIN
-		);
-
-		$this->is_subadmin_editable_cached = true;
-		$this->is_subadmin_editable = (($local_acl & $edit_access) > 0);
-
-		return $this->is_subadmin_editable;
+			return ($local_acl > 0);
+		});
 	}
 
-	/**
-	 * @throws CoreException
-	 */
-	public function isUnitEditableForEditor($unit_id): bool
-	{
-		if (empty($unit_id) || !$this->isUserEditor())
-			return false;
-
-		if ($this->is_editor_editable_cached)
-			return $this->is_editor_editable;
-
-		$local_acl	= $this->getUserVipRepository()->findOneAclByUIDModuleAndDataNum(
-			$this->userEntity->getMain()['UID'],
-			$this->getEditorUserModuleName(),
-			$unit_id
-		);
-
-		$edit_access = $this->getConfig()->getConfigValue(
-			$this->getLocalEditorUserEditName(),
-			$this->getModuleName(),
-			self::CONFIG_ACL_SECTION_EDITOR
-		);
-
-		$this->is_editor_editable_cached = true;
-		$this->is_editor_editable = (($local_acl & $edit_access) > 0);
-
-		return $this->is_editor_editable;
-	}
-
-	public function isUnitUsableForEditor($unit_id): bool
+	public function isUnitViewable($unit_id): bool
 	{
 		if (empty($unit_id))
 			return false;
 
-		if ($this->is_editor_usable_cached)
-			return $this->is_editor_usable;
+		return $this->getCachedResult("isViewer_$unit_id", function () use ($unit_id) {
+			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
+				$this->userEntity->getMain()['UID'],
+				$this->getViewerModuleName(),
+				$unit_id
+			);
 
-		$local_acl	= $this->getUserVipRepository()->findOneAclByUIDModuleAndDataNum(
-			$this->userEntity->getMain()['UID'],
-			$this->getEditorUserModuleName(),
-			$unit_id
-		);
-
-		$edit_access = $this->getConfig()->getConfigValue(
-			$this->getLocalEditorUserUseName(),
-			$this->getModuleName(),
-			self::CONFIG_ACL_SECTION_EDITOR
-		);
-
-		$this->is_editor_usable_cached = true;
-		$this->is_editor_usable = (($local_acl & $edit_access) > 0);
-
-		return $this->is_editor_usable;
+			return ($local_acl > 0);
+		});
 	}
 
 	public function determineCompaniesForSubAdmin(): array
 	{
-		$vips = $this->getUserVipRepository()->findAllActiveDataNumsByUIDModule(
+		$vips = $this->userVipRepository->findAllActiveDataNumsByUIDModule(
 			$this->userEntity->getMain()['UID'],
 			$this->getSubAdminUserModuleName()
 		);
@@ -166,34 +142,27 @@ abstract class AbstractAclValidator
 		return array_column($vips, 'data_num');
 	}
 
-	public function filterLocalAcl(array $acls, int $access): array
+	/**
+	 * @throws CoreException
+	 */
+	protected function hasGlobalAcl(string $aclName): bool
 	{
-		return array_filter($acls, function($var) use ($access) { return ($var['acl'] & $access); });
+		$value = $this->config->getConfigValue($aclName, $this->moduleName, self::GLOBAL_ACLS);
+		return $this->validateAcl($value);
 	}
 
-	public function getUserEntity(): UserEntity
+	protected function getCachedResult(string $key, callable $callback): mixed
 	{
-		return $this->userEntity;
-	}
+		if (array_key_exists($key, $this->cache))
+			return $this->cache[$key];
 
-	public function getUserVipRepository(): UserVipRepository
-	{
-		return $this->userVipRepository;
+		$this->cache[$key] = $callback();
+		return $this->cache[$key];
 	}
-
-	protected function getModuleName(): string
-	{
-		return $this->moduleName;
-	}
-
-	protected function getConfig(): Config
-	{
-		return $this->config;
-	}
-
 
 	protected function validateAcl(string $acl_constant): bool
 	{
-		return ($this->userEntity->getAcl()[$this->moduleName] === $acl_constant);
+		$acls = $this->userEntity->getAcl();
+		return isset($acls[$this->moduleName]) && $acls[$this->moduleName] === $acl_constant;
 	}
 }
