@@ -30,8 +30,7 @@ class UserVipRepository extends Sql
 		parent::__construct($connection,'user_security', 'UID');
 	}
 
-
-	public function findOneAclByUIDModuleAndDataNum(int $UID, string $module, int $data_num): int
+	public function findOneAclByUIDModuleAndDataNum(int $UID, string $module, int $data_num): int // maybe we need local acls later
 	{
 	/*	$field = 'acl';
 		$where = 'UID = ' . (int) $UID . ' AND module = ' . $this->quoteString($module) . ' AND data_num = ' . $data_num;

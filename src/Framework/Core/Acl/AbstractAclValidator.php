@@ -35,10 +35,8 @@ use App\Framework\User\UserEntity;
  */
 abstract class AbstractAclValidator
 {
-	const string GLOBAL_ACLS = 'GlobalACLs';
-
-	const int USER_STATUS_DEFAULT_USER 	= 1;
-	const int USER_STATUS_ADMIN_USER	= 2;
+	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
+	const string SECTION_ACL_VIP_NAMES = 'VipNames';
 	protected readonly string $moduleName;
 	protected readonly UserEntity $userEntity;
 	protected readonly UserMainRepository $userMainRepository;
@@ -56,13 +54,51 @@ abstract class AbstractAclValidator
 		$this->config             = $config;
 	}
 
-	abstract public function getAclNameModuleAdmin();
-	abstract public function getAclNameSubAdmin();
-	abstract public function getSubAdminUserModuleName();
-	abstract public function getAclNameEditor();
-	abstract public function getAclNameViewer();
-	abstract public function getEditorModuleName();
-	abstract public function getViewerModuleName();
+	/**
+	 * @throws CoreException
+	 */
+	public function getAclNameModuleAdmin(): string
+	{
+		return $this->config->getConfigValue('moduleadmin', $this->moduleName, self::SECTION_GLOBAL_ACLS);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	public function getAclNameSubAdmin(): string
+	{
+		return $this->config->getConfigValue('subadmin', $this->moduleName, self::SECTION_GLOBAL_ACLS);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	public function getAclNameEditor(): string
+	{
+		return $this->config->getConfigValue('editor', $this->moduleName, self::SECTION_GLOBAL_ACLS);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	public function getAclNameViewer(): string
+	{
+		return $this->config->getConfigValue('viewer', $this->moduleName, self::SECTION_GLOBAL_ACLS);
+	}
+	public function getSubAdminVipName(): string
+	{
+		return $this->config->getConfigValue('subadmin', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
+
+	}
+	public function getEditorVipName(): string
+	{
+		return $this->config->getConfigValue('editor', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
+
+	}
+	public function getViewerVipName(): string
+	{
+		return $this->config->getConfigValue('viewer', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
+	}
 
 	/**
 	 * @throws CoreException
@@ -96,19 +132,34 @@ abstract class AbstractAclValidator
 		return $this->hasGlobalAcl($this->getAclNameViewer());
 	}
 
+	public function hasSubAdminAccess(int $company_id): bool
+	{
+		if (empty($company_id) || !$this->isSubAdmin())
+			return false;
+
+		return $this->getCachedResult("hasSubAdminAccess_$company_id", function () use ($company_id) {
+			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
+				$this->userEntity->getMain()['UID'],
+				$this->getSubAdminVipName(),
+				$company_id
+			);
+
+			return ($local_acl > 0);
+		});
+	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isUnitEditable(int|string $unit_id): bool
+	public function hasEditorAccess(int|string $unit_id): bool
 	{
 		if (empty($unit_id) || !$this->isEditor())
 			return false;
 
-		return $this->getCachedResult("isEditorEditable_$unit_id", function () use ($unit_id) {
+		return $this->getCachedResult("hasEditorAccess_$unit_id", function () use ($unit_id) {
 			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
 				$this->userEntity->getMain()['UID'],
-				$this->getEditorModuleName(),
+				$this->getEditorVipName(),
 				$unit_id
 			);
 
@@ -116,15 +167,15 @@ abstract class AbstractAclValidator
 		});
 	}
 
-	public function isUnitViewable($unit_id): bool
+	public function hasViewerAccess(int|string $unit_id): bool
 	{
 		if (empty($unit_id))
 			return false;
 
-		return $this->getCachedResult("isViewer_$unit_id", function () use ($unit_id) {
+		return $this->getCachedResult("hasViewerAccess_$unit_id", function () use ($unit_id) {
 			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
 				$this->userEntity->getMain()['UID'],
-				$this->getViewerModuleName(),
+				$this->getViewerVipName(),
 				$unit_id
 			);
 
@@ -136,7 +187,7 @@ abstract class AbstractAclValidator
 	{
 		$vips = $this->userVipRepository->findAllActiveDataNumsByUIDModule(
 			$this->userEntity->getMain()['UID'],
-			$this->getSubAdminUserModuleName()
+			$this->getSubAdminVipName()
 		);
 
 		return array_column($vips, 'data_num');
@@ -147,7 +198,7 @@ abstract class AbstractAclValidator
 	 */
 	protected function hasGlobalAcl(string $aclName): bool
 	{
-		$value = $this->config->getConfigValue($aclName, $this->moduleName, self::GLOBAL_ACLS);
+		$value = $this->config->getConfigValue($aclName, $this->moduleName, self::SECTION_GLOBAL_ACLS);
 		return $this->validateAcl($value);
 	}
 
