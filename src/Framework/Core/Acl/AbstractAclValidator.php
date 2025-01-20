@@ -22,15 +22,13 @@ namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\User\Edge\UserMainRepository;
-use App\Framework\User\Enterprise\UserVipRepository;
-use App\Framework\User\UserEntity;
+use App\Framework\User\UserService;
 
 /**
  * Class AbstractAclValidator
  *
- * Includes a cache mechanismen to prevent repeated
- * access to the database
+ * Class is user agnostic and provides atomar functions to determine user access rights from a userentt
+ *
  *
  */
 abstract class AbstractAclValidator
@@ -38,20 +36,16 @@ abstract class AbstractAclValidator
 	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
 	const string SECTION_ACL_VIP_NAMES = 'VipNames';
 	protected readonly string $moduleName;
-	protected readonly UserEntity $userEntity;
-	protected readonly UserMainRepository $userMainRepository;
-	protected readonly UserVipRepository $userVipRepository;
+	protected readonly UserService $userService;
 	protected readonly Config $config;
 
 	private array $cache = [];
 
-	public function __construct(string $moduleName, UserEntity $user, UserMainRepository $userMainRepository, UserVipRepository $userVip, Config $config)
+	public function __construct(string $moduleName, UserService $userService, Config $config)
 	{
-		$this->moduleName         = $moduleName;
-		$this->userEntity         = $user;
-		$this->userVipRepository  = $userVip;
-		$this->userMainRepository = $userMainRepository;
-		$this->config             = $config;
+		$this->moduleName    = $moduleName;
+		$this->userService   = $userService;
+		$this->config        = $config;
 	}
 
 	/**
@@ -103,117 +97,92 @@ abstract class AbstractAclValidator
 	/**
 	 * @throws CoreException
 	 */
-	public function isModuleAdmin(): bool
+	public function isModuleAdmin(int $UID): bool
 	{
-		return $this->hasGlobalAcl($this->getAclNameModuleAdmin());
+		return $this->hasGlobalAcl($UID, $this->getAclNameModuleAdmin());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isSubAdmin(): bool
+	public function isSubAdmin(int $UID): bool
 	{
-		return $this->hasGlobalAcl($this->getAclNameSubAdmin());
+		return $this->hasGlobalAcl($UID, $this->getAclNameSubAdmin());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isEditor(): bool
+	public function isEditor(int $UID): bool
 	{
-		return $this->hasGlobalAcl($this->getAclNameEditor());
+		return $this->hasGlobalAcl($UID, $this->getAclNameEditor());
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function isViewer(): bool
+	public function isViewer(int $UID): bool
 	{
-		return $this->hasGlobalAcl($this->getAclNameViewer());
+		return $this->hasGlobalAcl($UID, $this->getAclNameViewer());
 	}
 
-	public function hasSubAdminAccess(int $company_id): bool
+	/**
+	 * @throws CoreException
+	 */
+	public function hasSubAdminAccess(int $UID, int $company_id): bool
 	{
 		if (empty($company_id) || !$this->isSubAdmin())
 			return false;
 
-		return $this->getCachedResult("hasSubAdminAccess_$company_id", function () use ($company_id) {
-			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
-				$this->userEntity->getMain()['UID'],
-				$this->getSubAdminVipName(),
-				$company_id
-			);
+		$userEntity = $this->userService->getUserById($UID);
 
-			return ($local_acl > 0);
-		});
+		return in_array($company_id, $userEntity->getVip()[$this->getSubAdminVipName()]);
+
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	public function hasEditorAccess(int|string $unit_id): bool
+	public function hasEditorAccess($UID, int|string $unit_id): bool
 	{
 		if (empty($unit_id) || !$this->isEditor())
 			return false;
 
-		return $this->getCachedResult("hasEditorAccess_$unit_id", function () use ($unit_id) {
-			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
-				$this->userEntity->getMain()['UID'],
-				$this->getEditorVipName(),
-				$unit_id
-			);
+		$userEntity = $this->userService->getUserById($UID);
 
-			return ($local_acl > 0);
-		});
+		return in_array($unit_id, $userEntity->getVip()[$this->getEditorVipName()]);
 	}
 
-	public function hasViewerAccess(int|string $unit_id): bool
+	public function hasViewerAccess(int $UID, int|string $unit_id): bool
 	{
 		if (empty($unit_id))
 			return false;
 
-		return $this->getCachedResult("hasViewerAccess_$unit_id", function () use ($unit_id) {
-			$local_acl = $this->userVipRepository->findOneAclByUIDModuleAndDataNum(
-				$this->userEntity->getMain()['UID'],
-				$this->getViewerVipName(),
-				$unit_id
-			);
+		$userEntity = $this->userService->getUserById($UID);
 
-			return ($local_acl > 0);
-		});
+		return in_array($unit_id, $userEntity->getVip()[$this->getViewerVipName()]);
 	}
 
-	public function determineCompaniesForSubAdmin(): array
+	public function determineCompaniesForSubAdmin(int $UID): array
 	{
-		$vips = $this->userVipRepository->findAllActiveDataNumsByUIDModule(
-			$this->userEntity->getMain()['UID'],
-			$this->getSubAdminVipName()
-		);
+		$userEntity = $this->userService->getUserById($UID);
 
-		return array_column($vips, 'data_num');
+		return $userEntity->getVip()[$this->getViewerVipName()];
 	}
 
 	/**
 	 * @throws CoreException
 	 */
-	protected function hasGlobalAcl(string $aclName): bool
+	protected function hasGlobalAcl(int $UID, string $aclName): bool
 	{
 		$value = $this->config->getConfigValue($aclName, $this->moduleName, self::SECTION_GLOBAL_ACLS);
-		return $this->validateAcl($value);
+		return $this->validateAcl($UID, $value);
 	}
 
-	protected function getCachedResult(string $key, callable $callback): mixed
+	protected function validateAcl(int $UID, string $aclName): bool
 	{
-		if (array_key_exists($key, $this->cache))
-			return $this->cache[$key];
-
-		$this->cache[$key] = $callback();
-		return $this->cache[$key];
-	}
-
-	protected function validateAcl(string $acl_constant): bool
-	{
-		$acls = $this->userEntity->getAcl();
-		return isset($acls[$this->moduleName]) && $acls[$this->moduleName] === $acl_constant;
+		$userEntity = $this->userService->getUserById($UID);
+		$acls       = $userEntity->getAcl();
+		return array_key_exists($this->moduleName, $acls) && $acls[$this->moduleName] === $aclName;
 	}
 }

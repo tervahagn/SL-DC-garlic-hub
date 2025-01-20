@@ -148,7 +148,7 @@ class AuthService
 	 */
 	public function getCurrentUser(int $UID): UserEntity
 	{
-		return $this->userService->getCurrentUser($UID);
+		return $this->userService->getUserById($UID);
 	}
 
 	private function validateUserStatus(int $status): void

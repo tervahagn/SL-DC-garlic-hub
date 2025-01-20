@@ -109,7 +109,7 @@ class UserServiceTest extends TestCase
 			->with($cachedData)
 			->willReturn($mockUserEntity);
 
-		$result = $this->userService->getCurrentUser($UID);
+		$result = $this->userService->getUserById($UID);
 		$this->assertEquals($mockUserEntity, $result);
 	}
 
@@ -135,7 +135,7 @@ class UserServiceTest extends TestCase
 			->with(['main' => $userData])
 			->willReturn($mockUserEntity);
 
-		$result = $this->userService->getCurrentUser($UID);
+		$result = $this->userService->getUserById($UID);
 
 		$this->assertEquals($mockUserEntity, $result);
 	}

@@ -26,6 +26,12 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
 
+/**
+ * Userservice handles and caches the userEntity. This is a central point for authentication and checking
+ *  user access rights for different modules.
+ *
+ * The class is user agnostic and the methods needs user id to work and return a userEntity.
+ */
 class UserService
 {
 	const int USER_STATUS_DELETED       = 0;
@@ -100,7 +106,7 @@ class UserService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function getCurrentUser(int $UID): UserEntity
+	public function getUserById(int $UID): UserEntity
 	{
 		$cacheKey   = $this->getCacheKey($UID);
 		$cachedData = $this->cache->get($cacheKey);
