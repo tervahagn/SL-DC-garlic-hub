@@ -45,6 +45,7 @@ class NodesRepository extends Sql
 					node_id,
 					is_public,
 					root_id,
+					is_user_folder,
 					parent_id,
 					level,
 					lft,
