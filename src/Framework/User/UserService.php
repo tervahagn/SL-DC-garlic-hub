@@ -101,8 +101,6 @@ class UserService
 	/**
 	 * Get the current user from cache or database.
 	 *
-	 * @param int $UID
-	 * @return UserEntity
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */

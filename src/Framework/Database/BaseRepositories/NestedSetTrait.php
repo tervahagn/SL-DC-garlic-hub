@@ -96,7 +96,6 @@ trait NestedSetTrait
 			->where('node_id = :node_id')
 			->setParameter('node_id', $nodeId);
 
-
 		$node_data   = $queryBuilder->executeQuery()->fetchAllAssociative();
 
 		if (empty($node_data))
@@ -106,7 +105,6 @@ trait NestedSetTrait
 		$queryBuilder2->select('node_id, category_name')
 			->from($this->table)
 			->where('root_id = ' . (int) $node_data[0]['root_id']. ' AND (lft BETWEEN '.$node_data[0]['lft'].' AND '.$node_data[0]['rgt']);
-
 
 		return $queryBuilder2->executeQuery()->fetchAllAssociative();
 	}

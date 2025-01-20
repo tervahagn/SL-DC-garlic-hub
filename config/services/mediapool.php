@@ -19,11 +19,13 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Framework\User\UserService;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
+use App\Modules\Mediapool\Services\AclValidator;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
@@ -31,14 +33,18 @@ use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
-use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
 $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new NodesService(
-		new NodesRepository($container->get('SqlConnection'))
+		new NodesRepository($container->get('SqlConnection')),
+		new AclValidator(
+			'mediapool',
+			$container->get(UserService::class),
+			$container->get(Config::class),
+		)
 	);
 });
 $dependencies[NodesController::class] = DI\factory(function (ContainerInterface $container)

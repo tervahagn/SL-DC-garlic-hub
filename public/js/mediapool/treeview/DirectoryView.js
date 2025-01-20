@@ -23,7 +23,7 @@ export class DirectoryView
 {
     #tree               = null;
     #tree_element       = null;
-    static DEBUG_LEVEL  = 0;
+    static DEBUG_LEVEL  = 3;
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI =  '/async/mediapool/node/';
     #activeNode         = null;
@@ -72,8 +72,8 @@ export class DirectoryView
             dnd: {
                 effectAllowed: "all",
                 dropEffectDefault: "move",
-                preventNonNodes: false,
-                preventForeignNodes: false,
+                preventNonNodes: true,
+                preventForeignNodes: true,
                 preventVoidMoves: false,
                 dragStart: (e) => {
                       e.event.dataTransfer.effectAllowed = "all";

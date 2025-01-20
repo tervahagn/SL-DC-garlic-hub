@@ -47,7 +47,7 @@ class NodesController
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		if (!$this->hasRights($request->getAttribute('session')))
+		if (!$this->isLogged($request->getAttribute('session')))
 		{
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
@@ -65,7 +65,7 @@ class NodesController
 
 	public function add(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->hasRights($request->getAttribute('session')))
+		if (!$this->isLogged($request->getAttribute('session')))
 		{
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
@@ -103,7 +103,7 @@ class NodesController
 
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->hasRights($request->getAttribute('session')))
+		if (!$this->isLogged($request->getAttribute('session')))
 		{
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
@@ -145,7 +145,7 @@ class NodesController
 
 	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->hasRights($request->getAttribute('session')))
+		if (!$this->isLogged($request->getAttribute('session')))
 		{
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
@@ -193,7 +193,7 @@ class NodesController
 
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->hasRights($request->getAttribute('session')))
+		if (!$this->isLogged($request->getAttribute('session')))
 		{
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
@@ -221,7 +221,7 @@ class NodesController
 
 	}
 
-	private function hasRights(Session $session): bool
+	private function isLogged(Session $session): bool
 	{
 		$ret = $session->exists('user');
 		if ($ret)
