@@ -31,6 +31,8 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
  *
  * Class is user agnostic and provides atomar functions to determine
  * user access rights from a user entity
+ *
+ * @see /docs/user-administration.md
  */
 abstract class AbstractAclValidator
 {
@@ -105,10 +107,9 @@ abstract class AbstractAclValidator
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
+		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 
-		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 		return in_array($company_id, $userEntity->getVip()[$vipName]);
-
 	}
 
 	/**
@@ -122,8 +123,8 @@ abstract class AbstractAclValidator
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
+		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 
-		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 		return in_array($unitId, $userEntity->getVip()[$vipName]);
 	}
 
@@ -137,9 +138,8 @@ abstract class AbstractAclValidator
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
+		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 
-
-		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 		return in_array($unitId, $userEntity->getVip()[$vipName]);
 	}
 
@@ -150,7 +150,6 @@ abstract class AbstractAclValidator
 	 */
 	protected function hasGlobalAcl(int $UID, string $aclName): bool
 	{
-
 		$userEntity = $this->userService->getUserById($UID);
 		$acls       = $userEntity->getAcl();
 

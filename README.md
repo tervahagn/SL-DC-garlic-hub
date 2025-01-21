@@ -89,6 +89,7 @@ Each phase will build mostly on the features of the previous editions, ensuring 
 - [SQL Repository Usage](docs%2Fsql-repository-usage.md)
 - [CLI.php - Command Line Interface](docs%2Fcli.md)
 - [Api/Oauth2 - API and Oauth2](docs%2Foauth2.md)
+- [User- Administration](docs%2Fuser-administration.md)
 
 # Contributing
 Given its early development stage, contributions are highly encouraged. Please note that code changes, features, and documentation are subject to change as the project evolves toward a production-ready state.
