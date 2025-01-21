@@ -3,9 +3,9 @@
 namespace Tests\Unit\Framework\User;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\User\Core\UserAclRepository;
 use App\Framework\User\Core\UserContactRepository;
 use App\Framework\User\Core\UserStatsRepository;
+use App\Framework\User\Edge\UserAclRepository;
 use App\Framework\User\Edge\UserMainRepository;
 use App\Framework\User\Enterprise\UserSecurityRepository;
 use App\Framework\User\Enterprise\UserVipRepository;
@@ -85,8 +85,9 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$this->assertArrayHasKey('main', $result);
 		$this->assertInstanceOf(UserMainRepository::class, $result['main']);
+		$this->assertArrayHasKey('acl', $result);
+		$this->assertInstanceOf(UserMainRepository::class, $result['acl']);
 
-		$this->assertArrayNotHasKey('acl', $result);
 		$this->assertArrayNotHasKey('contact', $result);
 		$this->assertArrayNotHasKey('stats', $result);
 		$this->assertArrayNotHasKey('vip', $result);

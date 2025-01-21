@@ -44,7 +44,7 @@ class UserRepositoryFactory
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => [
 				'main'     => new Edge\UserMainRepository($this->connection),
-				'acl'      => new Core\UserAclRepository($this->connection),
+				'acl'      => new Edge\UserAclRepository($this->connection),
 				'contact'  => new Core\UserContactRepository($this->connection),
 				'stats'    => new Core\UserStatsRepository($this->connection),
 				'vip'      => new Enterprise\UserVipRepository($this->connection),
@@ -52,12 +52,13 @@ class UserRepositoryFactory
 			],
 			Config::PLATFORM_EDITION_CORE => [
 				'main'    => new Edge\UserMainRepository($this->connection),
-				'acl'     => new Core\UserAclRepository($this->connection),
+				'acl'     => new Edge\UserAclRepository($this->connection),
 				'contact' => new Core\UserContactRepository($this->connection),
 				'stats'   => new Core\UserStatsRepository($this->connection)
 			],
 			default => [
-				'main' => new Edge\UserMainRepository($this->connection)
+				'main' => new Edge\UserMainRepository($this->connection),
+				'acl'  => new Edge\UserAclRepository($this->connection)
 			],
 		};
 	}
