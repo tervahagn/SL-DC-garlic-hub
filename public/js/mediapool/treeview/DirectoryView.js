@@ -23,7 +23,7 @@ export class DirectoryView
 {
     #tree               = null;
     #tree_element       = null;
-    static DEBUG_LEVEL  = 3;
+    static DEBUG_LEVEL  = 0;
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI =  '/async/mediapool/node/';
     #activeNode         = null;
@@ -72,24 +72,29 @@ export class DirectoryView
             dnd: {
                 effectAllowed: "all",
                 dropEffectDefault: "move",
-                preventNonNodes: true,
-                preventForeignNodes: true,
+                preventNonNodes: false,
+                preventForeignNodes: false,
                 preventVoidMoves: false,
                 dragStart: (e) => {
                       e.event.dataTransfer.effectAllowed = "all";
                     return true;
                 },
                 dragOver: (e) => {
+                    if (e.sourceNode !== null && e.suggestedDropMode !== "appendChild") // media drag'nDrop
+                        return false;
+
                     return true;
                 },
                 dragLeave: (e) => {
                     return true;
                 },
                 dragEnter: (e) => {
-                    return ["before", "after", "appendChild"];
+                    if (e.sourceNode === null) // media drag'nDrop
+                        return ["appendChild"];
+                    else
+                        return ["before", "after", "appendChild"];
                 },
                 drop: (e) => {
-
                     if (e.sourceNode === null) // media drag'nDrop
                     {
                         const mediaId = e.event.dataTransfer.getData("data-media-id");
