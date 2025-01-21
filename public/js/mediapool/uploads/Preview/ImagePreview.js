@@ -21,7 +21,7 @@ import { AbstractPreview } from "./AbstractPreview.js";
 
 export class ImagePreview extends AbstractPreview
 {
-    #allowedFormats = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
+    #allowedFormats = ["image/jpeg", "image/png", "image/gif", "image/webp",  "image/avif", "image/svg+xml"];
 
     createPreview()
     {
