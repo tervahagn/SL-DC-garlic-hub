@@ -24,13 +24,13 @@ class AclValidator extends AbstractAclValidator
 			return ['create' => true, 'read' => true, 'edit' => true];
 
 		// Edge Edition will not move further as there is not subadmin
-		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccess($UID, $directory['company_id']))
+		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $directory['company_id']))
 			$permissions = ['create' => true, 'read' => true, 'edit' => true];
 
-		if ($this->isEditor($UID) && $this->hasEditorAccess($UID, $directory['node_id']))
+		if ($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $directory['node_id']))
 			$permissions = ['create' => true, 'read' => true, 'edit' => false];
 
-		if ($this->isViewer($UID) && $this->hasViewerAccess($UID, $directory['node_id']))
+		if ($this->isViewer($UID) && $this->hasViewerAccessOnUnit($UID, $directory['node_id']))
 			$permissions['read'] = true;
 
 		if ($directory['is_public'] === 1)

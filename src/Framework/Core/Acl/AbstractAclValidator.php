@@ -23,23 +23,21 @@ namespace App\Framework\Core\Acl;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\User\UserService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 /**
  * Class AbstractAclValidator
  *
- * Class is user agnostic and provides atomar functions to determine user access rights from a userentt
- *
- *
+ * Class is user agnostic and provides atomar functions to determine
+ * user access rights from a user entity
  */
 abstract class AbstractAclValidator
 {
 	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
-	const string SECTION_ACL_VIP_NAMES = 'VipNames';
 	protected readonly string $moduleName;
 	protected readonly UserService $userService;
 	protected readonly Config $config;
-
-	private array $cache = [];
 
 	public function __construct(string $moduleName, UserService $userService, Config $config)
 	{
@@ -49,140 +47,116 @@ abstract class AbstractAclValidator
 	}
 
 	/**
+	 * @param int $UID
+	 * @return bool
 	 * @throws CoreException
-	 */
-	public function getAclNameModuleAdmin(): string
-	{
-		return $this->config->getConfigValue('moduleadmin', $this->moduleName, self::SECTION_GLOBAL_ACLS);
-	}
-
-	/**
-	 * @throws CoreException
-	 */
-	public function getAclNameSubAdmin(): string
-	{
-		return $this->config->getConfigValue('subadmin', $this->moduleName, self::SECTION_GLOBAL_ACLS);
-	}
-
-	/**
-	 * @throws CoreException
-	 */
-	public function getAclNameEditor(): string
-	{
-		return $this->config->getConfigValue('editor', $this->moduleName, self::SECTION_GLOBAL_ACLS);
-	}
-
-	/**
-	 * @throws CoreException
-	 */
-	public function getAclNameViewer(): string
-	{
-		return $this->config->getConfigValue('viewer', $this->moduleName, self::SECTION_GLOBAL_ACLS);
-	}
-	public function getSubAdminVipName(): string
-	{
-		return $this->config->getConfigValue('subadmin', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
-
-	}
-	public function getEditorVipName(): string
-	{
-		return $this->config->getConfigValue('editor', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
-
-	}
-	public function getViewerVipName(): string
-	{
-		return $this->config->getConfigValue('viewer', $this->moduleName, self::SECTION_ACL_VIP_NAMES);
-	}
-
-	/**
-	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function isModuleAdmin(int $UID): bool
 	{
-		return $this->hasGlobalAcl($UID, $this->getAclNameModuleAdmin());
+		return $this->hasGlobalAcl($UID, AclSections::MODULEADMIN->value);
 	}
 
 	/**
+	 * @param int $UID
+	 * @return bool
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function isSubAdmin(int $UID): bool
 	{
-		return $this->hasGlobalAcl($UID, $this->getAclNameSubAdmin());
+		return $this->hasGlobalAcl($UID, AclSections::SUBADMIN->value);
 	}
 
 	/**
+	 * @param int $UID
+	 * @return bool
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function isEditor(int $UID): bool
 	{
-		return $this->hasGlobalAcl($UID, $this->getAclNameEditor());
+		return $this->hasGlobalAcl($UID, AclSections::EDITOR->value);
 	}
 
 	/**
+	 * @param int $UID
+	 * @return bool
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function isViewer(int $UID): bool
 	{
-		return $this->hasGlobalAcl($UID, $this->getAclNameViewer());
+		return $this->hasGlobalAcl($UID, AclSections::VIEWER->value);
 	}
 
 	/**
 	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
-	public function hasSubAdminAccess(int $UID, int $company_id): bool
+	public function hasSubAdminAccessOnCompany(int $UID, int $company_id): bool
 	{
-		if (empty($company_id) || !$this->isSubAdmin())
+		if (empty($company_id) || !$this->isSubAdmin($UID))
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
 
-		return in_array($company_id, $userEntity->getVip()[$this->getSubAdminVipName()]);
+		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
+		return in_array($company_id, $userEntity->getVip()[$vipName]);
 
 	}
 
 	/**
 	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
-	public function hasEditorAccess($UID, int|string $unit_id): bool
+	public function hasEditorAccessOnUnit($UID, int|string $unitId): bool
 	{
-		if (empty($unit_id) || !$this->isEditor())
+		if (empty($unitId) || !$this->isEditor($UID))
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
 
-		return in_array($unit_id, $userEntity->getVip()[$this->getEditorVipName()]);
+		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
+		return in_array($unitId, $userEntity->getVip()[$vipName]);
 	}
 
-	public function hasViewerAccess(int $UID, int|string $unit_id): bool
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function hasViewerAccessOnUnit(int $UID, int|string $unitId): bool
 	{
-		if (empty($unit_id))
+		if (empty($unitId))
 			return false;
 
 		$userEntity = $this->userService->getUserById($UID);
 
-		return in_array($unit_id, $userEntity->getVip()[$this->getViewerVipName()]);
-	}
 
-	public function determineCompaniesForSubAdmin(int $UID): array
-	{
-		$userEntity = $this->userService->getUserById($UID);
-
-		return $userEntity->getVip()[$this->getViewerVipName()];
+		$vipName = $this->moduleName.'_'.AclSections::SUBADMIN->value;
+		return in_array($unitId, $userEntity->getVip()[$vipName]);
 	}
 
 	/**
 	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
 	protected function hasGlobalAcl(int $UID, string $aclName): bool
 	{
-		$value = $this->config->getConfigValue($aclName, $this->moduleName, self::SECTION_GLOBAL_ACLS);
-		return $this->validateAcl($UID, $value);
-	}
 
-	protected function validateAcl(int $UID, string $aclName): bool
-	{
 		$userEntity = $this->userService->getUserById($UID);
 		$acls       = $userEntity->getAcl();
-		return array_key_exists($this->moduleName, $acls) && $acls[$this->moduleName] === $aclName;
+
+		$aclValue = $this->config->getConfigValue($aclName, $this->moduleName, self::SECTION_GLOBAL_ACLS);
+
+		return ($acls[$this->moduleName] & $aclValue);
 	}
+
 }
