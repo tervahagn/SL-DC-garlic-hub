@@ -52,20 +52,19 @@ class NodesService
 	public function getNodes(int $parent_id): array
 	{
 		if ($parent_id === 0)
-			$node_data = $this->nodesRepository->findAllRootNodes();
+			$nodes = $this->nodesRepository->findAllRootNodes();
 		else
-			$node_data = $this->nodesRepository->findAllChildNodesByParentNode($parent_id);
+			$nodes = $this->nodesRepository->findAllChildNodesByParentNode($parent_id);
 
-		$nodes = [];
-		foreach ($node_data as $node)
+		$tree = [];
+		foreach ($nodes as $node)
 		{
 			$rights = $this->determineRights($node);
 			if (!empty($rights))
-				return $this->prepareForWunderbaum($node, $rights);
-
+				$tree[] = $this->prepareForWunderbaum($node, $rights);
 		}
 
-		return $nodes;
+		return $tree;
 	}
 
 	/**

@@ -14,7 +14,7 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function checkDirectoryPermissions(int $UID, array $directory): array
 	{
-		if (!isset($directory['UID']))
+		if (!array_key_exists('UID', $directory))
 			throw new ModuleException($this->moduleName, 'Missing UID in media directory data struct.');
 
 		$permissions = ['create' => false, 'read' => false, 'edit' => false];

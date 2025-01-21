@@ -155,7 +155,13 @@ abstract class AbstractAclValidator
 
 		$aclValue = $this->config->getConfigValue($aclName, $this->moduleName, self::SECTION_GLOBAL_ACLS);
 
-		return ($acls[$this->moduleName] & $aclValue);
+		foreach ($acls as $acl)
+		{
+			if ($acl['module'] === $this->moduleName && ($acl['acl'] & $aclValue) > 0)
+				return true;
+		}
+
+		return false;
 	}
 
 }

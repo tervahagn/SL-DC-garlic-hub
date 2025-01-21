@@ -40,7 +40,7 @@ class UserEntityFactory
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], $userData['security'], $userData['acl'], $userData['vip']),
 			Config::PLATFORM_EDITION_CORE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], [], $userData['acl'], []),
-			default => new UserEntity($userData['main'], [], [], [], [], []),
+			default => new UserEntity($userData['main'], [], [], [],  $userData['acl'], []),
 		};
 	}
 }
