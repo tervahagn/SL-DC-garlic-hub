@@ -34,11 +34,13 @@ export class UploaderDialog
         this.#openButton.disabled  = true;
     }
 
-    init()
+    init(directoryView)
     {
         this.#initEvents();
         this.#initTabSwitching();
-
+        this.#dialog.addEventListener('close', () => {
+            directoryView.reloadCurrentNode();
+        });
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape' && this.#disableEscape)
                 event.preventDefault();

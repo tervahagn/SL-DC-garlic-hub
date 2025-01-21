@@ -80,9 +80,6 @@ export class DirectoryView
                     return true;
                 },
                 dragOver: (e) => {
-                    if (e.sourceNode !== null && e.suggestedDropMode !== "appendChild") // media drag'nDrop
-                        return false;
-
                     return true;
                 },
                 dragLeave: (e) => {
@@ -143,6 +140,11 @@ export class DirectoryView
             const removeNodeElement = document.getElementById("remove_node");
             contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
         });
+    }
+
+    reloadCurrentNode()
+    {
+        this.#loadMediaInDirectory(this.#activeNode.key);
     }
 
     setActiveTitle(title)

@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 		document.getElementById('closeDialog'),
 		document.getElementById("closeUploadDialog")
 	);
-	uploaderDialog.init();
+	uploaderDialog.init(directoryView);
 
 	const startFileUpload = document.getElementById("startFilesUpload");
 	const filePreviews = new FilePreviews(
