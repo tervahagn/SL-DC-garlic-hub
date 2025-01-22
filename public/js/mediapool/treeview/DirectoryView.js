@@ -125,20 +125,34 @@ export class DirectoryView
     {
         this.#tree_element.addEventListener("contextmenu", (event) => {
             event.preventDefault();
+
+            // check rights
             const currentTreeNode = this.setActiveNodeFromEventTarget(event.target);
+            if (!currentTreeNode.data.create_sub  && !currentTreeNode.data.edit_node  && !currentTreeNode.data.delete_node)
+                return;
 
             const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
             let contextMenu    = new ContextMenuTreeView(menu, nodesModel, treeDialog);
+
             contextMenu.show(event);
 
             const editNodeElement = document.getElementById("edit_node");
-            contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
+            if (currentTreeNode.data.edit_node)
+                contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
+            else
+                editNodeElement.remove();
 
             const addNodeElement = document.getElementById("add_node");
-            contextMenu.addAddEvent(addNodeElement, currentTreeNode, lang);
+            if (currentTreeNode.data.create_sub)
+                contextMenu.addAddEvent(addNodeElement, currentTreeNode, lang);
+            else
+                addNodeElement.remove();
 
             const removeNodeElement = document.getElementById("remove_node");
-            contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
+            if (currentTreeNode.data.create_sub)
+                contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
+            else
+                removeNodeElement.remove();
         });
     }
 
