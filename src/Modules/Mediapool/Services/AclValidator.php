@@ -9,8 +9,11 @@ use App\Framework\Exceptions\ModuleException;
 class AclValidator extends AbstractAclValidator
 {
 	/**
-	 * @throws ModuleException
+
 	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 */
 	public function checkDirectoryPermissions(int $UID, array $directory): array
 	{

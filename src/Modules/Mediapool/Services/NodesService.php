@@ -26,6 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class NodesService
 {
@@ -48,6 +49,7 @@ class NodesService
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function getNodes(int $parent_id): array
 	{
@@ -71,7 +73,7 @@ class NodesService
 	 * @throws ModuleException
 	 * @throws Exception
 	 * @throws CoreException
-	 * @throws DatabaseException
+	 * @throws DatabaseException|PhpfastcacheSimpleCacheException
 	 */
 	public function addNode(int $parent_id, string $name): int
 	{
@@ -88,13 +90,25 @@ class NodesService
 	 * @throws FrameworkException
 	 * @throws DatabaseException
 	 */
-	public function moveNode(int $srcNodeId, int $targetNodeId, string $targetRegion): int
+	public function moveNode(int $movedNodeId, int $targetNodeId, string $region): int
 	{
 		$regions = ['before', 'after', 'appendChild'];
-		if (!in_array($targetRegion, $regions))
+		if (!in_array($region, $regions))
 			return 0;
 
-		$this->nodesRepository->moveNode($srcNodeId, $targetNodeId, $targetRegion);
+		$movedNode  = $this->nodesRepository->getNode($movedNodeId);
+		$targetNode = $this->nodesRepository->getNode($targetNodeId);
+
+		// prevent root dir handling
+		if (($region === NodesRepository::REGION_APPENDCHILD && $targetNodeId === 0) ||
+			(($region === NodesRepository::REGION_BEFORE || $region === NodesRepository::REGION_AFTER) &&
+				$targetNode['parent_id'] === 0))
+			throw new FrameworkException('Create root node with a move is not yet allowed');
+
+		if ($movedNode['parent_id'] === 0)
+			throw new FrameworkException('Moving root node is not yet allowed');
+
+		$this->nodesRepository->moveNode($movedNode, $targetNode, $region);
 
 		return 1;
 	}
@@ -103,7 +117,7 @@ class NodesService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws DatabaseException
-	 * @throws CoreException
+	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
 	public function deleteNode($node_id): int
 	{
@@ -146,10 +160,11 @@ class NodesService
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws DatabaseException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function addRootNode($name): int
 	{
-		if ($this->aclValidator->isModuleAdmin($this->UID))
+		if (!$this->aclValidator->isModuleAdmin($this->UID))
 			throw new ModuleException('mediapool','No rights to add root node.');
 
 		return $this->nodesRepository->addRootNode($this->UID, $name);
@@ -159,7 +174,7 @@ class NodesService
 	 * @throws ModuleException
 	 * @throws Exception
 	 * @throws DatabaseException
-	 * @throws CoreException
+	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
 	public function addSubNode(int $parent_node_id, string $name): int
 	{
@@ -177,7 +192,7 @@ class NodesService
 	/**
 	 * @throws ModuleException
 	 * @throws Exception
-	 * @throws CoreException
+	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
 	public function editNode(int $id, string $name): int
 	{
@@ -193,8 +208,10 @@ class NodesService
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function determineRights(array $node): array
 	{

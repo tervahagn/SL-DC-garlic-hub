@@ -281,22 +281,12 @@ trait NestedSetTrait
 	 * @throws FrameworkException
 	 * @throws DatabaseException
 	 */
-	public function moveNode(int $sourceId, int $targetId, string $region): void
+	public function moveNode(array $movedNode, array $targetNode, string $region): void
 	{
 		try
 		{
 			$this->connection->beginTransaction();
 
-			$movedNode = $this->getNode($sourceId);
-			$targetNode = $this->getNode($targetId);
-
-			// prevent creating new root dir
-
-			if ($region === self::REGION_APPENDCHILD && $targetId === 0)
-				throw new FrameworkException('Create root node with move is not allowed');
-
-			if (($region === self::REGION_BEFORE || $region === self::REGION_AFTER) && $targetNode['parent_id'] === 0)
-				throw new FrameworkException('Create root node with move is not allowed');
 
 			$diff_level = $this->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
 			$newLgtPos  = $this->determineLgtPositionByRegion($region, $targetNode);
@@ -313,7 +303,8 @@ trait NestedSetTrait
 			if ($i === 0)
 				throw new FrameworkException($movedNode['name']. ' cannot be moved via '.$region.' of '. $targetNode['name']);
 
-			$this->update($sourceId, ['parent_id' => $this->determineParentIdByRegion($region, $targetNode)]);
+			$this->update($movedNode['node_id'], ['parent_id' => $this->determineParentIdByRegion($region,
+				$targetNode)]);
 
 			// close source space if not a root node
 			if ($movedNode['parent_id'] !== 0)
