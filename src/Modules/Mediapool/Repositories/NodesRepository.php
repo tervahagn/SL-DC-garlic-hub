@@ -29,6 +29,9 @@ class NodesRepository extends Sql
 {
 	use NestedSetTrait, TransactionsTrait;
 
+	const int VISIBILITY_USER = 0;
+	const int VISIBILITY_PUBLIC = 1;
+
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'mediapool_nodes', 'node_id');
@@ -43,7 +46,7 @@ class NodesRepository extends Sql
 					username,
 					company_id,
 					node_id,
-					is_public,
+					visibility,
 					root_id,
 					is_user_folder,
 					parent_id,
@@ -53,6 +56,7 @@ class NodesRepository extends Sql
 					last_updated,
 					create_date,
 					name,
+					media_location,
 					ROUND((rgt - lft - 1) / 2) AS children'];
 		$where = ['node_id' => $node_id];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
