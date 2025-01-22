@@ -151,7 +151,7 @@ class NodesService
 			'edit_node' => $rights['edit'],
 			'delete_node' => $rights['delete'],
 			'UID' => $node['UID'],
-			'is_public' => $node['is_public']
+			'visibility' => $node['visibility']
 		);
 	}
 
