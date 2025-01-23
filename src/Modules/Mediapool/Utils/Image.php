@@ -59,12 +59,8 @@ class Image extends AbstractMediaHandler
 	/**
 	 * @throws ModuleException
 	 */
-	public function checkFileBeforeUpload(UploadedFileInterface $uploadedFile): void
+	public function checkFileBeforeUpload(int $size): void
 	{
-		if ($uploadedFile->getError() !== UPLOAD_ERR_OK)
-			throw new ModuleException('mediapool', $this->codeToMessage($uploadedFile->getError()));
-
-		$size = (int) $uploadedFile->getSize();
 		if ($size > $this->maxImageSize)
 			throw new ModuleException('mediapool', 'Filesize: '.$this->calculateToMegaByte($size).' MB exceeds max image size.');
 	}

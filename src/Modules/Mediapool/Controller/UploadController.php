@@ -75,11 +75,47 @@ class UploadController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$succeed = $this->uploadService->uploadMedia($node_id, $this->UID, $uploadedFiles['files']);
+		$succeed = $this->uploadService->uploadMediaFiles($node_id, $this->UID, $uploadedFiles['files']);
 
 		$response->getBody()->write(json_encode($succeed));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
+
+	public function uploadExternal(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams    = $request->getParsedBody();
+
+		if (!array_key_exists('node_id', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$node_id = (int) $bodyParams['node_id'];
+		if ($node_id === 0)
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		if (!array_key_exists('external_link', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'no files']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$succeed = $this->uploadService->uploadExternalMedia($node_id, $this->UID, $bodyParams['external_link']);
+
+		$response->getBody()->write(json_encode($succeed, JSON_UNESCAPED_UNICODE));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
+
 
 	private function hasRights(Session $session): bool
 	{

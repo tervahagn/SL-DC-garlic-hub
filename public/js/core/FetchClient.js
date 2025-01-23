@@ -23,17 +23,33 @@ export class FetchClient
 
     async fetchData(url, options = {})
     {
-        const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json' } };
+        const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' } };
         const config          = { ...defaultOptions, ...options };
         const response        = await fetch(url, config);
 
         this.#checkResponse(response);
 
+        try
+        {
+            const data = await response.json()
+
+            return data;
+        }
+        catch (e)
+        {
+            return await response.text();
+        }
+        /*
+
+        Not trustable, wen server send wrong contentype
         const contentType = response.headers.get('Content-Type');
         if (contentType?.includes('application/json'))
             return await response.json();
          else
             return await response.text();
+
+
+         */
     }
 
     initUploadWithProgress()

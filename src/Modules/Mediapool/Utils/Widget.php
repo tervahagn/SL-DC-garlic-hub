@@ -55,12 +55,8 @@ class Widget extends AbstractMediaHandler
 	/**
 	 * @throws ModuleException
 	 */
-	public function checkFileBeforeUpload(UploadedFileInterface $uploadedFile): void
+	public function checkFileBeforeUpload(int $size): void
 	{
-		if ($uploadedFile->getError() !== UPLOAD_ERR_OK)
-			throw new ModuleException('mediapool', $this->codeToMessage($uploadedFile->getError()));
-
-		$size = (int) $uploadedFile->getSize();
 		if ($size > $this->maxDownloadSize)
 			throw new ModuleException('mediapool', 'Filesize: '.$this->calculateToMegaByte($size).' MB exceeds max download size.');
 	}

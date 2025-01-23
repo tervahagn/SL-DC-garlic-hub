@@ -33,6 +33,7 @@ use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
+use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -66,6 +67,7 @@ $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $c
 {
 	return new UploadService(
 		$container->get(MediaHandlerFactory::class),
+		new Client(),
 		new FilesRepository($container->get('SqlConnection')),
 		new MimeTypeDetector(),
 		$container->get('ModuleLogger')

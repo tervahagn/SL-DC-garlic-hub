@@ -245,9 +245,8 @@ export class DirectoryView
         try
         {
             const results = await this.#mediaService.loadMedia(key);
-            const data = JSON.parse(results);
 
-            this.#mediaList.render(data.media_list);
+            this.#mediaList.render(results.media_list);
         }
         catch (err)
         {
@@ -266,10 +265,9 @@ export class DirectoryView
             return null;
         });
 
-        let result_obj = JSON.parse(result);
-        if (!result_obj || !result_obj.success)
+        if (!result || !result.success)
         {
-            console.error('Error:', result_obj?.error_message || 'Unknown error');
+            console.error('Error:', result?.error_message || 'Unknown error');
             return;
         }
 

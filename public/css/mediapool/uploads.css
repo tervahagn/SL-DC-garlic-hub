@@ -39,6 +39,8 @@
     #dropzone{border: 2px dashed #ccc; padding: 1em; margin:1em 0 0 0; text-align: center;}
     #dropzone-preview{display:flex; flex-wrap: wrap; gap:1rem;margin:1em 0;}
 
+    #externalLinkField{width:100%; margin: 1rem 0; padding:0.5rem 0.5rem;}
+
     .previewContainer
     {
         display: inline-block;
@@ -78,7 +80,10 @@
             border: 1px solid #ccc;
             border-radius: var(--gh-border-radius);
         }
-
+.upload-button
+{
+    margin:1em 0;
+}
         .closeButton
         {
             position: absolute;
@@ -94,7 +99,7 @@
             cursor: pointer;
         }
 
-    #startFilesUpload:disabled, #closeUploadDialog:disabled, #closeDialog:disabled
+    .upload-button:disabled, #closeUploadDialog:disabled, #closeDialog:disabled
     {
         background-color: #ccc;
         color: #666;

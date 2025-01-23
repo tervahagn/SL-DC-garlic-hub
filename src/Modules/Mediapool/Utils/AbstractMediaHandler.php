@@ -24,6 +24,8 @@ namespace App\Modules\Mediapool\Utils;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\UploadedFileInterface;
@@ -95,17 +97,31 @@ abstract class AbstractMediaHandler
 		return $this->filesystem->fileExists($filePath);
 	}
 
-	abstract public function checkFileBeforeUpload(UploadedFileInterface $uploadedFile): void;
+	abstract public function checkFileBeforeUpload(int $size): void;
 	abstract public function checkFileAfterUpload(string $filePath): void;
 	abstract public function createThumbnail(string $filePath);
 
-	public function upload(UploadedFileInterface $uploadedFile): string
+	public function uploadFromLocal(UploadedFileInterface $uploadedFile): string
 	{
 		$targetPath = strtolower('/'. $this->originalPath .'/'. $uploadedFile->getClientFilename());
 		$uploadedFile->moveTo($this->getAbsolutePath($targetPath));
 
 		return $targetPath;
 	}
+
+	/**
+	 * @throws GuzzleException
+	 */
+	public function uploadFromExternal(Client $client, string $fileURI): string
+	{
+		$parsedUrl  = parse_url($fileURI);
+		$pathInfo   = pathinfo($parsedUrl['path']);
+		$targetPath = strtolower('/'. $this->originalPath .'/'. $pathInfo['basename']);
+
+		$client->request('GET', $fileURI, ['sink' => $this->getAbsolutePath($targetPath)]);
+		return $targetPath;
+	}
+
 
 	/**
 	 * @throws FilesystemException
@@ -154,21 +170,6 @@ abstract class AbstractMediaHandler
 	public function getAbsolutePath(string $filePath): string
 	{
 		return $this->config->getPaths('systemDir') . $filePath;
-	}
-
-	protected function codeToMessage(int $code): string
-	{
-		return match ($code)
-		{
-			UPLOAD_ERR_INI_SIZE   => "The uploaded file exceeds the upload_max_filesize directive in php.ini",
-			UPLOAD_ERR_FORM_SIZE  => "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form",
-			UPLOAD_ERR_PARTIAL    => "The uploaded file was only partially uploaded",
-			UPLOAD_ERR_NO_FILE    => "No file was uploaded",
-			UPLOAD_ERR_NO_TMP_DIR => "Missing a temporary folder",
-			UPLOAD_ERR_CANT_WRITE => "Failed to write file to disk",
-			UPLOAD_ERR_EXTENSION  => "File upload stopped by extension",
-			default => "Unknown upload error",
-		};
 	}
 
 	protected function calculateToMegaByte(int $bytes): float

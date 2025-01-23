@@ -80,6 +80,7 @@ class ShowController
 					'LANG_FILESIZE' => $translator->translate('filesize', 'mediapool'),
 					'LANG_DIMENSIONS' => $translator->translate('dimensions', 'mediapool'),
 					'LANG_MEDIA_DURATION' => $translator->translate('media_duration', 'mediapool'),
+					'LANG_ENTER_FILE_URL' => $translator->translate('enter_file_url', 'mediapool'),
 				]
 			]
 		];

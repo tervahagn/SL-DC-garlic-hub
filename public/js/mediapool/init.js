@@ -7,6 +7,7 @@ import { FilePreviews } from "./uploads/FilePreviews.js";
 import { DragDropManager } from "./uploads/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
 import { FileUploader } from "./uploads/FileUploader.js";
+import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
 import { FetchClient } from "../core/FetchClient.js";
 import { MediaList } from "./media/MediaList.js";
 import { MediaService } from "./media/MediaService.js";
@@ -14,7 +15,7 @@ import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
 
-document.addEventListener("DOMContentLoaded", function(event)
+document.addEventListener("DOMContentLoaded", function()
 {
 	let nodesModel    = new NodesModel();
 	let fetchClient   = new FetchClient();
@@ -61,12 +62,10 @@ document.addEventListener("DOMContentLoaded", function(event)
 	);
 	uploaderDialog.init(directoryView);
 
-	const startFileUpload = document.getElementById("startFilesUpload");
-	const filePreviews = new FilePreviews(
-		document.getElementById('dropzone-preview'),
-		startFileUpload,
-		new PreviewFactory()
-	)
+    const filePreviews = new FilePreviews(
+        document.getElementById('dropzone-preview'),
+        new PreviewFactory()
+    )
 	const dropzone = document.getElementById('dropzone');
 	const dragDropManager = new DragDropManager(
 		dropzone,
@@ -84,11 +83,19 @@ document.addEventListener("DOMContentLoaded", function(event)
 	const fileUploader = new FileUploader(
 		directoryView,
 		filePreviews,
+        document.getElementById("startFilesUpload"),
 		uploaderDialog,
 		fetchClient
 	);
-	fileUploader.initFileUpload(startFileUpload);
+    filePreviews.setFileUploader(fileUploader);
 
+    const externalFileUploader = new ExternalFileUploader(
+        document.getElementById("externalLinkField"),
+        document.getElementById("startExternalFileUpload"),
+        directoryView,
+        uploaderDialog,
+        fetchClient
+    );
 
 });
 

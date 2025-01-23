@@ -21,20 +21,21 @@ export class FileUploader
 {
     #directoryView  = null;
     #filePreviews   = null;
+    #startFileUpload = null;
     #fetchClient    = null;
     #uploaderDialog = null;
 
-    constructor(directoryView, filePreviews, uploaderDialog, fetchClient)
+    constructor(directoryView, filePreviews, startFileUpload, uploaderDialog, fetchClient)
     {
-        this.#filePreviews   = filePreviews;
-        this.#directoryView  = directoryView;
-        this.#uploaderDialog = uploaderDialog;
-        this.#fetchClient    = fetchClient;
-    }
+        this.#filePreviews    = filePreviews;
+        this.#directoryView   = directoryView;
+        this.#startFileUpload = startFileUpload;
+        this.#uploaderDialog  = uploaderDialog;
+        this.#fetchClient     = fetchClient;
 
-    initFileUpload(uploadButtonElement)
-    {
-        uploadButtonElement.addEventListener('click', () => this.uploadFiles());
+        this.#startFileUpload.disabled = true;
+        this.#startFileUpload.addEventListener('click', () => this.uploadFiles());
+
     }
 
     uploadFiles()
@@ -42,7 +43,7 @@ export class FileUploader
         const fileList = this.#filePreviews.getFileList();
         if (fileList.length === 0)
         {
-            alert("Keine Dateien zum Hochladen ausgewählt!");
+            alert("No files selected for upload.");
             return;
         }
 
@@ -110,6 +111,17 @@ export class FileUploader
         })();
     }
 
+    disableUploadButton()
+    {
+        this.#startFileUpload.disabled = true;
+    }
+
+    enableUploadButton()
+    {
+        this.#startFileUpload.disabled = false;
+    }
+
+
     #createProgressbar(container)
     {
         let progressContainer = document.createElement('div');
@@ -125,14 +137,14 @@ export class FileUploader
     #disableActions()
     {
         this.#uploaderDialog.disableActions();
-        this.#filePreviews.disableActions();
+        this.enableUploadButton();
         document.getElementById("linkTab").disabled = true;
     }
 
     #enableActions()
     {
         this.#uploaderDialog.enableActions();
-        this.#filePreviews.enableActions();
+        this.disableUploadButton();
         document.getElementById("linkTab").disabled = false;
     }
 

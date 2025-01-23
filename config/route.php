@@ -66,6 +66,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->patch('/mediapool/node', [NodesController::class, 'edit']);
 	$group->post('/mediapool/node/move', [NodesController::class, 'move']);
 	$group->post('/mediapool/upload', [UploadController::class, 'upload']);
+	$group->post('/mediapool/uploadExternal', [UploadController::class, 'uploadExternal']);
 	$group->get('/mediapool/media/{node_id}', [MediaController::class, 'list']);
 	$group->post('/mediapool/media', [MediaController::class, 'add']);
 	$group->delete('/mediapool/media', [MediaController::class, 'delete']);

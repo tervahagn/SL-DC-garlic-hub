@@ -22,18 +22,16 @@ import { PreviewFactory } from "./Preview/PreviewFactory.js";
 export class FilePreviews
 {
     dropzonePreview = null;
-    startFileUpload = null;
     previewFactory  = new PreviewFactory();
     fileList        = {};
+    #fileUploader   = null;
     #xhrUpload      = null;
     #upload_id      = null;
 
-    constructor(dropzonePreview, startFileUpload, previewFactory)
+    constructor(dropzonePreview, previewFactory)
     {
         this.dropzonePreview = dropzonePreview;
         this.previewFactory  = previewFactory;
-        this.startFileUpload = startFileUpload;
-        this.startFileUpload.disabled = true;
     }
 
     getFileList()
@@ -41,14 +39,9 @@ export class FilePreviews
         return this.fileList;
     }
 
-    enableActions()
+    setFileUploader(fileUploader)
     {
-        this.startFileUpload.disabled = false;
-    }
-
-    disableActions()
-    {
-        this.startFileUpload.disabled = true;
+        this.#fileUploader = fileUploader;
     }
 
     setUploadHandler(xhr, id)
@@ -71,7 +64,7 @@ export class FilePreviews
                 this.fileList[id] = file;
                 const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
                 this.dropzonePreview.appendChild(previewContainer);
-                this.enableActions();
+                this.#fileUploader.enableUploadButton();
             }
             catch (error)
             {
@@ -116,9 +109,8 @@ export class FilePreviews
         delete this.fileList[id];
         document.querySelector(`[data-preview-id="${id}"]`).remove();
 
-
         if (Object.keys(this.fileList).length === 0)
-            this.disableActions();
+            this.#fileUploader.disableUploadButton();
 
     }
 }

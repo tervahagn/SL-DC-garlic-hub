@@ -61,10 +61,9 @@ export class ContextMenuMedia
                     return null;
                 });
 
-                let result_obj = JSON.parse(result);
-                if (!result_obj || !result_obj.success)
+                if (!result || !result.success)
                 {
-                    console.error('Error:', result_obj?.error_message || 'Unknown error');
+                    console.error('Error:', result?.error_message || 'Unknown error');
                     return;
                 }
 
@@ -93,10 +92,9 @@ export class ContextMenuMedia
                     return null;
                 });
 
-                let result_obj = JSON.parse(result);
-                if (!result_obj || !result_obj.success)
+                if (!result || !result.success)
                 {
-                    console.error('Error:', result_obj?.error_message || 'Unknown error');
+                    console.error('Error:', result?.error_message || 'Unknown error');
                     return;
                 }
 
