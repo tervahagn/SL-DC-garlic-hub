@@ -21,6 +21,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\Config\Config;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -82,9 +83,28 @@ class ShowController
 				]
 			]
 		];
+		/** @var Config $config */
+		$config = $request->getAttribute('config');
+
+		if ($config->getEdition() === Config::PLATFORM_EDITION_ENTERPRISE)
+		{
+			$data['this_layout']['this_layout'] = ['folder_dialog_visibility' =>
+				['LANG_FOLDER_VISIBILITY' => $translator->translate('visibility', 'main'),
+					'visibility_options' => [
+						$translator->translate('visibility_global', 'main'),
+						$translator->translate('visibility_company', 'main'),
+						$translator->translate('visibility_user', 'main'),
+					]
+				]
+			];
+
+		}
+
 		$response->getBody()->write(serialize($data));
 
 		return $response->withHeader('Content-Type', 'text/html');
 	}
+
+
 
 }

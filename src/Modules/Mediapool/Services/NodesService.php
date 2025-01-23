@@ -147,9 +147,7 @@ class NodesService
 			'folder' => true,
 			'key' => $node['node_id'],
 			'lazy' => ($node['children'] > 0),
-			'create_sub' => $rights['create'],
-			'edit_node' => $rights['edit'],
-			'delete_node' => $rights['delete'],
+			'rights' => $rights,
 			'UID' => $node['UID'],
 			'visibility' => $node['visibility']
 		);
@@ -194,7 +192,7 @@ class NodesService
 	 * @throws Exception
 	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
-	public function editNode(int $id, string $name): int
+	public function editNode(int $id, string $name, ?int $visibility = null): int
 	{
 		$node = $this->nodesRepository->getNode($id);
 		if ((empty($node)))
@@ -204,7 +202,11 @@ class NodesService
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);
 
-		return $this->nodesRepository->update($id, ['name' => $name]);
+		$data = ['name' => $name];
+		if ($this->aclValidator->isModuleAdmin($this->UID) && !is_null($visibility))
+			$data['visibility'] = $visibility;
+
+		return $this->nodesRepository->update($id, $data);
 	}
 
 	/**
@@ -230,6 +232,6 @@ class NodesService
 				$edit   = true;
 			}
 		}
-		return ['create' => $rights['create'], 'edit' => $edit, 'delete' => $delete ];
+		return ['create' => $rights['create'], 'edit' => $edit, 'delete' => $delete, 'share' => $rights['share']];
 	}
 }

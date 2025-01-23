@@ -22,10 +22,12 @@
 namespace App\Modules\Mediapool\Controller;
 
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\NodesService;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -122,21 +124,31 @@ class NodesController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
+		$visibility = null;
+		if (array_key_exists('visibility', $bodyParams))
+		{
+			$visibility = $bodyParams['visibility'];
+		}
+
 		try
 		{
 			$this->nodesService->setUID($this->UID);
-			$count = $this->nodesService->editNode($bodyParams['node_id'], $bodyParams['name']);
+			$count = $this->nodesService->editNode($bodyParams['node_id'], $bodyParams['name'], $visibility);
 			if ($count === 0)
 				throw new ModuleException('mediapool', 'Edit node failed');
 
 			$response->getBody()->write(json_encode([
-				'success' => true,
-				'data' => ['id' => $bodyParams['node_id'], 'new_name' => $bodyParams['name']]
+					'success' => true,
+					'data' => [
+						'id' => $bodyParams['node_id'],
+						'new_name' => $bodyParams['name'],
+						'visibility' => $visibility
+					]
 				])
 			);
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
-		catch (FrameworkException | ModuleException $e)
+		catch (CoreException | PhpfastcacheSimpleCacheException | Exception | ModuleException $e)
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);

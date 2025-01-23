@@ -128,7 +128,8 @@ export class DirectoryView
 
             // check rights
             const currentTreeNode = this.setActiveNodeFromEventTarget(event.target);
-            if (!currentTreeNode.data.create_sub  && !currentTreeNode.data.edit_node  && !currentTreeNode.data.delete_node)
+            const rights = currentTreeNode.data.rights;
+            if (!rights.create  && !rights.edit  && !rights.delete)
                 return;
 
             const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
@@ -137,19 +138,19 @@ export class DirectoryView
             contextMenu.show(event);
 
             const editNodeElement = document.getElementById("edit_node");
-            if (currentTreeNode.data.edit_node)
+            if (rights.edit)
                 contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
             else
                 editNodeElement.remove();
 
             const addNodeElement = document.getElementById("add_node");
-            if (currentTreeNode.data.create_sub)
+            if (rights.create)
                 contextMenu.addAddEvent(addNodeElement, currentTreeNode, lang);
             else
                 addNodeElement.remove();
 
             const removeNodeElement = document.getElementById("remove_node");
-            if (currentTreeNode.data.create_sub)
+            if (rights.delete)
                 contextMenu.addRemoveEvent(removeNodeElement, currentTreeNode);
             else
                 removeNodeElement.remove();
@@ -170,7 +171,24 @@ export class DirectoryView
         this.#activeNode.update();
     }
 
-    getActiveTitle()
+    setActiveNodeVisibility(visibility)
+    {
+        if (this.#activeNode === null)
+            throw new Error("No active node");
+
+        this.#activeNode.data.visibility = visibility;
+        this.#activeNode.update();
+    }
+
+    getActiveVisibility()
+    {
+        if (this.#activeNode === null)
+            return "";
+
+        return this.#activeNode.title;
+    }
+
+    getActiveNodeTitle()
     {
         if (this.#activeNode === null)
             return "";
@@ -184,6 +202,23 @@ export class DirectoryView
             return 0;
 
         return this.#activeNode.key;
+    }
+
+    getActiveNodeRights()
+    {
+        if (this.#activeNode === null)
+            return 0;
+
+        return this.#activeNode.data.rights;
+    }
+
+
+    getActiveNodeVisibility()
+    {
+        if (this.#activeNode === null)
+            return 0;
+
+        return this.#activeNode.data.visibility;
     }
 
     setActiveNodeFromEventTarget(event_target)

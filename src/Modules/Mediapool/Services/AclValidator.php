@@ -20,18 +20,18 @@ class AclValidator extends AbstractAclValidator
 		if (!array_key_exists('UID', $directory))
 			throw new ModuleException($this->moduleName, 'Missing UID in media directory data struct.');
 
-		$permissions = ['create' => false, 'read' => false, 'edit' => false];
+		$permissions = ['create' => false, 'read' => false, 'edit' => false, 'share' => ''];
 
 		// Check for module admin or directory owner
 		if ($this->isModuleAdmin($UID) || $directory['UID'] == $UID)
-			return ['create' => true, 'read' => true, 'edit' => true];
+			return ['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'];
 
 		// Edge Edition will not move further as there is not subadmin
 		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $directory['company_id']))
-			$permissions = ['create' => true, 'read' => true, 'edit' => true];
+			$permissions = ['create' => true, 'read' => true, 'edit' => true, 'share' => 'company'];
 
 		if ($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $directory['node_id']))
-			$permissions = ['create' => true, 'read' => true, 'edit' => false];
+			$permissions = ['create' => true, 'read' => true, 'edit' => false, 'share' => ''];
 
 		if ($this->isViewer($UID) && $this->hasViewerAccessOnUnit($UID, $directory['node_id']))
 			$permissions['read'] = true;

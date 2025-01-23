@@ -51,7 +51,7 @@ export class TreeDialog
                 document.getElementById("folder_name").value = "";
                 break;
             case "edit_folder":
-                document.getElementById("folder_name").value = this.#directoryView.getActiveTitle();
+                document.getElementById("folder_name").value = this.#directoryView.getActiveNodeTitle();
                 break;
             default:
                 throw new Error("Unknown action for show");
@@ -123,18 +123,42 @@ export class TreeDialog
         if (this.#directoryView.getActiveNodeId()  === 0 && this.#action !== "add_root_folder")
             throw new Error("no node selected");
 
-        switch (this.#action) {
+        const activeNodeRights = this.#directoryView.getActiveNodeRights();
+        if (!activeNodeRights.create  && !activeNodeRights.edit  && !activeNodeRights.delete)
+            throw new Error('There are no rights for this node.');
+
+        let sendData = {};
+        switch (this.#action)
+         {
             case "add_root_folder":
-                return {"node_id": 0, "name": document.getElementById("folder_name").value};
+                if (!activeNodeRights.create)
+                    throw new Error('Missing create right for this node.');
+
+                sendData = {"node_id": 0, "name": document.getElementById("folder_name").value};
+                break;
             case "add_sub_folder":
-                return {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
+                if (!activeNodeRights.create)
+                    throw new Error('Missing create right for this node.');
+
+                sendData = {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
+                break;
             case "edit_folder":
-                return {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
+                if (!activeNodeRights.edit)
+                    throw new Error('Missing edit right for this node.');
+
+                sendData = {"node_id": this.#directoryView.getActiveNodeId(), "name": document.getElementById("folder_name").value};
+                break;
             case "delete_folder":
-                return {"node_id": this.#directoryView.getActiveNodeId() };
+                if (!activeNodeRights.delete)
+                    throw new Error('Missing delete right for this node.');
+
+                sendData = {"node_id": this.#directoryView.getActiveNodeId() };
+                break;
             default:
                 throw new Error("Unknown action");
         }
+
+        return sendData;
     }
 
     #addCancelEvent()
