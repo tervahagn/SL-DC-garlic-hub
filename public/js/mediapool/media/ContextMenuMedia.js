@@ -39,10 +39,9 @@ export class ContextMenuMedia
         document.addEventListener('click', () => this.#menuElement.remove(), {once: true});
     }
 
-    addEditEvent(editMediaMenuElement, currentMedia, lang)
+    addEditEvent(editMediaMenuElement)
     {
         editMediaMenuElement.addEventListener("click", () => {
-     //       this.#mediaDialog.prepareShow("edit_media", lang);
             this.#mediaDialog.show();
         });
     }
@@ -67,7 +66,7 @@ export class ContextMenuMedia
                     return;
                 }
 
-                callback(result_obj.new_media);
+                callback(result.new_media);
 
             })();
         });
