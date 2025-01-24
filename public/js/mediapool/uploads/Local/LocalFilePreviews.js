@@ -17,21 +17,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { PreviewFactory } from "./Preview/PreviewFactory.js";
-
-export class FilePreviews
+export class LocalFilePreviews
 {
-    dropzonePreview = null;
-    previewFactory  = new PreviewFactory();
+    #previewArea = null;
+    #previewFactory = null;
     fileList        = {};
     #fileUploader   = null;
     #xhrUpload      = null;
     #upload_id      = null;
 
-    constructor(dropzonePreview, previewFactory)
+    constructor(previewArea, previewFactory)
     {
-        this.dropzonePreview = dropzonePreview;
-        this.previewFactory  = previewFactory;
+        this.#previewArea     = previewArea;
+        this.#previewFactory  = previewFactory;
     }
 
     getFileList()
@@ -55,7 +53,7 @@ export class FilePreviews
         Array.from(files).forEach(file => {
             try
             {
-                const previewHandler = this.previewFactory.create(file);
+                const previewHandler = this.#previewFactory.create(file);
                 const metadata       = previewHandler.extractMetadata(file);
                 const previewElement = previewHandler.createPreview();
                 previewElement.className = "previewElement";
@@ -63,7 +61,7 @@ export class FilePreviews
                 const id = crypto.randomUUID();
                 this.fileList[id] = file;
                 const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
-                this.dropzonePreview.appendChild(previewContainer);
+                this.#previewArea.appendChild(previewContainer);
                 this.#fileUploader.enableUploadButton();
             }
             catch (error)

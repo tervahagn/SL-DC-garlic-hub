@@ -23,7 +23,7 @@ export class AudioPreview extends AbstractPreview
 {
     createPreview()
     {
-        const audio = document.createElement("audio");
+        const audio = this.createPreviewElement();
         const reader = new FileReader();
         reader.onload = (e) => {
             audio.src = e.target.result;
@@ -31,5 +31,10 @@ export class AudioPreview extends AbstractPreview
         };
         reader.readAsDataURL(this.getFile());
         return audio;
+    }
+
+    createPreviewElement()
+    {
+        return document.createElement("audio");
     }
 }

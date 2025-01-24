@@ -25,7 +25,7 @@ export class PdfPreview extends AbstractPreview
 {
     createPreview()
     {
-        const canvas = document.createElement("canvas");
+        const canvas = this.createPreviewElement();
         const context = canvas.getContext("2d");
 
         const reader = new FileReader();
@@ -49,5 +49,10 @@ export class PdfPreview extends AbstractPreview
 
         reader.readAsArrayBuffer(this.getFile());
         return canvas;
+    }
+
+    createPreviewElement()
+    {
+        return document.createElement("canvas");
     }
 }

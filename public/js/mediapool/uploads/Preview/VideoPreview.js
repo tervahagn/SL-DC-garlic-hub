@@ -21,10 +21,9 @@ import { AbstractPreview } from "./AbstractPreview.js";
 
 export class VideoPreview extends AbstractPreview
 {
-
     createPreview()
     {
-        const video = document.createElement("video");
+        const video = this.createPreviewElement();
         const reader = new FileReader();
         reader.onload = (e) => {
             video.src = e.target.result;
@@ -33,5 +32,10 @@ export class VideoPreview extends AbstractPreview
         reader.readAsDataURL(this.getFile());
 
         return video;
+    }
+
+    createPreviewElement()
+    {
+        return document.createElement("video");
     }
 }

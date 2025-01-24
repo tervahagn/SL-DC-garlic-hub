@@ -25,15 +25,20 @@ export class ImagePreview extends AbstractPreview
 
     createPreview()
     {
-        if (!this.#allowedFormats.includes(this.getFile().type))
-            throw new Error(`\nUnsupported file format: ${this.getFile().type}`);
-
-        const img = document.createElement("img");
+        const img = this.createPreviewElement();
         const reader = new FileReader();
         reader.onload = (e) => {
             img.src = e.target.result;
         };
         reader.readAsDataURL(this.getFile());
         return img;
+    }
+
+    createPreviewElement()
+    {
+        if (!this.#allowedFormats.includes(this.getFile().type))
+            throw new Error(`\nUnsupported file format: ${this.getFile().type}`);
+
+        return document.createElement("img");
     }
 }

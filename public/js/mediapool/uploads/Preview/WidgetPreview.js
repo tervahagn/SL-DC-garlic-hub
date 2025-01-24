@@ -23,10 +23,8 @@ export class WidgetPreview extends AbstractPreview
 {
     createPreview()
     {
-        const img = document.createElement("img");
-        img.src = "./images/widget.png";
+        const img = this.createPreviewElement();
         this.processZip(img);
-
         return img;
     }
 
@@ -54,4 +52,11 @@ export class WidgetPreview extends AbstractPreview
         }
     }
 
+    createPreviewElement()
+    {
+        const img = document.createElement("img");
+        img.src = "./images/widget.png";
+
+        return img;
+    }
 }

@@ -3,8 +3,8 @@ import { DirectoryView } from "./treeview/DirectoryView.js";
 import { TreeDialog } from "./treeview/TreeDialog.js";
 
 import { UploaderDialog } from "./uploads/UploaderDialog.js";
-import { FilePreviews } from "./uploads/FilePreviews.js";
-import { DragDropManager } from "./uploads/DragDropManager.js";
+import { LocalFilePreviews } from "./uploads/Local/LocalFilePreviews.js";
+import { DragDropManager } from "./uploads/Local/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
 import { FetchClient } from "../core/FetchClient.js";
 import { MediaList } from "./media/MediaList.js";
@@ -13,7 +13,7 @@ import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
 
-import { FileUploader } from "./uploads/FileUploader.js";
+import { FileUploader } from "./uploads/Local/FileUploader.js";
 import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
 
 import { Webcam } from "./uploads/Webcam/Webcam.js";
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 	uploaderDialog.init(directoryView);
 
-    const filePreviews = new FilePreviews(
+    const filePreviews = new LocalFilePreviews(
         document.getElementById('dropzone-preview'),
         new PreviewFactory()
     )
