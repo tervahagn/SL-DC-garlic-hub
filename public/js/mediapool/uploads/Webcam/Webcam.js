@@ -26,31 +26,20 @@ SOFTWARE.
 export class Webcam
 {
     #webcamElement = null;
-    #facingMode = "user";
     #webcamList = [];
     #streamList = [];
     #selectedDeviceId = '';
+    #selectedDevice = null;
     #webcamSettings = null;
 
-    constructor(webcamElement, facingMode = 'user')
+    constructor(webcamElement)
     {
         this.#webcamElement = webcamElement;
         this.#webcamElement.width = this.#webcamElement.width || 640;
         this.#webcamElement.height = this.#webcamElement.height || 360;
-        this.#facingMode = facingMode;
         this.#webcamList = [];
         this.#streamList = [];
         this.#selectedDeviceId = '';
-    }
-
-    get facingMode()
-    {
-        return this.#facingMode;
-    }
-
-    set facingMode(value)
-    {
-        this.#facingMode = value;
     }
 
     get webcamList()
@@ -68,133 +57,69 @@ export class Webcam
         return this.#selectedDeviceId;
     }
 
-    /* Get all video input devices info */
-    getVideoInputs(mediaDevices)
-    {
-        this.#webcamList = [];
-        mediaDevices.forEach(mediaDevice => {
-            if (mediaDevice.kind === 'videoinput')
-            {
-                this.#webcamList.push(mediaDevice);
-            }
-        });
-        if(this.#webcamList.length === 1)
-        {
-            this.#facingMode = 'user';
-        }
-        return this.#webcamList;
-    }
-
     /* Get media constraints */
     getMediaConstraints()
     {
         let videoConstraints = {};
 
-        if (this.#selectedDeviceId === '')
-            videoConstraints.facingMode =  this.#facingMode;
-         else
-            videoConstraints.deviceId = { exact: this.#selectedDeviceId};
+        videoConstraints.deviceId = {exact: this.#selectedDeviceId};
+        videoConstraints.width    = {ideal: 3840};
+        videoConstraints.height   = {ideal: 2160};
 
-        videoConstraints.width  = {ideal: 3840};
-        videoConstraints.height = {ideal: 2160};
-
-        return {
-            video: videoConstraints,
-            audio: false
-        };
+        return {video: videoConstraints, audio: false};
     }
 
-    /* Select camera based on facingMode */
-    selectCamera()
+    selectCamera(deviceid)
     {
         for(let webcam of this.#webcamList)
         {
-            if(   (this.#facingMode ==='user' && webcam.label.toLowerCase().includes('front'))
-                ||  (this.#facingMode ==='environment' && webcam.label.toLowerCase().includes('back'))
-            )
+            if (deviceid === webcam.deviceId)
             {
                 this.#selectedDeviceId = webcam.deviceId;
-                break;
+                this.#selectedDevice   = webcam;
+                return;
             }
         }
     }
 
-    /* Change Facing mode and selected camera */
-    flip()
+    detectVideoDevices()
     {
-        this.#facingMode = (this.#facingMode === 'user')? 'environment': 'user';
-        this.#webcamElement.style.transform = "";
-        this.selectCamera();
-    }
+        return new Promise(async (resolve, reject) => {
+            try
+            {
+                await navigator.mediaDevices.getUserMedia({ video: true });
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                this.#webcamList = devices.filter(device => device.kind === 'videoinput');
+                if(this.#webcamList.length > 0)
+                    this.#selectedDeviceId = this.#webcamList[0].deviceId;
 
-    /*
-      1. Get permission from user
-      2. Get all video input devices info
-      3. Select camera based on facingMode
-      4. Start stream
-    */
-    async start(startStream = true) {
-        return new Promise((resolve, reject) => {
-            this.stop();
-            navigator.mediaDevices.getUserMedia(this.getMediaConstraints()) //get permisson from user
-                .then(stream => {
-                    const track = stream.getVideoTracks()[0];
-                    this.#webcamSettings = track.getSettings();
-                    track.stop;
-                    this.#streamList.push(stream);
-                    this.info() //get all video input devices info
-                        .then(webcams =>{
-                            this.selectCamera();   //select camera based on facingMode
-                            if(startStream){
-                                this.stream()
-                                    .then(facingMode =>{
-                                        resolve(this.#facingMode);
-                                    })
-                                    .catch(error => {
-                                        reject(error);
-                                    });
-                            }else{
-                                resolve(this.#selectedDeviceId);
-                            }
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
-                })
-                .catch(error => {
-                    reject(error);
-                });
+                resolve(this.#webcamList);
+            }
+            catch (err)
+            {
+                reject(err);
+            }
         });
     }
 
-    /* Get all video input devices info */
-    async info(){
-        return new Promise((resolve, reject) => {
-            navigator.mediaDevices.enumerateDevices()
-                .then(devices =>{
-                    this.getVideoInputs(devices);
-                    resolve(this.#webcamList);
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
-    }
 
     /* Start streaming webcam to video element */
-    async stream()
+    async start()
     {
         return new Promise((resolve, reject) => {
             navigator.mediaDevices.getUserMedia(this.getMediaConstraints())
                 .then(stream => {
+                    const track = stream.getVideoTracks()[0];
+                    this.#webcamSettings = track.getSettings();
+
                     this.#streamList.push(stream);
                     this.#webcamElement.srcObject = stream;
-                    if(this.#facingMode === 'user')
-                    {
+
+                    if(this.#selectedDevice.label.toLowerCase().includes('front'))
                         this.#webcamElement.style.transform = "scale(-1,1)";
-                    }
+
                     this.#webcamElement.play();
-                    resolve(this.#facingMode);
+                    resolve(this.#selectedDeviceId);
                 })
                 .catch(error => {
                     console.log(error);
@@ -203,7 +128,6 @@ export class Webcam
         });
     }
 
-    /* Stop streaming webcam */
     stop()
     {
         this.#streamList.forEach(stream => {
@@ -213,12 +137,12 @@ export class Webcam
         });
     }
 
-    snap(canvasElement)
+    shootPhoto(canvasElement)
     {
         canvasElement.height = this.#webcamSettings.height;
         canvasElement.width = this.#webcamSettings.width;
         let context = canvasElement.getContext('2d');
-        if(this.#facingMode === 'user')
+        if(this.#selectedDevice.label.toLowerCase().includes('front'))
         {
             context.translate(canvasElement.width, 0);
             context.scale(-1, 1);

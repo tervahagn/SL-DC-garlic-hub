@@ -83,15 +83,26 @@
 				<section class="tab-content" id="webcamTab">
 					<h3>Webcam</h3>
 					<p>Nehmen Sie ein Bild oder Video mit Ihrer Webcam auf:</p>
-					<video id="webcamVideo" autoplay playsinline></video>
+					<div class="wrapVideoElements">
+						<video id="webcamVideo" autoplay playsinline></video>
+						<div>
+							<label for="selectCamera"> Webcam auswählen<br>
+								<select id="selectCamera">
+									<option value="-">-</option>
+								</select>
+							</label>
+							<p>
+								<label for="toggleWebcam"><input id="toggleWebcam" type="checkbox" disabled>
+									Webcam aktivieren
+								</label>
+							</p>
+
+							<button id="capturePhoto" disabled>Photo aufnehmen</button> <button
+								id="recording" disabled>Start Videoaufnahme</button>
+						</div>
+					</div>
 
 					<div id="previewRecordsArea" class="preview-media"></div>
-					<label>
-						<input id="toggleWebcam" type="checkbox"> Webcam Aktivieren
-					</label>
-					<div>
-						<button id="capturePhoto">Photo aufnehmen</button> <button id="recording">Start Aufnahme</button>
-					</div>
 					<button id="startWebcamUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 

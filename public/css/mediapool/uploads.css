@@ -118,20 +118,30 @@
     }
     #progressBar {width: 0;padding:0.25em; background: #4caf50; height: 100%; text-align: center; color: white;}
 
+input:disabled, select:disabled, button:disabled
+{
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+label:has(input:disabled)
+{
+    cursor: not-allowed;
+    color: #bbb;
+}
+
+.wrapVideoElements
+{
+    display: flex;
+    gap:1em;
+
+}
+
 #webcamVideo
 {
     width: 300px;
     height: 300px;
     border: 1px solid #ccc;
     border-radius: var(--gh-border-radius);
-    margin: 0 auto;
-}
-#webcamCanvas
-{
-    width: 150px;
-    height:150px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    border-radius: var(--gh-border-radius);
-
 }

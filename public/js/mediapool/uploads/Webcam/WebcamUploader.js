@@ -10,6 +10,7 @@ export class WebcamUploader
     #uploaderDialog = null;
     #mediaRecorder = null;
     #recordedChunks = [];
+
     constructor(webcam, webcamPreviews, webcamElements, directoryView, uploaderDialog, fetchClient)
     {
         this.#webcam         = webcam;
@@ -18,9 +19,12 @@ export class WebcamUploader
         this.#directoryView  = directoryView;
         this.#uploaderDialog = uploaderDialog;
         this.#fetchClient    = fetchClient;
-        this.#webcamElements.getToggleWebcam().addEventListener("input", () => this.#toggleWebcam());
         this.#webcamElements.getCapturePhotoButton().addEventListener("click", () => this.#shootPhoto());
         this.#webcamElements.getStartRecordingButton().addEventListener("click", (event) => this.#toggleRecording(event));
+        this.#webcamElements.getSelectCamera().addEventListener("change", (event) => this.#selectWebcam(event));
+        this.#webcamElements.getToggleCamera().addEventListener("click", (event) => this.#toggleWebcam(event));
+
+        this.#selectCameras();
     }
 
     disableUploadButton()
@@ -33,12 +37,34 @@ export class WebcamUploader
         this.#webcamElements.getStartWebcamUpload().disabled = false;
     }
 
-    #toggleWebcam()
+    #selectWebcam(event)
     {
-       if(this.#webcamElements.getToggleWebcam().checked)
-           this.#webcam.start();
-       else
-          this.#webcam.stop();
+        const selectedValue = event.target.value;
+        this.#webcam.selectCamera(selectedValue);
+        if (selectedValue === "-")
+            this.#webcamElements.getToggleCamera().disabled = true;
+        else
+            this.#webcamElements.getToggleCamera().disabled = false;
+
+    }
+
+    #toggleWebcam(event)
+    {
+        if(event.target.checked)
+        {
+            this.#webcam.start();
+            this.#webcamElements.getSelectCamera().disabled = true;
+            this.#webcamElements.getCapturePhotoButton().disabled = false;
+            this.#webcamElements.getStartRecordingButton().disabled = false;
+
+        }
+        else
+        {
+            this.#webcam.stop();
+            this.#webcamElements.getSelectCamera().disabled = false;
+            this.#webcamElements.getCapturePhotoButton().disabled = true;
+            this.#webcamElements.getStartRecordingButton().disabled = true;
+        }
     }
 
     #toggleRecording(event)
@@ -87,12 +113,11 @@ export class WebcamUploader
 
     #shootPhoto()
     {
-        const dataURL = this.#webcam.snap(document.createElement("canvas"))
+        const dataURL = this.#webcam.shootPhoto(document.createElement("canvas"))
 
         const [header, base64] = dataURL.split(',');
         const mimeType = header.match(/:(.*?);/)[1]; // MIME-Typ extrahieren
 
-        // Base64 zu Binär dekodieren und Länge berechnen
         const binary = atob(base64);
         const array = new Uint8Array(binary.length);
         for (let i = 0; i < binary.length; i++)
@@ -110,6 +135,20 @@ export class WebcamUploader
     {
         const base64Data = base64String.split(',')[1]; // remove prefixes
         return Math.floor(base64Data.length * 3 / 4);
+    }
+
+    #selectCameras()
+    {
+        this.#webcam.detectVideoDevices().then(videoDevices =>
+        {
+            for(let webcam of videoDevices)
+            {
+                this.#webcamElements.addCameraToSelect(webcam.deviceId, webcam.label)
+            }
+        })
+        .catch(err => {console.error('Fehler:', err);});
+
+
     }
 
 }
