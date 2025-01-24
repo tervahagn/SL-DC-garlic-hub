@@ -4,22 +4,33 @@ export class WebcamUploader
     #maxRecordTime = 60;
     #webcam = null;
     #webcamElements = null;
+    #webcamPreviews = null;
     #directoryView = null;
     #fetchClient = null;
     #uploaderDialog = null;
     #mediaRecorder = null;
     #recordedChunks = [];
-    constructor(webcam, webcamElements, directoryView, uploaderDialog, fetchClient)
+    constructor(webcam, webcamPreviews, webcamElements, directoryView, uploaderDialog, fetchClient)
     {
         this.#webcam         = webcam;
+        this.#webcamPreviews = webcamPreviews;
         this.#webcamElements = webcamElements;
         this.#directoryView  = directoryView;
         this.#uploaderDialog = uploaderDialog;
         this.#fetchClient    = fetchClient;
         this.#webcamElements.getToggleWebcam().addEventListener("input", () => this.#toggleWebcam());
-        this.#webcamElements.getCapturePhotoButton().addEventListener("click", () => this.#shotPhoto());
+        this.#webcamElements.getCapturePhotoButton().addEventListener("click", () => this.#shootPhoto());
         this.#webcamElements.getStartRecordingButton().addEventListener("click", (event) => this.#toggleRecording(event));
+    }
 
+    disableUploadButton()
+    {
+        this.#webcamElements.getStartWebcamUpload().disabled = true;
+    }
+
+    enableUploadButton()
+    {
+        this.#webcamElements.getStartWebcamUpload().disabled = false;
     }
 
     #toggleWebcam()
@@ -78,11 +89,36 @@ export class WebcamUploader
 
     }
 
-    #shotPhoto()
+    #shootPhoto()
     {
-        const tempImg = document.createElement('img');
-        tempImg.className = "preview-video";
-        tempImg.src = this.#webcam.snap(document.createElement("canvas"));
-        this.#webcamElements.getPreviewRecordsArea().appendChild(tempImg);
+        const dataURL = this.#webcam.snap(document.createElement("canvas"))
+
+        const [header, base64] = dataURL.split(',');
+        const mimeType = header.match(/:(.*?);/)[1]; // MIME-Typ extrahieren
+
+        // Base64 zu Binär dekodieren und Länge berechnen
+        const binary = atob(base64);
+        const array = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++)
+        {
+            array[i] = binary.charCodeAt(i);
+        }
+
+        // Dateigröße berechnen (Base64-Overhead berücksichtigen)
+        const sizeInBytes = Math.floor((base64.length * 3) / 4 - (base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0));
+        console.log(`Dateigröße: ${sizeInBytes} Bytes (${(sizeInBytes / 1024).toFixed(2)} KB)`);
+
+        // File erstellen
+        const file = new File([array], "webcam_shoot.jpg", { type: mimeType });
+
+        this.#webcamPreviews.addFile(file);
     }
+
+
+    #estimateImageSize(base64String)
+    {
+        const base64Data = base64String.split(',')[1]; // remove prefixes
+        return Math.floor(base64Data.length * 3 / 4);
+    }
+
 }

@@ -208,6 +208,7 @@ export class Webcam
         }
         context.clearRect(0, 0, canvasElement.width, canvasElement.height);
         context.drawImage(this._webcamElement, 0, 0, canvasElement.width, canvasElement.height);
-        return canvasElement.toDataURL('image/png');
+
+        return canvasElement.toDataURL('image/jpeg', 0.8);
     }
 }

@@ -19,38 +19,47 @@
 
 export class DragDropManager
 {
-    dropzone    = null;
-    filePreview = null;
+    #dropzone    = null;
+    #filePreview = null;
+    #fileInput = null;
 
-    constructor(dropzone, filePreview)
+    constructor(dropzone, filePreview, fileInput)
     {
-        this.dropzone    = dropzone;
-        this.filePreview = filePreview;
+        this.#dropzone    = dropzone;
+        this.#filePreview = filePreview;
+        this.#fileInput   = fileInput;
     }
 
     init()
     {
-        this.dropzone.addEventListener('dragover', (e) => this.onDragOver(e));
-        this.dropzone.addEventListener('dragleave', () => this.onDragLeave());
-        this.dropzone.addEventListener('drop', (e) => this.onDrop(e));
+        this.#dropzone.addEventListener('dragover', (e) => this.onDragOver(e));
+        this.#dropzone.addEventListener('dragleave', () => this.onDragLeave());
+        this.#dropzone.addEventListener('drop', (e) => this.onDrop(e));
+        this.#dropzone.addEventListener('click', () => fileInput.click());
+        this.#fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+            this.#filePreview.handleFiles(files);
+        });
+
+
     }
 
     onDragOver(event)
     {
         event.preventDefault();
-        this.dropzone.style.borderColor = "#007bff";
+        this.#dropzone.style.borderColor = "#007bff";
     }
 
     onDragLeave()
     {
-        this.dropzone.style.borderColor = "#ccc";
+        this.#dropzone.style.borderColor = "#ccc";
     }
 
     onDrop(event)
     {
         event.preventDefault();
-        this.dropzone.style.borderColor = "#ccc";
+        this.#dropzone.style.borderColor = "#ccc";
         const files =  Array.from(event.dataTransfer.files);
-        this.filePreview.handleFiles(files);
+        this.#filePreview.handleFiles(files);
     }
 }

@@ -19,10 +19,11 @@ import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
 import { Webcam } from "./uploads/Webcam/Webcam.js";
 import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
 import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
+import { WebcamPreviews } from "./uploads/Webcam/WebcamPreviews.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
-	let nodesModel    = new NodesModel();
+	const nodesModel    = new NodesModel();
 	let fetchClient   = new FetchClient();
 	let mediaService  = new MediaService(fetchClient);
 	let mediaDialog   = new MediaDialog(
@@ -67,23 +68,17 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 	uploaderDialog.init(directoryView);
 
+    const previewFactory = new PreviewFactory();
     const filePreviews = new LocalFilePreviews(
         document.getElementById('dropzone-preview'),
-        new PreviewFactory()
+        previewFactory
     )
-	const dropzone = document.getElementById('dropzone');
 	const dragDropManager = new DragDropManager(
-		dropzone,
-		filePreviews
+        document.getElementById('dropzone'),
+		filePreviews,
+        document.getElementById('fileInput')
 	);
 	dragDropManager.init();
-
-	dropzone.addEventListener('click', () => fileInput.click());
-	const fileInput = document.getElementById('fileInput');
-	fileInput.addEventListener('change', (event) => {
-		const files = event.target.files;
-		filePreviews.handleFiles(files);
-	});
 
 	const fileUploader = new FileUploader(
 		directoryView,
@@ -103,13 +98,19 @@ document.addEventListener("DOMContentLoaded", function()
     );
 
     const webcamElements = new WebcamElements();
+    const webcamPreviews = new WebcamPreviews(
+        webcamElements.getPreviewRecordsArea(),
+        previewFactory
+    )
     const webcamUploader = new WebcamUploader(
         new Webcam(webcamElements.getWebcamVideo()),
+        webcamPreviews,
         webcamElements,
         directoryView,
         uploaderDialog,
         fetchClient
     );
+    webcamPreviews.setFileUploader(fileUploader);
 
 });
 
