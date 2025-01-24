@@ -66,17 +66,13 @@ export class WebcamUploader
             };
 
             this.#mediaRecorder.onstop = () => {
-                const blob = new Blob(this.#recordedChunks, { type: 'video/webm' });
+                const blob = new Blob(this.#recordedChunks, { type: "video/webm" });
                 // Use the Blob for further processing or display in the browser memory
                 console.log('Recorded video blob:', blob);
 
-                // Optional: Display the video in a temporary element (not saved)
-                const videoURL = URL.createObjectURL(blob);
-                const tempVideo = document.createElement('video');
-                tempVideo.className = "preview-video";
-                tempVideo.src = videoURL;
-                tempVideo.controls = true;
-                this.#webcamElements.getPreviewRecordsArea().appendChild(tempVideo);
+                const file = new File([blob], "recorded-video.webm", { type: blob.type });
+
+                this.#webcamPreviews.addFile(file);
 
             };
         }
@@ -104,11 +100,6 @@ export class WebcamUploader
             array[i] = binary.charCodeAt(i);
         }
 
-        // Dateigröße berechnen (Base64-Overhead berücksichtigen)
-        const sizeInBytes = Math.floor((base64.length * 3) / 4 - (base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0));
-        console.log(`Dateigröße: ${sizeInBytes} Bytes (${(sizeInBytes / 1024).toFixed(2)} KB)`);
-
-        // File erstellen
         const file = new File([array], "webcam_shoot.jpg", { type: mimeType });
 
         this.#webcamPreviews.addFile(file);
