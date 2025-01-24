@@ -6,7 +6,7 @@
 }
 @font-face
 {
-	font-family: OpenSans-Bold;
+	font-family: OpenSans-/Bold;
 	src: url("/fonts/OpenSans-Bold-webfont.woff2") format("woff2");
 	font-weight: 700;
 	font-style: normal;
@@ -69,7 +69,6 @@ form {margin: 0 auto;}
 	form label {display: flex; flex-direction:column; gap:0.25em;margin: 0 0 0.25rem 0;}
 	input:not([type='checkbox'], [type='radio']), textarea, select, button, a.button
 	{
-		display:block;
 		border-radius: var(--gh-border-radius);
 		border: 1px solid #aaa;
 		padding: 0.25rem 0.5rem;

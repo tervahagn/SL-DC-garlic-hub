@@ -37,7 +37,7 @@
     .dialog-footer button {padding: 5px 10px; font-size: 14px; cursor: pointer;}
 
     #dropzone{border: 2px dashed #ccc; padding: 1em; margin:1em 0 0 0; text-align: center;}
-    #dropzone-preview{display:flex; flex-wrap: wrap; gap:1rem;margin:1em 0;}
+    .preview-media{display:flex; flex-wrap: wrap; gap:1rem;margin:1em 0;}
 
     #externalLinkField{width:100%; margin: 1rem 0; padding:0.5rem 0.5rem;}
 
@@ -117,3 +117,21 @@
         opacity: 0.8;
     }
     #progressBar {width: 0;padding:0.25em; background: #4caf50; height: 100%; text-align: center; color: white;}
+
+#webcamVideo
+{
+    width: 300px;
+    height: 300px;
+    border: 1px solid #ccc;
+    border-radius: var(--gh-border-radius);
+    margin: 0 auto;
+}
+#webcamCanvas
+{
+    width: 150px;
+    height:150px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: var(--gh-border-radius);
+
+}

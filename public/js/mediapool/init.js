@@ -6,14 +6,19 @@ import { UploaderDialog } from "./uploads/UploaderDialog.js";
 import { FilePreviews } from "./uploads/FilePreviews.js";
 import { DragDropManager } from "./uploads/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
-import { FileUploader } from "./uploads/FileUploader.js";
-import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
 import { FetchClient } from "../core/FetchClient.js";
 import { MediaList } from "./media/MediaList.js";
 import { MediaService } from "./media/MediaService.js";
 import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
+
+import { FileUploader } from "./uploads/FileUploader.js";
+import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
+
+import { Webcam } from "./uploads/Webcam/Webcam.js";
+import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
+import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -92,6 +97,15 @@ document.addEventListener("DOMContentLoaded", function()
     const externalFileUploader = new ExternalFileUploader(
         document.getElementById("externalLinkField"),
         document.getElementById("startExternalFileUpload"),
+        directoryView,
+        uploaderDialog,
+        fetchClient
+    );
+
+    const webcamElements = new WebcamElements();
+    const webcamUploader = new WebcamUploader(
+        new Webcam(webcamElements.getWebcamVideo()),
+        webcamElements,
         directoryView,
         uploaderDialog,
         fetchClient

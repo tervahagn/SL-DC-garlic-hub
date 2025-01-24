@@ -68,7 +68,7 @@
 						{{LANG_INSERT_FILES_HERE}}
 						<input type="file" id="fileInput" style="display: none;" multiple>
 					</p>
-					<div id="dropzone-preview"></div>
+					<div id="dropzone-preview" class="preview-media"></div>
 					<button id="startFilesUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
@@ -83,8 +83,16 @@
 				<section class="tab-content" id="webcamTab">
 					<h3>Webcam</h3>
 					<p>Nehmen Sie ein Bild oder Video mit Ihrer Webcam auf:</p>
-					<video id="webcamPreview" autoplay style="width: 100%; border: 1px solid #ccc;"></video>
-					<button id="capturePhoto">Capture Photo</button>
+					<video id="webcamVideo" autoplay playsinline width="640" height="480"></video>
+
+					<div id="previewRecordsArea" class="preview-media"></div>
+					<label>
+						<input id="toggleWebcam" type="checkbox"> Webcam Aktivieren
+					</label>
+					<div>
+						<button id="capturePhoto">Photo aufnehmen</button> <button id="recording">Start Aufnahme</button>
+					</div>
+					<button id="startWebcamUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<section class="tab-content" id="screencastTab">

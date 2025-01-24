@@ -23,7 +23,7 @@ export class DirectoryView
 {
     #tree               = null;
     #tree_element       = null;
-    static DEBUG_LEVEL  = 3;
+    static DEBUG_LEVEL  = 0;
     static SOURCE_URI   = '/async/mediapool/node/0';
     static LAZYLOAD_URI = '/async/mediapool/node/';
     #activeNode         = null;
