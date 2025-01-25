@@ -1,6 +1,7 @@
 # Coding Standards
 
-This document outlines the coding standards and best practices for gralic-hub. Following these conventions ensures that our code remains clean, consistent, and easy to read across the entire codebase.
+This document outlines the coding standards and best practices for garlic-hub. Following these conventions ensures 
+that our code remains clean, consistent, and easy to read across the entire codebase.
 
 ---
 
@@ -54,7 +55,7 @@ This document outlines the coding standards and best practices for gralic-hub. F
 
 ## 5. File Names
 
-#### For PHP-Files
+#### For PHP and JavaScript files
 
 - **Style**: `PascalCase`
 - **Convention**: File names should match class names exactly and use PascalCase.
@@ -110,6 +111,10 @@ public function processOrder(int $userId, array $orderDetails): string
     // continue with code here
     ```
   - Use braces for multi-line statements or to improve readability in complex conditions.
+  - JavaScript getter and setter can be written in one line if they are simple liners.
+    ```javascript
+    get someProperty() { return this.#someProperty; }
+    ```
 
 - **Line Length**: Limit lines to 80-120 characters where possible to enhance readability.
 - **Spacing**:
@@ -195,7 +200,7 @@ The following are the guidelines for writing templates:
 - normal variable names in upper case
 - blocks in lower case
 - use `{{#block_name}}` for opening a block and `{{/block_name}}` for closing a block
-### Ecammple
+### Example
 ```html
 {{#main_menu}}
     <li>
