@@ -1,7 +1,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -17,134 +17,74 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class AbstractUploader
+export class AbstractBaseUploader
 {
-    #directoryView  = null;
-    #filePreviews   = null;
-    #startFileUpload = null;
-    #fetchClient    = null;
-    #uploaderDialog = null;
+    #directoryView   = null;
+    #domElements     = null;
+    #fetchClient     = null;
+    #uploaderDialog  = null;
 
-    constructor(directoryView, startFileUpload, uploaderDialog, fetchClient)
+    constructor(domElements, directoryView, uploaderDialog, fetchClient)
     {
+		this.#domElements     = domElements;
         this.#directoryView   = directoryView;
-        this.#startFileUpload = startFileUpload;
         this.#uploaderDialog  = uploaderDialog;
         this.#fetchClient     = fetchClient;
 
-        this.#startFileUpload.disabled = true;
-        this.#startFileUpload.addEventListener('click', () => this.uploadFiles());
+		this.#domElements.startFileUpload.disabled = true;
+	}
 
-    }
+	/**
+	 * @type {DirectoryView}
+	 */
+	get directoryView()	{ return this.#directoryView; }
 
-    uploadFiles()
-    {
-        const fileList = this.#filePreviews.getFileList();
-        if (fileList.length === 0)
-        {
-            alert("No files selected for upload.");
-            return;
-        }
+	get domElements() {	return this.#domElements; }
 
-        if (this.#directoryView.getActiveNodeId() === 0)
-        {
-            alert("Choose a directory first.");
-            return;
-        }
+	/**
+	 * @type {UploaderDialog}
+	 */
+	get uploaderDialog() { return this.#uploaderDialog; }
 
-        (async () => {
-            for (const [id, file] of Object.entries(fileList))
-            {
-                // maybe some files in the queue where deleted.
-                let container = document.querySelector(`[data-preview-id="${id}"]`);
-                if (!container)
-                    continue;
-                try
-                {
+	/**
+	 * @type {FetchClient}
+	 */
+	get fetchClient() {	return this.#fetchClient;}
 
-                    this.#disableActions();
-                    const formData = new FormData();
-                    formData.append("files[]", file);
-                    formData.append("node_id", this.#directoryView.getActiveNodeId());
+	disableUploadButton()
+	{
+		this.#domElements.startFileUpload.disabled = true;
+	}
 
-                    const apiUrl   = '/async/mediapool/upload';
-                    const options  = {method: "POST", body: formData};
+	enableUploadButton()
+	{
+		this.#domElements.startFileUpload.disabled = false;
+	}
 
-                    const progressBar = this.#createProgressbar(container);
+	createProgressbar(container)
+	{
+		let progressContainer = document.createElement('div');
+		progressContainer.id = "progressContainer";
+		let progressBar = document.createElement('progress');
+		progressBar.id = "progressBar";
+		progressContainer.appendChild(progressBar);
+		container.appendChild(progressContainer);
 
-                    this.#fetchClient.initUploadWithProgress();
-                    let xhr = this.#fetchClient.getUploadProgressHandle();
-                    this.#filePreviews.setUploadHandler(xhr, id);
-                    const results = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
-                        progressBar.style.display = "block";
-                        progressBar.style.width = progress + "%";
-                        progressBar.textContent = Math.round(progress) + "%";
-                    });
+		return progressBar;
+	}
 
-                    for (const result of results)
-                    {
-                        if (!result || !result.success)
-                            console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
-                        else
-                            this.#filePreviews.removeFromPreview(id);
-                    }
+	#disableActions()
+	{
+		this.#uploaderDialog.disableActions();
+		this.enableUploadButton();
+		document.getElementById("linkTab").disabled = true;
+	}
 
-                }
-                catch(error)
-                {
-                    if (error.message === 'Upload aborted.')
-                        console.log('Upload aborted for file:', file.name);
-                    else
-                    {
-                        console.log('Upload failed for file:', file.name, '\n', error.message);
-                        container.className = "previewContainerError";
-                    }
-                    this.#enableActions()
-                }
-                finally
-                {
-                    this.#enableActions()
-                }
-
-            }
-        })();
-    }
-
-    disableUploadButton()
-    {
-        this.#startFileUpload.disabled = true;
-    }
-
-    enableUploadButton()
-    {
-        this.#startFileUpload.disabled = false;
-    }
-
-
-    #createProgressbar(container)
-    {
-        let progressContainer = document.createElement('div');
-        progressContainer.id = "progressContainer";
-        let progressBar = document.createElement('progress');
-        progressBar.id = "progressBar";
-        progressContainer.appendChild(progressBar);
-        container.appendChild(progressContainer);
-
-        return progressBar;
-    }
-
-    #disableActions()
-    {
-        this.#uploaderDialog.disableActions();
-        this.enableUploadButton();
-        document.getElementById("linkTab").disabled = true;
-    }
-
-    #enableActions()
-    {
-        this.#uploaderDialog.enableActions();
-        this.disableUploadButton();
-        document.getElementById("linkTab").disabled = false;
-    }
+	#enableActions()
+	{
+		this.#uploaderDialog.enableActions();
+		this.disableUploadButton();
+		document.getElementById("linkTab").disabled = false;
+	}
 
 }

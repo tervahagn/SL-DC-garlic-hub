@@ -196,7 +196,7 @@ export class DirectoryView
         return this.#activeNode.title;
     }
 
-    getActiveNodeId()
+	getActiveNodeId()
     {
         if (this.#activeNode === null)
             return 0;

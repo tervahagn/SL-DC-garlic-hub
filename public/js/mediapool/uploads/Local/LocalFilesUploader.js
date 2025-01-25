@@ -17,25 +17,31 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class LocalFilesUploader
+import { AbstractBaseUploader } from "../AbstractBaseUploader.js";
+
+export class LocalFilesUploader extends AbstractBaseUploader
 {
     #filePreviews   = null;
-    #domElements    = null;
-	#directoryView  = null;
-    #uploaderDialog = null;
-	#fetchClient    = null;
+	/**
+	 * @typedef {Object} LocalFilesElements
+	 * @property {HTMLElement} startFileUpload
+	 * @property {HTMLElement} cancelFileButton
+	 * @property {HTMLElement} fileListContainer
+	 */
 
-    constructor(filePreviews,  domElements, directoryView, uploaderDialog, fetchClient)
+	/**
+	 * @param {LocalFilesPreviews} filePreviews
+	 * @param {LocalFilesElements} domElements
+	 * @param {DirectoryView} directoryView
+	 * @param {UploaderDialog} uploaderDialog
+	 * @param {FetchClient} fetchClient
+	 */
+    constructor(filePreviews, domElements, directoryView, uploaderDialog, fetchClient)
     {
-        this.#filePreviews    = filePreviews;
-        this.#domElements     = domElements;
-		this.#directoryView   = directoryView;
-        this.#uploaderDialog  = uploaderDialog;
-        this.#fetchClient     = fetchClient;
+		super(domElements, directoryView, uploaderDialog, fetchClient);
 
-        this.#domElements.startFileUpload.disabled = true;
-        this.#domElements.startFileUpload.addEventListener('click', () => this.uploadFiles());
-
+		this.#filePreviews    = filePreviews;
+		this.domElements.startFileUpload.addEventListener('click', () => this.uploadFiles());
     }
 
     uploadFiles()
@@ -47,14 +53,14 @@ export class LocalFilesUploader
             return;
         }
 
-        if (this.#directoryView.getActiveNodeId() === 0)
+        if (this.directoryView.getActiveNodeId() === 0)
         {
             alert("Choose a directory first.");
             return;
         }
 
         (async () => {
-            for (const [id, file] of Object.entries(fileList))
+            for (const [id, file] of /** @type {Object.<string, File>} */ Object.entries(fileList))
             {
                 // maybe some files in the queue where deleted.
                 let container = document.querySelector(`[data-preview-id="${id}"]`);
@@ -63,20 +69,23 @@ export class LocalFilesUploader
                 try
                 {
 
-                    this.#disableActions();
+                    this.uploaderDialog.disableActions();
                     const formData = new FormData();
                     formData.append("files[]", file);
-                    formData.append("node_id", this.#directoryView.getActiveNodeId());
+                    formData.append("node_id", this.directoryView.getActiveNodeId());
 
                     const apiUrl   = '/async/mediapool/upload';
                     const options  = {method: "POST", body: formData};
 
-                    const progressBar = this.#createProgressbar(container);
+                    const progressBar = this.createProgressbar(container);
 
-                    this.#fetchClient.initUploadWithProgress();
-                    let xhr = this.#fetchClient.getUploadProgressHandle();
+                    this.fetchClient.initUploadWithProgress();
+                    let xhr = this.fetchClient.getUploadProgressHandle();
                     this.#filePreviews.setUploadHandler(xhr, id);
-                    const results = await this.#fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+					/**
+					 * @type {{ error_message?: string, success: boolean }}
+					 */
+                    const results = await this.fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
                         progressBar.style.display = "block";
                         progressBar.style.width = progress + "%";
                         progressBar.textContent = Math.round(progress) + "%";
@@ -84,7 +93,7 @@ export class LocalFilesUploader
 
                     for (const result of results)
                     {
-                        if (!result || !result.success)
+                        if (!result?.success)
                             console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
                         else
                             this.#filePreviews.removeFromPreview(id);
@@ -100,52 +109,14 @@ export class LocalFilesUploader
                         console.log('Upload failed for file:', file.name, '\n', error.message);
                         container.className = "previewContainerError";
                     }
-                    this.#enableActions()
+					this.uploaderDialog.enableActions()
                 }
                 finally
                 {
-                    this.#enableActions()
+					this.uploaderDialog.enableActions()
                 }
 
             }
         })();
     }
-
-    disableUploadButton()
-    {
-        this.#domElements.startFileUpload.disabled = true;
-    }
-
-    enableUploadButton()
-    {
-		this.#domElements.startFileUpload.disabled = false;
-    }
-
-
-    #createProgressbar(container)
-    {
-        let progressContainer = document.createElement('div');
-        progressContainer.id = "progressContainer";
-        let progressBar = document.createElement('progress');
-        progressBar.id = "progressBar";
-        progressContainer.appendChild(progressBar);
-        container.appendChild(progressContainer);
-
-        return progressBar;
-    }
-
-    #disableActions()
-    {
-        this.#uploaderDialog.disableActions();
-        this.enableUploadButton();
-        document.getElementById("linkTab").disabled = true;
-    }
-
-    #enableActions()
-    {
-        this.#uploaderDialog.enableActions();
-        this.disableUploadButton();
-        document.getElementById("linkTab").disabled = false;
-    }
-
 }

@@ -72,18 +72,12 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 	uploaderDialog.init(directoryView);
 
+	// Section for local file uploads
 	const localFilesElements = new LocalFilesElements();
-    const previewFactory = new PreviewFactory();
-    const filePreviews = new LocalFilesPreviews(
-        localFilesElements.dropzonePreview,
-        previewFactory
-    )
-	const dragDropManager = new DragDropManager(
-		localFilesElements,
-		filePreviews
-	);
+    const previewFactory     = new PreviewFactory();
+    const filePreviews       = new LocalFilesPreviews(localFilesElements.dropzonePreview, previewFactory);
+	const dragDropManager    = new DragDropManager(localFilesElements, filePreviews);
 	dragDropManager.init();
-
 	const localFilesUploader = new LocalFilesUploader(
 		filePreviews,
 		localFilesElements,
@@ -93,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function()
 	);
     filePreviews.setFileUploader(localFilesUploader);
 
+	// Section for external file uploads
     const externalFileUploader = new ExternalFileUploader(
         new ExternalFileElements(),
         directoryView,
@@ -100,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function()
         fetchClient
     );
 
-	// CameraSection
+	// Section for uploads from camera / webcam
     const webcamElements = new WebcamElements();
     const webcamPreviews = new WebcamPreviews(webcamElements.previewRecordsArea, previewFactory);
     const webcamUploader = new WebcamUploader(
