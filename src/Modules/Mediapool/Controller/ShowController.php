@@ -88,6 +88,7 @@ class ShowController
 					'LANG_CAPTURE_PHOTO' => $translator->translate('capture_photo', 'mediapool'),
 					'LANG_START_RECORD_VIDEO' => $translator->translate('start_record_video', 'mediapool'),
 					'LANG_STOP_RECORD_VIDEO' => $translator->translate('stop_record_video', 'mediapool'),
+					'LANG_ACTIVATE_SCREENCAST' => $translator->translate('activate_screencast', 'mediapool'),
 				]
 			]
 		];

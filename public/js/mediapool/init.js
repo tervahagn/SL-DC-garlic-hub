@@ -24,6 +24,11 @@ import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
 import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
 import { WebcamPreviews } from "./uploads/Webcam/WebcamPreviews.js";
 
+import { SpicyScreen } from "./uploads/Screencast/SpicyScreen.js";
+import { ScreencastElements } from "./uploads/Screencast/ScreencastElements.js";
+import { ScreencastUploader } from "./uploads/Screencast/ScreencastUploader.js";
+import { ScreencastPreviews } from "./uploads/Screencast/ScreencastPreviews.js";
+
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -105,6 +110,18 @@ document.addEventListener("DOMContentLoaded", function()
         uploaderDialog,
         fetchClient
     );
+
+	// Section for uploads from screencasts
+	const screencastElements = new ScreencastElements();
+	const screencastPreviews = new ScreencastPreviews(screencastElements.previewScreencastsArea, previewFactory);
+	screencastPreviews.fileUploader  = new ScreencastUploader(
+		new SpicyScreen(screencastElements.screencastVideo),
+		screencastPreviews,
+		screencastElements,
+		directoryView,
+		uploaderDialog,
+		fetchClient
+	);
 
 });
 

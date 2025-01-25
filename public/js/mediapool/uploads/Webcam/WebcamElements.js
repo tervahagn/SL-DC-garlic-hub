@@ -22,7 +22,7 @@ export class WebcamElements
 {
 	#detectCameras        = document.getElementById("detectCameras");
 	#capturePhotoButton   = document.getElementById("capturePhoto");
-	#startRecordingButton = document.getElementById("recording");
+	#startRecordingButton = document.getElementById("recordCamera");
 	#webcamVideo          = document.getElementById("webcamVideo");
 	#previewRecordsArea   = document.getElementById("previewRecordsArea");
 	#selectCamera         = document.getElementById("selectCamera");

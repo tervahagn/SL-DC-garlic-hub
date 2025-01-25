@@ -53,7 +53,7 @@ export class SpicyCam
         videoConstraints.width    = {ideal: 3840};
         videoConstraints.height   = {ideal: 2160};
 
-        return {video: videoConstraints, audio: false};
+        return {video: videoConstraints, audio: true};
     }
 
     selectCamera(deviceId)

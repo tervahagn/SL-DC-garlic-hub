@@ -136,10 +136,9 @@ label:has(input:disabled)
     display: flex;
     gap:1em;
     margin: 1rem 0;
-
 }
 
-#webcamVideo
+.live-preview-video
 {
     width: 280px;
     height: 240px;

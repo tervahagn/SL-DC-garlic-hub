@@ -83,7 +83,7 @@
 				<section class="tab-content" id="webcamTab">
 					<h3>{{LANG_RECORD_CAMERA}}</h3>
 					<div class="wrapVideoElements">
-						<video id="webcamVideo" autoplay playsinline></video>
+						<video id="webcamVideo" autoplay playsinline class="live-preview-video"></video>
 						<div>
 							<p>
 								<button id="detectCameras" type="button">{{LANG_DETECT_CAMERAS}}</button>
@@ -99,8 +99,8 @@
 								</label>
 							</p>
 
-							<button id="capturePhoto" disabled>{{LANG_CAPTURE_PHOTO}}</button> <button
-								id="recording" disabled>{{LANG_START_RECORD_VIDEO}}</button>
+							<button id="capturePhoto" disabled>{{LANG_CAPTURE_PHOTO}}</button>
+							<button	id="recordCamera" disabled>{{LANG_START_RECORD_VIDEO}}</button>
 						</div>
 					</div>
 
@@ -111,8 +111,22 @@
 				<section class="tab-content" id="screencastTab">
 					<h3>Screencast</h3>
 					<p>Zeichnen Sie Ihren Bildschirm auf:</p>
-					<button id="startScreencast">Start Screencast</button>
-				</section>
+					<div class="wrapVideoElements">
+						<video id="screencastVideo" autoplay playsinline class="live-preview-video"></video>
+						<div>
+							<p>
+								<label for="toggleScreencast"><input id="toggleScreencast" type="checkbox">
+									{{LANG_ACTIVATE_SCREENCAST}}
+								</label>
+							</p>
+							<button id="captureScreenshot" disabled>{{LANG_CAPTURE_PHOTO}}</button>
+							<button	id="recordingScreencast" disabled>{{LANG_START_RECORD_VIDEO}}</button>
+						</div>
+					</div>
+
+					<div id="previewScreencastsArea" class="preview-media"></div>
+					<button id="startScreencastsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
+			</section>
 
 				<section class="tab-content" id="unsplashTab">
 					<h3>Unsplash Integration</h3>
