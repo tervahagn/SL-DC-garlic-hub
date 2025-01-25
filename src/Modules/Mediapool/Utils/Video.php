@@ -126,106 +126,7 @@ class Video extends AbstractMediaHandler
 
 		$this->probeFile($this->getAbsolutePath($filePath));
 	}
-/*
-	public function saveAsTheora(string $destination): static
-	{
-		$this->options = $this->setVideoCodec('libtheora');
 
-		if ($this->mediaProperties['audio_codec'] != '')
-			$this->options .= ' -acodec libvorbis' . $this->audioQuality;
-
-		$this->destinationFile = $destination . '.ogg';
-		return $this;
-	}
-
-	public function saveAsWebM(string $destination): static
-	{
-		$this->options = $this->setVideoCodec('libvpx');
-
-		if ($this->mediaProperties['audio_codec'] != '')
-			$this->options .= ' -acodec libvorbis' . $this->audioQuality;
-
-		$this->destinationFile = $destination . '.webm';
-		return $this;
-	}
-
-	public function saveAsH264AVI(string $destination): static
-	{
-		$this->options     = $this->setVideoCodec('h264') . ' -r 25 -g 12 -keyint_min 2 -profile:v high -pix_fmt yuv420p';
-
-		if ($this->mediaProperties['audio_codec'] != '')
-			$this->options    .= ' -acodec ac3' . $this->audioQuality;
-
-		$this->destinationFile = $destination . '.avi';
-		return $this;
-	}
-
-	public function saveAsH264MP4(string $destination): static
-	{
-		$this->options     = $this->setVideoCodec('h264');//.' -r 25 -g 12 -keyint_min 2 -profile:v high -pix_fmt yuv420p';
-
-		// there is an error if with cannot be divide by 2
-		if ($this->mediaProperties['height']%2 != 0 || $this->mediaProperties['width']%2 != 0)
-		{
-			$width  = $this->mediaProperties['width'];
-			$height = $this->mediaProperties['height'];
-
-			if ($width %2 != 0 )
-				$width ++;
-
-			if ($height %2 != 0)
-				$height ++;
-
-			$this->scaleOptions = ' -vf "scale=' . $width . ':' . $height . '" ';
-		}
-
-		if ($this->mediaProperties['audio_codec'] != '')
-			$this->options   .= ' -acodec ac3' . $this->audioQuality;
-
-		$this->destinationFile = $destination . '.mp4';
-		return $this;
-	}
-
-	public function saveAsMP3(string $destination): static
-	{
-		$this->options       = ' -acodec libmp3lame' . $this->audioQuality;
-		$this->destinationFile     = $destination . '.mp3';
-		return $this;
-	}
-
-	public function saveAsOggVorbis(string $destination): static
-	{
-		$this->options       = ' -acodec libvorbis' . $this->audioQuality;
-		$this->destinationFile     = $destination . '.ogg';
-		return $this;
-	}
-*/
-	/**
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
-/*	public function convertVideo(): static
-	{
-		if ($this->mediaProperties['video_codec'] == '')
-		{
-			throw new FrameworkException('Can not convert ' . $this->mediaProperties['filename'] . '. File has no readable video stream');
-		}
-		return $this->prepareConvertingFile();
-	}
-*/
-	/**
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
-/*	public function convertAudio(): static
-	{
-		if ($this->mediaProperties['audio_codec'] == '')
-		{
-			throw new FrameworkException('Can not convert ' . $this->mediaProperties['filename'] . '. File has no readable audio stream');
-		}
-		return $this->prepareConvertingFile();
-	}
-*/
 	/**
 	 * @throws  FrameworkException
 	 * @throws  Exception|FilesystemException
@@ -249,32 +150,6 @@ class Video extends AbstractMediaHandler
 		return $vidcapPath;
 	}
 
-	/*
-	public function scaleHeight(int $height): static
-	{
-		$width       = round($this->mediaProperties['width'] / ($this->mediaProperties['height'] / $height));
-		if ($width%2 != 0)
-			$width++;
-
-		if ($height%2 != 0)
-			$height++;
-
-		$this->scaleOptions = ' -vf "scale='.$width.':'.$height.'" ';
-		return $this;
-	}
-
-	public function scaleWidth(int $width): static
-	{
-		$this->scaleOptions = ' -vf "scale='.$width.':-1" ';
-		return $this;
-	}
-
-	public function setAudioQuality(int $frequency, int $bitrate): static
-	{
-		$this->audioQuality = ' -ar ' . $frequency . ' -ab ' . $bitrate . 'k';
-		return $this;
-	}
-*/
 	/**
 	 * @throws CoreException
 	 */
@@ -350,26 +225,7 @@ class Video extends AbstractMediaHandler
 		$this->mediaProperties['container']  = (string) $meta_data->format->format_name;
 	}
 
-	/**
-	 * @throws FrameworkException
-	 * @throws CoreException
-	 */
-/*	protected function prepareConvertingFile(): static
-	{
-		$ffmpeg_thread_param = $this->config->getConfigValue('thread_usage_ffmpeg_param', 'video');
 
-		$command =
-			$this->executablePath . ' -i ' .
-			$this->mediaProperties['filename'] .
-			$this->options .
-			$this->scaleOptions .
-			$ffmpeg_thread_param .
-			' -y ' . $this->destinationFile .
-			' 2>&1';
-
-		return $this->callBinary($command);
-	}
-*/
 	/**
 	 * @throws  FrameworkException
 	 * @throws  Exception
@@ -385,10 +241,4 @@ class Video extends AbstractMediaHandler
 
 		return $this;
 	}
-/*
-	private function setVideoCodec(string $convert_codec): string
-	{
-		return ' -vcodec '.$convert_codec;
-	}
-*/
 }
