@@ -78,7 +78,6 @@ abstract class AbstractMediaHandler
 		return $this->duration;
 	}
 
-
 	public function getThumbExtension(): string
 	{
 		return $this->thumbExtension;

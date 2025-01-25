@@ -46,7 +46,7 @@ export class WebcamUploader extends AbstractBaseUploader
 
 	uploadFiles()
 	{
-		const fileList = this.#filePreviews.getFileList();
+		const fileList = this.#filePreviews.fileList;
 		if (fileList.length === 0)
 		{
 			alert("No files selected for upload.");
@@ -73,6 +73,11 @@ export class WebcamUploader extends AbstractBaseUploader
 					const formData = new FormData();
 					formData.append("files[]", file);
 					formData.append("node_id", this.directoryView.getActiveNodeId());
+					let metadata = {};
+					if (this.#filePreviews.metaDataList[id])
+					{
+						formData.append("metadata", this.#filePreviews.metaDataList[id]);
+					}
 
 					const apiUrl   = '/async/mediapool/upload';
 					const options  = {method: "POST", body: formData};
