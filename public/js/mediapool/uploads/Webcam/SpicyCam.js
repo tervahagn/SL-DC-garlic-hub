@@ -153,6 +153,8 @@ export class SpicyCam
                 track.stop();
             });
         });
+
+		this.#videoElement.srcObject = null; // reset video element
     }
 
     capturePhoto(canvasElement)
