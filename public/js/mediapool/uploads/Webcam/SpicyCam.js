@@ -73,8 +73,8 @@ export class SpicyCam
         return new Promise(async (resolve, reject) => {
             try
             {
-                await navigator.mediaDevices.getUserMedia({ video: true });
-                const devices = await navigator.mediaDevices.enumerateDevices();
+                await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const devices     = await navigator.mediaDevices.enumerateDevices();
                 this.#camerasList = devices.filter(device => device.kind === 'videoinput');
 
 				resolve(this.#camerasList);
