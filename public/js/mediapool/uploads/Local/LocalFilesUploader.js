@@ -72,7 +72,7 @@ export class LocalFilesUploader extends AbstractBaseUploader
                     this.uploaderDialog.disableActions();
                     const formData = new FormData();
                     formData.append("files[]", file);
-                    formData.append("node_id", this.directoryView.getActiveNodeId());
+                    formData.append("node_id", String(this.directoryView.getActiveNodeId()));
 
                     const apiUrl   = '/async/mediapool/upload';
                     const options  = {method: "POST", body: formData};
