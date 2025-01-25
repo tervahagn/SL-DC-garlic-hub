@@ -17,9 +17,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AbstractBaseUploader } from "../AbstractBaseUploader.js";
+import { BaseUploader } from "../BaseUploader.js";
 
-export class LocalFilesUploader extends AbstractBaseUploader
+export class LocalFilesUploader extends BaseUploader
 {
     #filePreviews   = null;
 

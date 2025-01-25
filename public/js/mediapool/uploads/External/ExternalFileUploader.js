@@ -17,9 +17,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AbstractBaseUploader } from "../AbstractBaseUploader.js";
+import { BaseUploader } from "../BaseUploader.js";
 
-export class ExternalFileUploader extends AbstractBaseUploader
+export class ExternalFileUploader extends BaseUploader
 {
 
 	constructor(domElements, directoryView, uploaderDialog, fetchClient)
