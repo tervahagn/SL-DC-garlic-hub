@@ -59,7 +59,7 @@ class IniConfigLoader implements ConfigLoaderInterface
 		if (!file_exists($fileName) || !is_readable($fileName))
 			throw new CoreException("Unable to access configuration file: $fileName");
 
-		$config = @parse_ini_file($fileName, true);
+		$config = @parse_ini_file($fileName, true, INI_SCANNER_RAW);
 		if ($config === false)
 			throw new CoreException("Error parsing configuration file: $fileName");
 

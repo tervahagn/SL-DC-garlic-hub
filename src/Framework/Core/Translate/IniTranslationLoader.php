@@ -48,7 +48,7 @@ class IniTranslationLoader implements TranslationLoaderInterface
 			}
 		}
 
-		$data = @parse_ini_file($filePath, true);
+		$data = @parse_ini_file($filePath, true, INI_SCANNER_RAW);
 
 		if (!is_array($data))
 			throw new CoreException("Invalid INI file format: $filePath");
