@@ -71,29 +71,26 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	 *
 	 * @throws Exception
 	 */
-	public function uploadMediaFiles(int $nodeId, int $UID, array $uploadedFiles): array
+	public function uploadMediaFiles(int $nodeId, int $UID, UploadedFile $uploadedFile, array $metadata): array
 	{
 		$ret = [];
-		/** @var $uploadedFile UploadedFile */
-		foreach ($uploadedFiles as $uploadedFile)
+		try
 		{
-			try
-			{
-				$preMimeType      = $uploadedFile->getClientMediaType();
-				if ($uploadedFile->getError() !== UPLOAD_ERR_OK)
-					throw new ModuleException('mediapool', $this->codeToMessage($uploadedFile->getError()));
+			$preMimeType      = $uploadedFile->getClientMediaType();
+			if ($uploadedFile->getError() !== UPLOAD_ERR_OK)
+				throw new ModuleException('mediapool', $this->codeToMessage($uploadedFile->getError()));
 
-				$mediaHandler = $this->mediaHandlerFactory->createHandler($preMimeType);
-				$mediaHandler->checkFileBeforeUpload($uploadedFile->getSize());
-				$uploadPath   = $mediaHandler->uploadFromLocal($uploadedFile);
+			$mediaHandler = $this->mediaHandlerFactory->createHandler($preMimeType);
+			$mediaHandler->setMetadata($metadata);
+			$mediaHandler->checkFileBeforeUpload($uploadedFile->getSize());
+			$uploadPath   = $mediaHandler->uploadFromLocal($uploadedFile);
 
-				$ret[] = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID);
-			}
-			catch(\Exception | FilesystemException $e)
-			{
-				$this->logger->error('UploadService Error: '.$e->getMessage());
-				$ret[] = ['success' => false, 'error_message' => $e->getMessage()];
-			}
+			$ret[] = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID);
+		}
+		catch(\Exception | FilesystemException $e)
+		{
+			$this->logger->error('UploadService Error: '.$e->getMessage());
+			$ret[] = ['success' => false, 'error_message' => $e->getMessage()];
 		}
 		return $ret;
 	}

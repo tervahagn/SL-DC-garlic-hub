@@ -47,35 +47,40 @@ class UploadController
 			$response->getBody()->write(json_encode([]));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
 		}
-		$uploadedFiles = $request->getUploadedFiles();
-		if (empty($uploadedFiles))
+		$uploadedFile = $request->getUploadedFiles();
+		if (empty($uploadedFile))
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'No files to upload.']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$bodyParams    = $request->getParsedBody();
+		$bodyParams = $request->getParsedBody();
 
 		if (!array_key_exists('node_id', $bodyParams))
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
-
 		$node_id = (int) $bodyParams['node_id'];
+
 		if ($node_id === 0)
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		if (empty($uploadedFiles['files']) || !is_array($uploadedFiles['files']))
+		if (empty($uploadedFile['file']))
 		{
 			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'no files']));
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$succeed = $this->uploadService->uploadMediaFiles($node_id, $this->UID, $uploadedFiles['files']);
+		$metadata = [];
+		if (array_key_exists('metadata', $bodyParams))
+		{
+			$metadata = json_decode($bodyParams['metadata'], true) ?? [];
+		}
+		$succeed = $this->uploadService->uploadMediaFiles($node_id, $this->UID, $uploadedFile['file'], $metadata);
 
 		$response->getBody()->write(json_encode($succeed));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);

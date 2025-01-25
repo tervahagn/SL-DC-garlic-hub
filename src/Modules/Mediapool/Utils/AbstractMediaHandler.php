@@ -45,8 +45,9 @@ abstract class AbstractMediaHandler
 	protected array $dimensions = [];
 	protected int $fileSize;
 	protected string $thumbExtension = 'jpg';
-	protected int $duration = 0;
+	protected float $duration = 0.0;
 
+	protected array $metadata = [];
 	/**
 	 * @param Config $config
 	 * @param Filesystem $filesystem
@@ -68,12 +69,17 @@ abstract class AbstractMediaHandler
 		$this->previewPath  = $this->config->getConfigValue('previews', 'mediapool', 'directories');
 	}
 
+	public function setMetadata(array $metadata): void
+	{
+		$this->metadata = $metadata;
+	}
+
 	public function getDimensions(): array
 	{
 		return $this->dimensions;
 	}
 
-	public function getDuration(): int
+	public function getDuration(): float
 	{
 		return $this->duration;
 	}

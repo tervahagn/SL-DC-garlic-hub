@@ -22,20 +22,7 @@ import { AbstractBaseUploader } from "../AbstractBaseUploader.js";
 export class LocalFilesUploader extends AbstractBaseUploader
 {
     #filePreviews   = null;
-	/**
-	 * @typedef {Object} LocalFilesElements
-	 * @property {HTMLElement} startFileUpload
-	 * @property {HTMLElement} cancelFileButton
-	 * @property {HTMLElement} fileListContainer
-	 */
 
-	/**
-	 * @param {LocalFilesPreviews} filePreviews
-	 * @param {LocalFilesElements} domElements
-	 * @param {DirectoryView} directoryView
-	 * @param {UploaderDialog} uploaderDialog
-	 * @param {FetchClient} fetchClient
-	 */
     constructor(filePreviews, domElements, directoryView, uploaderDialog, fetchClient)
     {
 		super(domElements, directoryView, uploaderDialog, fetchClient);
@@ -44,84 +31,85 @@ export class LocalFilesUploader extends AbstractBaseUploader
 		this.domElements.startFileUpload.addEventListener('click', () => this.uploadFiles());
     }
 
-    uploadFiles()
-    {
-        const fileList = this.#filePreviews.fileList;
-        if (fileList.length === 0)
-        {
-            alert("No files selected for upload.");
-            return;
-        }
+	get filePreviews() { return this.#filePreviews; }
 
-        if (this.directoryView.getActiveNodeId() === 0)
-        {
-            alert("Choose a directory first.");
-            return;
-        }
+	uploadFiles()
+	{
+		const fileList = this.#filePreviews.fileList;
+		if (fileList.length === 0)
+		{
+			alert("No files selected for upload.");
+			return;
+		}
 
-        (async () => {
-            for (const [id, file] of /** @type {Object.<string, File>} */ Object.entries(fileList))
-            {
-                // maybe some files in the queue where deleted.
-                let container = document.querySelector(`[data-preview-id="${id}"]`);
-                if (!container)
-                    continue;
-                try
-                {
+		if (this.directoryView.getActiveNodeId() === 0)
+		{
+			alert("Choose a directory first.");
+			return;
+		}
 
-                    this.uploaderDialog.disableActions();
-                    const formData = new FormData();
-                    formData.append("files[]", file);
-                    formData.append("node_id", String(this.directoryView.getActiveNodeId()));
+		(async () => {
+			for (const [id, file] of /** @type {Object.<string, File>} */ Object.entries(fileList))
+			{
+				// maybe some files in the queue where deleted.
+				let container = document.querySelector(`[data-preview-id="${id}"]`);
+				if (!container)
+					continue;
+				try
+				{
+
+					this.uploaderDialog.disableActions();
 					let metadata = {};
 					if (this.#filePreviews.metaDataList[id])
-					{
-						formData.append("metadata", this.#filePreviews.metaDataList[id]);
-					}
+						metadata = this.#filePreviews.metaDataList[id];
+					const formData = new FormData();
+					formData.append("file", file);
+					formData.append("node_id", this.directoryView.getActiveNodeId());
+					formData.append("metadata", JSON.stringify(this.#filePreviews.metaDataList[id]));
 
-                    const apiUrl   = '/async/mediapool/upload';
-                    const options  = {method: "POST", body: formData};
+					const apiUrl   = '/async/mediapool/upload';
+					const options  = {method: "POST", body: formData};
 
-                    const progressBar = this.createProgressbar(container);
+					const progressBar = this.createProgressbar(container);
 
-                    this.fetchClient.initUploadWithProgress();
-                    let xhr = this.fetchClient.getUploadProgressHandle();
-                    this.#filePreviews.setUploadHandler(xhr, id);
+					this.fetchClient.initUploadWithProgress();
+					let xhr = this.fetchClient.getUploadProgressHandle();
+					this.#filePreviews.setUploadHandler(xhr, id);
 					/**
 					 * @type {{ error_message?: string, success: boolean }}
 					 */
-                    const results = await this.fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
-                        progressBar.style.display = "block";
-                        progressBar.style.width = progress + "%";
-                        progressBar.textContent = Math.round(progress) + "%";
-                    });
+					const results = await this.fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+						progressBar.style.display = "block";
+						progressBar.style.width = progress + "%";
+						progressBar.textContent = Math.round(progress) + "%";
+					});
 
-                    for (const result of results)
-                    {
-                        if (!result?.success)
-                            console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
-                        else
-                            this.#filePreviews.removeFromPreview(id);
-                    }
+					for (const result of results)
+					{
+						if (!result?.success)
+							console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
+						else
+							this.#filePreviews.removeFromPreview(id);
+					}
 
-                }
-                catch(error)
-                {
-                    if (error.message === 'Upload aborted.')
-                        console.log('Upload aborted for file:', file.name);
-                    else
-                    {
-                        console.log('Upload failed for file:', file.name, '\n', error.message);
-                        container.className = "previewContainerError";
-                    }
+				}
+				catch(error)
+				{
+					if (error.message === 'Upload aborted.')
+						console.log('Upload aborted for file:', file.name);
+					else
+					{
+						console.log('Upload failed for file:', file.name, '\n', error.message);
+						container.className = "previewContainerError";
+					}
 					this.uploaderDialog.enableActions()
-                }
-                finally
-                {
+				}
+				finally
+				{
 					this.uploaderDialog.enableActions()
-                }
+				}
 
-            }
-        })();
-    }
+			}
+		})();
+	}
 }

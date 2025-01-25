@@ -17,112 +17,26 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AbstractBaseUploader } from "../AbstractBaseUploader.js";
+import { LocalFilesUploader } from "../Local/LocalFilesUploader.js";
 
-export class WebcamUploader extends AbstractBaseUploader
+export class WebcamUploader extends LocalFilesUploader
 {
     #maxRecordTime  = 300; // 5min
     #webcam         = null;
-    #filePreviews = null;
-	#durationList = [];
     #mediaRecorder  = null;
     #recordedChunks = [];
 
     constructor(webcam, filePreviews, domElements, directoryView, uploaderDialog, fetchClient)
     {
-		super(domElements, directoryView, uploaderDialog, fetchClient);
+		super(filePreviews, domElements, directoryView, uploaderDialog, fetchClient);
         this.#webcam       = webcam;
-        this.#filePreviews = filePreviews;
 
         this.domElements.capturePhotoButton.addEventListener("click", () => this.#capturePhoto());
         this.domElements.startRecordingButton.addEventListener("click", (event) => this.#toggleRecording(event));
         this.domElements.selectCamera.addEventListener("change", (event) => this.#selectWebcam(event));
         this.domElements.toggleCamera.addEventListener("click", (event) => this.#toggleWebcam(event));
-		this.domElements.startFileUpload.disabled = true;
-		this.domElements.startFileUpload.addEventListener('click', () => this.uploadFiles());
 
         this.#selectCameras();
-	}
-
-	uploadFiles()
-	{
-		const fileList = this.#filePreviews.fileList;
-		if (fileList.length === 0)
-		{
-			alert("No files selected for upload.");
-			return;
-		}
-
-		if (this.directoryView.getActiveNodeId() === 0)
-		{
-			alert("Choose a directory first.");
-			return;
-		}
-
-		(async () => {
-			for (const [id, file] of /** @type {Object.<string, File>} */ Object.entries(fileList))
-			{
-				// maybe some files in the queue where deleted.
-				let container = document.querySelector(`[data-preview-id="${id}"]`);
-				if (!container)
-					continue;
-				try
-				{
-
-					this.uploaderDialog.disableActions();
-					const formData = new FormData();
-					formData.append("files[]", file);
-					formData.append("node_id", this.directoryView.getActiveNodeId());
-					let metadata = {};
-					if (this.#filePreviews.metaDataList[id])
-					{
-						formData.append("metadata", this.#filePreviews.metaDataList[id]);
-					}
-
-					const apiUrl   = '/async/mediapool/upload';
-					const options  = {method: "POST", body: formData};
-
-					const progressBar = this.createProgressbar(container);
-
-					this.fetchClient.initUploadWithProgress();
-					let xhr = this.fetchClient.getUploadProgressHandle();
-					this.#filePreviews.setUploadHandler(xhr, id);
-					/**
-					 * @type {{ error_message?: string, success: boolean }}
-					 */
-					const results = await this.fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
-						progressBar.style.display = "block";
-						progressBar.style.width = progress + "%";
-						progressBar.textContent = Math.round(progress) + "%";
-					});
-
-					for (const result of results)
-					{
-						if (!result?.success)
-							console.error('Error for file:', file.name, result?.error_message || 'Unknown error');
-						else
-							this.#filePreviews.removeFromPreview(id);
-					}
-
-				}
-				catch(error)
-				{
-					if (error.message === 'Upload aborted.')
-						console.log('Upload aborted for file:', file.name);
-					else
-					{
-						console.log('Upload failed for file:', file.name, '\n', error.message);
-						container.className = "previewContainerError";
-					}
-					this.uploaderDialog.enableActions()
-				}
-				finally
-				{
-					this.uploaderDialog.enableActions()
-				}
-
-			}
-		})();
 	}
 
     #selectWebcam(event)
@@ -183,7 +97,7 @@ export class WebcamUploader extends AbstractBaseUploader
 
 				const file = new File([blob], "recorded-video.webm", { type: blob.type });
 				const metadata = {"duration":  durationInSeconds };
-				this.#filePreviews.addFile(file, metadata);
+				this.filePreviews.addFile(file, metadata);
 				this.#mediaRecorder = null;
 
             };
@@ -194,7 +108,6 @@ export class WebcamUploader extends AbstractBaseUploader
             event.target.textContent = "Start Aufnahme";
             this.#mediaRecorder = null;
         }
-
     }
 
     #capturePhoto()
@@ -213,7 +126,7 @@ export class WebcamUploader extends AbstractBaseUploader
 
         const file = new File([array], "webcam_shoot.jpg", { type: mimeType });
 
-        this.#filePreviews.addFile(file, null);
+        this.filePreviews.addFile(file, null);
     }
 
     #selectCameras()

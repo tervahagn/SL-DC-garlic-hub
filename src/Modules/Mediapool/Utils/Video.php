@@ -217,9 +217,19 @@ class Video extends AbstractMediaHandler
 			}
 		}
 
+		// Because WebApi MediaRecorder does not include duration in the created webm files
+		// we need to it from the WebUI metadata or set it to zero.
+		if (isset($meta_data->format) && isset($meta_data->format->duration))
+			$duration = $meta_data->format->duration;
+		else if (array_key_exists('duration', $this->metadata))
+			$duration = (float) $this->metadata['duration'];
+		else
+			$duration = 0;
+
+
 		$this->mediaProperties['start_time'] = (string) $meta_data->format->start_time;
-		$this->mediaProperties['duration']   = (string) $meta_data->format->duration;
-		$this->duration                      = (int) $meta_data->format->duration;
+		$this->mediaProperties['duration']   = (float) $duration;
+		$this->duration                      = (float) $duration;
 		$this->mediaProperties['filename']   = (string) $meta_data->format->filename;
 		$this->mediaProperties['filesize']   = (int) $meta_data->format->size;
 		$this->mediaProperties['container']  = (string) $meta_data->format->format_name;

@@ -49,21 +49,22 @@ export class BasePreviewHandler
         this.#upload_id = id;
     }
 
-    addFile(file, metadata)
+    addFile(file, metadataUI)
     {
         try
         {
-            const previewHandler = this.#previewFactory.create(file);
-            const metadata       = previewHandler.extractMetadata(file);
-            const previewElement = previewHandler.createPreview();
+            const previewHandler     = this.#previewFactory.create(file);
+            const previewElement     = previewHandler.createPreview();
             previewElement.className = "previewElement";
 
             const id = crypto.randomUUID();
             this.#fileList[id] = file;
-			if (metadata !== null)
-				this.#metaDataList[id] = metadata;
+			if (metadataUI !== null)
+				this.#metaDataList[id] = metadataUI;
 
-            const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
+            const previewContainer = this.createPreviewContainer(
+				previewHandler.extractMetadata(file), previewElement, id
+			);
             this.#previewArea.appendChild(previewContainer);
             this.#fileUploader.enableUploadButton();
         }
