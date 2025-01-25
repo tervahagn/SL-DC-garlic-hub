@@ -82,23 +82,23 @@
 
 				<section class="tab-content" id="webcamTab">
 					<h3>Webcam</h3>
-					<p>Nehmen Sie ein Bild oder Video mit Ihrer Webcam auf:</p>
+					<p>{{LANG_RECORD_WEBCAM}}</p>
 					<div class="wrapVideoElements">
 						<video id="webcamVideo" autoplay playsinline></video>
 						<div>
-							<label for="selectCamera"> Webcam auswählen<br>
+							<label for="selectCamera">{{LANG_SELECT_CAMERA}}<br>
 								<select id="selectCamera">
 									<option value="-">-</option>
 								</select>
 							</label>
 							<p>
 								<label for="toggleWebcam"><input id="toggleWebcam" type="checkbox" disabled>
-									Webcam aktivieren
+									{{LANG_ACTIVATE_CAMERA}}
 								</label>
 							</p>
 
-							<button id="capturePhoto" disabled>Photo aufnehmen</button> <button
-								id="recording" disabled>Start Videoaufnahme</button>
+							<button id="capturePhoto" disabled>{{LANG_CAPTURE_PHOTO}}</button> <button
+								id="recording" disabled>{{LANG_START_RECORD_VIDEO}}</button>
 						</div>
 					</div>
 
@@ -198,5 +198,7 @@
 			"add_sub_folder": "{{LANG_ADD_SUB_FOLDER}}",
 			"edit_folder": "{{LANG_EDIT_FOLDER}}",
 			"user_folder": "{{LANG_USER_FOLDER}}",
+			"start_record_video": "{{LANG_START_RECORD_VIDEO}}",
+			"stop_record_video": "{{LANG_STOP_RECORD_VIDEO}}",
         };
 </script>
