@@ -135,13 +135,14 @@ label:has(input:disabled)
 {
     display: flex;
     gap:1em;
+    margin: 1rem 0;
 
 }
 
 #webcamVideo
 {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 240px;
     border: 1px solid #ccc;
     border-radius: var(--gh-border-radius);
 }
