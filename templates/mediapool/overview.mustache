@@ -85,8 +85,11 @@
 					<div class="wrapVideoElements">
 						<video id="webcamVideo" autoplay playsinline></video>
 						<div>
+							<p>
+								<button id="detectCameras" type="button">{{LANG_DETECT_CAMERAS}}</button>
+							</p>
 							<label for="selectCamera">{{LANG_SELECT_CAMERA}}<br>
-								<select id="selectCamera">
+								<select id="selectCamera" disabled>
 									<option value="-">-</option>
 								</select>
 							</label>

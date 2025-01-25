@@ -81,6 +81,7 @@ class ShowController
 					'LANG_DIMENSIONS' => $translator->translate('dimensions', 'mediapool'),
 					'LANG_MEDIA_DURATION' => $translator->translate('media_duration', 'mediapool'),
 					'LANG_ENTER_FILE_URL' => $translator->translate('enter_file_url', 'mediapool'),
+					'LANG_DETECT_CAMERAS' => $translator->translate('detect_cameras', 'mediapool'),
 					'LANG_RECORD_CAMERA' => $translator->translate('record_camera', 'mediapool'),
 					'LANG_SELECT_CAMERA' => $translator->translate('select_camera', 'mediapool'),
 					'LANG_ACTIVATE_CAMERA' => $translator->translate('activate_camera', 'mediapool'),

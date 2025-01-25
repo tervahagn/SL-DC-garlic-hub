@@ -20,6 +20,7 @@
 
 export class WebcamElements
 {
+	#detectCameras        = document.getElementById("detectCameras");
 	#capturePhotoButton   = document.getElementById("capturePhoto");
 	#startRecordingButton = document.getElementById("recording");
 	#webcamVideo          = document.getElementById("webcamVideo");
@@ -28,40 +29,21 @@ export class WebcamElements
 	#toggleCamera         = document.getElementById("toggleWebcam");
 	#startFileUpload      = document.getElementById("startCameraUpload");
 
-	get capturePhotoButton()
-	{
-		return this.#capturePhotoButton;
-	}
+	get detectCameras() {return this.#detectCameras; }
 
-	get startRecordingButton()
-	{
-		return this.#startRecordingButton;
-	}
+	get capturePhotoButton() { return this.#capturePhotoButton;	}
 
-	get webcamVideo()
-	{
-		return this.#webcamVideo;
-	}
+	get startRecordingButton() { return this.#startRecordingButton; }
 
-	get previewRecordsArea()
-	{
-		return this.#previewRecordsArea;
-	}
+	get webcamVideo() { return this.#webcamVideo; }
 
-	get selectCamera()
-	{
-		return this.#selectCamera;
-	}
+	get previewRecordsArea() { return this.#previewRecordsArea; }
 
-	get toggleCamera()
-	{
-		return this.#toggleCamera;
-	}
+	get selectCamera() { return this.#selectCamera; }
 
-	get startFileUpload()
-	{
-		return this.#startFileUpload;
-	}
+	get toggleCamera() { return this.#toggleCamera; }
+
+	get startFileUpload() {	return this.#startFileUpload;}
 
 	addCameraToSelect(cameraId, cameraName)
 	{

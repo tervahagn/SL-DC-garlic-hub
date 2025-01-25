@@ -31,12 +31,12 @@ export class WebcamUploader extends LocalFilesUploader
 		super(filePreviews, domElements, directoryView, uploaderDialog, fetchClient);
         this.#webcam       = webcam;
 
+		this.domElements.detectCameras.addEventListener("click", () => this.#detectCameras());
         this.domElements.capturePhotoButton.addEventListener("click", () => this.#capturePhoto());
         this.domElements.startRecordingButton.addEventListener("click", (event) => this.#toggleRecording(event));
         this.domElements.selectCamera.addEventListener("change", (event) => this.#selectWebcam(event));
         this.domElements.toggleCamera.addEventListener("click", (event) => this.#toggleWebcam(event));
 
-        this.#selectCameras();
 	}
 
     #selectWebcam(event)
@@ -129,7 +129,7 @@ export class WebcamUploader extends LocalFilesUploader
         this.filePreviews.addFile(file, null);
     }
 
-    #selectCameras()
+    #detectCameras()
     {
         this.#webcam.detectVideoDevices().then(videoDevices =>
         {
@@ -137,6 +137,8 @@ export class WebcamUploader extends LocalFilesUploader
             {
                 this.domElements.addCameraToSelect(webcam.deviceId, webcam.label)
             }
+			if (videoDevices.length > 0)
+				this.domElements.selectCamera.disabled = false;
         })
         .catch(err => {console.error('Fehler:', err);});
     }
