@@ -19,29 +19,26 @@
 
 export class ExternalFileUploader
 {
-    #directoryView = null;
-    #externalLinkField = null;
-    #startFileUpload = null;
-    #fetchClient = null;
+	#domElements    = null
+    #directoryView  = null;
+    #fetchClient    = null;
     #uploaderDialog = null;
 
-    constructor(externalLinkField, startExternalFileUpload, directoryView, uploaderDialog, fetchClient)
+    constructor(domElements, directoryView, uploaderDialog, fetchClient)
     {
-        this.#externalLinkField = externalLinkField;
-        this.#startFileUpload  = startExternalFileUpload;
-        this.#directoryView     = directoryView;
-        this.#uploaderDialog    = uploaderDialog;
-        this.#fetchClient       = fetchClient;
+        this.#domElements    = domElements;
+        this.#directoryView  = directoryView;
+        this.#uploaderDialog = uploaderDialog;
+        this.#fetchClient    = fetchClient;
 
-        this.#startFileUpload.addEventListener("click", () => this.uploadFile());
-        this.#externalLinkField.addEventListener("input", () => this.#handleUploadButton());
+		this.#domElements.startFileUpload.addEventListener("click", () => this.uploadFile());
+		this.#domElements.externalLinkField.addEventListener("input", () => this.#handleUploadButton());
         this.disableUploadButton();
     }
 
 
     uploadFile()
     {
-
         if (this.#directoryView.getActiveNodeId() === 0)
         {
             alert("Choose a directory first.");
@@ -49,7 +46,7 @@ export class ExternalFileUploader
         }
 
         (async () => {
-                const filePath = this.#externalLinkField.value;
+                const filePath = this.#domElements.externalLinkField.value;
                 try
                 {
 
@@ -67,7 +64,7 @@ export class ExternalFileUploader
                         console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
                     else
                     {
-                        this.#externalLinkField.value = "";
+						this.#domElements.externalLinkField.value = "";
                         this.disableUploadButton();
                     }
 
@@ -94,7 +91,7 @@ export class ExternalFileUploader
 
     #handleUploadButton()
     {
-        if (this.#externalLinkField.validity.valid)
+        if (this.#domElements.externalLinkField.validity.valid)
             this.enableUploadButton();
         else
             this.disableUploadButton();
@@ -103,12 +100,12 @@ export class ExternalFileUploader
 
     disableUploadButton()
     {
-        this.#startFileUpload.disabled = true;
+		this.#domElements.startFileUpload.disabled = true;
     }
 
     enableUploadButton()
     {
-        this.#startFileUpload.disabled = false;
+		this.#domElements.startFileUpload.disabled = false;
     }
 
     #disableActions()

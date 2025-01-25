@@ -57,7 +57,7 @@
 				<nav class="tab-header">
 					<button class="tab-button active" data-tab="dragDropTab">Upload</button>
 					<button class="tab-button" data-tab="linkTab">Link</button>
-					<button class="tab-button" data-tab="webcamTab">Webcam</button>
+					<button class="tab-button" data-tab="webcamTab">SpicyCam</button>
 					<button class="tab-button" data-tab="screencastTab">Screencast</button>
 					<button class="tab-button" data-tab="unsplashTab">Unsplash</button>
 				</nav>
@@ -68,8 +68,8 @@
 						{{LANG_INSERT_FILES_HERE}}
 						<input type="file" id="fileInput" style="display: none;" multiple>
 					</p>
-					<div id="dropzone-preview" class="preview-media"></div>
-					<button id="startFilesUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
+					<div id="dropzonePreview" class="preview-media"></div>
+					<button id="startLocalFilesUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<section class="tab-content" id="linkTab">
@@ -81,8 +81,7 @@
 				</section>
 
 				<section class="tab-content" id="webcamTab">
-					<h3>Webcam</h3>
-					<p>{{LANG_RECORD_WEBCAM}}</p>
+					<h3>{{LANG_RECORD_WEBCAM}}</h3>
 					<div class="wrapVideoElements">
 						<video id="webcamVideo" autoplay playsinline></video>
 						<div>
@@ -103,7 +102,7 @@
 					</div>
 
 					<div id="previewRecordsArea" class="preview-media"></div>
-					<button id="startWebcamUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
+					<button id="startCameraUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<section class="tab-content" id="screencastTab">

@@ -3,7 +3,7 @@ import { DirectoryView } from "./treeview/DirectoryView.js";
 import { TreeDialog } from "./treeview/TreeDialog.js";
 
 import { UploaderDialog } from "./uploads/UploaderDialog.js";
-import { LocalFilePreviews } from "./uploads/Local/LocalFilePreviews.js";
+import { LocalFilesPreviews } from "./uploads/Local/LocalFilesPreviews.js";
 import { DragDropManager } from "./uploads/Local/DragDropManager.js";
 import { PreviewFactory } from "./uploads/Preview/PreviewFactory.js";
 import { FetchClient } from "../core/FetchClient.js";
@@ -13,13 +13,17 @@ import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
 
-import { FileUploader } from "./uploads/Local/FileUploader.js";
-import { ExternalFileUploader } from "./uploads/ExternalFileUploader.js";
+import { LocalFilesElements } from "./uploads/Local/LocalFilesElements.js";
+import { LocalFilesUploader } from "./uploads/Local/LocalFilesUploader.js";
 
-import { Webcam } from "./uploads/Webcam/Webcam.js";
+import { ExternalFileUploader } from "./uploads/External/ExternalFileUploader.js";
+import { ExternalFileElements } from "./uploads/External/ExternalFileElements.js";
+
+import { SpicyCam } from "./uploads/Webcam/SpicyCam.js";
 import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
 import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
 import { WebcamPreviews } from "./uploads/Webcam/WebcamPreviews.js";
+
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -68,49 +72,46 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 	uploaderDialog.init(directoryView);
 
+	const localFilesElements = new LocalFilesElements();
     const previewFactory = new PreviewFactory();
-    const filePreviews = new LocalFilePreviews(
-        document.getElementById('dropzone-preview'),
+    const filePreviews = new LocalFilesPreviews(
+        localFilesElements.dropzonePreview,
         previewFactory
     )
 	const dragDropManager = new DragDropManager(
-        document.getElementById('dropzone'),
-		filePreviews,
-        document.getElementById('fileInput')
+		localFilesElements,
+		filePreviews
 	);
 	dragDropManager.init();
 
-	const fileUploader = new FileUploader(
-		directoryView,
+	const localFilesUploader = new LocalFilesUploader(
 		filePreviews,
-        document.getElementById("startFilesUpload"),
+		localFilesElements,
+		directoryView,
 		uploaderDialog,
 		fetchClient
 	);
-    filePreviews.setFileUploader(fileUploader);
+    filePreviews.setFileUploader(localFilesUploader);
 
     const externalFileUploader = new ExternalFileUploader(
-        document.getElementById("externalLinkField"),
-        document.getElementById("startExternalFileUpload"),
+        new ExternalFileElements(),
         directoryView,
         uploaderDialog,
         fetchClient
     );
 
+	// CameraSection
     const webcamElements = new WebcamElements();
-    const webcamPreviews = new WebcamPreviews(
-        webcamElements.getPreviewRecordsArea(),
-        previewFactory
-    )
+    const webcamPreviews = new WebcamPreviews(webcamElements.previewRecordsArea, previewFactory);
     const webcamUploader = new WebcamUploader(
-        new Webcam(webcamElements.getWebcamVideo()),
+        new SpicyCam(webcamElements.webcamVideo),
         webcamPreviews,
         webcamElements,
         directoryView,
         uploaderDialog,
         fetchClient
     );
-    webcamPreviews.setFileUploader(fileUploader);
+    webcamPreviews.setFileUploader(webcamUploader);
 
 });
 

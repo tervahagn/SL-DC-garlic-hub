@@ -19,7 +19,7 @@
 
 import { BasePreviewHandler } from "../Preview/BasePreviewHandler.js";
 
-export class LocalFilePreviews extends BasePreviewHandler
+export class LocalFilesPreviews extends BasePreviewHandler
 {
     constructor(previewArea, previewFactory)
     {

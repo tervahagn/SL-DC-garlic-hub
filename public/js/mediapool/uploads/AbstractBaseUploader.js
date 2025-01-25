@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class FileUploader
+export class AbstractUploader
 {
     #directoryView  = null;
     #filePreviews   = null;
@@ -25,9 +25,8 @@ export class FileUploader
     #fetchClient    = null;
     #uploaderDialog = null;
 
-    constructor(directoryView, filePreviews, startFileUpload, uploaderDialog, fetchClient)
+    constructor(directoryView, startFileUpload, uploaderDialog, fetchClient)
     {
-        this.#filePreviews    = filePreviews;
         this.#directoryView   = directoryView;
         this.#startFileUpload = startFileUpload;
         this.#uploaderDialog  = uploaderDialog;

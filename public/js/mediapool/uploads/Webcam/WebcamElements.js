@@ -1,56 +1,56 @@
+
 export class WebcamElements
 {
-    #capturePhotoButton   = document.getElementById("capturePhoto");
-    #startRecordingButton = document.getElementById("recording");
-    #webcamVideo          = document.getElementById("webcamVideo");
-    #startWebcamUpload    = document.getElementById("startWebcamUpload");
-    #previewRecordsArea   = document.getElementById("previewRecordsArea");
-    #selectCamera         = document.getElementById("selectCamera");
-    #toggleCamera         = document.getElementById("toggleWebcam");
+	#capturePhotoButton   = document.getElementById("capturePhoto");
+	#startRecordingButton = document.getElementById("recording");
+	#webcamVideo          = document.getElementById("webcamVideo");
+	#previewRecordsArea   = document.getElementById("previewRecordsArea");
+	#selectCamera         = document.getElementById("selectCamera");
+	#toggleCamera         = document.getElementById("toggleWebcam");
+	#startFileUpload      = document.getElementById("startCameraUpload");
 
-    getCapturePhotoButton()
-    {
-        return this.#capturePhotoButton;
-    }
+	get capturePhotoButton()
+	{
+		return this.#capturePhotoButton;
+	}
 
-    getToggleCamera()
-    {
-        return this.#toggleCamera;
-    }
+	get startRecordingButton()
+	{
+		return this.#startRecordingButton;
+	}
 
+	get webcamVideo()
+	{
+		return this.#webcamVideo;
+	}
 
-    getStartRecordingButton()
-    {
-        return this.#startRecordingButton;
-    }
+	get previewRecordsArea()
+	{
+		return this.#previewRecordsArea;
+	}
 
-    getWebcamVideo()
-    {
-        return this.#webcamVideo;
-    }
+	get selectCamera()
+	{
+		return this.#selectCamera;
+	}
 
-    getStartWebcamUpload()
-    {
-        return this.#startWebcamUpload;
-    }
+	get toggleCamera()
+	{
+		return this.#toggleCamera;
+	}
 
-    getPreviewRecordsArea()
-    {
-       return this.#previewRecordsArea;
-    }
+	get startFileUpload()
+	{
+		return this.#startFileUpload;
+	}
 
-    getSelectCamera()
-    {
-        return this.#selectCamera;
-    }
+	addCameraToSelect(cameraId, cameraName)
+	{
+		const option = document.createElement('option');
+		option.value = cameraId;
+		option.textContent = cameraName;
 
-    addCameraToSelect(cameraId, cameraName)
-    {
-        const option       = document.createElement('option');
-        option.value       = cameraId;
-        option.textContent = cameraName;
-
-        this.#selectCamera.appendChild(option);
-    }
+		this.#selectCamera.appendChild(option);
+	}
 
 }
