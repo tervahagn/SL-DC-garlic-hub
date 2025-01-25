@@ -78,14 +78,13 @@ document.addEventListener("DOMContentLoaded", function()
     const filePreviews       = new LocalFilesPreviews(localFilesElements.dropzonePreview, previewFactory);
 	const dragDropManager    = new DragDropManager(localFilesElements, filePreviews);
 	dragDropManager.init();
-	const localFilesUploader = new LocalFilesUploader(
+	filePreviews.fileUploader = new LocalFilesUploader(
 		filePreviews,
 		localFilesElements,
 		directoryView,
 		uploaderDialog,
 		fetchClient
 	);
-    filePreviews.setFileUploader(localFilesUploader);
 
 	// Section for external file uploads
     const externalFileUploader = new ExternalFileUploader(
@@ -98,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function()
 	// Section for uploads from camera / webcam
     const webcamElements = new WebcamElements();
     const webcamPreviews = new WebcamPreviews(webcamElements.previewRecordsArea, previewFactory);
-    const webcamUploader = new WebcamUploader(
+	webcamPreviews.fileUploader  = new WebcamUploader(
         new SpicyCam(webcamElements.webcamVideo),
         webcamPreviews,
         webcamElements,
@@ -106,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function()
         uploaderDialog,
         fetchClient
     );
-    webcamPreviews.setFileUploader(webcamUploader);
 
 });
 

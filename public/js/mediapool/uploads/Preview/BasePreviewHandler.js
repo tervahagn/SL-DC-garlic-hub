@@ -22,7 +22,8 @@ export class BasePreviewHandler
 {
     #previewArea    = null;
     #previewFactory = null;
-    #fileList        = {};
+    #fileList       = {};
+	#metaDataList   = {}; // need metadata as mediarecorder do not include duration
     #fileUploader   = null;
     #xhrUpload      = null;
     #upload_id      = null;
@@ -33,12 +34,11 @@ export class BasePreviewHandler
         this.#previewFactory  = previewFactory;
     }
 
-    getFileList()
-    {
-        return this.#fileList;
-    }
+	get metaDataList() { return this.#metaDataList; }
 
-    setFileUploader(fileUploader)
+    get fileList() { return this.#fileList; }
+
+    set fileUploader(fileUploader)
     {
         this.#fileUploader = fileUploader;
     }
@@ -49,7 +49,7 @@ export class BasePreviewHandler
         this.#upload_id = id;
     }
 
-    addFile(file)
+    addFile(file, metadata)
     {
         try
         {
@@ -60,6 +60,9 @@ export class BasePreviewHandler
 
             const id = crypto.randomUUID();
             this.#fileList[id] = file;
+			if (metadata !== null)
+				this.#metaDataList[id] = metadata;
+
             const previewContainer = this.createPreviewContainer(metadata, previewElement, id);
             this.#previewArea.appendChild(previewContainer);
             this.#fileUploader.enableUploadButton();
