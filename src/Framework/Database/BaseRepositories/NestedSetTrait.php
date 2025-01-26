@@ -229,7 +229,7 @@ trait NestedSetTrait
 	 * @throws DatabaseException
 	 * @throws Exception
 	 */
-	protected function deleteSingleNode(array $node): void
+	public function deleteSingleNode(array $node): void
 	{
 		try
 		{
@@ -252,7 +252,7 @@ trait NestedSetTrait
 	 * @throws DatabaseException
 	 * @throws Exception
 	 */
-	protected function deleteTree(array $node): void
+	public function deleteTree(array $node): void
 	{
 		try
 		{
