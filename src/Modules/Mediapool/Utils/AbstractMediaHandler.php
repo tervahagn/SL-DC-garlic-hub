@@ -41,6 +41,7 @@ abstract class AbstractMediaHandler
 	protected string $thumbPath;
 	protected string $uploadPath;
 	protected string $originalPath;
+	protected string $iconsPath;
 	protected string $previewPath;
 	protected array $dimensions = [];
 	protected int $fileSize;
@@ -67,6 +68,7 @@ abstract class AbstractMediaHandler
 		$this->thumbPath    = $this->config->getConfigValue('thumbnails', 'mediapool', 'directories');
 		$this->originalPath = $this->config->getConfigValue('originals', 'mediapool', 'directories');
 		$this->previewPath  = $this->config->getConfigValue('previews', 'mediapool', 'directories');
+		$this->iconsPath    = $this->config->getConfigValue('icons', 'mediapool', 'directories');
 	}
 
 	public function setMetadata(array $metadata): void
