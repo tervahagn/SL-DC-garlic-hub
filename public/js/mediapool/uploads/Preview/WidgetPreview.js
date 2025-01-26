@@ -55,7 +55,7 @@ export class WidgetPreview extends AbstractPreview
     createPreviewElement()
     {
         const img = document.createElement("img");
-        img.src = "./images/widget.png";
+        img.src = "/images/icons/widget.svg";
 
         return img;
     }

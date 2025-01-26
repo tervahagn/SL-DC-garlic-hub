@@ -22,6 +22,7 @@ import { VideoPreview } from "./VideoPreview.js";
 import { AudioPreview } from "./AudioPreview.js";
 import { PdfPreview } from "./PdfPreview.js";
 import { WidgetPreview } from "./WidgetPreview.js";
+import {MiscellaneousPreview} from "./MiscellaneousPreview.js";
 
 export class PreviewFactory
 {
@@ -49,7 +50,7 @@ export class PreviewFactory
         }
         else
         {
-            throw new Error("Unsupported file type: " + file.type);
+            return new MiscellaneousPreview(file);
         }
     }
 }

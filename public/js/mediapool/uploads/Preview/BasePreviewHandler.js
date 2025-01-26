@@ -20,98 +20,98 @@
 
 export class BasePreviewHandler
 {
-    #previewArea    = null;
-    #previewFactory = null;
-    #fileList       = {};
+	#previewArea    = null;
+	#previewFactory = null;
+	#fileList       = {};
 	#metaDataList   = {}; // need metadata as mediarecorder do not include duration
-    #fileUploader   = null;
-    #xhrUpload      = null;
-    #upload_id      = null;
+	#fileUploader   = null;
+	#xhrUpload      = null;
+	#upload_id      = null;
 
-    constructor(previewArea, previewFactory)
-    {
-        this.#previewArea     = previewArea;
-        this.#previewFactory  = previewFactory;
-    }
+	constructor(previewArea, previewFactory)
+	{
+		this.#previewArea = previewArea;
+		this.#previewFactory = previewFactory;
+	}
 
 	get metaDataList() { return this.#metaDataList; }
 
-    get fileList() { return this.#fileList; }
+	get fileList() { return this.#fileList; }
 
-    set fileUploader(fileUploader)
-    {
-        this.#fileUploader = fileUploader;
-    }
+	set fileUploader(fileUploader)
+	{
+		this.#fileUploader = fileUploader;
+	}
 
-    setUploadHandler(xhr, id)
-    {
-        this.#xhrUpload = xhr;
-        this.#upload_id = id;
-    }
+	setUploadHandler(xhr, id)
+	{
+		this.#xhrUpload = xhr;
+		this.#upload_id = id;
+	}
 
-    addFile(file, metadataUI)
-    {
-        try
-        {
-            const previewHandler     = this.#previewFactory.create(file);
-            const previewElement     = previewHandler.createPreview();
-            previewElement.className = "previewElement";
+	addFile(file, metadataUI)
+	{
+		try
+		{
+			const previewHandler = this.#previewFactory.create(file);
+			const previewElement = previewHandler.createPreview();
+			previewElement.className = "previewElement";
 
-            const id = crypto.randomUUID();
-            this.#fileList[id] = file;
+			const id = crypto.randomUUID();
+			this.#fileList[id] = file;
 			if (metadataUI !== null)
 				this.#metaDataList[id] = metadataUI;
 
-            const previewContainer = this.createPreviewContainer(
+			const previewContainer = this.createPreviewContainer(
 				previewHandler.extractMetadata(file), previewElement, id
 			);
-            this.#previewArea.appendChild(previewContainer);
-            this.#fileUploader.enableUploadButton();
-        }
-        catch (error)
-        {
-            alert(`${file.name} not supported.` + error);
-        }
-    }
+			this.#previewArea.appendChild(previewContainer);
+			this.#fileUploader.enableUploadButton();
+		} catch (error)
+		{
+			alert(`${file.name} not supported.` + error);
+		}
+	}
 
-    createPreviewContainer(metadata, previewElement, id)
-    {
-        const container     = document.createElement("div");
-        container.className = "previewContainer";
+	createPreviewContainer(metadata, previewElement, id)
+	{
+		const container = document.createElement("div");
+		container.className = "previewContainer";
 
-        // Tooltip
-        const tooltip     = document.createElement("div");
-        tooltip.className = "tooltip";
-        tooltip.innerHTML = `${metadata.name}<br> ${metadata.size}<br /> ${metadata.type}`
-        container.appendChild(tooltip);
-        container.addEventListener("mouseenter", () => {tooltip.style.visibility = "visible";});
-        container.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
+		// Tooltip
+		const tooltip = document.createElement("div");
+		tooltip.className = "tooltip";
+		tooltip.innerHTML = `${metadata.name}<br> ${metadata.size}<br /> ${metadata.type}`
+		container.appendChild(tooltip);
+		container.addEventListener("mouseenter", () => {tooltip.style.visibility = "visible";});
+		container.addEventListener("mouseleave", () => {tooltip.style.visibility = "hidden";});
 
-        // Close button
-        const closeButton = document.createElement("button");
-        closeButton.className = "closeButton";
-        closeButton.textContent = "×";
+		// Close button
+		const closeButton = document.createElement("button");
+		closeButton.className = "closeButton";
+		closeButton.textContent = "×";
 
-        container.setAttribute('data-preview-id', id);
-        closeButton.addEventListener("click", () => {
-            this.removeFromPreview(id);
-        });
+		container.setAttribute('data-preview-id', id);
+		closeButton.addEventListener("click", () =>
+		{
+			this.removeFromPreview(id);
+		});
 
-        container.appendChild(closeButton);
-        container.appendChild(previewElement);
-        return container;
-    }
+		container.appendChild(closeButton);
+		container.appendChild(previewElement);
+		return container;
+	}
 
-    removeFromPreview(id)
-    {
-        if (this.#xhrUpload !== null && this.#upload_id === id)
-            this.#xhrUpload.abort();
+	removeFromPreview(id)
+	{
+		if (this.#xhrUpload !== null && this.#upload_id === id)
+			this.#xhrUpload.abort();
 
-        delete this.#fileList[id];
-        document.querySelector(`[data-preview-id="${id}"]`).remove();
+		delete this.#fileList[id];
+		document.querySelector(`[data-preview-id="${id}"]`).remove();
 
-        if (Object.keys(this.#fileList).length === 0)
-            this.#fileUploader.disableUploadButton();
+		if (Object.keys(this.#fileList).length === 0)
+			this.#fileUploader.disableUploadButton();
 
-    }
+	}
 }

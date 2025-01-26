@@ -1,0 +1,15 @@
+<svg width="361" height="361" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" version="1.1">
+    <g class="layer">
+        <title>Layer 1</title>
+        <g id="svg_1" transform="translate(0, 11) matrix(0.933359, 0, 0, 0.933359, 56.03, 3)">
+            <path d="m255.55,70.77l-23.24,260.36l-104.47,28.96l-104.18,-28.92l-23.21,-260.4l255.1,0l0,0z" fill="#E44D26" id="svg_2"/>
+            <path d="m128,337.95l84.42,-23.4l19.86,-222.49l-104.28,0l0,245.89l0,0z" fill="#F16529" id="svg_3"/>
+            <path d="m82.82,155.93l45.18,0l0,-31.94l-80.08,0l0.76,8.57l7.85,88.01l71.47,0l0,-31.93l-42.26,0l-2.92,-32.71l0,0z" fill="#EBEBEB" id="svg_4"/>
+            <path d="m90.02,236.54l-32.06,0l4.47,50.15l65.42,18.16l0.15,-0.04l0,-33.23l-0.14,0.04l-35.57,-9.61l-2.27,-25.47l0,0z" fill="#EBEBEB" id="svg_5"/>
+            <path d="m127.89,220.57l39.33,0l-3.71,41.42l-35.62,9.62l0,33.22l65.47,-18.14l0.48,-5.4l7.51,-84.08l0.78,-8.57l-74.24,0l0,31.93l0,0z" fill="#FFFFFF" id="svg_10"/>
+            <path d="m127.89,155.85l0,0.08l77.14,0l0.64,-7.18l1.46,-16.19l0.76,-8.57l-80,0l0,31.86l0,0z" fill="#FFFFFF" id="svg_11"/>
+            <text fill="#000000" fill-opacity="null" font-family="Sans-serif" font-size="65.78" font-weight="bold" id="svg_6" stroke="null" stroke-dasharray="null" stroke-linecap="null" stroke-linejoin="null" stroke-opacity="null" stroke-width="0" text-anchor="middle" x="126.95" xml:space="preserve" y="58.56">WIDGET</text>
+        </g>
+    </g>
+
+</svg>
