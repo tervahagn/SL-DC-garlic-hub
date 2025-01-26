@@ -64,10 +64,14 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 	directoryView.addContextMenu(nodesModel, treeDialog, lang);
 
-	document.getElementById('addRootFolder').addEventListener('click', () => {
-		treeDialog.prepareShow("add_root_folder", lang);
-		treeDialog.show();
-	});
+	const addRootFolder = document.getElementById('addRootFolder');
+	if (addRootFolder !== null)
+	{
+		addRootFolder.addEventListener('click', () => {
+			treeDialog.prepareShow("add_root_folder", lang);
+			treeDialog.show();
+		});
+	}
 
 	const uploaderDialog = new UploaderDialog(
 		document.getElementById('uploaderDialog'),
