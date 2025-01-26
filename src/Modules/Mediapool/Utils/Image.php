@@ -28,7 +28,6 @@ use Imagick;
 use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
-use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Class Image provides methods to handle image files
@@ -90,24 +89,56 @@ class Image extends AbstractMediaHandler
 	}
 
 	/**
-	 * @throws ImagickException
+	 * @throws ImagickException|FilesystemException
 	 */
 	public function createThumbnail(string $filePath): void
 	{
-		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
-
-		$fileInfo             = pathinfo($filePath);
-		if ($fileInfo['extension'] !== 'svg' && $fileInfo['extension'] !== 'gif')
+		$fileInfo  = pathinfo($filePath);
+		switch ($fileInfo['extension'])
 		{
-			$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
-			$this->thumbExtension = $fileInfo['extension'];
+			case 'gif':
+				$this->createGifThumbnail($fileInfo);
+				return;
+			case 'svg':
+				$this->createSvgThumbnail($fileInfo);
+				return;
+			default:
+				$this->createStandardThumbnail($fileInfo);
 		}
-		else
-		{
-			$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename'].'.jpg';
-		}
-		$this->imagick->writeImage($thumbPath);
 	}
 
+	/**
+	 * @throws ImagickException
+	 */
+	private function createGifThumbnail(array $fileInfo): void
+	{
+		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
+		$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename'].'.jpg';
+		$this->imagick->writeImage($thumbPath);
+
+	}
+
+	/**
+	 * @throws FilesystemException
+	 */
+	private function createSvgThumbnail(array $fileInfo): void
+	{
+		// just copy as imagemagick fucks up with svg.
+		$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['basename'];
+		$filePath  = '/'.$this->originalPath.'/'.$fileInfo['basename'];
+		$this->thumbExtension = $fileInfo['extension'];
+
+		$this->filesystem->copy($filePath, $thumbPath);
+	}
+
+	/**
+	 * @throws ImagickException
+	 */
+	private function createStandardThumbnail(array $fileInfo): void
+	{
+		$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
+		$this->thumbExtension = $fileInfo['extension'];
+		$this->imagick->writeImage($thumbPath);
+	}
 
 }
