@@ -50,6 +50,9 @@ export class DirectoryView
                 for (const key of parentList)
                 {
                     node = e.tree.findKey(key);
+					if (node === null)
+						return;
+
                     await node.setExpanded(true);
                 }
                 await node.setActive();
