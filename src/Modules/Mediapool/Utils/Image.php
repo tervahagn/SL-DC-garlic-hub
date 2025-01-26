@@ -97,9 +97,15 @@ class Image extends AbstractMediaHandler
 		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 
 		$fileInfo             = pathinfo($filePath);
-		$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
-		$this->thumbExtension = $fileInfo['extension'];
-
+		if ($fileInfo['extension'] !== 'svg' && $fileInfo['extension'] !== 'gif')
+		{
+			$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
+			$this->thumbExtension = $fileInfo['extension'];
+		}
+		else
+		{
+			$thumbPath = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename'].'.jpg';
+		}
 		$this->imagick->writeImage($thumbPath);
 	}
 
