@@ -24,7 +24,6 @@ namespace App\Modules\Mediapool\Utils;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Utils\Widget\ConfigXML;
-use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 
 class MediaHandlerFactory
@@ -34,11 +33,7 @@ class MediaHandlerFactory
 	private ZipFilesystemFactory $zipFilesystemFactory;
 	private ImagickFactory $imagickFactory;
 
-	/**
-	 * @param Config         $config
-	 * @param Filesystem     $fileSystem
-	 * @param ImagickFactory $imagickFactory
-	 */
+
 	public function __construct(Config $config, Filesystem $fileSystem,	ZipFilesystemFactory $zipFilesystemFactory, ImagickFactory $imagickFactory)
 	{
 		$this->config               = $config;
@@ -63,7 +58,13 @@ class MediaHandlerFactory
 				$this->imagickFactory->createImagick(),
 				new ConfigXML()
 			),
-			default => new Miscellaneous($this->config, $this->fileSystem),
+			$mimeType === 'application/zip' || $mimeType === 'application/json', $mimeType === 'text/csv' ||
+				$mimeType === 'application/xml' || $mimeType === 'application/rss+xml' || $mimeType === 'application/atom+xml' ||
+				$mimeType === 'application/vnd.android.package-archive' || $mimeType === 'application/octet-stream' ||
+				$mimeType === 'application/smil', $mimeType === 'text/xml'
+				=> new Miscellaneous($this->config, $this->fileSystem),
+
+			default => throw new CoreException('Unsupported mime type: ' . $mimeType)
 		};
 
 	}

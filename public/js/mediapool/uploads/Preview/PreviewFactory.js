@@ -49,7 +49,9 @@ export class PreviewFactory
             return new WidgetPreview(file);
         }
 		else if (file.name.endsWith(".csv") || file.name.endsWith(".json") || file.name.endsWith(".xml") ||
-			file.name.endsWith(".pkg") || file.name.endsWith(".apk") || file.name.endsWith(".zip")
+			file.name.endsWith(".dmg") || file.name.endsWith(".rss") || file.name.endsWith(".atom") ||
+			file.name.endsWith(".pkg") || file.name.endsWith(".apk") || file.name.endsWith(".zip") ||
+			file.name.endsWith(".smil")
 		)
         {
             return new MiscellaneousPreview(file);
