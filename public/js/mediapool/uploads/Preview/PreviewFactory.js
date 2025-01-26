@@ -48,9 +48,13 @@ export class PreviewFactory
         {
             return new WidgetPreview(file);
         }
-        else
+		else if (file.name.endsWith(".csv") || file.name.endsWith(".json") || file.name.endsWith(".xml") ||
+			file.name.endsWith(".pkg") || file.name.endsWith(".apk") || file.name.endsWith(".zip")
+		)
         {
             return new MiscellaneousPreview(file);
         }
+		else
+			throw new Error("File type: " + file.type +" is not supported");
     }
 }
