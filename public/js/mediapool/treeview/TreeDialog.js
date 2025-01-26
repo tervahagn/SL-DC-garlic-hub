@@ -130,9 +130,18 @@ export class TreeDialog
 
 	#determineDataToSend()
 	{
+		/*
+		  Remember: Only Module admins are able to see the action icon to create a root folder
+		  There are checks in the backend for the case someone wants to celebrate himself as the big haxOr,
+
+		  Regular every action assigned on an active node. Except of creating a root dir.
+		  So, we need to check only the rights of this active node.
+		  When no node is selected and the action is not add_root_folder, throw an error.
+		*/
 		if (this.#directoryView.getActiveNodeId() === 0 && this.#action !== "add_root_folder")
 			throw new Error("no node selected");
 
+		// same here as above: No checks for adding a root folder
 		const activeNodeRights = this.#directoryView.getActiveNodeRights();
 		if (!activeNodeRights.create && !activeNodeRights.edit && !activeNodeRights.delete && this.#action !== "add_root_folder")
 			throw new Error('There are no rights for this node.');
@@ -141,7 +150,7 @@ export class TreeDialog
 		switch (this.#action)
 		{
 			case "add_root_folder":
-				// no needs to check rights create action is only visible if the user is module admin
+				// again no needs to check rights
 				sendData = {"node_id": 0, "name": document.getElementById("folder_name").value};
 				break;
 			case "add_sub_folder":
