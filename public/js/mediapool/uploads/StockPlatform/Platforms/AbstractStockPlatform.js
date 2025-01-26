@@ -20,6 +20,7 @@ export class AbstractStockPlatform
 {
 	#apiToken = "";
 	#fetchClient = null;
+	#resultsList = {};
 
 	constructor(fetchClient)
 	{
@@ -31,9 +32,9 @@ export class AbstractStockPlatform
 		throw "search() must be implemented in subclass";
 	}
 
-	results()
+	get resultsList()
 	{
-		throw "search() must be implemented in subclass";
+		return this.#resultsList;
 	}
 
 	get apiToken() { return this.#apiToken; }

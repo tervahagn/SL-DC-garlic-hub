@@ -31,10 +31,8 @@ export class FetchClient
 
         try
         {
-            const data = await response.json()
-
-            return data;
-        }
+            return await response.json()
+		}
         catch (e)
         {
             return await response.text();

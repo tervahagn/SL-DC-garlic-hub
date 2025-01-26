@@ -32,16 +32,22 @@ export class StockPlatformUploader extends LocalFilesUploader
 		for (const [key, value] of Object.entries(this.#stockPlatformFactory.platforms)) {
 			this.domElements.addPlatform(key);
 		}
-		this.domElements.selectStockPlatform.addEventListener("click", (event) => this.#selectPlatform(event));
+		if (localStorage.getItem("lastPlatform") !== null)
+		{
+			this.#selectPlatform(localStorage.getItem("lastPlatform"));
+			this.domElements.selectStockPlatform.value = localStorage.getItem("lastPlatform");
+		}
+
+		this.domElements.selectStockPlatform.addEventListener("click", (event) => this.#selectPlatform(event.target.value));
 		this.domElements.savePlatformApiToken.addEventListener("click", (event) => this.#saveApiToken(event));
 		this.domElements.checkSearchPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
 		this.domElements.checkConfigPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
+		this.domElements.searchStockPlatform.addEventListener("click", (event) => this.#search(event));
 	}
 
 
-	#selectPlatform(event)
+	#selectPlatform(platform)
 	{
-		let platform = event.target.value;
 		this.#stockPlatform = this.#stockPlatformFactory.selectPlatform(platform);
 		if (this.#stockPlatform == null)
 			return;
@@ -49,9 +55,7 @@ export class StockPlatformUploader extends LocalFilesUploader
 		this.domElements.toggleSearchConfig(hasToken);
 		this.domElements.toggleSearchInPlatform(hasToken);
 
-		if (hasToken)
-			this.domElements
-
+		localStorage.setItem("lastPlatform", platform);
 	}
 
 	#saveApiToken()
@@ -72,5 +76,45 @@ export class StockPlatformUploader extends LocalFilesUploader
 		if (this.#stockPlatform.hasApiToken())
 			this.domElements.platformApiToken.value = this.#stockPlatform.apiToken;
 
+	}
+
+	async #search(event)
+	{
+		if (this.#stockPlatform === null)
+			return;
+
+		this.domElements.searchResultsArea.innerHTML = "";
+
+		const results = await this.#stockPlatform.search(this.domElements.searchTerms.value);
+
+		if (results === null)
+			return;
+
+		for (const result of results)
+		{
+			this.#addSearchResult(result);
+		}
+	}
+
+	#addSearchResult(result)
+	{
+		if (result.type === "image")
+		{
+			const container = document.createElement("div");
+			container.className = "result-media-container";
+			const img = document.createElement("img");
+			img.src = result.thumb;
+			img.id  = result.id;
+			img.className = "result-thumbnail";
+			img.setAttribute("data-download", result.download);
+			container.appendChild(img);
+			const imgPreview = document.createElement("img");
+			imgPreview.src = result.preview;
+			imgPreview.className = "result-preview";
+			container.appendChild(imgPreview);
+
+
+			this.domElements.searchResultsArea.appendChild(container);
+		}
 	}
 }

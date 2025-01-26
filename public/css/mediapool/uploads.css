@@ -1,6 +1,6 @@
 #uploaderDialog
 {
-    width: 50vw;
+    width: 54vw;
     min-height:600px;
     border: none;
     border-radius: var(--gh-border-radius);
@@ -159,5 +159,54 @@ label:has(input:disabled)
 
     .platform-mask input[type="text"]
     {
-        width:42rem;
+        width:44rem;
     }
+
+.search-results-media
+{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, 150px);
+    gap: 1em;
+    box-sizing: border-box;
+    height:300px;
+    overflow: scroll;
+    margin: 1rem 0;
+}
+
+    .result-media-container
+    {
+        width: 150px;
+        height:150px;
+        position: relative;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: var(--gh-border-radius);
+    }
+
+    .result-thumbnail
+    {
+        width: 150px;
+        height:150px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .result-thumbnail:hover { transform: scale(1.2); }
+
+    .result-preview
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        max-width: 400px;
+        max-height: 400px;
+        display: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .result-media-container:hover .result-preview {
+        display: block;
+        opacity: 1; /* Vollständig sichtbar machen */
+    }
+

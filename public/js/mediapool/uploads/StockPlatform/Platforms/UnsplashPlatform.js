@@ -27,38 +27,42 @@ export class UnsplashPlatform extends AbstractStockPlatform
 		super(fetchClient);
 	}
 
-	search(query)
+
+	async search(query)
 	{
-		(async () => {
-			const filePath = this.domElements.externalLinkField.value;
-			try
+		try
+		{
+			const apiUrl = `${this.#searchUri}?query=${encodeURIComponent(query)}&per_page=20&client_id=${this.apiToken}`;
+			const results = await this.fetchClient.fetchData(apiUrl);
+
+			if (!results)
 			{
-
-				this.uploaderDialog.disableActions();
-
-				const apiUrl   = this.#searchUri + "?query=" + query + "&client_id=" + this.apiToken;
-				const result = await this.fetchClient.fetchData(apiUrl);
-
-				if (!result || !result.success)
-					console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
-				else
-				{
-					this.domElements.externalLinkField.value = "";
-					this.disableUploadButton();
-				}
-
-			}
-			catch(error)
-			{
-				console.log('Upload failed for file:', filePath, '\n', error.message);
-			}
-			finally
-			{
-				this.uploaderDialog.enableActions()
+				console.error('Error:', result || 'Unknown error');
+				return;
 			}
 
-		})();
+			return this.#prepareResults(results);
+		}
+		catch(error)
+		{
+			console.log('Search error:', error.message);
+		}
+	}
 
+	#prepareResults(json)
+	{
+		if (!json.results || !Array.isArray(json.results)) {
+			throw new Error("Ungültiges JSON-Format");
+		}
+
+		// Ergebnisse durchlaufen und gewünschte Werte extrahieren
+		return json.results.map(item => ({
+			id: item.id,
+			type: "image",
+			preview: item.urls?.small || null,
+			thumb: item.urls?.thumb || null,
+			download: item.urls?.regular || null
+		}));
 
 	}
 
