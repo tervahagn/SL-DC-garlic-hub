@@ -46,6 +46,16 @@ class NodesService
 	}
 
 	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
+	public function isModuleAdmin(int $UID): bool
+	{
+		return $this->aclValidator->isModuleAdmin($UID);
+	}
+
+	/**
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException

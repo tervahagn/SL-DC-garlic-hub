@@ -22,6 +22,7 @@
 namespace App\Modules\Mediapool\Controller;
 
 use App\Framework\Core\Config\Config;
+use App\Modules\Mediapool\Services\NodesService;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,8 +30,20 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowController
 {
+
+	private NodesService $nodesService;
+
+	/**
+	 * @param NodesService $nodesService
+	 */
+	public function __construct(NodesService $nodesService)
+	{
+		$this->nodesService = $nodesService;
+	}
+
 	/**
 	 * @throws Exception|InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -69,7 +82,6 @@ class ShowController
 					'LANG_EDIT' => $translator->translate('edit', 'main'),
 					'LANG_CLONE' => $translator->translate('clone', 'main'),
 					'LANG_DOWNLOAD' => $translator->translate('download', 'main'),
-					'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool'),
 					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),
 					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
@@ -88,10 +100,20 @@ class ShowController
 					'LANG_CAPTURE_PHOTO' => $translator->translate('capture_photo', 'mediapool'),
 					'LANG_START_RECORD_VIDEO' => $translator->translate('start_record_video', 'mediapool'),
 					'LANG_STOP_RECORD_VIDEO' => $translator->translate('stop_record_video', 'mediapool'),
+					'LANG_RECORD_YOUR_SCREEN' => $translator->translate('record_your_screen', 'mediapool'),
 					'LANG_ACTIVATE_SCREENCAST' => $translator->translate('activate_screencast', 'mediapool'),
+					'LANG_ENTER_SEARCH_TERM' => $translator->translate('enter_search_term', 'mediapool'),
 				]
 			]
 		];
+		$session = $request->getAttribute('session');
+
+		if ($this->nodesService->isModuleAdmin($session->get('user')['UID']))
+		{
+			$data['this_layout']['data']['add_root_folder'] = [
+				'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool')
+				];
+		}
 		/** @var Config $config */
 		$config = $request->getAttribute('config');
 

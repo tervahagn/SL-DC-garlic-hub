@@ -1,6 +1,9 @@
 <aside>
 			<label id="wrap_tree_filter">
-				<input id="tree_filter" type="search" placeholder="Filter"><a class="bi bi-folder-plus" id="addRootFolder" title="{{LANG_ADD_ROOT_FOLDER}}"></a>
+				<input id="tree_filter" type="search" placeholder="Filter">
+				{{#add_root_folder}}
+				<a class="bi bi-folder-plus" id="addRootFolder" title="{{LANG_ADD_ROOT_FOLDER}}"></a>
+				{{/add_root_folder}}
 			</label>
 
 			<nav aria-label="Directory Structure">
@@ -109,8 +112,7 @@
 				</section>
 
 				<section class="tab-content" id="screencastTab">
-					<h3>Screencast</h3>
-					<p>Zeichnen Sie Ihren Bildschirm auf:</p>
+					<h3>{{LANG_RECORD_YOUR_SCREEN}}</h3>
 					<div class="wrapVideoElements">
 						<video id="screencastVideo" autoplay playsinline class="live-preview-video"></video>
 						<div>
@@ -123,15 +125,17 @@
 							<button	id="recordingScreencast" disabled>{{LANG_START_RECORD_VIDEO}}</button>
 						</div>
 					</div>
-
 					<div id="previewScreencastsArea" class="preview-media"></div>
 					<button id="startScreencastsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 			</section>
 
 				<section class="tab-content" id="unsplashTab">
-					<h3>Unsplash Integration</h3>
-					<label>Suchen Sie nach Bildern:
-						<input type="text" placeholder="Suchbegriff" style="width: 100%; padding: 10px;">
+					<h3>Unsplash</h3>
+					<label>{{}}
+						<input type="text" placeholder="{{LANG_ENTER_SEARCH_TERM}}" style="width: 100%; padding: 10px;">
+					</label>
+					<label>
+						<input type="text" placeholder="{{LANG_ENTER_SEARCH_TERM}}" style="width: 100%; padding: 10px;">
 					</label>
 					<div style="margin-top: 10px;">Bildervorschau hier...</div>
 				</section>
