@@ -22,6 +22,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\User\UserService;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
+use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
@@ -51,6 +52,11 @@ $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $co
 $dependencies[NodesController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new NodesController($container->get(NodesService::class));
+});
+
+$dependencies[ShowController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowController($container->get(NodesService::class));
 });
 
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
@@ -86,7 +92,6 @@ $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $co
 		$container->get('ModuleLogger')
 	);
 });
-
 
 $dependencies[MediaController::class] = DI\factory(function (ContainerInterface $container)
 {
