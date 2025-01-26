@@ -90,6 +90,7 @@ class Widget extends AbstractMediaHandler
 			$this->configXML->load($configContent)->parseBasic();
 		}
 
+		$fileInfo  = pathinfo($filePath);
 		if ($zipFilesystem->fileExists($this->configXML->getIcon()))
 		{
 			$imageContent = $zipFilesystem->read($this->configXML->getIcon());
@@ -97,9 +98,17 @@ class Widget extends AbstractMediaHandler
 			$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 
 			$this->thumbExtension = pathinfo($this->configXML->getIcon(), PATHINFO_EXTENSION);
-			$fileInfo             = pathinfo($filePath);
 			$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['filename']. '.'.$this->thumbExtension;
 			$this->imagick->writeImage($thumbPath);
+		}
+		else
+		{
+			$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['filename'].'.png';
+			$iconPath  = '/'.$this->iconsPath.'/widget.png';
+			$this->thumbExtension = 'png';
+
+			$this->filesystem->copy($iconPath, $thumbPath);
+
 		}
 		// we will show a standard thumbnail for the widget in
 	}
