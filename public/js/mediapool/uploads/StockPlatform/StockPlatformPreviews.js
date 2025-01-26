@@ -19,7 +19,7 @@
 
 import { BasePreviewHandler } from "../Preview/BasePreviewHandler.js";
 
-export class ScreencastPreviews extends BasePreviewHandler
+export class StockPlatformPreviews extends BasePreviewHandler
 {
     constructor(previewArea, previewFactory)
     {

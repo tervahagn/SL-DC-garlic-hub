@@ -17,12 +17,30 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { BasePreviewHandler } from "../Preview/BasePreviewHandler.js";
+import { UnsplashPlatform } from './UnsplashPlatform.js';
 
-export class ScreencastPreviews extends BasePreviewHandler
+export class StockPlatformFactory
 {
-    constructor(previewArea, previewFactory)
-    {
-        super(previewArea, previewFactory);
-    }
+	#platforms = {};
+
+	constructor(fetchClient)
+	{
+		this.registerPlatform("Unsplash", new UnsplashPlatform(fetchClient));
+	}
+
+	get platforms() { return this.#platforms; }
+
+	registerPlatform(name, platformClass)
+	{
+		this.#platforms[name] = platformClass;
+	}
+
+	selectPlatform(name)
+	{
+		if (this.#platforms[name])
+			return this.#platforms[name];
+		 else
+			throw new Error(`Platform ${name} not registered.`);
+	}
 }
+

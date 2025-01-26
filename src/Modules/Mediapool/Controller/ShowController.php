@@ -102,7 +102,10 @@ class ShowController
 					'LANG_STOP_RECORD_VIDEO' => $translator->translate('stop_record_video', 'mediapool'),
 					'LANG_RECORD_YOUR_SCREEN' => $translator->translate('record_your_screen', 'mediapool'),
 					'LANG_ACTIVATE_SCREENCAST' => $translator->translate('activate_screencast', 'mediapool'),
+					'LANG_SEARCH_STOCK_MEDIA' => $translator->translate('search_stock_media', 'mediapool'),
 					'LANG_ENTER_SEARCH_TERM' => $translator->translate('enter_search_term', 'mediapool'),
+					'LANG_ENTER_API_TOKEN' => $translator->translate('enter_api_token', 'mediapool'),
+					'LANG_SEARCH' => $translator->translate('search', 'main'),
 				]
 			]
 		];

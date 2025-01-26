@@ -22,10 +22,9 @@ import { LocalFilesUploader } from "../Local/LocalFilesUploader.js";
 export class ScreencastUploader extends LocalFilesUploader
 {
     #maxRecordTime  = 300; // 5min
-    #screencast         = null;
+    #screencast     = null;
     #mediaRecorder  = null;
     #recordedChunks = [];
-	#streamList     = [];
 
     constructor(screencast, filePreviews, domElements, directoryView, uploaderDialog, fetchClient)
     {

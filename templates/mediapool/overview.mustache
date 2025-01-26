@@ -62,7 +62,7 @@
 					<button class="tab-button" data-tab="linkTab">Link</button>
 					<button class="tab-button" data-tab="webcamTab">Webcam</button>
 					<button class="tab-button" data-tab="screencastTab">Screencast</button>
-					<button class="tab-button" data-tab="unsplashTab">Unsplash</button>
+					<button class="tab-button" data-tab="stockPlatformsTab">Mediapools</button>
 				</nav>
 
 				<section class="tab-content active" id="dragDropTab">
@@ -129,15 +129,38 @@
 					<button id="startScreencastsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 			</section>
 
-				<section class="tab-content" id="unsplashTab">
-					<h3>Unsplash</h3>
-					<label>{{}}
-						<input type="text" placeholder="{{LANG_ENTER_SEARCH_TERM}}" style="width: 100%; padding: 10px;">
-					</label>
-					<label>
-						<input type="text" placeholder="{{LANG_ENTER_SEARCH_TERM}}" style="width: 100%; padding: 10px;">
-					</label>
-					<div style="margin-top: 10px;">Bildervorschau hier...</div>
+				<section class="tab-content" id="stockPlatformsTab">
+					<h3>{{LANG_SEARCH_STOCK_MEDIA}}</h3>
+					<div class="platform-mask">
+						<label>
+							<select id="selectStockPlatform">
+								<option value="-">-</option>
+							</select>
+						</label>
+						<label id="radioSearchConfig" style="display:none">
+							<input type="radio" name="config_search" value="configPlatform" id="checkConfigPlatform">
+							Config
+							<input type="radio" name="config_search" value="searchPlatform" id="checkSearchPlatform"
+								   checked>
+							Search
+						</label>
+					</div>
+					<div id="searchInPlatform" class="platform-mask" style="display:none">
+						<label>
+							<input type="text" id="searchTerms" placeholder="{{LANG_ENTER_SEARCH_TERM}}">
+						</label>
+						<button id="searchStockPlatform">{{LANG_SEARCH}}</button>
+						<div id="searchResultsArea" class="search-results-media">... Suchergebnisse..</div>
+					</div>
+					<div id="configPlatform" class="platform-mask"  style="display:none">
+						<label>
+							<input type="text" id="platformApiToken" placeholder="{{LANG_ENTER_API_TOKEN}}">
+						</label>
+						<button id="savePlatformApiToken">{{LANG_SAVE}}</button>
+					</div>
+
+					<div id="previewPlatformArea" class="preview-media"></div>
+					<button id="startPlatformsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<footer>

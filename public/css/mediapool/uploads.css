@@ -145,3 +145,19 @@ label:has(input:disabled)
     border: 1px solid #ccc;
     border-radius: var(--gh-border-radius);
 }
+
+.platform-mask
+{
+    display: flex;
+    gap: 1em;
+    padding: 1rem 0;
+}
+    .platform-mask button
+    {
+        width:6rem;
+    }
+
+    .platform-mask input[type="text"]
+    {
+        width:42rem;
+    }

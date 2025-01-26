@@ -16,13 +16,30 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-import { BasePreviewHandler } from "../Preview/BasePreviewHandler.js";
-
-export class ScreencastPreviews extends BasePreviewHandler
+export class AbstractStockPlatform
 {
-    constructor(previewArea, previewFactory)
-    {
-        super(previewArea, previewFactory);
-    }
+	#apiToken = "";
+	#fetchClient = null;
+
+	constructor(fetchClient)
+	{
+		this.#fetchClient = fetchClient;
+	}
+
+	search(query)
+	{
+		throw "search() must be implemented in subclass";
+	}
+
+	results()
+	{
+		throw "search() must be implemented in subclass";
+	}
+
+	get apiToken() { return this.#apiToken; }
+
+	set apiToken(value)	{ this.#apiToken = value; }
+
+
+	get fetchClient() {	return this.#fetchClient; }
 }
