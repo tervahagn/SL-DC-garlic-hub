@@ -36,8 +36,15 @@ export class Media
         img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
         img.alt = "Thumbnail: " + media.filename;
 
-        const a = this.#mediaElement.querySelector("a");
-        a.href  = "/var/mediapool/originals/"+media.checksum+"." + media.extension;
+		const a = this.#mediaElement.querySelector("a");
+		if (this.#hasDetailedView(media.mimetype))
+			a.href  = "/var/mediapool/originals/"+media.checksum+"." + media.extension;
+		else
+		{
+			a.classList.remove("glightbox");
+			a.style.display = "none";
+		}
+
         if (media.extension !== "pdf")
         {
             a.setAttribute("data-title", media.filename);
@@ -69,6 +76,15 @@ export class Media
 
         return mediaItem;
     }
+
+	#hasDetailedView(mimetype)
+	{
+		const first = mimetype.split("/")[0]
+		if (first === "audio" || first === "video" || first === "image")
+			return true;
+
+		return mimetype.split("/")[1] === "pdf";
+	}
 
     #detectMediaType(mimetype)
     {

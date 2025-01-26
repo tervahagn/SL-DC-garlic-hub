@@ -90,7 +90,7 @@ dialog
 .media-grid
 {
     display:grid;
-    grid-template-columns: repeat(auto-fill, 250px);
+    grid-template-columns: repeat(auto-fill, 200px);
     gap: 1em;
     padding: 1em;
     box-sizing: border-box;
@@ -104,7 +104,7 @@ dialog
         overflow: hidden;
         position: relative;
         width: 100%;
-        aspect-ratio: 3 / 2;
+        aspect-ratio: 1 / 1;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -126,7 +126,7 @@ dialog
         {
             position: absolute;
             z-index:100;
-            bottom: 5px;
+            top: 5px;
             right: 5px;
             font-size: 1.4em;
             text-align: center;
@@ -140,7 +140,7 @@ dialog
         {
             position: absolute;
             z-index:100;
-            bottom: 5px;
+            top: 5px;
             right:35px;
             font-size: 1.4em;
             text-align: center;
