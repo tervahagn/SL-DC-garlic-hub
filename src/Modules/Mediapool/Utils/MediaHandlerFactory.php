@@ -63,7 +63,7 @@ class MediaHandlerFactory
 				$this->imagickFactory->createImagick(),
 				new ConfigXML()
 			),
-			default => throw new InvalidArgumentException('Unknown file type'),
+			default => new Miscellaneous($this->config, $this->fileSystem),
 		};
 
 	}
