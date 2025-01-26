@@ -47,6 +47,10 @@ class MimeTypeDetector
 			throw new InvalidArgumentException("File '$filePath' not exists.");
 		}
 
+		// exception for the digital signage widgets
+		if (pathinfo($filePath, PATHINFO_EXTENSION) === 'wgt')
+			return 'application/widget';
+
 		$mimeType = finfo_file($this->finfo, $filePath);
 		if ($mimeType === false)
 			throw new ModuleException('mediapool', "MIME-Type for '$filePath' could not be detected.");
