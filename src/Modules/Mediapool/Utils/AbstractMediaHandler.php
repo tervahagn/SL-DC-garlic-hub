@@ -149,11 +149,18 @@ abstract class AbstractMediaHandler
 		return $hash;
 	}
 
-	public function determineNewFilePath(string $oldFilePath, string $filehash): string
+	public function determineNewFilePath(string $oldFilePath, string $filehash, string $mimeType): string
 	{
 		$fileInfo    = pathinfo($oldFilePath);
+
+		// if files have no extension take it from mime type
+		if (array_key_exists('extension', $fileInfo))
+			$ext = $fileInfo['extension'];
+		else
+			$ext = explode('/', $mimeType)[1];
+
 		// normalize jpeg to jpg
-		$ext = str_replace('jpeg', 'jpg', $fileInfo['extension']);
+		$ext = str_replace('jpeg', 'jpg', $ext);
 
 		return $fileInfo['dirname']. '/'.$filehash.'.'.$ext;
 	}

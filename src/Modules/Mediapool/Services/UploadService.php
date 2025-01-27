@@ -131,13 +131,12 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 
 		if (empty($dataSet))
 		{
-			$newFilePath = $mediaHandler->determineNewFilePath($uploadedPath, $fileHash);
+			$mimetype    = $this->mimeTypeDetector->detectFromFile($mediaHandler->getAbsolutePath($uploadedPath));
+			$newFilePath = $mediaHandler->determineNewFilePath($uploadedPath, $fileHash, $mimetype);
 			$mediaHandler->rename($uploadedPath, $newFilePath);
 			$mediaHandler->checkFileAfterUpload($newFilePath);
 			$mediaHandler->createThumbnail($newFilePath);
 
-			$absoluteFilePath = $mediaHandler->getAbsolutePath($newFilePath);
-			$mimetype         = $this->mimeTypeDetector->detectFromFile($absoluteFilePath);
 			$metadata         = json_encode([
 					'size'       => $mediaHandler->getFileSize(),
 					'dimensions' => $mediaHandler->getDimensions(),
