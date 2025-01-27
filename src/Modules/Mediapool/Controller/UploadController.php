@@ -37,6 +37,26 @@ class UploadController
 		$this->uploadService = $uploadService;
 	}
 
+	public function requestApi(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		if (!$this->hasRights($request->getAttribute('session')))
+		{
+			$response->getBody()->write(json_encode([]));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+		}
+
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('api_url', $bodyParams))
+		{
+			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'api_url missing']));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+		}
+
+		$body = $this->uploadService->requestApi($bodyParams['api_url']);
+		$response->getBody()->write(json_encode(['success' => true, 'data' => $body],JSON_UNESCAPED_UNICODE));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
+
 	/**
 	 * @throws Exception
 	 */

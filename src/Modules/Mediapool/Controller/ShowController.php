@@ -106,6 +106,8 @@ class ShowController
 					'LANG_ENTER_SEARCH_TERM' => $translator->translate('enter_search_term', 'mediapool'),
 					'LANG_ENTER_API_TOKEN' => $translator->translate('enter_api_token', 'mediapool'),
 					'LANG_SEARCH' => $translator->translate('search', 'main'),
+					'LANG_MARK_FOR_DOWNLOAD' => $translator->translate('mark_for_download', 'mediapool'),
+					'LANG_DOWNLOAD_MARKED' => $translator->translate('download_marked', 'mediapool'),
 				]
 			]
 		];
