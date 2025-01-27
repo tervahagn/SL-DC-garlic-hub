@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function()
 	// Section for 3rd Party StockPlatforms
 	const stockPlatformElements = new StockPlatformElements();
 	const stockPlatformFactory = new StockPlatformFactory(fetchClient);
-	screencastPreviews.fileUploader  = new StockPlatformUploader(
+	new StockPlatformUploader(
 		stockPlatformFactory,
 		stockPlatformElements,
 		directoryView,

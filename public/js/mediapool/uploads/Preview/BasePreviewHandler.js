@@ -67,7 +67,8 @@ export class BasePreviewHandler
 			);
 			this.#previewArea.appendChild(previewContainer);
 			this.#fileUploader.enableUploadButton();
-		} catch (error)
+		}
+		catch (error)
 		{
 			alert(`${file.name} not supported.` + error);
 		}
