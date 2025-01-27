@@ -28,6 +28,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 	}
 
 
+
 	async search(query)
 	{
 		try
@@ -37,7 +38,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 
 			if (!results)
 			{
-				console.error('Error:', result || 'Unknown error');
+				console.error('Error:', results || 'Unknown error');
 				return;
 			}
 
@@ -49,23 +50,48 @@ export class UnsplashPlatform extends AbstractStockPlatform
 		}
 	}
 
+	async download(downloadUri)
+	{
+		try
+		{
+			const apiUrl = downloadUri + "&client_id=" +this.apiToken;
+			const result = await this.fetchClient.fetchData(apiUrl);
+
+			if (!result)
+			{
+				console.error('Error:', result || 'Unknown error');
+				return;
+			}
+
+			return this.#prepareDownloadMediaUrl(result.url);
+		}
+		catch(error)
+		{
+			console.log('Search error:', error.message);
+		}
+	}
+
+	#prepareDownloadMediaUrl(downloadUrl)
+	{
+		return downloadUrl + "&fit=clip&w=" + this.maxWith + "&h=" + this.maxHeight + "&client_id=" + this.apiToken;
+	}
+
 	#prepareResults(json)
 	{
 		if (!json.results || !Array.isArray(json.results)) {
-			throw new Error("Ungültiges JSON-Format");
+			throw new Error("Wrong JSON format");
 		}
 
-		// Ergebnisse durchlaufen und gewünschte Werte extrahieren
+		// traverse results and create a new array with the required fields
 		return json.results.map(item => ({
 			id: item.id,
 			type: "image",
 			preview: item.urls?.small || null,
 			thumb: item.urls?.thumb || null,
-			download: item.urls?.regular || null
+			downloadUrl: item.links?.download_location || null
 		}));
 
 	}
-
 
 	hasApiToken()
 	{

@@ -34,6 +34,48 @@ export class BaseUploader
 		this.#domElements.startFileUpload.disabled = true;
 	}
 
+	async uploadExternalFile(filePath)
+	{
+		if (this.directoryView.getActiveNodeId() === 0)
+		{
+			alert("Choose a directory first.");
+			return;
+		}
+
+		try
+		{
+			this.uploaderDialog.disableActions();
+			const formData = new FormData();
+			formData.append("node_id", String(this.directoryView.getActiveNodeId()));
+			formData.append("external_link", filePath);
+
+			const apiUrl   = '/async/mediapool/uploadExternal';
+			const options  = {method: "POST", body: formData};
+
+			const result = await this.fetchClient.fetchData(apiUrl, options);
+
+			if (!result || !result.success)
+				console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
+			else
+			{
+				this.domElements.externalLinkField.value = "";
+				this.disableUploadButton();
+			}
+		}
+		catch(error)
+		{
+			if (error.message === 'Upload aborted.')
+				console.log('Upload aborted for file:', filePath);
+			else
+				console.log('Upload failed for file:', filePath, '\n', error.message);
+		}
+		finally
+		{
+			this.uploaderDialog.enableActions()
+		}
+	}
+
+
 	/**
 	 * @type {DirectoryView}
 	 */

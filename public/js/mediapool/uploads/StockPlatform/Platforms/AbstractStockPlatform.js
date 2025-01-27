@@ -20,7 +20,9 @@ export class AbstractStockPlatform
 {
 	#apiToken = "";
 	#fetchClient = null;
-	#resultsList = {};
+	hasVideos    = false;
+	#maxWith     = 1920;
+	#maxHeight   = 1920;
 
 	constructor(fetchClient)
 	{
@@ -32,15 +34,28 @@ export class AbstractStockPlatform
 		throw "search() must be implemented in subclass";
 	}
 
-	get resultsList()
+	download()
 	{
-		return this.#resultsList;
+		throw "download() must be implemented in subclass";
+	}
+
+	hasApiToken(query)
+	{
+		throw "hasApiToken() must be implemented in subclass";
+	}
+
+	setApiToken()
+	{
+		throw "setApiToken() must be implemented in subclass";
 	}
 
 	get apiToken() { return this.#apiToken; }
 
 	set apiToken(value)	{ this.#apiToken = value; }
 
-
 	get fetchClient() {	return this.#fetchClient; }
+
+	get maxWith() {	return this.#maxWith;}
+
+	get maxHeight()	{ return this.#maxHeight; }
 }

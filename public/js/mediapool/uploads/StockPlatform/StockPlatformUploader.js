@@ -17,16 +17,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { LocalFilesUploader } from "../Local/LocalFilesUploader.js";
+import { BaseUploader } from "../BaseUploader.js";
 
-export class StockPlatformUploader extends LocalFilesUploader
+export class StockPlatformUploader extends BaseUploader
 {
 	#stockPlatformFactory = null;
 	#stockPlatform = null;
 
-	constructor(stockPlatformFactory, filePreviews, domElements, directoryView, uploaderDialog, fetchClient)
+	constructor(stockPlatformFactory, domElements, directoryView, uploaderDialog, fetchClient)
 	{
-		super(filePreviews, domElements, directoryView, uploaderDialog, fetchClient);
+		super(domElements, directoryView, uploaderDialog, fetchClient);
 		this.#stockPlatformFactory = stockPlatformFactory;
 
 		for (const [key, value] of Object.entries(this.#stockPlatformFactory.platforms)) {
