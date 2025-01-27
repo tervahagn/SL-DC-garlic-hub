@@ -61,6 +61,13 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		$this->logger              = $logger;
 	}
 
+	public function requestApi(string $apiUrl): array
+	{
+		$response = $this->client->request('GET', $apiUrl);
+
+		return json_decode($response->getBody(), true);
+	}
+
 	/**
 	 * Upload Media and insert them into database. The filename is a sh256 hash of the file
 	 *

@@ -23,6 +23,11 @@ export class AbstractStockPlatform
 	hasVideos    = false;
 	#maxWith     = 1920;
 	#maxHeight   = 1920;
+	totalPages   = 0;
+	totalResults = 0
+	currentPage  = 0
+	currentSearchQuery = "";
+	resultsPerPage = 20;
 
 	constructor(fetchClient)
 	{

@@ -127,7 +127,7 @@
 					</div>
 					<div id="previewScreencastsArea" class="preview-media"></div>
 					<button id="startScreencastsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
-			</section>
+				</section>
 
 				<section class="tab-content" id="stockPlatformsTab">
 					<h3>{{LANG_SEARCH_STOCK_MEDIA}}</h3>
@@ -158,9 +158,17 @@
 						</label>
 						<button id="savePlatformApiToken">{{LANG_SAVE}}</button>
 					</div>
+					<div id="downloadStatus"></div>
+					<button id="startPlatformsUpload" class="upload-button">{{LANG_DOWNLOAD_MARKED}}</button>
+					<template id="result-media-template">
+						<article class="result-media-container">
+							<input type="checkbox" class="result-checkbox" title="{{LANG_MARK_FOR_DOWNLOAD}}">
+							<img src="" class="result-thumbnail" alt="result-thumbnail" >
+							<i class="media-view-detail bi-eye-fill bi"></i>
+							<img src="" class="result-preview" alt="result-preview" >
+						</article>
+					</template>
 
-					<div id="previewPlatformArea" class="preview-media"></div>
-					<button id="startPlatformsUpload" class="upload-button">{{LANG_START_UPLOAD}}</button>
 				</section>
 
 				<footer>
@@ -173,7 +181,6 @@
 			<div class="upload">
 				<button id="openUploadDialog" disabled><i class="bi bi-upload"></i> Uploader</button>
 			</div>
-
 			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
 			</div>
 			<dialog id="editMediaDialog">

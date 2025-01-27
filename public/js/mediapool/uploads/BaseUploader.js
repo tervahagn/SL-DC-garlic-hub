@@ -58,7 +58,6 @@ export class BaseUploader
 				console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
 			else
 			{
-				this.domElements.externalLinkField.value = "";
 				this.disableUploadButton();
 			}
 		}

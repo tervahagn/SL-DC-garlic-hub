@@ -27,30 +27,26 @@ export class UnsplashPlatform extends AbstractStockPlatform
 		super(fetchClient);
 	}
 
-
-
 	async search(query)
 	{
-		try
-		{
-			const apiUrl = `${this.#searchUri}?query=${encodeURIComponent(query)}&per_page=20&client_id=${this.apiToken}`;
-			const results = await this.fetchClient.fetchData(apiUrl);
 
-			if (!results)
-			{
-				console.error('Error:', results || 'Unknown error');
-				return;
-			}
+		this.currentPage = 1;
+		this.currentSearchQuery = query;
 
-			return this.#prepareResults(results);
-		}
-		catch(error)
-		{
-			console.log('Search error:', error.message);
-		}
+		return await this.#executeSearchQuery();
 	}
 
-	async download(downloadUri)
+	async loadNextPage()
+	{
+		if (this.currentPage >= this.totalPages)
+			return;
+
+		this.currentPage++;
+		return await this.#executeSearchQuery();
+	}
+
+
+	async determineMediaDownloadUrl(downloadUri)
 	{
 		try
 		{
@@ -64,6 +60,33 @@ export class UnsplashPlatform extends AbstractStockPlatform
 			}
 
 			return this.#prepareDownloadMediaUrl(result.url);
+		}
+		catch(error)
+		{
+			console.log('Search error:', error.message);
+		}
+	}
+
+	async #executeSearchQuery()
+	{
+		try
+		{
+			const apiUrl = this.#searchUri + "/?query=" + encodeURIComponent(this.currentSearchQuery) +
+				"&page=" + this.currentPage + "&per_page=" + this.resultsPerPage +
+				"&client_id=" + this.apiToken;
+				
+			const results = await this.fetchClient.fetchData(apiUrl);
+
+			if (!results)
+			{
+				console.error('Error:', results || 'Unknown error');
+				return;
+			}
+
+			this.totalPages   = results.total_pages;
+			this.totalResults = results.total;
+
+			return this.#prepareResults(results);
 		}
 		catch(error)
 		{
@@ -88,7 +111,18 @@ export class UnsplashPlatform extends AbstractStockPlatform
 			type: "image",
 			preview: item.urls?.small || null,
 			thumb: item.urls?.thumb || null,
-			downloadUrl: item.links?.download_location || null
+			downloadUrl: item.links?.download_location || null,
+			metadata: {
+				pool: "Unsplash",
+				created: item.created_at || null,
+				description: item.alt_description || null,
+				user: {
+					username: item.user?.username || null,
+
+					name: item.user?.name || null,
+					url: item.user?.portfolio_url || null,
+				},
+			}
 		}));
 
 	}

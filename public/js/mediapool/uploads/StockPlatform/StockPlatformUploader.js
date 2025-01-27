@@ -29,9 +29,11 @@ export class StockPlatformUploader extends BaseUploader
 		super(domElements, directoryView, uploaderDialog, fetchClient);
 		this.#stockPlatformFactory = stockPlatformFactory;
 
-		for (const [key, value] of Object.entries(this.#stockPlatformFactory.platforms)) {
+		for (const [key, value] of Object.entries(this.#stockPlatformFactory.platforms))
+		{
 			this.domElements.addPlatform(key);
 		}
+
 		if (localStorage.getItem("lastPlatform") !== null)
 		{
 			this.#selectPlatform(localStorage.getItem("lastPlatform"));
@@ -43,6 +45,25 @@ export class StockPlatformUploader extends BaseUploader
 		this.domElements.checkSearchPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
 		this.domElements.checkConfigPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
 		this.domElements.searchStockPlatform.addEventListener("click", (event) => this.#search(event));
+		this.domElements.startFileUpload.addEventListener("click", () => this.#startDownload());
+
+		this.domElements.searchResultsArea.addEventListener('scroll', () => this.#loadNextPage());
+	}
+
+	async #startDownload()  //Downlod from Medis-Platform, but upload to us
+	{
+		const checkboxes = document.querySelectorAll('.result-checkbox');
+		for (const checkbox of checkboxes)
+		{
+			if (checkbox.checked)
+			{
+				this.domElements.downloadStatus.innerHTML = "Start downloading...";
+				const mediaUrl = await this.#stockPlatform.determineMediaDownloadUrl(checkbox.getAttribute("data-download"));
+				await this.uploadExternalFile(mediaUrl);
+				this.domElements.downloadStatus.innerHTML = "Finish Downloading";
+			}
+		}
+
 	}
 
 
@@ -96,25 +117,51 @@ export class StockPlatformUploader extends BaseUploader
 		}
 	}
 
+	async #loadNextPage()
+	{
+		return; // temporary disabled to save requests during developing
+		if (this.domElements.searchResultsArea.scrollTop + this.domElements.searchResultsArea.clientHeight >= this.domElements.searchResultsArea.scrollHeight)
+		{
+			if (this.#stockPlatform === null)
+				return;
+
+			const results = await this.#stockPlatform.loadNextPage();
+
+			if (results === null)
+				return;
+
+			for (const result of results)
+			{
+				this.#addSearchResult(result);
+			}
+		}
+	}
+
 	#addSearchResult(result)
 	{
+		const container = document.getElementById("result-media-template").content.cloneNode(true).firstElementChild;
 		if (result.type === "image")
 		{
-			const container = document.createElement("div");
-			container.className = "result-media-container";
-			const img = document.createElement("img");
+			const img = container.querySelector(".result-thumbnail");
 			img.src = result.thumb;
-			img.id  = result.id;
-			img.className = "result-thumbnail";
-			img.setAttribute("data-download", result.download);
-			container.appendChild(img);
-			const imgPreview = document.createElement("img");
+			img.id = result.id;
+			img.alt = result.metadata.description;
+			const imgPreview = container.querySelector(".result-preview");
 			imgPreview.src = result.preview;
-			imgPreview.className = "result-preview";
-			container.appendChild(imgPreview);
-
-
-			this.domElements.searchResultsArea.appendChild(container);
+			imgPreview.alt = result.metadata.description;
 		}
+		const downloadChecker = container.querySelector(".result-checkbox");
+		downloadChecker.setAttribute("data-download", result.downloadUrl);
+		downloadChecker.addEventListener("click", (event) => this.#markedDownload(event));
+
+		this.domElements.searchResultsArea.appendChild(container);
+	}
+
+	#markedDownload(event)
+	{
+		const checkboxes  = document.querySelectorAll('.result-checkbox');
+		const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+		this.domElements.startFileUpload.disabled = !isAnyChecked;
 	}
 }

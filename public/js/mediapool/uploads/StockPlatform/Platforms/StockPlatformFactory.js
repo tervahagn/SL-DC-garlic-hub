@@ -18,6 +18,7 @@
 */
 
 import { UnsplashPlatform } from './UnsplashPlatform.js';
+import { PixabayPlatform } from './PixabayPlatform.js';
 
 export class StockPlatformFactory
 {
@@ -26,6 +27,7 @@ export class StockPlatformFactory
 	constructor(fetchClient)
 	{
 		this.registerPlatform("Unsplash", new UnsplashPlatform(fetchClient));
+		this.registerPlatform("Pixabay", new PixabayPlatform(fetchClient));
 	}
 
 	get platforms() { return this.#platforms; }

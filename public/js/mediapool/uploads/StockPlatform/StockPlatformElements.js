@@ -36,6 +36,7 @@ export class StockPlatformElements
 	#previewPlatformArea  = document.getElementById("previewPlatformArea");
 	#startPlatformsUpload = document.getElementById("startPlatformsUpload")
 	#startFileUpload      = document.getElementById("startPlatformsUpload")
+	#downloadStatus = document.getElementById("downloadStatus");
 
 
 	get selectStockPlatform()
@@ -106,6 +107,11 @@ export class StockPlatformElements
 	get startFileUpload()
 	{
 		return this.#startFileUpload;
+	}
+
+	get downloadStatus()
+	{
+		return this.#downloadStatus;
 	}
 
 	toggleSearchInPlatform(isVisible)

@@ -31,9 +31,11 @@ export class ExternalFileUploader extends BaseUploader
         this.disableUploadButton();
     }
 
-	uploadFile()
+	async uploadFile()
 	{
-		this.uploadExternalFile(this.domElements.externalLinkField.value);
+		await this.uploadExternalFile(this.domElements.externalLinkField.value);
+		this.domElements.externalLinkField.value = "";
+
 	}
 
 
