@@ -140,6 +140,5 @@ document.addEventListener("DOMContentLoaded", function()
 		uploaderDialog,
 		fetchClient
 	);
-
 });
 
