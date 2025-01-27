@@ -19,11 +19,11 @@
 
 export class ScreencastElements
 {
-	#toggleScreencast       = document.getElementById("toggleScreencast");
-	#screencastVideo        = document.getElementById("screencastVideo");
-	#startFileUpload        = document.getElementById("startScreencastsUpload");
-	#previewScreencastsArea = document.getElementById("previewScreencastsArea");
-	#captureScreenshot      = document.getElementById("captureScreenshot");
+	#toggleScreencast        = document.getElementById("toggleScreencast");
+	#screencastVideo         = document.getElementById("screencastVideo");
+	#startFileUpload         = document.getElementById("startScreencastsUpload");
+	#previewScreencastsArea  = document.getElementById("previewScreencastsArea");
+	#captureScreenshot       = document.getElementById("captureScreenshot");
 	#recordingScreencast     = document.getElementById("recordingScreencast");
 
 	get toggleScreencast() { return this.#toggleScreencast;}

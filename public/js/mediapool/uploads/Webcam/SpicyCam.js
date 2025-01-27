@@ -1,7 +1,9 @@
 /*
- * SpicyCam: JavaScript Lib for easy Camera access
+ * SpicyCamCast: JavaScript Lib for easy Camera and Screencast access
  *
- * SpicyCam is free software: you can redistribute it and/or modify
+ * This file is part of the SpicyCamCast source code
+ *
+ * SpicyCamCast is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
@@ -20,24 +22,18 @@
 /**
  * This class was inspired by Benson Ruan webcam-easy
  */
-export class SpicyCam
+
+import {SpicyBase} from "../SpicyBase.js";
+
+export class SpicyCam extends SpicyBase
 {
-	#imageQuality    = 0.8
-    #videoElement    = null;
     #camerasList     = [];
-    #streamList      = [];
     #currentDeviceId = '';
-    #settings        = null;
-	#isMirror        = false;
 
     constructor(videoElement)
     {
-        this.#videoElement        = videoElement;
-        this.#videoElement.width  = this.#videoElement.width || 640;
-        this.#videoElement.height = this.#videoElement.height || 360;
+       super(videoElement);
     }
-
-	set isMirror(value)	{ this.#isMirror = value;}
 
 	get camerasList() { return this.#camerasList; }
 
@@ -128,15 +124,15 @@ export class SpicyCam
             navigator.mediaDevices.getUserMedia(this.getMediaConstraints())
                 .then(stream => {
                     const track = stream.getVideoTracks()[0];
-                    this.#settings = track.getSettings();
+                    this.settings = track.getSettings();
 
-                    this.#streamList.push(stream);
-                    this.#videoElement.srcObject = stream;
+                    this.streamList.push(stream);
+                    this.videoElement.srcObject = stream;
 
-                    if(this.#isMirror)
-                        this.#videoElement.style.transform = "scale(-1,1)";
+                    if(this.isMirror)
+                        this.videoElement.style.transform = "scale(-1,1)";
 
-                    this.#videoElement.play();
+                    this.videoElement.play();
                     resolve(this.#currentDeviceId);
                 })
                 .catch(error => {
@@ -148,51 +144,7 @@ export class SpicyCam
 
     stopCamera()
     {
-        this.#streamList.forEach(stream => {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
-        });
-
-		this.#videoElement.srcObject = null; // reset video element
-    }
-
-    capturePhoto(canvasElement)
-    {
-		return this.capturePhotoAsJpeg(canvasElement);
-    }
-
-	capturePhotoAsPng(canvasElement)
-	{
-		canvasElement = this.#handleCanvas(canvasElement);
-		return canvasElement.toDataURL('image/png');
+        this.stop();
 	}
 
-	capturePhotoAsJpeg(canvasElement)
-	{
-		canvasElement = this.#handleCanvas(canvasElement);
-		return canvasElement.toDataURL('image/jpeg', this.#imageQuality);
-	}
-
-	capturePhotoAsWebp(canvasElement)
-	{
-		canvasElement = this.#handleCanvas(canvasElement);
-		return canvasElement.toDataURL('image/webp', this.#imageQuality);
-	}
-
-	#handleCanvas(canvasElement)
-	{
-		canvasElement.height = this.#settings.height;
-		canvasElement.width = this.#settings.width;
-		let context = canvasElement.getContext('2d');
-		if(this.#isMirror)
-		{
-			context.translate(canvasElement.width, 0);
-			context.scale(-1, 1);
-		}
-		context.clearRect(0, 0, canvasElement.width, canvasElement.height);
-		context.drawImage(this.#videoElement, 0, 0, canvasElement.width, canvasElement.height);
-
-		return canvasElement;
-	}
 }

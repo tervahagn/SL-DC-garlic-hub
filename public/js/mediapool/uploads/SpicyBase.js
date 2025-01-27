@@ -1,7 +1,9 @@
 /*
- * SpicyCam: JavaScript Lib for easy Camera access
+ * SpicyCamCast: JavaScript Lib for easy Camera and Screencast access
  *
- * SpicyCam is free software: you can redistribute it and/or modify
+ * This file is part of the SpicyCamCast source code
+ *
+ * SpicyCamCast is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
@@ -16,75 +18,50 @@
  *
  * Copyright (C) 2025 Nikolaos Sagiadinos <niko@saghiadinos.de>
  */
-
-/**
- * This class was inspired by Benson Ruan webcam-easy
- */
-export class SpicyScreen
+export class SpicyBase
 {
 	#imageQuality    = 0.8
-    #videoElement    = null;
-    #camerasList     = [];
-    #streamList      = [];
-    #currentDeviceId = '';
-    #settings        = null;
 	#isMirror        = false;
+	#videoElement  = null;
+	#settings        = null;
+	#streamList      = [];
 
-    constructor(videoElement)
-    {
-        this.#videoElement        = videoElement;
-        this.#videoElement.width  = this.#videoElement.width || 640;
-        this.#videoElement.height = this.#videoElement.height || 360;
-    }
-
-
-    getMediaConstraints()
-    {
-        const videoConstraints    = {};
-
-        videoConstraints.width    = {ideal: 3840};
-        videoConstraints.height   = {ideal: 2160};
-
-        return {video: videoConstraints, audio: false};
-    }
-
-
-    async startScreencast()
-    {
-		return new Promise((resolve, reject) => {
-			navigator.mediaDevices.getDisplayMedia({ video: true, audio: true})
-				.then(stream => {
-					const track = stream.getVideoTracks()[0];
-
-					this.#settings = track.getSettings();
-					this.#streamList.push(stream);
-					this.#videoElement.srcObject = stream;
-
-					this.#videoElement.play();
-					resolve(this.#currentDeviceId);
-				})
-				.catch(error => {
-					console.log(error);
-					reject(error);
-				});
-		});
+	constructor(videoElement)
+	{
+		this.#videoElement        = videoElement;
+		this.#videoElement.width  = this.#videoElement.width || 640;
+		this.#videoElement.height = this.#videoElement.height || 360;
 	}
 
-    stopScreencast()
-    {
-        this.#streamList.forEach(stream => {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
-        });
+	get videoElement() { return this.#videoElement; }
 
-		this.#videoElement.srcObject = null; // reset video element
-    }
+	set isMirror(value) { this.#isMirror = value;}
 
-    capturePhoto(canvasElement)
-    {
+	get isMirror() { return this.#isMirror; }
+
+	set settings(value) { this.#settings = value; }
+
+	get settings() { return this.#settings;}
+
+	get streamList() { return this.#streamList; }
+
+	set streamList(value) {	this.#streamList = value;}
+
+	stop()
+	{
+		this.#streamList.forEach(stream => {
+			stream.getTracks().forEach(track => {
+				track.stop();
+			});
+		});
+
+		this.videoElement.srcObject = null; // reset video element
+	}
+
+	capturePhoto(canvasElement)
+	{
 		return this.capturePhotoAsJpeg(canvasElement);
-    }
+	}
 
 	capturePhotoAsPng(canvasElement)
 	{
