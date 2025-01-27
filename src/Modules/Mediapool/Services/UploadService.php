@@ -61,9 +61,13 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		$this->logger              = $logger;
 	}
 
-	public function requestApi(string $apiUrl): array
+	public function requestApi(string $apiUrl, $headers = []): array
 	{
-		$response = $this->client->request('GET', $apiUrl);
+		$options = [];
+		if (!empty($headers))
+			$options['headers'] =  $headers;
+
+		$response = $this->client->request('GET', $apiUrl, $options);
 
 		return json_decode($response->getBody(), true);
 	}

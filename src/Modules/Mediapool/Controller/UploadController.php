@@ -52,7 +52,11 @@ class UploadController
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 		}
 
-		$body = $this->uploadService->requestApi($bodyParams['api_url']);
+		$headers = null;
+		if (array_key_exists('headers', $bodyParams))
+			$headers = $bodyParams['headers'];
+
+		$body = $this->uploadService->requestApi($bodyParams['api_url'], $headers);
 		$response->getBody()->write(json_encode(['success' => true, 'data' => $body],JSON_UNESCAPED_UNICODE));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
