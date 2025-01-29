@@ -17,12 +17,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { ApiConfig } from '../../ApiConfig.js';
 import { AbstractStockPlatform } from './AbstractStockPlatform.js';
-
 export class PexelsPlatform extends AbstractStockPlatform
 {
 	#searchUri = "https://api.pexels.com/v1/search"
-	#backendApi = "/async/mediapool/requestApi";
 
 	constructor(fetchClient)
 	{
@@ -60,7 +59,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 
 			const dataToSend  = {"api_url": apiUrl, "headers": {"Authorization": this.apiToken}};
 			const options     = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)};
-			const results     = await this.fetchClient.fetchData(this.#backendApi, options);
+			const results     = await this.fetchClient.fetchData(ApiConfig.SEARCH_STOCK_IMAGES, options);
 
 			if (!results || !results.success)
 			{

@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { ApiConfig } from './ApiConfig.js';
+
 export class BaseUploader
 {
     #directoryView   = null;
@@ -49,10 +51,9 @@ export class BaseUploader
 			formData.append("node_id", String(this.directoryView.getActiveNodeId()));
 			formData.append("external_link", filePath);
 
-			const apiUrl   = '/async/mediapool/uploadExternal';
 			const options  = {method: "POST", body: formData};
 
-			const result = await this.fetchClient.fetchData(apiUrl, options);
+			const result = await this.fetchClient.fetchData(ApiConfig.UPLOAD_FROM_URL, options);
 
 			if (!result || !result.success)
 				console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
@@ -73,7 +74,6 @@ export class BaseUploader
 			this.uploaderDialog.enableActions()
 		}
 	}
-
 
 	/**
 	 * @type {DirectoryView}

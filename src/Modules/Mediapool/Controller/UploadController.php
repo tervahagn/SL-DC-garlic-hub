@@ -37,7 +37,7 @@ class UploadController
 		$this->uploadService = $uploadService;
 	}
 
-	public function requestApi(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function searchStockImages(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
 		{
@@ -64,7 +64,7 @@ class UploadController
 	/**
 	 * @throws Exception
 	 */
-	public function upload(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function uploadLocalFile(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
 		{
@@ -110,7 +110,7 @@ class UploadController
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
-	public function uploadExternal(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function uploadFromUrl(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		if (!$this->hasRights($request->getAttribute('session')))
 		{

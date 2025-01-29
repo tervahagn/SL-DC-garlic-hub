@@ -29,6 +29,9 @@ export class FetchClient
 
         this.#checkResponse(response);
 
+		// do not use const response.headers.get('Content-Type'); as
+		// supposed alternative.
+		// It is not trustable as server could send wrong content type.
         try
         {
             return await response.json()
@@ -37,17 +40,6 @@ export class FetchClient
         {
             return await response.text();
         }
-        /*
-
-        Not trustable, wen server send wrong contentype
-        const contentType = response.headers.get('Content-Type');
-        if (contentType?.includes('application/json'))
-            return await response.json();
-         else
-            return await response.text();
-
-
-         */
     }
 
     initUploadWithProgress()

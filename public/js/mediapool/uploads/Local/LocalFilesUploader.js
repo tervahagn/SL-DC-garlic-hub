@@ -18,6 +18,7 @@
 */
 
 import { BaseUploader } from "../BaseUploader.js";
+import { ApiConfig } from '../ApiConfig.js';
 
 export class LocalFilesUploader extends BaseUploader
 {
@@ -67,7 +68,6 @@ export class LocalFilesUploader extends BaseUploader
 					formData.append("node_id", this.directoryView.getActiveNodeId());
 					formData.append("metadata", JSON.stringify(this.#filePreviews.metaDataList[id]));
 
-					const apiUrl   = '/async/mediapool/upload';
 					const options  = {method: "POST", body: formData};
 
 					const progressBar = this.createProgressbar(container);
@@ -78,7 +78,7 @@ export class LocalFilesUploader extends BaseUploader
 					/**
 					 * @type {{ error_message?: string, success: boolean }}
 					 */
-					const results = await this.fetchClient.uploadWithProgress(apiUrl, options, (progress) => {
+					const results = await this.fetchClient.uploadWithProgress(ApiConfig.UPLOAD_LOCAL_FILE, options, (progress) => {
 						progressBar.style.display = "block";
 						progressBar.style.width = progress + "%";
 						progressBar.textContent = Math.round(progress) + "%";

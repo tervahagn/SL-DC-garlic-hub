@@ -19,12 +19,12 @@ import { LocalFilesUploader } from "./uploads/Local/LocalFilesUploader.js";
 import { ExternalFileUploader } from "./uploads/External/ExternalFileUploader.js";
 import { ExternalFileElements } from "./uploads/External/ExternalFileElements.js";
 
-import { SpicyCam } from "./uploads/Webcam/SpicyCam.js";
+import { SpicyCam } from "../external/spicy-camcast.min.js";
 import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
 import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
 import { WebcamPreviews } from "./uploads/Webcam/WebcamPreviews.js";
 
-import { SpicyCast } from "./uploads/Screencast/SpicyCast.js";
+import { SpicyCast } from "../external/spicy-camcast.min.js";
 import { ScreencastElements } from "./uploads/Screencast/ScreencastElements.js";
 import { ScreencastUploader } from "./uploads/Screencast/ScreencastUploader.js";
 import { ScreencastPreviews } from "./uploads/Screencast/ScreencastPreviews.js";
