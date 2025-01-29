@@ -2,7 +2,6 @@
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Framework\Core\Session;
 use App\Modules\Mediapool\Services\UploadService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -63,7 +62,7 @@ class UploadController
 		if (!isset($bodyParams['external_link']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No external file to upload.']);
 
-		$UID      = $request->getAttribute('session')->get('user')['UID'];
+		$UID     = $request->getAttribute('session')->get('user')['UID'];
 		$succeed = $this->uploadService->uploadExternalMedia($node_id, $UID, $bodyParams['external_link']);
 		return $this->jsonResponse($response, $succeed);
 	}
