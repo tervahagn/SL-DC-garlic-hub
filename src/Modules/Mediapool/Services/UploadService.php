@@ -61,6 +61,9 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		$this->logger              = $logger;
 	}
 
+	/**
+	 * @throws GuzzleException
+	 */
 	public function requestApi(string $apiUrl, $headers = []): array
 	{
 		$options = [];

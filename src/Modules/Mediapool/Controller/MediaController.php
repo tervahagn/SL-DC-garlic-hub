@@ -19,7 +19,7 @@ class MediaController
 	/**
 	 * @throws Exception
 	 */
-	public function list(ResponseInterface $response, array $args): ResponseInterface
+	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$node_id = $args['node_id'] ?? 0;
 		if ($node_id === 0)

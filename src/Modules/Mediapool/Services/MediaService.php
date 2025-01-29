@@ -89,7 +89,7 @@ class MediaService
 		$dataSet['media_id'] = Uuid::uuid4()->toString();
 		$dataSet['UID']      = $this->UID;
 
-		$uuid = $this->mediaRepository->insert($dataSet);
+		$dataSet['uuid']     = $this->mediaRepository->insert($dataSet);
 
 		return $dataSet;
 	}
