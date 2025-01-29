@@ -1,28 +1,9 @@
 <?php
-/*
- garlic-hub: Digital Signage Management Platform
-
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
- This file is part of the garlic-hub source code
-
- This program is free software: you can redistribute it and/or  modify
- it under the terms of the GNU Affero General Public License, version 3,
- as published by the Free Software Foundation.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 
 namespace App\Modules\Mediapool\Controller;
 
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\NodesService;
@@ -34,212 +15,133 @@ use Psr\Http\Message\ServerRequestInterface;
 class NodesController
 {
 	private NodesService $nodesService;
-	private int $UID;
 
-	/**
-	 * @param NodesService $nodesService
-	 */
 	public function __construct(NodesService $nodesService)
 	{
 		$this->nodesService = $nodesService;
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		if (!$this->isLogged($request->getAttribute('session')))
-		{
-			$response->getBody()->write(json_encode([]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
-		}
-
-		$parent_id = (array_key_exists('parent_id', $args)) ? (int) $args['parent_id'] : 0;
-		$this->nodesService->setUID($this->UID);
+		$parent_id = $args['parent_id'] ?? 0;
+		$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
 		$result = $this->nodesService->getNodes($parent_id);
 
-		$payload = json_encode($result);
-		$response->getBody()->write($payload);
-
+		$response->getBody()->write(json_encode($result));
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DatabaseException
+	 * @throws CoreException
+	 */
 	public function add(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->isLogged($request->getAttribute('session')))
-		{
-			$response->getBody()->write(json_encode([]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
-		}
-
 		$bodyParams = $request->getParsedBody();
-		if (!array_key_exists('name', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node name is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
+		if (!isset($bodyParams['name']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node name is missing']);
 
 		try
 		{
-			$node_id = 0;
-			if (array_key_exists('node_id', $bodyParams))
-				$node_id = (int) $bodyParams['node_id'];
-
-			$this->nodesService->setUID($this->UID);
+			$node_id = $bodyParams['node_id'] ?? 0;
+			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
 			$new_node_id = $this->nodesService->addNode($node_id, $bodyParams['name']);
 
-			$response->getBody()->write(json_encode([
+			return $this->jsonResponse($response, [
 				'success' => true,
 				'data' => ['id' => $new_node_id, 'new_name' => $bodyParams['name']]
-				])
-			);
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			]);
 		}
 		catch (Exception | ModuleException $e)
 		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
 	}
 
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->isLogged($request->getAttribute('session')))
-		{
-			$response->getBody()->write(json_encode([]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
-		}
-
 		$bodyParams = $request->getParsedBody();
-		if (!array_key_exists('name', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node name is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
+		if (!isset($bodyParams['name']) || !isset($bodyParams['node_id']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node name or id is missing']);
 
-		if (!array_key_exists('node_id', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
-
-		$visibility = null;
-		if (array_key_exists('visibility', $bodyParams))
-		{
-			$visibility = $bodyParams['visibility'];
-		}
+		$visibility = $bodyParams['visibility'] ?? null;
 
 		try
 		{
-			$this->nodesService->setUID($this->UID);
+			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
 			$count = $this->nodesService->editNode($bodyParams['node_id'], $bodyParams['name'], $visibility);
 			if ($count === 0)
 				throw new ModuleException('mediapool', 'Edit node failed');
 
-			$response->getBody()->write(json_encode([
-					'success' => true,
-					'data' => [
-						'id' => $bodyParams['node_id'],
-						'new_name' => $bodyParams['name'],
-						'visibility' => $visibility
-					]
-				])
-			);
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, [
+				'success' => true,
+				'data' => [
+					'id' => $bodyParams['node_id'],
+					'new_name' => $bodyParams['name'],
+					'visibility' => $visibility
+				]
+			]);
 		}
 		catch (CoreException | PhpfastcacheSimpleCacheException | Exception | ModuleException $e)
 		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
 	}
 
+	/**
+	 * @throws DatabaseException
+	 */
 	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->isLogged($request->getAttribute('session')))
-		{
-			$response->getBody()->write(json_encode([]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
-		}
-
 		$bodyParams = $request->getParsedBody();
-		if (!array_key_exists('src_node_id', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Source node is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
-
-		if (!array_key_exists('target_node_id', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Target node is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
-
-		if (!array_key_exists('target_region', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'Target region is 
-			missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
+		if (!isset($bodyParams['src_node_id']) || !isset($bodyParams['target_node_id']) || !isset($bodyParams['target_region']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source node, target node, or target region is missing']);
 
 		try
 		{
-			$this->nodesService->setUID($this->UID);
-			$count = $this->nodesService->moveNode(
-				$bodyParams['src_node_id'],
-				$bodyParams['target_node_id'],
-				$bodyParams['target_region']
-			);
-			$response->getBody()->write(json_encode(['success' => true, 'data' => ['count_deleted_nodes' => $count]]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
+			$count = $this->nodesService->moveNode($bodyParams['src_node_id'], $bodyParams['target_node_id'], $bodyParams['target_region']);
+			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
 		catch (Exception | FrameworkException | ModuleException $e)
 		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
-
 	}
 
-
+	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		if (!$this->isLogged($request->getAttribute('session')))
-		{
-			$response->getBody()->write(json_encode([]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
-		}
-
 		$bodyParams = $request->getParsedBody();
-		if (!array_key_exists('node_id', $bodyParams))
-		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => 'node is missing']));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-		}
+		if (!isset($bodyParams['node_id']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
 		try
 		{
-			$this->nodesService->setUID($this->UID);
+			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
 			$count = $this->nodesService->deleteNode($bodyParams['node_id']);
-			$response->getBody()->write(json_encode(['success' => true, 'data' => ['count_deleted_nodes' => $count]]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
 		catch (Exception | FrameworkException | ModuleException $e)
 		{
-			$response->getBody()->write(json_encode(['success' => false, 'error_message' => $e->getMessage()]));
-			return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
-
 	}
 
-	private function isLogged(Session $session): bool
+	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
-		$ret = $session->exists('user');
-		if ($ret)
-			$this->UID = $session->get('user')['UID'];
-
-		return $ret;
+		$response->getBody()->write(json_encode($data));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
-
 }

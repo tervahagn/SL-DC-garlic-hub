@@ -54,7 +54,7 @@ class UploadController
 	public function uploadFromUrl(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		$node_id = (int)($bodyParams['node_id'] ?? 0);
+		$node_id    = (int)($bodyParams['node_id'] ?? 0);
 
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
