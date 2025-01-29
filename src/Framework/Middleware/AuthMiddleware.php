@@ -34,11 +34,22 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
 
+/**
+ * The process method in the AuthMiddleware class is responsible for
+ * handling authentication for incoming HTTP requests.
+ *
+ * It implements the MiddlewareInterface and is designed to intercept requests,
+ * check for authentication, and either allow the request to proceed or redirect
+ * it based on the authentication status.
+ *
+ * The process method ensures that only authenticated users can access
+ * protected routes, while allowing public routes to be accessed without
+ * authentication. It handles session and cookie-based authentication,
+ * and appropriately responds based on the authentication status.
+ */
 class AuthMiddleware implements MiddlewareInterface
 {
-
 	private AuthService $authService;
-
 	private array $publicRoutes = [
 		'set-locales',
 		'register',
@@ -108,11 +119,19 @@ class AuthMiddleware implements MiddlewareInterface
 
 	private function respondNonAuth(string $path, ServerRequestInterface $request, RequestHandlerInterface $handler):	ResponseInterface
 	{
-		$response = new Response();
 		if ($path === 'login')
 			return $handler->handle($request);
+
+		$isApiRequest = ($path === 'async') || ($path === 'api') ||	$request->getHeaderLine('Accept') === 'application/json';
+
+		$response = new Response();
+		if ($isApiRequest)
+		{
+			$data = ['success' => false, 'message' => 'Unauthorized access. Please log in first.'];
+			$response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
+			return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+		}
 		else
 			return $response->withHeader('Location', '/login')->withStatus(302);
 	}
-
 }
