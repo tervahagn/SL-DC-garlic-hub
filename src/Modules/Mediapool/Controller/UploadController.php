@@ -67,9 +67,9 @@ class UploadController
 		return $this->jsonResponse($response, $succeed);
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data, int $status = 200): ResponseInterface
+	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
 		$response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
-		return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }
