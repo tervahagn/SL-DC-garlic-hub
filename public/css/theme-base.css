@@ -80,6 +80,20 @@ form {margin: 0 auto;}
 	button:hover, a.button:hover{color:#000;border: 1px solid #000;}
 	.trumbowyg-button-pane button{min-width:0;}
 
+dialog
+{
+    border:0;
+    border-radius: var(--gh-border-radius);
+    box-shadow: var(--gh-box-shadow);
+    padding:0;
+}
+    dialog .dlg_buttons { display: flex;gap: 1rem; margin:1em 0 0 0;}
+    dialog::backdrop {background-color: rgba(0, 0, 0, 0.8);}
+    dialog header {display: flex; color:#fff;justify-content: space-between; align-items: center;padding: 0.25rem 0.5rem;background-color: rgb(0, 122, 80)
+    }
+    dialog fieldset {background-color: unset; border:0;}
+    dialog .close-button {color: #fff;}
+
 
 main{flex: 1; padding:1rem;position:  relative;}
 footer{text-align: right;}
@@ -112,9 +126,9 @@ footer{text-align: right;}
 		80% { opacity: 1; }
 		100% { opacity: 0; display: none; }
 	}
-	.close-button {background: none;border: none;font-size:1rem;cursor: pointer;margin-left:auto;}
+	.close-button {background: none;border:none;padding:0;font-size:1rem;cursor:pointer;margin-left:auto;}
 	.close-button:hover {border: none;}
-	.close-button i {font-size: 24px;}
+	.close-button i {font-size: 28px;}
 
 /* Contextmenu */
 

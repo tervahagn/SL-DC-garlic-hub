@@ -11,10 +11,12 @@
 			</nav>
 
 			<dialog id="editFolderDialog">
-				<button id="closeEditDialog" class="close-button" aria-label="Close">&times;</button>
 				<form method="dialog">
+					<header>
+						<span class="dialog-name"></span>
+						<button id="closeEditDialog" class="close-button bi bi-x" aria-label="Close"></button>
+					</header>
 					<fieldset>
-						<legend></legend>
 						<label for="folder_name">{{LANG_FOLDER_NAME}}:
 							<input type="text" id="folder_name" name="folder_name" required>
 						</label>
@@ -56,13 +58,16 @@
 
 		<section class="content">
 			<dialog id="uploaderDialog">
-				<button id="closeUploadDialog" class="close-button"  aria-label="Close">&times;</button>
+				<header>
+					<span class="dialog-name">{{LANG_UPLOADER}}</span>
+					<button id="closeUploadDialog" class="close-button bi bi-x" aria-label="Close"></button>
+				</header>
 				<nav class="tab-header">
-					<button class="tab-button active" data-tab="dragDropTab">Upload</button>
-					<button class="tab-button" data-tab="linkTab">Link</button>
-					<button class="tab-button" data-tab="webcamTab">Webcam</button>
-					<button class="tab-button" data-tab="screencastTab">Screencast</button>
-					<button class="tab-button" data-tab="stockPlatformsTab">Mediapools</button>
+					<button class="tab-button active" data-tab="dragDropTab">{{LANG_UPLOAD_LOCAL_FILES}}</button>
+					<button class="tab-button" data-tab="linkTab">{{LANG_UPLOAD_EXTERNAL_FILES}}</button>
+					<button class="tab-button" data-tab="webcamTab">{{LANG_UPLOAD_CAMERA}}</button>
+					<button class="tab-button" data-tab="screencastTab">{{LANG_UPLOAD_SCREENCAST}}</button>
+					<button class="tab-button" data-tab="stockPlatformsTab">{{LANG_UPLOAD_STOCK_LIBRARIES}}</button>
 				</nav>
 
 				<section class="tab-content active" id="dragDropTab">
@@ -160,6 +165,7 @@
 					</div>
 					<div id="downloadStatus"></div>
 					<button id="startPlatformsUpload" class="upload-button">{{LANG_DOWNLOAD_MARKED}}</button>
+
 					<template id="result-media-template">
 						<article class="result-media-container">
 							<input type="checkbox" class="result-checkbox" title="{{LANG_MARK_FOR_DOWNLOAD}}">
@@ -184,7 +190,10 @@
 			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
 			</div>
 			<dialog id="editMediaDialog">
-				<button id="closeEditMediaDialog" class="close-button" aria-label="Close">&times;</button>
+				<header>
+					<span class="dialog-name">{{LANG_UPLOADER}}</span>
+					<button id="closeEditMediaDialog" class="close-button bi bi-x" aria-label="Close"></button>
+				</header>
 				<form method="dialog">
 					<fieldset>
 						<legend></legend>

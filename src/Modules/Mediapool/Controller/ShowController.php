@@ -86,6 +86,7 @@ class ShowController
 					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
 					'LANG_OWNER' => $translator->translate('owner', 'main'),
+					'LANG_UPLOADER' => $translator->translate('uploader', 'mediapool'),
 					'LANG_FILENAME' => $translator->translate('filename', 'mediapool'),
 					'LANG_DESCRIPTION' => $translator->translate('description', 'mediapool'),
 					'LANG_MIMETYPE' => $translator->translate('mimetype', 'mediapool'),
@@ -108,6 +109,12 @@ class ShowController
 					'LANG_SEARCH' => $translator->translate('search', 'main'),
 					'LANG_MARK_FOR_DOWNLOAD' => $translator->translate('mark_for_download', 'mediapool'),
 					'LANG_DOWNLOAD_MARKED' => $translator->translate('download_marked', 'mediapool'),
+					'LANG_UPLOAD_LOCAL_FILES' => $translator->translate('upload_local_files', 'mediapool'),
+					'LANG_UPLOAD_EXTERNAL_FILES' => $translator->translate('upload_external_files', 'mediapool'),
+					'LANG_UPLOAD_CAMERA' => $translator->translate('upload_camera', 'mediapool'),
+					'LANG_UPLOAD_SCREENCAST' => $translator->translate('upload_screencast', 'mediapool'),
+					'LANG_UPLOAD_STOCK_LIBRARIES' => $translator->translate('upload_stock_libraries', 'mediapool'),
+
 				]
 			]
 		];
@@ -118,6 +125,7 @@ class ShowController
 			$data['this_layout']['data']['add_root_folder'] = [
 				'LANG_ADD_ROOT_FOLDER' => $translator->translate('add_root_folder', 'mediapool')
 				];
+			$data['this_layout']['data']['LANG_ADD_ROOT_FOLDER'] = $translator->translate('add_root_folder', 'mediapool');
 		}
 		/** @var Config $config */
 		$config = $request->getAttribute('config');

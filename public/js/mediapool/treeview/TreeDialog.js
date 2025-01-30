@@ -39,7 +39,7 @@ export class TreeDialog
 	prepareShow(action, lang)
 	{
 		this.#action = action;
-		this.#dialogElement.querySelector("legend").textContent = lang[action];
+		this.#dialogElement.querySelector(".dialog-name").textContent = lang[action];
 	}
 
 	show()

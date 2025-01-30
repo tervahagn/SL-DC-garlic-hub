@@ -35,27 +35,8 @@ main
     #wrap_tree_filter{display: flex; gap: 0.5rem; align-items: center;margin-bottom:0.5rem;}
     #wrap_tree_filter > input{width:85%;padding:0.1rem 0.25rem;border-radius: 5px; }
 
-dialog
+.context_menu
 {
-    border:0;
-    border-radius: var(--gh-border-radius);
-    box-shadow: var(--gh-box-shadow);
-}
-    dialog .dlg_buttons { display: flex;gap: 1rem; margin:1em 0 0 0; }
-    dialog::backdrop {background-color:  rgba(0, 122, 80, 0.5);}
-
-@keyframes pulse {
-    0% {
-        transform: translate(-50%, -50%) scale(0.5);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0;
-    }
-}
-
-.context_menu {
     position: absolute;
     z-index: 1000;
     list-style: none;
@@ -74,9 +55,7 @@ dialog
         gap: 8px;
     }
 
-    .context_menu li:hover {
-        background-color: #f0f0f0;
-    }
+    .context_menu li:hover { background-color: #f0f0f0; }
 
 #uploadDialog{width:800px;height:800px;}
 
