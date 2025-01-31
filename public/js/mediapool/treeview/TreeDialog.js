@@ -23,14 +23,14 @@ export class TreeDialog
 	#closeElement = null;
 	#action = "";
 	#directoryView = null;
-	#nodesModel = null;
+	#fetchClient = null;
 
-	constructor(dialog_element, close_element, directoryView, nodesModel)
+	constructor(dialog_element, close_element, directoryView,  fetchClient)
 	{
 		this.#dialogElement = dialog_element;
-		this.#closeElement = close_element;
+		this.#closeElement  = close_element;
 		this.#directoryView = directoryView;
-		this.#nodesModel = nodesModel;
+		this.#fetchClient   = fetchClient;
 
 		this.#addCancelEvent();
 		this.#addSaveEvent();
@@ -80,7 +80,7 @@ export class TreeDialog
 					body: JSON.stringify(dataToSend)
 				}
 
-				const result = await this.#nodesModel.fetchData(apiUrl, options).catch(error =>
+				const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error =>
 				{
 					console.error('Fetch error:', error.message);
 					return null;

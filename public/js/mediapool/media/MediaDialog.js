@@ -22,8 +22,7 @@ export class MediaDialog
     #dialogElement = null;
     #closeElement = null;
     #action       = "";
-    #mediaElement = null;
-    #fetchClient = null;
+    #fetchClient  = null;
 
     constructor(dialog_element, close_element, fetchClient)
     {

@@ -1,4 +1,3 @@
-import { NodesModel } from "./treeview/NodesModel.js";
 import { DirectoryView } from "./treeview/DirectoryView.js";
 import { TreeDialog } from "./treeview/TreeDialog.js";
 
@@ -35,7 +34,6 @@ import { StockPlatformUploader } from "./uploads/StockPlatform/StockPlatformUplo
 
 document.addEventListener("DOMContentLoaded", function()
 {
-	const nodesModel    = new NodesModel();
 	let fetchClient   = new FetchClient();
 	let mediaService  = new MediaService(fetchClient);
 	let mediaDialog   = new MediaDialog(
@@ -55,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function()
 		document.getElementById("current-path"),
 		mediaList,
 		mediaService,
-        fetchClient
+		fetchClient
 	);
 	directoryView.addFilter(document.getElementById("tree_filter"));
 
@@ -63,9 +61,9 @@ document.addEventListener("DOMContentLoaded", function()
 		document.getElementById('editFolderDialog'),
 		document.getElementById("closeEditDialog"),
 		directoryView,
-		nodesModel
+		fetchClient
 	);
-	directoryView.addContextMenu(nodesModel, treeDialog, lang);
+	directoryView.addContextMenu(fetchClient, treeDialog, lang);
 
 	const addRootFolder = document.getElementById('addRootFolder');
 	if (addRootFolder !== null)

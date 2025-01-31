@@ -20,14 +20,14 @@
 export class ContextMenuTreeView
 {
     #menu = null;
-    #nodesModel = null;
+    #fetchClient = null;
     #treeDialog = null;
 
-    constructor(menu, nodesModel, treeDialog)
+    constructor(menu, fetchClient, treeDialog)
     {
-        this.#menu = menu;
-        this.#nodesModel = nodesModel;
-        this.#treeDialog = treeDialog;
+        this.#menu        = menu;
+        this.#fetchClient = fetchClient;
+        this.#treeDialog  = treeDialog;
     }
 
     show(event)
@@ -68,7 +68,7 @@ export class ContextMenuTreeView
                     body: JSON.stringify(dataToSend)
                 }
 
-                const result = await this.#nodesModel.fetchData(apiUrl, options).catch(error => {
+                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
                     console.error('Fetch error:', error.message);
                     return null;
                 });
