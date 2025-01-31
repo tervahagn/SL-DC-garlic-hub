@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ApiConfig } from './ApiConfig.js';
+import { UploadApiConfig } from './UploadApiConfig.js';
 
 export class BaseUploader
 {
@@ -53,7 +53,7 @@ export class BaseUploader
 
 			const options  = {method: "POST", body: formData};
 
-			const result = await this.fetchClient.fetchData(ApiConfig.UPLOAD_FROM_URL, options);
+			const result = await this.fetchClient.fetchData(UploadApiConfig.UPLOAD_FROM_URL, options);
 
 			if (!result || !result.success)
 				console.error('Error for file:', filePath, result?.error_message || 'Unknown error');

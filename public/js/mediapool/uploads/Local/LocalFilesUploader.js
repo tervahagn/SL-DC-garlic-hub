@@ -18,7 +18,7 @@
 */
 
 import { BaseUploader } from "../BaseUploader.js";
-import { ApiConfig } from '../ApiConfig.js';
+import { UploadApiConfig } from '../UploadApiConfig.js';
 
 export class LocalFilesUploader extends BaseUploader
 {
@@ -78,7 +78,7 @@ export class LocalFilesUploader extends BaseUploader
 					/**
 					 * @type {{ error_message?: string, success: boolean }}
 					 */
-					const results = await this.fetchClient.uploadWithProgress(ApiConfig.UPLOAD_LOCAL_FILE, options, (progress) => {
+					const results = await this.fetchClient.uploadWithProgress(UploadApiConfig.UPLOAD_LOCAL_FILE, options, (progress) => {
 						progressBar.style.display = "block";
 						progressBar.style.width = progress + "%";
 						progressBar.textContent = Math.round(progress) + "%";

@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export const ApiConfig = {
+export const UploadApiConfig = {
 	UPLOAD_LOCAL_FILE: "/async/mediapool/uploadLocalFile",
 	UPLOAD_FROM_URL: "/async/mediapool/uploadFromUrl",
 	SEARCH_STOCK_IMAGES: "/async/mediapool/searchStockImages"
