@@ -18,14 +18,23 @@
 */
 
 import { ContextMenuTreeView } from "./ContextMenuTreeView.js";
+import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
+
+/**
+ * @typedef {Object} NodeEvent
+ * @property {Object} node
+ * @property {Object} sourceNode
+ * @property {Object} suggestedDropMode
+ * @property {Object} tree
+ * @property {Function} node.getPath
+ * @property {Function} node.getParentList
+ * @property {string} node.key
+ */
 
 export class DirectoryView
 {
     #tree               = null;
     #tree_element       = null;
-    static DEBUG_LEVEL  = 0;
-    static SOURCE_URI   = '/async/mediapool/node/0';
-    static LAZYLOAD_URI = '/async/mediapool/node/';
     #activeNode         = null;
     #mediaList          = null;
     #mediaService       = null;
@@ -38,9 +47,9 @@ export class DirectoryView
         this.#mediaService = mediaService;
         this.#fetchClient  = fetchClient;
         this.#tree         = new mar10.Wunderbaum({
-            debugLevel: DirectoryView.DEBUG_LEVEL,
+            debugLevel: TreeViewApiConfig.DEBUG_LEVEL,
             element: this.#tree_element,
-            source: { url: DirectoryView.SOURCE_URI },
+            source: { url: TreeViewApiConfig.ROOT_NODES_URI },
             init: async (e) => {
                 if (localStorage.getItem('parent_list') === null)
                     return;
@@ -59,9 +68,9 @@ export class DirectoryView
             },
             selectMode: "single",
             lazyLoad: function (e){
-                return { url:DirectoryView.LAZYLOAD_URI + e.node.key, params: { parentKey: e.node.key } };
+                return { url:TreeViewApiConfig.SUB_NODES_URI + e.node.key, params: { parentKey: e.node.key } };
              },
-            activate: (e) => {
+			activate: (e) => {
                 current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
                 document.getElementById("openUploadDialog").disabled = false;
                 this.#activeNode = e.node;
@@ -259,11 +268,10 @@ export class DirectoryView
 
     async #moveNodeTo(e)
     {
-        const apiUrl     = "/async/mediapool/node/move";
         const dataToSend = {"src_node_id": e.sourceNode.key, "target_node_id": e.node.key, "target_region": e.suggestedDropMode};
         const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
 
-        const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+        const result = await this.#fetchClient.fetchData(TreeViewApiConfig.MOVE_NODE_URI, options).catch(error => {
             console.error('Fetch error:', error.message);
             return null;
         });

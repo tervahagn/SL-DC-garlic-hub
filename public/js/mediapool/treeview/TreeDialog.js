@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {TreeViewApiConfig} from "./TreeViewApiConfig";
+
 export class TreeDialog
 {
 	#dialogElement = null;
@@ -72,7 +74,6 @@ export class TreeDialog
 			(async () =>
 			{
 				const method = this.#determineMethod();
-				const apiUrl = '/async/mediapool/node';
 				const dataToSend = this.#determineDataToSend();
 				const options = {
 					method: method,
@@ -80,7 +81,7 @@ export class TreeDialog
 					body: JSON.stringify(dataToSend)
 				}
 
-				const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error =>
+				const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error =>
 				{
 					console.error('Fetch error:', error.message);
 					return null;

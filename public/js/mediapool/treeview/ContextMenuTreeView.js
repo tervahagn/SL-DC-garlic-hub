@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
+
 export class ContextMenuTreeView
 {
     #menu = null;
@@ -59,8 +61,6 @@ export class ContextMenuTreeView
     {
         removeNodeElement.addEventListener("click", () => {
             (async () => {
-
-                const apiUrl = "/async/mediapool/node";
                 const dataToSend = {"node_id": currentTreeNode.key};
                 const options = {
                     method: 'DELETE',
@@ -68,7 +68,7 @@ export class ContextMenuTreeView
                     body: JSON.stringify(dataToSend)
                 }
 
-                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+                const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error => {
                     console.error('Fetch error:', error.message);
                     return null;
                 });
