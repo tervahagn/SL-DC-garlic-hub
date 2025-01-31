@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {TreeViewApiConfig} from "./TreeViewApiConfig";
+import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
 
 export class TreeDialog
 {

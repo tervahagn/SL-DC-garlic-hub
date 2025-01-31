@@ -20,7 +20,7 @@
 export const TreeViewApiConfig = {
 	DEBUG_LEVEL: 0,
 	BASE_NODE_URI: "/async/mediapool/node",
-	ROOT_NODES_URI: "/async/mediapool/node/0'",
+	ROOT_NODES_URI: "/async/mediapool/node/0",
 	SUB_NODES_URI: "/async/mediapool/node/",
 	MOVE_NODE_URI: "/async/mediapool/node/move"
 };

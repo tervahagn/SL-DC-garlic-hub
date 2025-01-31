@@ -60,7 +60,6 @@ class ShowController
 					'/css/mediapool/uploads.css'
 				],
 				'footer_scripts' => [
-					'/js/external/wunderbaum.umd.min.js',
 					'/js/external/glightbox.min.js',
 					'/js/external/jszip.min.js'
 				],
