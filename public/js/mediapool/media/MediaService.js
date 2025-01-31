@@ -19,6 +19,11 @@
 
 import {MediaApiConfig} from "./MediaApiConfig.js";
 
+/**
+ * @typedef {Object} ResultType
+ * @property {string} error_text
+ * @property {number} new_media
+ */
 export class MediaService
 {
     fetchClient       = null;
@@ -31,7 +36,7 @@ export class MediaService
     async loadMedia(nodeId)
     {
         const url    = MediaApiConfig.LIST_URI + nodeId;
-        const result = await this.fetchClient.fetchData(url).catch(error => {
+		const result = await this.fetchClient.fetchData(url).catch(error => {
 			throw new Error(error.message);
 		});
 
