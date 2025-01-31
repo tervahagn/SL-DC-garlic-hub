@@ -17,17 +17,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {MediaApiConfig} from "./MediaApiConfig.js";
+
 export class ContextMenuMedia
 {
-    #menuElement = null;
-    #fetchClient = null;
+    #menuElement  = null;
+    #mediaService = null;
     #mediaDialog  = null;
 
-    constructor(menuElement, fetchClient, mediaDialog)
+    constructor(menuElement, mediaService, mediaDialog)
     {
-        this.#menuElement = menuElement;
-        this.#fetchClient = fetchClient;
-        this.#mediaDialog = mediaDialog;
+        this.#menuElement  = menuElement;
+        this.#mediaService = mediaService;
+        this.#mediaDialog  = mediaDialog;
     }
 
     show(event)
@@ -51,52 +53,17 @@ export class ContextMenuMedia
         cloneMediaMenuElement.addEventListener("click", () => {
             (async () => {
 
-                const apiUrl = "/async/mediapool/media/clone";
-                const dataToSend = {"media_id": currentMedia.getAttribute('data-media-id')};
-                const options = {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-
-                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
-                    console.error('Fetch error:', error.message);
-                    return null;
-                });
-
-                if (!result || !result.success)
-                {
-                    console.error('Error:', result?.error_message || 'Unknown error');
-                    return;
-                }
-
-                callback(result.new_media);
-
+                const newMedia = await this.#mediaService.cloneMedia(currentMedia.getAttribute('data-media-id'));
+                callback(newMedia);
             })();
         });
     }
-
 
     addRemoveEvent(removeMediaMenuElement, currentMedia)
     {
         removeMediaMenuElement.addEventListener("click", () => {
             (async () => {
-
-                const apiUrl = "/async/mediapool/media";
-                const dataToSend = {"media_id": currentMedia.getAttribute('data-media-id')};
-                const options = {
-                    method: 'DELETE',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(dataToSend)
-                }
-
-                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
-                    console.error('Fetch error:', error.message);
-                    return null;
-                });
-
-                if (!result || !result.success)
-                {
-                    console.error('Error:', result?.error_message || 'Unknown error');
-                    return;
-                }
-
+                await this.#mediaService.removeMedia(currentMedia.getAttribute('data-media-id'));
                 currentMedia.remove();
             })();
         });

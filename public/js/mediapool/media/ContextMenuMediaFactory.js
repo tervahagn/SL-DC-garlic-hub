@@ -18,25 +18,24 @@
 */
 
 import { ContextMenuMedia } from "./ContextMenuMedia.js";
-
 export class ContextMenuMediaFactory
 {
     #templateElement = null;
-    #fetchClient = null;
+    #mediaService = null;
     #mediaDialog = null;
 
-    constructor(templateElement, mediaDialog, fetchClient)
+    constructor(templateElement, mediaDialog, mediaService)
     {
         this.#templateElement = templateElement;
-        this.#mediaDialog = mediaDialog;
-        this.#fetchClient  = fetchClient;
+        this.#mediaDialog     = mediaDialog;
+        this.#mediaService    = mediaService;
     }
 
     create()
     {
         return new ContextMenuMedia(
             this.#templateElement.content.cloneNode(true).firstElementChild,
-            this.#fetchClient,
+            this.#mediaService,
             this.#mediaDialog
         );
     }

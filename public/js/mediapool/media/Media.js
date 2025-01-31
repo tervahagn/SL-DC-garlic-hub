@@ -20,12 +20,10 @@
 export class Media
 {
     #mediaElement = null;
-    #fetchClient = null;
 
-    constructor(mediaElement, fetchClient)
+    constructor(mediaElement)
     {
         this.#mediaElement = mediaElement;
-        this.#fetchClient  = fetchClient;
     }
 
     buildMediaItem(media)

@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function()
 
 	let mediaList     = new MediaList(
 		document.getElementById("media-list"),
-		new MediaFactory(document.getElementById('media-template'), fetchClient),
-        new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, fetchClient),
+		new MediaFactory(document.getElementById('media-template')),
+        new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, mediaService),
 	);
 
 	let directoryView  = new DirectoryView(

@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {MediaApiConfig} from "./MediaApiConfig.js";
+
 export class MediaList
 {
     #mediaListElement = null;
@@ -40,8 +42,8 @@ export class MediaList
 
         const lightbox = GLightbox({
             plyr: {
-                css: "/css/external/plyr.css",
-                js: "/js/external/plyr.js"
+                css: MediaApiConfig.PYR_CSS_PATH,
+                js: MediaApiConfig.PYR_JS_PATH
             },
             width: "90vw",
             height: "90vh",

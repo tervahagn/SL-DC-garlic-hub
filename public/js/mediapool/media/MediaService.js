@@ -17,12 +17,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {MediaApiConfig} from "./MediaApiConfig.js";
+
 export class MediaService
 {
     fetchClient       = null;
-    static MEDIALIST_URI = '/async/mediapool/media/';
-    static MEDIAMOVE_URI = '/async/mediapool/media/move';
-    static MEDIACOPY_URI = '/async/mediapool/media/copy';
 
     constructor(fetchClient)
     {
@@ -31,39 +30,59 @@ export class MediaService
 
     async loadMedia(nodeId)
     {
-        const url  = MediaService.MEDIALIST_URI + nodeId;
-        const data = await this.fetchClient.fetchData(url);
+        const url    = MediaApiConfig.LIST_URI + nodeId;
+        const result = await this.fetchClient.fetchData(url);
 
-        if (data.error)
-            throw new Error(data.error_text);
+		if (!result || !result.success)
+			throw new Error(result.error_text);
 
-        return data;
+		return result;
     }
+
+	async editMetaData(mediaId, data)
+	{
+		const dataToSend = {"media_id": mediaId, "data": data};
+		const options    = {method: "UPDATE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+		const result     = await this.fetchClient.fetchData(MediaApiConfig.EDIT_URI, options);
+
+		if (!result || !result.success)
+			throw new Error(result.error_text);
+
+		return result;
+	}
 
     async moveMedia(mediaId, nodeId)
     {
-        const url  = MediaService.MEDIAMOVE_URI;
-        const dataToSend  = {"media_id": mediaId, "node_id": nodeId};
-        const options= {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const data = await this.fetchClient.fetchData(url, options);
+        const dataToSend = {"media_id": mediaId, "node_id": nodeId};
+        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+        const result     = await this.fetchClient.fetchData(MediaApiConfig.MOVE_URI, options);
 
-        if (data.error)
-            throw new Error(data.error_text);
+		if (!result || !result.success)
+			throw new Error(result.error_text);
 
-        return data;
+        return result;
     }
 
-    async copyMedia(mediaId)
+    async cloneMedia(mediaId)
     {
-        const url  = MediaService.MEDIACOPY_URI;
-        const dataToSend  = {"media_id": mediaId};
-        const options= {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const data = await this.fetchClient.fetchData(url);
+        const dataToSend = {"media_id": mediaId};
+        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+        const result     = await this.fetchClient.fetchData(MediaApiConfig.CLONE_URI, options);
 
-        if (data.error)
-            throw new Error(data.error_text);
+		if (!result || !result.success)
+			throw new Error(result.error_text);
 
-        return data;
+        return result.new_media;
     }
+
+	async removeMedia(mediaId)
+	{
+		const dataToSend = {"media_id": mediaId};
+		const options    = {method: "DELETE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+		const result     = await this.fetchClient.fetchData(MediaApiConfig.BASE_URI, options);
+
+		if (!result || !result.success)
+			throw new Error(result.error_text);
+	}
 
 }

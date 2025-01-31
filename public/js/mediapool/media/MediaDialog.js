@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {MediaApiConfig} from "./MediaApiConfig.js";
+
 export class MediaDialog
 {
     #dialogElement = null;
@@ -55,7 +57,7 @@ export class MediaDialog
 
             (async () => {
                 const method     = "POST";
-                const apiUrl     = "/async/mediapool/media/";
+                const apiUrl     = MediaApiConfig.BASE_URI + "/";
                 const dataToSend = ""; //this.#determineDataToSend();
                 const options    = {method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
 

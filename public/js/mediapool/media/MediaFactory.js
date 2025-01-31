@@ -22,16 +22,14 @@ import { Media } from "./Media.js";
 export class MediaFactory
 {
     #templateElement = null;
-    #fetchClient = null;
 
-    constructor(templateElement, fetchClient)
+    constructor(templateElement)
     {
         this.#templateElement = templateElement;
-        this.#fetchClient = fetchClient;
     }
 
     create()
     {
-        return new Media(this.#templateElement.content.cloneNode(true), this.#fetchClient);
+        return new Media(this.#templateElement.content.cloneNode(true));
     }
 }
