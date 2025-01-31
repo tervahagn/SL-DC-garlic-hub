@@ -31,7 +31,9 @@ export class MediaService
     async loadMedia(nodeId)
     {
         const url    = MediaApiConfig.LIST_URI + nodeId;
-        const result = await this.fetchClient.fetchData(url);
+        const result = await this.fetchClient.fetchData(url).catch(error => {
+			throw new Error(error.message);
+		});
 
 		if (!result || !result.success)
 			throw new Error(result.error_text);
@@ -43,7 +45,9 @@ export class MediaService
 	{
 		const dataToSend = {"media_id": mediaId, "data": data};
 		const options    = {method: "UPDATE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-		const result     = await this.fetchClient.fetchData(MediaApiConfig.EDIT_URI, options);
+		const result     = await this.fetchClient.fetchData(MediaApiConfig.EDIT_URI, options).catch(error => {
+			throw new Error(error.message);
+		});
 
 		if (!result || !result.success)
 			throw new Error(result.error_text);
@@ -55,7 +59,9 @@ export class MediaService
     {
         const dataToSend = {"media_id": mediaId, "node_id": nodeId};
         const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const result     = await this.fetchClient.fetchData(MediaApiConfig.MOVE_URI, options);
+        const result     = await this.fetchClient.fetchData(MediaApiConfig.MOVE_URI, options).catch(error => {
+			throw new Error(error.message);
+		});
 
 		if (!result || !result.success)
 			throw new Error(result.error_text);
@@ -67,7 +73,9 @@ export class MediaService
     {
         const dataToSend = {"media_id": mediaId};
         const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const result     = await this.fetchClient.fetchData(MediaApiConfig.CLONE_URI, options);
+        const result     = await this.fetchClient.fetchData(MediaApiConfig.CLONE_URI, options).catch(error => {
+			throw new Error(error.message);
+		});
 
 		if (!result || !result.success)
 			throw new Error(result.error_text);
@@ -79,7 +87,9 @@ export class MediaService
 	{
 		const dataToSend = {"media_id": mediaId};
 		const options    = {method: "DELETE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-		const result     = await this.fetchClient.fetchData(MediaApiConfig.BASE_URI, options);
+		const result     = await this.fetchClient.fetchData(MediaApiConfig.BASE_URI, options).catch(error => {
+			throw new Error(error.message);
+		});
 
 		if (!result || !result.success)
 			throw new Error(result.error_text);
