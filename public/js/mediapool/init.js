@@ -1,6 +1,7 @@
 import { DirectoryView } from "./treeview/DirectoryView.js";
 import { TreeViewElements } from "./treeview/TreeViewElements.js";
 import { TreeViewDialog } from "./treeview/TreeViewDialog.js";
+import { TreeViewService } from "./treeview/TreeViewService.js";
 
 import { UploaderDialog } from "./uploads/UploaderDialog.js";
 import { LocalFilesPreviews } from "./uploads/Local/LocalFilesPreviews.js";
@@ -33,38 +34,45 @@ import { ScreencastPreviews } from "./uploads/Screencast/ScreencastPreviews.js";
 import { StockPlatformElements } from "./uploads/StockPlatform/StockPlatformElements.js";
 import { StockPlatformFactory } from "./uploads/StockPlatform/Platforms/StockPlatformFactory.js";
 import { StockPlatformUploader } from "./uploads/StockPlatform/StockPlatformUploader.js";
+import {ContextMenuTreeViewFactory} from "./treeview/ContextMenuTreeViewFactory.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
-	let fetchClient   = new FetchClient();
-	let mediaService  = new MediaService(fetchClient);
-	let mediaDialog   = new MediaDialog(
+	const fetchClient   = new FetchClient();
+	const mediaService  = new MediaService(fetchClient);
+	const mediaDialog   = new MediaDialog(
 		document.getElementById('editMediaDialog'),
 		document.getElementById("closeEditMediaDialog"),
-		fetchClient
+		mediaService
 	)
 
-	let mediaList     = new MediaList(
+	const mediaList     = new MediaList(
 		document.getElementById("media-list"),
 		new MediaFactory(document.getElementById('media-template')),
         new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, mediaService),
+		mediaService
 	);
 
 	const treeViewElements = new TreeViewElements();
-	let directoryView  = new DirectoryView(
+	const treeViewService  = new TreeViewService(fetchClient)
+	const directoryView    = new DirectoryView(
 		treeViewElements,
 		mediaList,
-		mediaService,
-		fetchClient
+		treeViewService
 	);
 
-	let treeDialog = new TreeViewDialog(
-		document.getElementById('editFolderDialog'),
-		document.getElementById("closeEditDialog"),
+	const treeDialog = new TreeViewDialog(
+		treeViewElements,
 		directoryView,
-		fetchClient
+		treeViewService
 	);
-	directoryView.addContextMenu(fetchClient, treeDialog, lang);
+	const contextMenuTreeViewFactory = new ContextMenuTreeViewFactory(
+		treeViewElements,
+		treeDialog,
+		treeViewService
+	);
+
+	directoryView.addContextMenu(treeDialog);
 
 	const addRootFolder = document.getElementById('addRootFolder');
 	if (addRootFolder !== null)

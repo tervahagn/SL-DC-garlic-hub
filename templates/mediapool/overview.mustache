@@ -17,8 +17,8 @@
 						<button id="closeEditDialog" class="close-button bi bi-x" aria-label="Close"></button>
 					</header>
 					<fieldset>
-						<label for="folder_name">{{LANG_FOLDER_NAME}}:
-							<input type="text" id="folder_name" name="folder_name" required>
+						<label for="folderName">{{LANG_FOLDER_NAME}}:
+							<input type="text" id="folderName" name="folderName" required>
 						</label>
 						{{#folder_dialog_visibility}}
 						<label for="visibility"> {{LANG_FOLDER_VISIBILITY}}
@@ -41,7 +41,7 @@
 					</fieldset>
 				</form>
 			</dialog>
-			<template id="context_menu_tree">
+			<template id="treeViewContextMenuTemplate">
 				<ul class="context_menu">
 					<li id="edit_node">
 						<i class="bi bi-pencil"></i> {{LANG_EDIT}}

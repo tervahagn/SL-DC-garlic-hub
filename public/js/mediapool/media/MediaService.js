@@ -33,7 +33,7 @@ export class MediaService
         this.fetchClient      = fetchClient;
     }
 
-    async loadMedia(nodeId)
+    async loadMediaByNodeId(nodeId)
     {
         const url    = MediaApiConfig.LIST_URI + nodeId;
 		const result = await this.fetchClient.fetchData(url).catch(error => {
@@ -43,7 +43,7 @@ export class MediaService
 		if (!result || !result.success)
 			throw new Error(result.error_text);
 
-		return result;
+		return result.media_list;
     }
 
 	async editMetaData(mediaId, data)

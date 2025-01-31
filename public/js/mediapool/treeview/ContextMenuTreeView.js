@@ -22,14 +22,16 @@ import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
 export class ContextMenuTreeView
 {
     #menu = null;
-    #fetchClient = null;
     #treeDialog = null;
+	#treeViewService = null;
+	#lang  = null;
 
-    constructor(menu, fetchClient, treeDialog)
+    constructor(treeViewElements, treeDialog, treeViewService, lang)
     {
-        this.#menu        = menu;
-        this.#fetchClient = fetchClient;
-        this.#treeDialog  = treeDialog;
+        this.#menu            = treeViewElements.menuTemplate.content.cloneNode(true).firstElementChild;
+        this.#treeDialog      = treeDialog;
+		this.#treeViewService = treeViewService;
+		this.#lang            = lang;
     }
 
     show(event)
@@ -41,19 +43,19 @@ export class ContextMenuTreeView
         document.addEventListener('click', () => this.#menu.remove(), {once: true});
     }
 
-    addEditEvent(editNodeElement, currentTreeNode, lang)
+    addEditEvent(editNodeElement, directoryView)
     {
         editNodeElement.addEventListener("click", () => {
-            this.#treeDialog.prepareShow("edit_folder", lang);
-            this.#treeDialog.show();
+            this.#treeDialog.prepareShow("edit_folder", this.#lang);
+            this.#treeDialog.show(directoryView);
         });
     }
 
-    addAddEvent(addNodeElement, currentTreeNode, lang)
+    addAddEvent(addNodeElement, directoryView)
     {
         addNodeElement.addEventListener("click", () => {
-            this.#treeDialog.prepareShow("add_sub_folder", lang);
-            this.#treeDialog.show();
+            this.#treeDialog.prepareShow("add_sub_folder", this.#lang);
+            this.#treeDialog.show(directoryView);
         });
     }
 
@@ -61,22 +63,11 @@ export class ContextMenuTreeView
     {
         removeNodeElement.addEventListener("click", () => {
             (async () => {
-                const dataToSend = {"node_id": currentTreeNode.key};
-                const options = {
-                    method: 'DELETE',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(dataToSend)
-                }
 
-                const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error => {
-                    console.error('Fetch error:', error.message);
-                    return null;
-                });
+				if (!currentTreeNode.data.rights.delete)
+					throw new Error('Missing delete right for this node.');
 
-                if (!result || !result.success) {
-                    console.error('Error:', result?.error_message || 'Unknown error');
-                    return;
-                }
+				await this.#treeViewService.deleteNode(currentTreeNode.key);
 
                 currentTreeNode.remove();
             })();

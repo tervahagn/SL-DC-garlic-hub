@@ -17,43 +17,28 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class TreeViewElements
+import { ContextMenuTreeView } from "./ContextMenuTreeView.js";
+export class ContextMenuTreeViewFactory
 {
-	#mediapoolTree    = document.getElementById("mediapoolTree");
-	#currentPath      = document.getElementById("currentPath");
-	#treeViewFilter   = document.getElementById("treeViewFilter");
-	#editFolderDialog = document.getElementById("editFolderDialog");
-	#closeEditDialog  = document.getElementById("closeEditDialog");
-	#menuTemplate     = document.getElementById("treeViewContextMenuTemplate");
+	#treeViewElement = null;
+	#treeViewService = null;
+	#treeViewDialog  = null;
+	#lang            = null;
 
-	get mediapoolTree()
+	constructor(treeViewElement, treeViewDialog, treeViewService, lang)
 	{
-		return this.#mediapoolTree;
+		this.#treeViewElement = treeViewElement;
+		this.#treeViewDialog  = treeViewDialog;
+		this.#treeViewService = treeViewService;
+		this.#lang            = lang;
 	}
 
-	get currentPath()
+	create()
 	{
-		return this.#currentPath;
-	}
-
-	get treeViewFilter()
-	{
-		return this.#treeViewFilter;
-	}
-
-	get editFolderDialog()
-	{
-		return this.#editFolderDialog;
-	}
-
-	get closeEditDialog()
-	{
-		return this.#closeEditDialog;
-	}
-
-
-	get menuTemplate()
-	{
-		return this.#menuTemplate;
+		return new ContextMenuTreeView(
+			this.#treeViewElement,
+			this.#treeViewDialog,
+			this.#treeViewService,
+		);
 	}
 }

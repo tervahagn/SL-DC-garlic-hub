@@ -24,13 +24,22 @@ export class MediaList
     #mediaListElement = null;
     #mediaFactory = null
     #contextMenuFactory = null;
+	#mediaService = null;
 
-    constructor(mediaListElement, mediaFactory, contextMenuFactory)
+    constructor(mediaListElement, mediaFactory, contextMenuFactory, mediaService)
     {
         this.#mediaListElement   = mediaListElement;
         this.#mediaFactory       = mediaFactory;
         this.#contextMenuFactory = contextMenuFactory;
+		this.#mediaService       = mediaService;
     }
+
+	async loadMediaListByNode(nodeId)
+	{
+		const results = await this.#mediaService.loadMediaByNodeId(nodeId);
+
+		this.render(results);
+	}
 
     render(data)
     {
@@ -53,16 +62,17 @@ export class MediaList
         });
     }
 
-    deleteMediaDomBy(dataMediaId)
+	moveMediaTo(mediaId, nodeId)
+	{
+		this.#mediaService.moveMedia(mediaId, e.node.key);
+		this.#deleteMediaDomBy(mediaId);
+	}
+
+    #deleteMediaDomBy(mediaId)
     {
-        const element = document.querySelector(`[data-media-id="${dataMediaId}"]`);
+        const element = document.querySelector(`[data-media-id="${mediaId}"]`);
         if (element)
             element.remove();
-    }
-
-    toggleUploader(show)
-    {
-        document.getElementById("file-uploader").style.display = show ? "block" : "none";
     }
 
     #addMediaToList(media)

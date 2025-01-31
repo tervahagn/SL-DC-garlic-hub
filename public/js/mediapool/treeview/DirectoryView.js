@@ -37,15 +37,13 @@ export class DirectoryView
 	#treeViewElements    = null;
     #activeNode         = null;
     #mediaList          = null;
-    #mediaService       = null;
-    #fetchClient        = null;
+	#treeViewService	= null;
 
-    constructor(treeViewElements, mediaList, mediaService, fetchClient)
+    constructor(treeViewElements, mediaList, treeViewService)
     {
         this.#treeViewElements = treeViewElements;
         this.#mediaList        = mediaList;
-        this.#mediaService     = mediaService;
-        this.#fetchClient      = fetchClient;
+		this.#treeViewService  = treeViewService;
 
 		this.#tree             = new Wunderbaum({
             debugLevel: TreeViewApiConfig.DEBUG_LEVEL,
@@ -111,8 +109,7 @@ export class DirectoryView
                         if (mediaId === null || mediaId === undefined)
                             throw Error("mediaId is not defined")
 
-                        this.#mediaService.moveMedia(mediaId, e.node.key);
-                        this.#mediaList.deleteMediaDomBy(mediaId);
+                        this.#mediaList.moveMediaTo(mediaId, e.node.key);
                     }
                     else
                     {
@@ -130,7 +127,7 @@ export class DirectoryView
 		})
     }
 
-    addContextMenu(nodesModel, treeDialog, lang)
+    addContextMenu(contextMenuTreeViewFactory)
     {
         this.#treeViewElements.mediapoolTree.addEventListener("contextmenu", (event) => {
             event.preventDefault();
@@ -141,20 +138,18 @@ export class DirectoryView
             if (!rights.create  && !rights.edit  && !rights.delete)
                 return;
 
-            const menu = document.querySelector('#context_menu_tree').content.cloneNode(true).firstElementChild;
-            let contextMenu    = new ContextMenuTreeView(menu, nodesModel, treeDialog);
-
+            const contextMenu  = contextMenuTreeViewFactory.create();
             contextMenu.show(event);
 
             const editNodeElement = document.getElementById("edit_node");
             if (rights.edit)
-                contextMenu.addEditEvent(editNodeElement, currentTreeNode, lang);
+                contextMenu.addEditEvent(editNodeElement, this);
             else
                 editNodeElement.remove();
 
             const addNodeElement = document.getElementById("add_node");
             if (rights.create)
-                contextMenu.addAddEvent(addNodeElement, currentTreeNode, lang);
+                contextMenu.addAddEvent(addNodeElement, this);
             else
                 addNodeElement.remove();
 
@@ -253,9 +248,7 @@ export class DirectoryView
     {
         try
         {
-            const results = await this.#mediaService.loadMedia(key);
-
-            this.#mediaList.render(results.media_list);
+			await this.#mediaList.loadMediaListByNode(key);
         }
         catch (err)
         {
@@ -265,20 +258,14 @@ export class DirectoryView
 
     async #moveNodeTo(e)
     {
-        const dataToSend = {"src_node_id": e.sourceNode.key, "target_node_id": e.node.key, "target_region": e.suggestedDropMode};
-        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-
-        const result = await this.#fetchClient.fetchData(TreeViewApiConfig.MOVE_NODE_URI, options).catch(error => {
-            console.error('Fetch error:', error.message);
-            return null;
-        });
-
-        if (!result || !result.success)
-        {
-            console.error('Error:', result?.error_message || 'Unknown error');
-            return;
-        }
-
-        e.sourceNode.moveTo(e.node, e.suggestedDropMode);
+		try
+		{
+			await this.#treeViewService.moveNodeTo(e.sourceNode.key, e.node.key, e.suggestedDropMode);
+			e.sourceNode.moveTo(e.node, e.suggestedDropMode);
+		}
+		catch (err)
+		{
+			console.error("Error loading media:", err.message);
+		}
     }
 }

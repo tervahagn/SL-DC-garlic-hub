@@ -17,179 +17,122 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
+/**
+ * @typedef {Object} ResultData
+ * @property {string} new_name
+ */
+
+/**
+ * @typedef {Object} ResultType
+ * @property {ResultData} data
+ */
 
 export class TreeViewDialog
 {
-	#dialogElement = null;
-	#closeElement = null;
-	#action = "";
-	#directoryView = null;
-	#fetchClient = null;
+	#action           = "";
+	#treeViewService  = null;
+	#treeViewElements = null;
+	#directoryView    = null;
 
-	constructor(dialog_element, close_element, directoryView,  fetchClient)
+	constructor(treeViewElements, treeViewService)
 	{
-		this.#dialogElement = dialog_element;
-		this.#closeElement  = close_element;
-		this.#directoryView = directoryView;
-		this.#fetchClient   = fetchClient;
-
-		this.#addCancelEvent();
-		this.#addSaveEvent();
+		this.#treeViewElements = treeViewElements;
+		this.#treeViewService  = treeViewService;
 	}
 
 	prepareShow(action, lang)
 	{
 		this.#action = action;
-		this.#dialogElement.querySelector(".dialog-name").textContent = lang[action];
+		this.#treeViewElements.editFolderDialog.querySelector(".dialog-name").textContent = lang[action];
 	}
 
-	show()
+	show(directoryView)
 	{
+		this.#directoryView = directoryView;
+		this.#addCancelEvent();
+		this.#addSaveEvent();
+
 		switch (this.#action)
 		{
 			case "add_root_folder":
 			case "add_sub_folder":
 			case "delete_folder":
-				document.getElementById("folder_name").value = "";
+				document.getElementById("folderName").value = "";
 				break;
 			case "edit_folder":
-				document.getElementById("folder_name").value = this.#directoryView.getActiveNodeTitle();
+				document.getElementById("folderName").value = this.#directoryView.getActiveNodeTitle();
 				break;
 			default:
 				throw new Error("Unknown action for show");
 		}
 
-		this.#dialogElement.showModal();
+		this.#treeViewElements.editFolderDialog.showModal();
 	}
 
 	#addSaveEvent()
 	{
 		// also for closing the dialog with the cancel button
-		this.#dialogElement.addEventListener('close', () =>
+		this.#treeViewElements.editFolderDialog.addEventListener('close', () =>
 		{
-			if (this.#dialogElement.returnValue !== "submit")
+			if (this.#treeViewElements.editFolderDialog.returnValue !== "submit")
 				return;
 
 			(async () =>
 			{
-				const method = this.#determineMethod();
-				const dataToSend = this.#determineDataToSend();
-				const options = {
-					method: method,
-					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify(dataToSend)
-				}
+				const currentNodeId = this.#directoryView.getActiveNodeId();
+				if (currentNodeId === 0 && this.#action !== "add_root_folder")
+					throw new Error("no node selected");
 
-				const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error =>
-				{
-					console.error('Fetch error:', error.message);
-					return null;
-				});
+				/*
+				  Remember: Only Module admins are able to see the action icon to create a root folder
+				  There are checks in the backend for the case someone wants to celebrate himself as the big haxOr,
 
-				if (!result || !result.success)
-				{
-					console.error('Error:', result?.error_message || 'Unknown error');
-					return;
-				}
+				  Regular every action assigned on an active node. Except of creating a root dir.
+				  So, we need to check only the rights of this active node.
+				  When no node is selected and the action is not add_root_folder, throw an error.
+				*/
 
+				const activeNodeRights = this.#directoryView.getActiveNodeRights();
+				if (!activeNodeRights.create && !activeNodeRights.edit && !activeNodeRights.delete && this.#action !== "add_root_folder")
+					throw new Error('There are no rights for this node.');
+
+				let result = {};
+				const folderName = document.getElementById("folderName").value;
 				switch (this.#action)
 				{
 					case "add_root_folder":
+						// again no needs to check rights
+						result = await this.#treeViewService.addNode(0, folderName);
 						this.#directoryView.addRootChild(result.data.id, result.data.new_name);
 						break;
 					case "add_sub_folder":
+						if (!activeNodeRights.create)
+							throw new Error('Missing create right for this node.');
+
+						result = await this.#treeViewService.addNode(currentNodeId, folderName);
 						this.#directoryView.addSubChild(result.data.id, result.data.new_name);
 						break;
 					case "edit_folder":
+						if (!activeNodeRights.edit)
+							throw new Error('Missing edit right for this node.');
+
+						result = await this.#treeViewService.editNode(currentNodeId, folderName);
 						this.#directoryView.setActiveTitle(result.data.new_name);
 						break;
+					// delete is handled in the context menu directly
+					default:
+						throw new Error("Unknown action");
 				}
 
 			})();
 		});
 	}
 
-	#determineMethod()
-	{
-		if (this.#directoryView.getActiveNodeId() === 0 && this.#action !== "add_root_folder")
-			throw new Error("no node selected");
-
-		switch (this.#action)
-		{
-			case "add_root_folder":
-			case "add_sub_folder":
-				return "POST";
-			case "edit_folder":
-				return "PATCH";
-			case "delete_folder":
-				return "DELETE";
-			default:
-				throw new Error("Unknown action");
-		}
-	}
-
-	#determineDataToSend()
-	{
-		/*
-		  Remember: Only Module admins are able to see the action icon to create a root folder
-		  There are checks in the backend for the case someone wants to celebrate himself as the big haxOr,
-
-		  Regular every action assigned on an active node. Except of creating a root dir.
-		  So, we need to check only the rights of this active node.
-		  When no node is selected and the action is not add_root_folder, throw an error.
-		*/
-		if (this.#directoryView.getActiveNodeId() === 0 && this.#action !== "add_root_folder")
-			throw new Error("no node selected");
-
-		// same here as above: No checks for adding a root folder
-		const activeNodeRights = this.#directoryView.getActiveNodeRights();
-		if (!activeNodeRights.create && !activeNodeRights.edit && !activeNodeRights.delete && this.#action !== "add_root_folder")
-			throw new Error('There are no rights for this node.');
-
-		let sendData = {};
-		switch (this.#action)
-		{
-			case "add_root_folder":
-				// again no needs to check rights
-				sendData = {"node_id": 0, "name": document.getElementById("folder_name").value};
-				break;
-			case "add_sub_folder":
-				if (!activeNodeRights.create)
-					throw new Error('Missing create right for this node.');
-
-				sendData = {
-					"node_id": this.#directoryView.getActiveNodeId(),
-					"name": document.getElementById("folder_name").value
-				};
-				break;
-			case "edit_folder":
-				if (!activeNodeRights.edit)
-					throw new Error('Missing edit right for this node.');
-
-				sendData = {
-					"node_id": this.#directoryView.getActiveNodeId(),
-					"name": document.getElementById("folder_name").value
-				};
-				break;
-			case "delete_folder":
-				if (!activeNodeRights.delete)
-					throw new Error('Missing delete right for this node.');
-
-				sendData = {"node_id": this.#directoryView.getActiveNodeId()};
-				break;
-			default:
-				throw new Error("Unknown action");
-		}
-
-		return sendData;
-	}
-
 	#addCancelEvent()
 	{
-		this.#closeElement.addEventListener("click", () =>
+		this.#treeViewElements.closeEditDialog.addEventListener("click", () =>
 		{
-			this.#dialogElement.close("cancel");
+			this.#treeViewElements.editFolderDialog.close("cancel");
 		});
 	}
 

@@ -24,13 +24,13 @@ export class MediaDialog
     #dialogElement = null;
     #closeElement = null;
     #action       = "";
-    #fetchClient  = null;
+    #mediaService  = null;
 
-    constructor(dialog_element, close_element, fetchClient)
+    constructor(dialog_element, close_element, mediaService)
     {
         this.#dialogElement = dialog_element;
         this.#closeElement  = close_element;
-        this.#fetchClient   = fetchClient;
+        this.#mediaService   = mediaService;
 
         this.#addCancelEvent();
         this.#addSaveEvent();
@@ -51,7 +51,7 @@ export class MediaDialog
     #addSaveEvent()
     {
         // also for closing the dialog with the cancel button
-        this.#dialogElement.addEventListener('close', () => {
+ /*       this.#dialogElement.addEventListener('close', () => {
             if (this.#dialogElement.returnValue !== "submit")
                 return;
 
@@ -61,7 +61,7 @@ export class MediaDialog
                 const dataToSend = ""; //this.#determineDataToSend();
                 const options    = {method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
 
-                const result = await this.#fetchClient.fetchData(apiUrl, options).catch(error => {
+                const result = await this.#mediaService.editMedia(apiUrl, options).catch(error => {
                     console.error('Fetch error:', error.message);
                     return null;
                 });
@@ -75,6 +75,8 @@ export class MediaDialog
                 // change DOM
             })();
         });
+
+  */
     }
 
     #addCancelEvent()
