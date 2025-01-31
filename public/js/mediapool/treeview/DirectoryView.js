@@ -18,14 +18,14 @@
 */
 
 import { ContextMenuTreeView } from "./ContextMenuTreeView.js";
-import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
+import { TreeViewApiConfig } from "./TreeViewApiConfig.js";
+import { Wunderbaum } from "../../external/wunderbaum.esm.min.js";
 
 /**
  * @typedef {Object} NodeEvent
- * @property {Object} node
+ * @property {WunderbaumNode} node
  * @property {Object} sourceNode
  * @property {Object} suggestedDropMode
- * @property {Object} tree
  * @property {Function} node.getPath
  * @property {Function} node.getParentList
  * @property {string} node.key
@@ -33,7 +33,7 @@ import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
 
 export class DirectoryView
 {
-    #tree               = null;
+    #tree               = {};
     #tree_element       = null;
     #activeNode         = null;
     #mediaList          = null;
@@ -46,7 +46,7 @@ export class DirectoryView
         this.#mediaList    = mediaList;
         this.#mediaService = mediaService;
         this.#fetchClient  = fetchClient;
-        this.#tree         = new mar10.Wunderbaum({
+		this.#tree         = new Wunderbaum({
             debugLevel: TreeViewApiConfig.DEBUG_LEVEL,
             element: this.#tree_element,
             source: { url: TreeViewApiConfig.ROOT_NODES_URI },
@@ -236,7 +236,7 @@ export class DirectoryView
     setActiveNodeFromEventTarget(event_target)
     {
         // getNode is static for some reason
-        const node = mar10.Wunderbaum.getNode(event_target);
+        const node = Wunderbaum.getNode(event_target);
         node.setActive(true);
 
         return node;
