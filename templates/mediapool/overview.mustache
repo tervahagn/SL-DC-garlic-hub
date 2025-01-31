@@ -1,13 +1,13 @@
 <aside>
 			<label id="wrap_tree_filter">
-				<input id="tree_filter" type="search" placeholder="Filter">
+				<input id="treeViewFilter" type="search" placeholder="Filter">
 				{{#add_root_folder}}
 				<a class="bi bi-folder-plus" id="addRootFolder" title="{{LANG_ADD_ROOT_FOLDER}}"></a>
 				{{/add_root_folder}}
 			</label>
 
 			<nav aria-label="Directory Structure">
-				<div id="mediapool-tree" class="wb-skeleton wb-initializing wb-fade-expander"></div>
+				<div id="mediapoolTree" class="wb-skeleton wb-initializing wb-fade-expander"></div>
 			</nav>
 
 			<dialog id="editFolderDialog">
@@ -182,7 +182,7 @@
 				</footer>
 			</dialog>
 
-			<h2 id="current-path"> / </h2>
+			<h2 id="currentPath"> / </h2>
 
 			<div class="upload">
 				<button id="openUploadDialog" disabled><i class="bi bi-upload"></i> Uploader</button>

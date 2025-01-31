@@ -30,7 +30,7 @@ main
         overflow-y: auto;
     }
     section.content .upload {justify-content: space-between;margin: 0;padding:0;}
-    section.content > #current-path{font-weight: bold; text-align: right; margin:0;padding:0;}
+    section.content > #currentPath{font-weight: bold; text-align: right; margin:0;padding:0;}
 
     #wrap_tree_filter{display: flex; gap: 0.5rem; align-items: center;margin-bottom:0.5rem;}
     #wrap_tree_filter > input{width:85%;padding:0.1rem 0.25rem;border-radius: 5px; }

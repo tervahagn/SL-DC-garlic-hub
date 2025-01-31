@@ -19,7 +19,7 @@
 
 import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
 
-export class TreeDialog
+export class TreeViewDialog
 {
 	#dialogElement = null;
 	#closeElement = null;

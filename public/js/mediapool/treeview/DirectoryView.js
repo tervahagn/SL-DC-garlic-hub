@@ -34,21 +34,22 @@ import { Wunderbaum } from "../../external/wunderbaum.esm.min.js";
 export class DirectoryView
 {
     #tree               = {};
-    #tree_element       = null;
+	#treeViewElements    = null;
     #activeNode         = null;
     #mediaList          = null;
     #mediaService       = null;
     #fetchClient        = null;
 
-    constructor(tree_element, current_path, mediaList, mediaService, fetchClient)
+    constructor(treeViewElements, mediaList, mediaService, fetchClient)
     {
-        this.#tree_element = tree_element;
-        this.#mediaList    = mediaList;
-        this.#mediaService = mediaService;
-        this.#fetchClient  = fetchClient;
-		this.#tree         = new Wunderbaum({
+        this.#treeViewElements = treeViewElements;
+        this.#mediaList        = mediaList;
+        this.#mediaService     = mediaService;
+        this.#fetchClient      = fetchClient;
+
+		this.#tree             = new Wunderbaum({
             debugLevel: TreeViewApiConfig.DEBUG_LEVEL,
-            element: this.#tree_element,
+            element: this.#treeViewElements.mediapoolTree,
             source: { url: TreeViewApiConfig.ROOT_NODES_URI },
             init: async (e) => {
                 if (localStorage.getItem('parent_list') === null)
@@ -71,8 +72,8 @@ export class DirectoryView
                 return { url:TreeViewApiConfig.SUB_NODES_URI + e.node.key, params: { parentKey: e.node.key } };
              },
 			activate: (e) => {
-                current_path.innerText = " / " + e.node.getPath(true, "title", " / ");
-                document.getElementById("openUploadDialog").disabled = false;
+                this.#treeViewElements.currentPath.innerText = " / " + e.node.getPath(true, "title", " / ");
+
                 this.#activeNode = e.node;
 
                 const parentList = e.node.getParentList(false, true);
@@ -108,7 +109,7 @@ export class DirectoryView
                     {
                         const mediaId = e.event.dataTransfer.getData("data-media-id");
                         if (mediaId === null || mediaId === undefined)
-                            throw DOMException("mediaId is not defined")
+                            throw Error("mediaId is not defined")
 
                         this.#mediaService.moveMedia(mediaId, e.node.key);
                         this.#mediaList.deleteMediaDomBy(mediaId);
@@ -120,22 +121,18 @@ export class DirectoryView
                 },
             },
         });
-    }
 
-    addFilter(tree_filter)
-    {
-        // prevent a drag into this field
-        tree_filter.addEventListener('dragover', (event) => event.preventDefault());
-        tree_filter.addEventListener('drop', (event) => event.preventDefault());
-
-        tree_filter.addEventListener("input", (event) => {
-            this.#tree.filterNodes(event.target.value, { mode: "hide" });
-        })
+		// prevent a drag into this field
+		this.#treeViewElements.treeViewFilter.addEventListener('dragover', (event) => event.preventDefault());
+		this.#treeViewElements.treeViewFilter.addEventListener('drop', (event) => event.preventDefault());
+		this.#treeViewElements.treeViewFilter.addEventListener("input", (event) => {
+			this.#tree.filterNodes(event.target.value, { mode: "hide" });
+		})
     }
 
     addContextMenu(nodesModel, treeDialog, lang)
     {
-        this.#tree_element.addEventListener("contextmenu", (event) => {
+        this.#treeViewElements.mediapoolTree.addEventListener("contextmenu", (event) => {
             event.preventDefault();
 
             // check rights
@@ -235,7 +232,7 @@ export class DirectoryView
 
     setActiveNodeFromEventTarget(event_target)
     {
-        // getNode is static for some reason
+        // getNode is static for some reasons
         const node = Wunderbaum.getNode(event_target);
         node.setActive(true);
 

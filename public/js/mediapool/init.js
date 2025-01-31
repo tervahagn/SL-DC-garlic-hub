@@ -1,5 +1,6 @@
 import { DirectoryView } from "./treeview/DirectoryView.js";
-import { TreeDialog } from "./treeview/TreeDialog.js";
+import { TreeViewElements } from "./treeview/TreeViewElements.js";
+import { TreeViewDialog } from "./treeview/TreeViewDialog.js";
 
 import { UploaderDialog } from "./uploads/UploaderDialog.js";
 import { LocalFilesPreviews } from "./uploads/Local/LocalFilesPreviews.js";
@@ -49,16 +50,15 @@ document.addEventListener("DOMContentLoaded", function()
         new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, mediaService),
 	);
 
+	const treeViewElements = new TreeViewElements();
 	let directoryView  = new DirectoryView(
-		document.getElementById("mediapool-tree"),
-		document.getElementById("current-path"),
+		treeViewElements,
 		mediaList,
 		mediaService,
 		fetchClient
 	);
-	directoryView.addFilter(document.getElementById("tree_filter"));
 
-	let treeDialog = new TreeDialog(
+	let treeDialog = new TreeViewDialog(
 		document.getElementById('editFolderDialog'),
 		document.getElementById("closeEditDialog"),
 		directoryView,
