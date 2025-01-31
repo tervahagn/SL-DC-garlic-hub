@@ -19,71 +19,61 @@
 
 export class UploaderDialog
 {
-    #dialog = null;
-    #openButton = null;
-    #closeButton = null;
-    #closeElement = null;
-    #disableEscape = false;
+	#directoryView  = null;
+	#dialogElements = null;
+    #disableEscape  = false;
 
-    constructor(dialog, openButton, closeButton, closeDialogButton)
+    constructor(dialogElements, directoryView)
     {
-        this.#dialog       = dialog;
-        this.#openButton   = openButton;
-        this.#closeButton  = closeButton;
-        this.#closeElement = closeDialogButton;
-        this.#openButton.disabled  = true;
-    }
+		this.#dialogElements = dialogElements;
+		this.#directoryView  = directoryView;
 
-    init(directoryView)
-    {
-        this.#initEvents();
-        this.#initTabSwitching();
-        this.#dialog.addEventListener('close', () => {
-            directoryView.reloadCurrentNode();
-        });
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && this.#disableEscape)
-                event.preventDefault();
-        });
-    }
+        this.#dialogElements.openUploadDialog.disabled  = true;
+		this.#initEvents();
+		this.#initTabSwitching();
+		this.#dialogElements.uploaderDialog.addEventListener('close', () => {
+			this.#directoryView.reloadCurrentNode();
+		});
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && this.#disableEscape)
+				event.preventDefault();
+		});
+
+	}
 
     enableActions()
     {
-        this.#closeButton.disabled  = false;
-        this.#closeElement.disabled = false;
-        this.#disableEscape         = false;
+        this.#dialogElements.closeUploadDialog.disabled  = false;
+        this.#dialogElements.closeDialog.disabled        = false;
+        this.#disableEscape                              = false;
     }
 
     disableActions()
     {
-        this.#closeButton.disabled  = true;
-        this.#closeElement.disabled = true;
-        this.#disableEscape         = true;
+		this.#dialogElements.closeUploadDialog.disabled  = true;
+		this.#dialogElements.closeDialog.disabled        = true;
+		this.#disableEscape                              = true;
     }
 
     #initEvents()
     {
-        this.#openButton.addEventListener('click', () => this.#dialog.showModal());
-        this.#closeButton.addEventListener('click', () => this.#dialog.close());
-        this.#closeElement.addEventListener("click", () => {this.#dialog.close();});
+        this.#dialogElements.openUploadDialog.addEventListener('click', () => this.#dialogElements.uploaderDialog.showModal());
+        this.#dialogElements.closeDialog.addEventListener('click', () => this.#dialogElements.uploaderDialog.close());
+        this.#dialogElements.closeUploadDialog.addEventListener("click", () => {this.#dialogElements.uploaderDialog.close();});
     }
 
     #initTabSwitching()
     {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
+		this.#dialogElements.tabButtons.forEach(button => {
             button.addEventListener('click', () => {
 
                 // Deactivate all tabs
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
+				this.#dialogElements.tabButtons.forEach(btn => btn.classList.remove('active'));
+				this.#dialogElements.tabContents.forEach(content => content.classList.remove('active'));
 
                 // Activate the selected tab
                 button.classList.add('active');
-                const targetTab = document.getElementById(button.dataset.tab);
-                targetTab.classList.add('active');
+				this.#dialogElements.getTargetTab(button.dataset.tab).classList.add('active');
             });
         });
     }

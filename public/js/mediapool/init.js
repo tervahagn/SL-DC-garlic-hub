@@ -12,6 +12,7 @@ import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
 import { MediaDialog } from "./media/MediaDialog.js";
 
+import { UploadDialogElements } from "./uploads/UploadDialogElements.js";
 import { LocalFilesElements } from "./uploads/Local/LocalFilesElements.js";
 import { LocalFilesUploader } from "./uploads/Local/LocalFilesUploader.js";
 
@@ -74,13 +75,7 @@ document.addEventListener("DOMContentLoaded", function()
 		});
 	}
 
-	const uploaderDialog = new UploaderDialog(
-		document.getElementById('uploaderDialog'),
-		document.getElementById('openUploadDialog'),
-		document.getElementById('closeDialog'),
-		document.getElementById("closeUploadDialog")
-	);
-	uploaderDialog.init(directoryView);
+	const uploaderDialog = new UploaderDialog(new UploadDialogElements(), directoryView);
 
 	// Section for local file uploads
 	const localFilesElements = new LocalFilesElements();
