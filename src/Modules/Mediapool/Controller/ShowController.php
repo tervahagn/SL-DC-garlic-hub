@@ -84,6 +84,7 @@ class ShowController
 					'LANG_ADD_SUB_FOLDER' => $translator->translate('add_sub_folder', 'mediapool'),
 					'LANG_EDIT_FOLDER' => $translator->translate('edit_folder', 'mediapool'),
 					'LANG_REMOVE' => $translator->translate('remove', 'main'),
+					'LANG_INFORMATION' => $translator->translate('information', 'main'),
 					'LANG_OWNER' => $translator->translate('owner', 'main'),
 					'LANG_UPLOADER' => $translator->translate('uploader', 'mediapool'),
 					'LANG_FILENAME' => $translator->translate('filename', 'mediapool'),
