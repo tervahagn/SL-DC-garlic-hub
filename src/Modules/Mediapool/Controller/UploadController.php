@@ -62,8 +62,13 @@ class UploadController
 		if (!isset($bodyParams['external_link']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No external file to upload.']);
 
+		$metadata = [];
+		if (isset($bodyParams['metadata']))
+			$metadata = json_decode($bodyParams['metadata'], true);
+
 		$UID     = $request->getAttribute('session')->get('user')['UID'];
-		$succeed = $this->uploadService->uploadExternalMedia($node_id, $UID, $bodyParams['external_link']);
+		$succeed = $this->uploadService->uploadExternalMedia($node_id, $UID, $bodyParams['external_link'], $metadata);
+
 		return $this->jsonResponse($response, $succeed);
 	}
 

@@ -76,7 +76,9 @@ export class PixabayPlatform extends AbstractStockPlatform
 			this.totalPages   = data.totalHits / this.resultsPerPage;
 			this.totalResults = data.total;
 
-			return this.#prepareResults(data);
+			this.#prepareResults(data);
+
+			return this.resultList;
 		}
 		catch(error)
 		{
@@ -91,23 +93,24 @@ export class PixabayPlatform extends AbstractStockPlatform
 
 
 		// traverse results and create a new array with the required fields
-		return json.hits.map(item => ({
-			id: item.id,
-			type: "image",
-			preview: item.webformatURL || null,
-			thumb: item.previewURL || null,
-			downloadUrl: item.largeImageURL || null,
-			metadata: {
-				pool: "Pixabay",
-				created: item.created_at || null,
-				description: item.tags || null,
-				user: {
-					username: item.username || null,
-					name: item.username || null,
-					url: null,
-				},
-			}
-		}));
+		this.resultList = json.hits.reduce((acc, item) => {
+			acc[item.id] = {
+				type: "image",
+				preview: item.webformatURL || null,
+				thumb: item.previewURL || null,
+				downloadUrl: item.largeImageURL || null,
+				metadata: {
+					pool: "Pixabay",
+					description: item.tags || null,
+					user: {
+						username: item.username || null,
+						name: item.username || null,
+						url: null,
+					},
+				}
+			};
+			return acc;
+		}, {});
 
 	}
 

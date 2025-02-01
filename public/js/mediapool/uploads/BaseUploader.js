@@ -36,7 +36,7 @@ export class BaseUploader
 		this.#domElements.startFileUpload.disabled = true;
 	}
 
-	async uploadExternalFile(filePath)
+	async uploadExternalFile(filePath, metadata = null)
 	{
 		if (this.directoryView.getActiveNodeId() === 0)
 		{
@@ -50,6 +50,8 @@ export class BaseUploader
 			const formData = new FormData();
 			formData.append("node_id", String(this.directoryView.getActiveNodeId()));
 			formData.append("external_link", filePath);
+			if (metadata !== null)
+				formData.append("metadata", JSON.stringify(metadata));
 
 			const options  = {method: "POST", body: formData};
 
@@ -58,9 +60,7 @@ export class BaseUploader
 			if (!result || !result.success)
 				console.error('Error for file:', filePath, result?.error_message || 'Unknown error');
 			else
-			{
 				this.disableUploadButton();
-			}
 		}
 		catch(error)
 		{

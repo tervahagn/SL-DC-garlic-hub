@@ -109,7 +109,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		return $ret;
 	}
 
-	public function uploadExternalMedia(int $nodeId, int $UID, string $externalLink): array
+	public function uploadExternalMedia(int $nodeId, int $UID, string $externalLink, array $extMetadata): array
 	{
 		try
 		{
@@ -120,7 +120,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			$mediaHandler->checkFileBeforeUpload($contentLength);
 			$uploadPath    = $mediaHandler->uploadFromExternal($this->client, $externalLink);
 
-			$ret = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID);
+			$ret = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID, $extMetadata);
 		}
 		catch (ClientException|GuzzleException|CoreException|ModuleException|Exception|FilesystemException $e)
 		{
@@ -137,7 +137,9 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	 * @throws FilesystemException
 	 * @throws Exception
 	 */
-	private function insertDataset(AbstractMediaHandler $mediaHandler, string $uploadedPath, int $nodeId, int $UID): array
+	private function insertDataset(AbstractMediaHandler $mediaHandler, string $uploadedPath, int $nodeId, int $UID,
+								   array $extMetadata):
+	array
 	{
 		$fileHash = $mediaHandler->determineNewFilename($uploadedPath);
 		$dataSet  = $this->mediaRepository->findFirstBy(['checksum' => $fileHash]);
@@ -151,11 +153,16 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			$mediaHandler->checkFileAfterUpload($newFilePath);
 			$mediaHandler->createThumbnail($newFilePath);
 
-			$metadata         = json_encode([
+			$metadata         = [
 					'size'       => $mediaHandler->getFileSize(),
 					'dimensions' => $mediaHandler->getDimensions(),
-					'duration'   => $mediaHandler->getDuration()]
-			);
+					'duration'   => $mediaHandler->getDuration()
+			];
+			foreach ($extMetadata as $key => $value)
+			{
+				$metadata[$key] = $value;
+			}
+			$metadata  = json_encode($metadata);
 			$extension = pathinfo($newFilePath, PATHINFO_EXTENSION);
 			$thumbExtension = $mediaHandler->getThumbExtension();
 		}

@@ -86,7 +86,9 @@ export class UnsplashPlatform extends AbstractStockPlatform
 			this.totalPages   = results.total_pages;
 			this.totalResults = results.total;
 
-			return this.#prepareResults(results);
+			this.#prepareResults(results);
+
+			return this.resultList;
 		}
 		catch(error)
 		{
@@ -101,30 +103,28 @@ export class UnsplashPlatform extends AbstractStockPlatform
 
 	#prepareResults(json)
 	{
-		if (!json.results || !Array.isArray(json.results)) {
+		if (!json.results || !Array.isArray(json.results))
 			throw new Error("Wrong JSON format");
-		}
 
 		// traverse results and create a new array with the required fields
-		return json.results.map(item => ({
-			id: item.id,
-			type: "image",
-			preview: item.urls?.small || null,
-			thumb: item.urls?.thumb || null,
-			downloadUrl: item.links?.download_location || null,
-			metadata: {
-				pool: "Unsplash",
-				created: item.created_at || null,
-				description: item.alt_description || null,
-				user: {
-					username: item.user?.username || null,
-
-					name: item.user?.name || null,
-					url: item.user?.portfolio_url || null,
-				},
-			}
-		}));
-
+		this.resultList = json.results.reduce((acc, item) => {
+			acc[item.id] = {
+				type: "image",
+				preview: item.urls?.small || null,
+				thumb: item.urls?.thumb || null,
+				downloadUrl: item.links?.download_location || null,
+				metadata: {
+					pool: "Unsplash",
+					description: item.description || null,
+					user: {
+						username: item.user?.username || null,
+						name: item.user?.name || null,
+						url: item.user?.portfolio_url || null,
+					},
+				}
+			};
+			return acc;
+		}, {});
 	}
 
 	hasApiToken()

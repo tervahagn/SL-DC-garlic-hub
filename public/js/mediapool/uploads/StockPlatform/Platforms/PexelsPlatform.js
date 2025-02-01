@@ -73,7 +73,9 @@ export class PexelsPlatform extends AbstractStockPlatform
 			this.totalPages   = data.total_results / this.resultsPerPage;
 			this.totalResults = data.total_results;
 
-			return this.#prepareResults(data);
+			this.#prepareResults(data);
+
+			return this.resultList;
 		}
 		catch(error)
 		{
@@ -86,25 +88,24 @@ export class PexelsPlatform extends AbstractStockPlatform
 		if (!json.photos || !Array.isArray(json.photos))
 			throw new Error("Wrong JSON format");
 
-		// traverse results and create a new array with the required fields
-		return json.photos.map(item => ({
-			id: item.id,
-			type: "image",
-			preview: item.src?.medium || null,
-			thumb: item.src?.small || null,
-			downloadUrl: item.src?.original || null,
-			metadata: {
-				pool: "Pixabay",
-				created: item.created_at || null,
-				description: item.tags || null,
-				user: {
-					username: item.photographer_id || null,
-					name: item.photographer || null,
-					url: item.photographer_url,
-				},
-			}
-		}));
-
+		this.resultList = json.photos.reduce((acc, item) => {
+			acc[item.id] = {
+				type: "image",
+				preview: item.src?.medium || null,
+				thumb: item.src?.small || null,
+				downloadUrl: item.src?.original || null,
+				metadata: {
+					pool: "Pixabay",
+					description: item.tags || null,
+					user: {
+						username: item.photographer_id || null,
+						name: item.photographer || null,
+						url: item.photographer_url,
+					},
+				}
+			};
+			return acc;
+		}, {});
 	}
 
 	hasApiToken()

@@ -55,15 +55,29 @@ export class StockPlatformUploader extends BaseUploader
 		const checkboxes = document.querySelectorAll('.result-checkbox');
 		for (const checkbox of checkboxes)
 		{
-			if (checkbox.checked)
-			{
-				this.domElements.downloadStatus.innerHTML = "Start downloading...";
-				const mediaUrl = await this.#stockPlatform.determineMediaDownloadUrl(checkbox.getAttribute("data-download"));
-				await this.uploadExternalFile(mediaUrl);
-				this.domElements.downloadStatus.innerHTML = "Finish Downloading";
-			}
-		}
+			if (!checkbox.checked)
+				continue;
 
+			if (!Object.hasOwn(this.#stockPlatform.resultList, checkbox.id))
+				continue;
+
+			const uri = this.#stockPlatform.resultList[checkbox.id].downloadUrl;
+			const url = new URL(uri);
+			const pathname = url.pathname;
+			const filename = pathname.split('/').pop();
+
+			this.domElements.downloadStatus.innerHTML = "Start downloading: " + filename;;
+
+			const mediaUrl = await this.#stockPlatform.determineMediaDownloadUrl(uri);
+
+			let metadata   = this.#stockPlatform.resultList[checkbox.id].metadata;
+			await this.uploadExternalFile(mediaUrl, metadata);
+
+			this.domElements.downloadStatus.innerHTML = "Finish downloading: " + filename;
+
+			checkbox.checked = false;
+
+		}
 	}
 
 
@@ -111,9 +125,9 @@ export class StockPlatformUploader extends BaseUploader
 		if (results === null)
 			return;
 
-		for (const result of results)
+		for (const [id, item] of Object.entries(results))
 		{
-			this.#addSearchResult(result);
+			this.#addSearchResult(id, item);
 		}
 	}
 
@@ -131,27 +145,27 @@ export class StockPlatformUploader extends BaseUploader
 				return;
 
 			for (const result of results)
-			{
-				this.#addSearchResult(result);
-			}
+				for (const [id, item] of Object.entries(results))
+				{
+					this.#addSearchResult(id, item);
+				}
 		}
 	}
 
-	#addSearchResult(result)
+	#addSearchResult(id, item)
 	{
 		const container = document.getElementById("result-media-template").content.cloneNode(true).firstElementChild;
-		if (result.type === "image")
+		if (item.type === "image")
 		{
 			const img = container.querySelector(".result-thumbnail");
-			img.src = result.thumb;
-			img.id = result.id;
-			img.alt = result.metadata.description;
+			img.src = item.thumb;
+			img.alt = item.metadata.description;
 			const imgPreview = container.querySelector(".result-preview");
-			imgPreview.src = result.preview;
-			imgPreview.alt = result.metadata.description;
+			imgPreview.src = item.preview;
+			imgPreview.alt = item.metadata.description;
 		}
 		const downloadChecker = container.querySelector(".result-checkbox");
-		downloadChecker.setAttribute("data-download", result.downloadUrl);
+		downloadChecker.setAttribute("id", id);
 		downloadChecker.addEventListener("click", (event) => this.#markedDownload(event));
 
 		this.domElements.searchResultsArea.appendChild(container);

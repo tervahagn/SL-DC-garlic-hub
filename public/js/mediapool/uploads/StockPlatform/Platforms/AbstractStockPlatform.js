@@ -19,7 +19,7 @@
 
 export class AbstractStockPlatform
 {
-	#apiToken = "";
+	#apiToken    = "";
 	#fetchClient = null;
 	hasVideos    = false;
 	#maxWith     = 1920;
@@ -29,6 +29,7 @@ export class AbstractStockPlatform
 	currentPage  = 0
 	currentSearchQuery = "";
 	resultsPerPage = 20;
+	#resultList = {};
 
 	constructor(fetchClient)
 	{
@@ -64,4 +65,8 @@ export class AbstractStockPlatform
 	get maxWith() {	return this.#maxWith;}
 
 	get maxHeight()	{ return this.#maxHeight; }
+
+	get resultList() {	return this.#resultList;}
+
+	set resultList(value) {	this.#resultList = value; }
 }
