@@ -19,8 +19,9 @@
 
 export class UploadDialogElements
 {
+	static 	#openUploadDialog  = document.getElementById('openUploadDialog');
+
 	#uploaderDialog    = document.getElementById('uploaderDialog');
-	#openUploadDialog  = document.getElementById('openUploadDialog');
 	#closeDialog       = document.getElementById('closeDialog');
 	#closeUploadDialog = document.getElementById("closeUploadDialog");
 	#tabButtons        = document.querySelectorAll('.tab-button');
@@ -28,7 +29,9 @@ export class UploadDialogElements
 
 	get uploaderDialog() { return this.#uploaderDialog; }
 
-	get openUploadDialog() { return this.#openUploadDialog; }
+	static get openUploadDialog() {return this.#openUploadDialog; }
+
+	get openUploadDialog() { return UploadDialogElements.#openUploadDialog; }
 
 	get closeDialog() { return this.#closeDialog; }
 

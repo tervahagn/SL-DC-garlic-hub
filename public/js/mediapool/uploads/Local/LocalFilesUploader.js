@@ -110,6 +110,7 @@ export class LocalFilesUploader extends BaseUploader
 				}
 
 			}
+
 		})();
 	}
 }
