@@ -16,77 +16,47 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-import {TreeViewApiConfig} from "./TreeViewApiConfig.js";
+import { TreeViewApiConfig } from "./TreeViewApiConfig.js";
 
 export class TreeViewService
 {
-	#fetchClient = null;
-
 	constructor(fetchClient)
 	{
-		this.#fetchClient = fetchClient;
+		this.fetchClient = fetchClient;
 	}
 
 	async addNode(nodeId, name)
 	{
-		const sendData = {"node_id": nodeId, "name": name};
-		const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(sendData)}
-
-		const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
+		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "POST", { node_id: nodeId, name });
 	}
 
-
-	async editNode(nodeId, data)
+	async editNode(nodeId, name)
 	{
-		const sendData = {"node_id": nodeId, "name": name};
-		const options    = {method: "PATCH", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(sendData)}
-
-		const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
-		
-		return result;
+		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "PATCH", { node_id: nodeId, name });
 	}
-
 
 	async deleteNode(nodeId)
 	{
-		const sendData = {"node_id": nodeId};
-		const options    = {method: "DELETE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(sendData)}
-
-		const result = await this.#fetchClient.fetchData(TreeViewApiConfig.BASE_NODE_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
-
+		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "DELETE", { node_id: nodeId });
 	}
-
-
 
 	async moveNodeTo(sourceKey, targetKey, targetRegion)
 	{
-		const dataToSend = {"src_node_id": sourceKey, "target_node_id": targetKey, "target_region": targetRegion};
-		const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
+		const data = { src_node_id: sourceKey, target_node_id: targetKey, target_region: targetRegion };
+		return this.sendRequest(TreeViewApiConfig.MOVE_NODE_URI, "POST", data);
+	}
 
-		const result = await this.#fetchClient.fetchData(TreeViewApiConfig.MOVE_NODE_URI, options).catch(error => {
+	async sendRequest(url, method, data)
+	{
+		const ptions = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
+
+		const result  = await this.fetchClient.fetchData(url, options).catch(error => {
 			throw new Error(error.message);
 		});
 
 		if (!result || !result.success)
-			throw new Error(result.error_text);
+			throw new Error(result.error_message);
+
+		return result;
 	}
-
-
-
 }

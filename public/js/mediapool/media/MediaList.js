@@ -64,7 +64,7 @@ export class MediaList
 
 	moveMediaTo(mediaId, nodeId)
 	{
-		this.#mediaService.moveMedia(mediaId, e.node.key);
+		this.#mediaService.moveMedia(mediaId, nodeId);
 		this.#deleteMediaDomBy(mediaId);
 	}
 

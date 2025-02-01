@@ -39,6 +39,7 @@ export class ContextMenuTreeViewFactory
 			this.#treeViewElement,
 			this.#treeViewDialog,
 			this.#treeViewService,
+			this.#lang
 		);
 	}
 }

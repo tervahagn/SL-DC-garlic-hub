@@ -63,16 +63,15 @@ document.addEventListener("DOMContentLoaded", function()
 
 	const treeDialog = new TreeViewDialog(
 		treeViewElements,
-		directoryView,
 		treeViewService
 	);
 	const contextMenuTreeViewFactory = new ContextMenuTreeViewFactory(
 		treeViewElements,
 		treeDialog,
-		treeViewService
+		treeViewService,
+		lang
 	);
-
-	directoryView.addContextMenu(treeDialog);
+	directoryView.addContextMenu(contextMenuTreeViewFactory);
 
 	const addRootFolder = document.getElementById('addRootFolder');
 	if (addRootFolder !== null)
@@ -82,6 +81,8 @@ document.addEventListener("DOMContentLoaded", function()
 			treeDialog.show();
 		});
 	}
+
+	/**************** uploader ******************/
 
 	const uploaderDialog = new UploaderDialog(new UploadDialogElements(), directoryView);
 
@@ -142,4 +143,3 @@ document.addEventListener("DOMContentLoaded", function()
 		fetchClient
 	);
 });
-

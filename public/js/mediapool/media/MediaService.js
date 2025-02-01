@@ -36,68 +36,48 @@ export class MediaService
     async loadMediaByNodeId(nodeId)
     {
         const url    = MediaApiConfig.LIST_URI + nodeId;
-		const result = await this.fetchClient.fetchData(url).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
+		const result = await this.#sendRequest(url, "GET", null);
 
 		return result.media_list;
     }
 
 	async editMetaData(mediaId, data)
 	{
-		const dataToSend = {"media_id": mediaId, "data": data};
-		const options    = {method: "UPDATE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-		const result     = await this.fetchClient.fetchData(MediaApiConfig.EDIT_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
-
-		return result;
+		return this.#sendRequest(MediaApiConfig.MOVE_URI, "POST",  {"media_id": mediaId, "data": data});
 	}
 
     async moveMedia(mediaId, nodeId)
     {
-        const dataToSend = {"media_id": mediaId, "node_id": nodeId};
-        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const result     = await this.fetchClient.fetchData(MediaApiConfig.MOVE_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
-
-        return result;
+		return this.#sendRequest(MediaApiConfig.MOVE_URI, "POST",  {"media_id": mediaId, "node_id": nodeId});
     }
 
     async cloneMedia(mediaId)
     {
-        const dataToSend = {"media_id": mediaId};
-        const options    = {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-        const result     = await this.fetchClient.fetchData(MediaApiConfig.CLONE_URI, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_text);
-
-        return result.new_media;
+        return this.#sendRequest(MediaApiConfig.CLONE_URI, "POST", {"media_id": mediaId});
     }
 
 	async removeMedia(mediaId)
 	{
-		const dataToSend = {"media_id": mediaId};
-		const options    = {method: "DELETE", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-		const result     = await this.fetchClient.fetchData(MediaApiConfig.BASE_URI, options).catch(error => {
+		return this.#sendRequest(MediaApiConfig.BASE_URI,"DELETE", {"media_id": mediaId});
+	}
+
+	async #sendRequest(url, method, data)
+	{
+		let options = {};
+
+		if (method === "GET")
+			options = {method, headers: { 'Content-Type': 'application/json' }};
+		else
+			options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
+
+		const result  = await this.fetchClient.fetchData(url, options).catch(error => {
 			throw new Error(error.message);
 		});
 
 		if (!result || !result.success)
-			throw new Error(result.error_text);
+			throw new Error(result.error_message);
+
+		return result;
 	}
 
 }
