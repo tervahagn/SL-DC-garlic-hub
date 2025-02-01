@@ -17,9 +17,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ContextMenuTreeView } from "./ContextMenuTreeView.js";
 import { TreeViewApiConfig } from "./TreeViewApiConfig.js";
 import { Wunderbaum } from "../../external/wunderbaum.esm.min.js";
+import { UploadDialogElements } from "../uploads/UploadDialogElements.js";
 
 /**
  * @typedef {Object} NodeEvent
@@ -78,6 +78,8 @@ export class DirectoryView
                 let keyList = parentList.map(parent => parent.key);
                 localStorage.setItem('parent_list', keyList);
                 this.#loadMediaInDirectory(e.node.key);
+
+				UploadDialogElements.openUploadDialog.disabled = false;
             },
             filter: {autoApply: true, mode: "hide"},
             dnd: {
