@@ -36,12 +36,6 @@ export class MediaDialog
         this.#addSaveEvent();
     }
 
-    prepareShow(action, lang)
-    {
-        this.#action = action;
-        this.#dialogElement.querySelector("legend").textContent = lang[action];
-    }
-
     show()
     {
 
