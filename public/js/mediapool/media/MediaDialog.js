@@ -52,7 +52,7 @@ export class MediaDialog
     {
         // also for closing the dialog with the cancel button
  /*       this.#dialogElement.addEventListener('close', () => {
-            if (this.#dialogElement.returnValue !== "submit")
+            if (this.#dialogElement.returnValue !== "submit")x
                 return;
 
             (async () => {

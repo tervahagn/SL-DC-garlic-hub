@@ -93,9 +93,10 @@ export class MediaList
             const contextMenu    = this.#contextMenuFactory.create();
             contextMenu.show(event);
 
-            contextMenu.addRemoveEvent(document.getElementById("remove_media"), mediaItem);
-            contextMenu.addEditEvent(document.getElementById("edit_media"), mediaItem);
-            contextMenu.addCloneEvent(document.getElementById("clone_media"), mediaItem, this.#addMediaToList.bind(this));
+			contextMenu.addInfoEvent(document.getElementById("infoMedia"), mediaItem);
+            contextMenu.addRemoveEvent(document.getElementById("removeMedia"), mediaItem);
+            contextMenu.addEditEvent(document.getElementById("editMedia"), mediaItem);
+            contextMenu.addCloneEvent(document.getElementById("cloneMedia"), mediaItem, this.#addMediaToList.bind(this));
         });
     }
 }

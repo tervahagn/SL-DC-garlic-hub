@@ -41,7 +41,15 @@ export class ContextMenuMedia
         document.addEventListener('click', () => this.#menuElement.remove(), {once: true});
     }
 
-    addEditEvent(editMediaMenuElement)
+	addInfoEvent(infoMediaMenuElement)
+	{
+		infoMediaMenuElement.addEventListener("click", () => {
+			this.#mediaDialog.show();
+		});
+	}
+
+
+	addEditEvent(editMediaMenuElement)
     {
         editMediaMenuElement.addEventListener("click", () => {
             this.#mediaDialog.show();
@@ -52,7 +60,6 @@ export class ContextMenuMedia
     {
         cloneMediaMenuElement.addEventListener("click", () => {
             (async () => {
-
                 const newMedia = await this.#mediaService.cloneMedia(currentMedia.getAttribute('data-media-id'));
                 callback(newMedia);
             })();
