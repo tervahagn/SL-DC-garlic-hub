@@ -33,6 +33,8 @@ export class Media
         const img = this.#mediaElement.querySelector("img");
         img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
         img.alt = "Thumbnail: " + media.filename;
+		img.setAttribute("data-title", media.filename);
+		img.setAttribute("data-description", media.media_description);
 
 		const a = this.#mediaElement.querySelector("a");
 		if (this.#hasDetailedView(media.mimetype))
@@ -42,14 +44,6 @@ export class Media
 			a.classList.remove("glightbox");
 			a.style.display = "none";
 		}
-
-        if (media.extension !== "pdf")
-        {
-            a.setAttribute("data-title", media.filename);
-            a.setAttribute("data-description", media.media_description);
-            a.setAttribute("data-desc-position", "bottom");
-        }
-
         this.#mediaElement.querySelector(".media-owner").textContent    = media.username;
         this.#mediaElement.querySelector(".media-filename").textContent = media.filename;
         this.#mediaElement.querySelector(".media-filesize").textContent = this.#formatBytes(media.metadata.size);

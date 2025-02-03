@@ -131,14 +131,13 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		return $ret;
 	}
 
-
 	/**
 	 * @throws ModuleException
 	 * @throws FilesystemException
 	 * @throws Exception
 	 */
 	private function insertDataset(AbstractMediaHandler $mediaHandler, string $uploadedPath, int $nodeId, int $UID,
-								   array $extMetadata):
+								   array $extMetadata = []):
 	array
 	{
 		$fileHash = $mediaHandler->determineNewFilename($uploadedPath);

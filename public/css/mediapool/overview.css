@@ -163,3 +163,6 @@ main
     cursor: grabbing; /* Zeigt an, dass das Element gerade gezogen wird */
 }
 
+#editMediaDialog {width:40%; }
+
+#editMediaDialog textarea {height:200px;}

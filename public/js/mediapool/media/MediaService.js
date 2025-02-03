@@ -41,9 +41,14 @@ export class MediaService
 		return result.media_list;
     }
 
-	async editMetaData(mediaId, data)
+	async editMedia(mediaId, filename, description)
 	{
-		return this.#sendRequest(MediaApiConfig.MOVE_URI, "POST",  {"media_id": mediaId, "data": data});
+		const data = {
+			"media_id": mediaId,
+			"filename": filename,
+			"description": description
+		};
+		return this.#sendRequest(MediaApiConfig.EDIT_URI, "POST",  data);
 	}
 
     async moveMedia(mediaId, nodeId)
@@ -53,7 +58,8 @@ export class MediaService
 
     async cloneMedia(mediaId)
     {
-        return this.#sendRequest(MediaApiConfig.CLONE_URI, "POST", {"media_id": mediaId});
+        const result = await this.#sendRequest(MediaApiConfig.CLONE_URI, "POST", {"media_id": mediaId});
+		return result.new_media;
     }
 
 	async removeMedia(mediaId)

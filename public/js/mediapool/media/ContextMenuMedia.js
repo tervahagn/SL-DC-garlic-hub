@@ -17,23 +17,24 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {MediaApiConfig} from "./MediaApiConfig.js";
-
 export class ContextMenuMedia
 {
     #menuElement  = null;
     #mediaService = null;
     #mediaDialog  = null;
+	#currentMedia = null;
 
-    constructor(menuElement, mediaService, mediaDialog)
+    constructor(menuElement, mediaService, mediaDialog, currentMedia)
     {
         this.#menuElement  = menuElement;
         this.#mediaService = mediaService;
         this.#mediaDialog  = mediaDialog;
+		this.#currentMedia = currentMedia;
     }
 
     show(event)
     {
+
         document.querySelectorAll('.context_menu').forEach(el => el.remove());  // remove all previous menu
         this.#menuElement.style.left = `${event.pageX}px`;
         this.#menuElement.style.top = `${event.pageY}px`;
@@ -44,7 +45,7 @@ export class ContextMenuMedia
 	addInfoEvent(infoMediaMenuElement)
 	{
 		infoMediaMenuElement.addEventListener("click", () => {
-			this.#mediaDialog.show();
+			//this.#mediaInfoDialog.show(this.#mediaService);
 		});
 	}
 
@@ -52,26 +53,26 @@ export class ContextMenuMedia
 	addEditEvent(editMediaMenuElement)
     {
         editMediaMenuElement.addEventListener("click", () => {
-            this.#mediaDialog.show();
+            this.#mediaDialog.show(this.#currentMedia);
         });
     }
 
-    addCloneEvent(cloneMediaMenuElement, currentMedia, callback)
+    addCloneEvent(cloneMediaMenuElement, callback)
     {
         cloneMediaMenuElement.addEventListener("click", () => {
             (async () => {
-                const newMedia = await this.#mediaService.cloneMedia(currentMedia.getAttribute('data-media-id'));
+                const newMedia = await this.#mediaService.cloneMedia(this.#currentMedia.getAttribute('data-media-id'));
                 callback(newMedia);
             })();
         });
     }
 
-    addRemoveEvent(removeMediaMenuElement, currentMedia)
+    addRemoveEvent(removeMediaMenuElement)
     {
         removeMediaMenuElement.addEventListener("click", () => {
             (async () => {
-                await this.#mediaService.removeMedia(currentMedia.getAttribute('data-media-id'));
-                currentMedia.remove();
+                await this.#mediaService.removeMedia(this.#currentMedia.getAttribute('data-media-id'));
+                this.#currentMedia.remove();
             })();
         });
     }

@@ -17,14 +17,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {MediaApiConfig} from "./MediaApiConfig.js";
-
 export class MediaDialog
 {
     #dialogElement = null;
     #closeElement = null;
-    #action       = "";
     #mediaService  = null;
+	#editFilename     = document.getElementById("editFilename");
+	#editDescription  = document.getElementById("editDescription");
+	#currentMedia = null;
+	#submitEditMedia = document.getElementById("submitEditMedia");
 
     constructor(dialog_element, close_element, mediaService)
     {
@@ -36,41 +37,28 @@ export class MediaDialog
         this.#addSaveEvent();
     }
 
-    show()
+    show(currentMedia)
     {
-
+		this.#currentMedia = currentMedia;
+		this.#editFilename.value    = currentMedia.querySelector("img").getAttribute("data-title");
+		this.#editDescription.value = currentMedia.querySelector("img").getAttribute("data-description");
         this.#dialogElement.showModal();
+
     }
 
     #addSaveEvent()
     {
-        // also for closing the dialog with the cancel button
- /*       this.#dialogElement.addEventListener('close', () => {
-            if (this.#dialogElement.returnValue !== "submit")x
-                return;
+        this.#submitEditMedia.addEventListener('click', async () => {
+			await this.#mediaService.editMedia(
+				this.#currentMedia.getAttribute("data-media-id"),
+				this.#editFilename.value,
+				this.#editDescription.value
+			)
+			this.#currentMedia.querySelector(".media-filename").textContent = this.#editFilename.value;
+			this.#currentMedia.querySelector("img").setAttribute("data-title", this.#editFilename.value);
+			this.#currentMedia.querySelector("img").setAttribute("data-description", this.#editDescription.value);
 
-            (async () => {
-                const method     = "POST";
-                const apiUrl     = MediaApiConfig.BASE_URI + "/";
-                const dataToSend = ""; //this.#determineDataToSend();
-                const options    = {method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dataToSend)}
-
-                const result = await this.#mediaService.editMedia(apiUrl, options).catch(error => {
-                    console.error('Fetch error:', error.message);
-                    return null;
-                });
-
-                if (!result || !result.success)
-                {
-                    console.error('Error:', result?.error_message || 'Unknown error');
-                    return;
-                }
-
-                // change DOM
-            })();
         });
-
-  */
     }
 
     #addCancelEvent()

@@ -29,6 +29,23 @@ class MediaController
 		return $this->jsonResponse($response, ['success' => true, 'media_list' => $media_list]);
 	}
 
+	public function edit(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$bodyParams = $request->getParsedBody();
+		if (!array_key_exists('media_id', $bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
+
+		if (!array_key_exists('filename', $bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Filename is missing']);
+
+		if (!array_key_exists('description', $bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Description is missing']);
+
+		$this->mediaService->updateMedia($bodyParams['media_id'], $bodyParams['filename'], $bodyParams['description']);
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+
 	/**
 	 * @throws Exception
 	 */

@@ -31,12 +31,13 @@ export class ContextMenuMediaFactory
         this.#mediaService    = mediaService;
     }
 
-    create()
+    create(currentMedia)
     {
         return new ContextMenuMedia(
             this.#templateElement.content.cloneNode(true).firstElementChild,
             this.#mediaService,
-            this.#mediaDialog
+            this.#mediaDialog,
+			currentMedia
         );
     }
 }

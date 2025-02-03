@@ -58,6 +58,13 @@ class MediaService
 		return $result;
 	}
 
+
+	public function updateMedia(string $mediaId, string $filename, string $description): void
+	{
+		$this->mediaRepository->update($mediaId, ['filename' => $filename, 'media_description' => $description]);
+	}
+
+
 	/**
 	 * @throws Exception
 	 */

@@ -197,18 +197,15 @@
 				<form method="dialog">
 					<fieldset>
 						<legend></legend>
-						<label for="edit-filename">{{LANG_FILENAME}}:
-							<input type="text" id="edit-filename" name="edit-filename">
+						<label for="editFilename">{{LANG_FILENAME}}:
+							<input type="text" id="editFilename" name="editFilename">
 						</label>
-						<label for="edit-description">{{LANG_DESCRIPTION}}:
-							<textarea id="edit-description" name="edit-description">
+						<label for="editDescription">{{LANG_DESCRIPTION}}:
+							<textarea id="editDescription" name="editDescription">
 							</textarea>
 						</label>
-
-						<input type="hidden" id="media_id" name="media_id">
-
 						<div class="dlg_buttons">
-							<button value="submit" type="submit">{{LANG_SAVE}}</button>
+							<button id="submitEditMedia" type="submit">{{LANG_SAVE}}</button>
 							<button value="cancel" formnovalidate autofocus>{{LANG_CANCEL}}</button>
 						</div>
 					</fieldset>

@@ -90,13 +90,13 @@ export class MediaList
         mediaItem.addEventListener("contextmenu", (event) => {
             event.preventDefault();
 
-            const contextMenu    = this.#contextMenuFactory.create();
+            const contextMenu    = this.#contextMenuFactory.create(mediaItem);
             contextMenu.show(event);
 
-			contextMenu.addInfoEvent(document.getElementById("infoMedia"), mediaItem);
-            contextMenu.addRemoveEvent(document.getElementById("removeMedia"), mediaItem);
-            contextMenu.addEditEvent(document.getElementById("editMedia"), mediaItem);
-            contextMenu.addCloneEvent(document.getElementById("cloneMedia"), mediaItem, this.#addMediaToList.bind(this));
+			contextMenu.addInfoEvent(document.getElementById("infoMedia"));
+            contextMenu.addRemoveEvent(document.getElementById("removeMedia"));
+            contextMenu.addEditEvent(document.getElementById("editMedia"));
+            contextMenu.addCloneEvent(document.getElementById("cloneMedia"), this.#addMediaToList.bind(this));
         });
     }
 }
