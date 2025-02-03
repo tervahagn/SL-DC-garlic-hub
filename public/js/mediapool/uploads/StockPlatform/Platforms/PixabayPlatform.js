@@ -102,6 +102,7 @@ export class PixabayPlatform extends AbstractStockPlatform
 				metadata: {
 					pool: "Pixabay",
 					description: item.tags || null,
+					page_url: item.pageURL || null,
 					user: {
 						username: item.username || null,
 						name: item.username || null,

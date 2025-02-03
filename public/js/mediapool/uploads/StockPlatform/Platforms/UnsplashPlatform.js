@@ -116,6 +116,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 				metadata: {
 					pool: "Unsplash",
 					description: item.description || null,
+					page_url: item.links?.html || null,
 					user: {
 						username: item.user?.username || null,
 						name: item.user?.name || null,
