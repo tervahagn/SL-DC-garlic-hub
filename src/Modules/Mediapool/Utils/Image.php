@@ -136,6 +136,7 @@ class Image extends AbstractMediaHandler
 	 */
 	private function createStandardThumbnail(array $fileInfo): void
 	{
+		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 		$thumbPath            = $this->config->getPaths('systemDir').'/'.$this->thumbPath.'/'.$fileInfo['basename'];
 		$this->thumbExtension = $fileInfo['extension'];
 		$this->imagick->writeImage($thumbPath);
