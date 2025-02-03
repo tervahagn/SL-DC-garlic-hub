@@ -187,7 +187,7 @@
 			<div class="upload">
 				<button id="openUploadDialog" disabled><i class="bi bi-upload"></i> Uploader</button>
 			</div>
-			<div id="media-list" class="media-grid" aria-labelledby="media-list-title">
+			<div id="media-list" class="media-list-grid-view" aria-labelledby="media-list-title">
 			</div>
 			<dialog id="editMediaDialog">
 				<header>
@@ -238,8 +238,9 @@
 			</dialog>
 
 			<template id="media-template">
-				<article class="media-item" draggable="true">
+				<article class="media-item" draggable="false">
 					<figure draggable="false">
+						<i class="media-drag-icon bi bi-grip-vertical" draggable="true"></i>
 						<i class="media-type-icon bi" draggable="false"></i>
 						<a href="" class="glightbox media-view-icon bi-eye bi"
 						   data-glightbox="descPosition: left; zoomable: true;" draggable="false">

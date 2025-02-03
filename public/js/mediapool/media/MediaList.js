@@ -39,6 +39,7 @@ export class MediaList
 		const results = await this.#mediaService.loadMediaByNodeId(nodeId);
 
 		this.render(results);
+		this.#initDrag();
 	}
 
     render(data)
@@ -99,4 +100,22 @@ export class MediaList
             contextMenu.addCloneEvent(document.getElementById("cloneMedia"), this.#addMediaToList.bind(this));
         });
     }
+
+	#initDrag()
+	{
+		document.querySelectorAll(".media-drag-icon").forEach(icon => {
+			icon.addEventListener("dragstart", event => {
+				let article = event.target.closest(".media-item"); // Finde das übergeordnete <article>
+				event.dataTransfer.setData("text/plain", ""); // Notwendig für Drag & Drop in manchen Browsern
+				event.dataTransfer.setDragImage(article, 0, 0); // Setzt das <article> als Drag-Objekt
+				article.setAttribute("draggable", "true"); // Macht das ganze Element draggable
+			});
+
+			icon.addEventListener("dragend", event => {
+				let article = event.target.closest(".media-item");
+				article.removeAttribute("draggable"); // Entfernt das Attribut nach dem Drag-Vorgang
+			});
+		});
+	}
+
 }

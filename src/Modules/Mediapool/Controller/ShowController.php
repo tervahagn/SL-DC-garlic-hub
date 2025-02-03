@@ -57,6 +57,7 @@ class ShowController
 					'/css/external/wunderbaum.min.css',
 					'/css/external/glightbox.min.css',
 					'/css/mediapool/overview.css',
+					'/css/mediapool/media-list.css',
 					'/css/mediapool/uploads.css'
 				],
 				'footer_scripts' => [

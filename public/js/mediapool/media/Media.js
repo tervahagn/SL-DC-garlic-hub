@@ -26,6 +26,7 @@ export class Media
         this.#mediaElement = mediaElement;
     }
 
+
     buildMediaItem(media)
     {
         this.#mediaElement.querySelector(".media-type-icon").classList.add(this.#detectMediaType(media.mimetype));
