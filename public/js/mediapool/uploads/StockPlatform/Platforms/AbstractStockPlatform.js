@@ -68,5 +68,10 @@ export class AbstractStockPlatform
 
 	get resultList() {	return this.#resultList;}
 
+	resetResultList()
+	{
+		this.#resultList = {};
+	}
+
 	set resultList(value) {	this.#resultList = value; }
 }

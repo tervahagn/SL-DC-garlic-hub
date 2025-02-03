@@ -118,6 +118,8 @@ export class StockPlatformUploader extends BaseUploader
 		if (this.#stockPlatform === null)
 			return;
 
+		this.#stockPlatform.resetResultList();
+
 		this.domElements.searchResultsArea.innerHTML = "";
 
 		const results = await this.#stockPlatform.search(this.domElements.searchTerms.value);
@@ -133,7 +135,7 @@ export class StockPlatformUploader extends BaseUploader
 
 	async #loadNextPage()
 	{
-		return; // temporary disabled to save requests during developing
+//		return; // temporary disabled to save requests during developing
 		if (this.domElements.searchResultsArea.scrollTop + this.domElements.searchResultsArea.clientHeight >= this.domElements.searchResultsArea.scrollHeight)
 		{
 			if (this.#stockPlatform === null)
@@ -144,11 +146,10 @@ export class StockPlatformUploader extends BaseUploader
 			if (results === null)
 				return;
 
-			for (const result of results)
-				for (const [id, item] of Object.entries(results))
-				{
-					this.#addSearchResult(id, item);
-				}
+			for (const [id, item] of Object.entries(results))
+			{
+				this.#addSearchResult(id, item);
+			}
 		}
 	}
 

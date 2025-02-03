@@ -111,7 +111,7 @@ export class PixabayPlatform extends AbstractStockPlatform
 				}
 			};
 			return acc;
-		}, {});
+		}, this.resultList || {});
 
 	}
 

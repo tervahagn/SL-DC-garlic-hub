@@ -125,7 +125,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 				}
 			};
 			return acc;
-		}, {});
+		}, this.resultList || {});
 	}
 
 	hasApiToken()

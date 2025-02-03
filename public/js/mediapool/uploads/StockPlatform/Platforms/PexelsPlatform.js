@@ -106,7 +106,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 				}
 			};
 			return acc;
-		}, {});
+		}, this.resultList || {});
 	}
 
 	hasApiToken()
