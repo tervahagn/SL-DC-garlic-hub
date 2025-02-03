@@ -76,6 +76,12 @@ abstract class AbstractMediaHandler
 		$this->metadata = $metadata;
 	}
 
+	public function getMetadata(): array
+	{
+		return $this->metadata;
+	}
+
+
 	public function getDimensions(): array
 	{
 		return $this->dimensions;

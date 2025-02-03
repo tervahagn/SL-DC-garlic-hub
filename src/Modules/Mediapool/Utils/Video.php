@@ -226,7 +226,6 @@ class Video extends AbstractMediaHandler
 		else
 			$duration = 0;
 
-
 		$this->mediaProperties['start_time'] = (string) $meta_data->format->start_time;
 		$this->mediaProperties['duration']   = (float) $duration;
 		$this->duration                      = (float) $duration;

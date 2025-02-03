@@ -152,19 +152,12 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			$mediaHandler->checkFileAfterUpload($newFilePath);
 			$mediaHandler->createThumbnail($newFilePath);
 
-			$metadata         = [
-					'size'       => $mediaHandler->getFileSize(),
-					'dimensions' => $mediaHandler->getDimensions(),
-					'duration'   => $mediaHandler->getDuration()
-			];
+			$metadata    =  $this->combineMetaData($mediaHandler, $extMetadata);
 			$description = '';
-			foreach ($extMetadata as $key => $value)
-			{
-				$metadata[$key] = $value;
 
-				if ($key === 'description')
-					$description = $value;
-			}
+			if (array_key_exists('description', $metadata))
+				$description = $metadata['description'];
+
 			$metadata  = json_encode($metadata);
 			$extension = pathinfo($newFilePath, PATHINFO_EXTENSION);
 			$thumbExtension = $mediaHandler->getThumbExtension();
@@ -209,6 +202,39 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			UPLOAD_ERR_EXTENSION  => "File upload stopped by extension",
 			default => "Unknown upload error",
 		};
+	}
+
+	/**
+	 * We need this bullshit because webapi mediarecoder do not include durations.
+	 * To workaround, we use duration from metadata for ffmpeg lib
+	 *
+	 * Because we have different of metadata e.g. from stock pools / file uploads etc
+	 *  we must combine them and prevent the double handling of duration
+	 *
+	 * Todo: Fix this when we have a better solution
+	 */
+	private function combineMetaData(AbstractMediaHandler$mediaHandler, array $extMetadata): array
+	{
+		// base metadata
+		$metadata         = [
+			'size'       => $mediaHandler->getFileSize(),
+			'dimensions' => $mediaHandler->getDimensions(),
+			'duration'   => $mediaHandler->getDuration()
+		];
+
+		// metadata from external sources
+		foreach ($extMetadata as $key => $value)
+		{
+			$metadata[$key] = $value;
+		}
+
+		foreach ($mediaHandler->getMetadata() as $key => $value)
+		{
+			if ($key !== 'duration') // we have already duration from ffmpeg or metadata
+				$metadata[$key] = $value;
+		}
+
+		return $metadata;
 	}
 
 }
