@@ -96,7 +96,7 @@ export class WebcamUploader extends LocalFilesUploader
 				const durationInSeconds = (endTime - startTime) / 1000; // ms to sec
 
 				const file = new File([blob], "recorded-video.webm", { type: blob.type });
-				const metadata = {"duration":  durationInSeconds };
+				const metadata = {"duration":  durationInSeconds, "origin": "Camera video", "page_url": "" };
 				this.filePreviews.addFile(file, metadata);
 				this.#mediaRecorder = null;
 
@@ -126,7 +126,8 @@ export class WebcamUploader extends LocalFilesUploader
 
         const file = new File([array], "webcam_shoot.jpg", { type: mimeType });
 
-        this.filePreviews.addFile(file, null);
+		const metadata = {"origin": "Camera screenshot", "page_url": ""};
+        this.filePreviews.addFile(file, metadata);
     }
 
     #detectCameras()

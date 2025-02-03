@@ -48,6 +48,8 @@ class MediaService
 	 */
 	public function listMedia(int $node_id): array
 	{
+		// Todo: Check if there are rights to this operation
+
 		$result = $this->mediaRepository->findAllByNodeId($node_id);
 
 		foreach ($result as &$media)
@@ -58,9 +60,23 @@ class MediaService
 		return $result;
 	}
 
+	public function getMedia(mixed $media_id): array
+	{
+		$ar = $this->mediaRepository->findAllWithOwnerById($media_id);
+
+		// Todo: Check if there are rights to this operation
+
+		$ar['metadata'] = json_decode($ar['metadata'], true);
+
+		return $ar;
+	}
+
 
 	public function updateMedia(string $mediaId, string $filename, string $description): void
 	{
+		// Todo: Check if there are rights to this operation
+
+
 		$this->mediaRepository->update($mediaId, ['filename' => $filename, 'media_description' => $description]);
 	}
 
@@ -70,6 +86,8 @@ class MediaService
 	 */
 	public function deleteMedia(string $media_id): int
 	{
+		// Todo: Check if there are rights to this operation
+
 		$field     = ['deleted' => 1];
 		$condition = ['media_id' => $media_id];
 
@@ -81,6 +99,8 @@ class MediaService
 	 */
 	public function moveMedia(string $media_id, int $node_id): int
 	{
+		// Todo: Check if there are rights to this operation
+
 		$condition = ['media_id' => $media_id];
 		$field     = ['node_id'  => $node_id];
 
@@ -92,6 +112,8 @@ class MediaService
 	 */
 	public function cloneMedia(string $media_id): array
 	{
+		// Todo: Check if there are rights to this operation
+
 		$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($media_id));
 		$dataSet['media_id'] = Uuid::uuid4()->toString();
 		$dataSet['UID']      = $this->UID;
@@ -100,5 +122,6 @@ class MediaService
 
 		return $dataSet;
 	}
+
 
 }

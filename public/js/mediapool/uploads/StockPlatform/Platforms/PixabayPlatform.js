@@ -100,7 +100,7 @@ export class PixabayPlatform extends AbstractStockPlatform
 				thumb: item.previewURL || null,
 				downloadUrl: item.largeImageURL || null,
 				metadata: {
-					pool: "Pixabay",
+					origin: "Pixabay",
 					description: item.tags || null,
 					page_url: item.pageURL || null,
 					user: {

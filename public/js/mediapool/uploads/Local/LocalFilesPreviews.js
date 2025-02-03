@@ -30,7 +30,9 @@ export class LocalFilesPreviews extends BasePreviewHandler
     handleFiles(files)
     {
         Array.from(files).forEach(file => {
-            this.addFile(file, null);
+
+			const metadata = {"origin": "File upload", "page_url": ""};
+			this.addFile(file, metadata);
         });
     }
 

@@ -33,7 +33,8 @@ export class ExternalFileUploader extends BaseUploader
 
 	async uploadFile()
 	{
-		await this.uploadExternalFile(this.domElements.externalLinkField.value);
+		const metadata = {"origin": "External link", "page_url": this.domElements.externalLinkField.value};
+		await this.uploadExternalFile(this.domElements.externalLinkField.value, metadata);
 		this.domElements.externalLinkField.value = "";
 
 	}

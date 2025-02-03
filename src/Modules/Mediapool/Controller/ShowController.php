@@ -114,6 +114,13 @@ class ShowController
 					'LANG_UPLOAD_CAMERA' => $translator->translate('upload_camera', 'mediapool'),
 					'LANG_UPLOAD_SCREENCAST' => $translator->translate('upload_screencast', 'mediapool'),
 					'LANG_UPLOAD_STOCK_LIBRARIES' => $translator->translate('upload_stock_libraries', 'mediapool'),
+					'LANG_UPLOADED_AT' => $translator->translate('uploaded_at', 'mediapool'),
+					'LANG_MEDIA_ORIGIN' => $translator->translate('media_origin', 'mediapool'),
+					'LANG_PAGE_URL' => $translator->translate('page_url', 'mediapool'),
+					'LANG_STOCK_DESCRIPTION' => $translator->translate('stock_description', 'mediapool'),
+					'LANG_STOCK_USERNAME' => $translator->translate('stock_username', 'mediapool'),
+					'LANG_STOCK_REALNAME' => $translator->translate('stock_realname', 'mediapool'),
+					'LANG_STOCK_USER_URL' => $translator->translate('stock_user_url', 'mediapool')
 
 				]
 			]

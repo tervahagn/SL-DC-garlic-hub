@@ -35,11 +35,19 @@ export class MediaService
 
     async loadMediaByNodeId(nodeId)
     {
-        const url    = MediaApiConfig.LIST_URI + nodeId;
+        const url    = MediaApiConfig.LIST_URI + "/" + nodeId;
 		const result = await this.#sendRequest(url, "GET", null);
 
 		return result.media_list;
     }
+
+	async getMediaById(mediaId)
+	{
+		const url = MediaApiConfig.BASE_URI + "/" + mediaId;
+		const result = await this.#sendRequest(url, "GET", null);
+		return result.media;
+	}
+
 
 	async editMedia(mediaId, filename, description)
 	{

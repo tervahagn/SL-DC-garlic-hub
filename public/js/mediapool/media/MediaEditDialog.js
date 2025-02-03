@@ -17,22 +17,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class MediaDialog
+export class MediaEditDialog
 {
-    #dialogElement = null;
-    #closeElement = null;
-    #mediaService  = null;
+    #dialogElement    = document.getElementById('editMediaDialog');
+    #closeElement     = document.getElementById("closeEditMediaDialog");
+    #mediaService     = null;
 	#editFilename     = document.getElementById("editFilename");
 	#editDescription  = document.getElementById("editDescription");
-	#currentMedia = null;
+	#currentMedia     = null;
 	#submitEditMedia = document.getElementById("submitEditMedia");
 
-    constructor(dialog_element, close_element, mediaService)
+    constructor(mediaService)
     {
-        this.#dialogElement = dialog_element;
-        this.#closeElement  = close_element;
         this.#mediaService   = mediaService;
-
         this.#addCancelEvent();
         this.#addSaveEvent();
     }

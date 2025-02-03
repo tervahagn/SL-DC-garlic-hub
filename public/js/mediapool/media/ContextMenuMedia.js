@@ -21,14 +21,17 @@ export class ContextMenuMedia
 {
     #menuElement  = null;
     #mediaService = null;
-    #mediaDialog  = null;
+    #mediaEditDialog  = null;
+	#mediaInfoDialog = null;
 	#currentMedia = null;
 
-    constructor(menuElement, mediaService, mediaDialog, currentMedia)
+
+    constructor(menuElement, mediaService, mediaEditDialog, mediaInfoDialog, currentMedia)
     {
         this.#menuElement  = menuElement;
         this.#mediaService = mediaService;
-        this.#mediaDialog  = mediaDialog;
+        this.#mediaEditDialog  = mediaEditDialog;
+		this.#mediaInfoDialog  = mediaInfoDialog;
 		this.#currentMedia = currentMedia;
     }
 
@@ -45,7 +48,7 @@ export class ContextMenuMedia
 	addInfoEvent(infoMediaMenuElement)
 	{
 		infoMediaMenuElement.addEventListener("click", () => {
-			//this.#mediaInfoDialog.show(this.#mediaService);
+			this.#mediaInfoDialog.show(this.#currentMedia);
 		});
 	}
 
@@ -53,7 +56,7 @@ export class ContextMenuMedia
 	addEditEvent(editMediaMenuElement)
     {
         editMediaMenuElement.addEventListener("click", () => {
-            this.#mediaDialog.show(this.#currentMedia);
+            this.#mediaEditDialog.show(this.#currentMedia);
         });
     }
 

@@ -29,6 +29,17 @@ class MediaController
 		return $this->jsonResponse($response, ['success' => true, 'media_list' => $media_list]);
 	}
 
+	public function getInfo(ServerRequestInterface $request, ResponseInterface $response, array $args):
+	ResponseInterface
+	{
+		$media_id = $args['media_id'] ?? 0;
+		if ($media_id === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'mwdia_id is missing']);
+
+		$media = $this->mediaService->getMedia($media_id);
+		return $this->jsonResponse($response, ['success' => true, 'media' => $media]);
+	}
+
 	public function edit(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();

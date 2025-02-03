@@ -92,7 +92,7 @@ export class ScreencastUploader extends LocalFilesUploader
 				const durationInSeconds = (endTime - startTime) / 1000; // ms to sec
 
 				const file = new File([blob], "recorded-video.webm", { type: blob.type });
-				const metadata = {"duration":  durationInSeconds };
+				const metadata = {"duration":  durationInSeconds, "origin": "Screencast video", "page_url": "" };
 				this.filePreviews.addFile(file, metadata);
 				this.#mediaRecorder = null;
 
@@ -122,7 +122,8 @@ export class ScreencastUploader extends LocalFilesUploader
 
 		const file = new File([array], "screencast_shoot.jpg", { type: mimeType });
 
-		this.filePreviews.addFile(file, null);
+		const metadata = {"origin": "Screencast screenshot", "page_url": ""};
+		this.filePreviews.addFile(file, metadata);
 	}
 
 }

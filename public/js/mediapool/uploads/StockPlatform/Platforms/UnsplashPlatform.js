@@ -114,7 +114,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 				thumb: item.urls?.thumb || null,
 				downloadUrl: item.links?.download_location || null,
 				metadata: {
-					pool: "Unsplash",
+					origin: "Unsplash",
 					description: item.description || null,
 					page_url: item.links?.html || null,
 					user: {

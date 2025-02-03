@@ -163,6 +163,14 @@ main
     cursor: grabbing; /* Zeigt an, dass das Element gerade gezogen wird */
 }
 
-#editMediaDialog {width:40%; }
+#editInfoDialog {width:50%; }
+    #editInfoDialog ul {list-style-type: none; padding:1em; margin:0;}
+    #editInfoDialog ul li{display: flex; gap:1em;}
+    #editInfoDialog ul li .info-parameter{font-family: var(--gh-font-bold);width:30%;}
+    #editInfoDialog ul li .media-filename{width:65%; text-overflow: ellipsis;white-space: nowrap;overflow: hidden;}
 
-#editMediaDialog textarea {height:200px;}
+    #editInfoDialog ul li a{color: var(--gh-primary-color);text-align:center;}
+    #editInfoDialog ul li a:hover{text-decoration: underline;}
+
+#editMediaDialog {width:40%; }
+    #editMediaDialog textarea {height:200px;}

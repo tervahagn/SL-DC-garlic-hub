@@ -95,7 +95,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 				thumb: item.src?.small || null,
 				downloadUrl: item.src?.original || null,
 				metadata: {
-					pool: "Pixabay",
+					origin: "Pixabay",
 					description: item.alt || null,
 					page_url: item.url || null,
 					user: {

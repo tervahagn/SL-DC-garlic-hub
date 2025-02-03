@@ -12,7 +12,8 @@ import { MediaList } from "./media/MediaList.js";
 import { MediaService } from "./media/MediaService.js";
 import { ContextMenuMediaFactory } from "./media/ContextMenuMediaFactory.js";
 import { MediaFactory } from "./media/MediaFactory.js";
-import { MediaDialog } from "./media/MediaDialog.js";
+import { MediaEditDialog } from "./media/MediaEditDialog.js";
+import { MediaInfoDialog } from "./media/MediaInfoDialog.js";
 
 import { UploadDialogElements } from "./uploads/UploadDialogElements.js";
 import { LocalFilesElements } from "./uploads/Local/LocalFilesElements.js";
@@ -22,7 +23,7 @@ import { ExternalFileUploader } from "./uploads/External/ExternalFileUploader.js
 import { ExternalFileElements } from "./uploads/External/ExternalFileElements.js";
 
 import { SpicyCam } from "../external/spicy-camcast.min.js";
-import {WebcamElements} from "./uploads/Webcam/WebcamElements.js";
+import { WebcamElements } from "./uploads/Webcam/WebcamElements.js";
 import { WebcamUploader } from "./uploads/Webcam/WebcamUploader.js";
 import { WebcamPreviews } from "./uploads/Webcam/WebcamPreviews.js";
 
@@ -38,18 +39,18 @@ import {ContextMenuTreeViewFactory} from "./treeview/ContextMenuTreeViewFactory.
 
 document.addEventListener("DOMContentLoaded", function()
 {
-	const fetchClient   = new FetchClient();
-	const mediaService  = new MediaService(fetchClient);
-	const mediaDialog   = new MediaDialog(
-		document.getElementById('editMediaDialog'),
-		document.getElementById("closeEditMediaDialog"),
-		mediaService
-	)
+	const fetchClient     = new FetchClient();
+	const mediaService    = new MediaService(fetchClient);
 
 	const mediaList     = new MediaList(
 		document.getElementById("media-list"),
 		new MediaFactory(document.getElementById('media-template')),
-        new ContextMenuMediaFactory(document.getElementById('media-contextmenu-template'), mediaDialog, mediaService),
+        new ContextMenuMediaFactory(
+			document.getElementById('media-contextmenu-template'),
+			new MediaEditDialog(mediaService),
+			new MediaInfoDialog(mediaService),
+			mediaService
+		),
 		mediaService
 	);
 

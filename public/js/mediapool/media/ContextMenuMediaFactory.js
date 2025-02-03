@@ -22,12 +22,14 @@ export class ContextMenuMediaFactory
 {
     #templateElement = null;
     #mediaService = null;
-    #mediaDialog = null;
+    #mediaEditDialog = null;
+	#mediaInfoDialog = null;
 
-    constructor(templateElement, mediaDialog, mediaService)
+    constructor(templateElement, mediaEditDialog, mediaInfoDialog, mediaService)
     {
         this.#templateElement = templateElement;
-        this.#mediaDialog     = mediaDialog;
+        this.#mediaEditDialog = mediaEditDialog;
+		this.#mediaInfoDialog = mediaInfoDialog;
         this.#mediaService    = mediaService;
     }
 
@@ -36,7 +38,8 @@ export class ContextMenuMediaFactory
         return new ContextMenuMedia(
             this.#templateElement.content.cloneNode(true).firstElementChild,
             this.#mediaService,
-            this.#mediaDialog,
+            this.#mediaEditDialog,
+			this.#mediaInfoDialog,
 			currentMedia
         );
     }
