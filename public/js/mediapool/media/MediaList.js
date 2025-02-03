@@ -25,6 +25,8 @@ export class MediaList
     #mediaFactory = null
     #contextMenuFactory = null;
 	#mediaService = null;
+	#setListView = document.getElementById("setListView");
+	#setGridView = document.getElementById("setGridView");
 
     constructor(mediaListElement, mediaFactory, contextMenuFactory, mediaService)
     {
@@ -32,6 +34,8 @@ export class MediaList
         this.#mediaFactory       = mediaFactory;
         this.#contextMenuFactory = contextMenuFactory;
 		this.#mediaService       = mediaService;
+
+		this.#setViewActions();
     }
 
 	async loadMediaListByNode(nodeId)
@@ -45,6 +49,8 @@ export class MediaList
     render(data)
     {
         this.#mediaListElement.innerHTML = ""; // Clear previous content
+		if (localStorage.getItem("media-list-view") !== null)
+			this.#mediaListElement.className = localStorage.getItem("media-list-view");
 
         data.forEach((media) => {
             this.#addMediaToList(media);
@@ -59,7 +65,6 @@ export class MediaList
             height: "90vh",
             loop: false,
             autoplayVideos: true
-
         });
     }
 
@@ -118,4 +123,20 @@ export class MediaList
 		});
 	}
 
+	#setViewActions()
+	{
+		this.#setListView.addEventListener("click", () =>
+		{
+			this.#mediaListElement.className = "media-list-list-view";
+			localStorage.setItem("media-list-view", "media-list-list-view");
+
+		});
+
+		this.#setGridView.addEventListener("click", () =>
+		{
+			this.#mediaListElement.className = "media-list-grid-view";
+			localStorage.setItem("media-list-view", "media-list-grid-view");
+
+		});
+	}
 }

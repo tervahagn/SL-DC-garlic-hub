@@ -184,10 +184,12 @@
 
 			<h2 id="currentPath"> / </h2>
 
-			<div class="upload">
+			<div class="list-actions">
 				<button id="openUploadDialog" disabled><i class="bi bi-upload"></i> Uploader</button>
+				<button id="setListView" style="margin-left:auto"><i class="bi bi-list-stars"></i> </button>
+				<button id="setGridView"><i class="bi bi-grid"></i> </button>
 			</div>
-			<div id="media-list" class="media-list-grid-view" aria-labelledby="media-list-title">
+			<div id="mediaList" class="media-list-list-view" aria-labelledby="media-list-title">
 			</div>
 			<dialog id="editMediaDialog">
 				<header>
@@ -241,18 +243,20 @@
 				<article class="media-item" draggable="false">
 					<figure draggable="false">
 						<i class="media-drag-icon bi bi-grip-vertical" draggable="true"></i>
+						<img src="" alt="Media Thumbnail" draggable="false">
 						<i class="media-type-icon bi" draggable="false"></i>
 						<a href="" class="glightbox media-view-icon bi-eye bi"
 						   data-glightbox="descPosition: left; zoomable: true;" draggable="false">
 						</a>
-						<img src="" alt="Media Thumbnail" draggable="false">
 						<figcaption class="media-info" draggable="false">
-							<p>{{{LANG_FILENAME}}}: <span class="media-filename"></span></p>
-							<p>{{{LANG_OWNER}}}: <span class="media-owner"></span></p>
-							<p>{{{LANG_MIMETYPE}}}: <span class="media-mimetype"></span></p>
-							<p>{{{LANG_FILESIZE}}}: <span class="media-filesize"></span></p>
-							<p style="display: none">{{{LANG_DIMENSIONS}}}: <span class="media-dimensions"></span></p>
-							<p style="display: none">{{{LANG_MEDIA_DURATION}}}: <span class="media-duration"></span></p>
+							<p class="wrap-media-filename">{{{LANG_FILENAME}}}: <span class="media-filename"></span></p>
+							<p class="wrap-media-owner">{{{LANG_OWNER}}}: <span class="media-owner"></span></p>
+							<p class="wrap-media-mimetype">{{{LANG_MIMETYPE}}}: <span class="media-mimetype"></span></p>
+							<p class="wrap-media-filesize">{{{LANG_FILESIZE}}}: <span class="media-filesize"></span></p>
+							<p  class="wrap-media-dimensions" style="display: none">{{{LANG_DIMENSIONS}}}: <span
+									class="media-dimensions"></span></p>
+							<p class="wrap-media-duration" style="display: none">{{{LANG_MEDIA_DURATION}}}: <span
+									class="media-duration"></span></p>
 						</figcaption>
 					</figure>
 				</article>

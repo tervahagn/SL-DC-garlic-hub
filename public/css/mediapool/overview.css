@@ -66,14 +66,9 @@ main
     cursor: not-allowed;
 }
 
-[draggable="true"]
-{
-    cursor: grab;
-}
-
-[draggable="true"]:active {
-    cursor: grabbing; /* Zeigt an, dass das Element gerade gezogen wird */
-}
+[draggable="true"]{cursor: grab;}
+[draggable="true"]:active { cursor: grabbing; }
+.list-actions {display: flex; gap: 0.5em;}
 
 #editInfoDialog {width:50%; }
     #editInfoDialog ul {list-style-type: none; padding:1em; margin:0;}

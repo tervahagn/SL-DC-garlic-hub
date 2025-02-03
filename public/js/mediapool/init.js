@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function()
 	const mediaService    = new MediaService(fetchClient);
 
 	const mediaList     = new MediaList(
-		document.getElementById("media-list"),
+		document.getElementById("mediaList"),
 		new MediaFactory(document.getElementById('media-template')),
         new ContextMenuMediaFactory(
 			document.getElementById('media-contextmenu-template'),
@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function()
 		treeViewElements,
 		treeViewService
 	);
+
 	const contextMenuTreeViewFactory = new ContextMenuTreeViewFactory(
 		treeViewElements,
 		treeDialog,
