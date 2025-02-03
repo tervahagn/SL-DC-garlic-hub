@@ -158,9 +158,13 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 					'dimensions' => $mediaHandler->getDimensions(),
 					'duration'   => $mediaHandler->getDuration()
 			];
+			$description = '';
 			foreach ($extMetadata as $key => $value)
 			{
 				$metadata[$key] = $value;
+
+				if ($key === 'description')
+					$description = $value;
 			}
 			$metadata  = json_encode($metadata);
 			$extension = pathinfo($newFilePath, PATHINFO_EXTENSION);
@@ -169,9 +173,10 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		else
 		{
 			$mediaHandler->removeUploadedFile($uploadedPath);
-			$mimetype  = $dataSet['mimetype'];
-			$metadata  = $dataSet['metadata'];
-			$extension = $dataSet['extension'];
+			$mimetype    = $dataSet['mimetype'];
+			$metadata       = $dataSet['metadata'];
+			$extension      = $dataSet['extension'];
+			$description    = $dataSet['media_description'];
 			$thumbExtension = $dataSet['thumb_extension'];
 		}
 
@@ -184,7 +189,8 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			'metadata'  => $metadata,
 			'filename'  => $pathInfo['basename'],
 			'extension' => $extension,
-			'thumb_extension' => $thumbExtension
+			'thumb_extension' => $thumbExtension,
+			'media_description' => $description
 		];
 		$this->mediaRepository->insert($fileData);
 
