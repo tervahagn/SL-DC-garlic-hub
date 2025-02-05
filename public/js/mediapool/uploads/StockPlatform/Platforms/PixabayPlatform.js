@@ -23,6 +23,7 @@ import { AbstractStockPlatform } from './AbstractStockPlatform.js';
 export class PixabayPlatform extends AbstractStockPlatform
 {
 	#searchUri = "https://pixabay.com/api"
+	hasVideos  = true;
 
 	constructor(fetchClient)
 	{

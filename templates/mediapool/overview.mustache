@@ -144,10 +144,16 @@
 						</label>
 						<label id="radioSearchConfig" style="display:none">
 							<input type="radio" name="config_search" value="configPlatform" id="checkConfigPlatform">
-							Config
+							{{{LANG_CONFIGURATION}}}
 							<input type="radio" name="config_search" value="searchPlatform" id="checkSearchPlatform"
 								   checked>
-							Search
+							{{{LANG_SEARCH}}}
+						</label>
+						<label for="hasPlatformVideos">
+							<input type="radio" name="mediatype_search" value="images" id="searchMediatypeImages"
+								   checked> {{{LANG_IMAGES_SEARCH}}}
+							<input type="radio" name="mediatype_search" value="videos" id="searchMediatypeVideos">
+							{{{LANG_VIDEOS_SEARCH}}}
 						</label>
 					</div>
 					<div id="searchInPlatform" class="platform-mask" style="display:none">

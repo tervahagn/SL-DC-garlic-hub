@@ -121,8 +121,10 @@ class ShowController
 					'LANG_STOCK_DESCRIPTION' => $translator->translate('stock_description', 'mediapool'),
 					'LANG_STOCK_USERNAME' => $translator->translate('stock_username', 'mediapool'),
 					'LANG_STOCK_REALNAME' => $translator->translate('stock_realname', 'mediapool'),
-					'LANG_STOCK_USER_URL' => $translator->translate('stock_user_url', 'mediapool')
-
+					'LANG_STOCK_USER_URL' => $translator->translate('stock_user_url', 'mediapool'),
+					'LANG_CONFIGURATION' => $translator->translate('configuration', 'main'),
+					'LANG_IMAGES_SEARCH' => $translator->translate('images_search', 'mediapool'),
+					'LANG_VIDEOS_SEARCH' => $translator->translate('videos_search', 'mediapool'),
 				]
 			]
 		];

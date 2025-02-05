@@ -22,6 +22,7 @@ import { AbstractStockPlatform } from './AbstractStockPlatform.js';
 export class PexelsPlatform extends AbstractStockPlatform
 {
 	#searchUri = "https://api.pexels.com/v1/search"
+	hasVideos  = true;
 
 	constructor(fetchClient)
 	{
