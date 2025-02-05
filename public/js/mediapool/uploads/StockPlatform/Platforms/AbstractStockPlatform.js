@@ -36,7 +36,7 @@ export class AbstractStockPlatform
 		this.#fetchClient = fetchClient;
 	}
 
-	search(query)
+	search(query, mediatype = "images")
 	{
 		throw "search() must be implemented in subclass";
 	}

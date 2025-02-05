@@ -38,6 +38,8 @@ export class StockPlatformElements
 	#startFileUpload      = document.getElementById("startPlatformsUpload")
 	#downloadStatus       = document.getElementById("downloadStatus");
 	#radioSelectMediatype = document.getElementById("radioSelectMediatype");
+	#searchMediatypeVideos = document.getElementById("searchMediatypeVideos");
+	_searchMediatypeImages = document.getElementById("searchMediatypeImages");
 
 	get selectStockPlatform()
 	{
@@ -115,6 +117,17 @@ export class StockPlatformElements
 	}
 
 	get radioSelectMediatype()	{ return this.#radioSelectMediatype;}
+
+
+	get searchMediatypeVideos()
+	{
+		return this.#searchMediatypeVideos;
+	}
+
+	get searchMediatypeImages()
+	{
+		return this._searchMediatypeImages;
+	}
 
 	toggleSearchInPlatform(isVisible)
 	{

@@ -28,7 +28,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 		super(fetchClient);
 	}
 
-	async search(query)
+	async search(query, mediatype = "images")
 	{
 
 		this.currentPage = 1;

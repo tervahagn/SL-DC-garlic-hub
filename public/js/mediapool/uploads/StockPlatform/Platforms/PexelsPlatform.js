@@ -21,18 +21,21 @@ import { UploadApiConfig } from '../../UploadApiConfig.js';
 import { AbstractStockPlatform } from './AbstractStockPlatform.js';
 export class PexelsPlatform extends AbstractStockPlatform
 {
-	#searchUri = "https://api.pexels.com/v1/search"
+	#searchImageUri = "https://api.pexels.com/v1/search";
+	#searchVideoUri = "https://api.pexels.com/videos/search";
 	hasVideos  = true;
+	#mediatype = "images";
 
 	constructor(fetchClient)
 	{
 		super(fetchClient);
 	}
 
-	async search(query)
+	async search(query, mediatype)
 	{
 		this.currentPage = 1;
 		this.currentSearchQuery = query;
+		this.#mediatype = mediatype;
 
 		return await this.#executeSearchQuery();
 	}
@@ -55,7 +58,11 @@ export class PexelsPlatform extends AbstractStockPlatform
 	{
 		try
 		{
-			const apiUrl = this.#searchUri + "/?query=" + encodeURIComponent(this.currentSearchQuery) +
+			let searchUri = this.#searchImageUri;
+			if (this.#mediatype === "videos")
+				searchUri = this.#searchVideoUri;
+
+			const apiUrl = searchUri + "/?query=" + encodeURIComponent(this.currentSearchQuery) +
 				"&page=" + this.currentPage + "&per_page=" + this.resultsPerPage;
 
 			const dataToSend  = {"api_url": apiUrl, "headers": {"Authorization": this.apiToken}};

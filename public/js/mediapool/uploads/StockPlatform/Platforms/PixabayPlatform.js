@@ -22,18 +22,21 @@ import { AbstractStockPlatform } from './AbstractStockPlatform.js';
 
 export class PixabayPlatform extends AbstractStockPlatform
 {
-	#searchUri = "https://pixabay.com/api"
+	#searchImageUri = "https://pixabay.com/api"
+	#searchVideoUri = "https://pixabay.com/api/videos";
 	hasVideos  = true;
+	#mediatype = "images";
 
 	constructor(fetchClient)
 	{
 		super(fetchClient);
 	}
 
-	async search(query)
+	async search(query, mediatype = "images")
 	{
 		this.currentPage = 1;
 		this.currentSearchQuery = query;
+		this.#mediatype = mediatype;
 
 		return await this.#executeSearchQuery();
 	}
@@ -57,7 +60,11 @@ export class PixabayPlatform extends AbstractStockPlatform
 	{
 		try
 		{
-			const apiUrl = this.#searchUri + "/?q=" + encodeURIComponent(this.currentSearchQuery) +
+			let searchUri = this.#searchImageUri;
+			if (this.#mediatype === "videos")
+				searchUri = this.#searchVideoUri;
+
+			const apiUrl = searchUri + "/?q=" + encodeURIComponent(this.currentSearchQuery) +
 				"&page=" + this.currentPage + "&per_page=" + this.resultsPerPage +
 				"&key=" + this.apiToken;
 

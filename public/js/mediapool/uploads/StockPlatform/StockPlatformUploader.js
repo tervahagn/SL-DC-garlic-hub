@@ -123,7 +123,11 @@ export class StockPlatformUploader extends BaseUploader
 
 		this.domElements.searchResultsArea.innerHTML = "";
 
-		const results = await this.#stockPlatform.search(this.domElements.searchTerms.value);
+		let mediatype = "images";
+		if (this.#stockPlatform.hasVideos && this.domElements.searchMediatypeVideos.checked)
+			mediatype = "videos";
+
+		const results = await this.#stockPlatform.search(this.domElements.searchTerms.value, mediatype);
 
 		if (results === null)
 			return;
