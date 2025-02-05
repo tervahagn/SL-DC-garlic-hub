@@ -161,14 +161,18 @@ export class StockPlatformUploader extends BaseUploader
 	#addSearchResult(id, item)
 	{
 		const container = document.getElementById("result-media-template").content.cloneNode(true).firstElementChild;
+		const img = container.querySelector(".result-thumbnail");
+		img.src = item.thumb;
+		img.alt = item.metadata.description;
 		if (item.type === "image")
 		{
-			const img = container.querySelector(".result-thumbnail");
-			img.src = item.thumb;
-			img.alt = item.metadata.description;
 			const imgPreview = container.querySelector(".result-preview");
 			imgPreview.src = item.preview;
 			imgPreview.alt = item.metadata.description;
+		}
+		else if (item.type === "video")
+		{
+
 		}
 		const downloadChecker = container.querySelector(".result-checkbox");
 		downloadChecker.setAttribute("id", id);

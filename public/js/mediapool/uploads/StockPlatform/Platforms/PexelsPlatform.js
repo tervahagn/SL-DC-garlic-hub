@@ -81,7 +81,10 @@ export class PexelsPlatform extends AbstractStockPlatform
 			this.totalPages   = data.total_results / this.resultsPerPage;
 			this.totalResults = data.total_results;
 
-			this.#prepareResults(data);
+			if (this.#mediatype === "images")
+				this.#prepareImagesResults(data);
+			else
+				this.#prepareVideosResults(data);
 
 			return this.resultList;
 		}
@@ -91,7 +94,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 		}
 	}
 
-	#prepareResults(json)
+	#prepareImagesResults(json)
 	{
 		if (!json.photos || !Array.isArray(json.photos))
 			throw new Error("Wrong JSON format");
@@ -103,7 +106,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 				thumb: item.src?.small || null,
 				downloadUrl: item.src?.original || null,
 				metadata: {
-					origin: "Pixabay",
+					origin: "pexels",
 					description: item.alt || null,
 					page_url: item.url || null,
 					user: {
@@ -116,6 +119,33 @@ export class PexelsPlatform extends AbstractStockPlatform
 			return acc;
 		}, this.resultList || {});
 	}
+
+	#prepareVideosResults(json)
+	{
+		if (!json.videos || !Array.isArray(json.videos))
+			throw new Error("Wrong JSON format");
+
+		this.resultList = json.videos.reduce((acc, item) => {
+			acc[item.id] = {
+				type: "video",
+				preview: item.video_files[0]?.link || null,
+				thumb: item.video_pictures[0]?.picture || null,
+				downloadUrl: null,
+				metadata: {
+					origin: "pexels",
+					description: null,
+					page_url: item.url || null,
+					user: {
+						username: item.user.id || null,
+						name: item.user.name || null,
+						url: item.user.url,
+					},
+				}
+			};
+			return acc;
+		}, this.resultList || {});
+	}
+
 
 	hasApiToken()
 	{
