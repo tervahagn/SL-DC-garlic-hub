@@ -21,6 +21,7 @@ import { AbstractStockPlatform } from './AbstractStockPlatform.js';
 export class UnsplashPlatform extends AbstractStockPlatform
 {
 	#searchUri = "https://api.unsplash.com/search/photos"
+	hasVideos  = false;
 
 	constructor(fetchClient)
 	{

@@ -68,6 +68,8 @@ export class AbstractStockPlatform
 
 	get resultList() {	return this.#resultList;}
 
+	get hasVideos()	{return this.hasVideos;}
+
 	resetResultList()
 	{
 		this.#resultList = {};

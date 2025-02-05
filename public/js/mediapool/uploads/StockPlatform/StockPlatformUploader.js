@@ -80,15 +80,16 @@ export class StockPlatformUploader extends BaseUploader
 		}
 	}
 
-
 	#selectPlatform(platform)
 	{
 		this.#stockPlatform = this.#stockPlatformFactory.selectPlatform(platform);
 		if (this.#stockPlatform == null)
 			return;
+
 		const hasToken = this.#stockPlatform.hasApiToken()
 		this.domElements.toggleSearchConfig(hasToken);
 		this.domElements.toggleSearchInPlatform(hasToken);
+		this.domElements.toogleHasVideo(this.#stockPlatform.hasVideos);
 
 		localStorage.setItem("lastPlatform", platform);
 	}

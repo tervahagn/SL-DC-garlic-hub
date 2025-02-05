@@ -36,8 +36,8 @@ export class StockPlatformElements
 	#previewPlatformArea  = document.getElementById("previewPlatformArea");
 	#startPlatformsUpload = document.getElementById("startPlatformsUpload")
 	#startFileUpload      = document.getElementById("startPlatformsUpload")
-	#downloadStatus = document.getElementById("downloadStatus");
-
+	#downloadStatus       = document.getElementById("downloadStatus");
+	#radioSelectMediatype = document.getElementById("radioSelectMediatype");
 
 	get selectStockPlatform()
 	{
@@ -114,6 +114,8 @@ export class StockPlatformElements
 		return this.#downloadStatus;
 	}
 
+	get radioSelectMediatype()	{ return this.#radioSelectMediatype;}
+
 	toggleSearchInPlatform(isVisible)
 	{
 		if (isVisible)
@@ -127,6 +129,14 @@ export class StockPlatformElements
 			this.#configPlatform.style.display = "block";
 		}
 
+	}
+
+	toogleHasVideo(hasVideo)
+	{
+		if (hasVideo)
+			this.#radioSelectMediatype.style.display = "block";
+		else
+			this.#radioSelectMediatype.style.display = "none";
 	}
 
 	toggleSearchConfig(isVisible)
