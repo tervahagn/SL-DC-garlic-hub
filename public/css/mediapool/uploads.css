@@ -227,13 +227,13 @@ label:has(input:disabled)
         padding: 0;
     }
 
-    .media-view-detail:hover ~.result-preview
+ /*   .media-view-detail:hover ~.result-preview
     {
         display: block;
         opacity: 1;
         animation: stayVisible 5s forwards;
     }
-
+*/
     @keyframes stayVisible {
     0% {
         opacity: 1;

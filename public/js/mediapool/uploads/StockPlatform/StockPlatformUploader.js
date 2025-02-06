@@ -164,21 +164,62 @@ export class StockPlatformUploader extends BaseUploader
 		const img = container.querySelector(".result-thumbnail");
 		img.src = item.thumb;
 		img.alt = item.metadata.description;
+		let preview = null;
 		if (item.type === "image")
 		{
-			const imgPreview = container.querySelector(".result-preview");
-			imgPreview.src = item.preview;
-			imgPreview.alt = item.metadata.description;
+			preview = document.createElement("img");
 		}
 		else if (item.type === "video")
 		{
-
+			preview = document.createElement("video");
+			preview.autoplay = true;
+			preview.muted = true;
+			preview.loop = true
+			preview.preload = "none";
+			preview.poster = item.thumb;
 		}
+
+		if (preview === null)
+		{
+			console.log("Unknown media type: " + item.type);
+			return;
+		}
+		preview.className = "result-preview";
+
+		preview.src = item.preview;
+		preview.alt = item.metadata.description;
+		container.append(preview);
+
+		const hoverPreview = container.querySelector(".media-view-detail");
+		hoverPreview.addEventListener("mouseover", (event) => this.showPreview(event));
+		hoverPreview.addEventListener("mouseout", (event) => this.stopPreview(event, preview));
+
 		const downloadChecker = container.querySelector(".result-checkbox");
 		downloadChecker.setAttribute("id", id);
 		downloadChecker.addEventListener("click", (event) => this.#markedDownload(event));
 
 		this.domElements.searchResultsArea.appendChild(container);
+	}
+
+	showPreview(event)
+	{
+		const preview = event.target.parentElement.querySelector(".result-preview");
+		if (preview.tagName === "VIDEO")
+			preview.play();
+
+		preview.style.display = "block";
+
+
+	}
+
+	stopPreview(event, preview)
+	{
+
+		if (preview.tagName === "VIDEO")
+			preview.pause();
+
+		preview.style.display = "none";
+
 	}
 
 	#markedDownload(event)
@@ -188,4 +229,6 @@ export class StockPlatformUploader extends BaseUploader
 
 		this.domElements.startFileUpload.disabled = !isAnyChecked;
 	}
+
+
 }
