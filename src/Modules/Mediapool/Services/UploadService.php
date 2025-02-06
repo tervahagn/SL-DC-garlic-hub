@@ -115,6 +115,11 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		{
 			$response      = $this->client->head($externalLink);
 			$preMimeType   = $response->getHeaderLine('Content-Type');
+			// workaround if no content-type sended
+			if ($preMimeType === '' && (str_contains($externalLink, "mp4") ||
+					str_contains($externalLink, "webm") || str_contains($externalLink, "video")))
+				$preMimeType = 'video/mp4';
+
 			$contentLength = $response->getHeaderLine('Content-Length');
 			$mediaHandler  = $this->mediaHandlerFactory->createHandler($preMimeType);
 			$mediaHandler->checkFileBeforeUpload($contentLength);
