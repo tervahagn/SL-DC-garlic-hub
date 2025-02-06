@@ -84,7 +84,10 @@ export class PixabayPlatform extends AbstractStockPlatform
 			this.totalPages   = data.totalHits / this.resultsPerPage;
 			this.totalResults = data.total;
 
-			this.#prepareResults(data);
+			if (this.#mediatype === "images")
+				this.#prepareImagesResults(data);
+			else
+				this.#prepareVideosResults(data);
 
 			return this.resultList;
 		}
@@ -94,7 +97,7 @@ export class PixabayPlatform extends AbstractStockPlatform
 		}
 	}
 
-	#prepareResults(json)
+	#prepareImagesResults(json)
 	{
 		if (!json.hits || !Array.isArray(json.hits))
 			throw new Error("Wrong JSON format");
@@ -120,8 +123,38 @@ export class PixabayPlatform extends AbstractStockPlatform
 			};
 			return acc;
 		}, this.resultList || {});
+	}
+
+	#prepareVideosResults(json)
+	{
+		if (!json.hits || !Array.isArray(json.hits))
+			throw new Error("Wrong JSON format");
+
+
+		// traverse results and create a new array with the required fields
+		this.resultList = json.hits.reduce((acc, item) => {
+			acc[item.id] = {
+				type: "video",
+				preview: item.videos.tiny.url || null,
+				thumb: item.videos.tiny.thumbnail || null,
+				downloadUrl: item.videos.large.url || null,
+				metadata: {
+					origin: "Pixabay",
+					description: item.tags || null,
+					page_url: item.pageURL || null,
+					user: {
+						username: item.user_id || null,
+						name: item.user || null,
+						url: null,
+					},
+				}
+			};
+			return acc;
+		}, this.resultList || {});
 
 	}
+
+
 
 	hasApiToken()
 	{
