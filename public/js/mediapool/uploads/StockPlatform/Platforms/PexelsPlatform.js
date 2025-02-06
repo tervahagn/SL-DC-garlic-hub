@@ -124,13 +124,12 @@ export class PexelsPlatform extends AbstractStockPlatform
 	{
 		if (!json.videos || !Array.isArray(json.videos))
 			throw new Error("Wrong JSON format");
-
 		this.resultList = json.videos.reduce((acc, item) => {
 			acc[item.id] = {
 				type: "video",
-				preview: item.video_files[0]?.link || null,
+				preview: item.video_files.filter(v => v.quality === "sd").sort((a, b) => (a.width * a.height) - (b.width * b.height))[0]?.link,
 				thumb: item.video_pictures[0]?.picture || null,
-				downloadUrl: null,
+				downloadUrl: item.video_files.filter(v => v.quality === "hd").sort((a, b) => (b.width * b.height) - (a.width * a.height))[0]?.link,
 				metadata: {
 					origin: "pexels",
 					description: null,
