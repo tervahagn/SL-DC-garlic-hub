@@ -85,7 +85,7 @@ export class StockPlatformUploader extends BaseUploader
 		this.#stockPlatform = this.#stockPlatformFactory.selectPlatform(platform);
 		if (this.#stockPlatform == null)
 			return;
-x
+
 		this.#configPlatformOptions(this.#stockPlatform.hasApiToken());
 
 		localStorage.setItem("lastPlatform", platform);
