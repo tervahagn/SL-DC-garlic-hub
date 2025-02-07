@@ -36,7 +36,7 @@ class MediaController
 		if ($media_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'mwdia_id is missing']);
 
-		$media = $this->mediaService->getMedia($media_id);
+		$media = $this->mediaService->fetchMedia($media_id);
 		return $this->jsonResponse($response, ['success' => true, 'media' => $media]);
 	}
 

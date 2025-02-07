@@ -21,21 +21,31 @@
 
 namespace App\Modules\Mediapool\Services;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\FilesRepository;
+use App\Modules\Mediapool\Repositories\NodesRepository;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Ramsey\Uuid\Uuid;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
 class MediaService
 {
-	private FilesRepository $mediaRepository;
-	private LoggerInterface $logger;
+	private readonly FilesRepository $mediaRepository;
+	private readonly NodesRepository $nodesRepository;
+	private readonly AclValidator $aclValidator;
+
+	private readonly LoggerInterface $logger;
 	private int $UID;
 
-	public function __construct(FilesRepository $mediaRepository, LoggerInterface $logger)
+	public function __construct(FilesRepository $mediaRepository, NodesRepository $nodesRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->mediaRepository = $mediaRepository;
-		$this->logger = $logger;
+		$this->nodesRepository = $nodesRepository;
+		$this->aclValidator    = $aclValidator;
+		$this->logger          = $logger;
 	}
 
 	public function setUID(int $UID): void
@@ -43,85 +53,144 @@ class MediaService
 		$this->UID = $UID;
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	public function listMedia(int $node_id): array
+	public function listMedia(int $nodeId): array
 	{
-		// Todo: Check if there are rights to this operation
-
-		$result = $this->mediaRepository->findAllByNodeId($node_id);
-
-		foreach ($result as &$media)
+		try
 		{
-			$media['metadata'] = json_decode($media['metadata'], true);
+			$node = $this->nodesRepository->findNodeOwner($nodeId);
+
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
+			if (!$permissions['read'])
+				throw new ModuleException('mediapool', 'No read permissions on directory:'. $node['name']);
+
+			$result = $this->mediaRepository->findAllByNodeId($nodeId);
+
+			foreach ($result as &$media)
+			{
+				$media['metadata'] = json_decode($media['metadata'], true);
+			}
+
+			return $result;
 		}
-
-		return $result;
+		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException | DatabaseException $e)
+		{
+			$this->logger->error('Error listing media: ' . $e->getMessage());
+			return [];
+		}
 	}
 
-	public function getMedia(mixed $media_id): array
+	public function fetchMedia(string $mediaId): array
 	{
-		$ar = $this->mediaRepository->findAllWithOwnerById($media_id);
+		try
+		{
+			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
 
-		// Todo: Check if there are rights to this operation
+			// media has all the required fields (node_id, UID, company_id) for permissions check
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			if (!$permissions['read'])
+				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
 
-		$ar['metadata'] = json_decode($ar['metadata'], true);
+			$media['metadata'] = json_decode($media['metadata'], true);
 
-		return $ar;
+			return $media;
+		}
+		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error fetch media: ' . $e->getMessage());
+			return [];
+		}
 	}
 
-
-	public function updateMedia(string $mediaId, string $filename, string $description): void
+	public function updateMedia(string $mediaId, string $filename, string $description): int
 	{
-		// Todo: Check if there are rights to this operation
+		try
+		{
+			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
 
+			// media has all the required fields (node_id, UID, company_id) for permissions check
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			if (!$permissions['edit'])
+				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $media['node_id']);
 
-		$this->mediaRepository->update($mediaId, ['filename' => $filename, 'media_description' => $description]);
+			return $this->mediaRepository->update($mediaId, ['filename' => $filename, 'media_description' => $description]);
+		}
+		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error updating media: ' . $e->getMessage());
+			return 0;
+		}
 	}
 
-
-	/**
-	 * @throws Exception
-	 */
-	public function deleteMedia(string $media_id): int
+	public function deleteMedia(string $mediaId): int
 	{
-		// Todo: Check if there are rights to this operation
+		try
+		{
+			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
 
-		$field     = ['deleted' => 1];
-		$condition = ['media_id' => $media_id];
+			// media has all the required fields (node_id, UID, company_id) for permissions check
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			if (!$permissions['edit'])
+				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $media['node_id']);
 
-		return $this->mediaRepository->updateWithWhere($field, $condition);
+			$field     = ['deleted' => 1];
+			$condition = ['media_id' => $mediaId];
+
+			return $this->mediaRepository->updateWithWhere($field, $condition);
+		}
+		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error deleting media: ' . $e->getMessage());
+			return 0;
+		}
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	public function moveMedia(string $media_id, int $node_id): int
+	public function moveMedia(string $mediaId, int $nodeId): int
 	{
-		// Todo: Check if there are rights to this operation
+		try
+		{
+			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			if (!$permissions['read'])
+				throw new ModuleException('mediapool', 'No read permissions on this directory:'. $media['node_id']);
 
-		$condition = ['media_id' => $media_id];
-		$field     = ['node_id'  => $node_id];
+			$node = $this->nodesRepository->findNodeOwner($nodeId);
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
+			if (!$permissions['edit'])
+				throw new ModuleException('mediapool', 'No edit permissions on directory:'. $node['name']);
 
-		return $this->mediaRepository->updateWithWhere($field, $condition);
+			$condition = ['media_id' => $mediaId];
+			$field     = ['node_id'  => $nodeId];
+
+			return $this->mediaRepository->updateWithWhere($field, $condition);
+		}
+		catch (Exception | CoreException | ModuleException | DatabaseException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error moving media: ' . $e->getMessage());
+			return 0;
+		}
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	public function cloneMedia(string $media_id): array
+	public function cloneMedia(string $mediaId): array
 	{
-		// Todo: Check if there are rights to this operation
+		try
+		{
+			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			if (!$permissions['read'] || !$permissions['edit'])
+				throw new ModuleException('mediapool', 'No permissions on this directory:'. $media['node_id']);
 
-		$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($media_id));
-		$dataSet['media_id'] = Uuid::uuid4()->toString();
-		$dataSet['UID']      = $this->UID;
+			$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
+			$dataSet['media_id'] = Uuid::uuid4()->toString();
+			$dataSet['UID']      = $this->UID;
 
-		$dataSet['uuid']     = $this->mediaRepository->insert($dataSet);
+			$dataSet['uuid']     = $this->mediaRepository->insert($dataSet);
 
-		return $dataSet;
+			return $dataSet;
+		}
+		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error moving media: ' . $e->getMessage());
+			return [];
+		}
 	}
-
-
 }

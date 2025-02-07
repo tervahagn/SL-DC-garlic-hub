@@ -32,15 +32,17 @@ class FilesRepository extends Sql
 		parent::__construct($connection,'mediapool_files', 'media_id');
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function findAllWithOwnerById(string $media_id): array
 	{
-		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
+		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = ['media_id' => $media_id, 'deleted' => 0];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
-
 
 	/**
 	 * @throws Exception
