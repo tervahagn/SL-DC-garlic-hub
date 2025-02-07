@@ -131,11 +131,7 @@ export class UnsplashPlatform extends AbstractStockPlatform
 
 	hasApiToken()
 	{
-		if (localStorage.getItem('UnsplashApiToken') === null)
-			return false
-
-		this.apiToken = localStorage.getItem('UnsplashApiToken');
-		return true;
+		return super.hasApiToken('UnsplashApiToken');
 	}
 
 	saveToken(token)

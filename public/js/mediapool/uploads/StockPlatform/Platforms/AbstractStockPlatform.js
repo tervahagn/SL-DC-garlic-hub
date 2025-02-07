@@ -46,9 +46,17 @@ export class AbstractStockPlatform
 		throw "download() must be implemented in subclass";
 	}
 
-	hasApiToken(query)
+	hasApiToken(tokenName)
 	{
-		throw "hasApiToken() must be implemented in subclass";
+		if (localStorage.getItem(tokenName) === null)
+			return false
+
+		if (localStorage.getItem(tokenName) === "")
+			return false
+
+		this.apiToken = localStorage.getItem(tokenName);
+		return true;
+
 	}
 
 	setApiToken()

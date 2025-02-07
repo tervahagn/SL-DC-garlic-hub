@@ -148,11 +148,7 @@ export class PexelsPlatform extends AbstractStockPlatform
 
 	hasApiToken()
 	{
-		if (localStorage.getItem('PexelsApiToken') === null)
-			return false
-
-		this.apiToken = localStorage.getItem('PexelsApiToken');
-		return true;
+		return super.hasApiToken('PexelsApiToken');
 	}
 
 	saveToken(token)

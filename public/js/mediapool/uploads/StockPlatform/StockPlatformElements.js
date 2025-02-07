@@ -144,8 +144,14 @@ export class StockPlatformElements
 
 	}
 
-	toogleHasVideo(hasVideo)
+	toogleHasVideo(hasToken, hasVideo)
 	{
+		if (!hasToken)
+		{
+			this.#radioSelectMediatype.style.display = "none";
+			return;
+		}
+
 		if (hasVideo)
 			this.#radioSelectMediatype.style.display = "block";
 		else

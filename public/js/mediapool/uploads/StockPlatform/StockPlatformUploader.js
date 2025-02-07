@@ -40,7 +40,7 @@ export class StockPlatformUploader extends BaseUploader
 			this.domElements.selectStockPlatform.value = localStorage.getItem("lastPlatform");
 		}
 
-		this.domElements.selectStockPlatform.addEventListener("click", (event) => this.#selectPlatform(event.target.value));
+		this.domElements.selectStockPlatform.addEventListener("change", (event) => this.#selectPlatform(event.target.value));
 		this.domElements.savePlatformApiToken.addEventListener("click", (event) => this.#saveApiToken(event));
 		this.domElements.checkSearchPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
 		this.domElements.checkConfigPlatform.addEventListener("click", (event) => this.#toggleSearchConfig(event));
@@ -86,20 +86,22 @@ export class StockPlatformUploader extends BaseUploader
 		if (this.#stockPlatform == null)
 			return;
 
-		const hasToken = this.#stockPlatform.hasApiToken()
-		this.domElements.toggleSearchConfig(hasToken);
-		this.domElements.toggleSearchInPlatform(hasToken);
-		this.domElements.toogleHasVideo(this.#stockPlatform.hasVideos);
+		this.#configPlatformOptions(this.#stockPlatform.hasApiToken());
 
 		localStorage.setItem("lastPlatform", platform);
 	}
 
 	#saveApiToken()
 	{
-		if (this.domElements.platformApiToken.value !== "")
-			this.#stockPlatform.saveToken(this.domElements.platformApiToken.value);
+		this.#stockPlatform.saveToken(this.domElements.platformApiToken.value);
+		this.#configPlatformOptions(this.#stockPlatform.hasApiToken());
+	}
 
-		this.domElements.toggleSearchConfig(this.#stockPlatform.apiToken !== "");
+	#configPlatformOptions(hasToken)
+	{
+		this.domElements.toggleSearchConfig(hasToken);
+		this.domElements.toggleSearchInPlatform(hasToken);
+		this.domElements.toogleHasVideo(hasToken, this.#stockPlatform.hasVideos);
 	}
 
 	#toggleSearchConfig(event)
@@ -208,18 +210,14 @@ export class StockPlatformUploader extends BaseUploader
 			preview.play();
 
 		preview.style.display = "block";
-
-
 	}
 
 	stopPreview(event, preview)
 	{
-
 		if (preview.tagName === "VIDEO")
 			preview.pause();
 
 		preview.style.display = "none";
-
 	}
 
 	#markedDownload(event)

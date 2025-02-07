@@ -158,11 +158,7 @@ export class PixabayPlatform extends AbstractStockPlatform
 
 	hasApiToken()
 	{
-		if (localStorage.getItem('PixabayApiToken') === null)
-			return false
-
-		this.apiToken = localStorage.getItem('PixabayApiToken');
-		return true;
+		return super.hasApiToken('PixabayApiToken');
 	}
 
 	saveToken(token)
