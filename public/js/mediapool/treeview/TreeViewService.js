@@ -48,7 +48,7 @@ export class TreeViewService
 
 	async sendRequest(url, method, data)
 	{
-		const ptions = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
+		const options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
 
 		const result  = await this.fetchClient.fetchData(url, options).catch(error => {
 			throw new Error(error.message);

@@ -1,3 +1,5 @@
+"use strict";
+
 import { DirectoryView } from "./treeview/DirectoryView.js";
 import { TreeViewElements } from "./treeview/TreeViewElements.js";
 import { TreeViewDialog } from "./treeview/TreeViewDialog.js";
@@ -103,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function()
 	);
 
 	// Section for external file uploads
-    const externalFileUploader = new ExternalFileUploader(
+    new ExternalFileUploader(
         new ExternalFileElements(),
         directoryView,
         uploaderDialog,
