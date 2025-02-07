@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {DirectoryView} from "../treeview/DirectoryView.js";
+
 export class Media
 {
     #mediaElement = null;
@@ -64,7 +66,7 @@ export class Media
 
         const mediaItem = this.#mediaElement.querySelector(".media-item");
         mediaItem.addEventListener("dragstart", (event) => {
-            event.dataTransfer.setData("data-media-id", mediaItem.getAttribute("data-media-id")); // Speichere es im dataTransfer
+			DirectoryView.workaroundShitForMediaIdBecauseOfChrome = mediaItem.getAttribute("data-media-id");
         });
 
         return mediaItem;

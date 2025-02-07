@@ -33,7 +33,11 @@ import { UploadDialogElements } from "../uploads/UploadDialogElements.js";
 
 export class DirectoryView
 {
-    #tree               = {};
+	// Chrome and Safari make DataTransfer while Drag and drop useless
+	// see https://stackoverflow.com/questions/12958136/html5-drag-and-drop-datatransfer-and-chrome
+	static workaroundShitForMediaIdBecauseOfChrome = "";
+
+	#tree               = {};
 	#treeViewElements    = null;
     #activeNode         = null;
     #mediaList          = null;
@@ -89,7 +93,7 @@ export class DirectoryView
                 preventNonNodes: false,
                 preventForeignNodes: false,
                 dragStart: (e) => {
-                      e.event.dataTransfer.effectAllowed = "all";
+					e.event.dataTransfer.effectAllowed = "all";
                     return true;
                 },
                 dragOver: (e) => {
@@ -99,7 +103,7 @@ export class DirectoryView
                     return true;
                 },
                 dragEnter: (e) => {
-                    if (e.sourceNode === null) // media drag'nDrop
+					if (e.sourceNode === null) // media drag'nDrop
                         return ["appendChild"];
                     else
                         return ["before", "after", "appendChild"];
@@ -107,12 +111,13 @@ export class DirectoryView
                 drop: (e) => {
                     if (e.sourceNode === null) // media drag'nDrop
                     {
-                        const mediaId = e.event.dataTransfer.getData("data-media-id");
+						const mediaId = DirectoryView.workaroundShitForMediaIdBecauseOfChrome;
                         if (mediaId === null || mediaId === undefined)
                             throw Error("mediaId is not defined")
 
                         this.#mediaList.moveMediaTo(mediaId, e.node.key);
-                    }
+						DirectoryView.workaroundShitForMediaIdBecauseOfChrome = ""; // reset for security
+					}
                     else
                     {
                         this.#moveNodeTo(e);
