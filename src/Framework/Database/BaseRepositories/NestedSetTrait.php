@@ -435,7 +435,7 @@ trait NestedSetTrait
 		return match ($region)
 		{
 			self::REGION_BEFORE => $node['lft'],
-			self::REGION_APPENDCHILD => $node['lft'] + 1,
+			self::REGION_APPENDCHILD => $node['rgt'],
 			self::REGION_AFTER => $node['rgt'] + 1,
 			default => throw new DatabaseException('Unknown region: ' . $region),
 		};
