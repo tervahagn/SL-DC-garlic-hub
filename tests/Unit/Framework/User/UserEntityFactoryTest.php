@@ -85,7 +85,7 @@ class UserEntityFactoryTest extends TestCase
 			'contact' => ['email' => 'edge@example.com'], // Ignored in Edge
 			'stats' => ['logins' => 1], // Ignored in Edge
 			'security' => ['role' => 'guest'], // Ignored in Edge
-			'acl' => ['permissions' => ['read']], // Ignored in Edge
+			'acl' => ['permissions' => ['read']],
 			'vip' => ['status' => 'none'], // Ignored in Edge
 		];
 
@@ -100,7 +100,7 @@ class UserEntityFactoryTest extends TestCase
 		$this->assertEmpty($result->getContact());
 		$this->assertEmpty($result->getStats());
 		$this->assertEmpty($result->getSecurity());
-		$this->assertEmpty($result->getAcl());
+		$this->assertNotEmpty($result->getAcl());
 		$this->assertEmpty($result->getVip());
 	}
 }

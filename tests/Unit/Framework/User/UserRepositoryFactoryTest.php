@@ -86,7 +86,7 @@ class UserRepositoryFactoryTest extends TestCase
 		$this->assertArrayHasKey('main', $result);
 		$this->assertInstanceOf(UserMainRepository::class, $result['main']);
 		$this->assertArrayHasKey('acl', $result);
-		$this->assertInstanceOf(UserMainRepository::class, $result['acl']);
+		$this->assertInstanceOf(UserAclRepository::class, $result['acl']);
 
 		$this->assertArrayNotHasKey('contact', $result);
 		$this->assertArrayNotHasKey('stats', $result);
