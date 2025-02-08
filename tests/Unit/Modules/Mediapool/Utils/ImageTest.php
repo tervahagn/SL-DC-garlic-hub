@@ -1,0 +1,154 @@
+<?php
+
+namespace Tests\Unit\Modules\Mediapool\Utils;
+
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\User\UserEntityFactory;
+use App\Modules\Mediapool\Utils\Image;
+use Imagick;
+use League\Flysystem\Filesystem;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
+
+class ImageTest extends TestCase
+{
+	private readonly Config $configMock;
+	private readonly Filesystem $filesystemMock;
+	private readonly Imagick $imagickMock;
+	private readonly Image $image;
+
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 */
+	protected function setUp(): void
+	{
+		$this->configMock = $this->createMock(Config::class);
+		$this->filesystemMock = $this->createMock(Filesystem::class);
+		$this->imagickMock = $this->createMock(Imagick::class);
+
+		$this->configMock->method('getConfigValue')
+			->willReturnMap([
+				['width', 'mediapool', 'max_resolution', 3840],
+				['height', 'mediapool', 'max_resolution', 3840],
+				['thumb_width', 'mediapool', 'dimensions', 150],
+				['thumb_height', 'mediapool', 'dimensions', 150],
+				['uploads', 'mediapool', 'directories', '/uploads'],
+				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
+				['originals', 'mediapool', 'directories', '/originals'],
+				['previews', 'mediapool', 'directories', '/previews'],
+				['icons', 'mediapool', 'directories', '/icons'],
+				['images', 'mediapool', 'max_file_sizes', 20971520]
+
+			]);
+
+		$this->image = new Image($this->configMock, $this->filesystemMock, $this->imagickMock);
+
+	}
+
+	#[Group('units')]
+	public function testCheckFileBeforeUploadThrowsExceptionWhenFileSizeExceedsLimit(): void
+	{
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Filesize: 20 MB exceeds max image size.');
+
+		$this->image->checkFileBeforeUpload(20 * 1024 * 1024 + 1);
+	}
+
+	#[Group('units')]
+	public function testCheckFileBeforeUploadDoesNotThrowExceptionWhenFileSizeIsWithinLimit(): void
+	{
+		$this->image->checkFileBeforeUpload(20 * 1024 * 1024);
+		$this->assertTrue(true); // If no exception is thrown, the test passes
+	}
+
+	#[Group('units')]
+	public function testCheckFileAfterUploadThrowsExceptionWhenFileDoesNotExist(): void
+	{
+		$this->filesystemMock->method('fileExists')->willReturn(false);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('After Upload Check: /path/to/file not exists.');
+
+		$this->image->checkFileAfterUpload('/path/to/file');
+	}
+
+	#[Group('units')]
+	public function testCheckFileAfterUploadThrowsExceptionWhenFileSizeExceedsLimit(): void
+	{
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(20 * 1024 * 1024 + 1);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('After Upload Check: 20 MB exceeds max image size.');
+
+		$this->image->checkFileAfterUpload('/path/to/file');
+	}
+
+	#[Group('units')]
+	public function testCheckFileAfterUploadThrowsExceptionWhenImageWidthExceedsLimit(): void
+	{
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(20 * 1024 * 1024);
+		$this->imagickMock->method('getImageWidth')->willReturn(5001);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('After Upload Check:  Image width 5001 exceeds maximum.');
+
+		$this->image->checkFileAfterUpload('/path/to/file');
+	}
+
+	#[Group('units')]
+	public function testCheckFileAfterUploadThrowsExceptionWhenImageHeightExceedsLimit(): void
+	{
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(20 * 1024 * 1024);
+		$this->imagickMock->method('getImageHeight')->willReturn(5001);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('After Upload Check:  Image height 5001 exceeds maximum.');
+
+		$this->image->checkFileAfterUpload('/path/to/file');
+	}
+
+	#[Group('units')]
+	public function testCheckFileAfterUploadDoesNotThrowExceptionWhenFileIsValid(): void
+	{
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(20 * 1024 * 1024);
+		$this->imagickMock->method('getImageWidth')->willReturn(3840);
+		$this->imagickMock->method('getImageHeight')->willReturn(3840);
+
+		$this->image->checkFileAfterUpload('/path/to/file');
+		$this->assertTrue(true); // If no exception is thrown, the test passes
+	}
+
+	#[Group('units')]
+	public function testCreateThumbnailCreatesGifThumbnail(): void
+	{
+		$this->imagickMock->expects($this->once())->method('thumbnailImage');
+		$this->imagickMock->expects($this->once())->method('writeImage');
+
+		$this->image->createThumbnail('/path/to/file.gif');
+	}
+
+	#[Group('units')]
+	public function testCreateThumbnailCreatesSvgThumbnail(): void
+	{
+		$this->filesystemMock->expects($this->once())->method('copy');
+
+		$this->image->createThumbnail('/path/to/file.svg');
+	}
+
+	#[Group('units')]
+	public function testCreateThumbnailCreatesStandardThumbnail(): void
+	{
+		$this->imagickMock->expects($this->once())->method('thumbnailImage');
+		$this->imagickMock->expects($this->once())->method('writeImage');
+
+		$this->image->createThumbnail('/path/to/file.jpg');
+	}
+}
