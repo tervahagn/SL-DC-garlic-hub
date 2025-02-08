@@ -60,6 +60,9 @@ class Miscellaneous extends AbstractMediaHandler
 			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max size.');
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	public function createThumbnail(string $filePath)
 	{
 		$fileInfo  = pathinfo($filePath);
