@@ -33,7 +33,6 @@ class MediaHandlerFactory
 	private ZipFilesystemFactory $zipFilesystemFactory;
 	private ImagickFactory $imagickFactory;
 
-
 	public function __construct(Config $config, Filesystem $fileSystem,	ZipFilesystemFactory $zipFilesystemFactory, ImagickFactory $imagickFactory)
 	{
 		$this->config               = $config;
