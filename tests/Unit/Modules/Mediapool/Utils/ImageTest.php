@@ -5,17 +5,17 @@ namespace Tests\Unit\Modules\Mediapool\Utils;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\User\UserEntityFactory;
 use App\Modules\Mediapool\Utils\Image;
 use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
 {
-	private readonly Config $configMock;
 	private readonly Filesystem $filesystemMock;
 	private readonly Imagick $imagickMock;
 	private readonly Image $image;
@@ -26,11 +26,11 @@ class ImageTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->configMock = $this->createMock(Config::class);
+		$configMock = $this->createMock(Config::class);
 		$this->filesystemMock = $this->createMock(Filesystem::class);
 		$this->imagickMock = $this->createMock(Imagick::class);
 
-		$this->configMock->method('getConfigValue')
+		$configMock->method('getConfigValue')
 			->willReturnMap([
 				['width', 'mediapool', 'max_resolution', 3840],
 				['height', 'mediapool', 'max_resolution', 3840],
@@ -42,10 +42,9 @@ class ImageTest extends TestCase
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
 				['images', 'mediapool', 'max_file_sizes', 20971520]
-
 			]);
 
-		$this->image = new Image($this->configMock, $this->filesystemMock, $this->imagickMock);
+		$this->image = new Image($configMock, $this->filesystemMock, $this->imagickMock);
 
 	}
 
@@ -58,6 +57,9 @@ class ImageTest extends TestCase
 		$this->image->checkFileBeforeUpload(20 * 1024 * 1024 + 1);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testCheckFileBeforeUploadDoesNotThrowExceptionWhenFileSizeIsWithinLimit(): void
 	{
@@ -65,6 +67,10 @@ class ImageTest extends TestCase
 		$this->assertTrue(true); // If no exception is thrown, the test passes
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadThrowsExceptionWhenFileDoesNotExist(): void
 	{
@@ -76,6 +82,10 @@ class ImageTest extends TestCase
 		$this->image->checkFileAfterUpload('/path/to/file');
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadThrowsExceptionWhenFileSizeExceedsLimit(): void
 	{
@@ -88,6 +98,10 @@ class ImageTest extends TestCase
 		$this->image->checkFileAfterUpload('/path/to/file');
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadThrowsExceptionWhenImageWidthExceedsLimit(): void
 	{
@@ -101,6 +115,10 @@ class ImageTest extends TestCase
 		$this->image->checkFileAfterUpload('/path/to/file');
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadThrowsExceptionWhenImageHeightExceedsLimit(): void
 	{
@@ -114,6 +132,11 @@ class ImageTest extends TestCase
 		$this->image->checkFileAfterUpload('/path/to/file');
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadDoesNotThrowExceptionWhenFileIsValid(): void
 	{
@@ -126,6 +149,10 @@ class ImageTest extends TestCase
 		$this->assertTrue(true); // If no exception is thrown, the test passes
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCreateThumbnailCreatesGifThumbnail(): void
 	{
@@ -135,6 +162,10 @@ class ImageTest extends TestCase
 		$this->image->createThumbnail('/path/to/file.gif');
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCreateThumbnailCreatesSvgThumbnail(): void
 	{
@@ -143,6 +174,10 @@ class ImageTest extends TestCase
 		$this->image->createThumbnail('/path/to/file.svg');
 	}
 
+	/**
+	 * @throws ImagickException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testCreateThumbnailCreatesStandardThumbnail(): void
 	{

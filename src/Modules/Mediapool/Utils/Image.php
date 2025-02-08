@@ -41,8 +41,8 @@ use League\Flysystem\FilesystemException;
  */
 class Image extends AbstractMediaHandler
 {
-	private Imagick $imagick;
-	private int $maxImageSize;
+	private readonly Imagick $imagick;
+	private readonly int $maxImageSize;
 
 	/**
 	 * @throws CoreException

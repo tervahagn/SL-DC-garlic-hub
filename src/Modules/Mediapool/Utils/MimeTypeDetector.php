@@ -43,9 +43,9 @@ class MimeTypeDetector
 	 */
 	public function detectFromFile(string $filePath): string
 	{
-		if (!file_exists($filePath)) {
+		if (!file_exists($filePath))
 			throw new InvalidArgumentException("File '$filePath' not exists.");
-		}
+
 
 		// exception for the digital signage widgets
 		if (pathinfo($filePath, PATHINFO_EXTENSION) === 'wgt')

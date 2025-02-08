@@ -37,7 +37,7 @@ class Miscellaneous extends AbstractMediaHandler
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
-		$this->maxSize = $this->config->getConfigValue('download', 'mediapool', 'max_file_sizes');
+		$this->maxSize = $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
 	}
 
 	public function checkFileBeforeUpload(int $size): void
