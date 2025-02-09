@@ -53,6 +53,7 @@ class Video extends AbstractMediaHandler
 		if ($this->fileSize > $this->maxVideoSize)
 			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max image size.');
 
+		$this->ffmpeg->setMetadata($this->getMetadata());
 		$this->ffmpeg->init($filePath);
 		$mediaProperties = $this->ffmpeg->getMediaProperties();
 		if ($mediaProperties['width'] > $this->maxWidth)
@@ -60,6 +61,9 @@ class Video extends AbstractMediaHandler
 
 		if ($mediaProperties['height'] > $this->maxHeight)
 			throw new ModuleException('mediapool', 'After Upload Check:  Video height '.$mediaProperties['height'] .' exceeds maximum.');
+
+		$this->setMetadata($this->ffmpeg->getMetadata());
+		$this->duration   = $this->ffmpeg->getDuration();
 
 		$this->dimensions = ['width' => $mediaProperties['width'] , 'height' => $mediaProperties['height'] ];
 	}

@@ -157,7 +157,7 @@ class ConfigXML extends BaseSimpleXml
 
 		foreach($this->MyXML->preference as $pref)
 		{
-			// readonly is only interesting for player not for a authoring tool or CMS
+			// readonly is only interesting for player not for an authoring tool or CMS
 			if (isset($pref['readonly']) && strtolower($pref['readonly']) == 'true')
 				continue;
 			if (!isset($pref['name']) || empty($pref['name']))

@@ -52,9 +52,19 @@ class Ffmpeg
 		$this->metadata = $metadata;
 	}
 
+	public function getMetadata(): array
+	{
+		return $this->metadata;
+	}
+
 	public function getMediaProperties(): array
 	{
 		return $this->mediaProperties;
+	}
+
+	public function getDuration(): float
+	{
+		return $this->duration;
 	}
 
 	/**
@@ -204,5 +214,6 @@ class Ffmpeg
 	{
 		return $this->config->getPaths('systemDir') . $filePath;
 	}
+
 
 }
