@@ -6,50 +6,27 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use Exception;
+use App\Framework\Utils\Ffmpeg;
 use Imagick;
 use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
-use Psr\Http\Message\UploadedFileInterface;
-use stdClass;
 
-/**
- * some convenient methods wrapping around ffmpeg functions
- *
- * The constructor only sets needed objects, but does not do anything
- *
- * Fore initialisation use the Ffmpeg::init($file_name) method.
- *
- * Ffmpeg::init() will take the video file name as a argument,
- * determine if it is local or on a remote server and call ffprobe (Ffmpeg::probeFile()) to read
- * meta data of the video and sets these data to the internal property Ffmpeg::media_properties = array()
- *
- * Class Ffmpeg
- *
- * @package Thymian\framework\utils\video
- */
 class Video extends AbstractMediaHandler
 {
-
-	protected string $probePath        = '/usr/bin/ffprobe';
-	protected string $executablePath   = '/usr/bin/ffmpeg';
-	protected string $options          = '';
-	protected string $scaleOptions     = '';
-	protected string $audioQuality     = '';
-	protected string $destinationFile  = '';
-	protected array $mediaProperties   = [];
 	private Imagick $imagick;
+	private Ffmpeg $ffmpeg;
 	private int $maxVideoSize;
 
 	/**
 	 * @throws CoreException
 	 */
-	public function __construct(Config $config, Filesystem $fileSystem, Imagick $imagick)
+	public function __construct(Config $config, Filesystem $fileSystem, Ffmpeg $ffmpeg, Imagick $imagick)
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
-		$this->imagick     = $imagick;
+		$this->ffmpeg       = $ffmpeg;
+		$this->imagick      = $imagick;
 		$this->maxVideoSize = $this->config->getConfigValue('videos', 'mediapool', 'max_file_sizes');
 	}
 
@@ -76,14 +53,15 @@ class Video extends AbstractMediaHandler
 		if ($this->fileSize > $this->maxVideoSize)
 			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max image size.');
 
-		$this->init($filePath);
-		if ($this->mediaProperties['width'] > $this->maxWidth)
-			throw new ModuleException('mediapool', 'After Upload Check:  Video width '.$this->mediaProperties['width'].' exceeds maximum.');
+		$this->ffmpeg->init($filePath);
+		$mediaProperties = $this->ffmpeg->getMediaProperties();
+		if ($mediaProperties['width'] > $this->maxWidth)
+			throw new ModuleException('mediapool', 'After Upload Check:  Video width '.$mediaProperties['width'].' exceeds maximum.');
 
-		if ($this->mediaProperties['height'] > $this->maxHeight)
-			throw new ModuleException('mediapool', 'After Upload Check:  Video height '.$this->mediaProperties['height'] .' exceeds maximum.');
+		if ($mediaProperties['height'] > $this->maxHeight)
+			throw new ModuleException('mediapool', 'After Upload Check:  Video height '.$mediaProperties['height'] .' exceeds maximum.');
 
-		$this->dimensions = ['width' => $this->mediaProperties['width'] , 'height' => $this->mediaProperties['height'] ];
+		$this->dimensions = ['width' => $mediaProperties['width'] , 'height' => $mediaProperties['height'] ];
 	}
 
 	/**
@@ -93,7 +71,7 @@ class Video extends AbstractMediaHandler
 	 */
 	public function createThumbnail(string $filePath): void
 	{
-		$vidcapPath = $this->createVidCap('/'.$this->originalPath);
+		$vidcapPath = $this->ffmpeg->createVidCap('/'.$this->originalPath);
 
 		$fileInfo = pathinfo($filePath);
 		$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['filename'].'.jpg';
@@ -103,151 +81,5 @@ class Video extends AbstractMediaHandler
 		$this->imagick->readImage($absolutePath);
 		$this->imagick->thumbnailImage($this->thumbWidth, $this->thumbHeight, true);
 		$this->imagick->writeImage($absolutePath);
-	}
-
-	/**
-	 * need this init method, because we don't want to do this all in the constructor.
-	 * This method should also clean up all internal properties for re-using with other videos
-	 *
-	 * @throws CoreException
-	 * @throws FilesystemException|FrameworkException
-	 */
-	public function init(string $filePath): void
-	{
-		$this->setUpBinaryPathsByConfig()->setUpAudioQualityByConfig();
-
-		$this->mediaProperties  = array();
-		$this->options          = '';
-		$this->scaleOptions     = '';
-		$this->destinationFile  = '';
-
-		if (!$this->filesystem->fileExists($filePath))
-			throw new FrameworkException('File does not exist: ' . $filePath);
-
-		$this->probeFile($this->getAbsolutePath($filePath));
-	}
-
-	/**
-	 * @throws  FrameworkException
-	 * @throws  Exception|FilesystemException
-	 */
-	public function createVidCap(string $destination): string
-	{
-		if ($this->mediaProperties['video_codec'] == '')
-			throw new FrameworkException('Can create video captions of ' . $this->mediaProperties['filename'] . '. File has no readable video stream');
-
-		$command = $this->executablePath . ' -i ' .
-					$this->mediaProperties['filename'] .
-					$this->scaleOptions .
-					' -ss 00:00:02 -an -r 1 -vframes 1 -y '.$this->getAbsolutePath($destination).'/vid_%d.jpg 2>&1';
-
-		$this->callBinary($command);
-
-		$vidcapPath = $destination . '/vid_1.jpg';
-		if (!$this->filesystem->fileExists($vidcapPath))
-			throw new FrameworkException('Vid cap ' . $vidcapPath . ' not found');
-
-		return $vidcapPath;
-	}
-
-	/**
-	 * @throws CoreException
-	 */
-	protected function setUpBinaryPathsByConfig(): static
-	{
-		$this->executablePath   = $this->config->getConfigValue('path_to_ffmpeg_bin', 'video');
-		$this->probePath       = $this->config->getConfigValue('path_to_ffmpeg_probe', 'video');
-		return $this;
-	}
-
-	/**
-	 * @throws CoreException
-	 */
-	protected function setUpAudioQualityByConfig(): static
-	{
-		$this->audioQuality = $this->config->getConfigValue('audio_quality_ffmepg_param', 'video');
-		return $this;
-	}
-
-	/**
-	 * @throws  FrameworkException
-	 */
-	protected function probeFile(string $filePath): void
-	{
-		$command    = $this->probePath . ' -v quiet -print_format json -show_format -show_streams ' . $filePath;
-		$result     = shell_exec($command);
-		$metadata   = json_decode($result);
-
-		if (is_null($metadata) || !isset($metadata->format))
-			throw new FrameworkException('Probing media file failed. Unsupported file type for file ' . $filePath . '. Using command: ' . $command);
-
-		$this->parseMediaProperties($metadata);
-	}
-
-	protected function parseMediaProperties(stdClass $meta_data): void
-	{
-		// init
-		$this->mediaProperties = [
-			'width'             => 0,
-			'height'            => 0,
-			'video_codec'       => '',
-			'aspect_ratio'      => '',
-			'audio_codec'       => ''
-		];
-
-		foreach ($meta_data->streams as $value)
-		{
-			if ($value->codec_type == 'video' && isset($value->codec_name))
-			{
-				$this->mediaProperties['video_codec']  = (string) $value->codec_name;
-
-				// prepare for ffmpeg 4.1.x some wmv do not have a sample_aspect_ratio/display_aspect_ratio
-				// ffmpeg 2.x there is no problem
-				if (isset($value->display_aspect_ratio))
-					$this->mediaProperties['aspect_ratio'] = (string) $value->display_aspect_ratio;
-				else
-					$this->mediaProperties['aspect_ratio'] = '1:1';
-
-				$this->mediaProperties['width']  = (int) $value->width;
-				$this->mediaProperties['height'] = (int) $value->height;
-			}
-			elseif ($value->codec_type == 'audio')
-			{
-				$this->mediaProperties['audio_codec'] = (string) $value->codec_name;
-			}
-		}
-
-		// Because WebApi MediaRecorder does not include duration in the created webm files
-		// we need to it from the WebUI metadata or set it to zero.
-		if (isset($meta_data->format) && isset($meta_data->format->duration))
-			$duration = $meta_data->format->duration;
-		else if (array_key_exists('duration', $this->metadata))
-			$duration = (float) $this->metadata['duration'];
-		else
-			$duration = 0;
-
-		$this->mediaProperties['start_time'] = (string) $meta_data->format->start_time;
-		$this->mediaProperties['duration']   = (float) $duration;
-		$this->duration                      = (float) $duration;
-		$this->mediaProperties['filename']   = (string) $meta_data->format->filename;
-		$this->mediaProperties['filesize']   = (int) $meta_data->format->size;
-		$this->mediaProperties['container']  = (string) $meta_data->format->format_name;
-	}
-
-
-	/**
-	 * @throws  FrameworkException
-	 * @throws  Exception
-	 */
-	protected function callBinary(string $command): static
-	{
-		$output         = array();
-		$return_value   = 0;
-		$last_line = exec($command, $output, $return_value);
-
-		if ($return_value != 0)
-			throw new FrameworkException('ffmpeg error: Exit code: ' . $return_value . '. Calling: ' . $command, $return_value. 'Last line: ' . $last_line);
-
-		return $this;
 	}
 }

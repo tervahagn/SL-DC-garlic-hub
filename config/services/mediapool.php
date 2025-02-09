@@ -20,6 +20,7 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\User\UserService;
+use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
@@ -38,6 +39,14 @@ use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
+
+$dependencies[Ffmpeg::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Ffmpeg(
+		$container->get(Config::class),
+		$container->get('LocalFileSystem')
+	);
+});
 $dependencies[NodesRepository::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new NodesRepository($container->get('SqlConnection'));
@@ -73,7 +82,8 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 		$container->get(Config::class),
 		$container->get('LocalFileSystem'),
 		new ZipFilesystemFactory(),
-		new ImagickFactory()
+		new ImagickFactory(),
+		new Ffmpeg($container->get(Config::class), $container->get('LocalFileSystem'))
 	);
 });
 
