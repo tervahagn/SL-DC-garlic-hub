@@ -125,8 +125,7 @@ abstract class BaseSimpleXml
 	 * the errors as a string (concatenated by line breaks)
 	 *
 	 * since this clears the libxml error, it should not
-	 * called from outside
-	 *
+	 * be called from outside
 	 */
 	private function buildXmlErrors(): void
 	{

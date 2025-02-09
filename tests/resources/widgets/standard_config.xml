@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns       = "http://www.w3.org/ns/widgets"
+        id          = "http://example.org/exampleWidget"
+        version     = "2.0"
+        height      = "200"
+        width       = "200"
+        viewmodes   = "fullscreen">
+
+    <name short="Example 2.0" xml:lang="en-us">
+        The example Widget!
+    </name>
+    <name short="Beispiel 2.0" xml:lang="de-de">
+        Ein Beispiel Widget!
+    </name>
+
+    <content src="start.html"/>
+    <icon src="icon.jpg"/>
+
+    <description xml:lang="en">
+        English description.
+    </description>
+    <description xml:lang="de">
+        Deutsche Beschreibung.
+    </description>
+    <license xml:lang="en">
+        English license
+    </license>
+    <license xml:lang="de">
+        Deutsche Lizenz
+    </license>
+
+    <feature name="http://example.com/camera">
+        <param name="autofocus" value="true"/>
+    </feature>
+
+    <author href  = "http://foo-bar.example.org/"
+            email = "foo-bar@example.org">Foo Bar Corp</author>
+
+    <preference name     = "apikey"
+                value    = "ea31ad3a23fd2f"
+                readonly = "true" />
+
+    <preference name = "url" />
+
+
+    <icon src="icons/example.png"/>
+    <icon src="icons/boo.png"/>
+    <content src="myWidget.html"/>
+
+</widget>

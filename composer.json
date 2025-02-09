@@ -20,7 +20,9 @@
         "ext-imagick": "*",
         "league/flysystem-ziparchive": "^3.29",
         "guzzlehttp/guzzle": "^7.9",
-        "slim/http": "^1.4"
+        "slim/http": "^1.4",
+        "ext-simplexml": "*",
+        "ext-libxml": "*"
   },
     "autoload": {
         "psr-4": {
