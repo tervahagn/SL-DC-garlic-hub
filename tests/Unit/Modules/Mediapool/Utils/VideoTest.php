@@ -25,6 +25,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Utils\Video;
 use Imagick;
 use ImagickException;
@@ -39,6 +40,7 @@ class VideoTest extends TestCase
 	private readonly Video $video;
 	private readonly Filesystem $filesystemMock;
 	private readonly Imagick $imagickMock;
+	private readonly Ffmpeg $ffmpegMock;
 
 	/**
 	 * @throws Exception
@@ -49,6 +51,7 @@ class VideoTest extends TestCase
 		$configMock = $this->createMock(Config::class);
 		$this->filesystemMock = $this->createMock(Filesystem::class);
 		$this->imagickMock = $this->createMock(Imagick::class);
+		$this->ffmpegMock = $this->createMock(Ffmpeg::class);
 
 		$configMock->method('getConfigValue')
 			->willReturnMap([
@@ -64,7 +67,7 @@ class VideoTest extends TestCase
 				['videos', 'mediapool', 'max_file_sizes', 1073741824]
 			]);
 
-		$this->video = new Video($configMock, $this->filesystemMock, $this->imagickMock);
+		$this->video = new Video($configMock, $this->filesystemMock, $this->ffmpegMock, $this->imagickMock);
 	}
 
 	/**
@@ -98,6 +101,9 @@ class VideoTest extends TestCase
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
+		$this->ffmpegMock->method('init')->with('/path/to/file');
+		$properties = ['width' => 3840, 'height' => 3840];
+		$this->ffmpegMock->method('getMediaProperties')->willReturn($properties);
 
 		$this->expectNotToPerformAssertions();
 		$this->video->checkFileAfterUpload('/path/to/file');
@@ -133,6 +139,44 @@ class VideoTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws FilesystemException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 */
+	#[Group('units')]
+	public function testCheckFileAfterUploadExceedsMaxWidthThrowsModuleException()
+	{
+		$this->expectException(ModuleException::class);
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
+		$this->ffmpegMock->method('init')->with('/path/to/file');
+		$properties = ['width' => 3840 + 1, 'height' => 3840];
+		$this->ffmpegMock->method('getMediaProperties')->willReturn($properties);
+
+		$this->video->checkFileAfterUpload('/path/to/file');
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FilesystemException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 */
+	#[Group('units')]
+	public function testCheckFileAfterUploadExceedsMaxHeightThrowsModuleException()
+	{
+		$this->expectException(ModuleException::class);
+		$this->filesystemMock->method('fileExists')->willReturn(true);
+		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
+		$this->ffmpegMock->method('init')->with('/path/to/file');
+		$properties = ['width' => 3840, 'height' => 3840 + 1];
+		$this->ffmpegMock->method('getMediaProperties')->willReturn($properties);
+
+		$this->video->checkFileAfterUpload('/path/to/file');
+	}
+
+	/**
 	 * @throws ImagickException
 	 * @throws FilesystemException
 	 * @throws FrameworkException
@@ -144,6 +188,7 @@ class VideoTest extends TestCase
 		$this->imagickMock->expects($this->once())->method('readImage');
 		$this->imagickMock->expects($this->once())->method('thumbnailImage')->with(150, 150, true);
 		$this->imagickMock->expects($this->once())->method('writeImage');
+		$this->ffmpegMock->expects($this->once())->method('createVidCap');
 
 		$this->video->createThumbnail('/path/to/file.mp4');
 	}

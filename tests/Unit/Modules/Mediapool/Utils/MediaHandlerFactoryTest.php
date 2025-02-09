@@ -22,6 +22,7 @@ namespace Tests\Unit\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Utils\Image;
 use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
@@ -47,16 +48,18 @@ class MediaHandlerFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->configMock = $this->createMock(Config::class);
-		$filesystemMock = $this->createMock(Filesystem::class);
+		$this->configMock         = $this->createMock(Config::class);
+		$filesystemMock           = $this->createMock(Filesystem::class);
 		$zipFilesystemFactoryMock = $this->createMock(ZipFilesystemFactory::class);
 		$this->imagickFactoryMock = $this->createMock(ImagickFactory::class);
+		$ffmpegMock = $this->createMock(Ffmpeg::class);
 
 		$this->mediaHandlerFactory = new MediaHandlerFactory(
 			$this->configMock,
 			$filesystemMock,
 			$zipFilesystemFactoryMock,
-			$this->imagickFactoryMock
+			$this->imagickFactoryMock,
+			$ffmpegMock
 		);
 	}
 
