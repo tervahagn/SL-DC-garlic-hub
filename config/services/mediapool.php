@@ -38,15 +38,23 @@ use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
+$dependencies[NodesRepository::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new NodesRepository($container->get('SqlConnection'));
+});
+$dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new AclValidator(
+		'mediapool',
+		$container->get(UserService::class),
+		$container->get(Config::class),
+	);
+});
 $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new NodesService(
-		new NodesRepository($container->get('SqlConnection')),
-		new AclValidator(
-			'mediapool',
-			$container->get(UserService::class),
-			$container->get(Config::class),
-		)
+		$container->get(NodesRepository::class),
+		$container->get(AclValidator::class)
 	);
 });
 $dependencies[NodesController::class] = DI\factory(function (ContainerInterface $container)
@@ -89,6 +97,8 @@ $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $co
 {
 	return new MediaService(
 		new FilesRepository($container->get('SqlConnection')),
+		$container->get(NodesRepository::class),
+		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
 });
