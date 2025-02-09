@@ -78,7 +78,7 @@ trait NestedSetTrait
 				'user_main',
 				'user_main',
 				$this->table.'.UID = user_main.UID')
-			->where('parent_id = :id')
+			->where('node_id = :id')
 			->orderBy('lft ASC')
 			->setParameter('id', $nodeId);
 
