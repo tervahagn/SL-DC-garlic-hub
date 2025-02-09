@@ -25,6 +25,7 @@ class MediaController
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
+		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
 		$media_list = $this->mediaService->listMedia($node_id);
 		return $this->jsonResponse($response, ['success' => true, 'media_list' => $media_list]);
 	}
@@ -36,6 +37,7 @@ class MediaController
 		if ($media_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'mwdia_id is missing']);
 
+		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
 		$media = $this->mediaService->fetchMedia($media_id);
 		return $this->jsonResponse($response, ['success' => true, 'media' => $media]);
 	}
@@ -51,6 +53,8 @@ class MediaController
 
 		if (!array_key_exists('description', $bodyParams))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Description is missing']);
+
+		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
 
 		$this->mediaService->updateMedia($bodyParams['media_id'], $bodyParams['filename'], $bodyParams['description']);
 		return $this->jsonResponse($response, ['success' => true]);
