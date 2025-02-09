@@ -20,20 +20,25 @@
 
 namespace Tests\Unit\Modules\Mediapool\Utils;
 
+
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Mediapool\Utils\Miscellaneous;
+use App\Modules\Mediapool\Utils\Video;
 use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
-class MiscellaneousTest extends TestCase
+class VideoTest extends TestCase
 {
+	private readonly Video $video;
 	private readonly Filesystem $filesystemMock;
+	private readonly Imagick $imagickMock;
 
 	/**
 	 * @throws Exception
@@ -56,33 +61,37 @@ class MiscellaneousTest extends TestCase
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['downloads', 'mediapool', 'max_file_sizes', 1073741824]
+				['videos', 'mediapool', 'max_file_sizes', 1073741824]
 			]);
 
-		$this->misc = new Miscellaneous($configMock, $this->filesystemMock);
+		$this->video = new Video($configMock, $this->filesystemMock, $this->imagickMock);
 	}
 
 	/**
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUpload_ValidSize_DoesNotThrowException()
+	public function testCheckFileBeforeUploadValidSizeDoesNotThrowException()
 	{
 		$this->expectNotToPerformAssertions();
-		$this->misc->checkFileBeforeUpload(1073741824);
+		$this->video->checkFileBeforeUpload(1073741824);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException()
 	{
 		$this->expectException(ModuleException::class);
-
-		$this->misc->checkFileBeforeUpload(1073741824 + 1);
+		$this->video->checkFileBeforeUpload(1073741824 + 1);
 	}
 
 	/**
 	 * @throws ModuleException
 	 * @throws FilesystemException
+	 * @throws CoreException
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadFileExistsDoesNotThrowException()
@@ -91,54 +100,51 @@ class MiscellaneousTest extends TestCase
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
 
 		$this->expectNotToPerformAssertions();
-		$this->misc->checkFileAfterUpload('/path/to/file');
+		$this->video->checkFileAfterUpload('/path/to/file');
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws FilesystemException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCheckFileAfterUploadFileNotExistsThrowsModuleException()
 	{
 		$this->expectException(ModuleException::class);
-
 		$this->filesystemMock->method('fileExists')->willReturn(false);
-		$this->misc->checkFileAfterUpload('/path/to/file');
+		$this->video->checkFileAfterUpload('/path/to/file');
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws FilesystemException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUpload_ExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileAfterUploadExceedsMaxSizeThrowsModuleException()
 	{
 		$this->expectException(ModuleException::class);
-
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824 + 1);
-		$this->misc->checkFileAfterUpload('/path/to/file');
+		$this->video->checkFileAfterUpload('/path/to/file');
 	}
 
 	/**
+	 * @throws ImagickException
 	 * @throws FilesystemException
-	 */
-	#[Group('units')]
-	public function testCreateThumbnailCsvFileCreatesDatabaseIcon()
-	{
-		$this->filesystemMock->method('copy');
-
-		$this->misc->createThumbnail('/path/to/file.csv');
-		$this->assertEquals('svg', $this->misc->getThumbExtension());
-	}
-
-	/**
-	 * @throws FilesystemException
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCreateThumbnail()
 	{
-		$this->filesystemMock->method('copy');
+		$this->filesystemMock->method('move');
+		$this->imagickMock->expects($this->once())->method('readImage');
+		$this->imagickMock->expects($this->once())->method('thumbnailImage')->with(150, 150, true);
+		$this->imagickMock->expects($this->once())->method('writeImage');
 
-		$this->misc->createThumbnail('/path/to/file.txt');
-		$this->assertEquals('svg', $this->misc->getThumbExtension());
-	}}
+		$this->video->createThumbnail('/path/to/file.mp4');
+	}
+}

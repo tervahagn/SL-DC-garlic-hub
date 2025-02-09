@@ -77,7 +77,7 @@ Probably ready at May 2025. But this depends on my real life, time schedule.
 - **Login/ Authentication**: Simple session based password login with remember me function and token based 
   authorization via OAuth2 (completed) 
 - **Mediapool**: Organize multimedia content with tree folders in a central place. Uploads from different sources 
-  including local files, external links, screencasts, camera, stock platforms (Pixabay, Unsplash, Pexels), AI input 
+  including local files, external links, screencasts, camera, stock platforms (Pixabay, Unsplash, Pexels)
   (almost completed)
 - **SMIL-Based Playlists**: Organize playlists with a playlist manager. and export them in the 
   SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players.
