@@ -28,10 +28,11 @@ use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 
 class ZipFilesystemFactory
 {
-	public static function create(string $zipPath): Filesystem
+	public function __construct() {}
+
+	public function create(string $zipPath): Filesystem
 	{
 		$adapter = new ZipArchiveAdapter(new FilesystemZipArchiveProvider($zipPath));
-
 		return new Filesystem($adapter);
 	}
 }
