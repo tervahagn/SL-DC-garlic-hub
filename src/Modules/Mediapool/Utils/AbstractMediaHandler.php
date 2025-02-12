@@ -44,7 +44,7 @@ abstract class AbstractMediaHandler
 	protected string $iconsPath;
 	protected string $previewPath;
 	protected array $dimensions = [];
-	protected int $fileSize;
+	protected int $fileSize = 0;
 	protected string $thumbExtension = 'jpg';
 	protected float $duration = 0.0;
 
