@@ -23,11 +23,13 @@ namespace Tests\Unit\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Widget\ConfigXML;
 use App\Modules\Mediapool\Utils\Widget;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
 use Imagick;
+use ImagickException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemException;
@@ -142,14 +144,65 @@ class WidgetTest extends TestCase
 		$this->assertTrue(true); // If no exception is thrown, the test passes
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws FilesystemException
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 * @throws ImagickException
+	 */
 	#[Group('units')]
-	public function testCreateThumbnail(): void
+	public function testCreateThumbnailFromIcon()
 	{
-		$zipFilesystemMock = $this->createMock(FilesystemAdapter::class);
-		$this->zipFilesystemFactoryMock->expects($this->once())->method('create')->return($zipFilesystemMock);
+		$zipFilesystemMock = $this->createMock(Filesystem::class);
+		$zipFilesystemMock->method('fileExists')->willReturnMap([
+			['config.xml', true],
+			['icon.png', true]
+		]);
+		$zipFilesystemMock->method('read')->willReturnMap([
+			['config.xml', '<config><icon>icon.png</icon></config>'],
+			['icon.png', 'image content']
+		]);
 
+		$this->zipFilesystemFactoryMock->method('create')->willReturn($zipFilesystemMock);
+		$this->configXmlMock->method('load')->willReturnSelf();
+		$this->configXmlMock->method('parseBasic')->willReturnSelf();
+		$this->configXmlMock->method('getIcon')->willReturn('icon.png');
 
+		$this->imagickMock->expects($this->once())->method('readImageBlob')->with('image content');
+		$this->imagickMock->expects($this->once())->method('thumbnailImage');
+		$this->imagickMock->expects($this->once())->method('writeImage');
 
+		$this->widget->createThumbnail('/path/to/file.wgt');
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws FilesystemException
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 * @throws ImagickException
+	 */
+	#[Group('units')]
+	public function testCreateThumbnailWhenIconNotFound()
+	{
+		$zipFilesystemMock = $this->createMock(Filesystem::class);
+		$zipFilesystemMock->method('fileExists')->willReturnMap([
+			['config.xml', true],
+			['icon.png', false]
+		]);
+		$zipFilesystemMock->method('read')->willReturnMap([
+			['config.xml', '<config><icon>icon.png</icon></config>']
+		]);
+
+		$this->zipFilesystemFactoryMock->method('create')->willReturn($zipFilesystemMock);
+		$this->configXmlMock->method('load')->willReturnSelf();
+		$this->configXmlMock->method('parseBasic')->willReturnSelf();
+		$this->configXmlMock->method('getIcon')->willReturn('icon.png');
+
+		$this->filesystemMock->expects($this->once())->method('copy')->with('//icons/widget.svg', '//thumbnails/file.svg');
+
+		$this->widget->createThumbnail('/path/to/file.wgt');
 	}
 
 }
