@@ -21,7 +21,6 @@
 
 namespace App\Modules\Mediapool\Utils;
 
-use App\Framework\Exceptions\FrameworkException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
