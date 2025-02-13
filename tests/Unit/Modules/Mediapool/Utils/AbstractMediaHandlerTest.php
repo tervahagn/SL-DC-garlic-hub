@@ -209,6 +209,9 @@ class AbstractMediaHandlerTest extends TestCase
 		$this->concreteMediaHandler->rename('/old/path', '/new/path');
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testUploadFromLocalSuccessfullyUploadsFile()
 	{

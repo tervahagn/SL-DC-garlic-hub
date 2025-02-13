@@ -21,8 +21,6 @@
 
 namespace Tests\Unit\Modules\Mediapool\Utils;
 
-use App\Framework\Exceptions\FrameworkException;
-use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Attributes\Group;
