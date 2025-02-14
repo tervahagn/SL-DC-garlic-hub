@@ -110,7 +110,7 @@ class NodesController
 			$count = $this->nodesService->moveNode($bodyParams['src_node_id'], $bodyParams['target_node_id'], $bodyParams['target_region']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
-		catch (Exception | FrameworkException | ModuleException $e)
+		catch (Exception | ModuleException $e)
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}

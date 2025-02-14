@@ -119,26 +119,27 @@ class NodesService
 
 	/**
 	 * @throws Exception
-	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws DatabaseException
 	 */
 	public function moveNode(int $movedNodeId, int $targetNodeId, string $region): int
 	{
 		$regions = ['before', 'after', 'appendChild'];
 		if (!in_array($region, $regions))
-			return 0;
+			throw new ModuleException('mediapool', $region.' is not supported');
 
 		$movedNode  = $this->nodesRepository->getNode($movedNodeId);
 		$targetNode = $this->nodesRepository->getNode($targetNodeId);
 
 		// prevent root dir handling
+		if ($movedNode['parent_id'] === 0)
+			throw new ModuleException('mediapool', 'Moving root node is not allowed');
+
 		if (($region === NodesRepository::REGION_APPENDCHILD && $targetNodeId === 0) ||
 			(($region === NodesRepository::REGION_BEFORE || $region === NodesRepository::REGION_AFTER) &&
 				$targetNode['parent_id'] === 0))
-			throw new FrameworkException('Create root node with a move is not yet allowed');
+			throw new ModuleException('mediapool', 'Create root node with a move is not allowed');
 
-		if ($movedNode['parent_id'] === 0)
-			throw new FrameworkException('Moving root node is not yet allowed');
 
 		$this->nodesRepository->moveNode($movedNode, $targetNode, $region);
 
@@ -232,7 +233,7 @@ class NodesService
 		$rights     = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 
 		if(!$rights['read'])
-			return [];
+			return ['create' => false, 'edit' => false, 'delete' => false, 'share' => ''];
 
 		if ($rights['edit'])
 		{
