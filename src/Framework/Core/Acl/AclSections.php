@@ -24,6 +24,6 @@ enum AclSections: string
 {
 	case MODULEADMIN = 'moduleadmin';
 	case SUBADMIN    = 'subadmin';
-	case EDITOR      = 'edito';
+	case EDITOR      = 'editor';
 	case VIEWER      = 'viewer';
 }

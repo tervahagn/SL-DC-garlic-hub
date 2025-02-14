@@ -5,11 +5,13 @@ namespace App\Modules\Mediapool\Services;
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use League\Flysystem\Visibility;
 
 class AclValidator extends AbstractAclValidator
 {
-	/**
 
+	const VISIBILITY_PUBLIC = 1;
+	/**
 	 * @throws CoreException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
@@ -36,7 +38,7 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isViewer($UID) && $this->hasViewerAccessOnUnit($UID, $directory['node_id']))
 			$permissions['read'] = true;
 
-		if ($directory['is_public'] === 1)
+		if ($directory['visibility'] === self::VISIBILITY_PUBLIC)
 			$permissions['read'] = true;
 
 		// Only moduleadmin can edit root directories

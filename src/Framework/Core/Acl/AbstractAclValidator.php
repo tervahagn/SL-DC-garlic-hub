@@ -101,15 +101,19 @@ abstract class AbstractAclValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function hasSubAdminAccessOnCompany(int $UID, int $company_id): bool
+	protected function hasSubAdminAccessOnCompany(int $UID, int $company_id): bool
 	{
-		if (empty($company_id) || !$this->isSubAdmin($UID))
-			return false;
-
 		$userEntity = $this->userService->getUserById($UID);
 		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
 
-		return in_array($company_id, $userEntity->getVip()[$vipName]);
+		$vips = $userEntity->getVip();
+		foreach ($vips as $vip)
+		{
+			if (isset($vip[$vipName]) && $vip[$vipName] === $company_id)
+				return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -117,30 +121,38 @@ abstract class AbstractAclValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function hasEditorAccessOnUnit($UID, int|string $unitId): bool
+	protected function hasEditorAccessOnUnit($UID, int|string $unitId): bool
 	{
-		if (empty($unitId) || !$this->isEditor($UID))
-			return false;
-
 		$userEntity = $this->userService->getUserById($UID);
-		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
+		$vipName    = $this->moduleName.'_'.AclSections::EDITOR->value;
 
-		return in_array($unitId, $userEntity->getVip()[$vipName]);
+		$vips = $userEntity->getVip();
+		foreach ($vips as $vip)
+		{
+			if (isset($vip[$vipName]) && $vip[$vipName] === $unitId)
+				return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function hasViewerAccessOnUnit(int $UID, int|string $unitId): bool
+	protected function hasViewerAccessOnUnit(int $UID, int|string $unitId): bool
 	{
-		if (empty($unitId))
-			return false;
-
 		$userEntity = $this->userService->getUserById($UID);
-		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
+		$vipName    = $this->moduleName.'_'.AclSections::VIEWER->value;
 
-		return in_array($unitId, $userEntity->getVip()[$vipName]);
+		$vips = $userEntity->getVip();
+		foreach ($vips as $vip)
+		{
+			if (isset($vip[$vipName]) && $vip[$vipName] === $unitId)
+				return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -148,7 +160,7 @@ abstract class AbstractAclValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	protected function hasGlobalAcl(int $UID, string $aclName): bool
+	private function hasGlobalAcl(int $UID, string $aclName): bool
 	{
 		$userEntity = $this->userService->getUserById($UID);
 		$acls       = $userEntity->getAcl();
