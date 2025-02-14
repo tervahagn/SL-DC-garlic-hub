@@ -151,12 +151,12 @@ class MediaService
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['read'])
-				throw new ModuleException('mediapool', 'No read permissions on this directory:'. $media['node_id']);
+				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
 
 			$node = $this->nodesRepository->findNodeOwner($nodeId);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 			if (!$permissions['edit'])
-				throw new ModuleException('mediapool', 'No edit permissions on directory:'. $node['name']);
+				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $node['name']);
 
 			$condition = ['media_id' => $mediaId];
 			$field     = ['node_id'  => $nodeId];
@@ -177,7 +177,7 @@ class MediaService
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['read'] || !$permissions['edit'])
-				throw new ModuleException('mediapool', 'No permissions on this directory:'. $media['node_id']);
+				throw new ModuleException('mediapool', 'No permissions on this directory: '. $media['node_id']);
 
 			$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
 			$dataSet['media_id'] = Uuid::uuid4()->toString();
@@ -189,7 +189,7 @@ class MediaService
 		}
 		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
 		{
-			$this->logger->error('Error moving media: ' . $e->getMessage());
+			$this->logger->error('Error cloning media: ' . $e->getMessage());
 			return [];
 		}
 	}

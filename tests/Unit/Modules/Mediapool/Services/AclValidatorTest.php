@@ -339,26 +339,20 @@ class AclValidatorTest extends TestCase
 
 
 	/**
-	 * @throws Exception
 	 */
 	private function mockConfigValues(): void
 	{
 		$this->configMock->method('getConfigValue')
-			->willReturnCallback(function($key, $module_name, $section)
+			->willReturnCallback(function($key)
 			{
-				switch ($key)
+				return match ($key)
 				{
-					case 'moduleadmin':
-						return 8;
-					case 'subadmin':
-						return 4;
-					case 'editor':
-						return 2;
-					case 'viewer':
-						return 1;
-					default:
-						return 0;
-				}
+					'moduleadmin' => 8,
+					'subadmin' => 4,
+					'editor' => 2,
+					'viewer' => 1,
+					default => 0,
+				};
 			});
 	}
 
