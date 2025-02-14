@@ -96,6 +96,28 @@ class NodesService
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws CoreException|PhpfastcacheSimpleCacheException
+	 */
+	public function editNode(int $id, string $name, ?int $visibility = null): int
+	{
+		$node = $this->nodesRepository->getNode($id);
+		if ((empty($node)))
+			throw new ModuleException('mediapool', 'Parent node not found');
+
+		$rights = $this->determineRights($node);
+		if (!$rights['edit'])
+			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);
+
+		$data = ['name' => $name];
+		if ($this->aclValidator->isModuleAdmin($this->UID) && !is_null($visibility))
+			$data['visibility'] = $visibility;
+
+		return $this->nodesRepository->update($id, $data);
+	}
+
+	/**
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws DatabaseException
@@ -184,7 +206,7 @@ class NodesService
 	 * @throws DatabaseException
 	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
-	public function addSubNode(int $parent_node_id, string $name): int
+	private function addSubNode(int $parent_node_id, string $name): int
 	{
 		$parentNode = $this->nodesRepository->getNode($parent_node_id);
 		if (empty($parentNode))
@@ -195,28 +217,6 @@ class NodesService
 			throw new ModuleException('mediapool', 'No rights to add node under: ' . $parentNode['name']);
 
 		return $this->nodesRepository->addSubNode($this->UID, $name, $parentNode);
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws Exception
-	 * @throws CoreException|PhpfastcacheSimpleCacheException
-	 */
-	public function editNode(int $id, string $name, ?int $visibility = null): int
-	{
-		$node = $this->nodesRepository->getNode($id);
-		if ((empty($node)))
-			throw new ModuleException('mediapool', 'Parent node not found');
-
-		$rights = $this->determineRights($node);
-		if (!$rights['edit'])
-			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);
-
-		$data = ['name' => $name];
-		if ($this->aclValidator->isModuleAdmin($this->UID) && !is_null($visibility))
-			$data['visibility'] = $visibility;
-
-		return $this->nodesRepository->update($id, $data);
 	}
 
 	/**

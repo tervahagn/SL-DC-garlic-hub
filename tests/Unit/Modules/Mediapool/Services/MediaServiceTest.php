@@ -21,12 +21,12 @@
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use App\Modules\Mediapool\Services\AclValidator;
 use App\Modules\Mediapool\Services\MediaService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -38,6 +38,9 @@ class MediaServiceTest extends TestCase
 	private readonly AclValidator $aclValidatorMock;
 	private readonly LoggerInterface $loggerMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->mediaRepositoryMock = $this->createMock(FilesRepository::class);
