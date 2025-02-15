@@ -35,7 +35,8 @@ class MimeTypeDetector
 
 	public function __destruct()
 	{
-		finfo_close($this->finfo);
+		if (isset($this->finfo)) // needed because of the tests
+			finfo_close($this->finfo);
 	}
 
 	/**
