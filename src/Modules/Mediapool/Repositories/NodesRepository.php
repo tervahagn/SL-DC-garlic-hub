@@ -42,22 +42,7 @@ class NodesRepository extends Sql
 	 */
 	public function getNode(int $node_id): array
 	{
-		$select = [$this->table.'.UID,
-					username,
-					company_id,
-					node_id,
-					visibility,
-					root_id,
-					is_user_folder,
-					parent_id,
-					level,
-					lft,
-					rgt,
-					last_updated,
-					create_date,
-					name,
-					media_location,
-					ROUND((rgt - lft - 1) / 2) AS children'];
+		$select = [$this->table.'.UID, username, company_id, node_id, visibility, root_id, is_user_folder, parent_id, level, lft, rgt, last_updated, create_date, name, media_location, ROUND((rgt - lft - 1) / 2) AS children'];
 		$where = ['node_id' => $node_id];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
 

@@ -106,8 +106,7 @@ class FilesRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindAllByNodeId()
 	{
-		// Mock the QueryBuilder and Result objects
-		$result = $this->createMock(Result::class);
+		$resultMock = $this->createMock(Result::class);
 
 		// Set up expectations for the QueryBuilder
 		$this->connectionMock->expects($this->once())
@@ -153,9 +152,9 @@ class FilesRepositoryTest extends TestCase
 
 		$this->queryBuilderMock ->expects($this->once())
 			->method('executeQuery')
-			->willReturn($result);
+			->willReturn($resultMock);
 
-		$result->expects($this->once())
+		$resultMock->expects($this->once())
 			->method('fetchAllAssociative')
 			->willReturn([['username' => 'testuser', 'node_id' => 456]]);
 
