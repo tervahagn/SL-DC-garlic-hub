@@ -56,4 +56,5 @@ class FilesRepository extends Sql
 
 		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
 	}
+
 }
