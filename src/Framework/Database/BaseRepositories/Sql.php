@@ -33,16 +33,16 @@ abstract class Sql
 {
 	use FindOperationsTrait;
 
-	protected string $idField;
+	protected readonly string $table;
+	protected readonly string $idField;
 	protected Connection $connection;
 
 	public function __construct(Connection $connection, string $table, string $idField)
 	{
 		$this->connection   = $connection;
 		$this->table        = $table;
-		$this->idField     = $idField;
+		$this->idField      = $idField;
 	}
-
 
 	public function getTable(): string
 	{

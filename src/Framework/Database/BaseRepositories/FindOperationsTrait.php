@@ -26,8 +26,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 trait FindOperationsTrait
 {
 
-	protected string $table;
-
 	/**
 	 * Finds a record by ID.
 	 *

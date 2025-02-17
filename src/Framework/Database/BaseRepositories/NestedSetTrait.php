@@ -24,6 +24,10 @@ use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
 
+/**
+ * @mixin Sql
+ * @property string $table
+ */
 trait NestedSetTrait
 {
 	const string REGION_BEFORE = 'before';
@@ -54,6 +58,7 @@ trait NestedSetTrait
 	public function findTreeByRootId(int $rootId): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
+
 		$queryBuilder->select('FLOOR((n.rgt-n.lft)/2) AS children, n.*, u.company_id')
 			->from($this->table, 'n')
 			->leftJoin('n', $this->table,'p','n.root_id = p.root_id')
@@ -259,13 +264,15 @@ trait NestedSetTrait
 		{
 			$this->beginTransaction();
 
-			$this->delete($node['node_id']);
+			if ($this->delete($node['node_id']) === 0 )
+				throw new \Exception('not exists');
+
 			$this->moveNodesToLeftForDeletion($node['root_id'], $node['rgt']);
 			$this->moveNodesToRightForDeletion($node['root_id'], $node['rgt']);
 
 			$this->commitTransaction();
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			$this->rollbackTransaction();
 			throw new DatabaseException('delete single node failed because of: '.$e->getMessage());
@@ -282,7 +289,8 @@ trait NestedSetTrait
 		{
 			$this->beginTransaction();
 
-			$this->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']);
+			if ($this->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']) === 0)
+				throw new \Exception('not exists');
 
 			// remove other nodes to create some space
 			$move = floor(($node['rgt'] - $node['lft']) / 2);
