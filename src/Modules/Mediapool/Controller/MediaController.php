@@ -35,7 +35,7 @@ class MediaController
 	{
 		$media_id = $args['media_id'] ?? 0;
 		if ($media_id === 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'mwdia_id is missing']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media_id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
 		$media = $this->mediaService->fetchMedia($media_id);
@@ -59,7 +59,6 @@ class MediaController
 		$this->mediaService->updateMedia($bodyParams['media_id'], $bodyParams['filename'], $bodyParams['description']);
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-
 
 	/**
 	 * @throws Exception
