@@ -33,10 +33,9 @@ abstract class BaseSimpleXml
 		return $this->xml_obj;
 	}
 
-	public function setXmlObj(SimpleXMLElement $xml_obj): static
+	public function setXmlObj(SimpleXMLElement $xml_obj): void
 	{
 		$this->xml_obj = $xml_obj;
-		return $this;
 	}
 
 	protected function getXmlErrors(): array
@@ -44,13 +43,9 @@ abstract class BaseSimpleXml
 		return $this->xml_errors;
 	}
 
-	/**
-	 * @return $this
-	 */
-	protected function setXmlErrors(array $xml_errors): static
+	protected function setXmlErrors(array $xml_errors): void
 	{
 		$this->xml_errors = $xml_errors;
-		return $this;
 	}
 
 	/**
@@ -101,7 +96,7 @@ abstract class BaseSimpleXml
 	}
 
 
-	public function getXmlErrorsAsString(): ?string
+	public function getXmlErrorsAsString(): string
 	{
 		$this->buildXmlErrors();
 
@@ -117,7 +112,7 @@ abstract class BaseSimpleXml
 				$last_error->column);
 		}
 
-		return null;
+		return '';
 	}
 
 	/**
