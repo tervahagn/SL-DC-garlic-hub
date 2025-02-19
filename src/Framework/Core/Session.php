@@ -50,6 +50,9 @@ class Session
 		session_start($settings);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function regenerateID(): void
 	{
 		if (session_status() !== PHP_SESSION_ACTIVE)
