@@ -136,11 +136,13 @@ class Ffmpeg
 
 	/**
 	 * @throws  FrameworkException
+	 * @throws CoreException
 	 */
 	private function probeFile(string $filePath): void
 	{
 		$command    = $this->probePath . ' -v quiet -print_format json -show_format -show_streams ' . $filePath;
-		$result     = shell_exec($command);
+		$this->shellExecutor->setCommand($command);
+		$result     = $this->shellExecutor->executeSimple();
 		$metadata   = json_decode($result);
 
 		if (is_null($metadata) || !isset($metadata->format))

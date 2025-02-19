@@ -12,15 +12,8 @@ use Psr\Log\LoggerInterface;
 class ShellExecutor
 {
 	private string $command = '';
-	private LoggerInterface $logger;
 
-	/**
-	 * @param LoggerInterface $logger
-	 */
-	public function __construct(LoggerInterface $logger)
-	{
-		$this->logger = $logger;
-	}
+	public function __construct() {}
 
 	public function setCommand(string $command): void
 	{
@@ -32,16 +25,33 @@ class ShellExecutor
 	 */
 	public function execute(): array
 	{
-		if (empty($this->command))
-			throw new CoreException("No command set for execution.");
+		$this->checkforCommand();
 
 		$output = [];
 		$returnCode = 0;
 		exec($this->command . ' 2>&1', $output, $returnCode);
 
 		if ($returnCode !== 0)
-			$this->logger->error("Command failed: $this->command", ['output' => $output]);
+			throw new CoreException("Command failed: $this->command \n". 'output: '. implode("\n", $output));
 
-		return ['output' => implode("\n", $output), 'code' => $returnCode];
+		return ['output' => $output, 'code' => $returnCode];
 	}
+
+	/**
+	 * @throws CoreException
+	 */
+	public function executeSimple(): string
+	{
+		$this->checkforCommand();
+		$output = shell_exec($this->command . ' 2>&1');
+
+		return $output;
+	}
+
+	private function checkforCommand()
+	{
+		if (empty($this->command))
+			throw new CoreException('No command set for execution.');
+	}
+
 }

@@ -80,7 +80,7 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 		new Ffmpeg(
 			$container->get(Config::class),
 			$container->get('LocalFileSystem'),
-			new ShellExecutor($container->get('ModuleLogger'))
+			new ShellExecutor()
 		)
 	);
 });

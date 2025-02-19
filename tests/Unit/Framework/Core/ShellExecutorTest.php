@@ -30,11 +30,9 @@ use Psr\Log\LoggerInterface;
 class ShellExecutorTest extends TestCase
 {
 	private ShellExecutor $executor;
-	private LoggerInterface $loggerMock;
 
 	protected function setUp(): void
 	{
-		$this->loggerMock = $this->createMock(LoggerInterface::class);
 		$this->executor   = new ShellExecutor($this->loggerMock);
 	}
 
@@ -47,8 +45,8 @@ class ShellExecutorTest extends TestCase
 		$this->executor->setCommand('echo "Hello, World!"');
 		$result = $this->executor->execute();
 
-		$this->assertEquals(0, $result['exit_code']);
-		$this->assertEquals('Hello, World!', $result['output']);
+		$this->assertEquals(0, $result['code']);
+		$this->assertEquals('Hello, World!', $result['output'][0]);
 	}
 
 	#[Group('units')]
@@ -61,12 +59,19 @@ class ShellExecutorTest extends TestCase
 	#[Group('units')]
 	public function testLoggerCalledOnError()
 	{
-		$this->loggerMock
-			->expects($this->once())
-			->method('error')
-			->with($this->stringContains('Command failed'));
+		$this->expectException(CoreException::class);
+		$this->expectExceptionMessageMatches('*Command failed*');
 
 		$this->executor->setCommand('hurz');
 		$this->executor->execute();
+	}
+
+	#[Group('units')]
+	public function testExecuteSimpleWithValidCommand()
+	{
+		$this->executor->setCommand('echo "Hello, World!"');
+		$result = $this->executor->executeSimple();
+
+		$this->assertEquals("Hello, World!\n", $result);
 	}
 }
