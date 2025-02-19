@@ -4,6 +4,7 @@ namespace App\Modules\Mediapool\Controller;
 
 use App\Modules\Mediapool\Services\UploadService;
 use Doctrine\DBAL\Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -16,6 +17,9 @@ class UploadController
 		$this->uploadService = $uploadService;
 	}
 
+	/**
+	 * @throws GuzzleException
+	 */
 	public function searchStockImages(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
@@ -55,12 +59,11 @@ class UploadController
 	{
 		$bodyParams = $request->getParsedBody();
 		$node_id    = (int)($bodyParams['node_id'] ?? 0);
-
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
 		if (!isset($bodyParams['external_link']))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No external file to upload.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No external link submitted.']);
 
 		$metadata = [];
 		if (isset($bodyParams['metadata']))

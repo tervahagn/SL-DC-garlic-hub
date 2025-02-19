@@ -79,7 +79,10 @@ class NodesControllerTest extends TestCase
 
 
 	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
 	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testAdd(): void
@@ -103,7 +106,10 @@ class NodesControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
 	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testAddFailNoName(): void
@@ -182,6 +188,7 @@ class NodesControllerTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws DatabaseException
 	 */
 	#[Group('units')]
 	public function testMove(): void
@@ -222,7 +229,10 @@ class NodesControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
 	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testDelete(): void
@@ -246,7 +256,10 @@ class NodesControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
 	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testDeleteFailsNodeId(): void
