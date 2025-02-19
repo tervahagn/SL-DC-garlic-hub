@@ -155,7 +155,6 @@ class ShowController
 		}
 
 		$response->getBody()->write(serialize($data));
-
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
