@@ -60,6 +60,11 @@ class Ffmpeg
 		return $this->metadata;
 	}
 
+	public function setMediaProperties(array $mediaProperties): void
+	{
+		$this->mediaProperties = $mediaProperties;
+	}
+
 	public function getMediaProperties(): array
 	{
 		return $this->mediaProperties;
@@ -121,7 +126,7 @@ class Ffmpeg
 	 */
 	private function setUpBinaryPathsByConfig(): static
 	{
-		$this->executablePath   = $this->config->getConfigValue('path_to_ffmpeg_bin', 'video');
+		$this->executablePath  = $this->config->getConfigValue('path_to_ffmpeg_bin', 'video');
 		$this->probePath       = $this->config->getConfigValue('path_to_ffmpeg_probe', 'video');
 		return $this;
 	}
@@ -206,6 +211,5 @@ class Ffmpeg
 	{
 		return $this->config->getPaths('systemDir') . $filePath;
 	}
-
 
 }
