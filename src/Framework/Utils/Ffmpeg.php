@@ -3,6 +3,7 @@ namespace App\Framework\Utils;
 
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\ShellExecutor;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use Exception;
@@ -28,6 +29,7 @@ class Ffmpeg
 
 	private readonly Config $config;
 	private readonly Filesystem $filesystem;
+	private readonly ShellExecutor $shellExecutor;
 
 	private string $probePath        = '/usr/bin/ffprobe';
 	private string $executablePath   = '/usr/bin/ffmpeg';
@@ -41,10 +43,11 @@ class Ffmpeg
 	private float $duration;
 
 
-	public function __construct(Config $config, Filesystem $fileSystem)
+	public function __construct(Config $config, Filesystem $fileSystem, ShellExecutor $shellExecutor)
 	{
-		$this->config = $config;
-		$this->filesystem = $fileSystem;
+		$this->config        = $config;
+		$this->filesystem    = $fileSystem;
+		$this->shellExecutor = $shellExecutor;
 	}
 
 	public function setMetadata(array $metadata): void
@@ -103,7 +106,8 @@ class Ffmpeg
 					$this->scaleOptions .
 					' -ss 00:00:02 -an -r 1 -vframes 1 -y '.$this->getAbsolutePath($destination).'/vid_%d.jpg 2>&1';
 
-		$this->callBinary($command);
+		$this->shellExecutor->setCommand($command);
+		$this->shellExecutor->execute();
 
 		$vidcapPath = $destination . '/vid_1.jpg';
 		if (!$this->filesystem->fileExists($vidcapPath))
@@ -195,20 +199,6 @@ class Ffmpeg
 		$this->mediaProperties['container']  = (string) $meta_data->format->format_name;
 	}
 
-
-	/**
-	 * @throws  FrameworkException
-	 * @throws  Exception
-	 */
-	private function callBinary(string $command): void
-	{
-		$output         = array();
-		$return_value   = 0;
-		$last_line = exec($command, $output, $return_value);
-
-		if ($return_value != 0)
-			throw new FrameworkException('ffmpeg error: Exit code: ' . $return_value . '. Calling: ' . $command, $return_value. 'Last line: ' . $last_line);
-	}
 
 	private function getAbsolutePath(string $filePath): string
 	{
