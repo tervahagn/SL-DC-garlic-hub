@@ -33,11 +33,9 @@ use Psr\Http\Message\StreamInterface;
 
 class MediaControllerTest extends TestCase
 {
-
 	private readonly ServerRequestInterface $requestMock;
 	private readonly ResponseInterface $responseMock;
 	private readonly MediaService $mediaServiceMock;
-
 	private readonly MediaController $controller;
 
 	/**
@@ -63,16 +61,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node is missing']);
 
-		$this->responseMock ->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock ->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->list($this->requestMock , $this->responseMock , []);
 	}
 
@@ -96,16 +84,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'media_list' => ['media1', 'media2']]);
 
-		$this->responseMock ->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->list($this->requestMock , $this->responseMock , ['node_id' => 2]);
 	}
 
@@ -118,16 +96,6 @@ class MediaControllerTest extends TestCase
 		$this->requestMock ->expects($this->never())->method('getAttribute');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media_id is missing']);
-
-		$this->responseMock ->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock ->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->getInfo($this->requestMock , $this->responseMock , []);
 	}
@@ -151,16 +119,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'media' => ['media' => 'data']]);
 
-		$this->responseMock ->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock ->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->getInfo($this->requestMock , $this->responseMock , ['media_id' => 1]);
 	}
 
@@ -177,16 +135,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
 
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
 	}
 
@@ -202,16 +150,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Filename is missing']);
 
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
 	}
 
@@ -226,16 +164,6 @@ class MediaControllerTest extends TestCase
 			->willReturn(['media_id' => 1, 'filename' => 'test.jpg']);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Description is missing']);
-
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
 	}
@@ -262,16 +190,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true]);
 
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
 	}
 
@@ -286,16 +204,6 @@ class MediaControllerTest extends TestCase
 			->willReturn([]);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
-
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->delete($this->requestMock, $this->responseMock);
 	}
@@ -325,16 +233,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['deleted_media' => 1]]);
 
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->delete($this->requestMock, $this->responseMock);
 	}
 
@@ -350,16 +248,6 @@ class MediaControllerTest extends TestCase
 			->willReturn(['media_id' => 1]);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id or node is missing']);
-
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->move($this->requestMock, $this->responseMock);
 	}
@@ -387,16 +275,6 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['deleted_media' => 1]]);
 
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
-
 		$this->controller->move($this->requestMock, $this->responseMock);
 	}
 
@@ -412,16 +290,6 @@ class MediaControllerTest extends TestCase
 			->willReturn([]);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
-
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->clone($this->requestMock, $this->responseMock);
 	}
@@ -449,16 +317,6 @@ class MediaControllerTest extends TestCase
 			->willReturn(['new_media' => 'data']);
 
 		$this->mockResponse(['success' => true, 'new_media' => ['new_media' => 'data']]);
-
-		$this->responseMock->expects($this->once())
-			->method('withHeader')
-			->with('Content-Type', 'application/json')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())
-			->method('withStatus')
-			->with(200)
-			->willReturnSelf();
 
 		$this->controller->clone($this->requestMock, $this->responseMock);
 	}
@@ -490,5 +348,15 @@ class MediaControllerTest extends TestCase
 		$streamInterfaceMock->expects($this->once())
 			->method('write')
 			->with(json_encode($data));
+
+		$this->responseMock->expects($this->once())
+			->method('withHeader')
+			->with('Content-Type', 'application/json')
+			->willReturnSelf();
+
+		$this->responseMock ->expects($this->once())
+			->method('withStatus')
+			->with(200)
+			->willReturnSelf();
 	}
 }
