@@ -37,10 +37,11 @@ class Cookie
 	 */
 	public function getHashedCookie($cookie_name): ?array
 	{
-		if (!array_key_exists($cookie_name, $_COOKIE))
+		$payload = $this->getCookie($cookie_name);
+
+		if (is_null($payload))
 			return null;
 
-		$payload = $_COOKIE[$cookie_name];
 		return $this->validateAndUnpackContent($payload);
 	}
 
@@ -55,25 +56,22 @@ class Cookie
 		return $tmp;
 	}
 
-	public function createCookie(string $name, string $content, DateTime $expire): void
-	{
-		$expire  = $expire->getTimestamp();
-		$result  = setcookie($name, $content, $expire, '/', '', true, true);
-
-		if ($result === false)
-			throw new FrameworkException('Cookie failed to set.');
-	}
-
 	/**
 	 * @throws FrameworkException
 	 */
 	public function createHashedCookie(string $name, array $contents, DateTime $expire): void
 	{
-		$expire  = $expire->getTimestamp();
 		$content = $this->hashContent($contents);
+		$this->createCookie($name, $content, $expire);
+	}
+
+
+	public function createCookie(string $name, string $content, DateTime $expire): void
+	{
+		$expire  = $expire->getTimestamp();
 		$result  = setcookie($name, $content, $expire, '/', '', true, true);
 
-		if ($result === false)
+		if ($result == false)
 			throw new FrameworkException('Cookie failed to set.');
 	}
 

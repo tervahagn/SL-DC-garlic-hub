@@ -39,7 +39,7 @@ class CookieTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->cryptMock = $this->createMock(Crypt::class);
-		$this->cookie = new Cookie($this->cryptMock);
+		$this->cookie    = new Cookie($this->cryptMock);
 	}
 
 	#[Group('units')]
