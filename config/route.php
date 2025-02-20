@@ -27,6 +27,10 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Playlists\Controller\ComposeController;
+use App\Modules\Playlists\Controller\ItemController;
+use App\Modules\Playlists\Controller\SettingsController;
+use App\Modules\Playlists\Controller\OverviewController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
@@ -50,6 +54,15 @@ $app->group('', function (RouteCollectorProxy $group)
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
+	$group->get('/playlists', [OverviewController::class, 'show']);
+	$group->get('/playlists/{playlist_id}/settings', [SettingsController::class, 'show']);
+/*		$group->get('/playlists/{playlist_id}/compose', [ComposeController::class, 'show']);
+
+		$group->get('/playlists/items/{id}/properties', []);
+		$group->get('/playlists/items/{id}/conditional', []);
+		$group->get('/playlists/items/{id}/trigger', []);
+		$group->get('/playlists/items/{id}/edit', []);
+	*/
 })->add($container->get(FinalRenderMiddleware::class))->add(new LayoutDataMiddleware());
 
 $app->group('/api', function (RouteCollectorProxy $group)
@@ -75,5 +88,8 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/media/edit', [MediaController::class, 'edit']);
 	$group->post('/mediapool/media/move', [MediaController::class, 'move']);
 	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
+
+//	$group->post('/playlists/items/move', [ItemController::class, 'move']);
+//	$group->delete('/playlists/item', [ItemController::class, 'delete']);
 
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
