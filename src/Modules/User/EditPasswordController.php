@@ -96,7 +96,7 @@ class EditPasswordController
 					'additional_css' => ['/css/user/options.css']
 				],
 				'this_layout' => [
-					'template' => 'utils/edit', // Template-name
+					'template' => 'generic/edit', // Template-name
 					'data' => [
 						'LANG_PAGE_HEADER' => 'User Options',
 						'SITE' => '/user/edit/password',

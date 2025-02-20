@@ -1,20 +1,20 @@
 
-	<form action="{{SITE}}" method="post" enctype="multipart/form-data" id="form_elements_edit">
+<form action="{{SITE}}" method="post" enctype="multipart/form-data" id="form_elements_edit">
 		<fieldset>
 			{{#element_hidden}}
-			{{{HIDDEN_HTML_ELEMENT}}}
+				{{{HIDDEN_HTML_ELEMENT}}}
 			{{/element_hidden}}
 
-				{{#form_element}}
+			{{#form_element}}
 				<div class="field-wrapper">
 					<label for="{{HTML_ELEMENT_ID}}">{{LANG_ELEMENT_NAME}} {{ELEMENT_MUST_FIELD}}</label>
 					{{{HTML_ELEMENT}}}
 					<span class="error-message" id="error_{{HTML_ELEMENT_ID}}"></span>
 				</div>
-				{{/form_element}}
+			{{/form_element}}
 
 			{{#form_button}}
-			<button type="{{ELEMENT_BUTTON_TYPE}}" name="{{ELEMENT_BUTTON_NAME}}" id="{{ELEMENT_BUTTON_NAME}}" value="{{LANG_ELEMENT_BUTTON}}">{{LANG_ELEMENT_BUTTON}}</button>
+				<button type="{{ELEMENT_BUTTON_TYPE}}" name="{{ELEMENT_BUTTON_NAME}}" id="{{ELEMENT_BUTTON_NAME}}" value="{{LANG_ELEMENT_BUTTON}}">{{LANG_ELEMENT_BUTTON}}</button>
 			{{/form_button}}
 		</fieldset>
 	</form>
