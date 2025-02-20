@@ -131,4 +131,20 @@ CREATE INDEX idx_mediapool_checksum ON mediapool_files (checksum);
 CREATE INDEX idx_mediapool_mimetype ON mediapool_files (mimetype);
 CREATE INDEX idx_mediapool_deleted ON mediapool_files (deleted);
 
+CREATE TABLE playlists (
+    playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    UID INTEGER NOT NULL DEFAULT 0,
+    time_limit INTEGER NOT NULL DEFAULT 0,
+    owner_duration INTEGER NOT NULL DEFAULT 0,
+    duration INTEGER NOT NULL DEFAULT 0,
+    filesize INTEGER NOT NULL DEFAULT 0,
+    shuffle INTEGER NOT NULL DEFAULT 0,
+    shuffle_picking INTEGER NOT NULL DEFAULT 0,
+    last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    playlist_mode TEXT DEFAULT 'master' CHECK (playlist_mode IN ('master', 'internal', 'external', 'multizone', 'channel')),
+    `name` varchar(100) DEFAULT NULL,
+    external_playlist_link  varchar(100) DEFAULT NULL,
+    multizone TEXT DEFAULT NULL
+);
 
+CREATE INDEX idx_playlist_mode ON playlists(playlist_mode);
