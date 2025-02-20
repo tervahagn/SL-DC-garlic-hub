@@ -28,6 +28,8 @@ interface FieldInterface
 
 	public function getId(): string;
 
+	public function getTranslatedName(): string;
+
 	public function getValue(): ?string;
 
 	public function getValidationRules(): array;

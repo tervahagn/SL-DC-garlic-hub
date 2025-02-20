@@ -22,6 +22,7 @@
 namespace App\Modules\User;
 
 use App\Framework\Core\Cookie;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldType;
@@ -35,6 +36,7 @@ class EditPasswordController
 {
 	private readonly FormBuilder $formBuilder;
 	private readonly UserService $userService;
+	private Translator $translator;
 
 	public function __construct(FormBuilder $formBuilder, UserService $userService)
 	{
@@ -67,7 +69,7 @@ class EditPasswordController
 	 */
 	public function showForm(Request $request, Response $response): Response
 	{
-		$translator = $request->getAttribute('translator');
+		$this->translator = $request->getAttribute('translator');
 
 		$formElements   = [];
 		$hiddenElements = [];
@@ -84,7 +86,7 @@ class EditPasswordController
 
 			$formElements[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $translator->translate($key, 'user'),
+				'LANG_ELEMENT_NAME'  => $element->getTranslatedName(),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
@@ -92,7 +94,7 @@ class EditPasswordController
 
 		$data = [
 				'main_layout' => [
-					'LANG_PAGE_TITLE' => $translator->translate('options', 'user'),
+					'LANG_PAGE_TITLE' => $this->translator->translate('options', 'user'),
 					'additional_css' => ['/css/user/options.css']
 				],
 				'this_layout' => [
@@ -106,7 +108,7 @@ class EditPasswordController
 							[
 								'ELEMENT_BUTTON_TYPE' => 'submit',
 								'ELEMENT_BUTTON_NAME' => 'submit',
-								'LANG_ELEMENT_BUTTON' => $translator->translate('save', 'main')
+								'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
 							]
 					]
 				]
@@ -144,7 +146,7 @@ class EditPasswordController
 	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
 	 */
-	private function createPasswordForm(Request $request): array
+	private function createPasswordForm(): array
 	{
 		$form = [];
 		$rules = ['required' => true, 'minlength' => 8];
@@ -153,6 +155,7 @@ class EditPasswordController
 			'type' => FieldType::PASSWORD,
 			'id' => 'edit_password',
 			'name' => 'edit_password',
+			'translated_name' => $this->translator->translate('edit_password', 'user'),
 			'value' => '',
 			'rules' => $rules,
 			'default_value' => ''
@@ -161,6 +164,7 @@ class EditPasswordController
 			'type' => FieldType::PASSWORD,
 			'id' => 'repeat_password',
 			'name' => 'repeat_password',
+			'translated_name' => $this->translator->translate('repeat_password', 'user'),
 			'rules' => $rules,
 			'default_value' => ''
 		]);
