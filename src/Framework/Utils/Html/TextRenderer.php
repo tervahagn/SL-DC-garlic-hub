@@ -20,7 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-class TextRenderer extends AbstractInputFieldRenderer
+class TextRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 	public function render(FieldInterface $field): string
 	{

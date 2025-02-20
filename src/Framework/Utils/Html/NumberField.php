@@ -20,14 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
+class NumberField extends AbstractInputField
 {
 
-	public function render(FieldInterface $field): string
-	{
-		$this->field = $field;
-		$datalist_id =  'datalist_'.$this->field->getId();
-
-		return '<input list="'.$datalist_id.'" '.$this->buildAttributes().' aria-describedby="error_'.$this->field->getId().'"><datalist id = "'.$datalist_id.'" ><option value = "" ></datalist>';
-	}
 }

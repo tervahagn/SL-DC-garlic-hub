@@ -74,7 +74,7 @@ class EditPasswordController
 		$formElements   = [];
 		$hiddenElements = [];
 
-		foreach ($this->createPasswordForm($request) as $key => $element)
+		foreach ($this->createForm() as $key => $element)
 		{
 			if ($key === 'csrf_token')
 			{
@@ -145,8 +145,9 @@ class EditPasswordController
 	/**
 	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 */
-	private function createPasswordForm(): array
+	private function createForm(): array
 	{
 		$form = [];
 		$rules = ['required' => true, 'minlength' => 8];

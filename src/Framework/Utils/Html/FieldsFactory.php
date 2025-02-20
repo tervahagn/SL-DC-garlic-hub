@@ -30,7 +30,12 @@ class FieldsFactory
 		return new TextField($attributes);
 	}
 
-	public function createAutocomplete(array $attributes): AutocompleteField
+	public function createNumberField(array $attributes): NumberField
+	{
+		return new NumberField($attributes);
+	}
+
+	public function createAutocompleteField(array $attributes): AutocompleteField
 	{
 		return new AutocompleteField($attributes);
 	}

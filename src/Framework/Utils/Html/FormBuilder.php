@@ -45,7 +45,8 @@ class FormBuilder
 	{
 		return match ($options['type']) {
 			FieldType::TEXT         => $this->fieldsFactory->createTextField($options),
-			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocomplete($options),
+			FieldType::NUMBER       => $this->fieldsFactory->createNumberField($options),
+			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocompleteField($options),
 			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($options),
 			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($options),
 			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($options, $this->session),

@@ -31,6 +31,7 @@ class FieldsRenderFactory
 		return match (true)
 		{
 			$field instanceof TextField         => $this->getCachedRenderer(TextRenderer::class)->render($field),
+			$field instanceof NumberField       => $this->getCachedRenderer(NumberRenderer::class)->render($field),
 			$field instanceof AutocompleteField => $this->getCachedRenderer(AutocompleteRenderer::class)->render($field),
 			$field instanceof EmailField        => $this->getCachedRenderer(EmailRenderer::class)->render($field),
 			$field instanceof PasswordField     => $this->getCachedRenderer(PasswordRenderer::class)->render($field),

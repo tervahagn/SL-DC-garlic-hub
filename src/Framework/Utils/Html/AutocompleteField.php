@@ -20,8 +20,6 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\AbstractInputField;
-
 class AutocompleteField extends AbstractInputField
 {
 
