@@ -20,14 +20,21 @@
 
 namespace App\Modules\Playlists\Services;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
 class PlaylistsService
 {
+
+
 	private readonly PlaylistsRepository $playlistRepository;
 	private readonly AclValidator $playlistValidator;
 	private readonly LoggerInterface $logger;
+	private int $UID;
 
 	/**
 	 * @param PlaylistsRepository $playlistRepository
@@ -41,10 +48,86 @@ class PlaylistsService
 		$this->logger = $logger;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
+	public function isModuleadmin(): bool
+	{
+		return $this->playlistValidator->isModuleadmin($this->UID);
+	}
+
+	public function setUID(int $UID): void
+	{
+		$this->UID = $UID;
+	}
+
+	/**
+	 * @throws Exception
+	 */
 	public function create($playlistData): int
 	{
-		$this->playlistValidator->hasRights();
+		// No check neccessary as everyone shound create playlists
 		return $this->playlistRepository->insert($playlistData);
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function update(int $playlistId, array $playlistData): int
+	{
+		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+
+		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error updating playlist. '.$playlist['name'].' is not editable');
+			throw new ModuleException('mediapool', 'Error updating playlist. '.$playlist['name'].' is not editable');
+		}
+
+		return $this->playlistRepository->update($playlistId, $playlistData);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function delete(int $playlistId): int
+	{
+		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+
+		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error delete playlist. '.$playlist['name'].' is not editable');
+			throw new ModuleException('mediapool', 'Error delete playlist. '.$playlist['name'].' is not editable');
+		}
+
+		return $this->playlistRepository->delete($playlistId);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function loadPlaylistForEdit(int $playlistId): array
+	{
+		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+
+		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error loading playlist. '.$playlist['name'].' is not editable');
+			throw new ModuleException('mediapool', 'Error Loading Playlist. '.$playlist['name'].' is not editable');
+		}
+
+		return $playlist;
+	}
+
 
 }
