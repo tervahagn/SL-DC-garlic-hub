@@ -21,8 +21,33 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
+use App\Framework\Exceptions\CoreException;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class AclValidator extends AbstractAclValidator
 {
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isPlaylistEditable(int $UID, array $playlist): bool
+	{
+		if ($this->isModuleAdmin($UID))
+			return true;
+
+		// Edge Edition will not move further as there is not subadmin
+		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
+			return true;
+
+		if($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $playlist['playlist_id']))
+			return true;
+
+		if ($UID == $playlist['UID'])
+			return true;
+
+		return false;
+	}
 
 }
