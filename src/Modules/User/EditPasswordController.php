@@ -33,8 +33,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class EditPasswordController
 {
-	private FormBuilder $formBuilder;
-	private UserService $userService;
+	private readonly FormBuilder $formBuilder;
+	private readonly UserService $userService;
 
 	public function __construct(FormBuilder $formBuilder, UserService $userService)
 	{
