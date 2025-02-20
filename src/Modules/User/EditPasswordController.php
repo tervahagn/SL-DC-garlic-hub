@@ -100,7 +100,7 @@ class EditPasswordController
 				'this_layout' => [
 					'template' => 'generic/edit', // Template-name
 					'data' => [
-						'LANG_PAGE_HEADER' => 'User Options',
+						'LANG_PAGE_HEADER' =>  $this->translator->translate('options', 'user'),
 						'SITE' => '/user/edit/password',
 						'element_hidden' => $hiddenElements,
 						'form_element' => $formElements,

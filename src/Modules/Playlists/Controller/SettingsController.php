@@ -105,7 +105,7 @@ class SettingsController
 			'this_layout' => [
 				'template' => 'generic/edit', // Template-name
 				'data' => [
-					'LANG_PAGE_HEADER' => 'User Options',
+					'LANG_PAGE_HEADER' => $this->translator->translate('settings', 'playlists'),
 					'SITE' => '/playlists/settings',
 					'element_hidden' => $hiddenElements,
 					'form_element' => $formElements,
