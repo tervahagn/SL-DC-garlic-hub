@@ -21,10 +21,12 @@
 
 namespace App\Framework\Utils\Html;
 
-class AbstractInputFieldRenderer
+abstract class AbstractInputFieldRenderer
 {
 	protected array $attributes = [];
 	protected FieldInterface $field;
+
+	abstract public function render(FieldInterface $field): string;
 
 	protected function buildAttributes(): string
 	{

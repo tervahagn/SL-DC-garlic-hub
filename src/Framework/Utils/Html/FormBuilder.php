@@ -44,10 +44,11 @@ class FormBuilder
 	public function createField(array $options = []): FieldInterface
 	{
 		return match ($options['type']) {
-			FieldType::TEXT     => $this->fieldsFactory->createTextField($options),
-			FieldType::PASSWORD => $this->fieldsFactory->createPasswordField($options),
-			FieldType::EMAIL    => $this->fieldsFactory->createEmailField($options),
-			FieldType::CSRF     => $this->fieldsFactory->createCsrfTokenField($options, $this->session),
+			FieldType::TEXT         => $this->fieldsFactory->createTextField($options),
+			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocomplete($options),
+			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($options),
+			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($options),
+			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($options, $this->session),
 			default => throw new FrameworkException('Invalid field type'),
 		};
 	}

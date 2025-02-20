@@ -30,6 +30,11 @@ class FieldsFactory
 		return new TextField($attributes);
 	}
 
+	public function createAutocomplete(array $attributes): AutocompleteField
+	{
+		return new AutocompleteField($attributes);
+	}
+
 	public function createEmailField(array $attributes): EmailField
 	{
 		return new EmailField($attributes);
