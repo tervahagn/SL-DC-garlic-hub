@@ -23,4 +23,12 @@ namespace App\Framework\Utils\Html;
 class NumberField extends AbstractInputField
 {
 
+	public function __construct(array $attributes = [])
+	{
+		parent::__construct($attributes);
+		if (isset($attributes['min']))
+			$this->setAttribute('min',  $attributes['min']);
+		if (isset($attributes['max']))
+			$this->setAttribute('max',  $attributes['min']);
+	}
 }

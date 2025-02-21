@@ -24,8 +24,9 @@ namespace App\Framework\Utils\Html;
 class AbstractInputField implements FieldInterface
 {
 	private string $name;
-	private string $translatedName;
+	private string $label;
 	private string $id;
+	private string $title;
 	private ?string $value;
 	private ?string $defaultValue;
 	private array $attributes;
@@ -35,7 +36,8 @@ class AbstractInputField implements FieldInterface
 	{
 		$this->id              = $attributes['id'];
 		$this->name            = $attributes['name'] ?? $attributes['id'];
-		$this->translatedName  = $attributes['translated_name'] ?? '';
+		$this->title           = $attributes['title'] ?? '';
+		$this->label           = $attributes['label'] ?? '';
 		$this->value           = $attributes['value'] ?? '';
 		$this->defaultValue    = $attributes['default_value'] ?? '';
 		$this->validationRules = $attributes['rules'] ?? [];
@@ -71,14 +73,19 @@ class AbstractInputField implements FieldInterface
 		return $this->name;
 	}
 
+	public function getTitle(): string
+	{
+		return $this->title;
+	}
+
 	public function getId(): string
 	{
 		return $this->id;
 	}
 
-	public function getTranslatedName(): string
+	public function getLabel(): string
 	{
-		return $this->translatedName;
+		return $this->label;
 	}
 
 	public function getValue(): ?string

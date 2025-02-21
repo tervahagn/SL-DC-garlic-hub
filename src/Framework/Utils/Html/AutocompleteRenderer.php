@@ -28,6 +28,8 @@ class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRe
 		$this->field = $field;
 		$datalist_id =  'datalist_'.$this->field->getId();
 
-		return '<input list="'.$datalist_id.'" '.$this->buildAttributes().' aria-describedby="error_'.$this->field->getId().'"><datalist id = "'.$datalist_id.'" ><option value = "" ></datalist>';
+		return '<input list="'.$datalist_id.'" '.$this->buildAttributes().' aria-describedby="error_'.$this->field->getId().'">
+		
+		<datalist id = "'.$datalist_id.'" ><option value = "" ></datalist>';
 	}
 }

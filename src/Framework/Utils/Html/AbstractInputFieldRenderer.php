@@ -48,6 +48,11 @@ abstract class AbstractInputFieldRenderer
 			'id'    => $this->field->getId(),
 			'value' => $this->field->getValue()
 		];
+		if (!empty($this->field->getTitle()))
+			$this->attributes['title'] = $this->field->getTitle();
+
+		if (!empty($this->field->getLabel()))
+			$this->attributes['label'] = $this->field->getLabel();
 
 		return $this;
 	}

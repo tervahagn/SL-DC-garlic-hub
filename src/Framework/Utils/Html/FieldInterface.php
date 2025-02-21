@@ -28,7 +28,7 @@ interface FieldInterface
 
 	public function getId(): string;
 
-	public function getTranslatedName(): string;
+	public function getLabel(): string;
 
 	public function getValue(): ?string;
 
