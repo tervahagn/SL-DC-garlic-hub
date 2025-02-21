@@ -9,7 +9,7 @@ By keeping sanitization tasks simple, we ensure that the controller stays focuse
 
 - Trim whitespace
 - Convert to lower or uppercase
-- Check for Empty Fields
+- Check for empty fields
 - Round Numbers
 - Replace spaces or other characters with specific symbols (e.g., underscores).
 - Remove non-numeric characters from phone numbers.
