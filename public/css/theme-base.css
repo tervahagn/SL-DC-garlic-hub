@@ -57,7 +57,7 @@ body{padding:0 1rem;}
 	#user_menu{margin-left:auto;}
 
 a{text-decoration: none;color: var(--gh-link-text-color);}
-h1{font-size: 1.3rem; font-family: var(--gh-font-bold);}
+h1{font-size: 1.3rem; font-family: var(--gh-font-bold); margin-top:0;}
 h2{font-size: 1.2rem; font-family: var(--gh-font-bold);}
 h3, h4, h5, h6{font-size: 1.0rem; font-family: var(--gh-font-bold);}
 
@@ -95,7 +95,7 @@ dialog
     dialog .close-button {color: #fff;}
 
 
-main{flex: 1; padding:1rem;position:  relative;}
+main{flex: 1; padding:0;position:relative;}
 footer{text-align: right;}
 	footer nav ul
 	{
