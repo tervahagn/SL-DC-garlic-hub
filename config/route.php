@@ -55,14 +55,18 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
 	$group->get('/playlists', [OverviewController::class, 'show']);
-	$group->get('/playlists/{playlist_id}/settings', [SettingsController::class, 'show']);
-/*		$group->get('/playlists/{playlist_id}/compose', [ComposeController::class, 'show']);
+	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [SettingsController::class, 'create']);
+	$group->get('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'edit']);
+	$group->post('/playlists/settings', [SettingsController::class, 'store']);
 
-		$group->get('/playlists/items/{id}/properties', []);
-		$group->get('/playlists/items/{id}/conditional', []);
-		$group->get('/playlists/items/{id}/trigger', []);
-		$group->get('/playlists/items/{id}/edit', []);
-	*/
+
+	/*		$group->get('/playlists/{playlist_id}/compose', [ComposeController::class, 'show']);
+
+			$group->get('/playlists/items/{id}/properties', []);
+			$group->get('/playlists/items/{id}/conditional', []);
+			$group->get('/playlists/items/{id}/trigger', []);
+			$group->get('/playlists/items/{id}/edit', []);
+		*/
 })->add($container->get(FinalRenderMiddleware::class))->add(new LayoutDataMiddleware());
 
 $app->group('/api', function (RouteCollectorProxy $group)
