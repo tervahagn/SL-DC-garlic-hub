@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -41,6 +42,7 @@ class SettingsController
 	private readonly PlaylistsService $playlistsService;
 	private Translator $translator;
 	private int $UID;
+	private Session $session;
 	private string $playlistMode;
 	/**
 	 * @param FormBuilder $formBuilder
@@ -63,10 +65,9 @@ class SettingsController
 	public function show(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->translator = $request->getAttribute('translator');
-		$session    = $request->getAttribute('session');
-		$this->UID  = $session->get('user')['UID'];
+		$this->session    = $request->getAttribute('session');
 
-		$this->playlistsService->setUID($this->UID);
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
 		$playlist_id = $args['playlist_id'] ?? 0;
 		$this->playlistMode = $args['playlist_mode'] ?? 'master';
@@ -92,7 +93,7 @@ class SettingsController
 
 			$formElements[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getTranslatedName(),
+				'LANG_ELEMENT_NAME'  => $element->getLabel(),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
@@ -142,7 +143,8 @@ class SettingsController
 			'type' => FieldType::TEXT,
 			'id' => 'playlist_name',
 			'name' => 'playlist_name',
-			'translated_name' => $this->translator->translate('playlist_name', 'playlists'),
+			'title' => $this->translator->translate('playlist_name', 'playlists'),
+			'label' => $this->translator->translate('playlist_name', 'playlists'),
 			'value' => $playlist['name'] ?? '',
 			'rules' => $rules,
 			'default_value' => ''
@@ -152,8 +154,10 @@ class SettingsController
 			'type' => FieldType::AUTOCOMPLETE,
 			'id' => 'UID',
 			'name' => 'UID',
-			'translated_name' => $this->translator->translate('owner', 'main'),
-			'value' => $playlist['UID'] ?? $this->UID,
+			'title' => $this->translator->translate('owner', 'main'),
+			'label' => $this->translator->translate('owner', 'main'),
+			'data-id' => $playlist['UID'] ?? $this->session->get('user')['UID'],
+			'value' => $playlist['username'] ?? $this->session->get('user')['username'],
 			'default_value' => ''
 		]);
 
@@ -164,10 +168,11 @@ class SettingsController
 				'type' => FieldType::NUMBER,
 				'id' => 'time_limit',
 				'name' => 'time_limit',
-				'translated_name' => $this->translator->translate('time_limit', 'playlists'),
+				'title' => $this->translator->translate('time_limit_explanation', 'playlists'),
+				'label' => $this->translator->translate('time_limit', 'playlists'),
 				'value' => $playlist['time_limit'] ?? 0,
 				'min'   => 0,
-				'default_value' => ''
+				'default_value' => 0
 			]);
 		}
 

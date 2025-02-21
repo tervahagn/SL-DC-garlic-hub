@@ -86,7 +86,7 @@ class EditPasswordController
 
 			$formElements[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getTranslatedName(),
+				'LANG_ELEMENT_NAME'  => $element->getLabel(),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
 			];
