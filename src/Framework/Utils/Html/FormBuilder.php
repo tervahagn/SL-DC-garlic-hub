@@ -37,6 +37,34 @@ class FormBuilder
 		$this->session             = $session;
 	}
 
+	public function createFormular(array $formFields): array
+	{
+		$hidden = [];
+		$visible = [];
+
+		/** @var FieldInterface $element */
+		foreach ($formFields as $key => $element)
+		{
+			if ($element->getType() === FieldType::HIDDEN || $element->getType() === FieldType::CSRF)
+			{
+				$hidden[] = [
+					'HIDDEN_HTML_ELEMENT'        => $this->renderField($element)
+				];
+				continue;
+			}
+
+			$visible[] = [
+				'HTML_ELEMENT_ID'    => $element->getId(),
+				'LANG_ELEMENT_NAME'  => $element->getLabel(),
+				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
+				'HTML_ELEMENT'       => $this->renderField($element)
+			];
+		}
+
+		return ['hidden' => $hidden, 'visible' => $visible];
+	}
+
+
 	/**
 	 * @throws FrameworkException
 	 * @throws Exception
@@ -49,6 +77,7 @@ class FormBuilder
 			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocompleteField($options),
 			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($options),
 			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($options),
+			FieldType::HIDDEN       => $this->fieldsFactory->createHiddenField($options),
 			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($options, $this->session),
 			default => throw new FrameworkException('Invalid field type'),
 		};

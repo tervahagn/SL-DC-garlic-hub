@@ -53,9 +53,14 @@ class FieldsFactory
 	/**
 	 * @throws Exception
 	 */
-	public function createCsrfTokenField(array $attributes, Session $session): CsrfTokenField
+	public function createCsrfTokenField(array $attributes, $session): CsrfTokenField
 	{
 		return new CsrfTokenField($attributes, $session);
+	}
+
+	public function createHiddenField(array $options): HiddenField
+	{
+		return new HiddenField($options);
 	}
 
 }

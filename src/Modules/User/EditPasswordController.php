@@ -71,26 +71,7 @@ class EditPasswordController
 	{
 		$this->translator = $request->getAttribute('translator');
 
-		$formElements   = [];
-		$hiddenElements = [];
-
-		foreach ($this->createForm() as $key => $element)
-		{
-			if ($key === 'csrf_token')
-			{
-				$hiddenElements[] = [
-					'HIDDEN_HTML_ELEMENT'        => $this->formBuilder->renderField($element)
-				];
-				continue;
-			}
-
-			$formElements[] = [
-				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getLabel(),
-				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
-				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
-			];
-		}
+		$elements  = $this->formBuilder->createFormular($this->createForm());
 
 		$data = [
 				'main_layout' => [
@@ -102,8 +83,8 @@ class EditPasswordController
 					'data' => [
 						'LANG_PAGE_HEADER' =>  $this->translator->translate('options', 'user'),
 						'SITE' => '/user/edit/password',
-						'element_hidden' => $hiddenElements,
-						'form_element' => $formElements,
+						'element_hidden' => $elements['hidden'],
+						'form_element' => $elements['visible'],
 						'form_button' => [
 							[
 								'ELEMENT_BUTTON_TYPE' => 'submit',

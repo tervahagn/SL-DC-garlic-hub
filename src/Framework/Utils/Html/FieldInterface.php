@@ -35,4 +35,6 @@ interface FieldInterface
 	public function getValidationRules(): array;
 
 	public function getAttributes(): array;
+
+	public function getType();
 }

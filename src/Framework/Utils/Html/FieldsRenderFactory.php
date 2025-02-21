@@ -35,6 +35,7 @@ class FieldsRenderFactory
 			$field instanceof AutocompleteField => $this->getCachedRenderer(AutocompleteRenderer::class)->render($field),
 			$field instanceof EmailField        => $this->getCachedRenderer(EmailRenderer::class)->render($field),
 			$field instanceof PasswordField     => $this->getCachedRenderer(PasswordRenderer::class)->render($field),
+			$field instanceof HiddenField       => $this->getCachedRenderer(HiddenRenderer::class)->render($field),
 			$field instanceof CsrfTokenField    => $this->getCachedRenderer(CsrfTokenRenderer::class)->render($field),
 			default => throw new InvalidArgumentException('Unsupported field type: ' . get_class($field)),
 		};

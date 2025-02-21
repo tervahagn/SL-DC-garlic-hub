@@ -103,7 +103,7 @@ class Translator
 		$languageCode = $this->locales->getLanguageCode();
 		$translation  = $this->findTranslation($key, $module, $languageCode);
 
-		// Füge die Anzahl zu den Ersetzungen hinzu
+		// add number of replacements
 		$replacements['count'] = $count;
 
 		return $this->formatWithMessageFormatter($translation, $replacements);

@@ -27,6 +27,7 @@ class AbstractInputField implements FieldInterface
 	private string $label;
 	private string $id;
 	private string $title;
+	private FieldType $type;
 	private ?string $value;
 	private ?string $defaultValue;
 	private array $attributes;
@@ -35,6 +36,7 @@ class AbstractInputField implements FieldInterface
 	public function __construct(array $attributes = [])
 	{
 		$this->id              = $attributes['id'];
+		$this->type            = $attributes['type'];
 		$this->name            = $attributes['name'] ?? $attributes['id'];
 		$this->title           = $attributes['title'] ?? '';
 		$this->label           = $attributes['label'] ?? '';
@@ -71,6 +73,11 @@ class AbstractInputField implements FieldInterface
 	public function getName(): string
 	{
 		return $this->name;
+	}
+
+	public function getType(): FieldType
+	{
+		return $this->type;
 	}
 
 	public function getTitle(): string
