@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Slim\Flash\Messages;
 use Slim\Psr7\Stream;
 
 /**
@@ -54,6 +55,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$response = $handler->handle($request);
 
 		$layoutData   = $request->getAttribute('layoutData', []);
+		$layoutData['messages'] = $this->outputFlashMessages($request);
 
 		if ($_ENV['APP_DEBUG'])
 		{
@@ -79,5 +81,24 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$response->getBody()->write($finalContent);
 
 		return $response->withHeader('Content-Type', 'text/html');
+	}
+
+	private function outputFlashMessages(ServerRequestInterface $request): array
+	{
+		/** @var Messages $flash */
+		$flash    = $request->getAttribute('flash');
+		$messages = [];
+		// errors have a close button, successes close after 5s (set in css)
+		foreach (['error' => true, 'success' => false] as $type => $hasCloseButton)
+		{
+			if ($flash->hasMessage($type))
+			{
+				foreach ($flash->getMessage($type) as $message)
+				{
+					$messages[] = ['MESSAGE_TYPE' => $type,	'has_close_button' => $hasCloseButton, 'MESSAGE_TEXT' => $message];
+				}
+			}
+		}
+		return $messages;
 	}
 }

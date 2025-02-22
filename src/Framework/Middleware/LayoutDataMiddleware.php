@@ -37,7 +37,7 @@ use Slim\Flash\Messages;
  * The LayoutDataMiddleware class adds common layout data
  * (such as metadata, menu items, and legal information) to the request,
  * making it available for use in templates.
- * It then passes the request to the next middleware
+ * It then passes the request to the next middleware, Controller
  * or handler in the pipeline.
  */
 class LayoutDataMiddleware implements MiddlewareInterface
@@ -68,7 +68,6 @@ class LayoutDataMiddleware implements MiddlewareInterface
 			'user_menu' => $this->createUserMenu(),
 
 			'APP_NAME' => $config->getEnv('APP_NAME'),
-			'messages' => $this->outputFlashMessages($request),
 			'LANG_LEGAL_NOTICE' => $this->translator->translate('legal_notice', 'menu'),
 			'LANG_PRIVACY' => $this->translator->translate('privacy', 'menu'),
 			'LANG_TERMS' => $this->translator->translate('terms', 'menu')
@@ -135,24 +134,5 @@ class LayoutDataMiddleware implements MiddlewareInterface
 		}
 
 		return $ret;
-	}
-
-	private function outputFlashMessages(ServerRequestInterface $request): array
-	{
-		/** @var Messages $flash */
-		$flash    = $request->getAttribute('flash');
-		$messages = [];
-		// errors have an close button, successes close after 5s (set in css)
-		foreach (['error' => true, 'success' => false] as $type => $hasCloseButton)
-		{
-			if ($flash->hasMessage($type))
-			{
-				foreach ($flash->getMessage($type) as $message)
-				{
-					$messages[] = ['MESSAGE_TYPE' => $type,	'has_close_button' => $hasCloseButton, 'MESSAGE_TEXT' => $message];
-				}
-			}
-		}
-		return $messages;
 	}
 }
