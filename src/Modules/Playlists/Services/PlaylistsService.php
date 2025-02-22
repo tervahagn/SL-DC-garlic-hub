@@ -22,6 +22,7 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -32,7 +33,7 @@ class PlaylistsService
 
 
 	private readonly PlaylistsRepository $playlistRepository;
-	private readonly AclValidator $playlistValidator;
+	private readonly AclValidator $aclValidator;
 	private readonly LoggerInterface $logger;
 	private int $UID;
 
@@ -41,10 +42,10 @@ class PlaylistsService
 	 * @param AclValidator $playlistValidator
 	 * @param LoggerInterface $logger
 	 */
-	public function __construct(PlaylistsRepository $playlistRepository, AclValidator $playlistValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistRepository = $playlistRepository;
-		$this->playlistValidator = $playlistValidator;
+		$this->aclValidator = $aclValidator;
 		$this->logger = $logger;
 	}
 
@@ -55,7 +56,7 @@ class PlaylistsService
 	 */
 	public function isModuleadmin(): bool
 	{
-		return $this->playlistValidator->isModuleadmin($this->UID);
+		return $this->aclValidator->isModuleadmin($this->UID);
 	}
 
 	public function setUID(int $UID): void
@@ -66,10 +67,12 @@ class PlaylistsService
 	/**
 	 * @throws Exception
 	 */
-	public function create($playlistData): int
+	public function create($postData): int
 	{
-		// No check neccessary as everyone shound create playlists
-		return $this->playlistRepository->insert($playlistData);
+		$saveData = $this->validatePostData($postData, []);
+
+		// No acl checks required as every logged user can create playlists
+		return $this->playlistRepository->insert($saveData);
 	}
 
 	/**
@@ -78,17 +81,18 @@ class PlaylistsService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function update(int $playlistId, array $playlistData): int
+	public function update(array $postData): int
 	{
+		$playlistId = $postData['playlist_id'];
 		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
 
-		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		if ($this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error updating playlist. '.$playlist['name'].' is not editable');
 			throw new ModuleException('mediapool', 'Error updating playlist. '.$playlist['name'].' is not editable');
 		}
 
-		return $this->playlistRepository->update($playlistId, $playlistData);
+		return $this->playlistRepository->update($playlistId, $postData);
 	}
 
 	/**
@@ -101,7 +105,7 @@ class PlaylistsService
 	{
 		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
 
-		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		if ($this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error delete playlist. '.$playlist['name'].' is not editable');
 			throw new ModuleException('mediapool', 'Error delete playlist. '.$playlist['name'].' is not editable');
@@ -118,9 +122,9 @@ class PlaylistsService
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
-		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+		$playlist = $this->playlistRepository->findFirstWithUserName($playlistId);
 
-		if ($this->playlistValidator->isPlaylistEditable($this->UID, $playlist))
+		if ($this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error loading playlist. '.$playlist['name'].' is not editable');
 			throw new ModuleException('mediapool', 'Error Loading Playlist. '.$playlist['name'].' is not editable');
@@ -129,5 +133,52 @@ class PlaylistsService
 		return $playlist;
 	}
 
+	private function validatePostData(array $postData, $oldData): array
+	{
+		$saveData = ['name' => htmlentities($postData['playlist_name'], ENT_QUOTES)];
+
+		// only moduleadmin are allowed to chnge UID
+		if (array_key_exists('UID', $postData) && $this->isAdmin())
+			$saveData['UID'] = $postData['UID'];
+
+		// only accept valid playlist modes only when there is no $oldData
+		if (empty($oldData) && $this->checkPlaylistMode($postData['playlist_mode']))
+			$saveData['playlist_mode'] = $postData['playlist_mode'];
+
+		if (array_key_exists('time_limit', $postData) && $this->isAdmin() && $this->checkForTimeLimit($postData['playlist_mode']))
+			$saveData['time_limit'] = $postData['time_limit'];
+
+		if (array_key_exists('multizone', $postData) && $this->checkMultizone($postData, $oldData))
+			$saveData['multizone'] = $postData['multizone'];
+
+		return $saveData;
+	}
+
+	private function checkMultizone($postData, $oldData): bool
+	{
+		if ($postData['playlist_mode'] === PlaylistMode::MULTIZONE->value && empty($oldData))
+			return true;
+
+		if ($oldData['playlist_mode'] === PlaylistMode::MULTIZONE->value && !isset($postData['playlist_mode']))
+			return true;
+
+		return false;
+	}
+
+
+	private function checkPlaylistMode($value): bool
+	{
+		return in_array($value, array_column(PlaylistMode::cases(), 'value'), true);
+	}
+
+	private function checkForTimeLimit($value): bool
+	{
+		return in_array($value, [PlaylistMode::MASTER->value, PlaylistMode::INTERNAL->value], true);
+	}
+
+	private function isAdmin(): bool
+	{
+		return $this->aclValidator->isModuleadmin($this->UID) || $this->aclValidator->isSubAdmin($this->UID);
+	}
 
 }

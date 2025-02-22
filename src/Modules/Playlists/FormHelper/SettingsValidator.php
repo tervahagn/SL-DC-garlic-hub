@@ -18,25 +18,34 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Repositories;
+namespace App\Modules\Playlists\FormHelper;
 
-use App\Framework\Database\BaseRepositories\Sql;
-use Doctrine\DBAL\Connection;
+use Slim\Flash\Messages;
 
-class PlaylistsRepository extends Sql
+class SettingsValidator
 {
-	public function __construct(Connection $connection)
+
+	public function validatePlaylistId(array $args): ?int
 	{
-		parent::__construct($connection,'playlists', 'playlist_id');
+		return isset($args['playlist_id']) && (int)$args['playlist_id'] > 0 ? (int)$args['playlist_id'] : null;
 	}
 
-	public function findFirstWithUserName(int $playlistId): array
+	public function validateCreate($post, Messages $flash)
 	{
-		$select = [$this->table.'.*', 'users.username'];
-		$join   = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
-		$where  = ['playlist_id' => $playlistId];
+		$errors = 0;
+		if (!isset($post['playlist_name']) || empty(trim($post['playlist_name'])))
+		{
+			$flash->addMessage('error', 'Missing playlist name');
+			$errors++;
+		}
 
-		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		if (!isset($post['playlist_mode']) && !isset($post['playlist_id']))
+		{
+			$flash->addMessage('error', 'Relevant parameters are missing');
+			$errors++;
+		}
+
+		return ($errors === 0);
 	}
 
 }

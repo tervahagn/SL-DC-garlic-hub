@@ -28,6 +28,8 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
+use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
@@ -35,22 +37,22 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Slim\Flash\Messages;
 
 class SettingsController
 {
-	private readonly FormBuilder $formBuilder;
+	private readonly SettingsFormBuilder $settingsFormBuilder;
+	private readonly SettingsValidator $settingsValidator;
 	private readonly PlaylistsService $playlistsService;
 	private Translator $translator;
 	private int $UID;
 	private Session $session;
-	private string $playlistMode;
-	/**
-	 * @param FormBuilder $formBuilder
-	 * @param PlaylistsService $playlistsService
-	 */
-	public function __construct(FormBuilder $formBuilder, PlaylistsService $playlistsService)
+	private Messages $flash;
+
+	public function __construct(SettingsFormBuilder $formBuilder, SettingsValidator $settingsValidator, PlaylistsService $playlistsService)
 	{
-		$this->formBuilder = $formBuilder;
+		$this->settingsFormBuilder = $formBuilder;
+		$this->settingsValidator = $settingsValidator;
 		$this->playlistsService = $playlistsService;
 	}
 
@@ -58,58 +60,110 @@ class SettingsController
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws Exception
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function show(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function create(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$this->translator = $request->getAttribute('translator');
-		$this->session    = $request->getAttribute('session');
+		$this->setImportantAttributes($request);
+		$playlist = ['playlist_mode' => $args['playlist_mode'] ?? 'master'];
 
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		$response->getBody()->write(serialize($this->buildForm($playlist)));
+		return $response->withHeader('Content-Type', 'text/html');
+	}
 
-		$playlist_id = $args['playlist_id'] ?? 0;
-		$this->playlistMode = $args['playlist_mode'] ?? 'master';
+	/**
+	 * @return \Psr\Http\Message\ResponseInterface
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \App\Framework\Exceptions\ModuleException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 */
+	public function edit(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$this->setImportantAttributes($request);
+
+		$playlistId = $this->settingsValidator->validatePlaylistId($args);
+		if ($playlistId === null)
+			return $this->redirectWithError($response, 'Playlist ID not valid.', '/playlists');
+
+		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
+		if (empty($playlist))
+			return $this->redirectWithError($response, 'Playlist not found.', '/playlists');
+
+		return $this->returnBuildForm($response, $playlist);
+	}
+
+	/**
+	 * @throws \App\Framework\Exceptions\ModuleException
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$this->setImportantAttributes($request);
+		$this->flash = $request->getAttribute('flash');
+
+		$post = $request->getParsedBody();
+
+		if (!$this->settingsValidator->validateCreate($post, $this->flash))
+			return $this->returnBuildForm($response, $post);
+
+		if (isset($playlist['playlist_id']) && !isset($playlist['playlist_mode']) && $this->playlistsService->update($post) > 0)
+			return $this->redirectSucceed($response, 'Playlist '.$playlist['playlist_id'].' successfully updated.', '/playlists');
 
 
-		$playlist = [];
-		if ($playlist_id > 0)
-			$playlist = $this->playlistsService->loadPlaylistForEdit($playlist_id);
+		if (!isset($playlist['playlist_id']) && isset($playlist['playlist_mode']) && $this->playlistsService->create($post))
+				return $this->redirectSucceed($response, 'Playlist '.$playlist['playlist_id'].' successfully created.', '/playlists');
 
-		$hiddenElements = [];
-		$formElements = [];
+		return $this->returnBuildForm($response, $post);
+	}
 
-		/** @var FieldInterface $element */
-		foreach ($this->createForm($playlist) as $key => $element)
-		{
-			if ($key === 'csrf_token')
-			{
-				$hiddenElements[] = [
-					'HIDDEN_HTML_ELEMENT'        => $this->formBuilder->renderField($element)
-				];
-				continue;
-			}
+	/**
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	private function returnBuildForm(ResponseInterface $response, $post): ResponseInterface
+	{
+		$data = $this->buildForm($post);
+		$response->getBody()->write(serialize($data));
+		return $response->withHeader('Content-Type', 'text/html');
+	}
 
-			$formElements[] = [
-				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getLabel(),
-				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
-				'HTML_ELEMENT'       => $this->formBuilder->renderField($element)
-			];
-		}
+	/**
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	private function buildForm(array $playlist): array
+	{
+		$elements = $this->settingsFormBuilder->init($this->translator, $this->session)->createForm($playlist);
+
+		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
+			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($this->playlistMode)];
+
 		$data = [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => $this->translator->translate('settings', 'playlists'),
+				'LANG_PAGE_TITLE' => $title,
 				'additional_css' => ['/css/playlists/settings.css']
 			],
 			'this_layout' => [
 				'template' => 'generic/edit', // Template-name
 				'data' => [
-					'LANG_PAGE_HEADER' => $this->translator->translate('settings', 'playlists'),
+					'LANG_PAGE_HEADER' => $title,
 					'SITE' => '/playlists/settings',
-					'element_hidden' => $hiddenElements,
-					'form_element' => $formElements,
+					'element_hidden' => $elements['hidden'],
+					'form_element' => $elements['visible'],
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
@@ -120,71 +174,27 @@ class SettingsController
 				]
 			]
 		];
-		$response->getBody()->write(serialize($data));
 
-		return $response->withHeader('Content-Type', 'text/html');
-
+		return $data;
 	}
 
-
-	/**
-	 * @throws FrameworkException
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 */
-	private function createForm(array $playlist): array
+	private function setImportantAttributes(ServerRequestInterface $request): void
 	{
-		$form       = [];
-		$rules      = ['required' => true, 'minlength' => 2];
-
-		$form['playlist_name'] = $this->formBuilder->createField([
-			'type' => FieldType::TEXT,
-			'id' => 'playlist_name',
-			'name' => 'playlist_name',
-			'title' => $this->translator->translate('playlist_name', 'playlists'),
-			'label' => $this->translator->translate('playlist_name', 'playlists'),
-			'value' => $playlist['name'] ?? '',
-			'rules' => $rules,
-			'default_value' => ''
-		]);
-
-		$form['UID'] = $this->formBuilder->createField([
-			'type' => FieldType::AUTOCOMPLETE,
-			'id' => 'UID',
-			'name' => 'UID',
-			'title' => $this->translator->translate('owner', 'main'),
-			'label' => $this->translator->translate('owner', 'main'),
-			'data-id' => $playlist['UID'] ?? $this->session->get('user')['UID'],
-			'value' => $playlist['username'] ?? $this->session->get('user')['username'],
-			'default_value' => ''
-		]);
-
-		if ($this->playlistsService->isModuleadmin() &&
-			($this->playlistMode === PlaylistMode::MASTER->value || $this->playlistMode === PlaylistMode::INTERNAL->value))
-		{
-			$form['time_limit'] = $this->formBuilder->createField([
-				'type' => FieldType::NUMBER,
-				'id' => 'time_limit',
-				'name' => 'time_limit',
-				'title' => $this->translator->translate('time_limit_explanation', 'playlists'),
-				'label' => $this->translator->translate('time_limit', 'playlists'),
-				'value' => $playlist['time_limit'] ?? 0,
-				'min'   => 0,
-				'default_value' => 0
-			]);
-		}
-
-		$form['csrf_token'] = $this->formBuilder->createField([
-			'type' => FieldType::CSRF,
-			'id' => 'csrf_token',
-			'name' => 'csrf_token',
-		]);
-
-		return $form;
-
+		$this->translator = $request->getAttribute('translator');
+		$this->session    = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		$this->flash      = $request->getAttribute('flash');
 	}
 
+	private function redirectWithError(ResponseInterface $response, string $message, string $url): ResponseInterface
+	{
+		$this->flash->addMessage('error', $message);
+		return $response->withHeader('Location', $url)->withStatus(302);
+	}
 
+	private function redirectSucceed(ResponseInterface $response, string $message, string $url): ResponseInterface
+	{
+		$this->flash->addMessage('error', $message);
+		return $response->withHeader('Location', $url)->withStatus(302);
+	}
 }
