@@ -22,15 +22,19 @@ namespace App\Framework\Utils\Html;
 
 class AutocompleteField extends AbstractInputField
 {
-	private string $valueAlt;
+	private string $dataLabel;
 
 	public function __construct(array $attributes = [])
 	{
 		parent::__construct($attributes);
 
-		$this->setAttribute('data-id',  $attributes['data-id'] ?? '');
-
-
+		$this->dataLabel = $attributes['data-label'];
 	}
+
+	public function getDataLabel(): string
+	{
+		return $this->dataLabel;
+	}
+
 
 }
