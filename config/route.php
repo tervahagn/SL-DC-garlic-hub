@@ -57,6 +57,7 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/playlists', [OverviewController::class, 'show']);
 	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [SettingsController::class, 'create']);
 	$group->get('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'edit']);
+	$group->delete('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'delete']);
 	$group->post('/playlists/settings', [SettingsController::class, 'store']);
 
 

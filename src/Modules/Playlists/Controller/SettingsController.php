@@ -54,6 +54,7 @@ class SettingsController
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function create(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -93,6 +94,26 @@ class SettingsController
 	}
 
 	/**
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \App\Framework\Exceptions\ModuleException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 */
+	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$this->setImportantAttributes($request);
+		$playlistId = $this->settingsValidator->validatePlaylistId($args);
+		if ($playlistId === null)
+			return $this->redirectWithError($response, 'Playlist ID not valid.');
+
+		if ($this->playlistsService->delete($playlistId) === 0)
+			return $this->redirectWithError($response, 'Playlist not found.');
+
+
+		return $this->redirectSucceed($response, 'Playlist successful deleted');
+	}
+
+	/**
 	 * @throws \App\Framework\Exceptions\ModuleException
 	 * @throws \App\Framework\Exceptions\CoreException
 	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
@@ -123,6 +144,7 @@ class SettingsController
 	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	private function returnBuildForm(ResponseInterface $response, $post): ResponseInterface
 	{
@@ -133,9 +155,10 @@ class SettingsController
 
 	/**
 	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
 	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 * @throws \App\Framework\Exceptions\FrameworkException
 	 */
 	private function buildForm(array $playlist): array
 	{
