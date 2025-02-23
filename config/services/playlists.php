@@ -19,9 +19,12 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Sanitizer;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\SettingsController;
+use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
+use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -51,11 +54,18 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 		$container->get('ModuleLogger')
 	);
 });
-
+$dependencies[SettingsFormBuilder::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SettingsFormBuilder(
+		$container->get(AclValidator::class),
+		$container->get(FormBuilder::class)
+	);
+});
 $dependencies[SettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new SettingsController(
-		$container->get(FormBuilder::class),
+		$container->get(SettingsFormBuilder::class),
+		new SettingsValidator($container->get(Sanitizer::class)),
 		$container->get(PlaylistsService::class)
 	);
 });

@@ -185,7 +185,7 @@ $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $con
 });
 $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $container)
 {
-	$allowedTags = $container->get(Config::class)->getConfigValue('allowedTags', 'main');
+	$allowedTags = $container->get(Config::class)->getConfigValue('allowed_tags', 'main');
 	return new Sanitizer($allowedTags);
 });
 

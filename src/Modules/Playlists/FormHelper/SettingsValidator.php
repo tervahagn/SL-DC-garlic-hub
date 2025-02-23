@@ -41,24 +41,29 @@ class SettingsValidator extends Validator
 
 	public function validatePlaylistId(array $args): ?int
 	{
-		return isset($args['playlist_id']) && (int)$args['playlist_id'] > 0 ? (int)$args['playlist_id'] : null;
+		return $this->sanitizer->int($args['playlist_id'] ?? 0);
 	}
 
-	public function sanitizeInput($post)
+	public function sanitizeUserInput($post): array
 	{
 		$post['playlist_name'] = $this->sanitizer->string($post['playlist_name'] ?? '');
 
 		if (isset($post['playlist_mode']))
-			$post['playlist_mode'] = $this->sanitizer->string($post['playlist_mode'] ?? '');
+			$post['playlist_mode'] = $this->sanitizer->string($post['playlist_mode']);
 
 		$post['csrf_token'] = $this->sanitizer->string($post['csrf_token'] ?? '');
+
+		if (isset($post['time_limit']))
+			$post['time_limit'] = $this->sanitizer->string($post['time_limit']);
+
+		if (isset($post['multizone']))
+			$post['multizone'] = $this->sanitizer->stringArray($post['multizone']);
 
 		return $post;
 
 	}
 
-
-	public function validateStore($post, Messages $flash, Session $session)
+	public function validateUserInput($post, Messages $flash, Session $session)
 	{
 		$errors = 0;
 		if (!isset($post['playlist_name']) || empty(trim($post['playlist_name'])))
@@ -84,7 +89,6 @@ class SettingsValidator extends Validator
 			$flash->addMessage('error', 'CSRF Token mismatch');
 			$errors++;
 		}
-
 
 		return ($errors === 0);
 	}

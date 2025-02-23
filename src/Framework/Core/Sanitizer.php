@@ -24,7 +24,7 @@ class Sanitizer
 {
 	private string $allowedTags;
 
-	public function __construct(array $allowedTags = null)
+	public function __construct(string $allowedTags = null)
 	{
 		$this->allowedTags = $allowedTags;
 	}
@@ -41,7 +41,7 @@ class Sanitizer
 
 	public function int(?string $value, int $default = 0): int
 	{
-		return (int)($value ?? $default); // Simple cast for sanitization
+		return (int)($value ?? $default);
 	}
 
 	public function float(?string $value, float $default = 0.0): float
@@ -57,9 +57,8 @@ class Sanitizer
 
 	public function stringArray(?array $values, array $default = []): array
 	{
-		if (!is_array($values)) {
+		if (!is_array($values))
 			return $default;
-		}
 
 		return array_map(function ($s) {
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
@@ -68,9 +67,8 @@ class Sanitizer
 
 	public function intArray(?array $values, array $default = []): array
 	{
-		if (!is_array($values)) {
+		if (!is_array($values))
 			return $default;
-		}
 
 		return array_map(function ($i) {
 			return (int)$i;
@@ -79,9 +77,8 @@ class Sanitizer
 
 	public function floatArray(?array $values, array $default = []): array
 	{
-		if (!is_array($values)) {
+		if (!is_array($values))
 			return $default;
-		}
 
 		return array_map(function ($f) {
 			return (float)$f;
@@ -90,15 +87,13 @@ class Sanitizer
 
 	public function jsonArray(?string $jsonString, array $default = []): array
 	{
-		if ($jsonString === null) {
+		if ($jsonString === null)
 			return $default;
-		}
 
 		$data = json_decode($jsonString, true);
 
-		if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+		if (json_last_error() !== JSON_ERROR_NONE || !is_array($data))
 			return $default;
-		}
 
 		return $data;
 	}

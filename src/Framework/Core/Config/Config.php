@@ -105,9 +105,9 @@ class Config
 	{
 		$config = $this->getConfigForModule($module);
 
-		if ($section !== null && array_key_exists($section, $config)) {
+		if ($section !== null && array_key_exists($section, $config))
 			$config = $config[$section];
-		}
+
 
 		return $config[$key] ?? null;
 	}

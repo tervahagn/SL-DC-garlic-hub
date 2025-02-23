@@ -22,80 +22,16 @@ namespace App\Framework\Core;
 
 class Validator
 {
-	public function isInt(string $value): bool
-	{
-		return filter_var($value, FILTER_VALIDATE_INT) !== false;
-	}
-
-	public function isFloat(string $value): bool
-	{
-		return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
-	}
-
-	public function isBool(string $value): bool
-	{
-		return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;
-	}
 
 	public function isEmail(string $value): bool
 	{
 		return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
 	}
 
-	public function isString(string $value): bool
-	{
-		return is_string($value);
-	}
-
-	public function isHtml(string $value): bool
-	{
-		return is_string($value);
-	}
-
 	public function isJson(string $value): bool
 	{
 		json_decode($value); // Just decode, don't need the result for validation
 		return json_last_error() === JSON_ERROR_NONE;
-	}
-
-	public function isStringArray(array $values): bool
-	{
-		if (!is_array($values))
-			return false;
-
-		foreach($values as $value)
-		{
-			if (!is_string($value))
-				return false;
-
-		}
-		return true;
-	}
-
-	public function isIntArray(array $values): bool
-	{
-		if (!is_array($values))
-			return false;
-
-		foreach($values as $value)
-		{
-			if (!is_numeric($value))
-				return false;
-		}
-		return true;
-	}
-
-	public function isFloatArray(array $values): bool
-	{
-		if (!is_array($values))
-			return false;
-
-		foreach($values as $value)
-		{
-			if (!is_numeric($value))
-				return false;
-		}
-		return true;
 	}
 
 }
