@@ -118,7 +118,10 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 });
 $dependencies[AdapterInterface::class] = DI\factory(function ()
 {
-	$mustacheEngine = new Mustache_Engine(['loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates')]);
+	$mustacheEngine = new Mustache_Engine([
+		'loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates'),
+    	'partials_loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates/generic')
+	]);
 	return new MustacheAdapter($mustacheEngine);
 });
 $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container)

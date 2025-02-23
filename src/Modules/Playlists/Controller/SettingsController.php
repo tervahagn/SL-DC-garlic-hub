@@ -173,7 +173,7 @@ class SettingsController
 				'additional_css' => ['/css/playlists/settings.css']
 			],
 			'this_layout' => [
-				'template' => 'generic/edit', // Template-name
+				'template' => 'playlists/edit', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
 					'SITE' => '/playlists/settings',

@@ -39,7 +39,7 @@ class PlaylistsService
 
 	/**
 	 * @param PlaylistsRepository $playlistRepository
-	 * @param \App\Modules\Playlists\Services\AclValidator $aclValidator
+	 * @param AclValidator $aclValidator
 	 * @param LoggerInterface $logger
 	 */
 	public function __construct(PlaylistsRepository $playlistRepository, AclValidator $aclValidator, LoggerInterface $logger)
@@ -55,9 +55,9 @@ class PlaylistsService
 	}
 
 	/**
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function create($postData): int
 	{
@@ -128,9 +128,9 @@ class PlaylistsService
 	}
 
 	/**
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
 	 */
 	private function validatePostDataForInsert(array $postData): array
 	{
@@ -145,9 +145,9 @@ class PlaylistsService
 	}
 
 	/**
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
 	 */
 	private function validatePostDataForUpdate(array $postData, $oldPlaylist): array
 	{
@@ -165,9 +165,9 @@ class PlaylistsService
 	}
 
 	/**
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
 	private function isAdmin(): bool
 	{
@@ -179,9 +179,9 @@ class PlaylistsService
 	 * @param $playlist_mode
 	 * @param array $saveData
 	 * @return array
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function validateCommon(array $postData, $playlist_mode, array $saveData): array
 	{
