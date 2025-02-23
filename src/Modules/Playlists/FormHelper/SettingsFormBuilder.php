@@ -27,12 +27,12 @@ use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 
-class SettingsFormBuilder
+readonly class SettingsFormBuilder
 {
-	private readonly FormBuilder $formBuilder;
-	private readonly Translator $translator;
-	private readonly Session $session;
-	private readonly AclValidator $aclValidator;
+	private FormBuilder $formBuilder;
+	private Translator $translator;
+	private Session $session;
+	private AclValidator $aclValidator;
 
 	/**
 	 * @param \App\Modules\Playlists\Services\AclValidator $aclValidator
@@ -44,7 +44,6 @@ class SettingsFormBuilder
 		$this->formBuilder = $formBuilder;
 	}
 
-
 	public function init($translator, $session): static
 	{
 		$this->translator = $translator;
@@ -53,6 +52,13 @@ class SettingsFormBuilder
 		return $this;
 	}
 
+	/**
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \App\Framework\Exceptions\FrameworkException
+	 */
 	public function createForm(array $playlist): array
 	{
 		$form = $this->collectFormElements($playlist);
@@ -88,8 +94,8 @@ class SettingsFormBuilder
 			'name' => 'UID',
 			'title' => $this->translator->translate('owner', 'main'),
 			'label' => $this->translator->translate('owner', 'main'),
-			'data-id' => $playlist['UID'] ?? $this->session->get('user')['UID'],
-			'value' => $playlist['username'] ?? $this->session->get('user')['username'],
+			'value' => $playlist['UID'] ?? $this->session->get('user')['UID'],
+			'data-label' => $playlist['username'] ?? $this->session->get('user')['username'],
 			'default_value' => ''
 		]);
 
@@ -109,22 +115,22 @@ class SettingsFormBuilder
 		}
 
 		// PlaylistMode can be set only on create.
-		if (isset($playlist['playlist_mode']))
-		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
-				'type' => FieldType::HIDDEN,
-				'id' => 'playlist_mode',
-				'name' => 'playlist_mode',
-				'value' => $playlist['playlist_mode'],
-			]);
-		}
-		else if (isset($playlist['playlist_id']))
+		if (isset($playlist['playlist_id']))
 		{
 			$form['playlist_id'] = $this->formBuilder->createField([
 				'type' => FieldType::HIDDEN,
 				'id' => 'playlist_id',
 				'name' => 'playlist_id',
 				'value' => $playlist['playlist_id'],
+			]);
+		}
+		else
+		{
+			$form['playlist_mode'] = $this->formBuilder->createField([
+				'type' => FieldType::HIDDEN,
+				'id' => 'playlist_mode',
+				'name' => 'playlist_mode',
+				'value' => $playlist['playlist_mode'],
 			]);
 		}
 

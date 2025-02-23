@@ -32,7 +32,8 @@ class OverviewController
 
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-
+		echo 'Playlist Overview';
+		return $response->withHeader('Content-Type', 'text/html');
 	}
 
 }

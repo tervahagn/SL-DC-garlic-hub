@@ -24,15 +24,9 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Html\FieldInterface;
-use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
-use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
-use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,7 +39,6 @@ class SettingsController
 	private readonly SettingsValidator $settingsValidator;
 	private readonly PlaylistsService $playlistsService;
 	private Translator $translator;
-	private int $UID;
 	private Session $session;
 	private Messages $flash;
 
@@ -59,13 +52,13 @@ class SettingsController
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
 	public function create(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->setImportantAttributes($request);
+
 		$playlist = ['playlist_mode' => $args['playlist_mode'] ?? 'master'];
 
 		$response->getBody()->write(serialize($this->buildForm($playlist)));
@@ -73,6 +66,9 @@ class SettingsController
 	}
 
 	/**
+	 * @param \Psr\Http\Message\ServerRequestInterface $request
+	 * @param \Psr\Http\Message\ResponseInterface $response
+	 * @param array $args
 	 * @return \Psr\Http\Message\ResponseInterface
 	 * @throws \App\Framework\Exceptions\CoreException
 	 * @throws \App\Framework\Exceptions\FrameworkException
@@ -87,11 +83,11 @@ class SettingsController
 
 		$playlistId = $this->settingsValidator->validatePlaylistId($args);
 		if ($playlistId === null)
-			return $this->redirectWithError($response, 'Playlist ID not valid.', '/playlists');
+			return $this->redirectWithError($response, 'Playlist ID not valid.');
 
 		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
-			return $this->redirectWithError($response, 'Playlist not found.', '/playlists');
+			return $this->redirectWithError($response, 'Playlist not found.');
 
 		return $this->returnBuildForm($response, $playlist);
 	}
@@ -108,18 +104,16 @@ class SettingsController
 	{
 		$this->setImportantAttributes($request);
 		$this->flash = $request->getAttribute('flash');
+		$post = $this->settingsValidator->sanitizeUserInput($request->getParsedBody());
 
-		$post = $request->getParsedBody();
-
-		if (!$this->settingsValidator->validateCreate($post, $this->flash))
+		if (!$this->settingsValidator->validateUserInput($post, $this->flash, $this->session))
 			return $this->returnBuildForm($response, $post);
 
-		if (isset($playlist['playlist_id']) && !isset($playlist['playlist_mode']) && $this->playlistsService->update($post) > 0)
-			return $this->redirectSucceed($response, 'Playlist '.$playlist['playlist_id'].' successfully updated.', '/playlists');
+		if (isset($post['playlist_id']) && !isset($post['playlist_mode']) && $this->playlistsService->update($post) > 0)
+			return $this->redirectSucceed($response, 'Playlist '.$post['playlist_id'].' successfully updated.');
 
-
-		if (!isset($playlist['playlist_id']) && isset($playlist['playlist_mode']) && $this->playlistsService->create($post))
-				return $this->redirectSucceed($response, 'Playlist '.$playlist['playlist_id'].' successfully created.', '/playlists');
+		if (!isset($post['playlist_id']) && isset($post['playlist_mode']) && $this->playlistsService->create($post))
+			return $this->redirectSucceed($response, 'Playlist '.$post['playlist_id'].' successfully created.');
 
 		return $this->returnBuildForm($response, $post);
 	}
@@ -129,7 +123,6 @@ class SettingsController
 	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 * @throws \App\Framework\Exceptions\FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	private function returnBuildForm(ResponseInterface $response, $post): ResponseInterface
 	{
@@ -143,16 +136,15 @@ class SettingsController
 	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 * @throws \Psr\SimpleCache\InvalidArgumentException
 	 * @throws \App\Framework\Exceptions\FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	private function buildForm(array $playlist): array
 	{
 		$elements = $this->settingsFormBuilder->init($this->translator, $this->session)->createForm($playlist);
 
 		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
-			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($this->playlistMode)];
+			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($playlist['playlist_mode'])];
 
-		$data = [
+		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
 				'additional_css' => ['/css/playlists/settings.css']
@@ -174,8 +166,6 @@ class SettingsController
 				]
 			]
 		];
-
-		return $data;
 	}
 
 	private function setImportantAttributes(ServerRequestInterface $request): void
@@ -186,15 +176,15 @@ class SettingsController
 		$this->flash      = $request->getAttribute('flash');
 	}
 
-	private function redirectWithError(ResponseInterface $response, string $message, string $url): ResponseInterface
+	private function redirectWithError(ResponseInterface $response, string $message): ResponseInterface
 	{
 		$this->flash->addMessage('error', $message);
-		return $response->withHeader('Location', $url)->withStatus(302);
+		return $response->withHeader('Location', '/playlists')->withStatus(302);
 	}
 
-	private function redirectSucceed(ResponseInterface $response, string $message, string $url): ResponseInterface
+	private function redirectSucceed(ResponseInterface $response, string $message): ResponseInterface
 	{
 		$this->flash->addMessage('error', $message);
-		return $response->withHeader('Location', $url)->withStatus(302);
+		return $response->withHeader('Location', '/playlists')->withStatus(302);
 	}
 }
