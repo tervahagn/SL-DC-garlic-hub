@@ -24,6 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
+use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
@@ -181,6 +182,11 @@ $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $con
 		new FieldsRenderFactory(),
 		$container->get(Session::class)
 	);
+});
+$dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $container)
+{
+	$allowedTags = $container->get(Config::class)->getConfigValue('allowedTags', 'main');
+	return new Sanitizer($allowedTags);
 });
 
 return $dependencies;
