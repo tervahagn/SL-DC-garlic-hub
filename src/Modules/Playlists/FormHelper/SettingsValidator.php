@@ -20,17 +20,45 @@
 
 namespace App\Modules\Playlists\FormHelper;
 
+use App\Framework\Core\Sanitizer;
+use App\Framework\Core\Session;
+use App\Framework\Core\Validator;
+use App\Modules\Playlists\PlaylistMode;
 use Slim\Flash\Messages;
 
-class SettingsValidator
+class SettingsValidator extends Validator
 {
+	private readonly Sanitizer $sanitizer;
+
+	/**
+	 * @param \App\Framework\Core\Sanitizer $sanitizer
+	 */
+	public function __construct(Sanitizer $sanitizer)
+	{
+		$this->sanitizer = $sanitizer;
+	}
+
 
 	public function validatePlaylistId(array $args): ?int
 	{
 		return isset($args['playlist_id']) && (int)$args['playlist_id'] > 0 ? (int)$args['playlist_id'] : null;
 	}
 
-	public function validateCreate($post, Messages $flash)
+	public function sanitizeInput($post)
+	{
+		$post['playlist_name'] = $this->sanitizer->string($post['playlist_name'] ?? '');
+
+		if (isset($post['playlist_mode']))
+			$post['playlist_mode'] = $this->sanitizer->string($post['playlist_mode'] ?? '');
+
+		$post['csrf_token'] = $this->sanitizer->string($post['csrf_token'] ?? '');
+
+		return $post;
+
+	}
+
+
+	public function validateStore($post, Messages $flash, Session $session)
 	{
 		$errors = 0;
 		if (!isset($post['playlist_name']) || empty(trim($post['playlist_name'])))
@@ -45,7 +73,25 @@ class SettingsValidator
 			$errors++;
 		}
 
+		if (isset($post['playlist_mode']) && !$this->checkPlaylistMode($post['playlist_mode']))
+		{
+			$flash->addMessage('error', 'Playlist mode '.$post['playlist_mode'].' is not supported');
+			$errors++;
+		}
+
+		if (!isset($post['csrf_token']) || $post['csrf_token'] !== $session->get('csrf_token'))
+		{
+			$flash->addMessage('error', 'CSRF Token mismatch');
+			$errors++;
+		}
+
+
 		return ($errors === 0);
+	}
+
+	private function checkPlaylistMode($value): bool
+	{
+		return in_array($value, array_column(PlaylistMode::cases(), 'value'), true);
 	}
 
 }
