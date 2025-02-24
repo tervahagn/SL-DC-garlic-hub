@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils;
+namespace App\Framework\Utils\FormParameters;
 
 enum ScalarType: int {
 	case INT = 1;

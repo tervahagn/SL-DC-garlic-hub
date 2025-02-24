@@ -1,5 +1,5 @@
 <?php
-namespace App\Framework\Utils\Traits;
+namespace App\Framework\Utils\FormParameters\Traits;
 
 /**
  * trait to store the filter/search parameters

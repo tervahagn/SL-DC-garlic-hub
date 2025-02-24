@@ -1,39 +1,20 @@
 <?php
-namespace App\Framework\Utils;
+namespace App\Framework\Utils\FormParameters;
 
 use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
 abstract class BaseParameters
 {
-	protected const string PARAMETER_NAME_ELEMENTS_PER_PAGE  = 'elements_per_page';
-	protected const string PARAMETER_NAME_ELEMENTS_PAGE      = 'elements_page';
-	protected const string PARAMETER_NAME_SORT_COLUMN        = 'sort_column';
-	protected const string PARAMETER_NAME_SORT_ORDER         = 'sort_order';
 
-	protected const string DEFAULT_SORT_ORDER    = 'asc';
-
-	protected array $default_parameters = array(
-		self::PARAMETER_NAME_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,              'parsed' => false),
-		self::PARAMETER_NAME_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => null,            'parsed' => false),
-		self::PARAMETER_NAME_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => null,            'parsed' => false),
-		self::PARAMETER_NAME_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => self::DEFAULT_SORT_ORDER, 'parsed' => false)
-	);
-
-	protected readonly Session $session;
-	protected readonly string $sessionStoreKey;
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
 	protected array $currentParameters;
 
-	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session, string $session_key_store = '')
+	public function __construct(string $moduleName, Sanitizer $sanitizer)
 	{
 		$this->moduleName        = $moduleName;
 		$this->sanitizer         = $sanitizer;
-		$this->session           = $session;
-		$this->sessionStoreKey   = $session_key_store;
-		$this->currentParameters = array_merge($this->currentParameters, $this->default_parameters);
 	}
 
 	/**
@@ -125,36 +106,6 @@ abstract class BaseParameters
 		return $this;
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	public function setParameterDefaultValues($default_sort_column): static
-	{
-		$this->setDefaultForParameter(self::PARAMETER_NAME_SORT_COLUMN, $default_sort_column);
-		return $this;
-	}
-
-	/**
-	 * since we are using ELEMENTS_PAGE and ELEMENTS_PER_PAGE for the limit clause in MySQL
-	 * this method sets both values to 0 (zero).
-	 * That means, there will be no LIMIT clause in the SQL query
-	 *
-	 * @throws ModuleException
-	 */
-	public function setElementsParametersToNull(): static
-	{
-		if ($this->hasParameter(self::PARAMETER_NAME_ELEMENTS_PAGE))
-		{
-			$this->setValueOfParameter(self::PARAMETER_NAME_ELEMENTS_PAGE, 0);
-		}
-
-		if ($this->hasParameter(self::PARAMETER_NAME_ELEMENTS_PER_PAGE))
-		{
-			$this->setValueOfParameter(self::PARAMETER_NAME_ELEMENTS_PER_PAGE, 0);
-		}
-
-		return $this;
-	}
 
 	public function hasParameter($parameter_name): bool
 	{
@@ -176,74 +127,13 @@ abstract class BaseParameters
 		return array_keys($this->currentParameters);
 	}
 
-	public function hasSessionKeyStore(): bool
-	{
-		return !empty($this->sessionStoreKey);
-	}
-
-	protected function storeSearchParamsToSession(array $ar_search): static
-	{
-		if ($this->hasSessionKeyStore())
-		{
-			$this->session->set($this->sessionStoreKey, $ar_search);
-		}
-		return $this;
-	}
-
-	protected function storedParametersInSessionExists(): bool
-	{
-		if ($this->hasSessionKeyStore())
-		{
-			return ($this->session->exists($this->sessionStoreKey));
-		}
-		return false;
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	protected function getStoredSearchParamsFromSession(): mixed
-	{
-		if ($this->storedParametersInSessionExists())
-		{
-			return $this->session->get($this->sessionStoreKey);
-		}
-		throw new ModuleException($this->moduleName, 'Can not find key ' . $this->sessionStoreKey . ' in session store');
-	}
-
-
-	/**
-	 * - checks if parameters are stored in session from previous visit
-	 * - iterates over all parameters and sets the values
-	 * - handles session storage by calling trait
-	 *
-	 * @throws  ModuleException
-	 */
-	public function parseInputFilterAllUsers(bool $filter_submitted = false): static
-	{
-		if ($filter_submitted === false && $this->storedParametersInSessionExists())
-		{
-			$this->currentParameters = $this->getStoredSearchParamsFromSession();
-		}
-		else
-		{
-			$this->parseInputAllParameters();
-		}
-
-		if ($filter_submitted === true)
-		{
-			$this->storeSearchParamsToSession($this->currentParameters);
-		}
-
-		return $this;
-	}
 
 	/**
 	 * iterates over parameters and parse them
 	 * can be used by async calls directly, without using the session store
 	 *
 	 * if you want to use the session store, use method above
-	 * @see BaseParameters::parseInputFilterAllUsers()
+	 * @see BaseFilterParameters::parseInputFilterAllUsers()
 	 *
 	 * @throws ModuleException
 	 */
