@@ -1,0 +1,49 @@
+		{{INSERT_SUBMENU}}
+		<form action="{{SITE}}" method="post" id="form_elements_search">
+		{{#search_form}}
+			<input type="hidden" name="site" value="{{TARGETSITE}}">
+			<input type="hidden" name="sort_column" id="sort_column" value="{{SORT_COLUMN}}">
+			<input type="hidden" name="sort_order" id="sort_order" value="{{SORT_ORDER}}">
+			<input type="hidden" name="elements_page" id="elements_page" value="{{ELEMENTS_PAGE}}">
+			<!-- BEGIN element_hidden -->
+			{{#element_hidden}}
+			<input type="hidden" name="{{HIDDEN_ELEMENT_NAME}}" id="{{HIDDEN_ELEMENT_ID}}" value="{{HIDDEN_ELEMENT_VALUE}}">
+			{{/element_hidden}}
+				<ul class="form_filter">
+					{{#form_element}}
+					<li id="wrap_{{HTML_ELEMENT_ID}}">
+						{{LANG_ELEMENT_NAME}}<br />
+						{{HTML_ELEMENT}}{{ELEMENT_DESCRIPTION}}
+					</li>
+					{{/form_element}}
+				</ul>
+				<ul class="form_action">
+					<li>
+						<button type="submit" name="submit_search" id="submit_search" value="{{LANG_ELEMENTS_SEARCH}}">{{LANG_ELEMENTS_SEARCH}}</button>
+					</li>
+					<li>
+						{{#if_add_allowed}}
+						<a href="{{ELEMENTS_ADD_LINK}}" title="{{LANG_ELEMENTS_ADD_LINK}}" class="thymian-icon thymian-icon-add"></a>
+						{{/if_add_allowed}}
+					</li>
+					<li>
+                        <label for="elements_per_page">{{LANG_COUNT_SEARCH_RESULTS}}</label>
+						<select name="elements_per_page" id="elements_per_page">
+							{{#elements_per_page}}
+							<option value="{{ELEMENTS_PER_PAGE_VALUE}}" {{ELEMENTS_PER_PAGE_SELECTED}}>{{ELEMENTS_PER_PAGE_NAME}}</option>
+							{{/elements_per_page}}
+						</select>
+                        {{LANG_ELEMENTS_PER_PAGE}}
+						{{#elements_pager}}
+						<a href="{{ELEMENTS_PAGELINK}}" class="page_numbers" id="page_number_{{ELEMENTS_PAGENUMBER}}">{{ELEMENTS_PAGENAME}}</a>&nbsp;
+						{{/elements_pager}}
+					</li>
+					<li class="export_csv"></li>
+					{{#elements_export_results}}
+					<li>
+						<a href="{{ELEMENTS_EXPORT_RESULTS_LINK}}" class="button" target="blank">{{LANG_ELEMENTS_EXPORT_RESULTS}}</a>
+					</li>
+					{{/elements_export_results}}
+				</ul>
+		{{/search_form}}
+		</form>

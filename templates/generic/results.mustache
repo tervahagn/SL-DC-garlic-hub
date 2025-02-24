@@ -1,0 +1,76 @@
+	<ul class="results">
+		<li>
+			<ul class="results_header">
+				{{#elements_result_header}}
+				<li class="{{CONTROL_NAME}}">
+					{{#if_sortable}}
+					<a href="{{LINK_CONTROL_SORT_ORDER}}" class="header_sort_column" id="{{SORT_CONTROL_NAME}}_sort_column">{{LANG_CONTROL_NAME}}</a> {{SORTABLE_ORDER}}
+					{{/if_sortable}}
+					{{LANG_CONTROL_NAME_2}}
+				</li>
+				{{/elements_result_header}}
+				<li class="functions"></li>
+			</ul>
+		</li>
+		{{#elements_results}}
+		<li>
+			<ul style="{{MARKED_AS_DISABLED}}" class="results_list">
+				{{#elements_result_element}}
+				<li class="{{CONTROL_NAME_BODY}}">
+					{{#if_editable}}
+					<a href="{{CONTROL_ELEMENT_VALUE_LINK}}" id="{{CONTROL_ELEMENT_VALUE_ID}}" class="{{CONTROL_ELEMENT_VALUE_CLASS}}" title="{{CONTROL_ELEMENT_VALUE_TITLE}}">{{CONTROL_ELEMENT_VALUE_NAME}}</a>
+					{{/if_editable}}
+
+					{{#if_not_editable}}
+					{{CONTROL_ELEMENT_VALUE}}
+					{{/if_not_editable}}
+
+					{{#if_icon_column}}
+                    <div class="{{CONTROL_ICON_CLASSNAME}}"><span title="{{CONTROL_ELEMENT_MESSAGE}}"></span></div>
+					{{/if_icon_column}}
+					{{#if_online_bullet}}
+                    <div class="thymian-icon thymian-icon-{{BULLET_COLOR}}" title="{{LANG_MONITORING}}">&nbsp;</div>
+					{{/if_online_bullet}}
+					{{#if_icon_column_linked}}
+					<div class="{{CONTROL_ICON_CLASSNAME_LINKED}}"><a href="{{CONTROL_ELEMENT_LINK}}" title="{{CONTROL_ELEMENT_MESSAGE_LINKED}}" class=""></a></div>
+					{{/if_icon_column_linked}}
+					{{#if_expand_collapse}}
+					<details>
+						<summary>{{CONTROL_ELEMENT_MESSAGE_COLLAPSED}}</summary>
+						<div>
+							{{CONTROL_ELEMENT_MESSAGE_EXPANDED}}
+						</div>
+					</details>
+					{{/if_expand_collapse}}
+					{{#if_UID}}
+					<a href="javascript:openProfileWindows('{{OWNER_UID}}')" title="{{OWNER_NAME}}">{{OWNER_NAME}}</a>
+					{{/if_UID}}
+					{{#if_UID_ShowOnly}}
+					{{OWNER_NAME}}
+					{{/if_UID_ShowOnly}}
+				</li>
+				{{/elements_result_element}}
+				<li class="submenu">
+                    <ul>
+                        {{#if_submenu_item}}
+                        <li>
+                            <a href="{{LINK_SUBMENU}}" title="{{LANG_SUBMENU}}" id="{{SUBMENU_ID}}" style="{{CSS_SUBMENU_INLINE}}" class="thymian-icon thymian-icon-{{CSS_SUBMENU}} {{SUBMENU_CLASS}}">&nbsp;&nbsp;</a>
+                        </li>
+						{{/if_submenu_item}}
+						{{#if_2nd_submenu_item}}
+						<li>
+							<a href="{{LINK_SUBMENU_2}}" title="{{LANG_SUBMENU_2}}" id="{{SUBMENU_ID_2}}" style="{{CSS_SUBMENU_INLINE}}" class="thymian-icon thymian-icon-{{CSS_SUBMENU_2}} {{SUBMENU_2_CLASS}}">&nbsp;&nbsp;</a>
+						</li>
+						{{/if_2nd_submenu_item}}
+
+{						{{#if_delete}}
+                        <li>
+                            <a href="{{ELEMENTS_DELETE_LINK}}" id="{{ELEMENTS_DELETE_ID}}" onclick="return confirm_delete('{{LANG_CONFIRM_DELETE}}')" title="{{LANG_ELEMENTS_DELETE_LANG}}" class="thymian-icon thymian-icon-delete {{ELEMENT_DELETE_CLASS}}">&nbsp;&nbsp;</a>
+                        </li>
+						{{/if_delete}}
+                    </ul>
+				</li>
+			</ul>
+		</li>
+	{{/elements_results}}
+	</ul>
