@@ -50,4 +50,20 @@ class AclValidator extends AbstractAclValidator
 		return false;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isAdmin($UID, $companyId)
+	{
+		if ($this->isModuleAdmin($UID))
+			return true;
+
+		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $companyId))
+			return true;
+
+		return false;
+	}
+
 }
