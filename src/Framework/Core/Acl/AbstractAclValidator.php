@@ -73,6 +73,20 @@ abstract class AbstractAclValidator
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isSimpleAdmin($UID): bool
+	{
+		if ($this->isModuleAdmin($UID) || $this->isSubAdmin($UID))
+			return true;
+
+		return false;
+	}
+
+
+	/**
 	 * @param int $UID
 	 * @return bool
 	 * @throws CoreException
@@ -97,43 +111,29 @@ abstract class AbstractAclValidator
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	protected function hasSubAdminAccessOnCompany(int $UID, int $company_id): bool
+	protected function hasSubAdminAccessOnCompany(int $UID, int $companyId): bool
 	{
-		$userEntity = $this->userService->getUserById($UID);
-		$vipName    = $this->moduleName.'_'.AclSections::SUBADMIN->value;
-
-		$vips = $userEntity->getVip();
-		foreach ($vips as $vip)
-		{
-			if (isset($vip[$vipName]) && $vip[$vipName] === $company_id)
-				return true;
-		}
-
-		return false;
+		return $this->hasVip(
+			$UID,
+			$this->moduleName.'_'.AclSections::SUBADMIN->value,
+			$companyId
+		);
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
 	protected function hasEditorAccessOnUnit($UID, int|string $unitId): bool
 	{
-		$userEntity = $this->userService->getUserById($UID);
-		$vipName    = $this->moduleName.'_'.AclSections::EDITOR->value;
-
-		$vips = $userEntity->getVip();
-		foreach ($vips as $vip)
-		{
-			if (isset($vip[$vipName]) && $vip[$vipName] === $unitId)
-				return true;
-		}
-
-		return false;
+		return $this->hasVip(
+			$UID,
+			$this->moduleName.'_'.AclSections::EDITOR->value,
+			$unitId
+		);
 	}
 
 	/**
@@ -142,17 +142,26 @@ abstract class AbstractAclValidator
 	 */
 	protected function hasViewerAccessOnUnit(int $UID, int|string $unitId): bool
 	{
-		$userEntity = $this->userService->getUserById($UID);
-		$vipName    = $this->moduleName.'_'.AclSections::VIEWER->value;
+		return $this->hasVip(
+			$UID,
+			$this->moduleName.'_'.AclSections::VIEWER->value,
+			$unitId
+		);
 
+	}
+
+	protected function hasVip(int $UID, string $vipName, int|string $id)
+	{
+		$userEntity = $this->userService->getUserById($UID);
 		$vips = $userEntity->getVip();
 		foreach ($vips as $vip)
 		{
-			if (isset($vip[$vipName]) && $vip[$vipName] === $unitId)
+			if (isset($vip[$vipName]) && $vip[$vipName] === $id)
 				return true;
 		}
 
 		return false;
+
 	}
 
 	/**
