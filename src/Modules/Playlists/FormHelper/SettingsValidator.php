@@ -20,82 +20,58 @@
 
 namespace App\Modules\Playlists\FormHelper;
 
-use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Core\Validator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\PlaylistMode;
-use Slim\Flash\Messages;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class SettingsValidator extends Validator
 {
-	private readonly Sanitizer $sanitizer;
+	private Translator $translator;
+	private SettingsParameters $inputEditParameters;
 
 	/**
-	 * @param \App\Framework\Core\Sanitizer $sanitizer
+	 * @param Translator $translator
+	 * @param SettingsParameters $inputEditParameters
 	 */
-	public function __construct(Sanitizer $sanitizer)
+	public function __construct(Translator $translator, SettingsParameters $inputEditParameters)
 	{
-		$this->sanitizer = $sanitizer;
+		$this->translator = $translator;
+		$this->inputEditParameters = $inputEditParameters;
 	}
 
-
-	public function validatePlaylistId(array $args): ?int
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	public function validateUserInput(array $userInputs): array
 	{
-		return $this->sanitizer->int($args['playlist_id'] ?? 0);
+		$this->inputEditParameters->checkCsrfToken();
+
+		$errors = [];
+		if (empty($this->inputEditParameters->getValueOfParameter(SettingsParameters::PARAMETER_NAME)))
+			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
+
+		// we need userInput here as getValueOfParameter will throw an exception if not set
+		if (!isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE]) && !isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_ID]))
+			$errors[] = $this->translator->translate('parameters_missing', 'playlists');
+
+		if (isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($userInputs))
+			$errors[] = sprintf($this->translator->translate('playlist_mode_unsupported', 'playlists'), $userInputs['playlist_mode']);
+
+		return $errors;
 	}
 
-	public function sanitizeUserInput($post): array
+	private function checkPlaylistMode(array $userInputs): bool
 	{
-		$post['playlist_name'] = $this->sanitizer->string($post['playlist_name'] ?? '');
-
-		if (isset($post['playlist_mode']))
-			$post['playlist_mode'] = $this->sanitizer->string($post['playlist_mode']);
-
-		$post['csrf_token'] = $this->sanitizer->string($post['csrf_token'] ?? '');
-
-		if (isset($post['time_limit']))
-			$post['time_limit'] = $this->sanitizer->string($post['time_limit']);
-
-		if (isset($post['multizone']))
-			$post['multizone'] = $this->sanitizer->stringArray($post['multizone']);
-
-		return $post;
-
-	}
-
-	public function validateUserInput($post, Messages $flash, Session $session)
-	{
-		$errors = 0;
-		if (!isset($post['playlist_name']) || empty(trim($post['playlist_name'])))
-		{
-			$flash->addMessage('error', 'Missing playlist name');
-			$errors++;
-		}
-
-		if (!isset($post['playlist_mode']) && !isset($post['playlist_id']))
-		{
-			$flash->addMessage('error', 'Relevant parameters are missing');
-			$errors++;
-		}
-
-		if (isset($post['playlist_mode']) && !$this->checkPlaylistMode($post['playlist_mode']))
-		{
-			$flash->addMessage('error', 'Playlist mode '.$post['playlist_mode'].' is not supported');
-			$errors++;
-		}
-
-		if (!isset($post['csrf_token']) || $post['csrf_token'] !== $session->get('csrf_token'))
-		{
-			$flash->addMessage('error', 'CSRF Token mismatch');
-			$errors++;
-		}
-
-		return ($errors === 0);
-	}
-
-	private function checkPlaylistMode($value): bool
-	{
-		return in_array($value, array_column(PlaylistMode::cases(), 'value'), true);
+		return in_array($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE], array_column(PlaylistMode::cases(), 'value'), true);
 	}
 
 }

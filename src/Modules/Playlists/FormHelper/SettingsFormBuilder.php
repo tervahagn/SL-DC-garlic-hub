@@ -22,55 +22,118 @@ namespace App\Modules\Playlists\FormHelper;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class SettingsFormBuilder
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
-	private Session $session;
 	private AclValidator $aclValidator;
+	private SettingsValidator $validator;
+	private SettingsParameters $parameters;
+	private int $UID;
+	private string $username;
 
-	/**
-	 * @param \App\Modules\Playlists\Services\AclValidator $aclValidator
-	 * @param \App\Framework\Utils\Html\FormBuilder $formBuilder
-	 */
-	public function __construct(AclValidator $aclValidator, FormBuilder $formBuilder)
+	public function __construct(AclValidator $aclValidator, SettingsParameters $parameters, SettingsValidator $validator, FormBuilder $formBuilder)
 	{
 		$this->aclValidator = $aclValidator;
-		$this->formBuilder = $formBuilder;
+		$this->parameters   = $parameters;
+		$this->validator    = $validator;
+		$this->formBuilder  = $formBuilder;
 	}
 
-	public function init($translator, $session): static
+	public function init(Translator $translator, Session $session): static
 	{
 		$this->translator = $translator;
-		$this->session = $session;
+		$this->UID      = $session->get('user')['UID'];
+		$this->username = $session->get('user')['username'];
 
 		return $this;
 	}
 
 	/**
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \App\Framework\Exceptions\FrameworkException
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
-	public function createForm(array $playlist): array
+	public function buildCreateNewParameter(string $playlistMode): void
+	{
+		$this->parameters->addPlaylistMode();
+		if (!$this->aclValidator->isSimpleAdmin($this->UID))
+			return;
+
+		$this->parameters->addUID();
+
+		if ($this->isTimeLimitPlaylist($playlistMode))
+			$this->parameters->addTimeLimit();
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function buildEditParameter(array $playlist): void
+	{
+		$this->parameters->addPlaylistId();
+		if (!$this->aclValidator->isAdmin($this->UID, $playlist['company_id']))
+			return;
+
+		$this->parameters->addUID();
+
+		if ($this->isTimeLimitPlaylist($playlist['playlist_mode']))
+			$this->parameters->addTimeLimit();
+
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
+	 */
+	public function buildForm(array $playlist): array
 	{
 		$form = $this->collectFormElements($playlist);
+
 		return $this->formBuilder->createFormular($form);
 	}
 
-		/**
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \App\Framework\Exceptions\FrameworkException
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function handleUserInput(array $userInput): array
+	{
+		$this->parameters->setUserInputs($userInput)
+			->parseInputAllParameters();
+
+		return $this->validator->validateUserInput($userInput);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
 	 */
 	public function collectFormElements(array $playlist): array
 	{
@@ -83,24 +146,26 @@ readonly class SettingsFormBuilder
 			'name' => 'playlist_name',
 			'title' => $this->translator->translate('playlist_name', 'playlists'),
 			'label' => $this->translator->translate('playlist_name', 'playlists'),
-			'value' => $playlist['name'] ?? '',
+			'value' => $playlist[SettingsParameters::PARAMETER_NAME] ?? '',
 			'rules' => $rules,
 			'default_value' => ''
 		]);
 
-		$form['UID'] = $this->formBuilder->createField([
-			'type' => FieldType::AUTOCOMPLETE,
-			'id' => 'UID',
-			'name' => 'UID',
-			'title' => $this->translator->translate('owner', 'main'),
-			'label' => $this->translator->translate('owner', 'main'),
-			'value' => $playlist['UID'] ?? $this->session->get('user')['UID'],
-			'data-label' => $playlist['username'] ?? $this->session->get('user')['username'],
-			'default_value' => ''
-		]);
+		if ($this->parameters->hasParameter(BaseEditParameters::PARAMETER_UID))
+		{
+			$form['UID'] = $this->formBuilder->createField([
+				'type' => FieldType::AUTOCOMPLETE,
+				'id' => 'UID',
+				'name' => 'UID',
+				'title' => $this->translator->translate('owner', 'main'),
+				'label' => $this->translator->translate('owner', 'main'),
+				'value' => $playlist[BaseEditParameters::PARAMETER_UID] ?? $this->UID,
+				'data-label' => $playlist['username'] ?? $this->username,
+				'default_value' =>  $this->UID
+			]);
+		}
 
-		if ($this->aclValidator->isModuleadmin($this->session->get('user')['UID']) &&
-			in_array($playlist['playlist_mode'], [PlaylistMode::MASTER->value, PlaylistMode::INTERNAL->value]))
+		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_TIME_LIMIT))
 		{
 			$form['time_limit'] = $this->formBuilder->createField([
 				'type' => FieldType::NUMBER,
@@ -108,39 +173,44 @@ readonly class SettingsFormBuilder
 				'name' => 'time_limit',
 				'title' => $this->translator->translate('time_limit_explanation', 'playlists'),
 				'label' => $this->translator->translate('time_limit', 'playlists'),
-				'value' => $playlist['time_limit'] ?? 0,
+				'value' => $playlist[SettingsParameters::PARAMETER_TIME_LIMIT] ?? $this->parameters->getDefaultValueOfParameter(SettingsParameters::PARAMETER_TIME_LIMIT),
 				'min'   => 0,
-				'default_value' => 0
+				'default_value' => $this->parameters->getDefaultValueOfParameter(SettingsParameters::PARAMETER_TIME_LIMIT)
 			]);
 		}
 
-		// PlaylistMode can be set only on create.
-		if (isset($playlist['playlist_id']))
+		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_PLAYLIST_ID))
 		{
 			$form['playlist_id'] = $this->formBuilder->createField([
 				'type' => FieldType::HIDDEN,
 				'id' => 'playlist_id',
 				'name' => 'playlist_id',
-				'value' => $playlist['playlist_id'],
+				'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_ID],
 			]);
 		}
-		else
+
+		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_PLAYLIST_MODE))
 		{
 			$form['playlist_mode'] = $this->formBuilder->createField([
 				'type' => FieldType::HIDDEN,
 				'id' => 'playlist_mode',
 				'name' => 'playlist_mode',
-				'value' => $playlist['playlist_mode'],
+				'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_MODE],
 			]);
 		}
 
 		$form['csrf_token'] = $this->formBuilder->createField([
 			'type' => FieldType::CSRF,
-			'id' => 'csrf_token',
-			'name' => 'csrf_token',
+			'id' => BaseEditParameters::PARAMETER_CSRF_TOKEN,
+			'name' => BaseEditParameters::PARAMETER_CSRF_TOKEN,
 		]);
 
 		return $form;
+	}
+
+	private function isTimeLimitPlaylist(string $playlistMode): bool
+	{
+		return ($playlistMode == PlaylistMode::INTERNAL->value || $playlistMode == PlaylistMode::MASTER->value);
 	}
 
 }
