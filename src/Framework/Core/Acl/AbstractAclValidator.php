@@ -85,7 +85,6 @@ abstract class AbstractAclValidator
 		return false;
 	}
 
-
 	/**
 	 * @param int $UID
 	 * @return bool
@@ -150,7 +149,11 @@ abstract class AbstractAclValidator
 
 	}
 
-	protected function hasVip(int $UID, string $vipName, int|string $id)
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	protected function hasVip(int $UID, string $vipName, int|string $id): bool
 	{
 		$userEntity = $this->userService->getUserById($UID);
 		$vips = $userEntity->getVip();

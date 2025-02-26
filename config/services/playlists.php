@@ -20,9 +20,12 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
+use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\SettingsController;
+use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
@@ -54,18 +57,36 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 		$container->get('ModuleLogger')
 	);
 });
+$dependencies[SettingsParameters::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SettingsParameters(
+		$container->get(Sanitizer::class),
+		$container->get(Session::class)
+	);
+});
+$dependencies[SettingsValidator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SettingsValidator(
+		$container->get(Translator::class),
+		$container->get(SettingsParameters::class),
+	);
+});
 $dependencies[SettingsFormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new SettingsFormBuilder(
 		$container->get(AclValidator::class),
+		$container->get(SettingsParameters::class),
+		$container->get(SettingsValidator::class),
 		$container->get(FormBuilder::class)
 	);
 });
+
+
 $dependencies[SettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new SettingsController(
 		$container->get(SettingsFormBuilder::class),
-		new SettingsValidator($container->get(Sanitizer::class)),
+		$container->get(SettingsParameters::class),
 		$container->get(PlaylistsService::class)
 	);
 });

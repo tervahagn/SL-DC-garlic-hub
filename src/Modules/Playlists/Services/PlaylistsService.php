@@ -22,7 +22,6 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -30,8 +29,6 @@ use Psr\Log\LoggerInterface;
 
 class PlaylistsService
 {
-
-
 	private readonly PlaylistsRepository $playlistRepository;
 	private readonly AclValidator $aclValidator;
 	private readonly LoggerInterface $logger;
@@ -54,15 +51,19 @@ class PlaylistsService
 		$this->UID = $UID;
 	}
 
+	public function loadPlaylistsForOverview()
+	{
+
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function create($postData): int
+	public function createNew($postData): int
 	{
-		$saveData = $this->validatePostDataForInsert($postData);
-
+		$saveData = $this->collectDataForInsert($postData);
 		// No acl checks required as every logged user can create playlists
 		return $this->playlistRepository->insert($saveData);
 	}
@@ -78,13 +79,13 @@ class PlaylistsService
 		$playlistId = $postData['playlist_id'];
 		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
 
-		$saveData = $this->validatePostDataForUpdate($postData, $playlist);
-
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error updating playlist. '.$playlist['name'].' is not editable');
 			throw new ModuleException('mediapool', 'Error updating playlist. '.$playlist['name'].' is not editable');
 		}
+
+		$saveData = $this->collectDataForUpdate($postData);
 
 		return $this->playlistRepository->update($playlistId, $saveData);
 	}
@@ -132,16 +133,16 @@ class PlaylistsService
 	 * @throws CoreException
 	 * @throws Exception
 	 */
-	private function validatePostDataForInsert(array $postData): array
+	private function collectDataForInsert(array $postData): array
 	{
-		// only moduleadmin are allowed to change UID
-		if (array_key_exists('UID', $postData) && $this->isAdmin())
+		if (array_key_exists('UID', $postData))
 			$saveData['UID'] = $postData['UID'];
 		else
 			$saveData['UID'] = $this->UID;
 
+		$saveData['playlist_mode'] = $postData['playlist_mode'];
 
-		return $this->validateCommon($postData, $postData['playlist_mode'], $saveData);
+		return $this->collectCommon($postData, $saveData);
 	}
 
 	/**
@@ -149,55 +150,30 @@ class PlaylistsService
 	 * @throws CoreException
 	 * @throws Exception
 	 */
-	private function validatePostDataForUpdate(array $postData, $oldPlaylist): array
+	private function collectDataForUpdate(array $postData): array
 	{
 		$saveData = [];
 		// only moduleadmin are allowed to change UID
-		if (array_key_exists('UID', $postData) && $this->isAdmin())
+		if (array_key_exists('UID', $postData))
 			$saveData['UID'] = $postData['UID'];
 
-		return $this->validateCommon($postData, $oldPlaylist['playlist_mode'], $saveData);
-	}
-
-	private function checkForTimeLimit($value): bool
-	{
-		return in_array($value, [PlaylistMode::MASTER->value, PlaylistMode::INTERNAL->value], true);
+		return $this->collectCommon($postData, $saveData);
 	}
 
 	/**
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
-	private function isAdmin(): bool
-	{
-		return $this->aclValidator->isModuleadmin($this->UID) || $this->aclValidator->isSubAdmin($this->UID);
-	}
-
-	/**
-	 * @param array $postData
-	 * @param $playlist_mode
-	 * @param array $saveData
-	 * @return array
-	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	private function validateCommon(array $postData, $playlist_mode, array $saveData): array
+	private function collectCommon(array $postData, array $saveData): array
 	{
-		$saveData['name'] = $postData['playlist_name'];
-
-		if (array_key_exists('time_limit', $postData) && $this->isAdmin() && $this->checkForTimeLimit($playlist_mode))
-		{
+		$saveData['playlist_name'] = $postData['playlist_name'];
+		if (array_key_exists('time_limit', $postData))
 			$saveData['time_limit'] = $postData['time_limit'];
-		}
 
-		if (array_key_exists('multizone', $postData) && $playlist_mode === PlaylistMode::MULTIZONE->value)
-		{
+		if (array_key_exists('multizone', $postData))
 			$saveData['multizone'] = $postData['multizone'];
-		}
 
 		return $saveData;
 	}
-
 }

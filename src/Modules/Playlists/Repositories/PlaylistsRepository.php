@@ -32,7 +32,7 @@ class PlaylistsRepository extends Sql
 
 	public function findFirstWithUserName(int $playlistId): array
 	{
-		$select = [$this->table.'.*', 'user_main.username'];
+		$select = [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
 		$join   = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where  = ['playlist_id' => $playlistId];
 
