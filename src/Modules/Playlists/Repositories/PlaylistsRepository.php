@@ -20,23 +20,42 @@
 
 namespace App\Modules\Playlists\Repositories;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\FilterBase;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
-class PlaylistsRepository extends Sql
+class PlaylistsRepository extends FilterBase
 {
+
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'playlists', 'playlist_id');
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function findFirstWithUserName(int $playlistId): array
 	{
 		$select = [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
 		$join   = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
-		$where  = ['playlist_id' => $playlistId];
+		$where  = ['playlist_id' => ['value' => $playlistId, 'operator' => '=']];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
+	protected function prepareJoin()
+	{
+		// TODO: Implement prepareJoin() method.
+	}
+
+	protected function prepareSelectFiltered()
+	{
+		// TODO: Implement prepareSelectFiltered() method.
+	}
+
+	protected function prepareSelectFilteredForUser()
+	{
+		// TODO: Implement prepareSelectFilteredForUser() method.
+	}
 }

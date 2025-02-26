@@ -22,7 +22,6 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -53,7 +52,6 @@ class PlaylistsEditService
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
@@ -126,8 +124,6 @@ class PlaylistsEditService
 
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws Exception
 	 */
 	private function collectDataForInsert(array $postData): array
 	{
@@ -143,8 +139,6 @@ class PlaylistsEditService
 
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws Exception
 	 */
 	private function collectDataForUpdate(array $postData): array
 	{
@@ -157,9 +151,6 @@ class PlaylistsEditService
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function collectCommon(array $postData, array $saveData): array
 	{

@@ -131,7 +131,7 @@ class SettingsController
 		$this->flash = $request->getAttribute('flash');
 		$post        = $request->getParsedBody();
 
-		// 1. Set the Inputparameters for the Form
+		// 1. Set the parameters for the form
 		$this->settingsFormBuilder->init($this->translator, $this->session);
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
 		{
@@ -143,7 +143,7 @@ class SettingsController
 			$this->settingsFormBuilder->buildCreateNewParameter($post['playlist_mode']);
 		}
 
-		// 2. Sanitize and Validate userInput and Inputparameters
+		// 2. Sanitize and Validate userInput and parameters
 		$errors = $this->settingsFormBuilder->handleUserInput($post);
 		foreach ($errors as $errorText)
 		{

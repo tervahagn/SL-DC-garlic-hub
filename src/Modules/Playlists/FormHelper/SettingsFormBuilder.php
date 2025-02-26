@@ -100,7 +100,6 @@ readonly class SettingsFormBuilder
 
 	/**
 	 * @throws CoreException
-	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException

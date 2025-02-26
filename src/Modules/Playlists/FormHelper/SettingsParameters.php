@@ -24,10 +24,7 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
-use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
-use App\Modules\Playlists\PlaylistMode;
-use Slim\Flash\Messages;
 
 class SettingsParameters extends BaseEditParameters
 {
