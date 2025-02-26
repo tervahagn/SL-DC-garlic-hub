@@ -2,6 +2,7 @@
 namespace App\Framework\Utils\FormParameters;
 
 use App\Framework\Core\Sanitizer;
+use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
 abstract class BaseParameters
@@ -9,12 +10,21 @@ abstract class BaseParameters
 
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
+	protected readonly Session $session;
 	protected array $currentParameters;
+	protected array $userInputs;
 
-	public function __construct(string $moduleName, Sanitizer $sanitizer)
+	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
 	{
 		$this->moduleName        = $moduleName;
 		$this->sanitizer         = $sanitizer;
+		$this->session           = $session;
+	}
+
+	public function setUserInputs(array $userInputs): static
+	{
+		$this->userInputs = $userInputs;
+		return $this;
 	}
 
 	/**
@@ -31,8 +41,7 @@ abstract class BaseParameters
 			$scalarType !== ScalarType::HTML_STRING &&
 			$scalarType !== ScalarType::JSON &&
 			$scalarType !== ScalarType::JSON_HTML &&
-			$scalarType !== ScalarType::MEDIAPOOL_FILE &&
-			$scalarType !== ScalarType::BOOLEAN)
+			$scalarType !== ScalarType::MEDIAPOOL_FILE)
 		{
 			throw new ModuleException($this->moduleName, 'Unsupported scalar type: ' . $scalarType->value);
 		}
@@ -71,7 +80,7 @@ abstract class BaseParameters
 	/**
 	 * @throws ModuleException
 	 */
-	public function getValueOfParameter(string $parameter_name): static
+	public function getValueOfParameter(string $parameter_name): mixed
 	{
 		if (!$this->hasParameter($parameter_name))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameter_name . ' is not found.');
@@ -161,34 +170,39 @@ abstract class BaseParameters
 	/**
 	 * @throws  ModuleException
 	 */
-	public function parseInputFilterByName(string|array $parameter_name): static
+	public function parseInputFilterByName(string|array $parameterName): static
 	{
-		if (!array_key_exists($parameter_name, $this->currentParameters))
-			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameter_name . ' is not found.');
+		if (!array_key_exists($parameterName, $this->currentParameters))
+			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');
 
 		// don't parse them twice
-		if ($this->currentParameters[$parameter_name]['parsed'] === true)
+		if ($this->currentParameters[$parameterName]['parsed'] === true)
 			return $this;
 
-		$parameter = $this->beforeParseHook($parameter_name, $this->currentParameters[$parameter_name]);
+		if (!array_key_exists($parameterName, $this->userInputs))
+			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' do not exist in user input.');
+
+		$parameterValue = $this->userInputs[$parameterName];
+
+		$parameter = $this->beforeParseHook($parameterName, $this->currentParameters[$parameterName]);
 		$value = match ($parameter['scalar_type'])
 		{
-			ScalarType::INT            => $this->sanitizer->int($parameter_name, (int)$parameter['default_value']),
-			ScalarType::FLOAT          => $this->sanitizer->float($parameter_name, $parameter['default_value']),
-			ScalarType::STRING         => $this->sanitizer->string($parameter_name, $parameter['default_value']),
-			ScalarType::NUMERIC_ARRAY  => $this->sanitizer->intArray($parameter_name),
-			ScalarType::STRING_ARRAY   => $this->sanitizer->stringArray($parameter_name),
-			ScalarType::HTML_STRING    => $this->sanitizer->html($parameter_name, $parameter['default_value']),
-			ScalarType::JSON           => $this->sanitizer->jsonArray($parameter_name, $parameter['default_value']),
-			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameter_name, $parameter['default_value']),
-			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameter_name, $parameter['default_value']),
+			ScalarType::INT            => $this->sanitizer->int($parameterValue, (int)$parameter['default_value']),
+			ScalarType::FLOAT          => $this->sanitizer->float($parameterValue, $parameter['default_value']),
+			ScalarType::STRING         => $this->sanitizer->string($parameterValue, $parameter['default_value']),
+			ScalarType::NUMERIC_ARRAY  => $this->sanitizer->intArray($parameterValue),
+			ScalarType::STRING_ARRAY   => $this->sanitizer->stringArray($parameterValue),
+			ScalarType::HTML_STRING    => $this->sanitizer->html($parameterValue, $parameter['default_value']),
+			ScalarType::JSON           => $this->sanitizer->jsonArray($parameterValue, $parameter['default_value']),
+			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameterValue, $parameter['default_value']),
+			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue, $parameter['default_value']),
 			default => throw new ModuleException($this->moduleName, 'Unknown scalar type: ' . $parameter['scalar_type']),
 		};
 
 		$parameter['value'] = $value;
 		$parameter['parsed'] = true;
 
-		$this->currentParameters[$parameter_name] = $this->afterParseHook($parameter_name, $parameter);
+		$this->currentParameters[$parameterName] = $this->afterParseHook($parameterName, $parameter);
 		return $this;
 	}
 

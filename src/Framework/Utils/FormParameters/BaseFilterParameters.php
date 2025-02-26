@@ -26,28 +26,24 @@ use App\Framework\Exceptions\ModuleException;
 
 class BaseFilterParameters extends BaseParameters
 {
-	protected const string PARAMETER_NAME_ELEMENTS_PER_PAGE  = 'elements_per_page';
-	protected const string PARAMETER_NAME_ELEMENTS_PAGE      = 'elements_page';
-	protected const string PARAMETER_NAME_SORT_COLUMN        = 'sort_column';
-	protected const string PARAMETER_NAME_SORT_ORDER         = 'sort_order';
+	protected const string PARAMETER_ELEMENTS_PER_PAGE  = 'elements_per_page';
+	protected const string PARAMETER_ELEMENTS_PAGE      = 'elements_page';
+	protected const string PARAMETER_SORT_COLUMN        = 'sort_column';
+	protected const string PARAMETER_SORT_ORDER         = 'sort_order';
 	protected const string DEFAULT_SORT_ORDER    = 'asc';
-
-	protected readonly Session $session;
 	protected readonly string $sessionStoreKey;
 
-	protected array $default_parameters = array(
-		self::PARAMETER_NAME_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,              'parsed' => false),
-		self::PARAMETER_NAME_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => null,            'parsed' => false),
-		self::PARAMETER_NAME_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => null,            'parsed' => false),
-		self::PARAMETER_NAME_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => self::DEFAULT_SORT_ORDER, 'parsed' => false)
+	protected array $defaultParameters = array(
+		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,              'parsed' => false),
+		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => null,            'parsed' => false),
+		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => null,            'parsed' => false),
+		self::PARAMETER_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => self::DEFAULT_SORT_ORDER, 'parsed' => false)
 	);
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session, string $session_key_store = '')
 	{
-		parent::__construct($moduleName, $sanitizer);
-		$this->session           = $session;
+		parent::__construct($moduleName, $sanitizer, $session);
 		$this->sessionStoreKey   = $session_key_store;
-		$this->currentParameters = array_merge($this->currentParameters, $this->default_parameters);
 	}
 
 	/**
