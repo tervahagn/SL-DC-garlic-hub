@@ -146,7 +146,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	array
 	{
 		$fileHash = $mediaHandler->determineNewFilename($uploadedPath);
-		$dataSet  = $this->mediaRepository->findFirstBy(['checksum' => $fileHash]);
+		$dataSet  = $this->mediaRepository->findFirstBy(['checksum' => ['value' => $fileHash, 'operator' => '=']]);
 		$pathInfo = pathinfo($uploadedPath);
 
 		if (empty($dataSet))

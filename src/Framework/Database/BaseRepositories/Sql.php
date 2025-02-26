@@ -147,7 +147,10 @@ abstract class Sql
 	{
 		foreach ($conditions as $field => $value)
 		{
-			$queryBuilder->andWhere("$field = :$field");
+			$operator = $value['operator']; // ?? '=';
+			$value    = $value['value']; // ?? $value;
+
+			$queryBuilder->andWhere("$field $operator :$field");
 			$queryBuilder->setParameter($field, $value);
 		}
 	}

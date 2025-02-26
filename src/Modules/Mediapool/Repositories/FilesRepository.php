@@ -39,7 +39,10 @@ class FilesRepository extends Sql
 	{
 		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
-		$where      = ['media_id' => $media_id, 'deleted' => 0];
+		$where      = [
+			'media_id' => ['value' => $media_id, 'operator' => '='],
+			'deleted' => ['value' => 0, 'operator' => '=']
+		];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
@@ -47,11 +50,14 @@ class FilesRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
-	public function findAllByNodeId(int $node_id): array
+	public function findAllByNodeId(int $nodeId): array
 	{
 		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
-		$where      = ['node_id' => $node_id, 'deleted' => 0];
+		$where      = [
+			'node_id' => ['value' => $nodeId, 'operator' => '='],
+			'deleted' => ['value' => 0, 'operator' => '=']
+		];
 		$order_by   = 'upload_time DESC';
 
 		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
