@@ -30,7 +30,7 @@ use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Playlists\Controller\ComposeController;
 use App\Modules\Playlists\Controller\ItemController;
 use App\Modules\Playlists\Controller\SettingsController;
-use App\Modules\Playlists\Controller\OverviewController;
+use App\Modules\Playlists\Controller\ListFilterController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
@@ -54,7 +54,7 @@ $app->group('', function (RouteCollectorProxy $group)
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
-	$group->get('/playlists', [OverviewController::class, 'show']);
+	$group->get('/playlists', [ListFilterController::class, 'show']);
 	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [SettingsController::class, 'newPlaylistForm']);
 	$group->get('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'editPlaylistForm']);
 	$group->delete('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'delete']);

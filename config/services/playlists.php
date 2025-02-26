@@ -30,7 +30,7 @@ use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
-use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\PlaylistsEditService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -49,9 +49,9 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 	);
 });
 
-$dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlaylistsEditService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlaylistsService(
+	return new PlaylistsEditService(
 		$container->get(PlaylistsRepository::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
@@ -87,7 +87,7 @@ $dependencies[SettingsController::class] = DI\factory(function (ContainerInterfa
 	return new SettingsController(
 		$container->get(SettingsFormBuilder::class),
 		$container->get(SettingsParameters::class),
-		$container->get(PlaylistsService::class)
+		$container->get(PlaylistsEditService::class)
 	);
 });
 

@@ -22,26 +22,22 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
-class PlaylistsService
+class PlaylistsEditService
 {
-	private readonly PlaylistsRepository $playlistRepository;
+	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
 	private readonly LoggerInterface $logger;
 	private int $UID;
 
-	/**
-	 * @param PlaylistsRepository $playlistRepository
-	 * @param AclValidator $aclValidator
-	 * @param LoggerInterface $logger
-	 */
-	public function __construct(PlaylistsRepository $playlistRepository, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
-		$this->playlistRepository = $playlistRepository;
+		$this->playlistsRepository = $playlistsRepository;
 		$this->aclValidator = $aclValidator;
 		$this->logger = $logger;
 	}
@@ -65,7 +61,7 @@ class PlaylistsService
 	{
 		$saveData = $this->collectDataForInsert($postData);
 		// No acl checks required as every logged user can create playlists
-		return $this->playlistRepository->insert($saveData);
+		return $this->playlistsRepository->insert($saveData);
 	}
 
 	/**
@@ -77,7 +73,7 @@ class PlaylistsService
 	public function update(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
-		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+		$playlist = $this->playlistsRepository->getFirstDataSet($this->playlistsRepository->findById($playlistId));
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
@@ -87,7 +83,7 @@ class PlaylistsService
 
 		$saveData = $this->collectDataForUpdate($postData);
 
-		return $this->playlistRepository->update($playlistId, $saveData);
+		return $this->playlistsRepository->update($playlistId, $saveData);
 	}
 
 	/**
@@ -98,7 +94,7 @@ class PlaylistsService
 	 */
 	public function delete(int $playlistId): int
 	{
-		$playlist = $this->playlistRepository->getFirstDataSet($this->playlistRepository->findById($playlistId));
+		$playlist = $this->playlistsRepository->getFirstDataSet($this->playlistsRepository->findById($playlistId));
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
@@ -106,7 +102,7 @@ class PlaylistsService
 			throw new ModuleException('mediapool', 'Error delete playlist. '.$playlist['name'].' is not editable');
 		}
 
-		return $this->playlistRepository->delete($playlistId);
+		return $this->playlistsRepository->delete($playlistId);
 	}
 
 	/**
@@ -117,7 +113,7 @@ class PlaylistsService
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
-		$playlist = $this->playlistRepository->findFirstWithUserName($playlistId);
+		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
