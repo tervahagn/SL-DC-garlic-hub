@@ -35,13 +35,13 @@ class FilesRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
-	public function findAllWithOwnerById(string $media_id): array
+	public function findAllWithOwnerById(string $mediaId): array
 	{
 		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
-			'media_id' => ['value' => $media_id, 'operator' => '='],
-			'deleted' => ['value' => 0, 'operator' => '=']
+			'media_id' => $this->buildWhere($mediaId),
+			'deleted' => $this->buildWhere(0)
 		];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
@@ -55,8 +55,8 @@ class FilesRepository extends Sql
 		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
-			'node_id' => ['value' => $nodeId, 'operator' => '='],
-			'deleted' => ['value' => 0, 'operator' => '=']
+			'node_id' => $this->buildWhere($nodeId),
+			'deleted' => $this->buildWhere(0)
 		];
 		$order_by   = 'upload_time DESC';
 

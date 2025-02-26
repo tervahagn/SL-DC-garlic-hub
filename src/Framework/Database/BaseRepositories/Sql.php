@@ -147,12 +147,32 @@ abstract class Sql
 	{
 		foreach ($conditions as $field => $value)
 		{
-			$operator = $value['operator']; // ?? '=';
-			$value    = $value['value']; // ?? $value;
+			$value    = $value['value'] ?? $value;
+			$compare  = $value['compare'] ?? '=';
+			$logic    = $value['logic'] ?? 'AND';
 
-			$queryBuilder->andWhere("$field $operator :$field");
+			if ($compare === 'IN')
+				$placeholder = "(:$field)";
+			else
+				$placeholder = ":$field";
+
+			switch ($logic)
+			{
+				case 'OR':
+					$queryBuilder->orWhere("$field $compare $placeholder");
+					break;
+				case 'AND':
+				default:
+					$queryBuilder->andWhere("$field $compare $placeholder");
+			}
+
 			$queryBuilder->setParameter($field, $value);
 		}
+	}
+
+	public function buildWhere(int|string $value, string $compare = '=', string $logic = 'AND'): array
+	{
+		return ['value' => $value, 'compare' => $compare, 'logic' => $logic];
 	}
 
 	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
