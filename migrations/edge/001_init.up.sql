@@ -142,7 +142,7 @@ CREATE TABLE playlists (
     shuffle_picking INTEGER NOT NULL DEFAULT 0,
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     playlist_mode TEXT DEFAULT 'master' CHECK (playlist_mode IN ('master', 'internal', 'external', 'multizone', 'channel')),
-    `name` varchar(100) DEFAULT NULL,
+    playlist_name varchar(100) DEFAULT NULL,
     external_playlist_link  varchar(100) DEFAULT NULL,
     multizone TEXT DEFAULT NULL
 );
