@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class ListFilterParameters extends BaseFilterParameters
+class FilterParameters extends BaseFilterParameters
 {
 	const string PARAMETER_PLAYLIST_NAME = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE = 'playlist_mode';

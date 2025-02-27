@@ -25,16 +25,16 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Services\AclValidator;
 
-class ListFilterFormBuilder
+class FilterFormBuilder
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
 	private AclValidator $aclValidator;
-	private ListFilterParameters $parameters;
+	private FilterParameters $parameters;
 	private int $UID;
 	private string $username;
 
-	public function __construct(AclValidator $aclValidator, ListFilterParameters $parameters, FormBuilder $formBuilder)
+	public function __construct(AclValidator $aclValidator, FilterParameters $parameters, FormBuilder $formBuilder)
 	{
 		$this->aclValidator = $aclValidator;
 		$this->parameters   = $parameters;

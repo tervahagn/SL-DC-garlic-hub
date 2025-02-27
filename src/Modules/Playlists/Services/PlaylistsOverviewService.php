@@ -25,13 +25,13 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Playlists\FormHelper\ListFilterParameters;
+use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
-class PlaylistsFilterListService
+class PlaylistsOverviewService
 {
 	use SearchFilterParams;
 
@@ -57,7 +57,7 @@ class PlaylistsFilterListService
 	 * @throws CoreException
 	 * @throws Exception
 	 */
-	public function loadPlaylistsForOverview(ListFilterParameters $parameters): void
+	public function loadPlaylistsForOverview(FilterParameters $parameters): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{
@@ -69,10 +69,11 @@ class PlaylistsFilterListService
 		}
 		elseif ($this->aclValidator->isEditor($this->UID))
 		{
+			// Todo
 		}
 		elseif ($this->aclValidator->isViewer($this->UID))
 		{
-
+			// Todo
 		}
 		else
 		{

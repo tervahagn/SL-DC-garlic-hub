@@ -23,28 +23,28 @@ namespace App\Modules\Playlists\Controller;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
-use App\Modules\Playlists\FormHelper\ListFilterFormBuilder;
-use App\Modules\Playlists\FormHelper\ListFilterParameters;
+use App\Modules\Playlists\FormHelper\FilterFormBuilder;
+use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Services\PlaylistsEditService;
-use App\Modules\Playlists\Services\PlaylistsFilterListService;
+use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
-class ListFilterController
+class OverviewController
 {
-	private readonly ListFilterFormBuilder $formBuilder;
-	private readonly ListFilterParameters $parameters;
-	private readonly PlaylistsFilterListService $playlistsService;
+	private readonly FilterFormBuilder $formBuilder;
+	private readonly FilterParameters $parameters;
+	private readonly PlaylistsOverviewService $playlistsService;
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(ListFilterFormBuilder $formBuilder, ListFilterParameters $parameters, PlaylistsFilterListService $playlistsService)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService)
 	{
 		$this->formBuilder = $formBuilder;
 		$this->parameters = $parameters;
@@ -63,7 +63,6 @@ class ListFilterController
 		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
 		$this->parameters->parseInputFilterAllUsers();
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
-
 		$num_search_results = $this->playlistsService->getCurrentTotalResult();
 
 		echo 'Playlist Overview';
@@ -81,13 +80,13 @@ class ListFilterController
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/settings.css']
+				'additional_css' => ['/css/playlists/overview.css']
 			],
 			'this_layout' => [
-				'template' => 'playlists/edit', // Template-name
+				'template' => 'playlists/overview', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
-					'SITE' => '/playlists/settings',
+					'SITE' => '/playlists',
 					'element_hidden' => $elements['hidden'],
 					'form_element' => $elements['visible'],
 					'form_button' => [

@@ -122,9 +122,9 @@ trait SearchFilterParams
 		return array('-') + array_combine($domain_ids, $allowed_companies);
 	}
 
-	protected function setAllResultData(int $total_elements, array $ar_result): static
+	protected function setAllResultData(int $total, array $results): static
 	{
-		return $this->setCurrentTotalResult($total_elements)
-					->setCurrentFilterResults($ar_result);
+		return $this->setCurrentTotalResult($total)
+					->setCurrentFilterResults($results);
 	}
 }

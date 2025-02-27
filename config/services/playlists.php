@@ -24,17 +24,17 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Playlists\Controller\ListFilterController;
+use App\Modules\Playlists\Controller\OverviewController;
 use App\Modules\Playlists\Controller\SettingsController;
-use App\Modules\Playlists\FormHelper\ListFilterFormBuilder;
-use App\Modules\Playlists\FormHelper\ListFilterParameters;
+use App\Modules\Playlists\FormHelper\FilterFormBuilder;
+use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsEditService;
-use App\Modules\Playlists\Services\PlaylistsFilterListService;
+use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -92,37 +92,37 @@ $dependencies[SettingsController::class] = DI\factory(function (ContainerInterfa
 		$container->get(PlaylistsEditService::class)
 	);
 });
-$dependencies[PlaylistsFilterListService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlaylistsOverviewService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlaylistsFilterListService(
+	return new PlaylistsOverviewService(
 		$container->get(PlaylistsRepository::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
 });
-$dependencies[ListFilterParameters::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ListFilterParameters(
+	return new FilterParameters(
 		$container->get(Sanitizer::class),
 		$container->get(Session::class)
 	);
 });
 
-$dependencies[ListFilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ListFilterFormBuilder(
+	return new FilterFormBuilder(
 		$container->get(AclValidator::class),
-		$container->get(ListFilterParameters::class),
+		$container->get(FilterParameters::class),
 		$container->get(FormBuilder::class)
 	);
 });
 
-$dependencies[ListFilterController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[OverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ListFilterController(
-		$container->get(ListFilterFormBuilder::class),
-		$container->get(ListFilterParameters::class),
-		$container->get(PlaylistsFilterListService::class)
+	return new OverviewController(
+		$container->get(FilterFormBuilder::class),
+		$container->get(FilterParameters::class),
+		$container->get(PlaylistsOverviewService::class)
 	);
 });
 return $dependencies;
