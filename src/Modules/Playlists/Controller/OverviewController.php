@@ -23,6 +23,7 @@ namespace App\Modules\Playlists\Controller;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
@@ -33,6 +34,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
 class OverviewController
@@ -70,12 +72,17 @@ class OverviewController
 	}
 
 
-	private function buildForm(array $playlist): array
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	private function buildForm(array $filter): array
 	{
-		$elements = $this->formBuilder->init($this->translator, $this->session)->createForm($playlist);
+		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm($filter);
 
-		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
-			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($playlist['playlist_mode'])];
+		$title = $this->translator->translate('overview', 'playlists');
 
 		return [
 			'main_layout' => [

@@ -22,6 +22,8 @@ namespace App\Modules\Playlists\FormHelper;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Services\AclValidator;
 
@@ -49,4 +51,54 @@ class FilterFormBuilder
 
 		return $this;
 	}
+
+	public function buildForm(array $filter): array
+	{
+		$form = $this->collectFormElements($filter);
+		return $this->formBuilder->createFormular($form);
+	}
+
+	public function collectFormElements(array $filter): array
+	{
+		$form       = [];
+		$rules      = ['required' => true, 'minlength' => 2];
+
+		$form['playlist_name'] = $this->formBuilder->createField([
+			'type' => FieldType::TEXT,
+			'id' => 'playlist_name',
+			'name' => 'playlist_name',
+			'title' => $this->translator->translate('playlist_name', 'playlists'),
+			'label' => $this->translator->translate('playlist_name', 'playlists'),
+			'value' => $filter[SettingsParameters::PARAMETER_PLAYLIST_NAME] ?? '',
+			'rules' => $rules,
+			'default_value' => ''
+		]);
+
+		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_USERNAME))
+		{
+			$form['UID'] = $this->formBuilder->createField([
+				'type' => FieldType::AUTOCOMPLETE,
+				'id' => 'UID',
+				'name' => 'UID',
+				'title' => $this->translator->translate('owner', 'main'),
+				'label' => $this->translator->translate('owner', 'main'),
+				'value' => $filter[FilterParameters::PARAMETER_USERNAME] ?? $this->UID,
+				'data-label' => $filter['username'] ?? $this->username,
+				'default_value' =>  $this->UID
+			]);
+		}
+
+		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_PLAYLIST_MODE))
+		{
+			$form['playlist_mode'] = $this->formBuilder->createField([
+				'type' => FieldType::HIDDEN,
+				'id' => 'playlist_mode',
+				'name' => 'playlist_mode',
+				'value' => $filter[FilterParameters::PARAMETER_PLAYLIST_MODE],
+			]);
+		}
+
+		return $form;
+	}
+
 }

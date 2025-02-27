@@ -241,7 +241,7 @@ class SettingsController
 				'template' => 'playlists/edit', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
-					'SITE' => '/playlists/settings',
+					'FORMACTION' => '/playlists/settings',
 					'element_hidden' => $elements['hidden'],
 					'form_element' => $elements['visible'],
 					'form_button' => [
