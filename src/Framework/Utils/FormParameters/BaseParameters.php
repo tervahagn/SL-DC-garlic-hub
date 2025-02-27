@@ -179,10 +179,10 @@ abstract class BaseParameters
 		if ($this->currentParameters[$parameterName]['parsed'] === true)
 			return $this;
 
-		if (!array_key_exists($parameterName, $this->userInputs))
-			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' do not exist in user input.');
-
-		$parameterValue = $this->userInputs[$parameterName];
+		if (array_key_exists($parameterName, $this->userInputs))
+			$parameterValue = $this->userInputs[$parameterName];
+		else
+			$parameterValue = $this->getDefaultValueOfParameter($parameterName);
 
 		$parameter = $this->beforeParseHook($parameterName, $this->currentParameters[$parameterName]);
 		$value = match ($parameter['scalar_type'])

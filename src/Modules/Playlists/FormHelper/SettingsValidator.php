@@ -56,7 +56,7 @@ class SettingsValidator extends Validator
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
-		if (empty($this->inputEditParameters->getValueOfParameter(SettingsParameters::PARAMETER_NAME)))
+		if (empty($this->inputEditParameters->getValueOfParameter(SettingsParameters::PARAMETER_PLAYLIST_NAME)))
 			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
 
 		// we need userInput here as getValueOfParameter will throw an exception if not set

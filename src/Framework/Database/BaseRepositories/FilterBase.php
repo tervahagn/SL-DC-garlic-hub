@@ -43,10 +43,10 @@ abstract class FilterBase extends Sql
 	{
 		$selects  = $this->prepareSelectFiltered();
 		$where 	  = $this->prepareWhereForSearch($fields);
-		$orderBy = $this->prepareOrderBy($fields);
+		$orderBy  = [$this->prepareOrderBy($fields)];
 		$join     = $this->prepareJoin();
 
-		return $this->findAllByWithFields($selects, $where, $join, $fields['elements_page']['value'], $fields['elements_per_page']['value'], $orderBy);
+		return $this->findAllByWithFields($selects, $where, $join, $fields['elements_page']['value'], $fields['elements_per_page']['value'], '', $orderBy);
 	}
 
 	/**
@@ -67,7 +67,7 @@ abstract class FilterBase extends Sql
 		$selects = $this->prepareSelectFiltered();
 		$where   = $this->buildRestrictedWhereForCountAndFindSearch($companyIds,  $fields, $UID);
 		$join    = $this->prepareJoin();
-		$orderBy = $this->prepareOrderBy($fields);
+		$orderBy = [$this->prepareOrderBy($fields)];
 
 		return $this->findAllByWithFields($selects, $where, $join, $fields['elements_page']['value'], $fields['elements_per_page']['value'], $orderBy);
 	}
@@ -90,7 +90,7 @@ abstract class FilterBase extends Sql
 		$selects = $this->prepareSelectFilteredForUser();
 		$where   = $this->prepareWhereForSearch($fields);
 		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
-		$orderBy = $this->prepareOrderBy($fields);
+		$orderBy = [$this->prepareOrderBy($fields)];
 
 		return $this->findAllByWithFields($selects, $where, [], $fields['elements_page']['value'], $fields['elements_per_page']['value'], $orderBy);
 	}
@@ -111,11 +111,11 @@ abstract class FilterBase extends Sql
 
 	abstract protected function prepareSelectFilteredForUser();
 
-	protected function prepareOrderBy(array $fields, $useUserMain = true): string
+	protected function prepareOrderBy(array $fields, $useUserMain = true): array
 	{
 		// no sort column
 		if (!array_key_exists('sort_column', $fields) || empty($fields['sort_column']) || !array_key_exists('value', $fields['sort_column']))
-			return '';
+			return [];
 
 		// validate ordering
 		$sort_order = (array_key_exists('sort_order', $fields)) ? $fields['sort_order']['value'] : 'ASC';
@@ -130,11 +130,10 @@ abstract class FilterBase extends Sql
 			$fields['sort_column']['value'] == 'usr_nickname')
 		{
 			$table = ($useUserMain === true) ?  'user_main.' : '';
-			return $table . 'username '.$sort_order;
+			return ['sort' => $table . 'username ', 'order' => $sort_order];
 		}
 
-		// sort regular
-		return $this->table.'.'.$fields['sort_column']['value'].' '.$sort_order;
+		return ['sort' => $this->table.'.'.$fields['sort_column']['value'], 'order' => $sort_order];
 	}
 
 	protected function buildWhereByCompanyIds(array $companyIds): array

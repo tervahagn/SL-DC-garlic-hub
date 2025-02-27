@@ -109,8 +109,6 @@ trait SearchFilterParams
 	 *
 	 * example:
 	 * array ( 2 => 'first company', 4 => 'second company', 8 => 'third company',...)
-	 *
-	 * @return array
 	 */
 	public function returnFilteredDomainsForDropdowns(): array
 	{

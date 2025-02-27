@@ -145,7 +145,7 @@ readonly class SettingsFormBuilder
 			'name' => 'playlist_name',
 			'title' => $this->translator->translate('playlist_name', 'playlists'),
 			'label' => $this->translator->translate('playlist_name', 'playlists'),
-			'value' => $playlist[SettingsParameters::PARAMETER_NAME] ?? '',
+			'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_NAME] ?? '',
 			'rules' => $rules,
 			'default_value' => ''
 		]);

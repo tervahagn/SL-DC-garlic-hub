@@ -46,16 +46,16 @@ class PlaylistsRepository extends FilterBase
 
 	protected function prepareJoin()
 	{
-		// TODO: Implement prepareJoin() method.
+		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 	}
 
 	protected function prepareSelectFiltered()
 	{
-		// TODO: Implement prepareSelectFiltered() method.
+		return [$this->table.'.*'];
 	}
 
 	protected function prepareSelectFilteredForUser()
 	{
-		// TODO: Implement prepareSelectFilteredForUser() method.
+		return [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
 	}
 }

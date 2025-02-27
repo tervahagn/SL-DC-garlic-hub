@@ -84,7 +84,7 @@ trait NestedSetTrait
 				'user_main',
 				$this->table.'.UID = user_main.UID')
 			->where('node_id = :id')
-			->orderBy('lft ASC')
+			->orderBy('lft', 'ASC')
 			->setParameter('id', $nodeId);
 
 		$ret = $queryBuilder->executeQuery()->fetchAssociative();
@@ -107,7 +107,7 @@ trait NestedSetTrait
 				'user_main',
 				$this->table.'.UID = user_main.UID')
 			->where('parent_id = :id')
-			->orderBy('lft ASC')
+			->orderBy('lft', 'ASC')
 			->setParameter('id', $nodeId);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();

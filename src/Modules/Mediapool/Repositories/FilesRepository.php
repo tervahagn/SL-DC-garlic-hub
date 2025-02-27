@@ -58,7 +58,8 @@ class FilesRepository extends Sql
 			'node_id' => $this->buildWhere($nodeId),
 			'deleted' => $this->buildWhere(0)
 		];
-		$order_by   = 'upload_time DESC';
+
+		$order_by   = [['sort' => 'upload_time', 'order' => 'DESC']];
 
 		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
 	}

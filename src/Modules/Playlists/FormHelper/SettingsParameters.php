@@ -29,13 +29,13 @@ use App\Framework\Utils\FormParameters\ScalarType;
 class SettingsParameters extends BaseEditParameters
 {
 	const string PARAMETER_PLAYLIST_ID        = 'playlist_id';
-	const string PARAMETER_NAME               = 'playlist_name';
+	const string PARAMETER_PLAYLIST_NAME      = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE      = 'playlist_mode';
 	const string PARAMETER_TIME_LIMIT         = 'time_limit';
 	const string PARAMETER_MULTIZONE          = 'multizone';
 
 	protected array $moduleParameters = array(
-		self::PARAMETER_NAME            => array('scalar_type'  => ScalarType::STRING,   'default_value' => '', 'parsed' => false)
+		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
 	);
 
 	public function __construct(Sanitizer $sanitizer, Session $session)

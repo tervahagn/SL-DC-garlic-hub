@@ -30,13 +30,13 @@ class BaseFilterParameters extends BaseParameters
 	protected const string PARAMETER_ELEMENTS_PAGE      = 'elements_page';
 	protected const string PARAMETER_SORT_COLUMN        = 'sort_column';
 	protected const string PARAMETER_SORT_ORDER         = 'sort_order';
-	protected const string DEFAULT_SORT_ORDER    = 'asc';
+	protected const string DEFAULT_SORT_ORDER    = 'ASC';
 	protected readonly string $sessionStoreKey;
 
 	protected array $defaultParameters = array(
 		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,              'parsed' => false),
-		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => null,            'parsed' => false),
-		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => null,            'parsed' => false),
+		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => 1,            'parsed' => false),
+		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => '',            'parsed' => false),
 		self::PARAMETER_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => self::DEFAULT_SORT_ORDER, 'parsed' => false)
 	);
 
@@ -51,7 +51,7 @@ class BaseFilterParameters extends BaseParameters
 	 */
 	public function setParameterDefaultValues($default_sort_column): static
 	{
-		$this->setDefaultForParameter(self::PARAMETER_NAME_SORT_COLUMN, $default_sort_column);
+		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, $default_sort_column);
 		return $this;
 	}
 
@@ -64,14 +64,14 @@ class BaseFilterParameters extends BaseParameters
 	 */
 	public function setElementsParametersToNull(): static
 	{
-		if ($this->hasParameter(self::PARAMETER_NAME_ELEMENTS_PAGE))
+		if ($this->hasParameter(self::PARAMETER_ELEMENTS_PAGE))
 		{
-			$this->setValueOfParameter(self::PARAMETER_NAME_ELEMENTS_PAGE, 0);
+			$this->setValueOfParameter(self::PARAMETER_ELEMENTS_PAGE, 0);
 		}
 
-		if ($this->hasParameter(self::PARAMETER_NAME_ELEMENTS_PER_PAGE))
+		if ($this->hasParameter(self::PARAMETER_ELEMENTS_PER_PAGE))
 		{
-			$this->setValueOfParameter(self::PARAMETER_NAME_ELEMENTS_PER_PAGE, 0);
+			$this->setValueOfParameter(self::PARAMETER_ELEMENTS_PER_PAGE, 0);
 		}
 
 		return $this;

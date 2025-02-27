@@ -46,11 +46,6 @@ class PlaylistsEditService
 		$this->UID = $UID;
 	}
 
-	public function loadPlaylistsForOverview()
-	{
-
-	}
-
 	/**
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
@@ -163,4 +158,5 @@ class PlaylistsEditService
 
 		return $saveData;
 	}
+
 }

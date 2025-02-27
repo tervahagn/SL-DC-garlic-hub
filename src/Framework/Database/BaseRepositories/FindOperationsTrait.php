@@ -82,7 +82,7 @@ trait FindOperationsTrait
 	 * @throws Exception
 	 */
 	public function findAllBy(array $conditions = [], array $joins = [], int $limitStart = null, int $limitShow =
-	null, string $groupBy = '', string $orderBy = ''): array
+	null, string $groupBy = '', array $orderBy = []): array
 	{
 		return $this->findAllByWithFields(array('*'), $conditions, $joins, $limitStart, $limitShow, $groupBy, $orderBy);
 	}
@@ -91,7 +91,7 @@ trait FindOperationsTrait
 	 * Finds records with specific fields and a custom WHERE clause.
 	 * @throws Exception
 	 */
-	public function findAllByWithFields(array $fields, array $conditions = [],array $joins = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', string $orderBy = ''): array
+	public function findAllByWithFields(array $fields, array $conditions = [],array $joins = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', array $orderBy = []): array
 	{
 		$fields       = implode(', ', $fields);
 		$queryBuilder = $this->buildQuery($fields, $conditions, $joins,	$groupBy, $orderBy);
@@ -107,7 +107,7 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findAllByWithLimits(int $limitStart, int $limitShow, string $orderBy, array $conditions = []): array
+	public function findAllByWithLimits(int $limitStart, int $limitShow, array $orderBy = [], array $conditions = []): array
 	{
 		$queryBuilder = $this->buildQuery('*', $conditions, [], '', $orderBy);
 
@@ -122,7 +122,7 @@ trait FindOperationsTrait
 	 * @throws Exception
 	 */
 	public function findOneValueBy(string $field, array $conditions = [], array $joins = [], string $groupBy = '',
-								   string $orderBy = ''): string
+								   array $orderBy = []): string
 	{
 		$queryBuilder = $this->buildQuery($field, $conditions, $joins, $groupBy, $orderBy);
 
@@ -138,7 +138,7 @@ trait FindOperationsTrait
 		return array();
 	}
 
-	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', string $orderBy = ''):
+	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', array $orderBy = []):
 	QueryBuilder
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -150,8 +150,10 @@ trait FindOperationsTrait
 		if (!empty($groupBy))
 			$queryBuilder->groupBy($groupBy);
 
-		if (!empty($orderBy))
-			$queryBuilder->orderBy($orderBy);
+		foreach ($orderBy as $order)
+		{
+			$queryBuilder->addOrderBy($order['sort'], $order['order'] ?? 'ASC');
+		}
 
 		return $queryBuilder;
 	}
