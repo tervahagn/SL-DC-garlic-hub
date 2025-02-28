@@ -40,6 +40,12 @@ class FieldsFactory
 		return new AutocompleteField($attributes);
 	}
 
+	public function createDropdownField(array $attributes): DropdownField
+	{
+		return new DropdownField($attributes);
+	}
+
+
 	public function createEmailField(array $attributes): EmailField
 	{
 		return new EmailField($attributes);

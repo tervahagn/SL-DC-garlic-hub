@@ -69,16 +69,17 @@ class FormBuilder
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function createField(array $options = []): FieldInterface
+	public function createField(array $attributes = []): FieldInterface
 	{
-		return match ($options['type']) {
-			FieldType::TEXT         => $this->fieldsFactory->createTextField($options),
-			FieldType::NUMBER       => $this->fieldsFactory->createNumberField($options),
-			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocompleteField($options),
-			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($options),
-			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($options),
-			FieldType::HIDDEN       => $this->fieldsFactory->createHiddenField($options),
-			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($options, $this->session),
+		return match ($attributes['type']) {
+			FieldType::TEXT         => $this->fieldsFactory->createTextField($attributes),
+			FieldType::NUMBER       => $this->fieldsFactory->createNumberField($attributes),
+			FieldType::DROPDOWN     => $this->fieldsFactory->createDropdownField($attributes),
+			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocompleteField($attributes),
+			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($attributes),
+			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($attributes),
+			FieldType::HIDDEN       => $this->fieldsFactory->createHiddenField($attributes),
+			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($attributes, $this->session),
 			default => throw new FrameworkException('Invalid field type'),
 		};
 	}
