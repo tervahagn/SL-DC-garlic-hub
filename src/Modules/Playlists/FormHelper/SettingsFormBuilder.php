@@ -73,7 +73,7 @@ readonly class SettingsFormBuilder
 		if (!$this->aclValidator->isSimpleAdmin($this->UID))
 			return;
 
-		$this->parameters->addUID();
+		$this->parameters->addUID($this->UID);
 
 		if ($this->isTimeLimitPlaylist($playlistMode))
 			$this->parameters->addTimeLimit();

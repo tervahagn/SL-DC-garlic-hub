@@ -26,11 +26,11 @@ use App\Framework\Exceptions\ModuleException;
 
 class BaseFilterParameters extends BaseParameters
 {
-	protected const string PARAMETER_ELEMENTS_PER_PAGE  = 'elements_per_page';
-	protected const string PARAMETER_ELEMENTS_PAGE      = 'elements_page';
-	protected const string PARAMETER_SORT_COLUMN        = 'sort_column';
-	protected const string PARAMETER_SORT_ORDER         = 'sort_order';
-	protected const string DEFAULT_SORT_ORDER    = 'ASC';
+	public const string PARAMETER_ELEMENTS_PER_PAGE  = 'elements_per_page';
+	public const string PARAMETER_ELEMENTS_PAGE      = 'elements_page';
+	public const string PARAMETER_SORT_COLUMN        = 'sort_column';
+	public const string PARAMETER_SORT_ORDER         = 'sort_order';
+	public const string DEFAULT_SORT_ORDER    = 'ASC';
 	protected readonly string $sessionStoreKey;
 
 	protected array $defaultParameters = array(

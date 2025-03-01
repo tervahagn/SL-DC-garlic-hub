@@ -41,9 +41,9 @@ class BaseEditParameters extends BaseParameters
 	/**
 	 * @throws ModuleException
 	 */
-	public function addUID(): void
+	public function addUID(int $defaultUID): void
 	{
-		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, 0);
+		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, $defaultUID);
 	}
 
 	/**

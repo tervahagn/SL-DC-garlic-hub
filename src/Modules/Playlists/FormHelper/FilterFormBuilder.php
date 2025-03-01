@@ -22,10 +22,14 @@ namespace App\Modules\Playlists\FormHelper;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Services\AclValidator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class FilterFormBuilder
 {
@@ -58,20 +62,23 @@ class FilterFormBuilder
 		return $this->formBuilder->createFormular($form);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function collectFormElements(array $filter): array
 	{
 		$form       = [];
-		$rules      = ['required' => true, 'minlength' => 2];
-
 		$form['playlist_name'] = $this->formBuilder->createField([
 			'type' => FieldType::TEXT,
 			'id' => 'playlist_name',
 			'name' => 'playlist_name',
 			'title' => $this->translator->translate('playlist_name', 'playlists'),
 			'label' => $this->translator->translate('playlist_name', 'playlists'),
-			'value' => $filter[SettingsParameters::PARAMETER_PLAYLIST_NAME] ?? '',
-			'rules' => $rules,
-			'default_value' => ''
+			'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_NAME)
 		]);
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_USERNAME))
@@ -82,19 +89,29 @@ class FilterFormBuilder
 				'name' => 'UID',
 				'title' => $this->translator->translate('owner', 'main'),
 				'label' => $this->translator->translate('owner', 'main'),
-				'value' => $filter[FilterParameters::PARAMETER_USERNAME] ?? $this->UID,
-				'data-label' => $filter['username'] ?? $this->username,
-				'default_value' =>  $this->UID
+				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_USERNAME),
+				'data-label' => ''
 			]);
 		}
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_PLAYLIST_MODE))
 		{
 			$form['playlist_mode'] = $this->formBuilder->createField([
-				'type' => FieldType::HIDDEN,
+				'type' => FieldType::DROPDOWN,
 				'id' => 'playlist_mode',
 				'name' => 'playlist_mode',
-				'value' => $filter[FilterParameters::PARAMETER_PLAYLIST_MODE],
+				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_MODE),
+				'options' => $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')
+			]);
+		}
+
+		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_COMPANY_ID))
+		{
+			$form['playlist_mode'] = $this->formBuilder->createField([
+				'type' => FieldType::HIDDEN,
+				'id' => 'company_id',
+				'name' => 'company_id',
+				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_COMPANY_ID),
 			]);
 		}
 

@@ -7,7 +7,6 @@ use App\Framework\Exceptions\ModuleException;
 
 abstract class BaseParameters
 {
-
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
 	protected readonly Session $session;

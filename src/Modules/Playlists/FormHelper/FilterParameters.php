@@ -30,14 +30,15 @@ class FilterParameters extends BaseFilterParameters
 {
 	const string PARAMETER_PLAYLIST_NAME = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE = 'playlist_mode';
-	const string PARAMETER_USERNAME      = 'username';
-	const string PARAMETER_COMPANY_ID    = 'company_id';
+	const string PARAMETER_USERNAME = 'username';
+	const string PARAMETER_UID = 'UID';
+	const string PARAMETER_COMPANY_ID = 'company_id';
 
-	const string PARAMETER_PLAYLIST_ID        = 'playlist_id';
+	const string PARAMETER_PLAYLIST_ID = 'playlist_id';
 
 	protected array $moduleParameters = array(
-		self::PARAMETER_PLAYLIST_NAME  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_PLAYLIST_MODE  => array('scalar_type'  => ScalarType::INT,    'default_value' => '', 'parsed' => false)
+		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
+		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::INT, 'default_value' => '', 'parsed' => false)
 	);
 
 	/**
@@ -51,9 +52,13 @@ class FilterParameters extends BaseFilterParameters
 		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_PLAYLIST_ID);
 	}
 
-	public function add()
+	public function addOwner()
 	{
-		$this->addParameter(self::PARAMETER_USERNAME, ScalarType::STRING, '');
+		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, 0);
+	}
+
+	public function addCompany()
+	{
 		$this->addParameter(self::PARAMETER_COMPANY_ID, ScalarType::STRING, '');
 	}
 }

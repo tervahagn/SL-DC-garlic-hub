@@ -24,11 +24,9 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
-use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
-use App\Modules\Playlists\FormHelper\SettingsValidator;
-use App\Modules\Playlists\Services\PlaylistsEditService;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -66,8 +64,13 @@ class OverviewController
 		$this->parameters->parseInputFilterAllUsers();
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
 		$num_search_results = $this->playlistsService->getCurrentTotalResult();
+		$filter = array_combine(
+			$this->parameters->getInputParametersKeys(),
+			$this->parameters->getInputValuesArray()
+		);
+		$data = $this->buildForm([]);
 
-		echo 'Playlist Overview';
+		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
@@ -93,14 +96,17 @@ class OverviewController
 				'template' => 'playlists/overview', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
-					'SITE' => '/playlists',
+					'FORM_ACTION' => '/playlists',
 					'element_hidden' => $elements['hidden'],
 					'form_element' => $elements['visible'],
+					'LANG_ELEMENTS_FILTER' => $this->translator->translate('filter', 'main'),
+					'SORT_COLUMN' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
+					'SORT_ORDER' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
+					'ELEMENTS_PAGE', $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
 							'ELEMENT_BUTTON_NAME' => 'submit',
-							'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
 						]
 					]
 				]
