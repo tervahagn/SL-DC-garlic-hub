@@ -210,7 +210,7 @@ class SettingsController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
-	 * @throws Exception|ModuleException
+	 * @throws ModuleException
 	 */
 	private function returnBuildForm(ResponseInterface $response, $post): ResponseInterface
 	{

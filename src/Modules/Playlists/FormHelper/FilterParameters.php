@@ -30,15 +30,14 @@ class FilterParameters extends BaseFilterParameters
 {
 	const string PARAMETER_PLAYLIST_NAME = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE = 'playlist_mode';
-	const string PARAMETER_USERNAME = 'username';
-	const string PARAMETER_UID = 'UID';
-	const string PARAMETER_COMPANY_ID = 'company_id';
-
-	const string PARAMETER_PLAYLIST_ID = 'playlist_id';
+	const string PARAMETER_USERNAME      = 'username';
+	const string PARAMETER_UID           = 'UID';
+	const string PARAMETER_COMPANY_ID    = 'company_id';
+	const string PARAMETER_PLAYLIST_ID   = 'playlist_id';
 
 	protected array $moduleParameters = array(
 		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::INT, 'default_value' => '', 'parsed' => false)
+		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::INT,    'default_value' => '', 'parsed' => false)
 	);
 
 	/**

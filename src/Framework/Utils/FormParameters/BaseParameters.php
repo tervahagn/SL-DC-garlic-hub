@@ -15,9 +15,9 @@ abstract class BaseParameters
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
 	{
-		$this->moduleName        = $moduleName;
-		$this->sanitizer         = $sanitizer;
-		$this->session           = $session;
+		$this->moduleName = $moduleName;
+		$this->sanitizer  = $sanitizer;
+		$this->session    = $session;
 	}
 
 	public function setUserInputs(array $userInputs): static

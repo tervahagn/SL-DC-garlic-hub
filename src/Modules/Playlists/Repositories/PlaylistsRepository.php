@@ -44,17 +44,17 @@ class PlaylistsRepository extends FilterBase
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
-	protected function prepareJoin()
+	protected function prepareJoin(): array
 	{
 		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 	}
 
-	protected function prepareSelectFiltered()
+	protected function prepareSelectFiltered(): array
 	{
 		return [$this->table.'.*'];
 	}
 
-	protected function prepareSelectFilteredForUser()
+	protected function prepareSelectFilteredForUser(): array
 	{
 		return [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
 	}

@@ -48,7 +48,6 @@ class PlaylistsEditService
 
 	/**
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function createNew($postData): int
 	{
@@ -118,7 +117,6 @@ class PlaylistsEditService
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function collectDataForInsert(array $postData): array
 	{
@@ -133,7 +131,6 @@ class PlaylistsEditService
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function collectDataForUpdate(array $postData): array
 	{

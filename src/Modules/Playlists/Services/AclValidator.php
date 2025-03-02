@@ -55,7 +55,7 @@ class AclValidator extends AbstractAclValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function isAdmin($UID, $companyId)
+	public function isAdmin($UID, $companyId): bool
 	{
 		if ($this->isModuleAdmin($UID))
 			return true;

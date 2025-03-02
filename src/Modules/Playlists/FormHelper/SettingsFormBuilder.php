@@ -140,9 +140,9 @@ readonly class SettingsFormBuilder
 		$rules      = ['required' => true, 'minlength' => 2];
 
 		$form['playlist_name'] = $this->formBuilder->createField([
-			'type' => FieldType::TEXT,
-			'id' => 'playlist_name',
-			'name' => 'playlist_name',
+			'type'  => FieldType::TEXT,
+			'id'    => 'playlist_name',
+			'name'  => 'playlist_name',
 			'title' => $this->translator->translate('playlist_name', 'playlists'),
 			'label' => $this->translator->translate('playlist_name', 'playlists'),
 			'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_NAME] ?? '',
@@ -153,13 +153,13 @@ readonly class SettingsFormBuilder
 		if ($this->parameters->hasParameter(BaseEditParameters::PARAMETER_UID))
 		{
 			$form['UID'] = $this->formBuilder->createField([
-				'type' => FieldType::AUTOCOMPLETE,
-				'id' => 'UID',
-				'name' => 'UID',
+				'type'  => FieldType::AUTOCOMPLETE,
+				'id'    => 'UID',
+				'name'  => 'UID',
 				'title' => $this->translator->translate('owner', 'main'),
 				'label' => $this->translator->translate('owner', 'main'),
 				'value' => $playlist[BaseEditParameters::PARAMETER_UID] ?? $this->UID,
-				'data-label' => $playlist['username'] ?? $this->username,
+				'data-label'    => $playlist['username'] ?? $this->username,
 				'default_value' =>  $this->UID
 			]);
 		}

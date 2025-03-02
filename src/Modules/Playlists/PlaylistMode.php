@@ -21,9 +21,9 @@
 namespace App\Modules\Playlists;
 
 enum PlaylistMode: string {
-	case MASTER = 'master';
-	case INTERNAL = 'internal';
-	case EXTERNAL = 'external';
+	case MASTER    = 'master';
+	case INTERNAL  = 'internal';
+	case EXTERNAL  = 'external';
 	case MULTIZONE = 'multizone';
-	case CHANNEL = 'channel';
+	case CHANNEL   = 'channel';
 }

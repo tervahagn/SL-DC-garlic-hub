@@ -56,9 +56,16 @@ class FilterFormBuilder
 		return $this;
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function buildForm(array $filter): array
 	{
-		$form = $this->collectFormElements($filter);
+		$form = $this->collectFormElements();
 		return $this->formBuilder->createFormular($form);
 	}
 
@@ -69,7 +76,7 @@ class FilterFormBuilder
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function collectFormElements(array $filter): array
+	public function collectFormElements(): array
 	{
 		$form       = [];
 		$form['playlist_name'] = $this->formBuilder->createField([
