@@ -15,32 +15,40 @@
 				</div>
 				{{/form_element}}
 			</div>
-			<ul class="form-action">
-				<li>
+			<div class="form-action">
+				<div>
 					<button type="submit" name="submit_search" id="submit_search" value="{{{LANG_ELEMENTS_FILTER}}}">{{{LANG_ELEMENTS_FILTER}}}</button>
-				</li>
-				<li>
+				</div>
+				<div>
 					{{#if_add_allowed}}
 					<a href="{{{ELEMENTS_ADD_LINK}}}" title="{{{LANG_ELEMENTS_ADD_LINK}}}" class="thymian-icon thymian-icon-add"></a>
 					{{/if_add_allowed}}
-				</li>
-				<li>
-					<label for="elements_per_page">{{{LANG_COUNT_SEARCH_RESULTS}}}</label>
-					<select name="elements_per_page" id="elements_per_page">
-						{{#elements_per_page}}
-						<option value="{{{ELEMENTS_PER_PAGE_VALUE}}}" {{{ELEMENTS_PER_PAGE_SELECTED}}}>{{{ELEMENTS_PER_PAGE_NAME}}}</option>
-						{{/elements_per_page}}
-					</select>
+				</div>
+				<div>
+					{{{LANG_COUNT_SEARCH_RESULTS}}}
+				</div>
+				<div>
+					<label>
+						<select name="elements_per_page" id="elements_per_page">
+							{{#elements_per_page}}
+								<option value="{{{ELEMENTS_PER_PAGE_VALUE}}}" {{{ELEMENTS_PER_PAGE_SELECTED}}}>{{{ELEMENTS_PER_PAGE_NAME}}}</option>
+							{{/elements_per_page}}
+						</select>
+					</label>
+				</div>
+				<div>
 					{{{LANG_ELEMENTS_PER_PAGE}}}
+				</div>
+				<div>
 					{{#elements_pager}}
 					<a href="{{{ELEMENTS_PAGELINK}}}" class="page_numbers" id="page_number_{{{ELEMENTS_PAGENUMBER}}}">{{{ELEMENTS_PAGENAME}}}</a>&nbsp;
 					{{/elements_pager}}
-				</li>
-				<li class="export_csv"></li>
+				</div>
+				<div class="export_csv"></div>
 				{{#elements_export_results}}
-				<li>
+				<div>
 					<a href="{{{ELEMENTS_EXPORT_RESULTS_LINK}}}" class="button" target="blank">{{{LANG_ELEMENTS_EXPORT_RESULTS}}}</a>
-				</li>
+				</div>
 				{{/elements_export_results}}
-			</ul>
+			</div>
 		</form>

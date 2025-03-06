@@ -107,6 +107,8 @@ class FilterFormBuilder
 				'type' => FieldType::DROPDOWN,
 				'id' => 'playlist_mode',
 				'name' => 'playlist_mode',
+				'title' => $this->translator->translate('playlist_mode', 'playlists'),
+				'label' => $this->translator->translate('playlist_mode', 'playlists'),
 				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_MODE),
 				'options' => $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')
 			]);

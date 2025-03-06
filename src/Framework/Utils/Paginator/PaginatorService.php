@@ -20,6 +20,7 @@
 
 namespace App\Framework\Utils\Paginator;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
 class PaginatorService
@@ -58,16 +59,19 @@ class PaginatorService
 		return $this->renderer->render($this->pagerLinks, $site, $this->baseFilter);
 	}
 
-	public function renderElementsPerSiteDropDown(int $currentElementsPerPage = 10, int $min = 10, int $max = 100, int $steps = 10)
+	/**
+	 * @throws ModuleException
+	 */
+	public function renderElementsPerSiteDropDown(int $min = 10, int $max = 100, int $steps = 10)
 	{
 		$data = [];
-
+		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
 		for ($i = $min; $i <= $max; $i += $steps)
 		{
 			$data[] = [
 				'ELEMENTS_PER_PAGE_VALUE' => $i,
 				'ELEMENTS_PER_PAGE_NAME' => $i,
-				'ELEMENTS_PER_PAGE_SELECTED' =>($i === $currentElementsPerPage) ? 'selected' : ''
+				'ELEMENTS_PER_PAGE_SELECTED' => ($i === $currentElementsPerPage) ? 'selected' : ''
 			];
 		}
 		return $data;

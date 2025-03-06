@@ -80,7 +80,6 @@ class OverviewController
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
-
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -93,8 +92,8 @@ class OverviewController
 		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm($filter);
 
 		$title = $this->translator->translate('overview', 'playlists');
-		$this->paginatorService->setBaseFilter($this->parameters)->create($this->playlistsService->getCurrentTotalResult());
-		$this->paginatorService->setBaseFilter($this->parameters)->create($this->playlistsService->getCurrentTotalResult());
+		$total = $this->playlistsService->getCurrentTotalResult();
+		$this->paginatorService->setBaseFilter($this->parameters)->create($total);
 
 		return [
 			'main_layout' => [
@@ -118,16 +117,10 @@ class OverviewController
 							'ELEMENT_BUTTON_NAME' => 'submit',
 						]
 					],
-					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(
-						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
-						10,
-						100,
-						10
-					),
-					'elements_pager' => $this->paginatorService->renderPagination(
-						'playlists',
-						$this->parameters
-					)
+					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(10,100,10),
+					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
+					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'playlists', $total), $total),
+					'elements_pager' => $this->paginatorService->renderPagination('playlists')
 				]
 			]
 		];
