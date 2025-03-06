@@ -98,7 +98,8 @@ class OverviewController
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/overview.css']
+				'additional_css' => ['/css/playlists/overview.css'],
+				'footer_modules' => ['/js/playlists/overview/init.js']
 			],
 			'this_layout' => [
 				'template' => 'playlists/overview', // Template-name
@@ -117,13 +118,38 @@ class OverviewController
 							'ELEMENT_BUTTON_NAME' => 'submit',
 						]
 					],
+					'create_playlist_contextmenu' => $this->buildPlaylistContextMenu(),
 					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(10,100,10),
+					'add_allowed' => [
+						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'playlists'),
+						'ELEMENTS_ADD_LINK' => '#'
+
+					],
 					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
 					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'playlists', $total), $total),
 					'elements_pager' => $this->paginatorService->renderPagination('playlists')
 				]
 			]
 		];
+	}
+
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws CoreException
+	 */
+	private function buildPlaylistContextMenu(): array
+	{
+		$list = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
+		$data = [];
+		foreach ($list as $key => $value)
+		{
+			$data[] = [
+				'CREATE_PLAYLIST_MODE' => $key,
+				'LANG_CREATE_PLAYLIST_MODE' => $value
+			];
+		}
+		return $data;
 	}
 
 	private function setImportantAttributes(ServerRequestInterface $request): void

@@ -19,11 +19,11 @@
 				<div>
 					<button type="submit" name="submit_search" id="submit_search" value="{{{LANG_ELEMENTS_FILTER}}}">{{{LANG_ELEMENTS_FILTER}}}</button>
 				</div>
+				{{#add_allowed}}
 				<div>
-					{{#if_add_allowed}}
-					<a href="{{{ELEMENTS_ADD_LINK}}}" title="{{{LANG_ELEMENTS_ADD_LINK}}}" class="thymian-icon thymian-icon-add"></a>
-					{{/if_add_allowed}}
+					<a href="{{{ELEMENTS_ADD_LINK}}}" title="{{{LANG_ELEMENTS_ADD_LINK}}}" class="bi bi-folder-plus" id="createUnitAction"></a>
 				</div>
+				{{/add_allowed}}
 				<div>
 					{{{LANG_COUNT_SEARCH_RESULTS}}}
 				</div>
