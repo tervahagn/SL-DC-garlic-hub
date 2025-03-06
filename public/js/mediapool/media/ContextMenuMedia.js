@@ -37,8 +37,7 @@ export class ContextMenuMedia
 
     show(event)
     {
-
-        document.querySelectorAll('.context_menu').forEach(el => el.remove());  // remove all previous menu
+        document.querySelectorAll('.context-menu').forEach(el => el.remove());  // remove all previous menu
         this.#menuElement.style.left = `${event.pageX}px`;
         this.#menuElement.style.top = `${event.pageY}px`;
         document.body.appendChild(this.#menuElement);

@@ -36,7 +36,7 @@ export class ContextMenuTreeView
 
     show(event)
     {
-        document.querySelectorAll('.context_menu').forEach(el => el.remove());  // remove all previous menu
+        document.querySelectorAll('.context-menu').forEach(el => el.remove());  // remove all previous menu
         this.#menu.style.left = `${event.pageX}px`;
         this.#menu.style.top = `${event.pageY}px`;
         document.body.appendChild(this.#menu);
