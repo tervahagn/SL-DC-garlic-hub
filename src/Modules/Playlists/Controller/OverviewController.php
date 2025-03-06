@@ -93,12 +93,8 @@ class OverviewController
 		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm($filter);
 
 		$title = $this->translator->translate('overview', 'playlists');
-
-		$this->paginatorService->create(
-			$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-			$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
-			$this->playlistsService->getCurrentTotalResult()
-		);
+		$this->paginatorService->setBaseFilter($this->parameters)->create($this->playlistsService->getCurrentTotalResult());
+		$this->paginatorService->setBaseFilter($this->parameters)->create($this->playlistsService->getCurrentTotalResult());
 
 		return [
 			'main_layout' => [
@@ -130,9 +126,7 @@ class OverviewController
 					),
 					'elements_pager' => $this->paginatorService->renderPagination(
 						'playlists',
-						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
-						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
-						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
+						$this->parameters
 					)
 				]
 			]

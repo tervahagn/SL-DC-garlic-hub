@@ -20,6 +20,8 @@
 
 namespace App\Framework\Utils\Paginator;
 
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
+
 class Creator
 {
 	private int $currentPage;
@@ -29,10 +31,10 @@ class Creator
 	private bool $shortened;
 	private array $pagerLinks;
 
-	public function init(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager = false, bool $shortened = true): static
+	public function init(BaseFilterParameters $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
 	{
-		$this->currentPage = max(1, $currentPage);
-		$this->itemsPerPage = max(1, $itemsPerPage);
+		$this->currentPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
+		$this->itemsPerPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));
 		$this->totalItems = max(0, $totalItems);
 		$this->usePager = $usePager;
 		$this->shortened = $shortened;

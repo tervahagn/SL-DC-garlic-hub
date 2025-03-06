@@ -20,15 +20,21 @@
 
 namespace App\Framework\Utils\Paginator;
 
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
+
 class Renderer
 {
-	public function render(array $pageLinks, string $site, string $sortColumn, string $sortOrder, string $elementsPerPage): array
+	public function render(array $pageLinks, string $site, BaseFilterParameters $baseFilter): array
 	{
+
+		$sortSuffix = '&sort_column='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
+			'&sort_order='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
+			'&elements_per_page='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
 		$data = [];
 		foreach($pageLinks as $key => $values)
 		{
 			$data[] = [
-				'ELEMENTS_PAGELINK'   => '/'.$site.'/'.$values['page'].'/'.$sortColumn.'/'.$sortOrder.'/'.$elementsPerPage,
+				'ELEMENTS_PAGELINK'   => '/'.$site.'?elements_page='.$values['page'].$sortSuffix,
 				'ELEMENTS_PAGENAME'   => $values['name'],
 				'ELEMENTS_PAGENUMBER' => $values['page']
 			];

@@ -20,10 +20,13 @@
 
 namespace App\Framework\Utils\Paginator;
 
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
+
 class PaginatorService
 {
 	private Creator $creator;
 	private Renderer $renderer;
+	private BaseFilterParameters $baseFilter;
 	private array $pagerLinks;
 
 	/**
@@ -36,16 +39,23 @@ class PaginatorService
 		$this->renderer = $renderer;
 	}
 
-	public function create(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager = false, bool $shortened = true): void
+	public function setBaseFilter(BaseFilterParameters $baseFilter): PaginatorService
 	{
-		$this->pagerLinks = $this->creator->init($currentPage, $itemsPerPage, $totalItems, $usePager, $shortened)
+		$this->baseFilter = $baseFilter;
+		return $this;
+	}
+
+
+	public function create(int $totalItems, bool $usePager = false, bool $shortened = true): void
+	{
+		$this->pagerLinks = $this->creator->init($this->baseFilter, $totalItems, $usePager, $shortened)
 			->buildPagerLinks()
 			->getPagerLinks();
 	}
 
-	public function renderPagination(string $site, string $sortColumn, string $sortOrder, string $elementsPerPage): array
+	public function renderPagination(string $site): array
 	{
-		return $this->renderer->render($this->pagerLinks, $site, $sortColumn, $sortOrder, $elementsPerPage);
+		return $this->renderer->render($this->pagerLinks, $site, $this->baseFilter);
 	}
 
 	public function renderElementsPerSiteDropDown(int $currentElementsPerPage = 10, int $min = 10, int $max = 100, int $steps = 10)
