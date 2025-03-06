@@ -64,9 +64,7 @@ class ShowController
 					'/js/external/glightbox.min.js',
 					'/js/external/jszip.min.js'
 				],
-				'footer_modules' => [
-					'/js/mediapool/init.js'
-				]
+				'footer_modules' => ['/js/mediapool/init.js']
 			],
 			'this_layout' => [
 				'template' => 'mediapool/overview', // Template-name
