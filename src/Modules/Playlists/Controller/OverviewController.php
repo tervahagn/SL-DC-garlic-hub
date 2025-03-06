@@ -26,6 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\Paginator\PaginatorService;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
@@ -41,15 +42,17 @@ class OverviewController
 	private readonly FilterFormBuilder $formBuilder;
 	private readonly FilterParameters $parameters;
 	private readonly PlaylistsOverviewService $playlistsService;
+	private readonly PaginatorService $paginatorService;
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService, PaginatorService $paginatorService)
 	{
 		$this->formBuilder = $formBuilder;
-		$this->parameters = $parameters;
+		$this->parameters       = $parameters;
 		$this->playlistsService = $playlistsService;
+		$this->paginatorService = $paginatorService;
 	}
 
 	/**
@@ -67,7 +70,6 @@ class OverviewController
 		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
 		$this->parameters->parseInputFilterAllUsers();
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
-		$num_search_results = $this->playlistsService->getCurrentTotalResult();
 		$filter = array_combine(
 			$this->parameters->getInputParametersKeys(),
 			$this->parameters->getInputValuesArray()
@@ -84,12 +86,19 @@ class OverviewController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws ModuleException
 	 */
 	private function buildForm(array $filter): array
 	{
 		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm($filter);
 
 		$title = $this->translator->translate('overview', 'playlists');
+
+		$this->paginatorService->create(
+			$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
+			$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
+			$this->playlistsService->getCurrentTotalResult()
+		);
 
 		return [
 			'main_layout' => [
@@ -112,7 +121,19 @@ class OverviewController
 							'ELEMENT_BUTTON_TYPE' => 'submit',
 							'ELEMENT_BUTTON_NAME' => 'submit',
 						]
-					]
+					],
+					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(
+						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
+						10,
+						100,
+						10
+					),
+					'elements_pager' => $this->paginatorService->renderPagination(
+						'playlists',
+						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
+						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
+						$this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
+					)
 				]
 			]
 		];

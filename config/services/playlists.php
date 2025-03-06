@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Framework\Utils\Paginator\PaginatorService;
 use App\Modules\Playlists\Controller\OverviewController;
 use App\Modules\Playlists\Controller\SettingsController;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
@@ -122,7 +123,8 @@ $dependencies[OverviewController::class] = DI\factory(function (ContainerInterfa
 	return new OverviewController(
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
-		$container->get(PlaylistsOverviewService::class)
+		$container->get(PlaylistsOverviewService::class),
+		$container->get(PaginatorService::class)
 	);
 });
 return $dependencies;

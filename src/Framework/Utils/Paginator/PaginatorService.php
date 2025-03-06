@@ -43,10 +43,26 @@ class PaginatorService
 			->getPagerLinks();
 	}
 
-	public function render(string $site, string $sortColumn, string $sortOrder, string $elementsPerPage): array
+	public function renderPagination(string $site, string $sortColumn, string $sortOrder, string $elementsPerPage): array
 	{
 		return $this->renderer->render($this->pagerLinks, $site, $sortColumn, $sortOrder, $elementsPerPage);
 	}
+
+	public function renderElementsPerSiteDropDown(int $currentElementsPerPage = 10, int $min = 10, int $max = 100, int $steps = 10)
+	{
+		$data = [];
+
+		for ($i = $min; $i <= $max; $i += $steps)
+		{
+			$data[] = [
+				'ELEMENTS_PER_PAGE_VALUE' => $i,
+				'ELEMENTS_PER_PAGE_NAME' => $i,
+				'ELEMENTS_PER_PAGE_SELECTED' =>($i === $currentElementsPerPage) ? 'selected' : ''
+			];
+		}
+		return $data;
+	}
+
 
 
 }

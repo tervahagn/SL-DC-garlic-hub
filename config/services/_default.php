@@ -40,6 +40,9 @@ use App\Framework\User\UserService;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Framework\Utils\Paginator\Creator;
+use App\Framework\Utils\Paginator\PaginatorService;
+use App\Framework\Utils\Paginator\Renderer;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -191,5 +194,13 @@ $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $conta
 	$allowedTags = $container->get(Config::class)->getConfigValue('allowed_tags', 'main');
 	return new Sanitizer($allowedTags);
 });
+$dependencies[PaginatorService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PaginatorService(
+		new Creator(),
+		new Renderer()
+	);
+});
+
 
 return $dependencies;
