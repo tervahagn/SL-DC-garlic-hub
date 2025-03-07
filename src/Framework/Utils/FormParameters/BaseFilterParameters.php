@@ -85,21 +85,15 @@ class BaseFilterParameters extends BaseParameters
 	 *
 	 * @throws  ModuleException
 	 */
-	public function parseInputFilterAllUsers(bool $filter_submitted = false): static
+	public function parseInputFilterAllUsers(bool $filterSubmitted = false): static
 	{
-		if ($filter_submitted === false && $this->storedParametersInSessionExists())
-		{
+		if ($filterSubmitted === false && $this->storedParametersInSessionExists())
 			$this->currentParameters = $this->getStoredSearchParamsFromSession();
-		}
 		else
-		{
 			$this->parseInputAllParameters();
-		}
 
-		if ($filter_submitted === true)
-		{
+		if ($filterSubmitted === true)
 			$this->storeSearchParamsToSession($this->currentParameters);
-		}
 
 		return $this;
 	}

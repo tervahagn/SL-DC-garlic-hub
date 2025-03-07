@@ -63,7 +63,7 @@ class FilterFormBuilder
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function buildForm(array $filter): array
+	public function buildForm(): array
 	{
 		$form = $this->collectFormElements();
 		return $this->formBuilder->createFormular($form);

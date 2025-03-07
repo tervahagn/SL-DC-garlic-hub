@@ -69,33 +69,44 @@ class OverviewController
 	 */
 	public function showFromGet(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
-
-		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
+		$this->parameters->setUserInputs($args);
 		$this->parameters->parseInputFilterAllUsers();
-		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
-		$filter = array_combine(
-			$this->parameters->getInputParametersKeys(),
-			$this->parameters->getInputValuesArray()
-		);
-		$data = $this->buildForm([]);
 
-		$response->getBody()->write(serialize($data));
-		return $response->withHeader('Content-Type', 'text/html');
+		return $this->show($request, $response);
 	}
 
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	public function showFromPost(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
-		$post = $request->getParsedBody();
-		$this->parameters->setUserInputs($post ?? []);
+		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
 		$this->parameters->parseInputFilterAllUsers(true);
+		return $this->show($request, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	private function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$this->setImportantAttributes($request);
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
-		$filter = array_combine(
-			$this->parameters->getInputParametersKeys(),
-			$this->parameters->getInputValuesArray()
-		);
-		$data = $this->buildForm([]);
+
+		$data = $this->buildForm();
 
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
@@ -107,10 +118,11 @@ class OverviewController
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 * @throws ModuleException
+	 * @throws Exception
 	 */
-	private function buildForm(array $filter): array
+	private function buildForm(): array
 	{
-		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm($filter);
+		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm();
 
 		$title = $this->translator->translate('overview', 'playlists');
 		$total = $this->playlistsService->getCurrentTotalResult();
@@ -140,7 +152,7 @@ class OverviewController
 						]
 					],
 					'create_playlist_contextmenu' => $this->buildPlaylistContextMenu(),
-					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(10,100,10),
+					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(),
 					'add_allowed' => [
 						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'playlists'),
 						'ELEMENTS_ADD_LINK' => '#'
@@ -165,13 +177,20 @@ class OverviewController
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	private function renderHeader()
+	private function renderHeader(): array
 	{
 		$this->resultList->createFields($this->session->get('user')['UID']);
 		return $this->resultList->renderTableHeader($this->parameters, 'playlists', $this->translator);
 	}
 
-	private function renderBody()
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	private function renderBody(): array
 	{
 		$showedIds     = $this->playlistsService->getPlaylistIdsFromResultSet();
 		$usedPlaylists = $this->playlistsService->getPlaylistsInUse($showedIds);
