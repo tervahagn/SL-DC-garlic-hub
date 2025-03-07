@@ -31,7 +31,7 @@ abstract class FilterBase extends Sql
 	 */
 	public function countAllFiltered(array $fields): int
 	{
-		$where = $this->prepareWhereForSearch($fields);
+		$where = $this->prepareWhereForFiltering($fields);
 		$join  = $this->prepareJoin();
 		return $this->countAllBy($where, $join);
 	}
@@ -42,7 +42,7 @@ abstract class FilterBase extends Sql
 	public function findAllFiltered(array $fields): array
 	{
 		$selects  = $this->prepareSelectFilteredForUser();
-		$where 	  = $this->prepareWhereForSearch($fields);
+		$where 	  = $this->prepareWhereForFiltering($fields);
 		$orderBy  = [$this->prepareOrderBy($fields)];
 		$join     = $this->prepareJoin();
 
@@ -77,7 +77,7 @@ abstract class FilterBase extends Sql
 	 */
 	public function countAllFilteredByUID(array $fields, $UID): int
 	{
-		$where   = $this->prepareWhereForSearch($fields);
+		$where   = $this->prepareWhereForFiltering($fields);
 		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
 		return $this->countAllBy($where);
 	}
@@ -88,7 +88,7 @@ abstract class FilterBase extends Sql
 	public function findAllFilteredByUID(array $fields, $UID): array
 	{
 		$selects = $this->prepareSelectFilteredForUser();
-		$where   = $this->prepareWhereForSearch($fields);
+		$where   = $this->prepareWhereForFiltering($fields);
 		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
 		$orderBy = [$this->prepareOrderBy($fields)];
 
@@ -97,7 +97,7 @@ abstract class FilterBase extends Sql
 
 	private function buildRestrictedWhereForCountAndFindSearch(array $company_ids, array $search_fields, $UID): array
 	{
-		$where   = $this->prepareWhereForSearch($search_fields);
+		$where   = $this->prepareWhereForFiltering($search_fields);
 		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
 		$where[] = $this->buildWhereByCompanyIds($company_ids);
 
@@ -146,17 +146,17 @@ abstract class FilterBase extends Sql
 		return [];
 	}
 
-	protected function prepareWhereForSearch(array $search_fields): array
+	protected function prepareWhereForFiltering(array $filterFields): array
 	{
 		$where             = array();
-		foreach ($search_fields as $key => $parameter)
+		foreach ($filterFields as $key => $parameter)
 		{
-			if ($clause = $this->determineWhereForSearch($key, $parameter))
+			if ($clause = $this->determineWhereForFiltering($key, $parameter))
 				$where[] = $clause;
 		}
 		return $where;
 	}
-	protected function determineWhereForSearch($key, $parameter): array
+	protected function determineWhereForFiltering($key, $parameter): array
 	{
 		$where = [];
 		switch ($key)

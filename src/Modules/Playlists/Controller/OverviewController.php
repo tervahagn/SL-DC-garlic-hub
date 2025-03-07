@@ -67,12 +67,29 @@ class OverviewController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws ModuleException
 	 */
-	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function showFromGet(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->setImportantAttributes($request);
 
 		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
 		$this->parameters->parseInputFilterAllUsers();
+		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
+		$filter = array_combine(
+			$this->parameters->getInputParametersKeys(),
+			$this->parameters->getInputValuesArray()
+		);
+		$data = $this->buildForm([]);
+
+		$response->getBody()->write(serialize($data));
+		return $response->withHeader('Content-Type', 'text/html');
+	}
+
+	public function showFromPost(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$this->setImportantAttributes($request);
+		$post = $request->getParsedBody();
+		$this->parameters->setUserInputs($post ?? []);
+		$this->parameters->parseInputFilterAllUsers(true);
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
 		$filter = array_combine(
 			$this->parameters->getInputParametersKeys(),
