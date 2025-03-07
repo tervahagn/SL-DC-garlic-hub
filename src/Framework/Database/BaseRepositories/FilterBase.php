@@ -151,7 +151,8 @@ abstract class FilterBase extends Sql
 		$where             = array();
 		foreach ($filterFields as $key => $parameter)
 		{
-			if ($clause = $this->determineWhereForFiltering($key, $parameter))
+			$clause = $this->determineWhereForFiltering($key, $parameter);
+			if (!empty($clause))
 				$where[] = $clause;
 		}
 		return $where;
