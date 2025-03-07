@@ -179,7 +179,7 @@ class SettingsController
 
 		$id = $this->playlistsService->createNew($saveData);
 		if ($id > 0)
-			return $this->redirectSucceed($response, 'Playlist '.$id.' successfully created.');
+			return $this->redirectSucceed($response, 'Playlist “'.$post['playlist_name'].'“ successfully created.');
 
 		return $this->returnBuildForm($response, $post);
 	}
@@ -200,7 +200,7 @@ class SettingsController
 		);
 
 		if ($this->playlistsService->update($saveData) > 0)
-			return $this->redirectSucceed($response, 'Playlist '.$post['playlist_id'].' successfully updated.');
+			return $this->redirectSucceed($response, 'Playlist “'.$post['playlist_name'].'“ successfully updated.');
 
 		return $this->returnBuildForm($response, $post);
 	}
@@ -241,7 +241,7 @@ class SettingsController
 				'template' => 'playlists/edit', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
-					'FORMACTION' => '/playlists/settings',
+					'FORM_ACTION' => '/playlists/settings',
 					'element_hidden' => $elements['hidden'],
 					'form_element' => $elements['visible'],
 					'form_button' => [
@@ -272,7 +272,7 @@ class SettingsController
 
 	private function redirectSucceed(ResponseInterface $response, string $message): ResponseInterface
 	{
-		$this->flash->addMessage('error', $message);
+		$this->flash->addMessage('success', $message);
 		return $response->withHeader('Location', '/playlists')->withStatus(302);
 	}
 }
