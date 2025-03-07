@@ -1,6 +1,6 @@
-	<ul class="results">
+	<ul class="results-listing">
 		<li>
-			<ul class="results_header">
+			<ul class="results-header">
 				{{#elements_result_header}}
 				<li class="{{{CONTROL_NAME}}}">
 					{{#if_sortable}}
@@ -9,12 +9,12 @@
 					{{{LANG_CONTROL_NAME_2}}}
 				</li>
 				{{/elements_result_header}}
-				<li class="functions"></li>
+				<li class="actions"></li>
 			</ul>
 		</li>
 		{{#elements_results}}
 		<li>
-			<ul style="{{{MARKED_AS_DISABLED}}}" class="results_list" data-id="{{{UNIT_ID}}}">
+			<ul style="{{{MARKED_AS_DISABLED}}}" class="results-body" data-id="{{{UNIT_ID}}}">
 				{{#elements_result_element}}
 				<li class="{{{CONTROL_NAME_BODY}}}">
 					{{#if_editable}}
@@ -34,7 +34,7 @@
 					{{/if_online_bullet}}
 
 					{{#if_checkbox}}
-						<label><input type="checkbox"></label>
+						<label><input type="checkbox" {{{SELECT_DISABLED}}}></label>
 					{{/if_checkbox}}
 
 					{{#if_icon_column_linked}}
@@ -57,24 +57,21 @@
 					{{/if_UID_ShowOnly}}
 				</li>
 				{{/elements_result_element}}
-				<li class="submenu">
+				<li class="actions">
                     <ul>
-                        {{#if_submenu_item}}
+                        {{#has_action}}
                         <li>
-                            <a href="{{{LINK_SUBMENU}}}" title="{{{LANG_SUBMENU}}}" id="{{{SUBMENU_ID}}}" style="{{{CSS_SUBMENU_INLINE}}}" class="thymian-icon thymian-icon-{{{CSS_SUBMENU}}} {{{SUBMENU_CLASS}}}">&nbsp;&nbsp;</a>
+                            <a href="{{{LINK_ACTION}}}" title="{{{LANG_ACTION}}}"
+							   data-action="{{{ACTION_NAME}}}" data-action-id="{{{SUBMENU_ID}}}"
+							   style="{{{ACTION_INLINE_CSS}}}"
+							   class="bi bi-{{{ACTION_ICON_CLASS}}} {{{ACTION_CLASS}}}"></a>
                         </li>
-						{{/if_submenu_item}}
-						{{#if_2nd_submenu_item}}
-						<li>
-							<a href="{{{LINK_SUBMENU_2}}}" title="{{{LANG_SUBMENU_2}}}" id="{{{SUBMENU_ID_2}}}" style="{{{CSS_SUBMENU_INLINE}}}" class="thymian-icon thymian-icon-{{{CSS_SUBMENU_2}}} {{{SUBMENU_2_CLASS}}}">&nbsp;&nbsp;</a>
-						</li>
-						{{/if_2nd_submenu_item}}
-
-{						{{#if_delete}}
+						{{/has_action}}
+						{{#has_delete}}
                         <li>
-                            <a href="{{{ELEMENTS_DELETE_LINK}}}" id="{{{ELEMENTS_DELETE_ID}}}" onclick="return confirm_delete('{{{LANG_CONFIRM_DELETE}}}')" title="{{{LANG_ELEMENTS_DELETE_LANG}}}" class="thymian-icon thymian-icon-delete {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
+                            <a href="{{{LINK_DELETE_ACTION}}}" data-delete-id="{{{DELETE_ID}}}" onclick="return confirm_delete('{{{LANG_CONFIRM_DELETE}}}')" title="{{{LANG_ELEMENTS_DELETE_LANG}}}" class="bi bi-trash {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
                         </li>
-						{{/if_delete}}
+						{{/has_delete}}
                     </ul>
 				</li>
 			</ul>
