@@ -145,16 +145,18 @@ abstract class Sql
 
 	protected function determineConditions(QueryBuilder $queryBuilder, array $conditions): void
 	{
-		foreach ($conditions as $field => $value)
+		foreach ($conditions as $field => $parameter)
 		{
-			$value    = $value['value'] ?? $value;
-			$compare  = $value['compare'] ?? '=';
-			$logic    = $value['logic'] ?? 'AND';
+			$value    = $parameter['value'] ?? $parameter;
+			$compare  = $parameter['compare'] ?? '=';
+			$logic    = $parameter['logic'] ?? 'AND';
+
+			$gavno = str_replace('.', '', $field); // because DBAl do not accept SQL-dots like table.field
 
 			if ($compare === 'IN')
-				$placeholder = "(:$field)";
+				$placeholder = "(:$gavno)";
 			else
-				$placeholder = ":$field";
+				$placeholder = ":$gavno";
 
 			switch ($logic)
 			{
@@ -166,7 +168,7 @@ abstract class Sql
 					$queryBuilder->andWhere("$field $compare $placeholder");
 			}
 
-			$queryBuilder->setParameter($field, $value);
+			$queryBuilder->setParameter($gavno, $value);
 		}
 	}
 

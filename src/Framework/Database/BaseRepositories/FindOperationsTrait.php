@@ -73,6 +73,7 @@ trait FindOperationsTrait
 	public function countAllBy(array $conditions = [], array $joins = [], string $groupBy = ''): int
 	{
 		$queryBuilder = $this->buildQuery('COUNT(1)', $conditions, $joins, $groupBy);
+
 		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 
@@ -97,7 +98,11 @@ trait FindOperationsTrait
 		$queryBuilder = $this->buildQuery($fields, $conditions, $joins,	$groupBy, $orderBy);
 
 		if ($limitStart !== null && $limitShow !== null)
-			$queryBuilder->setFirstResult($limitStart - 1)->setMaxResults($limitShow);
+		{
+			if ($limitStart > 0)
+				$limitStart--; // Todo find out why this shit creates so many problems.
+			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+		}
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
