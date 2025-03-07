@@ -91,7 +91,7 @@ readonly class SettingsFormBuilder
 		if (!$this->aclValidator->isAdmin($this->UID, $playlist['company_id']))
 			return;
 
-		$this->parameters->addUID();
+		$this->parameters->addUID($this->UID);
 
 		if ($this->isTimeLimitPlaylist($playlist['playlist_mode']))
 			$this->parameters->addTimeLimit();
