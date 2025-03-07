@@ -179,7 +179,7 @@ abstract class Sql
 	{
 		foreach ($joins as $table => $onCondition)
 		{
-			$queryBuilder->leftJoin($this->table, $table, $table, $onCondition);
+			$queryBuilder->leftJoin($this->table, $table, '', $onCondition);
 		}
 	}
 

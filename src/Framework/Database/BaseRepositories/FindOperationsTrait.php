@@ -97,7 +97,7 @@ trait FindOperationsTrait
 		$queryBuilder = $this->buildQuery($fields, $conditions, $joins,	$groupBy, $orderBy);
 
 		if ($limitStart !== null && $limitShow !== null)
-			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+			$queryBuilder->setFirstResult($limitStart - 1)->setMaxResults($limitShow);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
