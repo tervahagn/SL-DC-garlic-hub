@@ -54,7 +54,8 @@ $app->group('', function (RouteCollectorProxy $group)
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
-	$group->get('/playlists', [OverviewController::class, 'show']);
+	$group->get('/playlists', [OverviewController::class, 'showFromGet']);
+	$group->post('/playlists', [OverviewController::class, 'showFromPost']);
 	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [SettingsController::class, 'newPlaylistForm']);
 	$group->get('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'editPlaylistForm']);
 	$group->delete('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'delete']);
