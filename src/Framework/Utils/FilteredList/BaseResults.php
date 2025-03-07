@@ -102,12 +102,12 @@ abstract class BaseResults
 		foreach($this->tableHeaderFields as $HeaderField)
 		{
 			$headerFieldName = $HeaderField->getName();
-			$controlName     = ['CONTROL_NAME' => [$headerFieldName]];
+			$controlName     = ['CONTROL_NAME' => $headerFieldName];
 
 			if ($HeaderField->isSortable())
-				$controlName[$headerFieldName][] = ['if_sortable' => $this->renderSortableHeaderField($HeaderField)];
+				$controlName['if_sortable'] = $this->renderSortableHeaderField($HeaderField);
 			else
-				$controlName[$headerFieldName][] = ['LANG_CONTROL_NAME_2' => $this->renderNonSortableHeaderField($HeaderField)];
+				$controlName['LANG_CONTROL_NAME_2'] = $this->renderNonSortableHeaderField($HeaderField);
 
 			$header[] = $controlName;
 		}

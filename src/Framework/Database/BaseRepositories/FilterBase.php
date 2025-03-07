@@ -41,7 +41,7 @@ abstract class FilterBase extends Sql
 	 */
 	public function findAllFiltered(array $fields): array
 	{
-		$selects  = $this->prepareSelectFiltered();
+		$selects  = $this->prepareSelectFilteredForUser();
 		$where 	  = $this->prepareWhereForSearch($fields);
 		$orderBy  = [$this->prepareOrderBy($fields)];
 		$join     = $this->prepareJoin();

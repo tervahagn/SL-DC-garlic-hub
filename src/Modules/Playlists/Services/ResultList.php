@@ -87,12 +87,12 @@ class ResultList extends BaseResults
 				$innerKey = $HeaderField->getName();
 				$sort = $HeaderField->isSortable();
 
-				$resultElement = [];
-				$resultElement['CONTROL_NAME_BODY'] = $innerKey;
+				$resultElements = [];
+				$resultElements['CONTROL_NAME_BODY'] = $innerKey;
 				switch ($innerKey)
 				{
 					case 'playlist_name':
-						$data['if_editable'] = [
+						$resultElements['if_editable'] = [
 							'CONTROL_ELEMENT_VALUE_NAME'  => $value['playlist_name'],
 							'CONTROL_ELEMENT_VALUE_TITLE' => $this->translator->translate('edit', 'main'),
 							'CONTROL_ELEMENT_VALUE_LINK' => 'playlists/compose/'.$value['playlist_id'],
@@ -101,63 +101,66 @@ class ResultList extends BaseResults
 						];
 						break;
 					case 'UID':
-						$data['if_UID'] = [
+						$resultElements['if_UID'] = [
 							'OWNER_UID'  => $value['UID'],
 							'OWNER_NAME' => $value['username'],
 						];
 						break;
 					case 'duration':
-						$data['if_not_editable'] = [
+						$resultElements['if_not_editable'] = [
 							'CONTROL_ELEMENT_VALUE'  => $this->convertSeconds($value['duration'])->format('%H:%I:%S'),
 						];
 						break;
 					case 'playlist_mode':
-						$data['if_not_editable'] = [
+						$resultElements['if_not_editable'] = [
 							'CONTROL_ELEMENT_VALUE'  => $selectableModes[$value['playlist_mode']],
 						];
 						break;
+					case 'selector':
+						$resultElements['SELECT_DISABLED']     =  ($value['playlist_mode'] == PlaylistMode::MULTIZONE || $value['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
+						break;
 					default:
-						$data['if_not_editable'] = [
+						$resultElements['if_not_editable'] = [
 							'CONTROL_ELEMENT_VALUE'  => $value[$innerKey],
 						];
 						break;
 				}
+				$data['elements_result_element'][] = $resultElements;
+
+				if ($value['UID'] == $this->UID ||
+					$this->aclValidator->isModuleAdmin($this->UID) ||
+					$this->aclValidator->isSubAdmin($this->UID))
+				{
+					$data['has_action'] = [
+						[
+							'LANG_ACTION'       => $this->translator->translate('copy_playlist', 'playlists'),
+							'LINK_ACTION'       => 'playlists/?playlist_copy_id='.$value['playlist_id'],
+							'ACTION_NAME'       => 'copy',
+							'ACTION_ICON_CLASS' => 'copy'
+						],
+						[
+							'LANG_ACTION'       => $this->translator->translate('edit_settings', 'playlists'),
+							'LINK_ACTION'       => 'playlists/settings/'.$value['playlist_id'],
+							'ACTION_NAME'       => 'edit',
+							'ACTION_ICON_CLASS' => 'pencil'
+						]
+					];
+					if (!array_key_exists($value['playlist_id'], $usedPlaylists) &&
+						$this->aclValidator->isAllowedToDeletePlaylist($this->UID, $value))
+					{
+						$data['has_delete'] = [
+							'LINK_DELETE_ACTION' => 'playlists/?delete_id='.$value['playlist_id'],
+							'LANG_CONFIRM_DELETE'=> $this->translator->translate('confirm_delete', 'playlists'),
+							'DELETE_ID'          => $value['playlist_id']
+						];
+					}
+
+				}
 			}
-
-/*
-			$data['SELECT_DISABLED']     =  ($value['playlist_mode'] == PlaylistMode::MULTIZONE || $value['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
-
-
-			if ($value['UID'] == $this->UID ||
-				$this->aclValidator->isModuleAdmin($this->UID) ||
-				$this->aclValidator->isSubAdmin($this->UID))
-			{
-
-				$data['if_copy_option'] = [
-					'LANG_ELEMENTS_COPY_LINK' => $this->translator->translate('copy_playlist', 'playlists'),
-					'ELEMENTS_COPY_LINK' => 'playlists/?playlist_copy_id='.$value['playlist_id']
-				];
-
-				$data['if_edit_options'] = [
-					'LANG_ELEMENTS_OPTION_LINK' => $this->translator->translate('edit_properties', 'main'),
-					'ELEMENTS_OPTION_LINK' => 'playlists/settings/'.$value['playlist_id']
-				];
-			}
-
-			if (!array_key_exists($value['playlist_id'], $usedPlaylists) &&
-				$this->aclValidator->isAllowedToDeletePlaylist($this->UID, $value))
-			{
-				$data['if_deleteable'] = [
-					'LANG_ELEMENTS_DELETE_LINK' => $this->translator->translate('delete', 'main'),
-					'LANG_CONFIRM_DELETE'       => $this->translator->translate('confirm_delete', 'playlists'),
-					'ELEMENTS_DELETE_LINK'     => 'playlists/?delete_id='.$value['playlist_id']
-				];
-			}
-			*/
 			$body[] = $data;
 		}
 
-		return ['elements_result_element' => $data];
+		return $body;
 
 /*		$data['LANG_SELECT_ALL', 	$Translator->translate('select_all', 'main'));
 		$data['LANG_DESELCT_ALL', 	$Translator->translate('deselect_all', 'main'));
