@@ -37,7 +37,7 @@ class FilterParameters extends BaseFilterParameters
 
 	protected array $moduleParameters = array(
 		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::INT,    'default_value' => '', 'parsed' => false)
+		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::STRING,  'default_value' => '', 'parsed' => false)
 	);
 
 	/**
