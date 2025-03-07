@@ -60,4 +60,30 @@ class PlaylistsRepository extends FilterBase
 	{
 		return [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
 	}
+
+	protected function prepareWhereForFiltering(array $filterFields): array
+	{
+		$where = [];
+		foreach ($filterFields as $key => $parameter)
+		{
+			switch ($key)
+			{
+				case 'playlist_mode':
+					if (!empty($parameter['value']))
+					{
+						$where[$key] = ['value' => $parameter['value'], 'operator' => '='];
+					}
+					break;
+
+				default:
+					$clause = $this->determineWhereForFiltering($key, $parameter);
+					if (!empty($clause))
+					{
+						$where = array_merge($where, $clause);
+					}
+			}
+		}
+		return $where;
+	}
+
 }
