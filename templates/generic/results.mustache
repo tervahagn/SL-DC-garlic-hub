@@ -14,7 +14,7 @@
 		</li>
 		{{#elements_results}}
 		<li>
-			<ul style="{{{MARKED_AS_DISABLED}}}" class="results_list">
+			<ul style="{{{MARKED_AS_DISABLED}}}" class="results_list" data-id="{{{UNIT_ID}}}">
 				{{#elements_result_element}}
 				<li class="{{{CONTROL_NAME_BODY}}}">
 					{{#if_editable}}
@@ -28,12 +28,19 @@
 					{{#if_icon_column}}
                     <div class="{{{CONTROL_ICON_CLASSNAME}}}"><span title="{{{CONTROL_ELEMENT_MESSAGE}}}"></span></div>
 					{{/if_icon_column}}
+
 					{{#if_online_bullet}}
                     <div class="thymian-icon thymian-icon-{{{BULLET_COLOR}}}" title="{{{LANG_MONITORING}}}">&nbsp;</div>
 					{{/if_online_bullet}}
+
+					{{#if_checkbox}}
+						<label><input type="checkbox"></label>
+					{{/if_checkbox}}
+
 					{{#if_icon_column_linked}}
 					<div class="{{{CONTROL_ICON_CLASSNAME_LINKED}}}"><a href="{{{CONTROL_ELEMENT_LINK}}}" title="{{{CONTROL_ELEMENT_MESSAGE_LINKED}}}" class=""></a></div>
 					{{/if_icon_column_linked}}
+
 					{{#if_expand_collapse}}
 					<details>
 						<summary>{{{CONTROL_ELEMENT_MESSAGE_COLLAPSED}}}</summary>
