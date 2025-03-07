@@ -25,11 +25,12 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Framework\Utils\Paginator\PaginatorService;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
+use App\Modules\Playlists\Services\ResultList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -43,16 +44,19 @@ class OverviewController
 	private readonly FilterParameters $parameters;
 	private readonly PlaylistsOverviewService $playlistsService;
 	private readonly PaginatorService $paginatorService;
+	private readonly ResultList $resultList;
+
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService, PaginatorService $paginatorService)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService, PaginatorService $paginatorService, ResultList $resultList)
 	{
-		$this->formBuilder = $formBuilder;
+		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
 		$this->playlistsService = $playlistsService;
 		$this->paginatorService = $paginatorService;
+		$this->resultList       = $resultList;
 	}
 
 	/**
@@ -127,10 +131,39 @@ class OverviewController
 					],
 					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
 					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'playlists', $total), $total),
-					'elements_pager' => $this->paginatorService->renderPagination('playlists')
+					'elements_pager' => $this->paginatorService->renderPagination('playlists'),
+					'elements_result_header' => $this->renderHeader(),
+					'elements_results' => $this->renderBody()
+
 				]
 			]
 		];
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	private function renderHeader()
+	{
+		$this->resultList->createFields($this->session->get('user')['UID']);
+		return $this->resultList->renderTableHeader($this->parameters, 'playlists', $this->translator);
+	}
+
+	private function renderBody()
+	{
+		$showedIds     = $this->playlistsService->getPlaylistIdsFromResultSet();
+		$usedPlaylists = $this->playlistsService->getPlaylistsInUse($showedIds);
+
+		return $this->resultList->renderTableBody(
+			$this->playlistsService->getCurrentFilterResults(),
+			$showedIds,
+			$usedPlaylists
+		);
 	}
 
 	/**

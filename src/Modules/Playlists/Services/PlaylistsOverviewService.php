@@ -82,6 +82,11 @@ class PlaylistsOverviewService
 
 	}
 
+	public function getPlaylistIdsFromResultSet()
+	{
+		return array_column($this->getCurrentFilterResults(), 'playlist_id');
+	}
+
 	/**
 	 * @throws Exception
 	 */
@@ -128,6 +133,38 @@ class PlaylistsOverviewService
 		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->getUser()->getUID());
 
 		return $this->setAllResultData($total_elements, $results);
+	}
+
+	public function getPlaylistsInUse(array $playlistIds)
+	{
+		if (empty($playlistIds))
+			return [];
+
+		return $this->arePlayListsInUse($playlistIds);
+	}
+
+	protected function arePlayListsInUse(array $playlistIds)
+	{
+		$results = [];
+		/* later
+			// Todo: Find some smarter way to this
+			foreach($this->playerRepository->findPlaylistIdsByPlaylistIds($playlistIds) as $value)
+			{
+				$results[$value['playlist_id']] = true;
+			}
+			foreach($this->itemRepository->findMediaIdsByPlaylistId($playlistIds) as $value)
+			{
+				$results[$value['media_id']] = true;
+			}
+	*/
+	/* no channels currently
+		foreach($this->channelRepository->findTableIdsByPlaylistIds($playlistIds) as $value)
+		{
+			$results[$value['table_id']] = true;
+		}
+		*/
+
+		return $results;
 	}
 
 }

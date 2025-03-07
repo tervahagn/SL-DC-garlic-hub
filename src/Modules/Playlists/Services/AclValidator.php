@@ -22,6 +22,7 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -38,6 +39,9 @@ class AclValidator extends AbstractAclValidator
 			return true;
 
 		// Edge Edition will not move further as there is not subadmin
+		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
+			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
+
 		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 
@@ -65,5 +69,30 @@ class AclValidator extends AbstractAclValidator
 
 		return false;
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isAllowedToDeletePlaylist(int $UID, array $playlist): bool
+	{
+		// module admin is always allowed
+		if ($this->isModuleAdmin($UID))
+			return true;
+
+		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
+			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
+
+		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
+			return true;
+
+		if ($UID == $playlist['UID'])
+			return true;
+
+		return false;
+	}
+
 
 }

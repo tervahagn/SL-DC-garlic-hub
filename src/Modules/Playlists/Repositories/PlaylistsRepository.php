@@ -44,6 +44,8 @@ class PlaylistsRepository extends FilterBase
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
+	public function findPlaylistIdsByPlaylistIds(array $playlistIds) {}
+
 	protected function prepareJoin(): array
 	{
 		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];

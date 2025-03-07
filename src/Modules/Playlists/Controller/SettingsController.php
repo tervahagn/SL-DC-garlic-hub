@@ -28,6 +28,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\Services\PlaylistsEditService;
+use App\Modules\Playlists\Services\ResultList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -40,7 +41,6 @@ class SettingsController
 	private readonly SettingsFormBuilder $settingsFormBuilder;
 	private readonly PlaylistsEditService $playlistsService;
 	private readonly SettingsParameters $settingsParameters;
-
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
@@ -48,7 +48,7 @@ class SettingsController
 	public function __construct(SettingsFormBuilder $formBuilder, SettingsParameters $settingsParameters, PlaylistsEditService $playlistsService)
 	{
 		$this->settingsFormBuilder = $formBuilder;
-		$this->settingsParameters = $settingsParameters;
+		$this->settingsParameters  = $settingsParameters;
 		$this->playlistsService    = $playlistsService;
 	}
 

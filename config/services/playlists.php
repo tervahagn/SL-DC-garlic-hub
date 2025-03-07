@@ -23,19 +23,20 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
+use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Framework\Utils\Paginator\PaginatorService;
 use App\Modules\Playlists\Controller\OverviewController;
 use App\Modules\Playlists\Controller\SettingsController;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
-use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
+use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsEditService;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
+use App\Modules\Playlists\Services\ResultList;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -117,14 +118,18 @@ $dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterfac
 		$container->get(FormBuilder::class)
 	);
 });
-
+$dependencies[ResultList::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ResultList($container->get(AclValidator::class), $container->get(Config::class));
+});
 $dependencies[OverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new OverviewController(
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
 		$container->get(PlaylistsOverviewService::class),
-		$container->get(PaginatorService::class)
+		$container->get(PaginatorService::class),
+		$container->get(ResultList::class),
 	);
 });
 return $dependencies;
