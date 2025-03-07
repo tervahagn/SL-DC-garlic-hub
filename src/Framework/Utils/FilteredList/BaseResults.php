@@ -1,40 +1,31 @@
 <?php
-namespace App\Framework\Utils;
+namespace App\Framework\Utils\FilteredList;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class BaseResults
 {
-	protected BaseParameters $InputFilterParameter;
+	protected BaseParameters $filterParameter;
 	protected array $tplData = [];
 	protected string $site = '';
-	protected Translator $Translator;
+	protected Translator $translator;
 	protected array $tableHeaderFields = [];
 	protected int $currentTotalResult = 0;
 	protected array $currentFilterResults = [];
 	protected array $additionalUrlParameters = [];
 	protected array $languageModules = [];
 
-	public function getInputFilterParameter(): BaseParameters
+	public function setFilterParameter(BaseParameters $filterParameter): static
 	{
-		return $this->InputFilterParameter;
-	}
-
-	public function setInputFilterParameter(BaseParameters $InputFilterParameter): static
-	{
-		$this->InputFilterParameter = $InputFilterParameter;
+		$this->filterParameter = $filterParameter;
 		return $this;
-	}
-
-	public function getSite(): string
-	{
-		return $this->site;
 	}
 
 	public function setSite(string $site): static
@@ -48,16 +39,12 @@ abstract class BaseResults
 		return $this->tplData;
 	}
 
-	public function getTranslator(): Translator
+	public function setTranslator(Translator $translator): static
 	{
-		return $this->Translator;
-	}
-
-	public function setTranslator(Translator $Translator): static
-	{
-		$this->Translator = $Translator;
+		$this->translator = $translator;
 		return $this;
 	}
+
 	public function getCurrentTotalResult(): int
 	{
 		return $this->currentTotalResult;
@@ -86,7 +73,7 @@ abstract class BaseResults
 		return $this;
 	}
 
-	public function clearAdditionalUrlParameters()
+	public function clearAdditionalUrlParameters(): static
 	{
 		$this->additionalUrlParameters = array();
 		return $this;
@@ -104,9 +91,9 @@ abstract class BaseResults
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function renderTableHeader(BaseParameters $InputFilterParameter, $site, Translator $translate): static
+	public function renderTableHeader(BaseParameters $InputFilterParameter, $site, Translator $translate): array
 	{
-		$this->setInputFilterParameter($InputFilterParameter)
+		$this->setFilterParameter($InputFilterParameter)
 			 ->setSite($site)
 			 ->setTranslator($translate);
 
@@ -116,21 +103,16 @@ abstract class BaseResults
 		{
 			$headerFieldName = $HeaderField->getName();
 			$controlName     = ['CONTROL_NAME' => [$headerFieldName]];
+
 			if ($HeaderField->isSortable())
-			{
 				$controlName[$headerFieldName][] = ['if_sortable' => $this->renderSortableHeaderField($HeaderField)];
-			}
 			else
-			{
 				$controlName[$headerFieldName][] = ['LANG_CONTROL_NAME_2' => $this->renderNonSortableHeaderField($HeaderField)];
-			}
 
 			$header[] = $controlName;
 		}
 
-		$this->tplData['elements_result_header'] = $header;
-
-		return $this;
+		return $header;
 	}
 
 	public function getTableHeaderFields(): array
@@ -166,12 +148,11 @@ abstract class BaseResults
 	 */
 	protected function renderSortableHeaderField(HeaderField $headerField):array
 	{
-
 		$sortableData = array();
 
-		if ($this->getInputFilterParameter()->getValueOfParameter('sort_column') == $headerField->getName())
+		if ($this->filterParameter->getValueOfParameter('sort_column') == $headerField->getName())
 		{
-			if ($this->getInputFilterParameter()->getValueOfParameter('sort_order') == 'asc')
+			if ($this->filterParameter->getValueOfParameter('sort_order') == 'asc')
 			{
 				$sort_order_tmp = 'desc';
 				$sortableData['SORTABLE_ORDER']    = '▼';
@@ -210,11 +191,11 @@ abstract class BaseResults
 	protected function buildSortUrl(HeaderField $headerField, string $sort_order): string
 	{
 		$params = array(
-			'site'              => $this->getSite(),
-			'elements_page'     => $this->getInputFilterParameter()->getValueOfParameter('elements_page'),
+			'site'              => $this->site,
+			'elements_page'     => $this->filterParameter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
 			'sort_column'       => $headerField->getName(),
 			'sort_order'        => $sort_order,
-			'elements_per_page' => $this->getInputFilterParameter()->getValueOfParameter('elements_per_page')
+			'elements_per_page' => $this->filterParameter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
 		);
 
 		if ($this->hasAdditionalUrlParameters())
@@ -240,7 +221,7 @@ abstract class BaseResults
 
 		if ($HeaderField->hasSpecificLangModule())
 		{
-			return $this->getTranslator()->translate($key, $HeaderField->getSpecificLanguageModule());
+			return $this->translator->translate($key, $HeaderField->getSpecificLanguageModule());
 		}
 		else
 		{
@@ -248,7 +229,7 @@ abstract class BaseResults
 			{
 				try
 				{
-					$translated = $this->getTranslator()->translate($key, $module);
+					$translated = $this->translator->translate($key, $module);
 					if (!empty($translated))
 					{
 						return $translated;

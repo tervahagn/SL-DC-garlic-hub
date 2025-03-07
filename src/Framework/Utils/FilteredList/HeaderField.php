@@ -1,5 +1,5 @@
 <?php
-namespace App\Framework\Utils;
+namespace App\Framework\Utils\FilteredList;
 
 /**
  * Just a simple storage container for a table header field
@@ -34,9 +34,9 @@ class HeaderField
 		return $this->skipTranslation;
 	}
 
-	public function useSpecificLangModule(array $lang_module): static
+	public function useSpecificLangModule(string $langModule): static
 	{
-		$this->specificLangModule = $lang_module;
+		$this->specificLangModule = $langModule;
 		return $this;
 	}
 
