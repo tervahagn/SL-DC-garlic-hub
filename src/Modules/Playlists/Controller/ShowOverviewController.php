@@ -38,7 +38,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
-class OverviewController
+class ShowOverviewController
 {
 	private readonly FilterFormBuilder $formBuilder;
 	private readonly FilterParameters $parameters;
@@ -60,22 +60,6 @@ class OverviewController
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws ModuleException
-	 */
-	public function showFromGet(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
-	{
-		$this->parameters->setUserInputs($args);
-		$this->parameters->parseInputFilterAllUsers();
-
-		return $this->show($request, $response);
-	}
-
-	/**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
@@ -86,23 +70,11 @@ class OverviewController
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function showFromPost(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->parameters->setUserInputs($request->getParsedBody() ?? []);
-		$this->parameters->parseInputFilterAllUsers(true);
-		return $this->show($request, $response);
-	}
+		$this->parameters->setUserInputs($_GET);
+		$this->parameters->parseInputFilters();
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
-	private function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
 		$this->setImportantAttributes($request);
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
 
@@ -111,6 +83,7 @@ class OverviewController
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
+
 
 	/**
 	 * @throws CoreException
@@ -163,7 +136,6 @@ class OverviewController
 					'elements_pager' => $this->paginatorService->renderPagination('playlists'),
 					'elements_result_header' => $this->renderHeader(),
 					'elements_results' => $this->renderBody()
-
 				]
 			]
 		];

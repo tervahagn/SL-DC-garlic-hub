@@ -36,7 +36,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
-class SettingsController
+class ShowSettingsController
 {
 	private readonly SettingsFormBuilder $settingsFormBuilder;
 	private readonly PlaylistsEditService $playlistsService;
