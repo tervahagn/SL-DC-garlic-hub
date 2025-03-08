@@ -121,6 +121,7 @@ class NodesService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws DatabaseException
+	 * @throws FrameworkException
 	 */
 	public function moveNode(int $movedNodeId, int $targetNodeId, string $region): int
 	{

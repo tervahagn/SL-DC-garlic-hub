@@ -61,7 +61,7 @@ class FilesRepository extends Sql
 
 		$order_by   = [['sort' => 'upload_time', 'order' => 'DESC']];
 
-		return $this->findAllByWithFields($select, $where, $join, null, null, '', $order_by);
+		return $this->findAllByWithFields($select, $where, $join, [], '', $order_by);
 	}
 
 }
