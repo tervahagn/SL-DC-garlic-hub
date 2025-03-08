@@ -129,8 +129,8 @@ class PlaylistsOverviewService
 
 	public function handleRequestUser(FilterBase $repository, BaseParameters $parameters): static
 	{
-		$total_elements = $repository->countAllFilteredByUID($parameters->getInputParametersArray(), $this->getUser()->getUID());
-		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->getUser()->getUID());
+		$total_elements = $repository->countAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
+		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
 
 		return $this->setAllResultData($total_elements, $results);
 	}

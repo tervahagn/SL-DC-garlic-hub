@@ -80,7 +80,7 @@ abstract class FilterBase extends Sql
 	public function countAllFilteredByUID(array $fields, $UID): int
 	{
 		$where   = $this->prepareWhereForFiltering($fields);
-		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
+		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
 		return $this->countAllBy($where);
 	}
 
@@ -91,7 +91,7 @@ abstract class FilterBase extends Sql
 	{
 		$selects = $this->prepareSelectFilteredForUser();
 		$where   = $this->prepareWhereForFiltering($fields);
-		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
+		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
 		$orderBy = [$this->prepareOrderBy($fields)];
 		$limit    = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
 
@@ -101,7 +101,7 @@ abstract class FilterBase extends Sql
 	private function buildRestrictedWhereForCountAndFindSearch(array $company_ids, array $search_fields, $UID): array
 	{
 		$where   = $this->prepareWhereForFiltering($search_fields);
-		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
+		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
 		$where[] = $this->buildWhereByCompanyIds($company_ids);
 
 		return $where;
@@ -143,7 +143,7 @@ abstract class FilterBase extends Sql
 	{
 		if (!empty($companyIds))
 		{
-			return ['user_main.company_id' => $this->buildWhere(implode(',', $companyIds), 'IN', 'OR')];
+			return ['user_main.company_id' => $this->generateWhereClause(implode(',', $companyIds), 'IN', 'OR')];
 		}
 
 		return [];
@@ -177,7 +177,7 @@ abstract class FilterBase extends Sql
 					break;
 
 				$value = '%'.str_replace('*', '%', $parameter['value']).'%';
-				$where['user_main.username'] = $this->buildWhere($value, 'LIKE');
+				$where['user_main.username'] = $this->generateWhereClause($value, 'LIKE');
 				break;
 
 			case 'company_id':
@@ -191,7 +191,7 @@ abstract class FilterBase extends Sql
 				if (empty($parameter['value']))
 					break;
 				$value = '%'.str_replace('*', '%', $parameter['value']).'%';
-				$where[$this->table.'.'.$key] = $this->buildWhere($value, 'LIKE');
+				$where[$this->table.'.'.$key] = $this->generateWhereClause($value, 'LIKE');
 		}
 		return $where;
 	}

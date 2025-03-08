@@ -172,7 +172,7 @@ abstract class Sql
 		}
 	}
 
-	public function buildWhere(int|string $value, string $compare = '=', string $logic = 'AND'): array
+	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND'): array
 	{
 		return ['value' => $value, 'compare' => $compare, 'logic' => $logic];
 	}

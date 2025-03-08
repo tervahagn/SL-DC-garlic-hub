@@ -40,8 +40,8 @@ class FilesRepository extends Sql
 		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
-			'media_id' => $this->buildWhere($mediaId),
-			'deleted' => $this->buildWhere(0)
+			'media_id' => $this->generateWhereClause($mediaId),
+			'deleted' => $this->generateWhereClause(0)
 		];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
@@ -55,8 +55,8 @@ class FilesRepository extends Sql
 		$select     = ['user_main.username', 'company_id', 'media_id', 'node_id', $this->table.'.UID', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
-			'node_id' => $this->buildWhere($nodeId),
-			'deleted' => $this->buildWhere(0)
+			'node_id' => $this->generateWhereClause($nodeId),
+			'deleted' => $this->generateWhereClause(0)
 		];
 
 		$order_by   = [['sort' => 'upload_time', 'order' => 'DESC']];
