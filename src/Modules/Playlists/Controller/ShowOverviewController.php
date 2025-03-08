@@ -73,7 +73,7 @@ class ShowOverviewController
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->parameters->setUserInputs($_GET);
-		$this->parameters->parseInputFilters();
+		$this->parameters->parseInputFilterAllUsers();
 
 		$this->setImportantAttributes($request);
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
@@ -117,7 +117,8 @@ class ShowOverviewController
 					'LANG_ELEMENTS_FILTER' => $this->translator->translate('filter', 'main'),
 					'SORT_COLUMN' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
 					'SORT_ORDER' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
-					'ELEMENTS_PAGE', $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
+					'ELEMENTS_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
+					'ELEMENTS_PER_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',

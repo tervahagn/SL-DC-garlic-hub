@@ -147,9 +147,9 @@ abstract class BaseParameters
 	 */
 	public function parseInputAllParameters(): static
 	{
-		foreach(array_keys($this->currentParameters) as $parameter_name )
+		foreach(array_keys($this->currentParameters) as $parameterName )
 		{
-			$this->parseInputFilterByName($parameter_name);
+			$this->parseInputFilterByName($parameterName);
 		}
 		return $this;
 	}
@@ -173,6 +173,9 @@ abstract class BaseParameters
 	{
 		if (!array_key_exists($parameterName, $this->currentParameters))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');
+
+		if (isset($this->userInputs[$parameterName]) && $this->userInputs[$parameterName] != $this->currentParameters[$parameterName]['value'])
+			$this->currentParameters[$parameterName]['parsed'] = false;
 
 		// don't parse them twice
 		if ($this->currentParameters[$parameterName]['parsed'] === true)

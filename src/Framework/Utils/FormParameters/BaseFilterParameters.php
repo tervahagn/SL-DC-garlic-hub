@@ -20,6 +20,7 @@
 
 namespace App\Framework\Utils\FormParameters;
 
+use _PHPStan_a54cdb067\React\Dns\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
@@ -30,14 +31,13 @@ class BaseFilterParameters extends BaseParameters
 	public const string PARAMETER_ELEMENTS_PAGE     = 'elements_page';
 	public const string PARAMETER_SORT_COLUMN       = 'sort_column';
 	public const string PARAMETER_SORT_ORDER        = 'sort_order';
-	public const string DEFAULT_SORT_ORDER          = 'ASC';
 	protected readonly string $sessionStoreKey;
 
 	protected array $defaultParameters = array(
-		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,              'parsed' => false),
-		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => 1,            'parsed' => false),
-		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => '',            'parsed' => false),
-		self::PARAMETER_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => self::DEFAULT_SORT_ORDER, 'parsed' => false)
+		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,    'parsed' => false),
+		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => 1,     'parsed' => false),
+		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => '',    'parsed' => false),
+		self::PARAMETER_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => 'ASC', 'parsed' => false)
 	);
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session, string $session_key_store = '')
@@ -79,32 +79,15 @@ class BaseFilterParameters extends BaseParameters
 
 
 	/**
-	 * - checks if parameters are stored in session from previous visit
-	 * - iterates over all parameters and sets the values
-	 * - handles session storage by calling trait
+	 * checks if parameters are stored in session from previous visit
+	 * iterates over all parameters and sets the values
 	 *
 	 * @throws  ModuleException
 	 */
-	public function parseInputFilterAllUsers(bool $filterSubmitted = false): static
+	public function parseInputFilterAllUsers(): static
 	{
-		if ($filterSubmitted === false && $this->storedParametersInSessionExists())
+		if ($this->storedParametersInSessionExists())
 			$this->currentParameters = $this->getStoredSearchParamsFromSession();
-		else
-			$this->parseInputAllParameters();
-
-		if ($filterSubmitted === true)
-			$this->storeSearchParamsToSession($this->currentParameters);
-
-		return $this;
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	public function parseInputFilters(): static
-	{
-//		if ($this->storedParametersInSessionExists())
-//			$this->currentParameters = $this->getStoredSearchParamsFromSession();
 
 		$this->parseInputAllParameters();
 
