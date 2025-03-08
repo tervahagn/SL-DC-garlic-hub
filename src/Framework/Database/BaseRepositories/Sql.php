@@ -185,6 +185,17 @@ abstract class Sql
 		}
 	}
 
+	public function determineLimit($first = 0, $max = 0): array
+	{
+		if ($first == 0)
+			$first = 1;
+
+		if ($max > 0)
+			return ['first' => ($first - 1) * $max,	'max' => $max];
+
+		return [];
+	}
+
 	/**
 	 * Secure that return value will be an array
 	 *

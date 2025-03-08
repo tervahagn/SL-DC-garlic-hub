@@ -82,27 +82,22 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findAllBy(array $conditions = [], array $joins = [], int $limitStart = null, int $limitShow =
-	null, string $groupBy = '', array $orderBy = []): array
+	public function findAllBy(array $conditions = [], array $joins = [], array $limit = [], string $groupBy = '', array $orderBy = []): array
 	{
-		return $this->findAllByWithFields(array('*'), $conditions, $joins, $limitStart, $limitShow, $groupBy, $orderBy);
+		return $this->findAllByWithFields(array('*'), $conditions, $joins, $limit, $groupBy, $orderBy);
 	}
 
 	/**
 	 * Finds records with specific fields and a custom WHERE clause.
 	 * @throws Exception
 	 */
-	public function findAllByWithFields(array $fields, array $conditions = [],array $joins = [], int $limitStart = null, int $limitShow = null, string $groupBy = '', array $orderBy = []): array
+	public function findAllByWithFields(array $fields, array $conditions = [], array $joins = [], array $limit = [], string $groupBy = '', array $orderBy = []): array
 	{
 		$fields       = implode(', ', $fields);
 		$queryBuilder = $this->buildQuery($fields, $conditions, $joins,	$groupBy, $orderBy);
 
-		if ($limitStart !== null && $limitShow !== null)
-		{
-			if ($limitStart > 0)
-				$limitStart--; // Todo find out why this shit creates so many problems.
-			$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
-		}
+		if (!empty($limit))
+			$queryBuilder->setFirstResult($limit['first'])->setMaxResults($limit['max']);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
@@ -112,11 +107,12 @@ trait FindOperationsTrait
 	 *
 	 * @throws Exception
 	 */
-	public function findAllByWithLimits(int $limitStart, int $limitShow, array $orderBy = [], array $conditions = []): array
+	public function findAllByWithLimits(array $limit = [], array $orderBy = [], array $conditions = []): array
 	{
 		$queryBuilder = $this->buildQuery('*', $conditions, [], '', $orderBy);
 
-		$queryBuilder->setFirstResult($limitStart)->setMaxResults($limitShow);
+		if (!empty($limit))
+			$queryBuilder->setFirstResult($limit['first'])->setMaxResults($limit['max']);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}

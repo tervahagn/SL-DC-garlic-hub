@@ -45,8 +45,9 @@ abstract class FilterBase extends Sql
 		$where 	  = $this->prepareWhereForFiltering($fields);
 		$orderBy  = [$this->prepareOrderBy($fields)];
 		$join     = $this->prepareJoin();
+		$limit    = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
 
-		return $this->findAllByWithFields($selects, $where, $join, $fields['elements_page']['value'], $fields['elements_per_page']['value'], '', $orderBy);
+		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
 
 	/**
@@ -68,8 +69,9 @@ abstract class FilterBase extends Sql
 		$where   = $this->buildRestrictedWhereForCountAndFindSearch($companyIds,  $fields, $UID);
 		$join    = $this->prepareJoin();
 		$orderBy = [$this->prepareOrderBy($fields)];
+		$limit   = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
 
-		return $this->findAllByWithFields($selects, $where, $join, $fields['elements_page']['value'], $fields['elements_per_page']['value'], $orderBy);
+		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
 
 	/**
@@ -91,8 +93,9 @@ abstract class FilterBase extends Sql
 		$where   = $this->prepareWhereForFiltering($fields);
 		$where[] = [$this->table.'.UID' => $this->buildWhere($UID)];
 		$orderBy = [$this->prepareOrderBy($fields)];
+		$limit    = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
 
-		return $this->findAllByWithFields($selects, $where, [], $fields['elements_page']['value'], $fields['elements_per_page']['value'], $orderBy);
+		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
 
 	private function buildRestrictedWhereForCountAndFindSearch(array $company_ids, array $search_fields, $UID): array
