@@ -25,8 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Playlists\Controller\OverviewController;
-use App\Modules\Playlists\Controller\SettingsController;
+use App\Modules\Playlists\Controller\ShowOverviewController;
+use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
@@ -86,9 +86,9 @@ $dependencies[SettingsFormBuilder::class] = DI\factory(function (ContainerInterf
 		$container->get(FormBuilder::class)
 	);
 });
-$dependencies[SettingsController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new SettingsController(
+	return new ShowSettingsController(
 		$container->get(SettingsFormBuilder::class),
 		$container->get(SettingsParameters::class),
 		$container->get(PlaylistsEditService::class)
@@ -122,9 +122,9 @@ $dependencies[ResultList::class] = DI\factory(function (ContainerInterface $cont
 {
 	return new ResultList($container->get(AclValidator::class), $container->get(Config::class));
 });
-$dependencies[OverviewController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new OverviewController(
+	return new ShowOverviewController(
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
 		$container->get(PlaylistsOverviewService::class),

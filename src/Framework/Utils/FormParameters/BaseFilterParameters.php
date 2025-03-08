@@ -98,6 +98,21 @@ class BaseFilterParameters extends BaseParameters
 		return $this;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
+	public function parseInputFilters(): static
+	{
+//		if ($this->storedParametersInSessionExists())
+//			$this->currentParameters = $this->getStoredSearchParamsFromSession();
+
+		$this->parseInputAllParameters();
+
+		$this->storeSearchParamsToSession($this->currentParameters);
+
+		return $this;
+	}
+
 
 	public function hasSessionKeyStore(): bool
 	{

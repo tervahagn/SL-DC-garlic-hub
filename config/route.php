@@ -29,8 +29,8 @@ use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Playlists\Controller\ComposeController;
 use App\Modules\Playlists\Controller\ItemController;
-use App\Modules\Playlists\Controller\SettingsController;
-use App\Modules\Playlists\Controller\OverviewController;
+use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
 use Slim\App;
@@ -54,12 +54,11 @@ $app->group('', function (RouteCollectorProxy $group)
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
-	$group->get('/playlists', [OverviewController::class, 'showFromGet']);
-	$group->post('/playlists', [OverviewController::class, 'showFromPost']);
-	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [SettingsController::class, 'newPlaylistForm']);
-	$group->get('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'editPlaylistForm']);
-	$group->delete('/playlists/settings/{playlist_id:\d+}', [SettingsController::class, 'delete']);
-	$group->post('/playlists/settings', [SettingsController::class, 'store']);
+	$group->get('/playlists', [ShowOverviewController::class, 'show']);
+	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [ShowSettingsController::class, 'newPlaylistForm']);
+	$group->get('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'editPlaylistForm']);
+	$group->delete('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'delete']);
+	$group->post('/playlists/settings', [ShowSettingsController::class, 'store']);
 
 
 	/*		$group->get('/playlists/{playlist_id}/compose', [ComposeController::class, 'show']);
