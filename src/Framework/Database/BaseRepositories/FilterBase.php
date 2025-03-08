@@ -79,8 +79,9 @@ abstract class FilterBase extends Sql
 	 */
 	public function countAllFilteredByUID(array $fields, $UID): int
 	{
-		$where   = $this->prepareWhereForFiltering($fields);
-		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
+		$where = $this->prepareWhereForFiltering($fields);
+		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
+
 		return $this->countAllBy($where);
 	}
 
@@ -89,13 +90,13 @@ abstract class FilterBase extends Sql
 	 */
 	public function findAllFilteredByUID(array $fields, $UID): array
 	{
-		$selects = $this->prepareSelectFilteredForUser();
+		$selects = $this->prepareSelectFiltered();
 		$where   = $this->prepareWhereForFiltering($fields);
-		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
+		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
 		$orderBy = [$this->prepareOrderBy($fields)];
-		$limit    = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
+		$limit   = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
 
-		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
+		return $this->findAllByWithFields($selects, $where, [], $limit, '', $orderBy);
 	}
 
 	private function buildRestrictedWhereForCountAndFindSearch(array $company_ids, array $search_fields, $UID): array
