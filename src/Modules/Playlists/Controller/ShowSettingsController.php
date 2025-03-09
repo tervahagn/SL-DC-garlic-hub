@@ -98,24 +98,7 @@ class ShowSettingsController
 		return $this->returnBuildForm($response, $playlist);
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws ModuleException
-	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
-	{
-		$this->setImportantAttributes($request);
-		$playlistId = (int) $args['playlist_id'] ?? 0;
-		if ($playlistId === 0)
-			return $this->redirectWithError($response, 'Playlist ID not valid.');
 
-		if ($this->playlistsService->delete($playlistId) === 0)
-			return $this->redirectWithError($response, 'Playlist not found.');
-
-		return $this->redirectSucceed($response, 'Playlist successful deleted');
-	}
 
 	/**
 	 * @throws CoreException
