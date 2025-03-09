@@ -94,7 +94,7 @@ class ShowComposeController
 		$exportUnits = [];
 		foreach ($this->translator->translateArrayForOptions('export_unit_selects','playlists') as $key => $value)
 		{
-			$exportUnits[] = ['LANG_OPTION' => $value, 'VALUE_OPTION', $key];
+			$exportUnits[] = ['LANG_OPTION' => $value, 'VALUE_OPTION' => $key];
 		}
 		$title = $playlist['playlist_name']. "' ".$this->translator->translate('zone_edit',$moduleName);
 		return [

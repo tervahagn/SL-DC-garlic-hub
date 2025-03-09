@@ -115,7 +115,7 @@ class PlaylistsEditService extends AbstractBaseService
 		}
 	}
 
-	public function saveZones(int $playlistId, $zones)
+	public function saveZones(int $playlistId, $zones): int
 	{
 		try
 		{
