@@ -35,6 +35,9 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function isPlaylistEditable(int $UID, array $playlist): bool
 	{
+		if ($UID == $playlist['UID'])
+			return true;
+
 		if ($this->isModuleAdmin($UID))
 			return true;
 
@@ -46,9 +49,6 @@ class AclValidator extends AbstractAclValidator
 			return true;
 
 		if($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $playlist['playlist_id']))
-			return true;
-
-		if ($UID == $playlist['UID'])
 			return true;
 
 		return false;
