@@ -1,0 +1,121 @@
+#canvas_toolbar
+{
+	list-style:none;
+	padding:0;
+	margin:0;
+	display:flex;
+	gap:1em;
+	justify-content:flex-start;
+	align-items:center;
+	height:50px;
+}
+
+	.action_group
+	{
+		list-style: none;
+		margin:0;
+		padding:0;
+		display:flex;
+		gap:2em;
+	}
+	.svg_button {display: flex; justify-content: center; align-items:center;width:48px;}
+	input.color_button
+	{
+		width: 40px;
+		height: 30px;
+		background-color: #cccccc;
+		box-shadow: 0 1px 5px hsla(300,15%,25%,0.3) inset;
+	}
+
+.edit_dropdown
+{
+	position: relative;
+	display:  inline-block;
+}
+
+.edit_dropdown_content
+{
+	display:          none;
+	position:         absolute;
+	background-color: #f9f9f9;
+	min-width:        120px;
+	box-shadow:       0 8px 16px 0 rgba(0, 0, 0, 0.2);
+	z-index:          1;
+}
+#editor
+{
+	display: flex;
+	gap: 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#zone_properties
+{
+	width:20em;
+}
+	#zone_data
+	{
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	#editor legend {font-weight: bold; padding: 1em 0;}
+	#zone_name, #zone_playlist_search{width:20.5em;}
+	#zone_left, #zone_top, #zone_width, #zone_height{ width:10em;}
+
+
+#editor fieldset:disabled
+{
+	opacity: 0.4;
+}
+#zone_bgcolor:disabled
+{
+	opacity: 0.4;
+}
+
+	#canvas_wrap
+	{
+		width:96%;
+		padding:1em;
+		overflow:hidden;
+	}
+		#canvas
+		{
+			outline: none;
+			user-select: none; /* Verhindert, dass der Canvas auswählbar ist */
+			-webkit-user-select: none; /* Für Safari */
+			-moz-user-select: none; /* Für ältere Firefox-Versionen */
+			box-shadow: 0 4px 8px 0 #eee, 0 4px 8px 0 #000;
+		}
+
+#zones_list
+{
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+
+	#zones_list li
+	{
+		padding:0.25em;
+		width:20em;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	#zones_list li:hover
+	{
+		background-color:#888;
+		color:#fff;
+		cursor: pointer;
+	}
+	#zones_list li.active
+	{
+		background-color: #d3d3d3;
+		font-weight: bold;
+	}

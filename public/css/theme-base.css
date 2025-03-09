@@ -215,3 +215,15 @@ footer{text-align: right;}
             justify-content: center;
             align-items: center;
         }
+
+#waitOverlay
+{
+    position: fixed;
+    z-index: 1000000;
+    top: 0;
+    left:  0;
+    height: 100%;
+    width:   100%;
+    background: #fff url("/images/icons/ajax-loader.gif") no-repeat center center;
+    opacity: 0.8;
+}
