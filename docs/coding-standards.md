@@ -23,7 +23,13 @@ that our code remains clean, consistent, and easy to read across the entire code
     - `UserService`
     - `OrderProcessor`
     - `LocaleSubscriber`
-
+### Controller Naming
+- Controllers for GUI Actions should have a Show-prefix plus generic a name
+  **Examples**:
+    - `ShowController`
+    - `ShowSettingsController`
+    - `ShowOverviewController`
+  
 ## 2. Method Names
 
 - **Style**: `camelCase`
@@ -55,16 +61,20 @@ that our code remains clean, consistent, and easy to read across the entire code
 
 ## 5. File Names
 
-#### For PHP and JavaScript files
+### PHP and JavaScript files
 
 - **Style**: `PascalCase`
 - **Convention**: File names should match class names exactly and use PascalCase.
 - **Examples**:
     - `UserService.php`
     - `OrderProcessor.php`
+### Templates
+small letters and snake case
+##ä Translations
+small letters and snake case
 
-#### For Documentation Files
-
+### For Documentation Files
+ 
 - **Style**: kebab-case
 - **Convention**: File names for documentation should use kebab-case for better readability and consistency, especially in web-based environments.
 - **Examples**:
@@ -72,8 +82,20 @@ that our code remains clean, consistent, and easy to read across the entire code
   - `getting-started.md`
   - `api-reference.md`
 
+## 6. Directory Names
+### PHP
+PascalCase
+### Javascript, Templates
+small letters and snake case
+### Translations
+only the two code language code
 
-## 6. Function and Parameter Documentation
+**Examples**:
+- el for greek
+- de for german
+- en for english
+
+## 7. Function and Parameter Documentation
 
 All functions and methods should be documented with `phpdoc` comments. These comments should include:
 
@@ -98,7 +120,7 @@ public function processOrder(int $userId, array $orderDetails): string
 
 ```
 
-## 7. Code Formatting
+## 8. Code Formatting
 
 - **Indentation**: Use 4 spaces per indentation level.
 - **Braces in Allman style**:
@@ -137,7 +159,7 @@ public function processOrder(int $userId, array $orderDetails)
 }
 ```
 
-## 8. Error Handling and Exception Management
+## 9. Error Handling and Exception Management
 
 - Use meaningful exception messages to provide clear context about the error.
 - Avoid using generic exceptions (e.g., `Exception`) when specific exceptions are available, as they improve debugging and readability.
@@ -165,17 +187,17 @@ catch (Exception $e)
 }
 ```
 
-## 9. Naming Conventions for Interfaces and Abstract Classes
+## 10. Naming Conventions for Interfaces and Abstract Classes
 
 - **Interfaces** should end with `Interface` (e.g., `UserRepositoryInterface`).
 - **Abstract Classes** should start with `Abstract` (e.g., `AbstractOrderProcessor`).
 
-## 10. Commenting Style and Inline Documentation
+## 11. Commenting Style and Inline Documentation
 
 - **Inline Comments**: Use inline comments sparingly. Only comment on complex logic or decisions that are not immediately clear.
 - Keep comments up-to-date with any code changes to ensure accuracy.
 
-## 11. Attribute Placement Standards
+## 12. Attribute Placement Standards
 
 - **Placement Rule**: Attributes must be placed **after the DocBlock comment**. They should be the first line of code in that block, directly above the method, property, or class they are applied to.
 
@@ -191,7 +213,7 @@ public function testProcessAddsAttributesAndCallsNextHandler(): void
 }
 ```
 
-## 12. Templates 
+## 13. Templates 
 Garlic-hub use mustache templates for rendering views, although there is an option to user plain html and theoretically other template-engines. The template-engine should be used only for [separating of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and must not include any logic. 
 
 The following are the guidelines for writing templates:
@@ -209,7 +231,7 @@ The following are the guidelines for writing templates:
 {{/main_menu}} 
 ```
 
-## 13. Testing Standards
+## 14. Testing Standards
 
 - Write unit tests for all public methods to validate functionality.
 - Use a consistent naming convention for test methods to improve readability.
