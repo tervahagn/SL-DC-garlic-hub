@@ -25,6 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\User\UserService;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Playlists\Controller\PlaylistController;
+use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
@@ -132,4 +134,18 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 		$container->get(ResultList::class),
 	);
 });
+$dependencies[ShowComposeController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowComposeController(
+		$container->get(PlaylistsEditService::class),
+	);
+});
+$dependencies[PlaylistController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlaylistController(
+		$container->get(PlaylistsEditService::class),
+	);
+});
+
+
 return $dependencies;
