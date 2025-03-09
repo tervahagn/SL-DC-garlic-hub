@@ -18,9 +18,43 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Controller;
+namespace App\Framework\Services;
 
-class ComposeController
+use Psr\Log\LoggerInterface;
+
+abstract class AbstractBaseService
 {
+	protected readonly LoggerInterface $logger;
+	protected int $UID;
+	protected array $errorMessages = [];
+
+	/**
+	 * @param LoggerInterface $logger
+	 */
+	public function __construct(LoggerInterface $logger)
+	{
+		$this->logger = $logger;
+	}
+
+	public function setUID(int $UID): AbstractBaseService
+	{
+		$this->UID = $UID;
+		return $this;
+	}
+
+	public function getErrorMessages(): array
+	{
+		return $this->errorMessages;
+	}
+
+	public function hasErrorMessages(): bool
+	{
+		return !empty($this->errorMessages);
+	}
+
+	protected function addErrorMessage(string $message)
+	{
+		$this->errorMessages[] = $message;
+	}
 
 }
