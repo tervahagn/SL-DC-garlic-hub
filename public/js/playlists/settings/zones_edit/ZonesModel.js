@@ -1,4 +1,5 @@
 import './CanvasView.js';
+import { WaitOverlay } from '../../../core/WaitOverlay.js';
 
 export class ZonesModel
 {
@@ -59,7 +60,7 @@ export class ZonesModel
 	{
 		this.#playlist_id = playlist_id;
 
-		let url = ThymianConfig.async_site + "?site=playlists_async_zones" + url_separator + "action=load" + url_separator + "playlist_id=" + playlist_id;
+		let url = "/async/playlists/multizone/"+playlist_id;
 
 		return fetch(url, {
 			method: 'GET',
@@ -82,14 +83,16 @@ export class ZonesModel
 
 		})
 		.catch(error => {
-			jThymian.printError(error.message);
-			ThymianLog.log(error.message, 0, window.location.pathname);
+
+			alert(error.message);
+	//		jThymian.printError(error.message);
+	//		ThymianLog.log(error.message, 0, window.location.pathname);
 		});
 	}
 
 	#createZonesObject(response)
 	{
-		if (response.zones === null) // new playlist
+		if (response.zones === null || response.zones.length === 0) // new playlist
 			return;
 
 		// we need to be read compatible to the old save format
@@ -169,7 +172,7 @@ export class ZonesModel
 		{
 			const Properties = this.#createJsonForSave();
 
-			let url = ThymianConfig.async_site + "?site=playlists_async_zones" + url_separator + "action=save" + url_separator + "playlist_id=" + this.#playlist_id;
+			let url = "/async/playlists/multizone/"+ this.#playlist_id;
 			fetch(url, {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json;charset=UTF-8'},
@@ -187,20 +190,20 @@ export class ZonesModel
 				.then(jsonResponse => {
 					if (jsonResponse.success === false)
 					{
-						jThymian.printError(jsonResponse.message);
+				//		jThymian.printError(jsonResponse.message);
 					}
 				})
 				.catch(error => {
 					MyProgress.stop();
-					jThymian.printError(error.message);  // Fehler ausgeben
-					ThymianLog.log(error.message, 0, window.location.pathname);
+				//	jThymian.printError(error.message);  // Fehler ausgeben
+				//	ThymianLog.log(error.message, 0, window.location.pathname);
 				});
 
 		}
 		catch (err) {
 			MyProgress.stop();
-			ThymianLog.logException(err);
-			jThymian.printError(err);
+	//		ThymianLog.logException(err);
+	//		jThymian.printError(err);
 		}
 	}
 

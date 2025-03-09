@@ -20,7 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Modules\Playlists\FormHelper\SettingsParameters;
+use App\Framework\Core\Session;
 use App\Modules\Playlists\Services\PlaylistsEditService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,6 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class PlaylistController
 {
 	private readonly PlaylistsEditService $playlistsService;
+	private Session $session;
 
 	/**
 	 * @param PlaylistsEditService $playlistsService
@@ -70,24 +71,34 @@ class PlaylistController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-	public function loadZones(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		// Todo:
+		$this->session    = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
-		return $this->jsonResponse($response, ['success' => true]);
+		$multizone = $this->playlistsService->loadPlaylistForMultizone($playlistId);
+		if ( $this->playlistsService->hasErrorMessages())
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $this->playlistsService->getErrorMessages()]);
+
+		return $this->jsonResponse($response, ['success' => true, 'zones' => $multizone]);
 	}
 
-	public function saveZones(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function saveZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		// Todo:
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		$count = $this->playlistsService->saveZones($playlistId, $request->getParsedBody());
+		if ($count === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Multizone could not be saved']);
+
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}

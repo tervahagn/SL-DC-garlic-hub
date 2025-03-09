@@ -32,6 +32,7 @@ class PlaylistsRepository extends FilterBase
 		parent::__construct($connection,'playlists', 'playlist_id');
 	}
 
+
 	/**
 	 * @throws Exception
 	 */
