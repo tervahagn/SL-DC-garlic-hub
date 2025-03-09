@@ -78,18 +78,18 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function isAllowedToDeletePlaylist(int $UID, array $playlist): bool
 	{
+		if ($UID == $playlist['UID'])
+			return true;
+
 		// module admin is always allowed
 		if ($this->isModuleAdmin($UID))
 			return true;
 
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
-
 		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 
-		if ($UID == $playlist['UID'])
-			return true;
 
 		return false;
 	}
