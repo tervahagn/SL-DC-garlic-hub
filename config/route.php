@@ -27,8 +27,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
-use App\Modules\Playlists\Controller\ComposeController;
-use App\Modules\Playlists\Controller\ItemController;
+use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\User\EditLocalesController;
@@ -59,15 +58,13 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'editPlaylistForm']);
 	$group->delete('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'delete']);
 	$group->post('/playlists/settings', [ShowSettingsController::class, 'store']);
-
-
-	/*		$group->get('/playlists/{playlist_id}/compose', [ComposeController::class, 'show']);
-
-			$group->get('/playlists/items/{id}/properties', []);
-			$group->get('/playlists/items/{id}/conditional', []);
-			$group->get('/playlists/items/{id}/trigger', []);
-			$group->get('/playlists/items/{id}/edit', []);
-		*/
+	$group->get('/playlists/compose/{playlist_id}', [ShowComposeController::class, 'show']);
+	/*
+		$group->get('/playlists/items/{id}/properties', []);
+		$group->get('/playlists/items/{id}/conditional', []);
+		$group->get('/playlists/items/{id}/trigger', []);
+		$group->get('/playlists/items/{id}/edit', []);
+	*/
 })->add($container->get(FinalRenderMiddleware::class))->add(new LayoutDataMiddleware());
 
 $app->group('/api', function (RouteCollectorProxy $group)

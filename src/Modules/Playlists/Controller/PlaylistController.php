@@ -20,7 +20,83 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Modules\Playlists\FormHelper\SettingsParameters;
+use App\Modules\Playlists\Services\PlaylistsEditService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 class PlaylistController
 {
+	private readonly PlaylistsEditService $playlistsService;
+
+	/**
+	 * @param PlaylistsEditService $playlistsService
+	 */
+	public function __construct(PlaylistsEditService $playlistsService)
+	{
+		$this->playlistsService = $playlistsService;
+	}
+
+	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		if ($this->playlistsService->delete($playlistId) === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+	public function shuffle(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		// Todo:
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+	public function picking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		// Todo:
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+	public function loadZones(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		// Todo:
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+	public function saveZones(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		// Todo:
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+
+	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
+	{
+		$response->getBody()->write(json_encode($data));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+	}
 
 }
