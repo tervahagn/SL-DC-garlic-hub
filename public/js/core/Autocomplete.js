@@ -39,7 +39,7 @@ export class Autocomplete
 		);
 
 		// Add a 'change' listener to detect when a user selects from the datalist
-		this.input_element.addEventListener('change', () => this.#handleSelection());
+		this.input_element.addEventListener('input', () => this.#handleSelection());
 	}
 
 	/**
@@ -129,13 +129,17 @@ export class Autocomplete
 		const options = this.data_list_element.querySelectorAll('option');
 
 		// Loop through the options to find a match
-		options.forEach(option => {
+		for (let i = 0; i < options.length; i++)
+		{
+			const option = options[i];
 			if (option.value === value)
 			{
 				this.selected_hidden.value = option.getAttribute('data-value');
-				this.selected_hidden.dispatchEvent(new Event('change'));  // Manuelles Auslösen des change-Events
+				this.selected_hidden.dispatchEvent(new Event('change'));
+				this.input_element.blur();
+				break; // important
 			}
-		});
+		}
 	}
 
 	/**
@@ -145,7 +149,6 @@ export class Autocomplete
 	{
 		this.selected_hidden.value = '';
 	}
-
 
 	/**
 	 * Debounces the provided function, delaying its execution by the specified delay time.
