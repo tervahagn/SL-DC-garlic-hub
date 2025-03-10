@@ -77,7 +77,7 @@ $app->group('/api', function (RouteCollectorProxy $group)
 
 $app->group('/async', function (RouteCollectorProxy $group)
 {
-	$group->get('/mediapool/node[/{parent_id\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
+	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
 	$group->post('/mediapool/node', [NodesController::class, 'add']);
 	$group->delete('/mediapool/node', [NodesController::class, 'delete']);
 	$group->patch('/mediapool/node', [NodesController::class, 'edit']);
@@ -85,7 +85,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/uploadLocalFile', [UploadController::class, 'uploadLocalFile']);
 	$group->post('/mediapool/uploadFromUrl', [UploadController::class, 'uploadFromUrl']);
 	$group->post('/mediapool/searchStockImages', [UploadController::class, 'searchStockImages']);
-	$group->get('/mediapool/media/list/{node_id\d+}', [MediaController::class, 'list']);
+	$group->get('/mediapool/media/list/{node_id:\d+}', [MediaController::class, 'list']);
 	$group->get('/mediapool/media/{media_id}', [MediaController::class, 'getInfo']);
 	$group->post('/mediapool/media', [MediaController::class, 'add']);
 	$group->delete('/mediapool/media', [MediaController::class, 'delete']);
