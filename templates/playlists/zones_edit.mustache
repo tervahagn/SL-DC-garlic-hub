@@ -1,18 +1,14 @@
 <h1>{{{LANG_PAGE_HEADER}}}</h1>
 <template id="context-menu" xmlns="http://www.w3.org/1999/html">
-    <div class="context-menu">
-        <ul>
-            <li id="duplicate_zone"><a href="#">{{{LANG_DUPLICATE}}}</a></li>
-            <li id="delete_zone"><a href="#">{{{LANG_DELETE}}}</a></li>
-            <li>
-                <hr />
-            </li>
-            <li id="move_background"><a href="#">{{{LANG_MOVE_BACKGROUND}}}</a></li>
-            <li id="move_back"><a href="#">{{{LANG_MOVE_BACK}}}</a></li>
-            <li id="move_front"><a href="#">{{{LANG_MOVE_FRONT}}}</a></li>
-            <li id="move_foreground"><a href="#">{{{LANG_MOVE_FOREGROUND}}}</a></li>
-        </ul>
-    </div>
+	<ul class="context-menu">
+		<li id="duplicate_zone"><i class="bi bi-copy"></i>{{{LANG_DUPLICATE}}}</li>
+		<li id="delete_zone"><i class="bi bi-trash"></i>{{{LANG_DELETE}}}</li>
+    	<li class="divider"></li>
+		<li id="move_background"><i class="bi bi-back"></i>{{{LANG_MOVE_BACKGROUND}}}</li>
+		<li id="move_back"><i class="bi bi-layer-backward"></i>{{{LANG_MOVE_BACK}}}</li>
+		<li id="move_front"><i class="bi bi-layer-forward"></i>{{{LANG_MOVE_FRONT}}}</li>
+		<li id="move_foreground"><i class="bi bi-front"></i>{{{LANG_MOVE_FOREGROUND}}}</li>
+	</ul>
 </template>
 
 <ul id="canvas_toolbar">
