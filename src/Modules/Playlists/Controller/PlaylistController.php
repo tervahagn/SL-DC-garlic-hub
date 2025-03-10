@@ -21,22 +21,27 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
-use App\Modules\Playlists\Services\PlaylistsEditService;
+use App\Modules\Playlists\FormHelper\FilterParameters;
+use App\Modules\Playlists\Services\PlaylistsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PlaylistController
 {
-	private readonly PlaylistsEditService $playlistsService;
+	private readonly PlaylistsService $playlistsService;
+	private readonly FilterParameters $parameters;
 	private Session $session;
 
 	/**
-	 * @param PlaylistsEditService $playlistsService
+	 * @param PlaylistsService $playlistsService
+	 * @param FilterParameters $parameters
 	 */
-	public function __construct(PlaylistsEditService $playlistsService)
+	public function __construct(PlaylistsService $playlistsService, FilterParameters $parameters)
 	{
 		$this->playlistsService = $playlistsService;
+		$this->parameters = $parameters;
 	}
+
 
 	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -60,6 +65,7 @@ class PlaylistController
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
+
 	public function picking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
@@ -101,6 +107,38 @@ class PlaylistController
 
 
 		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$this->parameters->setUserInputs($args);
+		$this->parameters->parseInputAllParameters();
+
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
+		$results = [];
+		foreach ($this->playlistsService->getCurrentFilterResults() as $value)
+		{
+			$results[] = ['id' => $value['playlist_id'], 'name' => $value['playlist_name']];
+		}
+
+		return $this->jsonResponse($response, $results);
+
+	}
+
+	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+
+		$result = $this->playlistsService->loadNameById($playlistId);
+		return $this->jsonResponse($response, $result);
+
 	}
 
 

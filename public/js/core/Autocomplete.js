@@ -111,9 +111,9 @@ export class Autocomplete
 
 		suggestions.forEach(suggestion => {
 			const option = document.createElement('option');
-			option.value = suggestion.playlist_name;
+			option.value = suggestion.name;
 
-			option.setAttribute('data-value', suggestion.smil_playlist_id);
+			option.setAttribute('data-value', suggestion.id);
 			this.data_list_element.appendChild(option);
 		});
 	}

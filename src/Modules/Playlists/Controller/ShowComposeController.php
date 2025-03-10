@@ -96,7 +96,7 @@ class ShowComposeController
 		{
 			$exportUnits[] = ['LANG_OPTION' => $value, 'VALUE_OPTION' => $key];
 		}
-		$title = $playlist['playlist_name']. "' ".$this->translator->translate('zone_edit',$moduleName);
+		$title = $this->translator->translate('zone_edit', $moduleName). ' ('.$playlist['playlist_name'].')';
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,

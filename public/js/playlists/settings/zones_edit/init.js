@@ -14,7 +14,7 @@ window.onload = async function ()
 
     const MyAutocompleteFactory = new AutocompleteFactory();
     const MyPlaylistSearch      = MyAutocompleteFactory.create(
-        "zone_playlist", "/playlists?action=search_by_name&type=master&search="
+        "zone_playlist", "/async/playlists/find/master/"
     );
 
 

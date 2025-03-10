@@ -174,7 +174,9 @@ abstract class BaseParameters
 		if (!array_key_exists($parameterName, $this->currentParameters))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');
 
-		if (isset($this->userInputs[$parameterName]) && $this->userInputs[$parameterName] != $this->currentParameters[$parameterName]['value'])
+		if (isset($this->userInputs[$parameterName]) &&
+				isset($this->currentParameters[$parameterName]['value']) &&
+					$this->userInputs[$parameterName] != $this->currentParameters[$parameterName]['value'])
 			$this->currentParameters[$parameterName]['parsed'] = false;
 
 		// don't parse them twice

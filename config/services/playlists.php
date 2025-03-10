@@ -36,7 +36,7 @@ use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
-use App\Modules\Playlists\Services\PlaylistsEditService;
+use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use App\Modules\Playlists\Services\ResultList;
 use Psr\Container\ContainerInterface;
@@ -57,9 +57,9 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 	);
 });
 
-$dependencies[PlaylistsEditService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlaylistsEditService(
+	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
@@ -93,15 +93,7 @@ $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInt
 	return new ShowSettingsController(
 		$container->get(SettingsFormBuilder::class),
 		$container->get(SettingsParameters::class),
-		$container->get(PlaylistsEditService::class)
-	);
-});
-$dependencies[PlaylistsOverviewService::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new PlaylistsOverviewService(
-		$container->get(PlaylistsRepository::class),
-		$container->get(AclValidator::class),
-		$container->get('ModuleLogger')
+		$container->get(PlaylistsService::class)
 	);
 });
 $dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface $container)
@@ -129,7 +121,7 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 	return new ShowOverviewController(
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
-		$container->get(PlaylistsOverviewService::class),
+		$container->get(PlaylistsService::class),
 		$container->get(PaginatorService::class),
 		$container->get(ResultList::class),
 	);
@@ -137,13 +129,14 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowComposeController(
-		$container->get(PlaylistsEditService::class),
+		$container->get(PlaylistsService::class),
 	);
 });
 $dependencies[PlaylistController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlaylistController(
-		$container->get(PlaylistsEditService::class),
+		$container->get(PlaylistsService::class),
+		$container->get(FilterParameters::class)
 	);
 });
 

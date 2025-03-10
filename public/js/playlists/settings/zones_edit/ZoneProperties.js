@@ -266,7 +266,7 @@ export class ZoneProperties
 
 		try
 		{
-			const url      = ThymianConfig.async_site + "?site=playlist_async_get&action=name&playlist_id=" + this.ActiveGroup.zone_playlist_id;
+			const url      = "/async/playlists/findbyId/" + this.ActiveGroup.zone_playlist_id;
 			const response = await fetch(url);
 			const playlist = await response.json();
 

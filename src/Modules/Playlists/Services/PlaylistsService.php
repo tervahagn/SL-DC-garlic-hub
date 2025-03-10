@@ -155,7 +155,7 @@ class PlaylistsService extends AbstractBaseService
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error updating playlist. '.$playlist['playlist_name'].' is not editable');
-			throw new ModuleException('mediapool', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
+			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
 		}
 
 		$saveData = $this->collectDataForUpdate($postData);
@@ -176,7 +176,7 @@ class PlaylistsService extends AbstractBaseService
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error delete playlist. '.$playlist['playlist_name'].' is not editable');
-			throw new ModuleException('mediapool', 'Error delete playlist. '.$playlist['playlist_name'].' is not editable');
+			throw new ModuleException('playlists', 'Error delete playlist. '.$playlist['playlist_name'].' is not editable');
 		}
 
 		return $this->playlistsRepository->delete($playlistId);
@@ -188,10 +188,10 @@ class PlaylistsService extends AbstractBaseService
 		{
 			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 			if (empty($playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist: Is not editable');
+				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
 
 			if (!empty($playlist['multizone']))
 				return unserialize($playlist['multizone']);
@@ -206,16 +206,35 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+	public function loadNameById(int $playlistId): array
+	{
+		try
+		{
+			$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
+			if (empty($playlist))
+				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+
+			return array('playlist_id' => $playlistId, 'name' => $playlist['playlist_name']);
+		}
+		catch(\Exception | Exception $e)
+		{
+			$this->logger->error($e->getMessage());
+			$this->addErrorMessage($e->getMessage());
+			return [];
+		}
+	}
+
+
 	public function saveZones(int $playlistId, $zones): int
 	{
 		try
 		{
 			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 			if (empty($playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist: Is not editable');
+				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
 
 			if (!empty($zones))
 				$count = $this->playlistsRepository->update($playlistId, ['multizone' => serialize($zones)]);
@@ -228,7 +247,6 @@ class PlaylistsService extends AbstractBaseService
 			$this->addErrorMessage($e->getMessage());
 			return 0;
 		}
-
 	}
 
 	/**
@@ -240,10 +258,10 @@ class PlaylistsService extends AbstractBaseService
 		{
 			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 			if (empty($playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('mediapool', 'Error loading playlist: Is not editable');
+				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
 
 			return $playlist;
 		}
