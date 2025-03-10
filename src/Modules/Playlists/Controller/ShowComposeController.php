@@ -102,7 +102,7 @@ class ShowComposeController
 				'LANG_PAGE_TITLE' => $title,
 				'additional_css' => ['/css/playlists/zones_edit.css'],
 				'footer_scripts' => ['/js/external/fabric.min.js'],
-				'footer_modules' => ['/js/playlists/settings/zones_edit/init.js']
+				'footer_modules' => ['/js/playlists/compose/zones_edit/init.js']
 			],
 			'this_layout' => [
 				'template' => 'playlists/zones_edit', // Template-name
