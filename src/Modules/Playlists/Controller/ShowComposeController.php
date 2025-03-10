@@ -26,7 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\PlaylistMode;
-use App\Modules\Playlists\Services\PlaylistsEditService;
+use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,16 +37,16 @@ use Slim\Flash\Messages;
 
 class ShowComposeController
 {
-	private readonly PlaylistsEditService $playlistsService;
+	private readonly PlaylistsService $playlistsService;
 
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
 	/**
-	 * @param PlaylistsEditService $playlistsService
+	 * @param PlaylistsService $playlistsService
 	 */
-	public function __construct(PlaylistsEditService $playlistsService)
+	public function __construct(PlaylistsService $playlistsService)
 	{
 		$this->playlistsService = $playlistsService;
 	}

@@ -29,7 +29,7 @@ use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
-use App\Modules\Playlists\Services\PlaylistsOverviewService;
+use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\ResultList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -42,7 +42,7 @@ class ShowOverviewController
 {
 	private readonly FilterFormBuilder $formBuilder;
 	private readonly FilterParameters $parameters;
-	private readonly PlaylistsOverviewService $playlistsService;
+	private readonly PlaylistsService $playlistsService;
 	private readonly PaginatorService $paginatorService;
 	private readonly ResultList $resultList;
 
@@ -50,7 +50,7 @@ class ShowOverviewController
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsOverviewService $playlistsService, PaginatorService $paginatorService, ResultList $resultList)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginatorService $paginatorService, ResultList $resultList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
