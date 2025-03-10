@@ -121,7 +121,13 @@ export class ZoneProperties
 					return;
 
 				this.MyCanvasView.setChanged(true);
+				this.ActiveGroup.item(2).text = this.zone_playlist_name.value;
+				this.ActiveGroup.dirty  = true;
+
+				this.MyCanvasView.setChanged(true);
 				this.ActiveGroup.zone_playlist_id = this.zone_playlist_id.value;
+
+				this.MyCanvasView.renderCanvas();
 			}
 		});
 		this.zone_playlist_name.addEventListener('blur', () =>
@@ -273,6 +279,7 @@ export class ZoneProperties
 				return;
 
 			this.autocompletePlaylist.setInputFields(playlist.playlist_id, playlist.name);
+
 		}
 		catch (error)
 		{
