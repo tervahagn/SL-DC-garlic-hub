@@ -8,6 +8,7 @@ export class LabeledZone extends fabric.Group
 	_type = "LabeledZone";
 	// transparent must have shown more usable in editor, so we fake it with a grey plus opacity
 	zone_playlist_id = 0;
+	zone_playlist_name = '';
 
 	constructor(options = {})
 	{
@@ -40,7 +41,16 @@ export class LabeledZone extends fabric.Group
 			fill: LabeledZone.getTextColorFunction(rect.fill)
 		});
 
-		super([rect, label], {
+		let playlist_name = new fabric.Text(options.zone_playlist_name, {
+			fontSize: 24,
+			originX: 'center',
+			originY: 'center',
+			left: rect.left + rect.width / 2,
+			top: (rect.top + rect.height / 2) + 40,
+			fill: LabeledZone.getTextColorFunction(rect.fill)
+		});
+
+		super([rect, label, playlist_name], {
 			name: options.zone_name,
 			lockScalingFlip: true,
 			lockSkewingX: true,
@@ -54,7 +64,9 @@ export class LabeledZone extends fabric.Group
 		this.id = "id-" + LabeledZone.count;
 		this.rect  = rect;
 		this.label = label;
-		this.zone_playlist_id = options.zone_smil_playlist_id || 0;
+		this.zone_playlist_id = options.zone_playlist_id || 0;
+
+
 	}
 
 	getPropertiesForDuplicate()
@@ -66,7 +78,8 @@ export class LabeledZone extends fabric.Group
 			"zone_width":  this.width,
 			"zone_height":  this.height,
 			"zone_bgcolor": this.rect.fill,
-			"zone_smil_playlist_id" : this.zone_playlist_id
+			"zone_playlist_id" : this.zone_playlist_id,
+			"zone_playlist_name" : this.zone_playlist_name
 		};
 
 	}
@@ -81,7 +94,7 @@ export class LabeledZone extends fabric.Group
 			"zone_height":  Math.round(this.height),
 			"zone_z-index": this.canvas.getObjects().indexOf(this),
 			"zone_bgcolor": this.rect.fill,
-			"zone_smil_playlist_id" : this.zone_playlist_id
+			"zone_playlist_id" : this.zone_playlist_id
 		};
 	}
 

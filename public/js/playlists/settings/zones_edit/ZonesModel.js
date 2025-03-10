@@ -90,6 +90,27 @@ export class ZonesModel
 		});
 	}
 
+	async determinNameById(playlist_id)
+	{
+		try
+		{
+			const url      = "/async/playlists/findbyId/" + playlist_id;
+			const response = await fetch(url);
+			const playlist = await response.json();
+
+			if (playlist.lenght === 0)
+				return '';
+
+			return playlist.name;
+
+		}
+		catch (error)
+		{
+			console.error('Error fetching suggestions:', error);
+		}
+	}
+
+
 	#createZonesObject(response)
 	{
 		if (response.zones === null || response.zones.length === 0) // new playlist
@@ -294,4 +315,6 @@ export class ZonesModel
 		else
 			this.#export_unit = ZonesModel.UNIT_PIXEL;
 	}
+
+
 }

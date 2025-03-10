@@ -34,7 +34,7 @@ export class CanvasEvents
 		return this.is_autoresize;
 	}
 
-	buildUI()
+	async buildUI()
 	{
 		this.MyCanvasView.setDimensions(this.MyZonesModel.getScreenWidth(), this.MyZonesModel.getScreenHeight());
 		this.MyCanvasView.scaleCanvas(this.MyZonesModel.getZoom());
@@ -42,6 +42,19 @@ export class CanvasEvents
 		const zones = this.MyZonesModel.getZones()
 		for (let i = 0; i < zones.length; i++)
 		{
+			// convert zone_smil_playlist_id to zone playlist_id (SmilControl)
+			if (zones[i]?.zone_smil_playlist_id != null)
+			{
+				zones[i].zone_playlist_id = zone.smil_playlist_id;
+				delete zones[i].smil_playlist_id;
+			}
+
+			if (zones[i].zone_playlist_id > 0)
+				zones[i].zone_playlist_name = await this.MyZonesModel.determinNameById(zones[i].zone_playlist_id)
+			else
+				zones[i].zone_playlist_name = "";
+
+
 			const MyLabeledZone = this.MyLabeledZoneFactory.create(zones[i]);
 			this.#addZone(MyLabeledZone);
 		}
@@ -107,9 +120,9 @@ export class CanvasEvents
 	#snap(event)
 	{
 		event.target.set({
-							 left: Math.round(event.target.left / this.snap_to_grid) * this.snap_to_grid,
-							 top: Math.round(event.target.top / this.snap_to_grid) * this.snap_to_grid
-						 });
+			 left: Math.round(event.target.left / this.snap_to_grid) * this.snap_to_grid,
+			 top: Math.round(event.target.top / this.snap_to_grid) * this.snap_to_grid
+		});
 		this.MyCanvasView.renderCanvas();
 	}
 

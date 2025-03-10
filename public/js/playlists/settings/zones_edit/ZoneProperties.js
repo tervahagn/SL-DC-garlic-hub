@@ -16,14 +16,14 @@ export class ZoneProperties
 	zone_playlist_name = null; // will come from Autocomplete
 	ActiveGroup  = null;
 	MyCanvasView = null;
-	MyPlaylistSearch = null;
+	autocompletePlaylist = null;
 
-	constructor(MyCanvasView, MyPlaylistSearch)
+	constructor(MyCanvasView, autocompletePlaylist)
 	{
-		this.MyCanvasView       = MyCanvasView;
-		this.MyPlaylistSearch   = MyPlaylistSearch;
-		this.zone_playlist_id   = MyPlaylistSearch.getHiddenIdElement();
-		this.zone_playlist_name = MyPlaylistSearch.getEditFieldElement();
+		this.MyCanvasView         = MyCanvasView;
+		this.autocompletePlaylist = autocompletePlaylist;
+		this.zone_playlist_id     = autocompletePlaylist.getHiddenIdElement();
+		this.zone_playlist_name   = autocompletePlaylist.getEditFieldElement();
 
 		this.zone_name.addEventListener("input", () =>
 		{
@@ -143,7 +143,7 @@ export class ZoneProperties
 		this.zone_height.value     = "";
 		this.zone_bgcolor.value    = "";
 		this.zone_props.disabled   = true;
-		this.MyPlaylistSearch.clearAll();
+		this.autocompletePlaylist.clearAll();
 
 		this.ActiveGroup    = null;
 	}
@@ -259,8 +259,7 @@ export class ZoneProperties
 	{
 		if (this.ActiveGroup.zone_playlist_id === 0)
 		{
-			this.MyPlaylistSearch.setInputFields(0, "");
-
+			this.autocompletePlaylist.setInputFields(0, "");
 			return;
 		}
 
@@ -273,7 +272,7 @@ export class ZoneProperties
 			if (playlist.lenght === 0)
 				return;
 
-			this.MyPlaylistSearch.setInputFields(playlist.playlist_id, playlist.name);
+			this.autocompletePlaylist.setInputFields(playlist.playlist_id, playlist.name);
 		}
 		catch (error)
 		{
