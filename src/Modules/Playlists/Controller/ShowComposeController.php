@@ -125,7 +125,6 @@ class ShowComposeController
 					'LANG_INSERT' => $this->translator->translate('insert', 'main'),
 					'LANG_SAVE'  => $this->translator->translate('save', 'main'),
 					'LANG_CLOSE' => $this->translator->translate('close', 'main'),
-					'LANG_CONFIRM_CLOSE_EDITOR' => $this->translator->translate('confirm_close_editor', $moduleName),
 					'LANG_CANCEL' => $this->translator->translate('cancel', 'main'),
 					'LANG_TRANSFER' => $this->translator->translate('transfer', 'main'),
 					'LANG_PLAYLIST_NAME' => $this->translator->translate('playlist_name', $moduleName),
@@ -137,7 +136,8 @@ class ShowComposeController
 					'LANG_ZONE_WIDTH' => $this->translator->translate('zone_width', $moduleName),
 					'LANG_ZONE_HEIGHT' => $this->translator->translate('zone_height', $moduleName),
 					'LANG_ZONE_BGCOLOR' => $this->translator->translate('zone_bgcolor', $moduleName),
-					'LANG_ZONE_TRANSPARENT' => $this->translator->translate('zone_transparent', $moduleName)
+					'LANG_ZONE_TRANSPARENT' => $this->translator->translate('zone_transparent', $moduleName),
+					'LANG_CONFIRM_CLOSE_EDITOR' => $this->translator->translate('confirm_close_editor', $moduleName)
 				]
 			]
 		];

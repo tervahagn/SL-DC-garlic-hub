@@ -113,7 +113,7 @@ export class ZoneProperties
 				this.MyCanvasView.renderCanvas();
 			}
 		});
-		this.zone_playlist_id.addEventListener('change', () =>
+		this.zone_playlist_id.addEventListener('change', (e) =>
 		{
 			if (this.ActiveGroup != null)
 			{
@@ -124,7 +124,6 @@ export class ZoneProperties
 				this.ActiveGroup.item(2).text = this.zone_playlist_name.value;
 				this.ActiveGroup.dirty  = true;
 
-				this.MyCanvasView.setChanged(true);
 				this.ActiveGroup.zone_playlist_id = this.zone_playlist_id.value;
 
 				this.MyCanvasView.renderCanvas();

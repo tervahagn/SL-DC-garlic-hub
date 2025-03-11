@@ -278,8 +278,9 @@ export class CanvasEvents
 	#initCloseEvent()
 	{
 		document.getElementById("close_zones_editor").addEventListener("click", () => {
-			if (this.MyCanvasView.hasChanged() === false || confirm_delete(lang["confirm_close"]) === true)
-				window.location.href = ThymianConfig.main_site + "?site=smil_playlists_show" + url_separator + "smil_playlist_id=" + document.getElementById("playlist_id").value;
+			const changed = this.MyCanvasView.hasChanged();
+			if (!changed || (changed && confirm(lang["confirm_close"])))
+				window.location.href = "/playlists";
 		});
 
 	}

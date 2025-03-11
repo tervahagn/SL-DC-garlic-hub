@@ -47,7 +47,7 @@ export class LabeledZone extends fabric.Group
 			fill: LabeledZone.getTextColorFunction(rect.fill)
 		});
 
-		let playlist_name = new fabric.Text(options.zone_playlist_name, {
+		let playlist_name = new fabric.Text(options.zone_playlist_name || '--', {
 			fontSize: 24,
 			fontFamily: LabeledZone._fontFamilyRegular,
 			originX: 'center',
@@ -72,6 +72,7 @@ export class LabeledZone extends fabric.Group
 		this.rect  = rect;
 		this.label = label;
 		this.playlist_name = playlist_name;
+		this.zone_playlist_name = options.zone_playlist_name || '';
 		this.zone_playlist_id = options.zone_playlist_id || 0;
 	}
 
