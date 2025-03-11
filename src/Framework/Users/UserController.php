@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -18,15 +18,31 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User\Core;
+namespace App\Framework\Users;
 
-use App\Framework\Database\BaseRepositories\Sql;
-use Doctrine\DBAL\Connection;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class UserStatsRepository extends Sql
+class UserController
 {
-	public function __construct(Connection $connection)
+	private UserService $userService;
+
+	/**
+	 * @param UserService $userService
+	 */
+	public function __construct(UserService $userService)
 	{
-		parent::__construct($connection,'user_stats', 'UID');
+		$this->userService = $userService;
 	}
+
+	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args)
+	{
+		$username = $args['username'] ?? '';
+
+
+
+
+
+	}
+
 }

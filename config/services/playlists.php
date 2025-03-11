@@ -22,7 +22,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;

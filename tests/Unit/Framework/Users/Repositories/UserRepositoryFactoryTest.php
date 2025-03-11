@@ -18,16 +18,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\User;
+namespace Tests\Unit\Framework\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\User\Core\UserContactRepository;
-use App\Framework\User\Core\UserStatsRepository;
-use App\Framework\User\Edge\UserAclRepository;
-use App\Framework\User\Edge\UserMainRepository;
-use App\Framework\User\Enterprise\UserSecurityRepository;
-use App\Framework\User\Enterprise\UserVipRepository;
-use App\Framework\User\UserRepositoryFactory;
+use App\Framework\Users\Repositories\Core\UserContactRepository;
+use App\Framework\Users\Repositories\Core\UserStatsRepository;
+use App\Framework\Users\Repositories\Edge\UserAclRepository;
+use App\Framework\Users\Repositories\Edge\UserMainRepository;
+use App\Framework\Users\Repositories\Enterprise\UserSecurityRepository;
+use App\Framework\Users\Repositories\Enterprise\UserVipRepository;
+use App\Framework\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

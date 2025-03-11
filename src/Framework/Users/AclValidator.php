@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -18,15 +18,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User\Enterprise;
+namespace App\Framework\Users;
 
-use App\Framework\Database\BaseRepositories\Sql;
-use Doctrine\DBAL\Connection;
+use App\Framework\Core\Acl\AbstractAclValidator;
 
-class UserVipRepository extends Sql
+class AclValidator extends AbstractAclValidator
 {
-	public function __construct(Connection $connection)
-	{
-		parent::__construct($connection,'user_security', 'UID');
-	}
+
 }

@@ -20,7 +20,7 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;

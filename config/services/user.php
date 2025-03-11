@@ -19,13 +19,26 @@
 */
 
 
-use App\Framework\User\UserService;
+use App\Framework\Core\Config\Config;
+use App\Framework\Users\Repositories\UserRepositoryFactory;
+use App\Framework\Users\UserController;
+use App\Framework\Users\UserEntityFactory;
+use App\Framework\Users\UserService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\User\EditLocalesController;
 use App\Modules\User\EditPasswordController;
+use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
-$dependencies = [];
 
+$dependencies = [];
+$dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UserService(
+		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
+		new UserEntityFactory($container->get(Config::class)),
+		$container->get(Psr16Adapter::class)
+	);
+});
 $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new EditPasswordController(
@@ -33,10 +46,12 @@ $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInt
 		$container->get(UserService::class)
 	);
 });
-
 $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new EditLocalesController($container->get(UserService::class));
 });
-
+$dependencies[UserController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UserController($container->get(UserService::class));
+});
 return $dependencies;

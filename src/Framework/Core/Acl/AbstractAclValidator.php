@@ -22,7 +22,7 @@ namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 

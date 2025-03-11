@@ -18,29 +18,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User;
+namespace App\Framework\Users\Repositories\Enterprise;
 
-use App\Framework\Core\Config\Config;
+use App\Framework\Database\BaseRepositories\Sql;
+use Doctrine\DBAL\Connection;
 
-class UserEntityFactory
+class UserVipRepository extends Sql
 {
-	private Config $config;
-
-	/**
-	 * @param Config $config
-	 */
-	public function __construct(Config $config)
+	public function __construct(Connection $connection)
 	{
-		$this->config = $config;
-	}
-
-	public function create(mixed $userData): UserEntity
-	{
-		return match ($this->config->getEdition())
-		{
-			Config::PLATFORM_EDITION_ENTERPRISE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], $userData['security'], $userData['acl'], $userData['vip']),
-			Config::PLATFORM_EDITION_CORE => new UserEntity($userData['main'], $userData['contact'], $userData['stats'], [], $userData['acl'], []),
-			default => new UserEntity($userData['main'], [], [], [],  $userData['acl'], []),
-		};
+		parent::__construct($connection,'user_security', 'UID');
 	}
 }

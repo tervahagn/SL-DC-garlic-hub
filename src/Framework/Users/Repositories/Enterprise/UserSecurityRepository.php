@@ -18,15 +18,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User\Core;
+namespace App\Framework\Users\Repositories\Enterprise;
 
 use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 
-class UserContactRepository extends Sql
+class UserSecurityRepository extends Sql
 {
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'user_contact', 'UID');
+		parent::__construct($connection,'user_security', 'UID');
 	}
 }

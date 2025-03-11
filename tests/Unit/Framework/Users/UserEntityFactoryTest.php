@@ -18,14 +18,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\User;
+namespace Tests\Unit\Framework\Users;
 
+use App\Framework\Core\Config\Config;
+use App\Framework\Users\UserEntity;
+use App\Framework\Users\UserEntityFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use App\Framework\User\UserEntityFactory;
-use App\Framework\User\UserEntity;
-use App\Framework\Core\Config\Config;
 
 class UserEntityFactoryTest extends TestCase
 {

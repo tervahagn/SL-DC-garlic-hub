@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User;
+namespace App\Framework\Users;
 
 use League\OAuth2\Server\Entities\UserEntityInterface;
 

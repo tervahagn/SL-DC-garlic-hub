@@ -25,7 +25,7 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Framework\Middleware\AuthMiddleware;
-use App\Framework\User\UserEntity;
+use App\Framework\Users\UserEntity;
 use App\Modules\Auth\AuthService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;

@@ -18,9 +18,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User;
+namespace App\Framework\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Users\Repositories;
 use Doctrine\DBAL\Connection;
 
 class UserRepositoryFactory
@@ -43,22 +44,22 @@ class UserRepositoryFactory
 		return match ($this->config->getEdition())
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => [
-				'main'     => new Edge\UserMainRepository($this->connection),
-				'acl'      => new Edge\UserAclRepository($this->connection),
-				'contact'  => new Core\UserContactRepository($this->connection),
-				'stats'    => new Core\UserStatsRepository($this->connection),
-				'vip'      => new Enterprise\UserVipRepository($this->connection),
-				'security' => new Enterprise\UserSecurityRepository($this->connection)
+				'main'     => new Repositories\Edge\UserMainRepository($this->connection),
+				'acl'      => new Repositories\Edge\UserAclRepository($this->connection),
+				'contact'  => new Repositories\Core\UserContactRepository($this->connection),
+				'stats'    => new Repositories\Core\UserStatsRepository($this->connection),
+				'vip'      => new Repositories\Enterprise\UserVipRepository($this->connection),
+				'security' => new Repositories\Enterprise\UserSecurityRepository($this->connection)
 			],
 			Config::PLATFORM_EDITION_CORE => [
-				'main'    => new Edge\UserMainRepository($this->connection),
-				'acl'     => new Edge\UserAclRepository($this->connection),
-				'contact' => new Core\UserContactRepository($this->connection),
-				'stats'   => new Core\UserStatsRepository($this->connection)
+				'main'    => new Repositories\Edge\UserMainRepository($this->connection),
+				'acl'     => new Repositories\Edge\UserAclRepository($this->connection),
+				'contact' => new Repositories\Core\UserContactRepository($this->connection),
+				'stats'   => new Repositories\Core\UserStatsRepository($this->connection)
 			],
 			default => [
-				'main' => new Edge\UserMainRepository($this->connection),
-				'acl'  => new Edge\UserAclRepository($this->connection)
+				'main' => new Repositories\Edge\UserMainRepository($this->connection),
+				'acl'  => new Repositories\Edge\UserAclRepository($this->connection)
 			],
 		};
 	}

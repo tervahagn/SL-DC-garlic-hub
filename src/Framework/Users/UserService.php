@@ -18,9 +18,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User;
+namespace App\Framework\Users;
 
-use App\Framework\User\Edge\UserMainRepository;
+use App\Framework\Users\Repositories\Edge\UserMainRepository;
+use App\Framework\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;

@@ -34,9 +34,6 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\User\UserEntityFactory;
-use App\Framework\User\UserRepositoryFactory;
-use App\Framework\User\UserService;
 use App\Framework\Utils\FilteredList\Paginator\Creator;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\FilteredList\Paginator\Renderer;
@@ -173,14 +170,6 @@ if (php_sapi_name() === 'cli')
 		return new MigrateCommand($container->get(Runner::class));
 	});
 }
-$dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new UserService(
-		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
-		new UserEntityFactory($container->get(Config::class)),
-		$container->get(Psr16Adapter::class)
-	);
-});
 $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FormBuilder(

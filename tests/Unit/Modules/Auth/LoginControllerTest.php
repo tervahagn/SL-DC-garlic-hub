@@ -25,7 +25,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
-use App\Framework\User\UserEntity;
+use App\Framework\Users\UserEntity;
 use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

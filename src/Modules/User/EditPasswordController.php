@@ -24,7 +24,7 @@ namespace App\Modules\User;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Exception;

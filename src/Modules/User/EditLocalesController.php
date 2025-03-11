@@ -23,7 +23,7 @@ namespace App\Modules\User;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

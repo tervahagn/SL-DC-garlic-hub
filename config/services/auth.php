@@ -23,7 +23,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\OAuth2\ClientsRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
-use App\Framework\User\UserService;
+use App\Framework\Users\UserService;
 use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;

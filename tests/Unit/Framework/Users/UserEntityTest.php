@@ -18,9 +18,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\User;
+namespace Tests\Unit\Framework\Users;
 
-use App\Framework\User\UserEntity;
+use App\Framework\Users\UserEntity;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

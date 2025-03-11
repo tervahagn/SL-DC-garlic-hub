@@ -18,20 +18,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\User\Edge;
+namespace App\Framework\Users\Repositories\Core;
 
 use App\Framework\Database\BaseRepositories\Sql;
 use Doctrine\DBAL\Connection;
 
-class UserAclRepository extends Sql
+class UserStatsRepository extends Sql
 {
-	const string USER_MODULE_ADMIN = 'module_admin';
-	const string USER_SUB_ADMIN = 'sub_admin';
-	const string USER_EDITOR = 'editor';
-	const string USER_VIEWER = 'viewer';
-
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'user_acl', 'UID');
+		parent::__construct($connection,'user_stats', 'UID');
 	}
 }

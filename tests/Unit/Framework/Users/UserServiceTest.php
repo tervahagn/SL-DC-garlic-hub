@@ -18,18 +18,18 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\User;
+namespace Tests\Unit\Framework\Users;
 
+use App\Framework\Users\Repositories\Edge\UserMainRepository;
+use App\Framework\Users\Repositories\UserRepositoryFactory;
+use App\Framework\Users\UserEntity;
+use App\Framework\Users\UserEntityFactory;
+use App\Framework\Users\UserService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use App\Framework\User\UserService;
-use App\Framework\User\UserEntityFactory;
-use App\Framework\User\UserRepositoryFactory;
-use App\Framework\User\UserEntity;
-use App\Framework\User\Edge\UserMainRepository;
-use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
 
 class UserServiceTest extends TestCase
