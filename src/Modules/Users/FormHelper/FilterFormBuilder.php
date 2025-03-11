@@ -153,7 +153,7 @@ class FilterFormBuilder
 				'title' => $this->translator->translate('belongs_company', 'main'),
 				'label' => $this->translator->translate('belongs_company', 'main'),
 				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_STATUS),
-				'options' => $this->translator->translateArrayForOptions('playlist_mode_selects', 'users')
+				'options' => $this->translator->translateArrayForOptions(FilterParameters::PARAMETER_STATUS.'_selects', 'users')
 			]);
 		}
 
