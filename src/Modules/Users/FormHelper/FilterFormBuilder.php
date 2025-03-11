@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Services\AclValidator;
@@ -131,7 +132,7 @@ class FilterFormBuilder
 			]);
 		}
 
-		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_COMPANY_ID))
+		if ($this->parameters->hasParameter(BaseFilterParameters::PARAMETER_COMPANY_ID))
 		{
 			$form[FilterParameters::PARAMETER_COMPANY_ID] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
@@ -150,8 +151,8 @@ class FilterFormBuilder
 				'type' => FieldType::DROPDOWN,
 				'id' => FilterParameters::PARAMETER_STATUS,
 				'name' => FilterParameters::PARAMETER_STATUS,
-				'title' => $this->translator->translate('belongs_company', 'main'),
-				'label' => $this->translator->translate('belongs_company', 'main'),
+				'title' => $this->translator->translate(FilterParameters::PARAMETER_STATUS, 'users'),
+				'label' => $this->translator->translate(FilterParameters::PARAMETER_STATUS, 'users'),
 				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_STATUS),
 				'options' => $this->translator->translateArrayForOptions(FilterParameters::PARAMETER_STATUS.'_selects', 'users')
 			]);

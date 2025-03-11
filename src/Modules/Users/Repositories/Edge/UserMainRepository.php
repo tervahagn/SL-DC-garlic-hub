@@ -86,4 +86,22 @@ class UserMainRepository extends FilterBase
 	{
 		return [$this->table.'.*'];
 	}
+
+	protected function prepareWhereForFiltering(array $filterFields): array
+	{
+		$where = [];
+		foreach ($filterFields as $key => $parameter)
+		{
+			switch ($key)
+			{
+				default:
+					$clause = $this->determineWhereForFiltering($key, $parameter);
+					if (!empty($clause))
+					{
+						$where = array_merge($where, $clause);
+					}
+			}
+		}
+		return $where;
+	}
 }

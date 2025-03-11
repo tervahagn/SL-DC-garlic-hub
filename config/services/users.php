@@ -60,7 +60,8 @@ $dependencies[UsersOverviewService::class] = DI\factory(function (ContainerInter
 {
 	return new UsersOverviewService(
 		new \App\Modules\Users\Repositories\Edge\UserMainRepository($container->get('SqlConnection')),
-		$container->get(AclValidator::class)
+		$container->get(AclValidator::class),
+		$container->get('ModuleLogger')
 	);
 });
 $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)

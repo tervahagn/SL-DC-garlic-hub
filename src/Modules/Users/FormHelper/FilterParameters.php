@@ -39,8 +39,6 @@ class FilterParameters extends BaseFilterParameters
 	protected array $moduleParameters = array(
 		self::PARAMETER_USERNAME   => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_EMAIL      => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_FIRSTNAME  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_SURNAME    => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_STATUS     => array('scalar_type'  => ScalarType::INT,    'default_value' => 0,  'parsed' => false),
 	);
 

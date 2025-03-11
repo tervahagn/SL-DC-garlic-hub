@@ -26,6 +26,7 @@ use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
 use App\Modules\Users\FormHelper\FilterParameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use Psr\Log\LoggerInterface;
 
 class UsersOverviewService extends AbstractBaseService
 {
@@ -33,14 +34,11 @@ class UsersOverviewService extends AbstractBaseService
 	private readonly UserMainRepository $userMainRepository;
 	private readonly AclValidator $aclValidator;
 
-	/**
-	 * @param UserMainRepository $userMainRepository
-	 * @param AclValidator $aclValidator
-	 */
-	public function __construct(UserMainRepository $userMainRepository, AclValidator $aclValidator)
+	public function __construct(UserMainRepository $userMainRepository, AclValidator $aclValidator,  LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->aclValidator = $aclValidator;
+		parent::__construct($logger);
 	}
 
 	public function loadUsersForOverview(FilterParameters $parameters): void
