@@ -7,6 +7,8 @@ use App\Framework\Exceptions\ModuleException;
 
 abstract class BaseParameters
 {
+	const string PARAMETER_UID = 'UID';
+
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
 	protected readonly Session $session;
@@ -24,6 +26,11 @@ abstract class BaseParameters
 	{
 		$this->userInputs = $userInputs;
 		return $this;
+	}
+
+	public function addOwner()
+	{
+		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, 0);
 	}
 
 	/**

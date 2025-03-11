@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\FormHelper;
+namespace App\Modules\Users\FormHelper;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
@@ -26,15 +26,22 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class FilterParameters extends BaseFilterParameters
+class FilterParameter extends BaseFilterParameters
 {
-	const string PARAMETER_PLAYLIST_NAME = 'playlist_name';
-	const string PARAMETER_PLAYLIST_MODE = 'playlist_mode';
-	const string PARAMETER_PLAYLIST_ID   = 'playlist_id';
+	const string PARAMETER_USERNAME     = 'username';
+	const string PARAMETER_EMAIL        = 'email';
+	const string PARAMETER_FIRSTNAME    = 'firstname';
+	const string PARAMETER_SURNAME      = 'surname';
+	const string PARAMETER_COMPANY_NAME = 'company_name';
+	const string PARAMETER_STATUS       = 'status';
+	const string PARAMETER_ONLINE       = 'is_online';
 
 	protected array $moduleParameters = array(
-		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::STRING,  'default_value' => '', 'parsed' => false)
+		self::PARAMETER_USERNAME   => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
+		self::PARAMETER_EMAIL      => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
+		self::PARAMETER_FIRSTNAME  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
+		self::PARAMETER_SURNAME    => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
+		self::PARAMETER_STATUS     => array('scalar_type'  => ScalarType::INT,    'default_value' => 0,  'parsed' => false),
 	);
 
 	/**
@@ -42,9 +49,10 @@ class FilterParameters extends BaseFilterParameters
 	 */
 	public function __construct(Sanitizer $sanitizer, Session $session)
 	{
-		parent::__construct('playlists', $sanitizer, $session, 'playlists_filter');
+		parent::__construct('users', $sanitizer, $session, 'users_filter');
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
 
-		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_PLAYLIST_ID);
+		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_UID);
 	}
+
 }

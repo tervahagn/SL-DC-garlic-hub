@@ -20,7 +20,6 @@
 
 namespace App\Framework\Utils\FormParameters;
 
-use _PHPStan_a54cdb067\React\Dns\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
@@ -31,6 +30,7 @@ class BaseFilterParameters extends BaseParameters
 	public const string PARAMETER_ELEMENTS_PAGE     = 'elements_page';
 	public const string PARAMETER_SORT_COLUMN       = 'sort_column';
 	public const string PARAMETER_SORT_ORDER        = 'sort_order';
+	const string PARAMETER_COMPANY_ID               = 'company_id';
 	protected readonly string $sessionStoreKey;
 
 	protected array $defaultParameters = array(
@@ -96,10 +96,15 @@ class BaseFilterParameters extends BaseParameters
 		return $this;
 	}
 
-
 	public function hasSessionKeyStore(): bool
 	{
 		return !empty($this->sessionStoreKey);
+	}
+
+
+	public function addCompany()
+	{
+		$this->addParameter(self::PARAMETER_COMPANY_ID, ScalarType::STRING, '');
 	}
 
 	protected function storeSearchParamsToSession(array $ar_search): static
