@@ -122,9 +122,7 @@ class ShowOverviewController
 
 	private function renderBody(): array
 	{
-		return $this->resultsList->renderTableBody(
-			$this->usersService->getCurrentFilterResults()
-		);
+		return $this->resultsList->renderTableBody($this->usersService->getCurrentFilterResults());
 	}
 
 

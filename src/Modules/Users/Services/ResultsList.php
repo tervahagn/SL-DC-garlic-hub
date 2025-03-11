@@ -21,7 +21,12 @@
 namespace App\Modules\Users\Services;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FilteredList\BaseResults;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ResultsList extends BaseResults
 {
@@ -52,6 +57,7 @@ class ResultsList extends BaseResults
 		return $this;
 	}
 
+
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
@@ -62,6 +68,74 @@ class ResultsList extends BaseResults
 	public function renderTableBody($currentFilterResults): array
 	{
 		$body = [];
+		foreach($currentFilterResults as $value)
+		{
+			$data = [];
+			$data['UNIT_ID'] = $value['UID'];
+			foreach ($this->getTableHeaderFields() as $HeaderField)
+			{
+				$innerKey = $HeaderField->getName();
+				$sort = $HeaderField->isSortable();
+
+				$resultElements = [];
+				$resultElements['CONTROL_NAME_BODY'] = $innerKey;
+				switch ($innerKey)
+				{
+					case 'username':
+						if ($this->config->getEdition() == Config::PLATFORM_EDITION_EDGE)
+						{
+							$resultElements['if_not_editable'] = ['CONTROL_ELEMENT_VALUE' => $value['username']];
+
+						}
+						else
+						{
+							$resultElements['if_editable'] = [
+								'CONTROL_ELEMENT_VALUE_NAME' => $value['username'],
+								'CONTROL_ELEMENT_VALUE_TITLE' => $this->translator->translate('edit', 'main'),
+								'CONTROL_ELEMENT_VALUE_LINK' => 'users/profile' . $value['UID'],
+								'CONTROL_ELEMENT_VALUE_ID' => 'username_' . $value['UID'],
+								'CONTROL_ELEMENT_VALUE_CLASS' => ''
+							];
+						}
+						break;
+					case 'status':
+						$resultElements['if_not_editable'] = [
+							'CONTROL_ELEMENT_VALUE' => $this->translator->translateArrayForOptions('status_selects', 'users')[$value['status']],
+						];
+						break;
+					default:
+						$resultElements['if_not_editable'] = ['CONTROL_ELEMENT_VALUE' => $value[$innerKey],];
+						break;
+				}
+				$data['elements_result_element'][] = $resultElements;
+
+				if (
+					$value['UID'] == $this->UID ||
+					$this->aclValidator->isModuleAdmin($this->UID) ||
+					$this->aclValidator->isSubAdmin($this->UID))
+				{
+					$data['has_action'] = [
+
+						[
+							'LANG_ACTION' => $this->translator->translate('edit_settings', 'users'),
+							'LINK_ACTION' => 'users/settings/' . $value['UID'],
+							'ACTION_NAME' => 'edit',
+							'ACTION_ICON_CLASS' => 'pencil'
+						]
+					];
+					if ($this->aclValidator->isModuleAdmin($this->UID) && $value['status'] == 0)
+					{
+						$data['has_delete'] = [
+							'LINK_DELETE_ACTION' => 'users/?delete_id=' . $value['UID'],
+							'LANG_CONFIRM_DELETE' => $this->translator->translate('confirm_delete', 'users'),
+							'DELETE_ID' => $value['UID']
+						];
+					}
+
+				}
+			}
+			$body[] = $data;
+		}
 		return $body;
 	}
 
