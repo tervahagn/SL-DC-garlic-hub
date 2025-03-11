@@ -125,8 +125,6 @@ class ShowOverviewController
 		return $this->resultsList->renderTableBody($this->usersService->getCurrentFilterResults());
 	}
 
-
-
 	private function setImportantAttributes(ServerRequestInterface $request): void
 	{
 		$this->translator = $request->getAttribute('translator');
