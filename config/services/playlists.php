@@ -37,7 +37,7 @@ use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Playlists\Services\ResultList;
+use App\Modules\Playlists\Services\ResultsList;
 use App\Modules\Users\Services\UsersService;
 use Psr\Container\ContainerInterface;
 
@@ -103,7 +103,6 @@ $dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface
 		$container->get(Session::class)
 	);
 });
-
 $dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FilterFormBuilder(
@@ -111,9 +110,9 @@ $dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterfac
 		$container->get(FormBuilder::class)
 	);
 });
-$dependencies[ResultList::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultList($container->get(AclValidator::class), $container->get(Config::class));
+	return new ResultsList($container->get(AclValidator::class), $container->get(Config::class));
 });
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -122,7 +121,7 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 		$container->get(FilterParameters::class),
 		$container->get(PlaylistsService::class),
 		$container->get(PaginatorService::class),
-		$container->get(ResultList::class),
+		$container->get(ResultsList::class),
 	);
 });
 $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInterface $container)

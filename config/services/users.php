@@ -20,13 +20,21 @@
 
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Sanitizer;
+use App\Framework\Core\Session;
+use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Users\Controller\ShowOverviewController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Users\FormHelper\FilterFormBuilder;
+use App\Modules\Users\FormHelper\FilterParameters;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
+use App\Modules\Users\Services\ResultsList;
+use App\Modules\Users\Services\UsersOverviewService;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
@@ -48,6 +56,13 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 		$container->get(Psr16Adapter::class)
 	);
 });
+$dependencies[UsersOverviewService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UsersOverviewService(
+		new \App\Modules\Users\Repositories\Edge\UserMainRepository($container->get('SqlConnection')),
+		$container->get(AclValidator::class)
+	);
+});
 $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new EditPasswordController(
@@ -59,8 +74,36 @@ $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInte
 {
 	return new EditLocalesController($container->get(UsersService::class));
 });
+$dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new FilterFormBuilder(
+		$container->get(FilterParameters::class),
+		$container->get(FormBuilder::class)
+	);
+});
+$dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new FilterParameters(
+		$container->get(Sanitizer::class),
+		$container->get(Session::class)
+	);
+});
+$dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ResultsList($container->get(AclValidator::class), $container->get(Config::class));
+});
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UsersController($container->get(UsersService::class));
+});
+$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowOverviewController(
+		$container->get(FilterFormBuilder::class),
+		$container->get(FilterParameters::class),
+		$container->get(UsersOverviewService::class),
+		$container->get(PaginatorService::class),
+		$container->get(ResultsList::class),
+	);
 });
 return $dependencies;

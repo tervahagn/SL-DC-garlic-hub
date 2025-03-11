@@ -27,7 +27,6 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;

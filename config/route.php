@@ -49,7 +49,7 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/logout', [LoginController::class, 'logout']);
 	$group->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
 
-	$group->get('/users/', [\App\Modules\Users\Controller\ShowOverviewController::class, 'showForm']);
+	$group->get('/users', [\App\Modules\Users\Controller\ShowOverviewController::class, 'show']);
 	$group->get('/users/edit', [EditPasswordController::class, 'showForm']);
 	$group->post('/users/edit/password', [EditPasswordController::class, 'editPassword']);
 

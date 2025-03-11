@@ -28,7 +28,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\FormHelper\SettingsParameters;
 use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Playlists\Services\ResultList;
+use App\Modules\Playlists\Services\ResultsList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;

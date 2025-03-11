@@ -20,14 +20,14 @@
 
 namespace App\Modules\Users\Repositories\Edge;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\FilterBase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
 /**
  * Provides user data handling for authentication.
  */
-class UserMainRepository extends Sql
+class UserMainRepository extends FilterBase
 {
 	public function __construct(Connection $connection)
 	{
@@ -70,5 +70,20 @@ class UserMainRepository extends Sql
 		$queryBuilder->setParameter('identifier', $identifier);
 
 		return $this->fetchAssociative($queryBuilder);
+	}
+
+	protected function prepareJoin()
+	{
+		return [];
+	}
+
+	protected function prepareSelectFiltered()
+	{
+		return [$this->table.'.*'];
+	}
+
+	protected function prepareSelectFilteredForUser()
+	{
+		return [$this->table.'.*'];
 	}
 }

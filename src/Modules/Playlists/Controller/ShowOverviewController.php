@@ -30,7 +30,7 @@ use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\FormHelper\FilterFormBuilder;
 use App\Modules\Playlists\FormHelper\FilterParameters;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Playlists\Services\ResultList;
+use App\Modules\Playlists\Services\ResultsList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -44,19 +44,19 @@ class ShowOverviewController
 	private readonly FilterParameters $parameters;
 	private readonly PlaylistsService $playlistsService;
 	private readonly PaginatorService $paginatorService;
-	private readonly ResultList $resultList;
+	private readonly ResultsList $resultsList;
 
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginatorService $paginatorService, ResultList $resultList)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginatorService $paginatorService, ResultsList $resultsList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
 		$this->playlistsService = $playlistsService;
 		$this->paginatorService = $paginatorService;
-		$this->resultList       = $resultList;
+		$this->resultsList       = $resultsList;
 	}
 
 	/**
@@ -153,8 +153,8 @@ class ShowOverviewController
 	 */
 	private function renderHeader(): array
 	{
-		$this->resultList->createFields($this->session->get('user')['UID']);
-		return $this->resultList->renderTableHeader($this->parameters, 'playlists', $this->translator);
+		$this->resultsList->createFields($this->session->get('user')['UID']);
+		return $this->resultsList->renderTableHeader($this->parameters, 'playlists', $this->translator);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class ShowOverviewController
 		$showedIds     = $this->playlistsService->getPlaylistIdsFromResultSet();
 		$usedPlaylists = $this->playlistsService->getPlaylistsInUse($showedIds);
 
-		return $this->resultList->renderTableBody(
+		return $this->resultsList->renderTableBody(
 			$this->playlistsService->getCurrentFilterResults(),
 			$showedIds,
 			$usedPlaylists

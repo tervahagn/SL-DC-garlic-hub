@@ -31,7 +31,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class ResultList extends BaseResults
+class ResultsList extends BaseResults
 {
 		private readonly AclValidator $aclValidator;
 		private readonly Config $config;

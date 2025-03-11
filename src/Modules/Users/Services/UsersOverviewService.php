@@ -20,8 +20,11 @@
 
 namespace App\Modules\Users\Services;
 
+use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractBaseService;
+use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
+use App\Modules\Users\FormHelper\FilterParameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 
 class UsersOverviewService extends AbstractBaseService
@@ -40,31 +43,51 @@ class UsersOverviewService extends AbstractBaseService
 		$this->aclValidator = $aclValidator;
 	}
 
-	public function loadUserForOverview(FilterParameters $parameters): void
+	public function loadUsersForOverview(FilterParameters $parameters): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{
-			$this->handleRequestModuleAdmin($this->playlistsRepository, $parameters);
+			$this->handleRequestModuleAdmin($this->userMainRepository, $parameters);
 		}
 		elseif ($this->aclValidator->isSubAdmin($this->UID))
 		{
-			$this->handleRequestSubAdmin($this->playlistsRepository, $parameters);
+			$this->handleRequestSubAdmin($this->userMainRepository, $parameters);
 		}
-		elseif ($this->aclValidator->isEditor($this->UID))
-		{
-			// Todo
-		}
-		elseif ($this->aclValidator->isViewer($this->UID))
-		{
-			// Todo
-		}
-		else
-		{
-			$this->handleRequestUser($this->playlistsRepository, $parameters);
-		}
-
 	}
 
+	public function handleRequestModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
+	{
+		// later		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
+		// for edge
+		$this->setCompanyArray([[1 => 'local']]);
 
+		$this->setAllowedCompanyIds(array_keys($this->getCompanyArray()));
 
+		$total_elements 	   = $repository->countAllFiltered($parameters->getInputParametersArray());
+		$results	           = $repository->findAllFiltered($parameters->getInputParametersArray());
+
+		return $this->setAllResultData($total_elements,  $results);
+	}
+
+	public function handleRequestSubAdmin(FilterBase $repository, BaseParameters $parameters): static
+	{
+		// companies to show names in dropdowns e.g.
+		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
+
+		$company_ids = $this->aclValidator->determineCompaniesForSubAdmin();
+		$this->setAllowedCompanyIds($company_ids);
+
+		$total_elements = $repository->countAllFilteredByUIDCompanyReseller(
+			$company_ids,
+			$parameters->getInputParametersArray(),
+			$this->getUser()->getUID()
+		);
+
+		$results = $repository->findAllFilteredByUIDCompanyReseller(
+			$company_ids,
+			$parameters->getInputParametersArray(),
+			$this->getUser()->getUID()
+		);
+		return $this->setAllResultData($total_elements,  $results);
+	}
 }
