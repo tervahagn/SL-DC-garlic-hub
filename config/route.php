@@ -67,7 +67,7 @@ $app->group('', function (RouteCollectorProxy $group)
 		$group->get('/playlists/items/{id}/trigger', []);
 		$group->get('/playlists/items/{id}/edit', []);
 	*/
-})->add($container->get(FinalRenderMiddleware::class))->add(new LayoutDataMiddleware());
+})->add($container->get(FinalRenderMiddleware::class));
 
 $app->group('/api', function (RouteCollectorProxy $group)
 {
