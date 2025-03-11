@@ -128,6 +128,7 @@ class ShowOverviewController
 					'create_playlist_contextmenu' => $this->buildPlaylistContextMenu(),
 					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(),
 					'add_allowed' => [
+						'ADD_BI_ICON' => 'folder-plus',
 						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'playlists'),
 						'ELEMENTS_ADD_LINK' => '#'
 
