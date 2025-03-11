@@ -35,14 +35,12 @@ class FilterFormBuilder
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
-	private AclValidator $aclValidator;
 	private FilterParameters $parameters;
 	private int $UID;
 	private string $username;
 
-	public function __construct(AclValidator $aclValidator, FilterParameters $parameters, FormBuilder $formBuilder)
+	public function __construct(FilterParameters $parameters, FormBuilder $formBuilder)
 	{
-		$this->aclValidator = $aclValidator;
 		$this->parameters   = $parameters;
 		$this->formBuilder  = $formBuilder;
 	}
@@ -81,14 +79,14 @@ class FilterFormBuilder
 		$form       = [];
 		$form['playlist_name'] = $this->formBuilder->createField([
 			'type' => FieldType::TEXT,
-			'id' => 'playlist_name',
-			'name' => 'playlist_name',
-			'title' => $this->translator->translate('playlist_name', 'playlists'),
-			'label' => $this->translator->translate('playlist_name', 'playlists'),
+			'id' => FilterParameters::PARAMETER_PLAYLIST_NAME,
+			'name' => FilterParameters::PARAMETER_PLAYLIST_NAME,
+			'title' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
+			'label' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
 			'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_NAME)
 		]);
 
-		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_USERNAME))
+		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_UID))
 		{
 			$form['UID'] = $this->formBuilder->createField([
 				'type' => FieldType::AUTOCOMPLETE,
@@ -96,7 +94,7 @@ class FilterFormBuilder
 				'name' => 'UID',
 				'title' => $this->translator->translate('owner', 'main'),
 				'label' => $this->translator->translate('owner', 'main'),
-				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_USERNAME),
+				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_UID),
 				'data-label' => ''
 			]);
 		}
@@ -105,22 +103,12 @@ class FilterFormBuilder
 		{
 			$form['playlist_mode'] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
-				'id' => 'playlist_mode',
-				'name' => 'playlist_mode',
-				'title' => $this->translator->translate('playlist_mode', 'playlists'),
-				'label' => $this->translator->translate('playlist_mode', 'playlists'),
+				'id' => FilterParameters::PARAMETER_PLAYLIST_MODE,
+				'name' => FilterParameters::PARAMETER_PLAYLIST_MODE,
+				'title' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
+				'label' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
 				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_MODE),
-				'options' => $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')
-			]);
-		}
-
-		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_COMPANY_ID))
-		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
-				'type' => FieldType::HIDDEN,
-				'id' => 'company_id',
-				'name' => 'company_id',
-				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_COMPANY_ID),
+				'options' => $this->translator->translateArrayForOptions(FilterParameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
 			]);
 		}
 
