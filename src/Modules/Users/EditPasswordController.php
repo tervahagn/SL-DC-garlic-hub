@@ -74,13 +74,13 @@ class EditPasswordController
 
 		$data = [
 				'main_layout' => [
-					'LANG_PAGE_TITLE' => $this->translator->translate('options', 'user'),
+					'LANG_PAGE_TITLE' => $this->translator->translate('options', 'users'),
 					'additional_css' => ['/css/user/options.css']
 				],
 				'this_layout' => [
 					'template' => 'generic/edit', // Template-name
 					'data' => [
-						'LANG_PAGE_HEADER' =>  $this->translator->translate('options', 'user'),
+						'LANG_PAGE_HEADER' =>  $this->translator->translate('options', 'users'),
 						'FORM_ACTION' => '/user/edit/password',
 						'element_hidden' => $elements['hidden'],
 						'form_element' => $elements['visible'],
@@ -136,7 +136,7 @@ class EditPasswordController
 			'type' => FieldType::PASSWORD,
 			'id' => 'edit_password',
 			'name' => 'edit_password',
-			'translated_name' => $this->translator->translate('edit_password', 'user'),
+			'translated_name' => $this->translator->translate('edit_password', 'users'),
 			'value' => '',
 			'rules' => $rules,
 			'default_value' => ''
@@ -145,7 +145,7 @@ class EditPasswordController
 			'type' => FieldType::PASSWORD,
 			'id' => 'repeat_password',
 			'name' => 'repeat_password',
-			'translated_name' => $this->translator->translate('repeat_password', 'user'),
+			'translated_name' => $this->translator->translate('repeat_password', 'users'),
 			'rules' => $rules,
 			'default_value' => ''
 		]);
