@@ -1,10 +1,15 @@
 export class LabeledZone extends fabric.Group
 {
 	static _transparent = "rgba(128, 128, 128, 0.3)";
+	static _fontFamilyRegular = "OpenSans-Regular"
+	static _fontFamilyBold = "OpenSans-Bold"
+	static _font_size_label = 32;
+	static _font_size_playlist_name = 24;
 	static count = 0;
 	id = 0;
 	rect  = null;
 	label = null;
+	playlist_name = null;
 	_type = "LabeledZone";
 	// transparent must have shown more usable in editor, so we fake it with a grey plus opacity
 	zone_playlist_id = 0;
@@ -34,6 +39,7 @@ export class LabeledZone extends fabric.Group
 		// getTextColorFunction must be static as need to call before super
 		let label = new fabric.Text(options.zone_name, {
 			fontSize: 32,
+			fontFamily: LabeledZone._fontFamilyBold,
 			originX: 'center',
 			originY: 'center',
 			left: rect.left + rect.width / 2,
@@ -43,6 +49,7 @@ export class LabeledZone extends fabric.Group
 
 		let playlist_name = new fabric.Text(options.zone_playlist_name, {
 			fontSize: 24,
+			fontFamily: LabeledZone._fontFamilyRegular,
 			originX: 'center',
 			originY: 'center',
 			left: rect.left + rect.width / 2,
@@ -64,9 +71,8 @@ export class LabeledZone extends fabric.Group
 		this.id = "id-" + LabeledZone.count;
 		this.rect  = rect;
 		this.label = label;
+		this.playlist_name = playlist_name;
 		this.zone_playlist_id = options.zone_playlist_id || 0;
-
-
 	}
 
 	getPropertiesForDuplicate()
@@ -146,15 +152,16 @@ export class LabeledZone extends fabric.Group
 	changeBgColor(new_color)
 	{
 		this.rect.set({fill: new_color});
-		this.label.set({fill: LabeledZone.getTextColorFunction(new_color)});
+		const new_bg = LabeledZone.getTextColorFunction(new_color)
+		this.label.set({fill: new_bg});
+		this.playlist_name.set({fill: new_bg});
 		this.dirty = true;
 	}
 
 	adjustLabel()
 	{
-		this.label.set({
-		   fontSize: 32
-		});
+		this.label.set({fontSize: LabeledZone._font_size_label});
+		this.playlist_name.set({fontSize: LabeledZone._font_size_playlist_name});
 	}
 
 	static getTextColorFunction(hexColor)
