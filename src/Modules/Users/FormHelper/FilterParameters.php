@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class FilterParameter extends BaseFilterParameters
+class FilterParameters extends BaseFilterParameters
 {
 	const string PARAMETER_USERNAME     = 'username';
 	const string PARAMETER_EMAIL        = 'email';

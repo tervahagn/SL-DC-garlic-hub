@@ -107,7 +107,6 @@ $dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface
 $dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FilterFormBuilder(
-		$container->get(AclValidator::class),
 		$container->get(FilterParameters::class),
 		$container->get(FormBuilder::class)
 	);
