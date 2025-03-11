@@ -29,10 +29,10 @@ use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
-use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
-use App\Modules\User\EditLocalesController;
-use App\Modules\User\EditPasswordController;
+use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Users\EditLocalesController;
+use App\Modules\Users\EditPasswordController;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -77,7 +77,7 @@ $app->group('/api', function (RouteCollectorProxy $group)
 
 $app->group('/async', function (RouteCollectorProxy $group)
 {
-	$group->get('/user/find/{username}', [\App\Framework\Users\UserController::class, 'findByName']);
+	$group->get('/user/find/{username}', [\App\Modules\Users\Controller\UserController::class, 'findByName']);
 
 	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
 	$group->post('/mediapool/node', [NodesController::class, 'add']);

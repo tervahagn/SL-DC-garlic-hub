@@ -66,6 +66,11 @@
 				<li>
 					{{LANG_LOGIN_AS}}: {{USERNAME}}
 					<ul>
+						{{#has_user_access}}
+						<li>
+							<a class="dropdown-item" href="{{{LINK_USER_ACCESS}}}">{{LANG_USER_ACCESS}}</a>
+						</li>
+						{{/has_user_access}}
 						<li>
 							<a class="dropdown-item" href="/user/edit">{{LANG_MANAGE_ACCOUNT}}</a>
 						</li>

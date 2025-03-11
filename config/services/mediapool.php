@@ -20,7 +20,6 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
-use App\Framework\Users\UserService;
 use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
@@ -36,6 +35,7 @@ use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
+use App\Modules\Users\Services\UserService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 

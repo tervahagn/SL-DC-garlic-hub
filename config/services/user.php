@@ -20,13 +20,13 @@
 
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Users\Repositories\UserRepositoryFactory;
-use App\Framework\Users\UserController;
-use App\Framework\Users\UserEntityFactory;
-use App\Framework\Users\UserService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\User\EditLocalesController;
-use App\Modules\User\EditPasswordController;
+use App\Modules\Users\Controller\UserController;
+use App\Modules\Users\EditLocalesController;
+use App\Modules\Users\EditPasswordController;
+use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Users\Repositories\UserRepositoryFactory;
+use App\Modules\Users\Services\UserService;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 
