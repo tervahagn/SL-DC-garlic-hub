@@ -20,18 +20,18 @@
 
 namespace App\Modules\Users\Controller;
 
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class UserController
+class UsersController
 {
-	private UserService $userService;
+	private UsersService $userService;
 
 	/**
-	 * @param UserService $userService
+	 * @param UsersService $userService
 	 */
-	public function __construct(UserService $userService)
+	public function __construct(UsersService $userService)
 	{
 		$this->userService = $userService;
 	}

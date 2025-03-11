@@ -38,7 +38,7 @@ use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\ResultList;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -52,7 +52,7 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator(
 		'playlists',
-		$container->get(UserService::class),
+		$container->get(UsersService::class),
 		$container->get(Config::class),
 	);
 });

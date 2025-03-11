@@ -23,7 +23,7 @@ namespace Tests\Unit\Modules\Users;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Users\EditLocalesController;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +36,7 @@ class EditLocalesControllerTest extends TestCase
 	private ResponseInterface $responseMock;
 	private Session $sessionMock;
 	private Locales $localesMock;
-	private UserService $userServiceMock;
+	private UsersService $userServiceMock;
 
 	/**
 	 * @throws Exception
@@ -47,7 +47,7 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock    = $this->createMock(ResponseInterface::class);
 		$this->sessionMock     = $this->createMock(Session::class);
 		$this->localesMock     = $this->createMock(Locales::class);
-		$this->userServiceMock = $this->createMock(UserService::class);
+		$this->userServiceMock = $this->createMock(UsersService::class);
 	}
 
 	#[Group('units')]

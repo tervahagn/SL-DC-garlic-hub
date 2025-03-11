@@ -35,7 +35,7 @@ use Psr\Cache\InvalidArgumentException;
  *
  * The class is user agnostic and the methods needs user id to work and return a userEntity.
  */
-class UserService
+class UsersService
 {
 	const int USER_STATUS_DELETED       = 0;
 	const int USER_STATUS_LOCKED        = 1;

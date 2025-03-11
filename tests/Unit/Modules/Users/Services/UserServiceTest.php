@@ -24,7 +24,7 @@ use App\Modules\Users\Entities\UserEntity;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
@@ -34,7 +34,7 @@ use Psr\Cache\InvalidArgumentException;
 
 class UserServiceTest extends TestCase
 {
-	private UserService $userService;
+	private UsersService $userService;
 	private UserEntityFactory $entityFactoryMock;
 	private Psr16Adapter $cacheMock;
 	private UserMainRepository $userMainRepositoryMock;
@@ -51,7 +51,7 @@ class UserServiceTest extends TestCase
 		$repositoryFactoryMock->method('create')
 			->willReturn(['main' => $this->userMainRepositoryMock]);
 
-		$this->userService = new UserService(
+		$this->userService = new UsersService(
 			$repositoryFactoryMock,
 			$this->entityFactoryMock,
 			$this->cacheMock

@@ -26,7 +26,7 @@ use App\Framework\OAuth2\TokensRepository;
 use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
@@ -38,7 +38,7 @@ $dependencies = [];
 $dependencies[AuthService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new AuthService(
-		$container->get(UserService::class),
+		$container->get(UsersService::class),
 		$container->get(Cookie::class),
 		$container->get('ModuleLogger')
 	);

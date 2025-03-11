@@ -21,13 +21,13 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Users\Controller\UserController;
+use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 
@@ -36,13 +36,13 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator(
 		'users',
-		$container->get(UserService::class),
+		$container->get(UsersService::class),
 		$container->get(Config::class),
 	);
 });
-$dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[UsersService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UserService(
+	return new UsersService(
 		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
 		new UserEntityFactory($container->get(Config::class)),
 		$container->get(Psr16Adapter::class)
@@ -52,15 +52,15 @@ $dependencies[EditPasswordController::class] = DI\factory(function (ContainerInt
 {
 	return new EditPasswordController(
 		$container->get(FormBuilder::class),
-		$container->get(UserService::class)
+		$container->get(UsersService::class)
 	);
 });
 $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new EditLocalesController($container->get(UserService::class));
+	return new EditLocalesController($container->get(UsersService::class));
 });
-$dependencies[UserController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UserController($container->get(UserService::class));
+	return new UsersController($container->get(UsersService::class));
 });
 return $dependencies;

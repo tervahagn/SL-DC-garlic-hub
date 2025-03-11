@@ -25,7 +25,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\AuthService;
 use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
 class AuthServiceTest extends TestCase
 {
 	private AuthService $authService;
-	private UserService $userServiceMock;
+	private UsersService $userServiceMock;
 	private Cookie $cookieMock;
 	private LoggerInterface $loggerMock;
 
@@ -45,7 +45,7 @@ class AuthServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->userServiceMock = $this->createMock(UserService::class);
+		$this->userServiceMock = $this->createMock(UsersService::class);
 		$this->cookieMock      = $this->createMock(Cookie::class);
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 
@@ -72,7 +72,7 @@ class AuthServiceTest extends TestCase
 		$userData = [
 			'UID' => 1,
 			'password' => $hashedPassword,
-			'status' => UserService::USER_STATUS_REGULAR,
+			'status' => UsersService::USER_STATUS_REGULAR,
 		];
 
 		$this->userServiceMock->method('findUser')->with($identifier)->willReturn($userData);
@@ -111,7 +111,7 @@ class AuthServiceTest extends TestCase
 		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([
 			'UID' => 1,
 			'password' => password_hash($password, PASSWORD_BCRYPT),
-			'status' => UserService::USER_STATUS_DELETED,
+			'status' => UsersService::USER_STATUS_DELETED,
 		]);
 
 		$userEntity = $this->authService->login($identifier, $password);
@@ -129,7 +129,7 @@ class AuthServiceTest extends TestCase
 		$this->userServiceMock->method('findUser')->with($identifier)->willReturn([
 			'UID' => 1,
 			'password' => password_hash($password, PASSWORD_BCRYPT),
-			'status' => UserService::USER_STATUS_REGISTERED,
+			'status' => UsersService::USER_STATUS_REGISTERED,
 		]);
 
 		$userEntity = $this->authService->login($identifier, $password);
@@ -154,7 +154,7 @@ class AuthServiceTest extends TestCase
 		$this->cookieMock->method('hasCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn(true);
 		$this->cookieMock->method('getHashedCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn($cookiePayload);
 
-		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
+		$userEntityMock->method('getMain')->willReturn(['status' => UsersService::USER_STATUS_REGULAR]);
 		$this->userServiceMock->method('getUserById')->with(1)->willReturn($userEntityMock);
 
 		$userEntity = $this->authService->loginByCookie();
@@ -182,7 +182,7 @@ class AuthServiceTest extends TestCase
 		$this->cookieMock->method('hasCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn(true);
 		$this->cookieMock->method('getHashedCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN)->willReturn($cookiePayload);
 
-		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
+		$userEntityMock->method('getMain')->willReturn(['status' => UsersService::USER_STATUS_REGULAR]);
 		$this->userServiceMock->method('getUserById')->with(1)->willReturn($userEntityMock);
 
 		$userEntity = $this->authService->loginByCookie();
@@ -205,7 +205,7 @@ class AuthServiceTest extends TestCase
 		$sessionId = 'valid_session';
 		$userEntityMock = $this->createMock(UserEntity::class);
 
-		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_REGULAR]);
+		$userEntityMock->method('getMain')->willReturn(['status' => UsersService::USER_STATUS_REGULAR]);
 
 		$this->userServiceMock->method('getUserById')->with($UID)->willReturn($userEntityMock);
 
@@ -228,7 +228,7 @@ class AuthServiceTest extends TestCase
 		$sessionId = 'valid_session';
 		$userEntityMock = $this->createMock(UserEntity::class);
 
-		$userEntityMock->method('getMain')->willReturn(['status' => UserService::USER_STATUS_LOCKED]);
+		$userEntityMock->method('getMain')->willReturn(['status' => UsersService::USER_STATUS_LOCKED]);
 
 		$this->userServiceMock->method('getUserById')->with($UID)->willReturn($userEntityMock);
 

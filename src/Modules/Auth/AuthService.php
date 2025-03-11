@@ -24,7 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -35,12 +35,12 @@ class AuthService
 {
 	const string COOKIE_NAME_AUTO_LOGIN = 'UserLogin';
 	const string AUTOLOGIN_EXPIRE = '+28 days';
-	private UserService $userService;
+	private UsersService $userService;
 	private Cookie $cookie;
 	private string $errorMessage = '';
 	private LoggerInterface $logger;
 
-	public function __construct(UserService $userService, Cookie $cookie, LoggerInterface $logger)
+	public function __construct(UsersService $userService, Cookie $cookie, LoggerInterface $logger)
 	{
 		$this->userService = $userService;
 		$this->cookie      = $cookie;
@@ -155,15 +155,15 @@ class AuthService
 	{
 		switch ($status)
 		{
-			case UserService::USER_STATUS_DELETED:
+			case UsersService::USER_STATUS_DELETED:
 				$this->errorMessage = 'login//account_deleted';
 				break;
 
-			case UserService::USER_STATUS_LOCKED:
+			case UsersService::USER_STATUS_LOCKED:
 				$this->errorMessage = 'login//account_locked';
 				break;
 
-			case UserService::USER_STATUS_REGISTERED:
+			case UsersService::USER_STATUS_REGISTERED:
 				$this->errorMessage = 'login//account_inactive';
 				break;
 		}

@@ -22,7 +22,7 @@ namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -38,10 +38,10 @@ abstract class AbstractAclValidator
 {
 	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
 	protected readonly string $moduleName;
-	protected readonly UserService $userService;
+	protected readonly UsersService $userService;
 	protected readonly Config $config;
 
-	public function __construct(string $moduleName, UserService $userService, Config $config)
+	public function __construct(string $moduleName, UsersService $userService, Config $config)
 	{
 		$this->moduleName    = $moduleName;
 		$this->userService   = $userService;

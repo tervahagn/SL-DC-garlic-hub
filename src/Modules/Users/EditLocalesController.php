@@ -23,15 +23,15 @@ namespace App\Modules\Users;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EditLocalesController
 {
-	private UserService $userService;
+	private UsersService $userService;
 
-	public function __construct(UserService $userService)
+	public function __construct(UsersService $userService)
 	{
 		$this->userService = $userService;
 	}

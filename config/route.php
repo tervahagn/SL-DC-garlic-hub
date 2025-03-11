@@ -49,8 +49,9 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/logout', [LoginController::class, 'logout']);
 	$group->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
 
-	$group->get('/user/edit', [EditPasswordController::class, 'showForm']);
-	$group->post('/user/edit/password', [EditPasswordController::class, 'editPassword']);
+	$group->get('/users/edit', [\App\Modules\Users\Controller\ShowOverviewController::class, 'showForm']);
+	$group->get('/users/edit', [EditPasswordController::class, 'showForm']);
+	$group->post('/users/edit/password', [EditPasswordController::class, 'editPassword']);
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
@@ -77,7 +78,7 @@ $app->group('/api', function (RouteCollectorProxy $group)
 
 $app->group('/async', function (RouteCollectorProxy $group)
 {
-	$group->get('/user/find/{username}', [\App\Modules\Users\Controller\UserController::class, 'findByName']);
+	$group->get('/user/find/{username}', [\App\Modules\Users\Controller\UsersController::class, 'findByName']);
 
 	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
 	$group->post('/mediapool/node', [NodesController::class, 'add']);

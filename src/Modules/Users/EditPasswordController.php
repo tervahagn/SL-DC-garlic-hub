@@ -25,7 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -34,10 +34,10 @@ use Psr\SimpleCache\InvalidArgumentException;
 class EditPasswordController
 {
 	private readonly FormBuilder $formBuilder;
-	private readonly UserService $userService;
+	private readonly UsersService $userService;
 	private Translator $translator;
 
-	public function __construct(FormBuilder $formBuilder, UserService $userService)
+	public function __construct(FormBuilder $formBuilder, UsersService $userService)
 	{
 		$this->formBuilder = $formBuilder;
 		$this->userService = $userService;

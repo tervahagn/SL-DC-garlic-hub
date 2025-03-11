@@ -35,7 +35,7 @@ use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
@@ -49,7 +49,7 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator(
 		'mediapool',
-		$container->get(UserService::class),
+		$container->get(UsersService::class),
 		$container->get(Config::class),
 	);
 });

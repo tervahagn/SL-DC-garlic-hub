@@ -175,7 +175,6 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$user     = $this->session->get('user');
 		$username = is_array($user) && array_key_exists('username', $user) ? $user['username'] : '';
 
-
 		return [
 			[
 				'LANG_LOGIN_AS'       => $this->translator->translate('logged_in_as', 'menu'),

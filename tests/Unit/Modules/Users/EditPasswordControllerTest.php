@@ -27,7 +27,7 @@ use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Html\PasswordField;
 use App\Modules\Users\EditPasswordController;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +40,7 @@ use Slim\Psr7\Response;
 class EditPasswordControllerTest extends TestCase
 {
 	private FormBuilder $formBuilderMock;
-	private UserService $userServiceMock;
+	private UsersService $userServiceMock;
 	private Request $requestMock;
 	private Response $responseMock;
 	private EditPasswordController $controller;
@@ -54,7 +54,7 @@ class EditPasswordControllerTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->formBuilderMock = $this->createMock(FormBuilder::class);
-		$this->userServiceMock = $this->createMock(UserService::class);
+		$this->userServiceMock = $this->createMock(UsersService::class);
 		$this->requestMock     = $this->createMock(Request::class);
 		$this->responseMock    = $this->createMock(Response::class);
 		$this->sessionMock     = $this->createMock(Session::class);

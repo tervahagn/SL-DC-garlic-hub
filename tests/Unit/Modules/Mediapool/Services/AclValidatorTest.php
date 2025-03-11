@@ -26,7 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\AclValidator;
 use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Services\UserService;
+use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -35,7 +35,7 @@ use PHPUnit\Framework\TestCase;
 class AclValidatorTest extends TestCase
 {
 	private readonly AclValidator $aclValidator;
-	private readonly UserService $userServiceMock;
+	private readonly UsersService $userServiceMock;
 	private readonly Config $configMock;
 
 	/**
@@ -43,7 +43,7 @@ class AclValidatorTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->userServiceMock = $this->createMock(UserService::class);
+		$this->userServiceMock = $this->createMock(UsersService::class);
 		$this->configMock      = $this->createMock(Config::class);
 		$this->aclValidator    = new AclValidator('mediapool', $this->userServiceMock, $this->configMock);
 	}
