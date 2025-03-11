@@ -121,7 +121,8 @@ class LoginController
 		$session = $request->getAttribute('session');
 		$user    = $session->get('user');
 		$this->authService->logout($user);
-		$session->delete('user');
+		$session->clear();
+		$session->regenerateID();
 
 		/** @var Cookie $cookie */
 		$cookie = $request->getAttribute('cookie');
