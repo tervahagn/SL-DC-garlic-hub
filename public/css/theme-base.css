@@ -210,6 +210,8 @@ footer{text-align: right;}
 
         .results-header a{ color: #fff; font-weight: bold; }
         .results-header > li, .results-body > li {flex-wrap: nowrap;min-width:20px;padding:0 0.5rem;}
+        .results-listing .actions {width:6%;margin-left: auto;}
+
         .results-header {background-color: #666}
         .results-header *{color: #fff;}
         .results-header a:hover{color:#f60;transition: color .25s ease, margin .25s ease;}
