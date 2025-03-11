@@ -77,7 +77,7 @@ class FilterFormBuilder
 	public function collectFormElements(): array
 	{
 		$form       = [];
-		$form['playlist_name'] = $this->formBuilder->createField([
+		$form[FilterParameters::PARAMETER_PLAYLIST_NAME] = $this->formBuilder->createField([
 			'type' => FieldType::TEXT,
 			'id' => FilterParameters::PARAMETER_PLAYLIST_NAME,
 			'name' => FilterParameters::PARAMETER_PLAYLIST_NAME,
@@ -88,7 +88,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_UID))
 		{
-			$form['UID'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_UID] = $this->formBuilder->createField([
 				'type' => FieldType::AUTOCOMPLETE,
 				'id' => 'UID',
 				'name' => 'UID',
@@ -101,7 +101,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_PLAYLIST_MODE))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_PLAYLIST_MODE] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => FilterParameters::PARAMETER_PLAYLIST_MODE,
 				'name' => FilterParameters::PARAMETER_PLAYLIST_MODE,
