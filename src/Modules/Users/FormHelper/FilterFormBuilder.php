@@ -77,7 +77,7 @@ class FilterFormBuilder
 	public function collectFormElements(): array
 	{
 		$form       = [];
-		$form['username'] = $this->formBuilder->createField([
+		$form[FilterParameters::PARAMETER_USERNAME] = $this->formBuilder->createField([
 			'type'  => FieldType::TEXT,
 			'id'    => FilterParameters::PARAMETER_USERNAME,
 			'name'  => FilterParameters::PARAMETER_USERNAME,
@@ -86,7 +86,7 @@ class FilterFormBuilder
 			'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_USERNAME)
 		]);
 
-		$form['UID'] = $this->formBuilder->createField([
+		$form[FilterParameters::PARAMETER_EMAIL] = $this->formBuilder->createField([
 			'type'  => FieldType::TEXT,
 			'id'    => FilterParameters::PARAMETER_EMAIL,
 			'name'  => FilterParameters::PARAMETER_EMAIL,
@@ -97,7 +97,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_FIRSTNAME))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_FIRSTNAME] = $this->formBuilder->createField([
 				'type' => FieldType::TEXT,
 				'id' => FilterParameters::PARAMETER_FIRSTNAME,
 				'name' => FilterParameters::PARAMETER_FIRSTNAME,
@@ -109,7 +109,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_SURNAME))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_SURNAME] = $this->formBuilder->createField([
 				'type' => FieldType::TEXT,
 				'id' => FilterParameters::PARAMETER_SURNAME,
 				'name' => FilterParameters::PARAMETER_SURNAME,
@@ -121,7 +121,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_COMPANY_NAME))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_COMPANY_NAME] = $this->formBuilder->createField([
 				'type' => FieldType::TEXT,
 				'id' => FilterParameters::PARAMETER_COMPANY_NAME,
 				'name' => FilterParameters::PARAMETER_COMPANY_NAME,
@@ -133,7 +133,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_COMPANY_ID))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_COMPANY_ID] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => FilterParameters::PARAMETER_COMPANY_ID,
 				'name' => FilterParameters::PARAMETER_COMPANY_ID,
@@ -146,7 +146,7 @@ class FilterFormBuilder
 
 		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_STATUS))
 		{
-			$form['playlist_mode'] = $this->formBuilder->createField([
+			$form[FilterParameters::PARAMETER_STATUS] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => FilterParameters::PARAMETER_STATUS,
 				'name' => FilterParameters::PARAMETER_STATUS,
