@@ -40,6 +40,7 @@ use App\Framework\Utils\FilteredList\Paginator\Renderer;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Users\Services\AclValidator;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -81,7 +82,7 @@ $dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container)
 });
 $dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FinalRenderMiddleware($container->get(AdapterInterface::class));
+	return new FinalRenderMiddleware($container->get(AdapterInterface::class), $container->get(AclValidator::class));
 });
 $dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (){ return new Application();}); // symfony console app

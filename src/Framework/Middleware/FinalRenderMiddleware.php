@@ -26,6 +26,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\TemplateEngine\AdapterInterface;
+use App\Modules\Users\Services\AclValidator;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,21 +46,29 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	private Translator $translator;
 	private Session $session;
 
+	private AclValidator $userAclValidator;
 	private AdapterInterface $templateService;
 
 	/**
 	 * @param AdapterInterface $templateService
+	 * @param AclValidator $userAclValidator
 	 */
-	public function __construct(AdapterInterface $templateService)
+	public function __construct(AdapterInterface $templateService, AclValidator $userAclValidator)
 	{
 		$this->templateService = $templateService;
+		$this->userAclValidator = $userAclValidator;
 	}
 
 	/**
-	 * @param ServerRequestInterface  $request
+	 * @param ServerRequestInterface $request
 	 * @param RequestHandlerInterface $handler
 	 *
 	 * @return ResponseInterface
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
@@ -78,7 +88,6 @@ class FinalRenderMiddleware implements MiddlewareInterface
 			'CURRENT_LOCALE_UPPER' => strtoupper($locale),
 			'language_select' => $this->createLanguageSelect(),
 			'user_menu' => $this->createUserMenu(),
-
 			'APP_NAME' => $config->getEnv('APP_NAME'),
 			'LANG_LEGAL_NOTICE' => $this->translator->translate('legal_notice', 'menu'),
 			'LANG_PRIVACY' => $this->translator->translate('privacy', 'menu'),
@@ -151,9 +160,12 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	}
 
 	/**
+	 * @return array
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function createUserMenu(): array
 	{
@@ -163,14 +175,41 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$user     = $this->session->get('user');
 		$username = is_array($user) && array_key_exists('username', $user) ? $user['username'] : '';
 
+
 		return [
 			[
 				'LANG_LOGIN_AS'       => $this->translator->translate('logged_in_as', 'menu'),
 				'USERNAME'            => $username,
+				'has_user_access'    => $this->createAdminMenuPoints(),
 				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
 				'LANG_LOGOUT'         => $this->translator->translate('logout', 'menu')
 			]
 		];
+	}
+
+	/**
+	 * @return array
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	private function createAdminMenuPoints(): array
+	{
+		if (!$this->session->exists('user'))
+			return [];
+
+		$UID =	$this->session->get('user')['UID'];
+		$adminMenuPoints = [];
+		if ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isModuleAdmin($UID))
+		{
+			$adminMenuPoints[] = [
+				'LINK_USER_ACCESS' => '/users',
+				'LANG_USER_ACCESS' => $this->translator->translate('users_overview', 'main')
+			];
+		}
+		return $adminMenuPoints;
 	}
 
 	/**

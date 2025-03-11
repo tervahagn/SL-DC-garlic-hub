@@ -26,11 +26,20 @@ use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
+use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UserService;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
+$dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new AclValidator(
+		'users',
+		$container->get(UserService::class),
+		$container->get(Config::class),
+	);
+});
 $dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UserService(
