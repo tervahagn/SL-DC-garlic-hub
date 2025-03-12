@@ -171,7 +171,7 @@ abstract class BaseResults
 
 		// todo: find a solution for _Mainsite
 		$sortableData['SORT_CONTROL_NAME']         = $headerField->getName();
-		$sortableData['LINK_CONTROL_SORT_ORDER']   = '_Mainsite' . '?' . $this->buildSortUrl($headerField, $sort_order_tmp);
+		$sortableData['LINK_CONTROL_SORT_ORDER']   = $this->site.'?'.$this->buildSortUrl($headerField, $sort_order_tmp);
 		$sortableData['LANG_CONTROL_NAME']         = $this->translate($headerField);
 
 		return $sortableData;
@@ -191,7 +191,6 @@ abstract class BaseResults
 	protected function buildSortUrl(HeaderField $headerField, string $sort_order): string
 	{
 		$params = array(
-			'site'              => $this->site,
 			'elements_page'     => $this->filterParameter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
 			'sort_column'       => $headerField->getName(),
 			'sort_order'        => $sort_order,
