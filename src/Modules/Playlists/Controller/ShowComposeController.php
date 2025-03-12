@@ -40,6 +40,7 @@ class ShowComposeController
 
 	private Translator $translator;
 	private Session $session;
+	private readonly string $moduleName;
 	private Messages $flash;
 
 	/**
@@ -48,6 +49,7 @@ class ShowComposeController
 	public function __construct(PlaylistsService $playlistsService)
 	{
 		$this->playlistsService = $playlistsService;
+		$this->moduleName = 'playlists';
 	}
 
 	/**
@@ -84,8 +86,26 @@ class ShowComposeController
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
-	private function buildExternalEditor(array $playlist)
+	private function buildExternalEditor(array $playlist): array
 	{
+		$title = $this->translator->translate('external_edit',  $this->moduleName). ' ('.$playlist['playlist_name'].')';
+		return [
+			'main_layout' => [
+				'LANG_PAGE_TITLE' => $title,
+				'additional_css' => ['/css/playlists/external.css'],
+				'footer_modules' => ['/js/playlists/compose/external/init.js']
+			],
+			'this_layout' => [
+				'template' => 'playlists/external', // Template-name
+				'data' => [
+					'LANG_PAGE_HEADER' => $title,
+					'PLAYLIST_ID' => $playlist['playlist_id'],
+					'LANG_URL_TO_PLAYLIST' => $this->translator->translate('url_to_playlist', $this->moduleName),
+					'LANG_SAVE' => $this->translator->translate('save', 'main'),
+					'LANG_CLOSE' => $this->translator->translate('close', 'main'),
+				]
+			]
+		];
 
 	}
 
@@ -97,13 +117,12 @@ class ShowComposeController
 	 */
 	private function buildMultizoneEditor(array $playlist): array
 	{
-		$moduleName = 'playlists';
 		$exportUnits = [];
 		foreach ($this->translator->translateArrayForOptions('export_unit_selects','playlists') as $key => $value)
 		{
 			$exportUnits[] = ['LANG_OPTION' => $value, 'VALUE_OPTION' => $key];
 		}
-		$title = $this->translator->translate('zone_edit', $moduleName). ' ('.$playlist['playlist_name'].')';
+		$title = $this->translator->translate('zone_edit',  $this->moduleName). ' ('.$playlist['playlist_name'].')';
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
@@ -123,32 +142,31 @@ class ShowComposeController
 					'LANG_MOVE_FOREGROUND' =>  $this->translator->translate('move_foreground', 'templates'),
 					'PLAYLIST_ID' => $playlist['playlist_id'],
 					'LANG_ADD_ZONE' => $this->translator->translate('add_zone', 'playlists'),
-					'LANG_MULTIZONE_EXPORT_UNIT' => $this->translator->translate('multizone_export_unit', $moduleName),
+					'LANG_MULTIZONE_EXPORT_UNIT' => $this->translator->translate('multizone_export_unit',  $this->moduleName),
 					'export_units' => $exportUnits,
-					'LANG_SCREEN_RESOLUTION' =>  $this->translator->translate('screen_resolution', $moduleName),
+					'LANG_SCREEN_RESOLUTION' =>  $this->translator->translate('screen_resolution',  $this->moduleName),
 					'LANG_ZOOM' => $this->translator->translate('zoom', 'main'),
-					'LANG_WIDTH' => $this->translator->translate('zone_width', $moduleName),
-					'LANG_HEIGHT' => $this->translator->translate('zone_height', $moduleName),
+					'LANG_WIDTH' => $this->translator->translate('zone_width',  $this->moduleName),
+					'LANG_HEIGHT' => $this->translator->translate('zone_height',  $this->moduleName),
 					'LANG_INSERT' => $this->translator->translate('insert', 'main'),
 					'LANG_SAVE'  => $this->translator->translate('save', 'main'),
 					'LANG_CLOSE' => $this->translator->translate('close', 'main'),
 					'LANG_CANCEL' => $this->translator->translate('cancel', 'main'),
 					'LANG_TRANSFER' => $this->translator->translate('transfer', 'main'),
-					'LANG_PLAYLIST_NAME' => $this->translator->translate('playlist_name', $moduleName),
-					'LANG_ZONE_PROPERTIES' => $this->translator->translate('zone_properties', $moduleName),
-					'LANG_ZONES_SELECTS' => $this->translator->translate('zones_select', $moduleName),
-					'LANG_ZONE_NAME' => $this->translator->translate('zone_name', $moduleName),
-					'LANG_ZONE_LEFT' => $this->translator->translate('zone_left', $moduleName),
-					'LANG_ZONE_TOP' => $this->translator->translate('zone_top', $moduleName),
-					'LANG_ZONE_WIDTH' => $this->translator->translate('zone_width', $moduleName),
-					'LANG_ZONE_HEIGHT' => $this->translator->translate('zone_height', $moduleName),
-					'LANG_ZONE_BGCOLOR' => $this->translator->translate('zone_bgcolor', $moduleName),
-					'LANG_ZONE_TRANSPARENT' => $this->translator->translate('zone_transparent', $moduleName),
-					'LANG_CONFIRM_CLOSE_EDITOR' => $this->translator->translate('confirm_close_editor', $moduleName)
+					'LANG_PLAYLIST_NAME' => $this->translator->translate('playlist_name',  $this->moduleName),
+					'LANG_ZONE_PROPERTIES' => $this->translator->translate('zone_properties',  $this->moduleName),
+					'LANG_ZONES_SELECTS' => $this->translator->translate('zones_select',  $this->moduleName),
+					'LANG_ZONE_NAME' => $this->translator->translate('zone_name',  $this->moduleName),
+					'LANG_ZONE_LEFT' => $this->translator->translate('zone_left',  $this->moduleName),
+					'LANG_ZONE_TOP' => $this->translator->translate('zone_top',  $this->moduleName),
+					'LANG_ZONE_WIDTH' => $this->translator->translate('zone_width',  $this->moduleName),
+					'LANG_ZONE_HEIGHT' => $this->translator->translate('zone_height',  $this->moduleName),
+					'LANG_ZONE_BGCOLOR' => $this->translator->translate('zone_bgcolor',  $this->moduleName),
+					'LANG_ZONE_TRANSPARENT' => $this->translator->translate('zone_transparent',  $this->moduleName),
+					'LANG_CONFIRM_CLOSE_EDITOR' => $this->translator->translate('confirm_close_editor',  $this->moduleName)
 				]
 			]
 		];
-
 	}
 
 	private function setImportantAttributes(ServerRequestInterface $request): void
