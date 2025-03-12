@@ -51,8 +51,7 @@ export class Autocomplete
 	 */
 	async fetchSuggestions()
 	{
-		const query = this.input_element.value;
-		if (query.length < 1) // Only fetch if input is not empty
+		if (this.input_element.value.length < 1) // Only fetch if input is not empty
 		{
 			this.#clearSelection();  // Clear the hidden field when input is cleared
 			return;
@@ -60,7 +59,8 @@ export class Autocomplete
 
 		try
 		{
-			const response    = await fetch(this.api_endpoint + query);
+			const url = this.api_endpoint + this.input_element.value;
+			const response    = await fetch(url);
 			const suggestions = await response.json();
 			this.#updateDataList(suggestions);
 		}

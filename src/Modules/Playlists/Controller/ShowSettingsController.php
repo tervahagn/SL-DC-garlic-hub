@@ -218,7 +218,9 @@ class ShowSettingsController
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/settings.css']
+				'additional_css' => ['/css/playlists/settings.css'],
+				'footer_modules' => ['/js/playlists/settings/init.js']
+
 			],
 			'this_layout' => [
 				'template' => 'playlists/edit', // Template-name

@@ -1,4 +1,3 @@
-<?php
 /*
  garlic-hub: Digital Signage Management Platform
 
@@ -17,21 +16,13 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+"use strict";
+import { AutocompleteFactory } from '../../core/AutocompleteFactory.js';
 
-namespace App\Framework\Utils\Html;
-
-class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
+document.addEventListener("DOMContentLoaded", function()
 {
-
-	public function render(FieldInterface $field): string
-	{
-		$this->field = $field;
-		$inputId    = $this->field->getId().'_search';
-		$datalistId = $this->field->getId().'_suggestions';
-		$hiddenId   = $this->field->getId().'_selected';
-
-		return '<input id="'.$inputId.'" list="'.$datalistId.'" value="'.$this->field->getDataLabel().'" aria-describedby="error_'.$this->field->getId().'">
-		<input type="hidden" id="'.$hiddenId.'" value="'.$this->field->getValue().'">
-		<datalist id = "'.$datalistId.'" ></datalist>';
-	}
-}
+	const autocompleteFactory = new AutocompleteFactory();
+	const userSearch      = autocompleteFactory.create(
+		"UID", "/async/users/find/"
+	);
+});

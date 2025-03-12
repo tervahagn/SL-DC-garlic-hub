@@ -78,7 +78,7 @@ $app->group('/api', function (RouteCollectorProxy $group)
 
 $app->group('/async', function (RouteCollectorProxy $group)
 {
-	$group->get('/user/find/{username}', [\App\Modules\Users\Controller\UsersController::class, 'findByName']);
+	$group->get('/users/find/{username}', [\App\Modules\Users\Controller\UsersController::class, 'findByName']);
 
 	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
 	$group->post('/mediapool/node', [NodesController::class, 'add']);

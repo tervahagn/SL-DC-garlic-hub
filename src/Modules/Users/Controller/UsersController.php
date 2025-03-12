@@ -20,30 +20,44 @@
 
 namespace App\Modules\Users\Controller;
 
-use App\Modules\Users\Services\UsersService;
+use App\Framework\Exceptions\ModuleException;
+use App\Modules\Users\FormHelper\FilterParameters;
+use App\Modules\Users\Services\UsersOverviewService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UsersController
 {
-	private UsersService $userService;
+	private UsersOverviewService $usersService;
+	private readonly FilterParameters $parameters;
 
-	/**
-	 * @param UsersService $userService
-	 */
-	public function __construct(UsersService $userService)
+	public function __construct(UsersOverviewService $usersService, FilterParameters $parameters)
 	{
-		$this->userService = $userService;
+		$this->usersService = $usersService;
+		$this->parameters = $parameters;
 	}
 
-	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args)
+
+	/**
+	 * @throws ModuleException
+	 */
+	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$username = $args['username'] ?? '';
+		$args['status'] = 3;
+		$this->parameters->setUserInputs($args);
+		$this->parameters->parseInputAllParameters();
 
+		$session = $request->getAttribute('session');
+		$this->usersService->setUID($session->get('user')['UID']);
+		$this->usersService->loadUsersForOverview($this->parameters);
+		$results = [];
+		foreach ($this->usersService->getCurrentFilterResults() as $value)
+		{
+			$results[] = ['id' => $value['UID'], 'name' => $value['username']];
+		}
 
-
-
-
+		$response->getBody()->write(json_encode($results));
+		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
 }

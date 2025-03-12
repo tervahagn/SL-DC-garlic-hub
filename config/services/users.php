@@ -95,7 +95,7 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UsersController($container->get(UsersService::class));
+	return new UsersController($container->get(UsersOverviewService::class), $container->get(FilterParameters::class));
 });
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
