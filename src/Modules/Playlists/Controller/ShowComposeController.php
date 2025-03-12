@@ -72,6 +72,9 @@ class ShowComposeController
 			case PlaylistMode::MULTIZONE->value:
 				$data = $this->buildMultizoneEditor($playlist);
 			break;
+			case PlaylistMode::EXTERNAL->value:
+				$data = $this->buildExternalEditor($playlist);
+				break;
 			default:
 				return $this->redirectWithErrors($response, 'Unsupported playlist mode: .'.$playlist['playlist_mode']);
 
@@ -79,6 +82,11 @@ class ShowComposeController
 
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
+	}
+
+	private function buildExternalEditor(array $playlist)
+	{
+
 	}
 
 	/**
@@ -99,12 +107,12 @@ class ShowComposeController
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/zones_edit.css'],
+				'additional_css' => ['/css/playlists/multizone.css'],
 				'footer_scripts' => ['/js/external/fabric.min.js'],
-				'footer_modules' => ['/js/playlists/compose/zones_edit/init.js']
+				'footer_modules' => ['/js/playlists/compose/multizone/init.js']
 			],
 			'this_layout' => [
-				'template' => 'playlists/zones_edit', // Template-name
+				'template' => 'playlists/multizone', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
 					'LANG_DUPLICATE' => $this->translator->translate('duplicate', 'templates'),

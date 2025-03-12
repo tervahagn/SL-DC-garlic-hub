@@ -46,7 +46,7 @@ class ResultsList extends BaseResults
 		$this->addLanguageModule('users')->addLanguageModule('main');
 		$this->createField()->setName('username')->sortable(true);
 		$this->createField()->setName('created_at')->sortable(true);
-		$this->createField()->setName('status')->sortable(true);
+		$this->createField()->setName('status')->sortable(false);
 		if ($this->config->getEdition() === Config::PLATFORM_EDITION_CORE || $this->config->getEdition() === Config::PLATFORM_EDITION_ENTERPRISE)
 		{
 			$this->createField()->setName('firstname')->sortable(false);
