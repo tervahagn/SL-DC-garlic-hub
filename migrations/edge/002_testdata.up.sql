@@ -1,9 +1,12 @@
-INSERT INTO "user_main" ("UID","company_id","last_access","login_time","num_logins","created_at","status","locale","username","password","session_id","gender","email","last_password_change")
+INSERT INTO "user_main" ("UID","company_id", "status","locale","username","password","session_id","gender","email")
 VALUES
-(2,1,'2025-03-08 07:33:11',NULL,0,'2025-03-08 07:33:11',3,'en_US','horst','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','horst@example.com',NULL),
-(3,1,'2025-03-08 07:33:11',NULL,0,'2025-03-08 07:33:11',3,'en_US','Günter','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','guenter@example.com',NULL),
-(4,1,'2025-03-08 07:33:11',NULL,0,'2025-03-08 07:33:11',3,'en_US','zapappallas','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','zapappallas@example.com',NULL),
-(4,1,'2025-03-08 07:33:11',NULL,0,'2025-03-08 07:33:11',3,'de_DE','reseller','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','zapappallas@example.com',NULL)
+(2,1,3,'en_US','horst','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','horst@example.com'),
+(3,1,3,'en_US','Günter','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','guenter@example.com'),
+(4,1,3,'en_US','zapappallas','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','zapappallas@example.com'),
+(5,1,3,'de_DE','reseller','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','reseller@example.com'),
+(6,1,0,'en_UD','deleted','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','deleted@example.com'),
+(7,1,1,'en_UD','banned','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','banned@example.com'),
+(8,1,2,'en_UD','unverificated','$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6',NULL,'','unverificated@example.com')
 ;
 
 INSERT INTO "playlists" ("UID","time_limit","owner_duration","duration","filesize","shuffle","shuffle_picking","last_update","playlist_mode","playlist_name","external_playlist_link","multizone")
