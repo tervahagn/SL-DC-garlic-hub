@@ -21,8 +21,10 @@
 namespace App\Modules\Users\Controller;
 
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\ScalarType;
 use App\Modules\Users\FormHelper\FilterParameters;
 use App\Modules\Users\Services\UsersOverviewService;
+use App\Modules\Users\UserStatus;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -43,7 +45,9 @@ class UsersController
 	 */
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$args['status'] = 3;
+		// we want only registered user and higher
+		$this->parameters->addParameter(FilterParameters::PARAMETER_FROM_STATUS, ScalarType::INT, UserStatus::REGISTERED->value);
+
 		$this->parameters->setUserInputs($args);
 		$this->parameters->parseInputAllParameters();
 

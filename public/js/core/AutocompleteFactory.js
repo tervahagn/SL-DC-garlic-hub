@@ -10,7 +10,7 @@ export class AutocompleteFactory
 	{
 		const input_element     = document.getElementById(field_name+"_search");
 		const data_list_element = document.getElementById(field_name+"_suggestions");
-		const selected_hiddden  = document.getElementById(field_name+"_selected");
+		const selected_hiddden  = document.getElementById(field_name); // hidden is the field we get data from
 
 		if (!input_element || !data_list_element || !api_endpoint)
 		{

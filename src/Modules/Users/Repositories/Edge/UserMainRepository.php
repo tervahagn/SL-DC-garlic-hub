@@ -21,6 +21,7 @@
 namespace App\Modules\Users\Repositories\Edge;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Modules\Users\FormHelper\FilterParameters;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -94,6 +95,9 @@ class UserMainRepository extends FilterBase
 		{
 			switch ($key)
 			{
+				case FilterParameters::PARAMETER_FROM_STATUS:
+					$where['status'] = $this->generateWhereClause($parameter['value'], '>=');
+					break;
 				default:
 					$clause = $this->determineWhereForFiltering($key, $parameter);
 					if (!empty($clause))
