@@ -127,7 +127,6 @@ class LoginController
 		/** @var Cookie $cookie */
 		$cookie = $request->getAttribute('cookie');
 		$cookie->deleteCookie(AuthService::COOKIE_NAME_AUTO_LOGIN);
-		$session->regenerateID(); // for more security
 
 		return $this->redirect($response, '/login');
 	}
