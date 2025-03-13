@@ -41,11 +41,11 @@ use Slim\Psr7\Stream;
  * Middleware that finalizes the response by rendering the layout or template.
  * It adds execution time and memory usage statistics for non-API routes.
  */
+// Todo: refactor this as it violates the SRP and testing is pain
 class FinalRenderMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
 	private Session $session;
-
 	private AclValidator $userAclValidator;
 	private AdapterInterface $templateService;
 
@@ -76,7 +76,8 @@ class FinalRenderMiddleware implements MiddlewareInterface
 
 		$this->session    = $request->getAttribute('session');
 		$this->translator = $request->getAttribute('translator');
-		$locales = $request->getAttribute('locales');
+		$locales          = $request->getAttribute('locales');
+
 		/** @var Config $config */
 		$config = $request->getAttribute('config');
 		$locale = $locales->getLanguageCode();
@@ -196,12 +197,9 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	 */
 	private function createAdminMenuPoints(): array
 	{
-		if (!$this->session->exists('user'))
-			return [];
-
 		$UID =	$this->session->get('user')['UID'];
 		$adminMenuPoints = [];
-		if ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isModuleAdmin($UID))
+		if ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isSubAdmin($UID))
 		{
 			$adminMenuPoints[] = [
 				'LINK_USER_ACCESS' => '/users',
