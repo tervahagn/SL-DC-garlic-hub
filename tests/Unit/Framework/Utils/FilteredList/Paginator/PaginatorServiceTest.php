@@ -116,10 +116,7 @@ class PaginatorServiceTest extends TestCase
 			]
 		];
 
-		// Setup the creator mock to initialize pagerLinks through reflection
-		$reflectionProperty = new \ReflectionProperty(PaginatorService::class, 'pagerLinks');
-		$reflectionProperty->setAccessible(true);
-		$reflectionProperty->setValue($this->paginatorService, $pagerLinks);
+
 
 		$this->rendererMock->expects($this->once())
 			->method('render')
@@ -183,7 +180,6 @@ class PaginatorServiceTest extends TestCase
 			->with(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
 			->willReturn((string)$currentElements);
 
-		// Wir testen nur die ersten beiden Elemente um zu prüfen, ob die Standardwerte korrekt verwendet werden
 		$expectedFirstElements = [
 			[
 				'ELEMENTS_PER_PAGE_VALUE' => 10,
