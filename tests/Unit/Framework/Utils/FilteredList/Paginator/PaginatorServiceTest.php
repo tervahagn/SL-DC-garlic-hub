@@ -88,7 +88,6 @@ class PaginatorServiceTest extends TestCase
 			->method('getPagerLinks')
 			->willReturn($pagerLinks);
 
-		// Act
 		$this->paginatorService->create($totalItems, $usePager, $shortened);
 
 		$this->assertTrue(true);
@@ -116,17 +115,28 @@ class PaginatorServiceTest extends TestCase
 			]
 		];
 
+		$this->creatorMock->expects($this->once())
+			->method('init')
+			->with($this->baseFilterMock, 100)
+			->willReturnSelf();
 
+		$this->creatorMock->expects($this->once())
+			->method('buildPagerLinks')
+			->willReturnSelf();
 
+		$this->creatorMock->expects($this->once())
+			->method('getPagerLinks')
+			->willReturn($pagerLinks);
 		$this->rendererMock->expects($this->once())
 			->method('render')
 			->with($pagerLinks, $site, $this->baseFilterMock)
 			->willReturn($expectedResult);
 
-		// Act
+
+		$this->paginatorService->create(100);
+
 		$result = $this->paginatorService->renderPagination($site);
 
-		// Assert
 		$this->assertSame($expectedResult, $result);
 	}
 
