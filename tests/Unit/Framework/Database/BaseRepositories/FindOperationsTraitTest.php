@@ -156,7 +156,7 @@ class FindOperationsTraitTest extends TestCase
 					if (
 						$mainTable === 'test_table' &&
 						$joinTable === $expectedTable &&
-						$alias === $expectedTable &&
+						$alias === '' &&
 						$onCondition === $expectedCondition)
 					{
 						return $this->queryBuilderMock;
@@ -224,7 +224,7 @@ class FindOperationsTraitTest extends TestCase
 			'test_user_group_table3' => 'test_user_group_table3.test_id = test_table.test_id'
 		];
 		$groupBy = 'test_table.test_id';
-		$orderBy = 'test_table.username ASC';
+		$orderBy = ['sort' => 'test_table.username', 'order' => 'ASC'];
 		$limitStart = 10;
 		$limitShow = 20;
 
@@ -243,7 +243,7 @@ class FindOperationsTraitTest extends TestCase
 				{
 					if (
 						$mainTable === 'test_table' && $joinTable === $expectedTable &&
-						$alias === $expectedTable && $onCondition === $expectedCondition)
+						$alias === '' && $onCondition === $expectedCondition)
 					{
 						return $this->queryBuilderMock;
 					} // For method chaining
@@ -269,7 +269,7 @@ class FindOperationsTraitTest extends TestCase
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->once())->method('groupBy')->with($groupBy);
-		$this->queryBuilderMock->expects($this->once())->method('orderBy')->with($orderBy);
+		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')->with($orderBy['sort'], $orderBy['order']);
 		$this->queryBuilderMock->expects($this->once())->method('setFirstResult')->with($limitStart)
 			->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('setMaxResults')->with($limitShow);
@@ -279,8 +279,8 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['hurz', 'wurz']);
 
-		$this->assertEquals(['hurz', 'wurz'], $this->repository->findAllBy($conditions, $joins, $limitStart,
-			$limitShow, $groupBy, $orderBy));
+		$limit = ['first' => $limitStart, 'max' => $limitShow];
+		$this->assertEquals(['hurz', 'wurz'], $this->repository->findAllBy($conditions, $joins, $limit, $groupBy, [$orderBy]));
 	}
 
 	/**
@@ -323,7 +323,7 @@ class FindOperationsTraitTest extends TestCase
 	{
 		$limitStart = 1;
 		$limitShow = 20;
-		$orderBy = 'test_table.username ASC';
+		$orderBy = ['sort' => 'test_table.username', 'order' => 'ASC'];
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -336,7 +336,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->never())->method('andWhere');
 		$this->queryBuilderMock->expects($this->never())->method('setParameter');
 		$this->queryBuilderMock->expects($this->never())->method('groupBy');
-		$this->queryBuilderMock->expects($this->once())->method('orderBy')->with($orderBy);
+		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')->with($orderBy['sort'], $orderBy['order']);
 		$this->queryBuilderMock->expects($this->once())->method('setFirstResult')->with($limitStart)
 			->willReturn($this->queryBuilderMock);
 		$this->queryBuilderMock->expects($this->once())->method('setMaxResults')->with($limitShow);
@@ -347,8 +347,8 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['Highway to hell', 'Stairway to heaven']);
 
-		$this->assertEquals(['Highway to hell', 'Stairway to heaven'], $this->repository->findAllByWithLimits($limitStart,
-			$limitShow, $orderBy));
+		$limit = ['first' => $limitStart, 'max' => $limitShow];
+		$this->assertEquals(['Highway to hell', 'Stairway to heaven'], $this->repository->findAllByWithLimits($limit, [$orderBy]));
 	}
 
 	/**
