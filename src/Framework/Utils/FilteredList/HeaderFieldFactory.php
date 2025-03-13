@@ -22,7 +22,7 @@ namespace App\Framework\Utils\FilteredList;
 
 class HeaderFieldFactory
 {
-	public function create()
+	public function create(): HeaderField
 	{
 		return new HeaderField();
 	}
