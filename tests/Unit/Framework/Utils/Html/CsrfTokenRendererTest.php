@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\CsrfTokenRenderer;
 use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
@@ -34,7 +35,7 @@ class CsrfTokenRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithBasicAttributes(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(CsrfTokenField::class);
 		$fieldMock->method('getName')->willReturn('csrf_token');
 		$fieldMock->method('getId')->willReturn('csrf_token');
 		$fieldMock->method('getValue')->willReturn('the_token_in_some_hash');

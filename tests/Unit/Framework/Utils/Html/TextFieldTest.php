@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\TextField;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -31,6 +32,7 @@ class TextFieldTest extends TestCase
 	{
 		$attributes = [
 			'id' => 'username',
+			'type' => FieldType::TEXT,
 			'name' => 'user_name',
 			'value' => 'defaultUser',
 			'default_value' => 'guest',
@@ -50,7 +52,7 @@ class TextFieldTest extends TestCase
 	#[Group('units')]
 	public function testSetValue(): void
 	{
-		$textField = new TextField(['id' => 'password']);
+		$textField = new TextField(['id' => 'password', 'type' => FieldType::TEXT]);
 
 		$textField->setValue('secret123');
 
@@ -60,7 +62,7 @@ class TextFieldTest extends TestCase
 	#[Group('units')]
 	public function testGetValueDefault(): void
 	{
-		$textField = new TextField(['id' => 'email', 'default_value' => 'guest']);
+		$textField = new TextField(['id' => 'email', 'type' => FieldType::TEXT, 'default_value' => 'guest']);
 
 		$this->assertSame('guest', $textField->getValue());
 	}
@@ -68,7 +70,7 @@ class TextFieldTest extends TestCase
 	#[Group('units')]
 	public function testSetValidationRules(): void
 	{
-		$textField = new TextField(['id' => 'email']);
+		$textField = new TextField(['id' => 'email', 'type' => FieldType::TEXT]);
 
 		$textField->setValidationRules(['required' => true, 'email' => true]);
 
@@ -78,7 +80,7 @@ class TextFieldTest extends TestCase
 	#[Group('units')]
 	public function testSetAttribute(): void
 	{
-		$textField = new TextField(['id' => 'phone']);
+		$textField = new TextField(['id' => 'phone', 'type' => FieldType::TEXT]);
 
 		$textField->setAttribute('class', 'phone-input');
 
@@ -88,7 +90,7 @@ class TextFieldTest extends TestCase
 	#[Group('units')]
 	public function testAddValidationRule(): void
 	{
-		$textField = new TextField(['id' => 'website']);
+		$textField = new TextField(['id' => 'website', 'type' => FieldType::TEXT]);
 
 		$textField->addValidationRule('url');
 

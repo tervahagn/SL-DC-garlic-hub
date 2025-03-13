@@ -21,6 +21,7 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\FieldInterface;
+use App\Framework\Utils\Html\TextField;
 use App\Framework\Utils\Html\TextRenderer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -34,8 +35,9 @@ class TextInputRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithBasicAttributes(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(TextField::class);
 		$fieldMock->method('getName')->willReturn('username');
+		$fieldMock->method('getTitle')->willReturn('edit username');
 		$fieldMock->method('getId')->willReturn('user_1');
 		$fieldMock->method('getValue')->willReturn('JohnDoe');
 		$fieldMock->method('getValidationRules')->willReturn([]);
@@ -44,7 +46,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" aria-describedby="error_user_1">';
+		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" title="edit username" aria-describedby="error_user_1">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -54,8 +56,9 @@ class TextInputRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithValidationRules(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(TextField::class);
 		$fieldMock->method('getName')->willReturn('email');
+		$fieldMock->method('getTitle')->willReturn('edit email');
 		$fieldMock->method('getId')->willReturn('email_input');
 		$fieldMock->method('getValue')->willReturn('john@example.com');
 		$fieldMock->method('getValidationRules')->willReturn([
@@ -67,7 +70,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="email" id="email_input" value="john@example.com" required="required" maxlength="255" aria-describedby="error_email_input">';
+		$expected = '<input type="text" name="email" id="email_input" value="john@example.com" title="edit email" required="required" maxlength="255" aria-describedby="error_email_input">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -77,8 +80,9 @@ class TextInputRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithAdditionalAttributes(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(TextField::class);
 		$fieldMock->method('getName')->willReturn('username');
+		$fieldMock->method('getTitle')->willReturn('edit username');
 		$fieldMock->method('getId')->willReturn('user_1');
 		$fieldMock->method('getValue')->willReturn('JohnDoe');
 		$fieldMock->method('getValidationRules')->willReturn([]);
@@ -90,7 +94,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" class="form-control" placeholder="Enter your username" aria-describedby="error_user_1">';
+		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" title="edit username" class="form-control" placeholder="Enter your username" aria-describedby="error_user_1">';
 		$this->assertSame($expected, $result);
 	}
 
@@ -100,8 +104,9 @@ class TextInputRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithAllOptions(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(TextField::class);
 		$fieldMock->method('getName')->willReturn('password');
+		$fieldMock->method('getTitle')->willReturn('edit password');
 		$fieldMock->method('getId')->willReturn('password_input');
 		$fieldMock->method('getValue')->willReturn('');
 		$fieldMock->method('getValidationRules')->willReturn([
@@ -116,7 +121,7 @@ class TextInputRendererTest extends TestCase
 		$renderer = new TextRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="text" name="password" id="password_input" value="" class="password-input" placeholder="Enter your password" required="required" maxlength="20" aria-describedby="error_password_input">';
+		$expected = '<input type="text" name="password" id="password_input" value="" title="edit password" class="password-input" placeholder="Enter your password" required="required" maxlength="20" aria-describedby="error_password_input">';
 		$this->assertSame($expected, $result);
 	}
 }

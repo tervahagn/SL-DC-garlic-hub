@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Utils\Html\EmailField;
 use App\Framework\Utils\Html\EmailRenderer;
 use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
@@ -34,8 +35,9 @@ class EmailRendererTest extends TestCase
 	#[Group('units')]
 	public function testRenderWithMinimumAttributes(): void
 	{
-		$fieldMock = $this->createMock(FieldInterface::class);
+		$fieldMock = $this->createMock(EmailField::class);
 		$fieldMock->method('getName')->willReturn('email_1');
+		$fieldMock->method('getTitle')->willReturn('edit email_1');
 		$fieldMock->method('getId')->willReturn('email_1');
 		$fieldMock->method('getValue')->willReturn('test@test.kl');
 		$fieldMock->method('getValidationRules')->willReturn([]);
@@ -44,7 +46,7 @@ class EmailRendererTest extends TestCase
 		$renderer = new EmailRenderer();
 		$result = $renderer->render($fieldMock);
 
-		$expected = '<input type="email" name="email_1" id="email_1" value="test@test.kl" aria-describedby="error_email_1">';
+		$expected = '<input type="email" name="email_1" id="email_1" value="test@test.kl" title="edit email_1" aria-describedby="error_email_1">';
 		$this->assertSame($expected, $result);
 	}
 }

@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\EmailField;
 use App\Framework\Utils\Html\FieldsFactory;
+use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\TextField;
 use Exception;
@@ -42,7 +43,7 @@ class FieldsFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreateTextField(): void
 	{
-		$attributes = ['id' => 'username', 'name' => 'user_name'];
+		$attributes = ['id' => 'username', 'type' => FieldType::TEXT, 'name' => 'user_name'];
 
 		$field = $this->fieldsFactory->createTextField($attributes);
 
@@ -54,7 +55,7 @@ class FieldsFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreateEmailField(): void
 	{
-		$attributes = ['id' => 'email', 'name' => 'email_address'];
+		$attributes = ['id' => 'email', 'type' => FieldType::EMAIL, 'name' => 'email_address'];
 
 		$field = $this->fieldsFactory->createEmailField($attributes);
 
@@ -66,7 +67,7 @@ class FieldsFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreatePasswordField(): void
 	{
-		$attributes = ['id' => 'password', 'name' => 'user_password'];
+		$attributes = ['id' => 'password', 'type' => FieldType::PASSWORD, 'name' => 'user_password'];
 
 		$field = $this->fieldsFactory->createPasswordField($attributes);
 
@@ -81,7 +82,7 @@ class FieldsFactoryTest extends TestCase
 	#[Group('units')]
 	public function testCreateCsrfTokenField(): void
 	{
-		$attributes = ['id' => 'csrf_token', 'name' => 'csrf_token_name'];
+		$attributes = ['id' => 'csrf_token', 'type' => FieldType::CSRF, 'name' => 'csrf_token_name'];
 
 		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(Session::class));
 

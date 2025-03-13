@@ -22,6 +22,7 @@ namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Core\Session;
 use App\Framework\Utils\Html\CsrfTokenField;
+use App\Framework\Utils\Html\FieldType;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -44,6 +45,7 @@ class CsrfTokenFieldTest extends TestCase
 	{
 		$attributes = [
 			'id' => 'csrf_token',
+			'type' => FieldType::CSRF,
 			'name' => 'csrf_token_name'
 		];
 
@@ -68,8 +70,8 @@ class CsrfTokenFieldTest extends TestCase
 	#[Group('units')]
 	public function testTokenIsGeneratedOnEachInstance(): void
 	{
-		$csrfTokenField1 = new CsrfTokenField(['id' => 'csrf1'], $this->sessionMock);
-		$csrfTokenField2 = new CsrfTokenField(['id' => 'csrf2'], $this->sessionMock);
+		$csrfTokenField1 = new CsrfTokenField(['id' => 'csrf1', 'type' => FieldType::CSRF], $this->sessionMock);
+		$csrfTokenField2 = new CsrfTokenField(['id' => 'csrf2', 'type' => FieldType::CSRF], $this->sessionMock);
 
 		$this->assertNotSame($csrfTokenField1->getValue(), $csrfTokenField2->getValue());
 	}
@@ -80,7 +82,7 @@ class CsrfTokenFieldTest extends TestCase
 	#[Group('units')]
 	public function testTokenHasCorrectLength(): void
 	{
-		$csrfTokenField = new CsrfTokenField(['id' => 'csrf'], $this->sessionMock);
+		$csrfTokenField = new CsrfTokenField(['id' => 'csrf', 'type' => FieldType::CSRF], $this->sessionMock);
 
 		$this->assertSame(64, strlen($csrfTokenField->getValue()));
 	}
