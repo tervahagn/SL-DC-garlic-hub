@@ -1,0 +1,91 @@
+			<input type="hidden" id="playlist_id" value="{SMIL_PLAYLIST_ID}" />
+
+			<a href="#" title="{{{LANG_INSERT}}}" class="bi bi-plus-square" id="addItems"></a>
+			<template id="insertItemsMenuTemplate">
+				<ul class="context-menu">
+					<li id="insertMedia">
+						{LANG_INSERT_MEDIA}
+					</li>
+					<li id="insertExternMedia">
+						{LANG_ADD_EXTERN_MEDIA}
+					</li>
+					<!-- BEGIN if_not_time_limited -->
+					<li id="insertPlaylista">
+						{LANG_ADD_INTERN_PLAYLIST}
+					</li>
+					<!-- END if_not_time_limited -->
+					<!-- BEGIN if_allowed_external_playlists -->
+					<li id="insertExternalPlaylists">
+						{LANG_ADD_EXTERN_PLAYLIST}
+					</li>
+					<!-- END if_allowed_external_playlists -->
+					<li id="insertTemplates">
+						{LANG_INSERT_TEMPLATE}
+					</li>
+					<li id="insertChannels">
+						{LANG_INSERT_CHANNEL}
+					</li>
+				</ul>
+			</template>
+
+			<section id="item_container">
+				<div id="wrap_mediapool">
+					<div>
+						<label for="filter_treeview">{LANG_FILTER}</label><br />
+						<input name="filter_treeview" id="filter_treeview" />
+						<button type="button" id="show_treeview" >▲</button>
+					</div>
+					<div id="directories_list">
+					</div>
+				</div>
+				<div id="wrap_filter_playlists">
+					<label for="filter_playlists">{LANG_FILTER}</label><br />
+					<input name="filter_playlists" id="filter_playlists" />
+				</div>
+				<ul id="items">
+					<li>
+					</li>
+				</ul>
+			</section>
+
+			<section id="playlistInformation">
+				{LANG_PLAYLIST_DURATION}: <span id="playlist_duration">{PLAYLIST_DURATION}</span>
+				• {LANG_NUMBER_MEDIA}: <span id="number_media">{NUMBER_MEDIA}</span>
+				• {LANG_FILESIZE_MEDIA}: <span id="filesize_media">{FILESIZE_MEDIA}</span>
+				<!-- BEGIN if_max_duration -->
+				• {LANG_PLAYLIST_REMAIN_DURATION}: <span id="remain_playlist_duration">{REMAIN_PLAYLIST_DURATION}</span>
+				<!-- END if_max_duration -->
+			</section>
+			<section id="playlistActions">
+				<input type="checkbox" value="1" id="check_shuffle" /> <label for="check_shuffle">{LANG_SHUFFLE}</label>
+				<span id="wrap_edit_picking">
+					 <select name="edit_picking" id="edit_picking">
+						 <!-- BEGIN picking_options -->
+						 <option value="{EDIT_PICKING_OPTION_VALUE}">{EDIT_PICKING_OPTION_NAME}</option>
+						 <!-- END picking_options -->
+					 </select> <label for="edit_picking">{LANG_PICKING_MEDIA_PER_CYCLE}</label>
+				</span>
+				<button id="saveChanges">{LANG_SAVE_CHANGES}</button>
+				<button id="preview">{LANG_PLAYLIST_PREVIEW}</button>
+			</section>
+
+			<div id="playList" class="item-list-list-view" aria-labelledby="item-list-title"></div>
+			<template id="playlistItemTemplate">
+				<div class="playlist_item">
+					<img class="thumbnail" src="" alt="" />
+					<div class="properties">
+						<div class="actions">
+							<span class="item_duration"></span>
+							<button class="bi bi-link link_playlist" aria-label="{LANG_LINK_TEMPLATE}" data-template-content-id=""></button>
+							<button class="bi bi-pencil edit_template" aria-label="{LANG_EDIT_TEMPLATE}" data-template-content-id=""></button>
+							<button class="bi bi-alarm conditional_play" aria-label="{LANG_CONDITIONAL_PLAY_EDIT}" data-conditional-play-id=""></button>
+							<button class="bi bi-lightning trigger_edit" aria-label="{LANG_TRIGGER_EDIT}" data-trigger-id=""></button>
+							<button class="bi bi-pencil edit_widget" aria-label="{LANG_WIDGET_EDIT}" data-widget-id=""></button>
+							<button class="bi bi-gear open_edit_dialog" aria-label="{LANG_SETTINGS}" data-properties-id=""></button>
+							<button class="bi bi-copy copy_item" aria-label="{LANG_COPY_ITEM}" data-copy-id=""></button>
+							<button class="bi bi-trash delete_item" aria-label="{LANG_DELETE_ITEM}" data-delete-id=""></button>
+						</div>
+						<p class="item_name"></p>
+					</div>
+				</div>
+			</template>
