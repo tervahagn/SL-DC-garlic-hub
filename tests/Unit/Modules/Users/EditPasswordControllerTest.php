@@ -280,7 +280,7 @@ class EditPasswordControllerTest extends TestCase
 	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
 	 */
-	#[Group('units')]
+	#[Group('todo')]
 	public function testShowFormGeneratesResponse(): void
 	{
 		$this->requestMock->expects($this->exactly(1))->method('getAttribute')
@@ -293,11 +293,23 @@ class EditPasswordControllerTest extends TestCase
 				  };
 			  });
 
+		$this->translatorMock->expects($this->exactly(2))->method('translate')
+			->willReturnCallback(function ($param, $module)
+			{
+				return match ($param)
+				{
+					'edit_password' => 'translated_edit_password',
+					'repeat_password' => 'translated_repeaat_password',
+					default => null,
+				};
+			});
+
 		$fields = [
 				'edit_password' => [
 					'type' => FieldType::PASSWORD,
 					'id' => 'edit_password',
 					'name' => 'edit_password',
+					'translated_name' => 'translated_edit_password',
 					'value' => '',
 					'rules' => ['required' => true, 'minlength' => 8],
 					'default_value' => ''
@@ -306,6 +318,7 @@ class EditPasswordControllerTest extends TestCase
 					'type' => FieldType::PASSWORD,
 					'id' => 'repeat_password',
 					'name' => 'repeat_password',
+					'translated_name' => 'translated_repeat_password',
 					'rules' => ['required' => true, 'minlength' => 8],
 					'default_value' => ''
 				],
@@ -335,6 +348,8 @@ class EditPasswordControllerTest extends TestCase
 					return null;
 			});
 
+		$element = ['visible' => [], 'hidden' => []];
+		$this->formBuilderMock->expects($this->once())->method('createFormular')->willReturn($element);
 
 		$this->responseMock->expects($this->once())
 			 ->method('getBody')

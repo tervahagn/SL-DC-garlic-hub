@@ -312,7 +312,7 @@ class LoginControllerTest extends TestCase
 			}
 			);
 		$this->sessionMock->expects($this->once())->method('get')->with('user')->willReturn(['UID' => 88]);
-		$this->sessionMock->expects($this->once())->method('delete')->with('user');
+		$this->sessionMock->expects($this->once())->method('clear');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
