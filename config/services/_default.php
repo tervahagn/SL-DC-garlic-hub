@@ -34,6 +34,7 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
+use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use App\Framework\Utils\FilteredList\Paginator\Creator;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\FilteredList\Paginator\Renderer;
@@ -190,6 +191,10 @@ $dependencies[PaginatorService::class] = DI\factory(function (ContainerInterface
 		new Creator(),
 		new Renderer()
 	);
+});
+$dependencies[HeaderFieldFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new HeaderFieldFactory();
 });
 
 

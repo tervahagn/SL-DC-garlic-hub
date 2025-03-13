@@ -22,6 +22,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
@@ -112,7 +113,11 @@ $dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterfac
 });
 $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultsList($container->get(AclValidator::class), $container->get(Config::class));
+	return new ResultsList(
+		$container->get(AclValidator::class),
+		$container->get(Config::class),
+		$container->get(HeaderFieldFactory::class)
+	);
 });
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {

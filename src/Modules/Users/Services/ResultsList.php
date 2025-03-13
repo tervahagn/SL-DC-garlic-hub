@@ -24,6 +24,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FilteredList\BaseResults;
+use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -34,10 +35,11 @@ class ResultsList extends BaseResults
 	private readonly Config $config;
 	private readonly int $UID;
 
-	public function __construct(AclValidator $aclValidator, Config $config)
+	public function __construct(AclValidator $aclValidator, Config $config, HeaderFieldFactory $headerFieldFactory)
 	{
 		$this->aclValidator = $aclValidator;
 		$this->config = $config;
+		parent::__construct($headerFieldFactory);
 	}
 
 	public function createFields($UID): static

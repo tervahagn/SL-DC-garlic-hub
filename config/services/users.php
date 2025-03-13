@@ -22,6 +22,7 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Controller\ShowOverviewController;
@@ -31,6 +32,7 @@ use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\FormHelper\FilterFormBuilder;
 use App\Modules\Users\FormHelper\FilterParameters;
+use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\ResultsList;
@@ -59,7 +61,7 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 $dependencies[UsersOverviewService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UsersOverviewService(
-		new \App\Modules\Users\Repositories\Edge\UserMainRepository($container->get('SqlConnection')),
+		new UserMainRepository($container->get('SqlConnection')),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
@@ -91,7 +93,11 @@ $dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface
 });
 $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultsList($container->get(AclValidator::class), $container->get(Config::class));
+	return new ResultsList(
+		$container->get(AclValidator::class),
+		$container->get(Config::class),
+		$container->get(HeaderFieldFactory::class)
+	);
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {

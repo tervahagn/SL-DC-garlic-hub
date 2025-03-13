@@ -16,16 +16,20 @@ abstract class BaseResults
 	protected array $tplData = [];
 	protected string $site = '';
 	protected Translator $translator;
+	protected HeaderFieldFactory $headerFieldFactory;
 	protected array $tableHeaderFields = [];
 	protected int $currentTotalResult = 0;
 	protected array $currentFilterResults = [];
 	protected array $additionalUrlParameters = [];
 	protected array $languageModules = [];
 
-	public function setFilterParameter(BaseParameters $filterParameter): static
+	/**
+	 * @param HeaderFieldFactory $headerFieldFactory
+	 * @param BaseParameters $filterParameter
+	 */
+	public function __construct(HeaderFieldFactory $headerFieldFactory)
 	{
-		$this->filterParameter = $filterParameter;
-		return $this;
+		$this->headerFieldFactory = $headerFieldFactory;
 	}
 
 	public function setSite(string $site): static
@@ -37,6 +41,12 @@ abstract class BaseResults
 	public function getTplData(): array
 	{
 		return $this->tplData;
+	}
+
+	public function setFilterParameter(BaseParameters $filterParameter): BaseResults
+	{
+		$this->filterParameter = $filterParameter;
+		return $this;
 	}
 
 	public function setTranslator(Translator $translator): static
@@ -115,6 +125,12 @@ abstract class BaseResults
 		return $header;
 	}
 
+	public function setTableHeaderFields(array $tableHeaderFields): BaseResults
+	{
+		$this->tableHeaderFields = $tableHeaderFields;
+		return $this;
+	}
+
 	public function getTableHeaderFields(): array
 	{
 		return $this->tableHeaderFields;
@@ -122,7 +138,7 @@ abstract class BaseResults
 
 	public function createField(): HeaderField
 	{
-		$field = new HeaderField();
+		$field = $this->headerFieldFactory->create();
 		$this->addField($field);
 		return $field;
 	}
