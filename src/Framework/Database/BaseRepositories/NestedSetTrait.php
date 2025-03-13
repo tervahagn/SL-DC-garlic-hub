@@ -47,7 +47,7 @@ trait NestedSetTrait
 						 'user_main',
 						 $this->table.'.UID = user_main.UID')
 					 ->where('parent_id = 0')
-					 ->orderBy('root_order ASC');
+					 ->orderBy('root_order', 'ASC');
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
