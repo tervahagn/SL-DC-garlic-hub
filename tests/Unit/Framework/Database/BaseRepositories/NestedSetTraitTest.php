@@ -103,7 +103,7 @@ class NestedSetTraitTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->once())
 			->method('orderBy')
-			->with('root_order ASC')
+			->with('root_order', 'ASC')
 			->willReturnSelf();
 
 		$this->queryBuilderMock->expects($this->once())
