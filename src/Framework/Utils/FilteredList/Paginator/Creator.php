@@ -33,11 +33,11 @@ class Creator
 
 	public function init(BaseFilterParameters $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
 	{
-		$this->currentPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
+		$this->currentPage  = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
 		$this->itemsPerPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));
-		$this->totalItems = max(0, $totalItems);
-		$this->usePager = $usePager;
-		$this->shortened = $shortened;
+		$this->totalItems   = max(0, $totalItems);
+		$this->usePager     = $usePager;
+		$this->shortened    = $shortened;
 
 		return $this;
 	}

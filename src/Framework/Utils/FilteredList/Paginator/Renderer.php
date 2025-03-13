@@ -20,13 +20,16 @@
 
 namespace App\Framework\Utils\FilteredList\Paginator;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
 class Renderer
 {
+	/**
+	 * @throws ModuleException
+	 */
 	public function render(array $pageLinks, string $site, BaseFilterParameters $baseFilter): array
 	{
-
 		$sortSuffix = '&sort_column='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
 			'&elements_per_page='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);

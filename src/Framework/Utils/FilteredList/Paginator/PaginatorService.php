@@ -54,6 +54,9 @@ class PaginatorService
 			->getPagerLinks();
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function renderPagination(string $site): array
 	{
 		return $this->renderer->render($this->pagerLinks, $site, $this->baseFilter);
@@ -62,7 +65,7 @@ class PaginatorService
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderElementsPerSiteDropDown(int $min = 10, int $max = 100, int $steps = 10)
+	public function renderElementsPerSiteDropDown(int $min = 10, int $max = 100, int $steps = 10): array
 	{
 		$data = [];
 		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
