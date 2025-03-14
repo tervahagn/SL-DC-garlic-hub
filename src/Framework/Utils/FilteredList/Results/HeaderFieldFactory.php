@@ -18,11 +18,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList;
+namespace App\Framework\Utils\FilteredList\Results;
 
 class HeaderFieldFactory
 {
-	public function create(): HeaderField
+	static public function create(): HeaderField
 	{
 		return new HeaderField();
 	}

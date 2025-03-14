@@ -22,8 +22,8 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
-use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
+use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Controller\ShowOverviewController;
 use App\Modules\Users\Controller\UsersController;
@@ -96,7 +96,7 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 	return new ResultsList(
 		$container->get(AclValidator::class),
 		$container->get(Config::class),
-		$container->get(HeaderFieldFactory::class)
+		$container->get(ResultsServiceLocator::class)
 	);
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)

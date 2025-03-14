@@ -34,10 +34,13 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\Utils\FilteredList\HeaderFieldFactory;
 use App\Framework\Utils\FilteredList\Paginator\Creator;
 use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
 use App\Framework\Utils\FilteredList\Paginator\Renderer;
+use App\Framework\Utils\FilteredList\Results\HeaderFieldFactory;
+use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\FilteredList\Results\TranslatorManager;
+use App\Framework\Utils\FilteredList\Results\UrlBuilder;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
@@ -192,9 +195,12 @@ $dependencies[PaginatorService::class] = DI\factory(function (ContainerInterface
 		new Renderer()
 	);
 });
-$dependencies[HeaderFieldFactory::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ResultsServiceLocator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new HeaderFieldFactory();
+	$translatorManager = new TranslatorManager($container->get(Translator::class));
+	$renderer = new \App\Framework\Utils\FilteredList\Results\Renderer($translatorManager,	new UrlBuilder());
+
+	return new ResultsServiceLocator($renderer, $translatorManager, new HeaderFieldFactory());
 });
 
 

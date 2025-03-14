@@ -21,17 +21,16 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Utils\FilteredList\BaseResults;
-use App\Framework\Utils\FilteredList\HeaderFieldFactory;
+use App\Framework\Utils\FilteredList\Results\BaseResults;
+use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
 use App\Modules\Playlists\PlaylistMode;
-use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
 class ResultsList extends BaseResults
 {
@@ -43,11 +42,12 @@ class ResultsList extends BaseResults
 	 * @param AclValidator $acl_validator
 	 * @param Config $config
 	 */
-	public function __construct(AclValidator $aclValidator, Config $config, HeaderFieldFactory $headerFieldFactory)
+	public function __construct(AclValidator $aclValidator, Config $config, ResultsServiceLocator $resultsServiceLocator)
 	{
 		$this->aclValidator = $aclValidator;
-		$this->config = $config;
-		parent::__construct($headerFieldFactory);
+		$this->config       = $config;
+
+		parent::__construct($resultsServiceLocator);
 	}
 
 	/**
@@ -58,30 +58,29 @@ class ResultsList extends BaseResults
 	public function createFields($UID): static
 	{
 		$this->UID = $UID;
-		$this->createField()->setName('playlist_name')->sortable(true);
+		$this->createField('playlist_name', true);
 		$this->addLanguageModule('playlists')->addLanguageModule('main');
 
 		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
-			$this->createField()->setName('UID')->sortable(true);
+			$this->createField('UID', true);
 
-		$this->createField()->setName('playlist_mode')->sortable(true);
-		$this->createField()->setName('duration')->sortable(false);
+		$this->createField('playlist_mode', true);
+		$this->createField('duration', false);
 
 		return $this;
 	}
 
 	/**
 	 * @throws CoreException
-	 * @throws FrameworkException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws \App\Framework\Exceptions\ModuleException
 	 */
-	public function renderTableBody($currentFilterResults, $showedIds, $usedPlaylists): array
+	public function renderTableBody(Translator $translator, $showedIds, $usedPlaylists): array
 	{
 		$body = [];
-		$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
-		foreach($currentFilterResults as $value)
+		$selectableModes = $translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
+		foreach($this->getCurrentFilterResults() as $value)
 		{
 			$data            = [];
 			$data['UNIT_ID'] = $value['playlist_id'];
@@ -95,37 +94,29 @@ class ResultsList extends BaseResults
 				switch ($innerKey)
 				{
 					case 'playlist_name':
-						$resultElements['if_editable'] = [
-							'CONTROL_ELEMENT_VALUE_NAME'  => $value['playlist_name'],
-							'CONTROL_ELEMENT_VALUE_TITLE' => $this->translator->translate('edit', 'main'),
-							'CONTROL_ELEMENT_VALUE_LINK' => 'playlists/compose/'.$value['playlist_id'],
-							'CONTROL_ELEMENT_VALUE_ID' => 'playlist_name_'.$value['playlist_id'],
-							'CONTROL_ELEMENT_VALUE_CLASS' => ''
-						];
+						$resultElements['is_link'] = $this->resultsServiceLocator->getRenderer()->renderLink(
+							$value['playlist_name'],
+							$translator->translate('edit', 'main'),
+							'playlists/compose/'.$value['playlist_id'],
+							'playlist_name_'.$value['playlist_id']
+						);
+
 						break;
 					case 'UID':
-						$resultElements['if_UID'] = [
-							'OWNER_UID'  => $value['UID'],
-							'OWNER_NAME' => $value['username'],
-						];
+						$resultElements['is_UID'] = $this->resultsServiceLocator->getRenderer()->renderUID($value['UID'], $value['username']);
+
 						break;
 					case 'duration':
-						$resultElements['if_not_editable'] = [
-							'CONTROL_ELEMENT_VALUE'  => $this->convertSeconds($value['duration'])->format('%H:%I:%S'),
-						];
+						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($this->convertSeconds($value['duration'])->format('%H:%I:%S'));
 						break;
 					case 'playlist_mode':
-						$resultElements['if_not_editable'] = [
-							'CONTROL_ELEMENT_VALUE'  => $selectableModes[$value['playlist_mode']],
-						];
+						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($selectableModes[$value['playlist_mode']]);
 						break;
 					case 'selector':
-						$resultElements['SELECT_DISABLED']     =  ($value['playlist_mode'] == PlaylistMode::MULTIZONE || $value['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
+						$resultElements['SELECT_DISABLED'] = ($value['playlist_mode'] == PlaylistMode::MULTIZONE || $value['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
 						break;
 					default:
-						$resultElements['if_not_editable'] = [
-							'CONTROL_ELEMENT_VALUE'  => $value[$innerKey],
-						];
+						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($value[$innerKey]);
 						break;
 				}
 				$data['elements_result_element'][] = $resultElements;
@@ -135,27 +126,25 @@ class ResultsList extends BaseResults
 					$this->aclValidator->isSubAdmin($this->UID))
 				{
 					$data['has_action'] = [
-						[
-							'LANG_ACTION'       => $this->translator->translate('copy_playlist', 'playlists'),
-							'LINK_ACTION'       => 'playlists/?playlist_copy_id='.$value['playlist_id'],
-							'ACTION_NAME'       => 'copy',
-							'ACTION_ICON_CLASS' => 'copy'
-						],
-						[
-							'LANG_ACTION'       => $this->translator->translate('edit_settings', 'playlists'),
-							'LINK_ACTION'       => 'playlists/settings/'.$value['playlist_id'],
-							'ACTION_NAME'       => 'edit',
-							'ACTION_ICON_CLASS' => 'pencil'
-						]
+						$this->resultsServiceLocator->getRenderer()->renderAction(
+							$translator->translate('copy_playlist', 'playlists'),
+							'playlists/?playlist_copy_id='.$value['playlist_id'],
+							'copy', 'copy'),
+						$this->resultsServiceLocator->getRenderer()->renderAction(
+							$translator->translate('edit_settings', 'playlists'),
+							'playlists/settings/'.$value['playlist_id'],
+							'edit', 'pencil')
 					];
 					if (!array_key_exists($value['playlist_id'], $usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($this->UID, $value))
 					{
-						$data['has_delete'] = [
-							'LINK_DELETE_ACTION' => 'playlists/?delete_id='.$value['playlist_id'],
-							'LANG_CONFIRM_DELETE'=> $this->translator->translate('confirm_delete', 'playlists'),
-							'DELETE_ID'          => $value['playlist_id']
-						];
+						$data['has_delete'] = $this->resultsServiceLocator->getRenderer()->renderActionDelete(
+							$translator->translate('delete', 'main'),
+							$translator->translate('confirm_delete', 'playlists'),
+							'playlists/?delete_id='.$value['playlist_id'],
+							$value['playlist_id'],
+							''
+						);
 					}
 
 				}
@@ -177,11 +166,10 @@ class ResultsList extends BaseResults
 */
 	}
 
-
-
 	private function convertSeconds($seconds): \DateInterval|false
 	{
 		$dtT = new DateTime("@$seconds");
 		return (new DateTime("@0"))->diff($dtT);
 	}
+
 }

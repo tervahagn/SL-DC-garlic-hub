@@ -17,44 +17,44 @@
 			<ul style="{{{MARKED_AS_DISABLED}}}" class="results-body" data-id="{{{UNIT_ID}}}">
 				{{#elements_result_element}}
 				<li class="{{{CONTROL_NAME_BODY}}}">
-					{{#if_editable}}
+					{{#is_link}}
 					<a href="{{{CONTROL_ELEMENT_VALUE_LINK}}}" id="{{{CONTROL_ELEMENT_VALUE_ID}}}" class="{{{CONTROL_ELEMENT_VALUE_CLASS}}}" title="{{{CONTROL_ELEMENT_VALUE_TITLE}}}">{{{CONTROL_ELEMENT_VALUE_NAME}}}</a>
-					{{/if_editable}}
+					{{/is_link}}
 
-					{{#if_not_editable}}
+					{{#is_text}}
 					{{{CONTROL_ELEMENT_VALUE}}}
-					{{/if_not_editable}}
+					{{/is_text}}
 
-					{{#if_icon_column}}
+					{{#is_icon_column}}
                     <div class="{{{CONTROL_ICON_CLASSNAME}}}"><span title="{{{CONTROL_ELEMENT_MESSAGE}}}"></span></div>
-					{{/if_icon_column}}
+					{{/is_icon_column}}
 
-					{{#if_online_bullet}}
+					{{#is_bullet}}
                     <div class="thymian-icon thymian-icon-{{{BULLET_COLOR}}}" title="{{{LANG_MONITORING}}}">&nbsp;</div>
-					{{/if_online_bullet}}
+					{{/is_bullet}}
 
-					{{#if_checkbox}}
-						<label><input type="checkbox" {{{SELECT_DISABLED}}}></label>
-					{{/if_checkbox}}
+					{{#is_checkbox}}
+						<label><input type="checkbox" {{{SELECT_DISABLED}}} title="{{{LANG_CHECKBOX_NAME}}}"></label>
+					{{/is_checkbox}}
 
-					{{#if_icon_column_linked}}
+					{{#is_icon_column_linked}}
 					<div class="{{{CONTROL_ICON_CLASSNAME_LINKED}}}"><a href="{{{CONTROL_ELEMENT_LINK}}}" title="{{{CONTROL_ELEMENT_MESSAGE_LINKED}}}" class=""></a></div>
-					{{/if_icon_column_linked}}
+					{{/is_icon_column_linked}}
 
-					{{#if_expand_collapse}}
+					{{#is_expand_collapse}}
 					<details>
 						<summary>{{{CONTROL_ELEMENT_MESSAGE_COLLAPSED}}}</summary>
 						<div>
 							{{{CONTROL_ELEMENT_MESSAGE_EXPANDED}}}
 						</div>
 					</details>
-					{{/if_expand_collapse}}
-					{{#if_UID}}
-					<a href="javascript:openProfileWindows('{{{OWNER_UID}}}')" title="{{{OWNER_NAME}}}">{{{OWNER_NAME}}}</a>
-					{{/if_UID}}
-					{{#if_UID_ShowOnly}}
+					{{/is_expand_collapse}}
+					{{#is_UID}}
+						<a data-uid="{{{OWNER_UID}}}')" title="{{{OWNER_NAME}}}">{{{OWNER_NAME}}}</a>
+					{{/is_UID}}
+					{{#is_UID_ShowOnly}}
 					{{{OWNER_NAME}}}
-					{{/if_UID_ShowOnly}}
+					{{/is_UID_ShowOnly}}
 				</li>
 				{{/elements_result_element}}
 				<li class="actions">
@@ -69,7 +69,7 @@
 						{{/has_action}}
 						{{#has_delete}}
                         <li>
-                            <a href="{{{LINK_DELETE_ACTION}}}" data-delete-id="{{{DELETE_ID}}}" onclick="return confirm_delete('{{{LANG_CONFIRM_DELETE}}}')" title="{{{LANG_ELEMENTS_DELETE_LANG}}}" class="bi bi-trash {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
+                            <a href="{{{LINK_DELETE_ACTION}}}" data-delete-id="{{{DELETE_ID}}}" onclick="return confirm_delete('{{{LANG_CONFIRM_DELETE}}}')" title="{{{LANG_DELETE}}}" class="bi bi-trash {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
                         </li>
 						{{/has_delete}}
                     </ul>

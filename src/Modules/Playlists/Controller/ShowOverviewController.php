@@ -154,7 +154,7 @@ class ShowOverviewController
 	private function renderHeader(): array
 	{
 		$this->resultsList->createFields($this->session->get('user')['UID']);
-		return $this->resultsList->renderTableHeader($this->parameters, 'playlists', $this->translator);
+		return $this->resultsList->renderTableHeader($this->parameters, 'playlists');
 	}
 
 	/**
@@ -167,12 +167,13 @@ class ShowOverviewController
 	private function renderBody(): array
 	{
 		$showedIds     = $this->playlistsService->getPlaylistIdsFromResultSet();
-		$usedPlaylists = $this->playlistsService->getPlaylistsInUse($showedIds);
 
+		$this->resultsList->setCurrentTotalResult($this->playlistsService->getCurrentTotalResult());
+		$this->resultsList->setCurrentFilterResults($this->playlistsService->getCurrentFilterResults());
 		return $this->resultsList->renderTableBody(
-			$this->playlistsService->getCurrentFilterResults(),
+			$this->translator,
 			$showedIds,
-			$usedPlaylists
+			$this->playlistsService->getPlaylistsInUse($showedIds)
 		);
 	}
 
