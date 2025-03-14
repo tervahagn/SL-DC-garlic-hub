@@ -43,7 +43,7 @@ class ResultsServiceLocator
 
 	public function createHeaderField(): HeaderField
 	{
-		return $this->headerFieldFactory->create();
+		return new HeaderField();
 	}
 
 	public function getRenderer(): Renderer
