@@ -41,18 +41,21 @@ class PaginationManager
 		$this->renderer = $renderer;
 	}
 
-	public function setBaseFilter(BaseFilterParameters $baseFilter): PaginationManager
+	public function init(BaseFilterParameters $baseFilter, string $site): PaginationManager
 	{
 		$this->baseFilter = $baseFilter;
 		$this->renderer->setBaseFilter($baseFilter);
+		$this->renderer->setSite($site);
 		return $this;
 	}
 
-	public function createPagination(int $totalItems, bool $usePager = false, bool $shortened = true): void
+	public function createPagination(int $totalItems, bool $usePager = false, bool $shortened = true): static
 	{
 		$this->pagerLinks = $this->creator->init($this->baseFilter, $totalItems, $usePager, $shortened)
 			->buildPagerLinks()
 			->getPagerLinks();
+
+		return $this;
 	}
 
 	public function createDropDown(int $min = 10, int $max = 100, int $steps = 10): void
@@ -65,7 +68,6 @@ class PaginationManager
 	 */
 	public function renderPagination(string $site): array
 	{
-		$this->renderer->setSite($site);
 		return $this->renderer->renderLinks($this->pagerLinks);
 	}
 

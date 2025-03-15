@@ -20,10 +20,8 @@
 
 namespace App\Framework\Utils\FilteredList\Results;
 
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Framework\Utils\FormParameters\BaseParameters;
 
 class Renderer
 {
@@ -42,13 +40,14 @@ class Renderer
 		$this->urlBuilder = $urlBuilder;
 	}
 
-	/**
-	 * @return BaseFilterParameters
-	 */
-	public function init(BaseFilterParameters $filterParameter, string $site): void
+	public function init(BaseFilterParameters $filterParameter, string $site, array $languageModules): void
 	{
 		$this->filterParameter = $filterParameter;
 		$this->site = $site;
+		foreach ($languageModules as $module)
+		{
+			$this->translatorManager->addLanguageModule($module);
+		}
 	}
 
 	public function renderLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array

@@ -20,18 +20,16 @@
 
 namespace App\Framework\Utils\FilteredList\Results;
 
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
-
 abstract class BaseResults
 {
-	protected ResultsServiceLocator $resultsServiceLocator;
+	protected Renderer $renderer;
 	protected array $tableHeaderFields = [];
 	private int $currentTotalResult;
 	private array $currentFilterResults;
 
-	public function __construct(ResultsServiceLocator $resultsServiceLocator)
+	public function __construct(Renderer $renderer)
 	{
-		$this->resultsServiceLocator = $resultsServiceLocator;
+		$this->renderer = $renderer;
 	}
 
 	public function getCurrentTotalResult(): int
@@ -50,22 +48,14 @@ abstract class BaseResults
 		return $this->currentFilterResults;
 	}
 
-	public function renderTableHeader(BaseFilterParameters $filterParameter, string $site): array
+	public function renderTableHeader(): array
 	{
-		$this->resultsServiceLocator->getRenderer()->init($filterParameter, $site);
-
-		return $this->resultsServiceLocator->getRenderer()->renderTableHeader($this->tableHeaderFields);
+		return $this->renderer->renderTableHeader($this->tableHeaderFields);
 	}
 
 	public function setCurrentFilterResults(array $currentFilterResults): static
 	{
 		$this->currentFilterResults = $currentFilterResults;
-		return $this;
-	}
-
-	public function setResultsServiceLocator(ResultsServiceLocator $resultsServiceLocator): BaseResults
-	{
-		$this->resultsServiceLocator = $resultsServiceLocator;
 		return $this;
 	}
 
@@ -76,12 +66,13 @@ abstract class BaseResults
 
 	public function createField(string $fieldname, bool $sortable): void
 	{
-		$this->tableHeaderFields[] = $this->resultsServiceLocator->createHeaderField()->setName($fieldname)->sortable($sortable);
+		$this->tableHeaderFields[] = $this->createHeaderField()->setName($fieldname)->sortable($sortable);
 	}
 
-	public function addLanguageModule(string $languageModule): static
+	private function createHeaderField(): HeaderField
 	{
-		$this->resultsServiceLocator->addLanguageModule($languageModule);
-		return $this;
+		return new HeaderField();
 	}
+
+
 }
