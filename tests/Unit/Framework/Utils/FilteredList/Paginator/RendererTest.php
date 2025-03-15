@@ -39,7 +39,7 @@ class RendererTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testRender(): void
+	public function testRenderLinks(): void
 	{
 		// Arrange
 		$pageLinks = [
@@ -70,8 +70,54 @@ class RendererTest extends TestCase
 			],
 		];
 
+		$this->renderer->setBaseFilter($this->baseFilterMock)->setSite($site);
+
+		$result = $this->renderer->renderLinks($pageLinks);
+
+		$this->assertSame($expectedResult, $result);
+	}
+
+	#[Group('units')]
+	public function testRenderElementsPerSiteDropDown(): void
+	{
+		$settings = ['min' => 10, 'max' => 30, 'steps' => 10];
+		$elementsPage = 2;
+		$site = 'example-site';
+
+		$this->renderer->setBaseFilter($this->baseFilterMock)->setSite($site);
+
+		$this->baseFilterMock
+			->method('getValueOfParameter')
+			->willReturnMap([
+				[BaseFilterParameters::PARAMETER_SORT_COLUMN, 'name'],
+				[BaseFilterParameters::PARAMETER_SORT_ORDER, 'asc'],
+				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, $elementsPage],
+				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 20],
+			]);
+
+		$expectedResult = [
+			[
+				'ELEMENTS_PER_PAGE_VALUE' => 10,
+				'ELEMENTS_PER_PAGE_DATA_LINK' =>'/example-site?elements_per_page=10&sort_column=name&sort_order=asc&elements_page=2',
+				'ELEMENTS_PER_PAGE_NAME' => 10,
+				'ELEMENTS_PER_PAGE_SELECTED' => ''
+			],
+			[
+				'ELEMENTS_PER_PAGE_VALUE' => 20,
+				'ELEMENTS_PER_PAGE_DATA_LINK' =>'/example-site?elements_per_page=20&sort_column=name&sort_order=asc&elements_page=2',
+				'ELEMENTS_PER_PAGE_NAME' => 20,
+				'ELEMENTS_PER_PAGE_SELECTED' => 'selected'
+			],
+			[
+				'ELEMENTS_PER_PAGE_VALUE' => 30,
+				'ELEMENTS_PER_PAGE_DATA_LINK' =>'/example-site?elements_per_page=30&sort_column=name&sort_order=asc&elements_page=2',
+				'ELEMENTS_PER_PAGE_NAME' => 30,
+				'ELEMENTS_PER_PAGE_SELECTED' => ''
+			]
+		];
+
 		// Act
-		$result = $this->renderer->render($pageLinks, $site, $this->baseFilterMock);
+		$result = $this->renderer->renderDropdown($settings);
 
 		// Assert
 		$this->assertSame($expectedResult, $result);
