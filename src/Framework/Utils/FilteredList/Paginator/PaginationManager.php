@@ -23,12 +23,13 @@ namespace App\Framework\Utils\FilteredList\Paginator;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class PaginatorService
+class PaginationManager
 {
 	private Creator $creator;
 	private Renderer $renderer;
 	private BaseFilterParameters $baseFilter;
 	private array $pagerLinks;
+	private mixed $dropDownSettings;
 
 	/**
 	 * @param Creator $creator
@@ -40,18 +41,23 @@ class PaginatorService
 		$this->renderer = $renderer;
 	}
 
-	public function setBaseFilter(BaseFilterParameters $baseFilter): PaginatorService
+	public function setBaseFilter(BaseFilterParameters $baseFilter): PaginationManager
 	{
 		$this->baseFilter = $baseFilter;
+		$this->renderer->setBaseFilter($baseFilter);
 		return $this;
 	}
 
-
-	public function create(int $totalItems, bool $usePager = false, bool $shortened = true): void
+	public function createPagination(int $totalItems, bool $usePager = false, bool $shortened = true): void
 	{
 		$this->pagerLinks = $this->creator->init($this->baseFilter, $totalItems, $usePager, $shortened)
 			->buildPagerLinks()
 			->getPagerLinks();
+	}
+
+	public function createDropDown(int $min = 10, int $max = 100, int $steps = 10): void
+	{
+		$this->dropDownSettings = ['min' => $min, 'max' => $max, 'steps' => $steps];
 	}
 
 	/**
@@ -59,25 +65,15 @@ class PaginatorService
 	 */
 	public function renderPagination(string $site): array
 	{
-		return $this->renderer->render($this->pagerLinks, $site, $this->baseFilter);
+		return $this->renderer->render($this->pagerLinks);
 	}
 
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderElementsPerSiteDropDown(int $min = 10, int $max = 100, int $steps = 10): array
+	public function renderElementsPerSiteDropDown(): array
 	{
-		$data = [];
-		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
-		for ($i = $min; $i <= $max; $i += $steps)
-		{
-			$data[] = [
-				'ELEMENTS_PER_PAGE_VALUE' => $i,
-				'ELEMENTS_PER_PAGE_NAME' => $i,
-				'ELEMENTS_PER_PAGE_SELECTED' => ($i === $currentElementsPerPage) ? 'selected' : ''
-			];
-		}
-		return $data;
+		return $this->renderer->renderDropdown($this->dropDownSettings);
 	}
 
 

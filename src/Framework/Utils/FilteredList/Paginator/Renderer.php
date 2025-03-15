@@ -25,24 +25,63 @@ use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
 class Renderer
 {
+	private BaseFilterParameters $baseFilter;
+	private string $site;
+
+	public function setBaseFilter(BaseFilterParameters $baseFilter): static
+	{
+		$this->baseFilter = $baseFilter;
+		return $this;
+	}
+
+	public function setSite(string $site): static
+	{
+		$this->site = $site;
+		return $this;
+	}
+
+
 	/**
 	 * @throws ModuleException
 	 */
-	public function render(array $pageLinks, string $site, BaseFilterParameters $baseFilter): array
+	public function render(array $pageLinks): array
 	{
-		$sortSuffix = '&sort_column='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
-			'&sort_order='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
-			'&elements_per_page='.$baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
+		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
+			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
+			'&elements_per_page='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
 		$data = [];
-		foreach($pageLinks as $key => $values)
+		foreach($pageLinks as $values)
 		{
 			$data[] = [
-				'ELEMENTS_PAGELINK'   => '/'.$site.'?elements_page='.$values['page'].$sortSuffix,
+				'ELEMENTS_PAGELINK'   => '/'.$this->site.'?elements_page='.$values['page'].$sortSuffix,
 				'ELEMENTS_PAGENAME'   => $values['name'],
 				'ELEMENTS_PAGENUMBER' => $values['page']
 			];
 		}
 
+		return $data;
+	}
+
+	/**
+	 * @throws ModuleException
+	 */
+	public function renderDropdown(array $dropDownSettings): array
+	{
+		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
+			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
+			'&elements_page='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE);
+
+		$data = [];
+		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
+		for ($i = $dropDownSettings['min']; $i <= $dropDownSettings['max']; $i += $dropDownSettings['steps'])
+		{
+			$data[] = [
+				'ELEMENTS_PER_PAGE_VALUE' => $i,
+				'ELEMENTS_PER_PAGE_DATA_LINK' => '/'.$this->site.'?elements_per_page='.$i.$sortSuffix,
+				'ELEMENTS_PER_PAGE_NAME' => $i,
+				'ELEMENTS_PER_PAGE_SELECTED' => ($i === $currentElementsPerPage) ? 'selected' : ''
+			];
+		}
 		return $data;
 	}
 }
