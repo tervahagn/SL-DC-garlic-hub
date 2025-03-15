@@ -44,7 +44,7 @@ class Renderer
 	/**
 	 * @throws ModuleException
 	 */
-	public function render(array $pageLinks): array
+	public function renderLinks(array $pageLinks): array
 	{
 		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).

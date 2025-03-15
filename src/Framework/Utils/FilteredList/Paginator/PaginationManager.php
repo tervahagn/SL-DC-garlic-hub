@@ -65,7 +65,8 @@ class PaginationManager
 	 */
 	public function renderPagination(string $site): array
 	{
-		return $this->renderer->render($this->pagerLinks);
+		$this->renderer->setSite($site);
+		return $this->renderer->renderLinks($this->pagerLinks);
 	}
 
 	/**
