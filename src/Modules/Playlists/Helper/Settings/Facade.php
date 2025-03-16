@@ -20,20 +20,122 @@
 
 namespace App\Modules\Playlists\Helper\Settings;
 
+use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\PlaylistsService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
-class Facade
+readonly class Facade
 {
-	private readonly FormCreator $settingsFormBuilder;
-	private readonly PlaylistsService $playlistsService;
-	private readonly Parameters $settingsParameters;
+	private FormCreator $settingsFormBuilder;
+	private PlaylistsService $playlistsService;
+	private Parameters $settingsParameters;
+	private Renderer $renderer;
 
-	public function __construct(FormCreator $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters)
+	public function __construct(FormCreator $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, Renderer $renderer)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->playlistsService = $playlistsService;
 		$this->settingsParameters = $settingsParameters;
+		$this->renderer = $renderer;
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function loadPlaylistForEdit($playlistId): array
+	{
+		return $this->playlistsService->loadPlaylistForEdit($playlistId);
+	}
+
+	public function init(Translator $translator, Session $session): void
+	{
+		$this->settingsFormBuilder->init($translator, $session);
+		$this->playlistsService->setUID($session->get('user')['UID']);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function configurePlaylistFormParameter(array $post): array
+	{
+		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
+		{
+			$playlist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
+			$this->settingsFormBuilder->buildEditParameter($playlist);
+		}
+		else
+		{
+			$this->settingsFormBuilder->buildCreateNewParameter($post['playlist_mode']);
+		}
+
+		return $this->settingsFormBuilder->handleUserInput($post);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function storePlaylist($post): int
+	{
+		$saveData  = array_combine(
+			$this->settingsParameters->getInputParametersKeys(),
+			$this->settingsParameters->getInputValuesArray()
+		);
+		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
+			$id = $this->playlistsService->update($saveData);
+		else
+			$id = $this->playlistsService->createNew($saveData);
+
+		return $id;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function buildCreateNewParameter(string $playlistMode): void
+	{
+		$this->settingsFormBuilder->buildCreateNewParameter($playlistMode);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function buildEditParameter(array $playlist): void
+	{
+		$this->settingsFormBuilder->buildEditParameter($playlist);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function render($post): array
+	{
+		$elements = $this->settingsFormBuilder->buildForm($post);
+
+		return $this->renderer->renderTemplate($elements, $post['playlist_mode']);
+	}
 
 }

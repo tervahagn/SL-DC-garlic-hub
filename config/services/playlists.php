@@ -24,7 +24,6 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FilteredList\Results\Renderer;
-use App\Framework\Utils\FilteredList\Results\ResultsManager;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
@@ -32,12 +31,14 @@ use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Helper\FilterFormBuilder;
 use App\Modules\Playlists\Helper\FilterParameters;
+
+use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
-use App\Modules\Playlists\Services\PlaylistsOverviewService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\ResultsList;
 use App\Modules\Users\Services\UsersService;
@@ -92,12 +93,26 @@ $dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $con
 });
 $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
+	return new Facade(
+		$container->get(FormCreator::class),
+		$container->get(PlaylistsService::class),
+		$container->get(Parameters::class),
+		new \App\Modules\Playlists\Helper\Settings\Renderer($container->get(Translator::class))
+	);
+});
+
+$dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
+{
 	return new ShowSettingsController(
+		$container->get(Facade::class),
 		$container->get(FormCreator::class),
 		$container->get(Parameters::class),
 		$container->get(PlaylistsService::class)
 	);
 });
+
+
+
 $dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FilterParameters(

@@ -20,14 +20,10 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Framework\Core\Session;
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\Settings\FormCreator;
-use App\Modules\Playlists\Helper\Settings\Parameters;
-use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Helper\Settings\Facade;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -37,18 +33,12 @@ use Slim\Flash\Messages;
 
 class ShowSettingsController
 {
-	private readonly FormCreator $settingsFormBuilder;
-	private readonly PlaylistsService $playlistsService;
-	private readonly Parameters $settingsParameters;
-	private Translator $translator;
-	private Session $session;
+	private readonly Facade $facade;
 	private Messages $flash;
 
-	public function __construct(FormCreator $formBuilder, Parameters $settingsParameters, PlaylistsService $playlistsService)
+	public function __construct(Facade $facade)
 	{
-		$this->settingsFormBuilder = $formBuilder;
-		$this->settingsParameters  = $settingsParameters;
-		$this->playlistsService    = $playlistsService;
+		$this->facade              = $facade;
 	}
 
 	/**
@@ -61,14 +51,12 @@ class ShowSettingsController
 	 */
 	public function newPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
 		$playlist = ['playlist_mode' => $args['playlist_mode'] ?? 'master'];
 
-		$this->settingsFormBuilder->init($this->translator, $this->session);
+		$this->initFacade($request);
+		$this->facade->buildCreateNewParameter($playlist['playlist_mode']);
 
-		$this->settingsFormBuilder->buildCreateNewParameter($playlist['playlist_mode']);
-
-		return $this->returnBuildForm($response, $playlist);
+		return $this->outputRenderedForm($response, $playlist);
 	}
 
 
@@ -82,23 +70,24 @@ class ShowSettingsController
 	 */
 	public function editPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
-
 		$playlistId = (int) $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
-			return $this->redirectWithError($response, 'Playlist ID not valid.');
+		{
+			$this->flash->addMessage('error', 'Playlist ID not valid.');
+			return $response->withHeader('Location', '/playlists')->withStatus(302);
+		}
 
-		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
+		$this->initFacade($request);
+		$playlist = $this->facade->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
-			return $this->redirectWithError($response, 'Playlist not found.');
+		{
+			$this->flash->addMessage('error', 'Playlist not found.');
+			return $response->withHeader('Location', '/playlists')->withStatus(302);
+		}
+		$this->facade->buildEditParameter($playlist);
 
-		$this->settingsFormBuilder->init($this->translator, $this->session);
-		$this->settingsFormBuilder->buildEditParameter($playlist);
-
-		return $this->returnBuildForm($response, $playlist);
+		return $this->outputRenderedForm($response, $playlist);
 	}
-
-
 
 	/**
 	 * @throws CoreException
@@ -110,82 +99,26 @@ class ShowSettingsController
 	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
-		$this->flash = $request->getAttribute('flash');
 		$post        = $request->getParsedBody();
 
-		// 1. Set the parameters for the form
-		$this->settingsFormBuilder->init($this->translator, $this->session);
-		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
-		{
-			$playlist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
-			$this->settingsFormBuilder->buildEditParameter($playlist);
-		}
-		else
-		{
-			$this->settingsFormBuilder->buildCreateNewParameter($post['playlist_mode']);
-		}
-
-		// 2. Sanitize and Validate userInput and parameters
-		$errors = $this->settingsFormBuilder->handleUserInput($post);
+		$this->initFacade($request);
+		$errors = $this->facade->configurePlaylistFormParameter($post);
 		foreach ($errors as $errorText)
 		{
 			$this->flash->addMessageNow('error', $errorText);
 		}
 
-		// 3. if there are errors build the form again
 		if (!empty($errors))
-			return $this->returnBuildForm($response, $post);
+			return $this->outputRenderedForm($response, $post);
 
-		// 3. When no errors store
-		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
-			return $this->storeUpdatedPlaylist($response, $post);
-		else
-			return $this->storeNewPlaylist($response, $post);
-
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws ModuleException
-	 */
-	private function storeNewPlaylist(ResponseInterface $response, array $post): ResponseInterface
-	{
-		$saveData  = array_combine(
-			$this->settingsParameters->getInputParametersKeys(),
-			$this->settingsParameters->getInputValuesArray()
-		);
-
-		$id = $this->playlistsService->createNew($saveData);
+		$id = $this->facade->storePlaylist($post);
 		if ($id > 0)
-			return $this->redirectSucceed($response, 'Playlist “'.$post['playlist_name'].'“ successfully created.');
+		{
+			$this->flash->addMessage('success', 'Playlist “'.$post['playlist_name'].'“ successfully stored.');
+			return $response->withHeader('Location', '/playlists')->withStatus(302);
+		}
 
-		return $this->returnBuildForm($response, $post);
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
-	private function storeUpdatedPlaylist(ResponseInterface $response, array $post): ResponseInterface
-	{
-		$saveData  = array_combine(
-			$this->settingsParameters->getInputParametersKeys(),
-			$this->settingsParameters->getInputValuesArray()
-		);
-
-		if ($this->playlistsService->update($saveData) > 0)
-			return $this->redirectSucceed($response, 'Playlist “'.$post['playlist_name'].'“ successfully updated.');
-
-		return $this->returnBuildForm($response, $post);
+		return $this->outputRenderedForm($response, $post);
 	}
 
 	/**
@@ -195,68 +128,16 @@ class ShowSettingsController
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 */
-	private function returnBuildForm(ResponseInterface $response, $post): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, $post): ResponseInterface
 	{
-		$elements = $this->settingsFormBuilder->buildForm($post);
-		$data = $this->buildForm($elements, $post['playlist_mode']);
-
+		$data = $this->facade->render($post);
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 */
-	private function buildForm(array $elements, string $playlistMode): array
+	private function initFacade(ServerRequestInterface $request): void
 	{
-		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
-			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($playlistMode)];
-
-		return [
-			'main_layout' => [
-				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/settings.css'],
-				'footer_modules' => ['/js/playlists/settings/init.js']
-			],
-			'this_layout' => [
-				'template' => 'playlists/edit', // Template-name
-				'data' => [
-					'LANG_PAGE_HEADER' => $title,
-					'FORM_ACTION' => '/playlists/settings',
-					'element_hidden' => $elements['hidden'],
-					'form_element' => $elements['visible'],
-					'form_button' => [
-						[
-							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
-							'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
-						]
-					]
-				]
-			]
-		];
-	}
-
-	private function setImportantAttributes(ServerRequestInterface $request): void
-	{
-		$this->translator = $request->getAttribute('translator');
-		$this->session    = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
 		$this->flash      = $request->getAttribute('flash');
-	}
-
-	private function redirectWithError(ResponseInterface $response, string $message): ResponseInterface
-	{
-		$this->flash->addMessage('error', $message);
-		return $response->withHeader('Location', '/playlists')->withStatus(302);
-	}
-
-	private function redirectSucceed(ResponseInterface $response, string $message): ResponseInterface
-	{
-		$this->flash->addMessage('success', $message);
-		return $response->withHeader('Location', '/playlists')->withStatus(302);
+		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
 	}
 }
