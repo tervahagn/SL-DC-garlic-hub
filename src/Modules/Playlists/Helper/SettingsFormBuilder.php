@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\FormHelper;
+namespace App\Modules\Playlists\Helper;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;

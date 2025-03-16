@@ -25,8 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\FormHelper\SettingsParameters;
-use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
+use App\Modules\Playlists\Helper\SettingsParameters;
+use App\Modules\Playlists\Helper\SettingsFormBuilder;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\ResultsList;
 use Doctrine\DBAL\Exception;
@@ -220,7 +220,6 @@ class ShowSettingsController
 				'LANG_PAGE_TITLE' => $title,
 				'additional_css' => ['/css/playlists/settings.css'],
 				'footer_modules' => ['/js/playlists/settings/init.js']
-
 			],
 			'this_layout' => [
 				'template' => 'playlists/edit', // Template-name

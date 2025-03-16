@@ -47,7 +47,7 @@ class PaginatorManagerTest extends TestCase
 		$this->baseFilterMock = $this->createMock(BaseFilterParameters::class);
 
 		$this->paginationManager = new PaginationManager($this->creatorMock, $this->rendererMock);
-		$this->paginationManager->setBaseFilter($this->baseFilterMock);
+		$this->paginationManager->init($this->baseFilterMock);
 	}
 
 
@@ -61,7 +61,7 @@ class PaginatorManagerTest extends TestCase
 
 		$this->rendererMock->expects($this->once())->method('setBaseFilter');
 
-		$result = $this->paginationManager->setBaseFilter($baseFilterMock);
+		$result = $this->paginationManager->init($baseFilterMock);
 
 		$this->assertSame($this->paginationManager, $result);
 	}

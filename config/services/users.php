@@ -22,8 +22,8 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
-use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
+use App\Framework\Utils\FilteredList\Results\ResultsManager;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Controller\ShowOverviewController;
 use App\Modules\Users\Controller\UsersController;
@@ -96,7 +96,7 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 	return new ResultsList(
 		$container->get(AclValidator::class),
 		$container->get(Config::class),
-		$container->get(ResultsServiceLocator::class)
+		$container->get(ResultsManager::class)
 	);
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
@@ -109,7 +109,7 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
 		$container->get(UsersOverviewService::class),
-		$container->get(PaginatorService::class),
+		$container->get(PaginationManager::class),
 		$container->get(ResultsList::class),
 	);
 });

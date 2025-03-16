@@ -21,7 +21,7 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
-use App\Modules\Playlists\FormHelper\FilterParameters;
+use App\Modules\Playlists\Helper\FilterParameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

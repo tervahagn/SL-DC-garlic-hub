@@ -35,10 +35,8 @@ use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
 use App\Framework\Utils\FilteredList\Paginator\Creator;
-use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
+use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FilteredList\Paginator\Renderer;
-use App\Framework\Utils\FilteredList\Results\HeaderFieldFactory;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
 use App\Framework\Utils\FilteredList\Results\TranslatorManager;
 use App\Framework\Utils\FilteredList\Results\UrlBuilder;
 use App\Framework\Utils\Html\FieldsFactory;
@@ -188,19 +186,19 @@ $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $conta
 	$allowedTags = $container->get(Config::class)->getConfigValue('allowed_tags', 'main');
 	return new Sanitizer($allowedTags);
 });
-$dependencies[PaginatorService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PaginationManager::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PaginatorService(
+	return new PaginationManager(
 		new Creator(),
 		new Renderer()
 	);
 });
-$dependencies[ResultsServiceLocator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[\App\Framework\Utils\FilteredList\Results\Renderer::class] = DI\factory(function (ContainerInterface $container)
 {
-	$translatorManager = new TranslatorManager($container->get(Translator::class));
-	$renderer = new \App\Framework\Utils\FilteredList\Results\Renderer($translatorManager,	new UrlBuilder());
-
-	return new ResultsServiceLocator($renderer, $translatorManager, new HeaderFieldFactory());
+	return new \App\Framework\Utils\FilteredList\Results\Renderer(
+		new TranslatorManager($container->get(Translator::class)),
+		new UrlBuilder()
+	);
 });
 
 

@@ -25,10 +25,10 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
+use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Modules\Playlists\FormHelper\FilterFormBuilder;
-use App\Modules\Playlists\FormHelper\FilterParameters;
+use App\Modules\Playlists\Helper\FilterFormBuilder;
+use App\Modules\Playlists\Helper\FilterParameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\ResultsList;
 use Doctrine\DBAL\Exception;
@@ -43,14 +43,14 @@ class ShowOverviewController
 	private readonly FilterFormBuilder $formBuilder;
 	private readonly FilterParameters $parameters;
 	private readonly PlaylistsService $playlistsService;
-	private readonly PaginatorService $paginatorService;
+	private readonly PaginationManager $paginatorService;
 	private readonly ResultsList $resultsList;
 
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginatorService $paginatorService, ResultsList $resultsList)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginationManager $paginatorService, ResultsList $resultsList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
@@ -72,10 +72,10 @@ class ShowOverviewController
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		$this->setImportantAttributes($request);
+
 		$this->parameters->setUserInputs($_GET);
 		$this->parameters->parseInputFilterAllUsers();
-
-		$this->setImportantAttributes($request);
 		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
 
 		$data = $this->buildForm();
@@ -99,7 +99,9 @@ class ShowOverviewController
 
 		$title = $this->translator->translate('overview', 'playlists');
 		$total = $this->playlistsService->getCurrentTotalResult();
-		$this->paginatorService->setBaseFilter($this->parameters)->create($total);
+		$this->paginatorService->init($this->parameters, 'playlists')
+			->createPagination($total)
+			->createDropDown();
 
 		return [
 			'main_layout' => [
@@ -154,7 +156,7 @@ class ShowOverviewController
 	private function renderHeader(): array
 	{
 		$this->resultsList->createFields($this->session->get('user')['UID']);
-		return $this->resultsList->renderTableHeader($this->parameters, 'playlists');
+		return $this->resultsList->renderTableHeader();
 	}
 
 	/**

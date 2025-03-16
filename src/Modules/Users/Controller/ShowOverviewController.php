@@ -22,7 +22,7 @@ namespace App\Modules\Users\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
+use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Users\FormHelper\FilterFormBuilder;
 use App\Modules\Users\Services\ResultsList;
@@ -37,12 +37,12 @@ class ShowOverviewController
 	private readonly FilterFormBuilder $formBuilder;
 	private readonly FilterParameters $parameters;
 	private readonly UsersOverviewService $usersService;
-	private readonly PaginatorService $paginatorService;
+	private readonly PaginationManager $paginatorService;
 	private readonly ResultsList $resultsList;
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, UsersOverviewService $usersService, PaginatorService $paginatorService, ResultsList $resultsList)
+	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, UsersOverviewService $usersService, PaginationManager $paginatorService, ResultsList $resultsList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
@@ -71,7 +71,7 @@ class ShowOverviewController
 
 		$title = $this->translator->translate('users_overview', 'main');
 		$total = $this->usersService->getCurrentTotalResult();
-		$this->paginatorService->setBaseFilter($this->parameters)->create($total);
+		$this->paginatorService->init($this->parameters)->createPagination($total);
 
 		return [
 			'main_layout' => [

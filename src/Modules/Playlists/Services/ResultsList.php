@@ -25,7 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FilteredList\Results\BaseResults;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\FilteredList\Results\Renderer;
+use App\Modules\Playlists\Helper\FilterParameters;
 use App\Modules\Playlists\PlaylistMode;
 use DateTime;
 use Doctrine\DBAL\Exception;
@@ -35,6 +36,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 class ResultsList extends BaseResults
 {
 		private readonly AclValidator $aclValidator;
+		private readonly FilterParameters $filterparameters;
 		private readonly Config $config;
 		private readonly int $UID;
 
@@ -42,12 +44,13 @@ class ResultsList extends BaseResults
 	 * @param AclValidator $acl_validator
 	 * @param Config $config
 	 */
-	public function __construct(AclValidator $aclValidator, Config $config, ResultsServiceLocator $resultsServiceLocator)
+	public function __construct(AclValidator $aclValidator, Config $config, FilterParameters $filterParameters, Renderer $renderer)
 	{
 		$this->aclValidator = $aclValidator;
 		$this->config       = $config;
+		$this->filterparameters = $filterParameters;
 
-		parent::__construct($resultsServiceLocator);
+		parent::__construct($renderer);
 	}
 
 	/**
@@ -59,7 +62,7 @@ class ResultsList extends BaseResults
 	{
 		$this->UID = $UID;
 		$this->createField('playlist_name', true);
-		$this->addLanguageModule('playlists')->addLanguageModule('main');
+		$this->renderer->init($this->filterparameters, 'playlists', ['playlists', 'main']);
 
 		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
 			$this->createField('UID', true);
@@ -94,7 +97,7 @@ class ResultsList extends BaseResults
 				switch ($innerKey)
 				{
 					case 'playlist_name':
-						$resultElements['is_link'] = $this->resultsServiceLocator->getRenderer()->renderLink(
+						$resultElements['is_link'] = $this->renderer->renderLink(
 							$value['playlist_name'],
 							$translator->translate('edit', 'main'),
 							'playlists/compose/'.$value['playlist_id'],
@@ -103,20 +106,20 @@ class ResultsList extends BaseResults
 
 						break;
 					case 'UID':
-						$resultElements['is_UID'] = $this->resultsServiceLocator->getRenderer()->renderUID($value['UID'], $value['username']);
+						$resultElements['is_UID'] = $this->renderer->renderUID($value['UID'], $value['username']);
 
 						break;
 					case 'duration':
-						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($this->convertSeconds($value['duration'])->format('%H:%I:%S'));
+						$resultElements['is_text'] = $this->renderer->renderText($this->convertSeconds($value['duration'])->format('%H:%I:%S'));
 						break;
 					case 'playlist_mode':
-						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($selectableModes[$value['playlist_mode']]);
+						$resultElements['is_text'] = $this->renderer->renderText($selectableModes[$value['playlist_mode']]);
 						break;
 					case 'selector':
 						$resultElements['SELECT_DISABLED'] = ($value['playlist_mode'] == PlaylistMode::MULTIZONE || $value['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
 						break;
 					default:
-						$resultElements['is_text'] = $this->resultsServiceLocator->getRenderer()->renderText($value[$innerKey]);
+						$resultElements['is_text'] = $this->renderer->renderText($value[$innerKey]);
 						break;
 				}
 				$data['elements_result_element'][] = $resultElements;
@@ -126,11 +129,11 @@ class ResultsList extends BaseResults
 					$this->aclValidator->isSubAdmin($this->UID))
 				{
 					$data['has_action'] = [
-						$this->resultsServiceLocator->getRenderer()->renderAction(
+						$this->renderer->renderAction(
 							$translator->translate('copy_playlist', 'playlists'),
 							'playlists/?playlist_copy_id='.$value['playlist_id'],
 							'copy', 'copy'),
-						$this->resultsServiceLocator->getRenderer()->renderAction(
+						$this->renderer->renderAction(
 							$translator->translate('edit_settings', 'playlists'),
 							'playlists/settings/'.$value['playlist_id'],
 							'edit', 'pencil')
@@ -138,7 +141,7 @@ class ResultsList extends BaseResults
 					if (!array_key_exists($value['playlist_id'], $usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($this->UID, $value))
 					{
-						$data['has_delete'] = $this->resultsServiceLocator->getRenderer()->renderActionDelete(
+						$data['has_delete'] = $this->renderer->renderActionDelete(
 							$translator->translate('delete', 'main'),
 							$translator->translate('confirm_delete', 'playlists'),
 							'playlists/?delete_id='.$value['playlist_id'],

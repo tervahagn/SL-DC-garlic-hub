@@ -22,18 +22,19 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Paginator\PaginatorService;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
+use App\Framework\Utils\FilteredList\Results\Renderer;
+use App\Framework\Utils\FilteredList\Results\ResultsManager;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Playlists\FormHelper\FilterFormBuilder;
-use App\Modules\Playlists\FormHelper\FilterParameters;
-use App\Modules\Playlists\FormHelper\SettingsFormBuilder;
-use App\Modules\Playlists\FormHelper\SettingsParameters;
-use App\Modules\Playlists\FormHelper\SettingsValidator;
+use App\Modules\Playlists\Helper\FilterFormBuilder;
+use App\Modules\Playlists\Helper\FilterParameters;
+use App\Modules\Playlists\Helper\SettingsFormBuilder;
+use App\Modules\Playlists\Helper\SettingsParameters;
+use App\Modules\Playlists\Helper\SettingsValidator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
@@ -116,7 +117,8 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 	return new ResultsList(
 		$container->get(AclValidator::class),
 		$container->get(Config::class),
-		$container->get(ResultsServiceLocator::class)
+		$container->get(FilterParameters::class),
+		$container->get(Renderer::class),
 	);
 });
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
@@ -125,7 +127,7 @@ $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInt
 		$container->get(FilterFormBuilder::class),
 		$container->get(FilterParameters::class),
 		$container->get(PlaylistsService::class),
-		$container->get(PaginatorService::class),
+		$container->get(PaginationManager::class),
 		$container->get(ResultsList::class),
 	);
 });
