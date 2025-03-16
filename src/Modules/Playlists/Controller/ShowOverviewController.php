@@ -27,10 +27,10 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Modules\Playlists\Helper\FilterFormBuilder;
-use App\Modules\Playlists\Helper\FilterParameters;
+use App\Modules\Playlists\Helper\Overview\FormCreator;
+use App\Modules\Playlists\Helper\Overview\Parameters;
+use App\Modules\Playlists\Helper\Overview\ResultsList;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Playlists\Services\ResultsList;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -40,8 +40,8 @@ use Slim\Flash\Messages;
 
 class ShowOverviewController
 {
-	private readonly FilterFormBuilder $formBuilder;
-	private readonly FilterParameters $parameters;
+	private readonly FormCreator $formBuilder;
+	private readonly Parameters $parameters;
 	private readonly PlaylistsService $playlistsService;
 	private readonly PaginationManager $paginatorService;
 	private readonly ResultsList $resultsList;
@@ -50,7 +50,7 @@ class ShowOverviewController
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, PlaylistsService $playlistsService, PaginationManager $paginatorService, ResultsList $resultsList)
+	public function __construct(FormCreator $formBuilder, Parameters $parameters, PlaylistsService $playlistsService, PaginationManager $paginatorService, ResultsList $resultsList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;

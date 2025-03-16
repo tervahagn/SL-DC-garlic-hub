@@ -18,25 +18,23 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Services;
+namespace App\Modules\Playlists\Helper\Overview;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FilteredList\Results\BaseResults;
 use App\Framework\Utils\FilteredList\Results\Renderer;
-use App\Modules\Playlists\Helper\FilterParameters;
-use App\Modules\Playlists\PlaylistMode;
+use App\Modules\Playlists\Helper\PlaylistMode;
+use App\Modules\Playlists\Services\AclValidator;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class ResultsList extends BaseResults
 {
 		private readonly AclValidator $aclValidator;
-		private readonly FilterParameters $filterparameters;
+		private readonly Parameters $filterparameters;
 		private readonly Config $config;
 		private readonly int $UID;
 
@@ -44,7 +42,7 @@ class ResultsList extends BaseResults
 	 * @param AclValidator $acl_validator
 	 * @param Config $config
 	 */
-	public function __construct(AclValidator $aclValidator, Config $config, FilterParameters $filterParameters, Renderer $renderer)
+	public function __construct(AclValidator $aclValidator, Config $config, Parameters $filterParameters, Renderer $renderer)
 	{
 		$this->aclValidator = $aclValidator;
 		$this->config       = $config;

@@ -20,12 +20,12 @@
 
 namespace App\Modules\Playlists\Helper\Settings;
 
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Core\BaseValidator;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\PlaylistMode;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 

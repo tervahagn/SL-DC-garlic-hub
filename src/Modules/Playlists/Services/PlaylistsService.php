@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Playlists\Helper\FilterParameters;
+use App\Modules\Playlists\Helper\Overview\Parameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -45,7 +45,7 @@ class PlaylistsService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function loadPlaylistsForOverview(FilterParameters $parameters): void
+	public function loadPlaylistsForOverview(Parameters $parameters): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{

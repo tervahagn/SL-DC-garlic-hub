@@ -21,7 +21,7 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
-use App\Modules\Playlists\Helper\FilterParameters;
+use App\Modules\Playlists\Helper\Overview\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,14 +29,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class PlaylistController
 {
 	private readonly PlaylistsService $playlistsService;
-	private readonly FilterParameters $parameters;
+	private readonly Parameters $parameters;
 	private Session $session;
 
 	/**
 	 * @param PlaylistsService $playlistsService
-	 * @param FilterParameters $parameters
+	 * @param Parameters $parameters
 	 */
-	public function __construct(PlaylistsService $playlistsService, FilterParameters $parameters)
+	public function __construct(PlaylistsService $playlistsService, Parameters $parameters)
 	{
 		$this->playlistsService = $playlistsService;
 		$this->parameters = $parameters;

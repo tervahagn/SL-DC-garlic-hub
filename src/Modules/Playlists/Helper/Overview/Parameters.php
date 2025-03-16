@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper;
+namespace App\Modules\Playlists\Helper\Overview;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class FilterParameters extends BaseFilterParameters
+class Parameters extends BaseFilterParameters
 {
 	const string PARAMETER_PLAYLIST_NAME = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE = 'playlist_mode';

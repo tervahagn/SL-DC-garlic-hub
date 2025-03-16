@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper;
+namespace App\Modules\Playlists\Helper\Overview;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -27,19 +27,18 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class FilterFormBuilder
+class FormCreator
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
-	private FilterParameters $parameters;
+	private Parameters $parameters;
 	private int $UID;
 	private string $username;
 
-	public function __construct(FilterParameters $parameters, FormBuilder $formBuilder)
+	public function __construct(Parameters $parameters, FormBuilder $formBuilder)
 	{
 		$this->parameters   = $parameters;
 		$this->formBuilder  = $formBuilder;
@@ -77,38 +76,38 @@ class FilterFormBuilder
 	public function collectFormElements(): array
 	{
 		$form       = [];
-		$form[FilterParameters::PARAMETER_PLAYLIST_NAME] = $this->formBuilder->createField([
+		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->formBuilder->createField([
 			'type' => FieldType::TEXT,
-			'id' => FilterParameters::PARAMETER_PLAYLIST_NAME,
-			'name' => FilterParameters::PARAMETER_PLAYLIST_NAME,
-			'title' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
-			'label' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
-			'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_NAME)
+			'id' => Parameters::PARAMETER_PLAYLIST_NAME,
+			'name' => Parameters::PARAMETER_PLAYLIST_NAME,
+			'title' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_NAME, 'playlists'),
+			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_NAME)
 		]);
 
-		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_UID))
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_UID))
 		{
-			$form[FilterParameters::PARAMETER_UID] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_UID] = $this->formBuilder->createField([
 				'type' => FieldType::AUTOCOMPLETE,
 				'id' => 'UID',
 				'name' => 'UID',
 				'title' => $this->translator->translate('owner', 'main'),
 				'label' => $this->translator->translate('owner', 'main'),
-				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_UID),
+				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_UID),
 				'data-label' => ''
 			]);
 		}
 
-		if ($this->parameters->hasParameter(FilterParameters::PARAMETER_PLAYLIST_MODE))
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
 		{
-			$form[FilterParameters::PARAMETER_PLAYLIST_MODE] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->formBuilder->createField([
 				'type' => FieldType::DROPDOWN,
-				'id' => FilterParameters::PARAMETER_PLAYLIST_MODE,
-				'name' => FilterParameters::PARAMETER_PLAYLIST_MODE,
-				'title' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
-				'label' => $this->translator->translate(FilterParameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
-				'value' => $this->parameters->getValueOfParameter(FilterParameters::PARAMETER_PLAYLIST_MODE),
-				'options' => $this->translator->translateArrayForOptions(FilterParameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
+				'id' => Parameters::PARAMETER_PLAYLIST_MODE,
+				'name' => Parameters::PARAMETER_PLAYLIST_MODE,
+				'title' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
+				'label' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
+				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_MODE),
+				'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
 			]);
 		}
 

@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists;
+namespace App\Modules\Playlists\Helper;
 
 enum PlaylistMode: string {
 	case MASTER    = 'master';
