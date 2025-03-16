@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper;
+namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
