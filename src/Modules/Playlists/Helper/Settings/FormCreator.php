@@ -34,17 +34,17 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class SettingsFormBuilder
+readonly class FormCreator
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
 	private AclValidator $aclValidator;
-	private SettingsValidator $validator;
-	private SettingsParameters $parameters;
+	private Validator $validator;
+	private Parameters $parameters;
 	private int $UID;
 	private string $username;
 
-	public function __construct(AclValidator $aclValidator, SettingsParameters $parameters, SettingsValidator $validator, FormBuilder $formBuilder)
+	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, FormBuilder $formBuilder)
 	{
 		$this->aclValidator = $aclValidator;
 		$this->parameters   = $parameters;
@@ -145,7 +145,7 @@ readonly class SettingsFormBuilder
 			'name'  => 'playlist_name',
 			'title' => $this->translator->translate('playlist_name', 'playlists'),
 			'label' => $this->translator->translate('playlist_name', 'playlists'),
-			'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_NAME] ?? '',
+			'value' => $playlist[Parameters::PARAMETER_PLAYLIST_NAME] ?? '',
 			'rules' => $rules,
 			'default_value' => ''
 		]);
@@ -164,7 +164,7 @@ readonly class SettingsFormBuilder
 			]);
 		}
 
-		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_TIME_LIMIT))
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT))
 		{
 			$form['time_limit'] = $this->formBuilder->createField([
 				'type' => FieldType::NUMBER,
@@ -172,29 +172,29 @@ readonly class SettingsFormBuilder
 				'name' => 'time_limit',
 				'title' => $this->translator->translate('time_limit_explanation', 'playlists'),
 				'label' => $this->translator->translate('time_limit', 'playlists'),
-				'value' => $playlist[SettingsParameters::PARAMETER_TIME_LIMIT] ?? $this->parameters->getDefaultValueOfParameter(SettingsParameters::PARAMETER_TIME_LIMIT),
+				'value' => $playlist[Parameters::PARAMETER_TIME_LIMIT] ?? $this->parameters->getDefaultValueOfParameter(Parameters::PARAMETER_TIME_LIMIT),
 				'min'   => 0,
-				'default_value' => $this->parameters->getDefaultValueOfParameter(SettingsParameters::PARAMETER_TIME_LIMIT)
+				'default_value' => $this->parameters->getDefaultValueOfParameter(Parameters::PARAMETER_TIME_LIMIT)
 			]);
 		}
 
-		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_PLAYLIST_ID))
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID))
 		{
 			$form['playlist_id'] = $this->formBuilder->createField([
 				'type' => FieldType::HIDDEN,
 				'id' => 'playlist_id',
 				'name' => 'playlist_id',
-				'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_ID],
+				'value' => $playlist[Parameters::PARAMETER_PLAYLIST_ID],
 			]);
 		}
 
-		if ($this->parameters->hasParameter(SettingsParameters::PARAMETER_PLAYLIST_MODE))
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
 		{
 			$form['playlist_mode'] = $this->formBuilder->createField([
 				'type' => FieldType::HIDDEN,
 				'id' => 'playlist_mode',
 				'name' => 'playlist_mode',
-				'value' => $playlist[SettingsParameters::PARAMETER_PLAYLIST_MODE],
+				'value' => $playlist[Parameters::PARAMETER_PLAYLIST_MODE],
 			]);
 		}
 

@@ -18,20 +18,22 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Core;
+namespace App\Modules\Playlists\Helper\Settings;
 
-class Validator
+use App\Modules\Playlists\Services\PlaylistsService;
+
+class Facade
 {
+	private readonly FormCreator $settingsFormBuilder;
+	private readonly PlaylistsService $playlistsService;
+	private readonly Parameters $settingsParameters;
 
-	public function isEmail(string $value): bool
+	public function __construct(FormCreator $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters)
 	{
-		return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+		$this->settingsFormBuilder = $settingsFormBuilder;
+		$this->playlistsService = $playlistsService;
+		$this->settingsParameters = $settingsParameters;
 	}
 
-	public function isJson(string $value): bool
-	{
-		json_decode($value); // Just decode, don't need the result for validation
-		return json_last_error() === JSON_ERROR_NONE;
-	}
 
 }

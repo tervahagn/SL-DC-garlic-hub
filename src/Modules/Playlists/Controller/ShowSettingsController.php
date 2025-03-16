@@ -25,8 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\Settings\SettingsFormBuilder;
-use App\Modules\Playlists\Helper\Settings\SettingsParameters;
+use App\Modules\Playlists\Helper\Settings\FormCreator;
+use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,14 +37,14 @@ use Slim\Flash\Messages;
 
 class ShowSettingsController
 {
-	private readonly SettingsFormBuilder $settingsFormBuilder;
+	private readonly FormCreator $settingsFormBuilder;
 	private readonly PlaylistsService $playlistsService;
-	private readonly SettingsParameters $settingsParameters;
+	private readonly Parameters $settingsParameters;
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
 
-	public function __construct(SettingsFormBuilder $formBuilder, SettingsParameters $settingsParameters, PlaylistsService $playlistsService)
+	public function __construct(FormCreator $formBuilder, Parameters $settingsParameters, PlaylistsService $playlistsService)
 	{
 		$this->settingsFormBuilder = $formBuilder;
 		$this->settingsParameters  = $settingsParameters;
@@ -65,6 +65,7 @@ class ShowSettingsController
 		$playlist = ['playlist_mode' => $args['playlist_mode'] ?? 'master'];
 
 		$this->settingsFormBuilder->init($this->translator, $this->session);
+
 		$this->settingsFormBuilder->buildCreateNewParameter($playlist['playlist_mode']);
 
 		return $this->returnBuildForm($response, $playlist);

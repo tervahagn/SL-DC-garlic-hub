@@ -21,7 +21,7 @@
 namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Core\Validator;
+use App\Framework\Core\BaseValidator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
@@ -29,16 +29,16 @@ use App\Modules\Playlists\PlaylistMode;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class SettingsValidator extends Validator
+class Validator extends BaseValidator
 {
 	private Translator $translator;
-	private SettingsParameters $inputEditParameters;
+	private Parameters $inputEditParameters;
 
 	/**
 	 * @param Translator $translator
-	 * @param SettingsParameters $inputEditParameters
+	 * @param Parameters $inputEditParameters
 	 */
-	public function __construct(Translator $translator, SettingsParameters $inputEditParameters)
+	public function __construct(Translator $translator, Parameters $inputEditParameters)
 	{
 		$this->translator = $translator;
 		$this->inputEditParameters = $inputEditParameters;
@@ -56,14 +56,14 @@ class SettingsValidator extends Validator
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
-		if (empty($this->inputEditParameters->getValueOfParameter(SettingsParameters::PARAMETER_PLAYLIST_NAME)))
+		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_NAME)))
 			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
 
 		// we need userInput here as getValueOfParameter will throw an exception if not set
-		if (!isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE]) && !isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_ID]))
+		if (!isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !isset($userInputs[Parameters::PARAMETER_PLAYLIST_ID]))
 			$errors[] = $this->translator->translate('parameters_missing', 'playlists');
 
-		if (isset($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($userInputs))
+		if (isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($userInputs))
 			$errors[] = sprintf($this->translator->translate('playlist_mode_unsupported', 'playlists'), $userInputs['playlist_mode']);
 
 		return $errors;
@@ -71,7 +71,7 @@ class SettingsValidator extends Validator
 
 	private function checkPlaylistMode(array $userInputs): bool
 	{
-		return in_array($userInputs[SettingsParameters::PARAMETER_PLAYLIST_MODE], array_column(PlaylistMode::cases(), 'value'), true);
+		return in_array($userInputs[Parameters::PARAMETER_PLAYLIST_MODE], array_column(PlaylistMode::cases(), 'value'), true);
 	}
 
 }

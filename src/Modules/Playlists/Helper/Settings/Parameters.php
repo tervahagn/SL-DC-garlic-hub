@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class SettingsParameters extends BaseEditParameters
+class Parameters extends BaseEditParameters
 {
 	const string PARAMETER_PLAYLIST_ID    = 'playlist_id';
 	const string PARAMETER_PLAYLIST_NAME  = 'playlist_name';

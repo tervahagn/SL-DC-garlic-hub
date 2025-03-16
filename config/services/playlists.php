@@ -32,9 +32,9 @@ use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Helper\FilterFormBuilder;
 use App\Modules\Playlists\Helper\FilterParameters;
-use App\Modules\Playlists\Helper\Settings\SettingsFormBuilder;
-use App\Modules\Playlists\Helper\Settings\SettingsParameters;
-use App\Modules\Playlists\Helper\Settings\SettingsValidator;
+use App\Modules\Playlists\Helper\Settings\FormCreator;
+use App\Modules\Playlists\Helper\Settings\Parameters;
+use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsOverviewService;
@@ -67,34 +67,34 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 		$container->get('ModuleLogger')
 	);
 });
-$dependencies[SettingsParameters::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new SettingsParameters(
+	return new Parameters(
 		$container->get(Sanitizer::class),
 		$container->get(Session::class)
 	);
 });
-$dependencies[SettingsValidator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[Validator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new SettingsValidator(
+	return new Validator(
 		$container->get(Translator::class),
-		$container->get(SettingsParameters::class),
+		$container->get(Parameters::class),
 	);
 });
-$dependencies[SettingsFormBuilder::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new SettingsFormBuilder(
+	return new FormCreator(
 		$container->get(AclValidator::class),
-		$container->get(SettingsParameters::class),
-		$container->get(SettingsValidator::class),
+		$container->get(Parameters::class),
+		$container->get(Validator::class),
 		$container->get(FormBuilder::class)
 	);
 });
 $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowSettingsController(
-		$container->get(SettingsFormBuilder::class),
-		$container->get(SettingsParameters::class),
+		$container->get(FormCreator::class),
+		$container->get(Parameters::class),
 		$container->get(PlaylistsService::class)
 	);
 });
