@@ -16,6 +16,9 @@ that our code remains clean, consistent, and easy to read across the entire code
 ---
 
 ## 1. Class Names
+Try to find names as short as possible. 
+
+Concrete: If you have a directory named `Settings` do not use `Settings` in class name and let the namespace do the job.
 
 - **Style**: `PascalCase`
 - **Convention**: Class names should begin with an uppercase letter, with each subsequent word also capitalized.
