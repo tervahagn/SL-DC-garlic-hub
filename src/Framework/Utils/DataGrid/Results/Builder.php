@@ -18,13 +18,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList\Results;
+namespace App\Framework\Utils\DataGrid\Results;
 
-class Creator
+class Builder
 {
 	private array $tableHeaderFields = [];
 
-	public function getTableHeaderFields(): array
+	public function getHeaderFields(): array
 	{
 		return $this->tableHeaderFields;
 	}

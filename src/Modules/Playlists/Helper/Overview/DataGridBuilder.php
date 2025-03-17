@@ -24,29 +24,30 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\DataGrid\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\FormBuilder;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class FormCreator
+class DataGridBuilder
 {
-	private FormBuilder $formBuilder;
+	private BuildServiceLocator $buildServiceLocator;
 	private Translator $translator;
 	private Parameters $parameters;
-	private array $formElements = [];
+	private array $dataGridBuild = [];
 
-	public function __construct(Parameters $parameters, FormBuilder $formBuilder, Translator $translator)
+	public function __construct(BuildServiceLocator $buildServiceLocator,  Parameters $parameters, Translator $translator)
 	{
+		$this->buildServiceLocator  = $buildServiceLocator;
 		$this->parameters   = $parameters;
-		$this->formBuilder  = $formBuilder;
 		$this->translator   = $translator;
 	}
 
-	public function renderForm(): array
+	public function getDataGridBuild(): array
 	{
-		return $this->formBuilder->renderFormular($this->formElements);
+		return $this->dataGridBuild;
 	}
 
 	/**
@@ -59,7 +60,7 @@ class FormCreator
 	public function collectFormElements(): void
 	{
 		$form       = [];
-		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->formBuilder->createField([
+		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->buildServiceLocator->getFormBuilder()->createField([
 			'type' => FieldType::TEXT,
 			'id' => Parameters::PARAMETER_PLAYLIST_NAME,
 			'name' => Parameters::PARAMETER_PLAYLIST_NAME,
@@ -70,7 +71,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
 		{
-			$form[BaseParameters::PARAMETER_UID] = $this->formBuilder->createField([
+			$form[BaseParameters::PARAMETER_UID] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::AUTOCOMPLETE,
 				'id' => 'UID',
 				'name' => 'UID',
@@ -83,7 +84,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
 		{
-			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_PLAYLIST_MODE,
 				'name' => Parameters::PARAMETER_PLAYLIST_MODE,
@@ -94,7 +95,39 @@ class FormCreator
 			]);
 		}
 
-		$this->formElements = $form;
+		$this->dataGridBuild['form'] = $form;
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function createTableFields(): static
+	{
+		$this->buildServiceLocator->getResultsBuilder()->createField('playlist_name', true);
+
+		if ($this->parameters->hasParameter('UID'))
+			$this->buildServiceLocator->getResultsBuilder()->createField('UID', true);
+
+		$this->buildServiceLocator->getResultsBuilder()->createField('playlist_mode', true);
+		$this->buildServiceLocator->getResultsBuilder()->createField('duration', false);
+
+		$this->dataGridBuild['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+
+		return $this;
+	}
+
+	public function createPagination(int $resultCount): void
+	{
+		$this->dataGridBuild['pager'] = $this->buildServiceLocator->getPaginationBuilder()->configure($this->parameters, $resultCount, true)
+			->buildPagerLinks()
+			->getPagerLinks();
+	}
+
+	public function createDropDown(): void
+	{
+		$this->dataGridBuild['dropdown'] = $this->buildServiceLocator->getPaginationBuilder()->createDropDown()->getDropDownSettings();
 	}
 
 }

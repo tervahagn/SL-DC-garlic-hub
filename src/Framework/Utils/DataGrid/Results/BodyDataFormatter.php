@@ -18,9 +18,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList\Results;
+namespace App\Framework\Utils\DataGrid\Results;
 
-class BodyRenderer
+class BodyDataFormatter
 {
 
 	public function renderLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array

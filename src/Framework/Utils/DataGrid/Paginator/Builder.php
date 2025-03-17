@@ -18,11 +18,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList\Paginator;
+namespace App\Framework\Utils\DataGrid\Paginator;
 
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class Creator
+class Builder
 {
 	private int $currentPage;
 	private int $itemsPerPage;
@@ -30,8 +30,12 @@ class Creator
 	private bool $usePager;
 	private bool $shortened;
 	private array $pagerLinks;
+	/**
+	 * @var array|int[]
+	 */
+	private array $dropDownSettings;
 
-	public function init(BaseFilterParameters $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
+	public function configure(BaseFilterParameters $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
 	{
 		$this->currentPage  = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
 		$this->itemsPerPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));
@@ -45,6 +49,18 @@ class Creator
 	public function getPagerLinks(): array
 	{
 		return $this->pagerLinks;
+	}
+
+	public function getDropDownSettings(): array
+	{
+		return $this->dropDownSettings;
+	}
+
+	public function createDropDown(int $min = 10, int $max = 100, int $steps = 10): static
+	{
+		$this->dropDownSettings = ['min' => $min, 'max' => $max, 'steps' => $steps];
+
+		return $this;
 	}
 
 	public function buildPagerLinks(): static

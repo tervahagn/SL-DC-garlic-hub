@@ -24,9 +24,10 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Modules\Users\FormHelper\FilterFormBuilder;
+use App\Modules\Users\Helper\Overview\Facade;
+use App\Modules\Users\Helper\Overview\FormBuilder;
+use App\Modules\Users\Helper\Overview\Parameters;
 use App\Modules\Users\Services\ResultsList;
-use App\Modules\Users\FormHelper\FilterParameters;
 use App\Modules\Users\Services\UsersOverviewService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,15 +35,15 @@ use Slim\Flash\Messages;
 
 class ShowOverviewController
 {
-	private readonly FilterFormBuilder $formBuilder;
-	private readonly FilterParameters $parameters;
+	private readonly Facade $facade;
+	private readonly Parameters $parameters;
 	private readonly UsersOverviewService $usersService;
 	private readonly PaginationManager $paginatorService;
 	private readonly ResultsList $resultsList;
 	private Translator $translator;
 	private Session $session;
 	private Messages $flash;
-	public function __construct(FilterFormBuilder $formBuilder, FilterParameters $parameters, UsersOverviewService $usersService, PaginationManager $paginatorService, ResultsList $resultsList)
+	public function __construct(FormBuilder $formBuilder, Parameters $parameters, UsersOverviewService $usersService, PaginationManager $paginatorService, ResultsList $resultsList)
 	{
 		$this->formBuilder      = $formBuilder;
 		$this->parameters       = $parameters;
@@ -65,65 +66,6 @@ class ShowOverviewController
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
-	private function buildForm(): array
-	{
-		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm();
-
-		$title = $this->translator->translate('users_overview', 'main');
-		$total = $this->usersService->getCurrentTotalResult();
-		$this->paginatorService->init($this->parameters)->createPagination($total);
-
-		return [
-			'main_layout' => [
-				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/users/overview.css'],
-				'footer_modules' => ['/js/users/overview/init.js']
-			],
-			'this_layout' => [
-				'template' => 'users/overview', // Template-name
-				'data' => [
-					'LANG_PAGE_HEADER' => $title,
-					'FORM_ACTION' => '/users',
-					'element_hidden' => $elements['hidden'],
-					'form_element' => $elements['visible'],
-					'LANG_ELEMENTS_FILTER' => $this->translator->translate('filter', 'main'),
-					'SORT_COLUMN' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
-					'SORT_ORDER' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
-					'ELEMENTS_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-					'ELEMENTS_PER_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
-					'form_button' => [
-						[
-							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
-						]
-					],
-					'elements_per_page' => $this->paginatorService->renderPaginationDropDown(),
-					'add_allowed' => [
-						'ADD_BI_ICON' => 'person-add',
-						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'users'),
-						'ELEMENTS_ADD_LINK' => '#'
-
-					],
-					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
-					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'users', $total), $total),
-					'elements_pager' => $this->paginatorService->renderPaginationLinks('users'),
-					'elements_result_header' => $this->renderHeader(),
-					'elements_results' => $this->renderBody()
-				]
-			]
-		];
-	}
-
-	private function renderHeader(): array
-	{
-		$this->resultsList->createFields($this->session->get('user')['UID']);
-		return $this->resultsList->renderTableHeader($this->parameters, 'users', $this->translator);
-	}
-
-	private function renderBody(): array
-	{
-		return $this->resultsList->renderTableBody($this->usersService->getCurrentFilterResults());
-	}
 
 	private function setImportantAttributes(ServerRequestInterface $request): void
 	{

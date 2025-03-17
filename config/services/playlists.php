@@ -22,20 +22,20 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\DataGrid\BuildServiceLocator;
+use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\DataGrid\FormatterServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Playlists\Helper\Overview\ResultsManager;
-
-use App\Modules\Playlists\Helper\Overview\TemplateRenderer;
+use App\Modules\Playlists\Helper\Overview\DataGridBuilder;
+use App\Modules\Playlists\Helper\Overview\DataGridFormatter;
 use App\Modules\Playlists\Helper\Settings\Facade;
-use App\Modules\Playlists\Helper\Settings\FormCreator;
+use App\Modules\Playlists\Helper\Settings\FilterBuilder;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
-
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -79,9 +79,9 @@ $dependencies[Validator::class] = DI\factory(function (ContainerInterface $conta
 		$container->get(Parameters::class),
 	);
 });
-$dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FilterBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FormCreator(
+	return new FilterBuilder(
 		$container->get(AclValidator::class),
 		$container->get(Parameters::class),
 		$container->get(Validator::class),
@@ -91,7 +91,7 @@ $dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $con
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Facade(
-		$container->get(FormCreator::class),
+		$container->get(FilterBuilder::class),
 		$container->get(PlaylistsService::class),
 		$container->get(Parameters::class),
 		new \App\Modules\Playlists\Helper\Settings\TemplateRenderer($container->get(Translator::class))
@@ -110,34 +110,31 @@ $dependencies[\App\Modules\Playlists\Helper\Overview\Parameters::class] = DI\fac
 		$container->get(Session::class)
 	);
 });
-$dependencies[\App\Modules\Playlists\Helper\Overview\FormCreator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DataGridBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new \App\Modules\Playlists\Helper\Overview\FormCreator(
+	return new DataGridBuilder(
+		$container->get(BuildServiceLocator::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
-		$container->get(FormBuilder::class),
 		$container->get(Translator::class)
 	);
 });
-$dependencies[ResultsManager::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DataGridFormatter::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultsManager(
-		$container->get(ResultsServiceLocator::class),
+	return new DataGridFormatter(
+		$container->get(FormatterServiceLocator::class),
 		$container->get(Translator::class),
-		$container->get(AclValidator::class),
-		$container->get(Config::class),
+		$container->get(AclValidator::class)
 	);
 });
+
 $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new \App\Modules\Playlists\Helper\Overview\Facade(
-		$container->get(\App\Modules\Playlists\Helper\Overview\FormCreator::class),
+		$container->get(DataGridBuilder::class),
+		$container->get(DataGridFormatter::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(PlaylistsService::class),
-		$container->get(ResultsManager::class),
-		new TemplateRenderer(
-			$container->get(Translator::class),
-			$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class)
-		)
+		$container->get(BaseDataGridTemplateFormatter::class)
 	);
 });
 

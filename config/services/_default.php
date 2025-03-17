@@ -34,14 +34,15 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\Utils\FilteredList\Paginator\Creator;
-use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FilteredList\Paginator\Renderer;
-use App\Framework\Utils\FilteredList\Results\BodyRenderer;
-use App\Framework\Utils\FilteredList\Results\HeaderRenderer;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
-use App\Framework\Utils\FilteredList\Results\TranslatorManager;
-use App\Framework\Utils\FilteredList\Results\UrlBuilder;
+use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\DataGrid\BuildServiceLocator;
+use App\Framework\Utils\DataGrid\FormatterServiceLocator;
+use App\Framework\Utils\DataGrid\Paginator\Builder;
+use App\Framework\Utils\DataGrid\Paginator\Formatter;
+use App\Framework\Utils\DataGrid\Results\BodyDataFormatter;
+use App\Framework\Utils\DataGrid\Results\HeaderDataFormatter;
+use App\Framework\Utils\DataGrid\Results\TranslatorManager;
+use App\Framework\Utils\DataGrid\Results\UrlBuilder;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
@@ -189,21 +190,30 @@ $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $conta
 	$allowedTags = $container->get(Config::class)->getConfigValue('allowed_tags', 'main');
 	return new Sanitizer($allowedTags);
 });
-$dependencies[PaginationManager::class] = DI\factory(function ()
+$dependencies[BuildServiceLocator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PaginationManager(
-		new Creator(),
-		new Renderer()
+	return new BuildServiceLocator(
+		$container->get(FormBuilder::class),
+		new Builder(),
+		new \App\Framework\Utils\DataGrid\Results\Builder()
 	);
 });
-$dependencies[ResultsServiceLocator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FormatterServiceLocator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultsServiceLocator(
-		new \App\Framework\Utils\FilteredList\Results\Creator(),
-		new HeaderRenderer(new TranslatorManager($container->get(Translator::class)), new UrlBuilder()),
-		new BodyRenderer(),
-		$container->get(PaginationManager::class)
+	return new FormatterServiceLocator(
+		$container->get(FormBuilder::class),
+		new Formatter(),
+		new HeaderDataFormatter(
+			new TranslatorManager($container->get(Translator::class)),
+			new UrlBuilder()
+		),
+		new BodyDataFormatter()
 	);
 });
+$dependencies[BaseDataGridTemplateFormatter::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new BaseDataGridTemplateFormatter($container->get(Translator::class));
+});
+
 
 return $dependencies;

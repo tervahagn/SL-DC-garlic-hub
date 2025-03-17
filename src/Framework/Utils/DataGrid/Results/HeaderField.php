@@ -1,5 +1,5 @@
 <?php
-namespace App\Framework\Utils\FilteredList\Results;
+namespace App\Framework\Utils\DataGrid\Results;
 
 /**
  * Just a simple storage container for a table header field

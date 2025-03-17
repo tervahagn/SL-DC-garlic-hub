@@ -24,7 +24,7 @@ use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractBaseService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Users\FormHelper\FilterParameters;
+use App\Modules\Users\Helper\Overview\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use Psr\Log\LoggerInterface;
 
@@ -41,7 +41,7 @@ class UsersOverviewService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function loadUsersForOverview(FilterParameters $parameters): void
+	public function loadUsersForOverview(Parameters $parameters): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{

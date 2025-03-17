@@ -34,7 +34,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class FormCreator
+readonly class FilterBuilder
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
@@ -109,7 +109,7 @@ readonly class FormCreator
 	{
 		$form = $this->collectFormElements($playlist);
 
-		return $this->formBuilder->renderFormular($form);
+		return $this->formBuilder->formatForm($form);
 	}
 
 	/**

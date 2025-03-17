@@ -40,10 +40,10 @@ readonly class ShowOverviewController
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->facade->init($request->getAttribute('session'));
+		$this->facade->configure($request->getAttribute('translator'), $request->getAttribute('session'));
 		$this->facade->handleUserInput($_GET);
 
-		$data = $this->facade->prepareDataGrid()->renderDataGrid();
+		$data = $this->facade->prepareDataGrid()->prepareDataGridTemplate();
 		$response->getBody()->write(serialize($data));
 
 		return $response->withHeader('Content-Type', 'text/html');

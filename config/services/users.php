@@ -22,6 +22,7 @@
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
@@ -30,8 +31,7 @@ use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
-use App\Modules\Users\FormHelper\FilterFormBuilder;
-use App\Modules\Users\FormHelper\FilterParameters;
+use App\Modules\Users\Helper\Overview\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
@@ -77,16 +77,18 @@ $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInte
 {
 	return new EditLocalesController($container->get(UsersService::class));
 });
-$dependencies[FilterFormBuilder::class] = DI\factory(function (ContainerInterface $container)
+/*
+$dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FilterFormBuilder(
-		$container->get(FilterParameters::class),
-		$container->get(FormBuilder::class)
+	return new FormBuilder(
+		$container->get(Parameters::class),
+		$container->get(FormBuilder::class),
+		$container->get(Translator::class)
 	);
 });
-$dependencies[FilterParameters::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FilterParameters(
+	return new Parameters(
 		$container->get(Sanitizer::class),
 		$container->get(Session::class)
 	);
@@ -101,16 +103,18 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UsersController($container->get(UsersOverviewService::class), $container->get(FilterParameters::class));
+	return new UsersController($container->get(UsersOverviewService::class), $container->get(Parameters::class));
 });
+
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowOverviewController(
-		$container->get(FilterFormBuilder::class),
-		$container->get(FilterParameters::class),
+		$container->get(FormBuilder::class),
+		$container->get(Parameters::class),
 		$container->get(UsersOverviewService::class),
 		$container->get(PaginationManager::class),
 		$container->get(ResultsList::class),
 	);
 });
+*/
 return $dependencies;

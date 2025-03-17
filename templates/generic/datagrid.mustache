@@ -1,3 +1,58 @@
+	<h1>{{{LANG_PAGE_HEADER}}}</h1>
+	{{{INSERT_SUBMENU}}}
+	<form action="{{{FORM_ACTION}}}" method="get" id="form_elements_search">
+				<input type="hidden" name="sort_column" id="sort_column" value="{{{SORT_COLUMN}}}">
+				<input type="hidden" name="sort_order" id="sort_order" value="{{{SORT_ORDER}}}">
+				<input type="hidden" name="elements_page" id="elements_page" value="{{{ELEMENTS_PAGE}}}">
+				<input type="hidden" name="elements_per_page" id="elements_per_page" value="{{{ELEMENTS_PER_PAGE}}}">
+		{{#element_hidden}}
+			{{{HIDDEN_HTML_ELEMENT}}}
+		{{/element_hidden}}
+		<div class="form-filter">
+			{{#form_element}}
+				<div class="field-wrapper">
+						<label for="{{{HTML_ELEMENT_ID}}}">{{{LANG_ELEMENT_NAME}}}</label>
+					{{{HTML_ELEMENT}}}
+					</div>
+			{{/form_element}}
+		</div>
+		<div class="form-action">
+			<div>
+				<button type="submit" id="submit_search" value="{{{LANG_ELEMENTS_FILTER}}}">{{{LANG_ELEMENTS_FILTER}}}</button>
+			</div>
+			{{#has_add}}
+				<div>
+				<a href="{{{ELEMENTS_ADD_LINK}}}" title="{{{LANG_ELEMENTS_ADD_LINK}}}" class="bi bi-{{ADD_BI_ICON}}" id="createUnitAction"></a>
+			</div>
+			{{/has_add}}
+			<div>
+				{{{LANG_COUNT_SEARCH_RESULTS}}}
+			</div>
+			<div>
+				<label>
+					<select name="elements_per_page" id="elements_per_page">
+						{{#elements_per_page}}
+							<option value="{{{ELEMENTS_PER_PAGE_VALUE}}}" data-link="{{{ELEMENTS_PER_PAGE_DATA_LINK}}}" {{{ELEMENTS_PER_PAGE_SELECTED}}}>{{{ELEMENTS_PER_PAGE_NAME}}}</option>
+						{{/elements_per_page}}
+					</select>
+				</label>
+			</div>
+			<div>
+				{{{LANG_ELEMENTS_PER_PAGE}}}
+			</div>
+			<div>
+				{{#elements_pager}}
+					<a href="{{{ELEMENTS_PAGELINK}}}" class="page_numbers" id="page_number_{{{ELEMENTS_PAGENUMBER}}}">{{{ELEMENTS_PAGENAME}}}</a>&nbsp;
+				{{/elements_pager}}
+			</div>
+			<div class="export_csv"></div>
+			{{#elements_export_results}}
+				<div>
+				<a href="{{{ELEMENTS_EXPORT_RESULTS_LINK}}}" class="button" target="blank">{{{LANG_ELEMENTS_EXPORT_RESULTS}}}</a>
+			</div>
+			{{/elements_export_results}}
+		</div>
+	</form>
 	<ul class="results-listing">
 		<li>
 			<ul class="results-header">

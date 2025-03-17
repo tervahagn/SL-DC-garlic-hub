@@ -21,20 +21,20 @@
 
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
-use App\Framework\Utils\FilteredList\Paginator\Creator;
+use App\Framework\Utils\FilteredList\Paginator\Builder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class CreatorTest extends TestCase
 {
-	private Creator $creator;
+	private Builder $creator;
 	private BaseFilterParameters $baseFilterMock;
 
 	protected function setUp(): void
 	{
 		$this->baseFilterMock = $this->createMock(BaseFilterParameters::class);
-		$this->creator = new Creator();
+		$this->creator = new Builder();
 	}
 
 	#[Group('units')]
@@ -46,7 +46,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 50, true, false);
+		$this->creator->configure($this->baseFilterMock, 50, true, false);
 		$this->creator->buildPagerLinks();
 
 		$pagerLinks = $this->creator->getPagerLinks();
@@ -64,7 +64,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 1],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 1);
+		$this->creator->configure($this->baseFilterMock, 1);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [['name' => 1, 'page' => 1, 'active' => 1]];
@@ -81,7 +81,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 50, true);
+		$this->creator->configure($this->baseFilterMock, 50, true);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [
@@ -106,7 +106,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 50, true);
+		$this->creator->configure($this->baseFilterMock, 50, true);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [
@@ -133,7 +133,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 50, true);
+		$this->creator->configure($this->baseFilterMock, 50, true);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [
@@ -158,7 +158,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 0, true);
+		$this->creator->configure($this->baseFilterMock, 0, true);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [
@@ -177,7 +177,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 100, true, false);
+		$this->creator->configure($this->baseFilterMock, 100, true, false);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [
@@ -209,7 +209,7 @@ class CreatorTest extends TestCase
 				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
 			]);
 
-		$this->creator->init($this->baseFilterMock, 100, true);
+		$this->creator->configure($this->baseFilterMock, 100, true);
 		$this->creator->buildPagerLinks();
 
 		$expectedLinks = [

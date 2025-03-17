@@ -22,9 +22,9 @@
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FilteredList\Paginator\Creator;
+use App\Framework\Utils\FilteredList\Paginator\Builder;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FilteredList\Paginator\Renderer;
+use App\Framework\Utils\FilteredList\Paginator\Formatter;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -33,8 +33,8 @@ use PHPUnit\Framework\TestCase;
 class PaginatorManagerTest extends TestCase
 {
 	private PaginationManager $paginationManager;
-	private Creator $creatorMock;
-	private Renderer $rendererMock;
+	private Builder $creatorMock;
+	private Formatter $rendererMock;
 	private BaseFilterParameters $baseFilterMock;
 
 	/**
@@ -42,8 +42,8 @@ class PaginatorManagerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->creatorMock   = $this->createMock(Creator::class);
-		$this->rendererMock  = $this->createMock(Renderer::class);
+		$this->creatorMock   = $this->createMock(Builder::class);
+		$this->rendererMock  = $this->createMock(Formatter::class);
 		$this->baseFilterMock = $this->createMock(BaseFilterParameters::class);
 
 		$this->paginationManager = new PaginationManager($this->creatorMock, $this->rendererMock);
@@ -79,7 +79,7 @@ class PaginatorManagerTest extends TestCase
 		];
 
 		$this->creatorMock->expects($this->once())
-			->method('init')
+			->method('configure')
 			->with($this->baseFilterMock, $totalItems, $usePager, $shortened)
 			->willReturnSelf();
 
@@ -110,13 +110,13 @@ class PaginatorManagerTest extends TestCase
 			->with($site);
 
 		$this->rendererMock->expects($this->once())
-			->method('renderLinks')
+			->method('formatLinks')
 			->willReturn($expectedResult);
 
 		// just for creating PagerLinks
 		$this->paginationManager->createPagination(100);
 
-		$result = $this->paginationManager->renderPaginationLinks($site);
+		$result = $this->paginationManager->formatPaginationLinks($site);
 
 		$this->assertSame($expectedResult, $result);
 	}
@@ -130,10 +130,10 @@ class PaginatorManagerTest extends TestCase
 		$this->paginationManager->createDropDown(20, 200, 2);
 
 		$this->rendererMock->expects($this->once())
-			->method('renderDropDown')
+			->method('formatDropdown')
 			->with(['min' => 20, 'max' => 200, 'steps' => 2]);
 
-		$this->paginationManager->renderPaginationDropDown();
+		$this->paginationManager->formatPaginationDropDown();
 	}
 
 

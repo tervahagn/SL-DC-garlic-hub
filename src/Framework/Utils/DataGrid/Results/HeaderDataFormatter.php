@@ -18,12 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList\Results;
+namespace App\Framework\Utils\DataGrid\Results;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class HeaderRenderer
+class HeaderDataFormatter
 {
 	private BaseFilterParameters $filterParameter;
 	private TranslatorManager $translatorManager;

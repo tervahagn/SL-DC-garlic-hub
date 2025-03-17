@@ -22,7 +22,7 @@ namespace App\Modules\Users\Controller;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\ScalarType;
-use App\Modules\Users\FormHelper\FilterParameters;
+use App\Modules\Users\Helper\Overview\Parameters;
 use App\Modules\Users\Services\UsersOverviewService;
 use App\Modules\Users\UserStatus;
 use Psr\Http\Message\ResponseInterface;
@@ -31,9 +31,9 @@ use Psr\Http\Message\ServerRequestInterface;
 class UsersController
 {
 	private UsersOverviewService $usersService;
-	private readonly FilterParameters $parameters;
+	private readonly Parameters $parameters;
 
-	public function __construct(UsersOverviewService $usersService, FilterParameters $parameters)
+	public function __construct(UsersOverviewService $usersService, Parameters $parameters)
 	{
 		$this->usersService = $usersService;
 		$this->parameters = $parameters;
@@ -46,7 +46,7 @@ class UsersController
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		// we want only registered user and higher
-		$this->parameters->addParameter(FilterParameters::PARAMETER_FROM_STATUS, ScalarType::INT, UserStatus::REGISTERED->value);
+		$this->parameters->addParameter(Parameters::PARAMETER_FROM_STATUS, ScalarType::INT, UserStatus::REGISTERED->value);
 
 		$this->parameters->setUserInputs($args);
 		$this->parameters->parseInputAllParameters();

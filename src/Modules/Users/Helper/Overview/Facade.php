@@ -18,19 +18,31 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils;
+namespace App\Modules\Users\Helper\Overview;
 
 use App\Framework\Core\Session;
-use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\DataGridFacadeInterface;
 
-/**
- * Interface for managing the behavior of a data grid.
- * Use this Facaade for OverviewControllers
- */
-interface DataGridFacadeInterface
+class Facade implements DataGridFacadeInterface
 {
-	public function configure(Translator $translator, Session $session): void;
-	public function handleUserInput(array $userInputs): void;
-	public function prepareDataGrid(): static;
-	public function prepareDataGridTemplate(): array;
+
+	public function configure(Session $session): void
+	{
+		// TODO: Implement init() method.
+	}
+
+	public function handleUserInput(array $userInputs): void
+	{
+		// TODO: Implement handleUserInput() method.
+	}
+
+	public function prepareDataGrid(): static
+	{
+		// TODO: Implement prepareDataGrid() method.
+	}
+
+	public function prepareDataGridTemplate(): array
+	{
+		// TODO: Implement renderDataGrid() method.
+	}
 }

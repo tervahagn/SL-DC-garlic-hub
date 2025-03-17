@@ -18,12 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\FilteredList\Paginator;
+namespace App\Framework\Utils\DataGrid\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class Renderer
+class Formatter
 {
 	private BaseFilterParameters $baseFilter;
 	private string $site;
@@ -44,7 +44,7 @@ class Renderer
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderLinks(array $pageLinks): array
+	public function formatLinks(array $pageLinks): array
 	{
 		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
@@ -65,7 +65,7 @@ class Renderer
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderDropdown(array $dropDownSettings): array
+	public function formatDropdown(array $dropDownSettings): array
 	{
 		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).

@@ -22,20 +22,20 @@
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FilteredList\Paginator\Renderer;
+use App\Framework\Utils\FilteredList\Paginator\Formatter;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class RendererTest extends TestCase
 {
-	private Renderer $renderer;
+	private Formatter $renderer;
 	private BaseFilterParameters $baseFilterMock;
 
 	protected function setUp(): void
 	{
 		$this->baseFilterMock = $this->createMock(BaseFilterParameters::class);
-		$this->renderer = new Renderer();
+		$this->renderer = new Formatter();
 	}
 
 	#[Group('units')]
@@ -72,7 +72,7 @@ class RendererTest extends TestCase
 
 		$this->renderer->setBaseFilter($this->baseFilterMock)->setSite($site);
 
-		$result = $this->renderer->renderLinks($pageLinks);
+		$result = $this->renderer->formatLinks($pageLinks);
 
 		$this->assertSame($expectedResult, $result);
 	}
@@ -117,7 +117,7 @@ class RendererTest extends TestCase
 		];
 
 		// Act
-		$result = $this->renderer->renderDropdown($settings);
+		$result = $this->renderer->formatDropdown($settings);
 
 		// Assert
 		$this->assertSame($expectedResult, $result);
