@@ -35,6 +35,8 @@ class FormCreator
 	private FormBuilder $formBuilder;
 	private Translator $translator;
 	private Parameters $parameters;
+	private array $formElements = [];
+
 	private int $UID;
 	private string $username;
 
@@ -53,17 +55,10 @@ class FormCreator
 		return $this;
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
-	public function buildForm(): array
+
+	public function renderForm(): array
 	{
-		$form = $this->collectFormElements();
-		return $this->formBuilder->createFormular($form);
+		return $this->formBuilder->renderFormular($this->formElements);
 	}
 
 	/**
@@ -73,7 +68,7 @@ class FormCreator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function collectFormElements(): array
+	public function collectFormElements(): void
 	{
 		$form       = [];
 		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->formBuilder->createField([
@@ -111,7 +106,7 @@ class FormCreator
 			]);
 		}
 
-		return $form;
+		$this->formElements = $form;
 	}
 
 }

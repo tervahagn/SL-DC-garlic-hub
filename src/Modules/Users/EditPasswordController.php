@@ -70,7 +70,7 @@ class EditPasswordController
 	{
 		$this->translator = $request->getAttribute('translator');
 
-		$elements  = $this->formBuilder->createFormular($this->createForm());
+		$elements  = $this->formBuilder->renderFormular($this->createForm());
 
 		$data = [
 				'main_layout' => [

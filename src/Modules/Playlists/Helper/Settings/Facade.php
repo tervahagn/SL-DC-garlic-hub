@@ -35,9 +35,9 @@ readonly class Facade
 	private FormCreator $settingsFormBuilder;
 	private PlaylistsService $playlistsService;
 	private Parameters $settingsParameters;
-	private Renderer $renderer;
+	private TemplateRenderer $renderer;
 
-	public function __construct(FormCreator $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, Renderer $renderer)
+	public function __construct(FormCreator $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, TemplateRenderer $renderer)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->playlistsService = $playlistsService;

@@ -27,6 +27,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Modules\Playlists\Helper\Overview\Facade;
 use App\Modules\Playlists\Helper\Overview\FormCreator;
 use App\Modules\Playlists\Helper\Overview\Parameters;
 use App\Modules\Playlists\Helper\Overview\ResultsList;
@@ -40,170 +41,27 @@ use Slim\Flash\Messages;
 
 class ShowOverviewController
 {
-	private readonly FormCreator $formBuilder;
-	private readonly Parameters $parameters;
-	private readonly PlaylistsService $playlistsService;
-	private readonly PaginationManager $paginatorService;
-	private readonly ResultsList $resultsList;
+	private readonly Facade $facade;
 
-	private Translator $translator;
-	private Session $session;
-	private Messages $flash;
-
-	public function __construct(FormCreator $formBuilder, Parameters $parameters, PlaylistsService $playlistsService, PaginationManager $paginatorService, ResultsList $resultsList)
+	public function __construct(Facade $facade)
 	{
-		$this->formBuilder      = $formBuilder;
-		$this->parameters       = $parameters;
-		$this->playlistsService = $playlistsService;
-		$this->paginatorService = $paginatorService;
-		$this->resultsList       = $resultsList;
+		$this->facade           = $facade;
 	}
 
 	/**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws ModuleException
-	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->setImportantAttributes($request);
+		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->facade->handleUserInput($_GET);
 
-		$this->parameters->setUserInputs($_GET);
-		$this->parameters->parseInputFilterAllUsers();
-		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
-
-		$data = $this->buildForm();
-
+		$data = $this->facade->prepareDataGrid()->render();
 		$response->getBody()->write(serialize($data));
+
 		return $response->withHeader('Content-Type', 'text/html');
-	}
-
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws ModuleException
-	 * @throws Exception
-	 */
-	private function buildForm(): array
-	{
-		$elements = $this->formBuilder->init($this->translator, $this->session)->buildForm();
-
-		$title = $this->translator->translate('overview', 'playlists');
-		$total = $this->playlistsService->getCurrentTotalResult();
-		$this->paginatorService->init($this->parameters, 'playlists')
-			->createPagination($total)
-			->createDropDown();
-
-		return [
-			'main_layout' => [
-				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/overview.css'],
-				'footer_modules' => ['/js/playlists/overview/init.js']
-			],
-			'this_layout' => [
-				'template' => 'playlists/overview', // Template-name
-				'data' => [
-					'LANG_PAGE_HEADER' => $title,
-					'FORM_ACTION' => '/playlists',
-					'element_hidden' => $elements['hidden'],
-					'form_element' => $elements['visible'],
-					'LANG_ELEMENTS_FILTER' => $this->translator->translate('filter', 'main'),
-					'SORT_COLUMN' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
-					'SORT_ORDER' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER),
-					'ELEMENTS_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-					'ELEMENTS_PER_PAGE' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
-					'form_button' => [
-						[
-							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
-						]
-					],
-					'create_playlist_contextmenu' => $this->buildPlaylistContextMenu(),
-					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(),
-					'add_allowed' => [
-						'ADD_BI_ICON' => 'folder-plus',
-						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'playlists'),
-						'ELEMENTS_ADD_LINK' => '#'
-
-					],
-					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
-					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'playlists', $total), $total),
-					'elements_pager' => $this->paginatorService->renderPagination('playlists'),
-					'elements_result_header' => $this->renderHeader(),
-					'elements_results' => $this->renderBody()
-				]
-			]
-		];
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
-	private function renderHeader(): array
-	{
-		$this->resultsList->createFields($this->session->get('user')['UID']);
-		return $this->resultsList->renderTableHeader();
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 */
-	private function renderBody(): array
-	{
-		$showedIds     = $this->playlistsService->getPlaylistIdsFromResultSet();
-
-		$this->resultsList->setCurrentTotalResult($this->playlistsService->getCurrentTotalResult());
-		$this->resultsList->setCurrentFilterResults($this->playlistsService->getCurrentFilterResults());
-		return $this->resultsList->renderTableBody(
-			$this->translator,
-			$showedIds,
-			$this->playlistsService->getPlaylistsInUse($showedIds)
-		);
-	}
-
-	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws CoreException
-	 */
-	private function buildPlaylistContextMenu(): array
-	{
-		$list = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
-		$data = [];
-		foreach ($list as $key => $value)
-		{
-			$data[] = [
-				'CREATE_PLAYLIST_MODE' => $key,
-				'LANG_CREATE_PLAYLIST_MODE' => $value
-			];
-		}
-		return $data;
-	}
-
-	private function setImportantAttributes(ServerRequestInterface $request): void
-	{
-		$this->translator = $request->getAttribute('translator');
-		$this->session    = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-		$this->flash      = $request->getAttribute('flash');
 	}
 
 }

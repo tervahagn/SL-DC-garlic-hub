@@ -66,7 +66,7 @@ class PaginationManager
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderPagination(string $site): array
+	public function renderPaginationLinks(string $site): array
 	{
 		return $this->renderer->renderLinks($this->pagerLinks);
 	}
@@ -74,7 +74,7 @@ class PaginationManager
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderElementsPerSiteDropDown(): array
+	public function renderPaginationDropDown(): array
 	{
 		return $this->renderer->renderDropdown($this->dropDownSettings);
 	}

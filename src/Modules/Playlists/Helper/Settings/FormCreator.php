@@ -109,7 +109,7 @@ readonly class FormCreator
 	{
 		$form = $this->collectFormElements($playlist);
 
-		return $this->formBuilder->createFormular($form);
+		return $this->formBuilder->renderFormular($form);
 	}
 
 	/**

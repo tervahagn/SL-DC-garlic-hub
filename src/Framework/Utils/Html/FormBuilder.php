@@ -37,7 +37,7 @@ class FormBuilder
 		$this->session             = $session;
 	}
 
-	public function createFormular(array $formFields): array
+	public function renderFormular(array $formFields): array
 	{
 		$hidden = [];
 		$visible = [];

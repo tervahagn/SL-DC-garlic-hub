@@ -22,7 +22,7 @@ namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Translate\Translator;
 
-class Renderer
+class TemplateRenderer
 {
 	private Translator $translator;
 

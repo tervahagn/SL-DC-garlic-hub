@@ -116,7 +116,7 @@ class PaginatorManagerTest extends TestCase
 		// just for creating PagerLinks
 		$this->paginationManager->createPagination(100);
 
-		$result = $this->paginationManager->renderPagination($site);
+		$result = $this->paginationManager->renderPaginationLinks($site);
 
 		$this->assertSame($expectedResult, $result);
 	}
@@ -133,7 +133,7 @@ class PaginatorManagerTest extends TestCase
 			->method('renderDropDown')
 			->with(['min' => 20, 'max' => 200, 'steps' => 2]);
 
-		$this->paginationManager->renderElementsPerSiteDropDown();
+		$this->paginationManager->renderPaginationDropDown();
 	}
 
 

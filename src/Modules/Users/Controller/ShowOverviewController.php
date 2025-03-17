@@ -97,7 +97,7 @@ class ShowOverviewController
 							'ELEMENT_BUTTON_NAME' => 'submit',
 						]
 					],
-					'elements_per_page' => $this->paginatorService->renderElementsPerSiteDropDown(),
+					'elements_per_page' => $this->paginatorService->renderPaginationDropDown(),
 					'add_allowed' => [
 						'ADD_BI_ICON' => 'person-add',
 						'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'users'),
@@ -106,7 +106,7 @@ class ShowOverviewController
 					],
 					'LANG_ELEMENTS_PER_PAGE' => $this->translator->translate('elements_per_page', 'main'),
 					'LANG_COUNT_SEARCH_RESULTS' => sprintf($this->translator->translateWithPlural('count_search_results', 'users', $total), $total),
-					'elements_pager' => $this->paginatorService->renderPagination('users'),
+					'elements_pager' => $this->paginatorService->renderPaginationLinks('users'),
 					'elements_result_header' => $this->renderHeader(),
 					'elements_results' => $this->renderBody()
 				]

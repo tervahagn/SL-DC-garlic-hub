@@ -70,11 +70,6 @@ class PlaylistsService extends AbstractBaseService
 
 	}
 
-	public function getPlaylistIdsFromResultSet()
-	{
-		return array_column($this->getCurrentFilterResults(), 'playlist_id');
-	}
-
 	/**
 	 * @throws Exception
 	 */

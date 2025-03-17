@@ -349,7 +349,7 @@ class EditPasswordControllerTest extends TestCase
 			});
 
 		$element = ['visible' => [], 'hidden' => []];
-		$this->formBuilderMock->expects($this->once())->method('createFormular')->willReturn($element);
+		$this->formBuilderMock->expects($this->once())->method('renderFormular')->willReturn($element);
 
 		$this->responseMock->expects($this->once())
 			 ->method('getBody')

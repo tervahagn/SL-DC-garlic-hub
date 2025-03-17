@@ -65,7 +65,7 @@ class FilterFormBuilder
 	public function buildForm(): array
 	{
 		$form = $this->collectFormElements();
-		return $this->formBuilder->createFormular($form);
+		return $this->formBuilder->renderFormular($form);
 	}
 
 	/**

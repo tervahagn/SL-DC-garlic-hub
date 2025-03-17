@@ -29,13 +29,13 @@ use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Playlists\Helper\Overview\FormCreator;
-use App\Modules\Playlists\Helper\Overview\Parameters;
 use App\Modules\Playlists\Helper\Overview\ResultsList;
+
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -57,7 +57,6 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 		$container->get(Config::class),
 	);
 });
-
 $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlaylistsService(
@@ -86,42 +85,35 @@ $dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $con
 		$container->get(AclValidator::class),
 		$container->get(Parameters::class),
 		$container->get(Validator::class),
-		$container->get(FormBuilder::class)
+		$container->get(FormBuilder::class),
 	);
 });
-$dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Facade(
 		$container->get(FormCreator::class),
 		$container->get(PlaylistsService::class),
 		$container->get(Parameters::class),
-		new \App\Modules\Playlists\Helper\Settings\Renderer($container->get(Translator::class))
+		new \App\Modules\Playlists\Helper\Settings\TemplateRenderer($container->get(Translator::class))
 	);
 });
-
 $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowSettingsController(
-		$container->get(Facade::class),
-		$container->get(FormCreator::class),
-		$container->get(Parameters::class),
-		$container->get(PlaylistsService::class)
+		$container->get(Facade::class)
 	);
 });
-
-
-
-$dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[\App\Modules\Playlists\Helper\Overview\Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new Parameters(
+	return new \App\Modules\Playlists\Helper\Overview\Parameters(
 		$container->get(Sanitizer::class),
 		$container->get(Session::class)
 	);
 });
-$dependencies[FormCreator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[\App\Modules\Playlists\Helper\Overview\FormCreator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FormCreator(
-		$container->get(Parameters::class),
+	return new \App\Modules\Playlists\Helper\Overview\FormCreator(
+		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(FormBuilder::class)
 	);
 });
@@ -130,18 +122,29 @@ $dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $con
 	return new ResultsList(
 		$container->get(AclValidator::class),
 		$container->get(Config::class),
-		$container->get(Parameters::class),
+		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(Renderer::class),
 	);
 });
-$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ShowOverviewController(
-		$container->get(FormCreator::class),
-		$container->get(Parameters::class),
+	return new \App\Modules\Playlists\Helper\Overview\Facade(
+		$container->get(\App\Modules\Playlists\Helper\Overview\FormCreator::class),
+		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(PlaylistsService::class),
 		$container->get(PaginationManager::class),
 		$container->get(ResultsList::class),
+		new \App\Modules\Playlists\Helper\Overview\TemplateRenderer(
+			$container->get(Translator::class),
+			$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class)
+		)
+	);
+});
+
+$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowOverviewController(
+		$container->get(\App\Modules\Playlists\Helper\Overview\Facade::class)
 	);
 });
 $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInterface $container)

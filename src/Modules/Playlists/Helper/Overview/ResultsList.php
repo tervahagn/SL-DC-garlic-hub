@@ -56,7 +56,7 @@ class ResultsList extends BaseResults
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function createFields($UID): static
+	public function createTableFields($UID): static
 	{
 		$this->UID = $UID;
 		$this->createField('playlist_name', true);
