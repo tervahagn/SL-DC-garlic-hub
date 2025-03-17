@@ -20,30 +20,15 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Framework\Core\Session;
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Modules\Playlists\Helper\Overview\Facade;
-use App\Modules\Playlists\Helper\Overview\FormCreator;
-use App\Modules\Playlists\Helper\Overview\Parameters;
-use App\Modules\Playlists\Helper\Overview\ResultsList;
-use App\Modules\Playlists\Services\PlaylistsService;
-use Doctrine\DBAL\Exception;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use App\Framework\Utils\DataGridFacadeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\SimpleCache\InvalidArgumentException;
-use Slim\Flash\Messages;
 
-class ShowOverviewController
+readonly class ShowOverviewController
 {
-	private readonly Facade $facade;
+	private DataGridFacadeInterface $facade;
 
-	public function __construct(Facade $facade)
+	public function __construct(DataGridFacadeInterface $facade)
 	{
 		$this->facade           = $facade;
 	}
@@ -55,10 +40,10 @@ class ShowOverviewController
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->facade->init($request->getAttribute('session'));
 		$this->facade->handleUserInput($_GET);
 
-		$data = $this->facade->prepareDataGrid()->render();
+		$data = $this->facade->prepareDataGrid()->renderDataGrid();
 		$response->getBody()->write(serialize($data));
 
 		return $response->withHeader('Content-Type', 'text/html');

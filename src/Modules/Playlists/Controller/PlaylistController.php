@@ -21,8 +21,12 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Overview\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -43,6 +47,12 @@ class PlaylistController
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;

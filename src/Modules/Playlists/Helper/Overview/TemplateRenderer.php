@@ -20,14 +20,20 @@
 
 namespace App\Modules\Playlists\Helper\Overview;
 
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class TemplateRenderer
 {
 
-	private $translator;
+	private Translator $translator;
 	private readonly Parameters $parameters;
-	private int $total;
+
 
 	public function __construct($translator, Parameters $parameters)
 	{
@@ -35,6 +41,13 @@ class TemplateRenderer
 		$this->parameters = $parameters;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function renderTemplate(array $datalistSections): array
 	{
 		$title = $this->translator->translate('overview', 'playlists');
@@ -82,6 +95,11 @@ class TemplateRenderer
 	}
 
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 */
 	private function buildPlaylistContextMenu(): array
 	{
 		$list = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');

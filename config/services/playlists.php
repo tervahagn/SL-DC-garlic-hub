@@ -22,15 +22,15 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FilteredList\Results\Renderer;
+use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Playlists\Helper\Overview\ResultsList;
+use App\Modules\Playlists\Helper\Overview\ResultsManager;
 
+use App\Modules\Playlists\Helper\Overview\TemplateRenderer;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
@@ -114,16 +114,17 @@ $dependencies[\App\Modules\Playlists\Helper\Overview\FormCreator::class] = DI\fa
 {
 	return new \App\Modules\Playlists\Helper\Overview\FormCreator(
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
-		$container->get(FormBuilder::class)
+		$container->get(FormBuilder::class),
+		$container->get(Translator::class)
 	);
 });
-$dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ResultsManager::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ResultsList(
+	return new ResultsManager(
+		$container->get(ResultsServiceLocator::class),
+		$container->get(Translator::class),
 		$container->get(AclValidator::class),
 		$container->get(Config::class),
-		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
-		$container->get(Renderer::class),
 	);
 });
 $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory(function (ContainerInterface $container)
@@ -132,9 +133,8 @@ $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory
 		$container->get(\App\Modules\Playlists\Helper\Overview\FormCreator::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(PlaylistsService::class),
-		$container->get(PaginationManager::class),
-		$container->get(ResultsList::class),
-		new \App\Modules\Playlists\Helper\Overview\TemplateRenderer(
+		$container->get(ResultsManager::class),
+		new TemplateRenderer(
 			$container->get(Translator::class),
 			$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class)
 		)

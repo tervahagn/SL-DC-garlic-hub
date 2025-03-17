@@ -23,7 +23,7 @@ namespace App\Framework\Utils\FilteredList\Results;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class Renderer
+class HeaderRenderer
 {
 	private BaseFilterParameters $filterParameter;
 	private TranslatorManager $translatorManager;
@@ -40,7 +40,7 @@ class Renderer
 		$this->urlBuilder = $urlBuilder;
 	}
 
-	public function init(BaseFilterParameters $filterParameter, string $site, array $languageModules): void
+	public function configure(BaseFilterParameters $filterParameter, string $site, array $languageModules): void
 	{
 		$this->filterParameter = $filterParameter;
 		$this->site = $site;
@@ -50,55 +50,8 @@ class Renderer
 		}
 	}
 
-	public function renderLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array
-	{
-		return [
-			'CONTROL_ELEMENT_VALUE_NAME'  => $valueName,
-			'CONTROL_ELEMENT_VALUE_TITLE' => $title,
-			'CONTROL_ELEMENT_VALUE_LINK' => $href,
-			'CONTROL_ELEMENT_VALUE_ID' => $valueId,
-			'CONTROL_ELEMENT_VALUE_CLASS' => $cssClass
-		];
-	}
-
-	public function renderUID(int $UID, string $username): array
-	{
-		return [
-			'OWNER_UID'  => $UID,
-			'OWNER_NAME' => $username,
-		];
-	}
-
-	public function renderText(string $text): array
-	{
-		return [
-			'CONTROL_ELEMENT_VALUE_TEXT' => $text
-		];
-	}
-	public function renderAction(string $lang, string $link, string $name, string $cssClass): array
-	{
-		return 	[
-				'LANG_ACTION'       => $lang,
-				'LINK_ACTION'       => $link,
-				'ACTION_NAME'       => $name,
-				'ACTION_ICON_CLASS' => $cssClass
-			];
-	}
-
-	public function renderActionDelete(string $lang, string $langConfirm, string $link, string $id, string $cssClass): array
-	{
-		return 	[
-			'LANG_DELETE_ACTION'   => $lang,
-			'LINK_DELETE_ACTION'   => $link,
-			'DELETE_ID'            => $id,
-			'LANG_CONFIRM_DELETE'  => $langConfirm,
-			'ELEMENT_DELETE_CLASS' => $cssClass
-		];
-	}
-
 	public function renderTableHeader(array $tableHeaderFields): array
 	{
-
 		$header = [];
 		/* @var $headerField HeaderField */
 		foreach($tableHeaderFields as $headerField)

@@ -68,14 +68,4 @@ class Parameters extends BaseEditParameters
 		$this->addParameter(self::PARAMETER_TIME_LIMIT, ScalarType::INT, 0);
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	public function addMultizone(): void
-	{
-		$this->addParameter(self::PARAMETER_MULTIZONE, ScalarType::STRING_ARRAY, []);
-	}
-
-
-
 }

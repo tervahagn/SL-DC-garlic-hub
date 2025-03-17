@@ -66,7 +66,7 @@ class PaginationManager
 	/**
 	 * @throws ModuleException
 	 */
-	public function renderPaginationLinks(string $site): array
+	public function renderPaginationLinks(): array
 	{
 		return $this->renderer->renderLinks($this->pagerLinks);
 	}

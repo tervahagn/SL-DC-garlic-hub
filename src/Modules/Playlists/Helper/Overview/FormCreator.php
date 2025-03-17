@@ -20,11 +20,11 @@
 
 namespace App\Modules\Playlists\Helper\Overview;
 
-use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,24 +37,12 @@ class FormCreator
 	private Parameters $parameters;
 	private array $formElements = [];
 
-	private int $UID;
-	private string $username;
-
-	public function __construct(Parameters $parameters, FormBuilder $formBuilder)
+	public function __construct(Parameters $parameters, FormBuilder $formBuilder, Translator $translator)
 	{
 		$this->parameters   = $parameters;
 		$this->formBuilder  = $formBuilder;
+		$this->translator   = $translator;
 	}
-
-	public function init(Translator $translator, Session $session): static
-	{
-		$this->translator = $translator;
-		$this->UID      = $session->get('user')['UID'];
-		$this->username = $session->get('user')['username'];
-
-		return $this;
-	}
-
 
 	public function renderForm(): array
 	{
@@ -80,15 +68,15 @@ class FormCreator
 			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_NAME)
 		]);
 
-		if ($this->parameters->hasParameter(Parameters::PARAMETER_UID))
+		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
 		{
-			$form[Parameters::PARAMETER_UID] = $this->formBuilder->createField([
+			$form[BaseParameters::PARAMETER_UID] = $this->formBuilder->createField([
 				'type' => FieldType::AUTOCOMPLETE,
 				'id' => 'UID',
 				'name' => 'UID',
 				'title' => $this->translator->translate('owner', 'main'),
 				'label' => $this->translator->translate('owner', 'main'),
-				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_UID),
+				'value' => $this->parameters->getValueOfParameter(BaseParameters::PARAMETER_UID),
 				'data-label' => ''
 			]);
 		}

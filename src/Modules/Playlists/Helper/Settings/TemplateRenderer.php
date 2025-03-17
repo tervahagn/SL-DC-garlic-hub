@@ -21,6 +21,10 @@
 namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class TemplateRenderer
 {
@@ -31,6 +35,12 @@ class TemplateRenderer
 		$this->translator = $translator;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function renderTemplate(array $elements, string $playlistMode): array
 	{
 		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
