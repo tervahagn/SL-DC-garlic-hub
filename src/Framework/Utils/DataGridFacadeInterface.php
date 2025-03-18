@@ -32,5 +32,5 @@ interface DataGridFacadeInterface
 	public function configure(Translator $translator, Session $session): void;
 	public function handleUserInput(array $userInputs): void;
 	public function prepareDataGrid(): static;
-	public function prepareDataGridTemplate(): array;
+	public function prepareTemplate(): array;
 }

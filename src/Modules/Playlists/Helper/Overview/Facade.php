@@ -39,18 +39,15 @@ class Facade implements DataGridFacadeInterface
 	private readonly DataGridFormatter $dataGridFormatter;
 	private readonly Parameters $parameters;
 	private readonly PlaylistsService $playlistsService;
-	private readonly BaseDataGridTemplateFormatter $renderer;
 	private int $UID;
 	private Translator $translator;
 
-	public function __construct(DataGridBuilder $dataGridBuilder, DataGridFormatter $dataGridFormatter, Parameters $parameters, PlaylistsService $playlistsService, BaseDataGridTemplateFormatter $renderer)
+	public function __construct(DataGridBuilder $dataGridBuilder, DataGridFormatter $dataGridFormatter, Parameters $parameters, PlaylistsService $playlistsService)
 	{
 		$this->dataGridBuilder = $dataGridBuilder;
 		$this->dataGridFormatter = $dataGridFormatter;
 		$this->parameters = $parameters;
 		$this->playlistsService = $playlistsService;
-
-		$this->renderer = $renderer;
 	}
 
 	public function configure(Translator $translator, Session $session): void
@@ -88,6 +85,11 @@ class Facade implements DataGridFacadeInterface
 		return $this;
 	}
 
+	public function prepareContextMenu(): array
+	{
+		return $this->dataGridFormatter->formatPlaylistContextMenu();
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws Exception
@@ -96,13 +98,13 @@ class Facade implements DataGridFacadeInterface
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function prepareDataGridTemplate(): array
+	public function prepareTemplate(): array
 	{
 		$this->dataGridFormatter->configurePagination($this->parameters);
 
 		$dataGridBuild = $this->dataGridBuilder->getDataGridBuild();
 
-		$datalistSections = [
+		return [
 			'filter_elements'     => $this->dataGridFormatter->formatFilterForm($dataGridBuild['form']),
 			'pagination_dropdown' => $this->dataGridFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
 			'pagination_links'    => $this->dataGridFormatter->formatPaginationLinks($dataGridBuild['pager']),
@@ -124,10 +126,6 @@ class Facade implements DataGridFacadeInterface
 				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
 			]
 		];
-		$templateData = $this->renderer->formatUITemplate($datalistSections);
-		$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->dataGridFormatter->formatPlaylistContextMenu();
-
-		return $templateData;
 	}
 
 	/**

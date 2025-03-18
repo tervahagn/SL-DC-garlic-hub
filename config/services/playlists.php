@@ -133,15 +133,15 @@ $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory
 		$container->get(DataGridBuilder::class),
 		$container->get(DataGridFormatter::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
-		$container->get(PlaylistsService::class),
-		$container->get(BaseDataGridTemplateFormatter::class)
+		$container->get(PlaylistsService::class)
 	);
 });
 
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowOverviewController(
-		$container->get(\App\Modules\Playlists\Helper\Overview\Facade::class)
+		$container->get(\App\Modules\Playlists\Helper\Overview\Facade::class),
+		$container->get(BaseDataGridTemplateFormatter::class)
 	);
 });
 $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInterface $container)

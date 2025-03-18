@@ -209,7 +209,7 @@ class DataGridFormatter
 		return $data;
 	}
 
-	static function convertSeconds(string $seconds): string
+	function convertSeconds(string $seconds): string
 	{
 		$dtT = new DateTime("@$seconds");
 		return (new DateTime("@0"))->diff($dtT)->format('%H:%I:%S');

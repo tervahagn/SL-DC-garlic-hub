@@ -20,31 +20,48 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
 use App\Framework\Utils\DataGridFacadeInterface;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class ShowOverviewController
 {
 	private DataGridFacadeInterface $facade;
-
-	public function __construct(DataGridFacadeInterface $facade)
+	private BaseDataGridTemplateFormatter $templateFormatter;
+	public function __construct(DataGridFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
 	{
-		$this->facade           = $facade;
+		$this->facade            = $facade;
+		$this->templateFormatter = $templateFormatter;
 	}
 
 	/**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->facade->configure($request->getAttribute('translator'), $request->getAttribute('session'));
 		$this->facade->handleUserInput($_GET);
 
-		$data = $this->facade->prepareDataGrid()->prepareDataGridTemplate();
-		$response->getBody()->write(serialize($data));
+		$this->facade->prepareDataGrid();
+		$dataGrid = $this->facade->prepareTemplate();
+
+		$templateData = $this->templateFormatter->formatUITemplate($dataGrid);
+		$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->facade->prepareContextMenu();
+
+		$response->getBody()->write(serialize($templateData));
 
 		return $response->withHeader('Content-Type', 'text/html');
 	}

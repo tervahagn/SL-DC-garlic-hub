@@ -38,7 +38,7 @@ class DataGridBuilder
 	private Parameters $parameters;
 	private array $dataGridBuild = [];
 
-	public function __construct(BuildServiceLocator $buildServiceLocator,  Parameters $parameters, Translator $translator)
+	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator)
 	{
 		$this->buildServiceLocator  = $buildServiceLocator;
 		$this->parameters   = $parameters;
