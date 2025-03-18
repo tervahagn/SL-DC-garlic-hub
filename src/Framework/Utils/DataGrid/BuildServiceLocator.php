@@ -22,6 +22,14 @@ namespace App\Framework\Utils\DataGrid;
 
 use App\Framework\Utils\Html\FormBuilder;
 
+/**
+ * BuildServiceLocator is an implementation of the so-called “Service Locator” design pattern.
+ *
+ * The class stores twxhree objects of the type:
+ * - `FormBuilder` - Creates and formats form fields.
+ * - `Paginator\Builder` - Generates paging components for dividing large amounts of data into several pages.
+ * - `Results\Builder` - Manages the creation of table-like outputs or result sets.
+ */
 class BuildServiceLocator
 {
 	private FormBuilder $formBuilder;

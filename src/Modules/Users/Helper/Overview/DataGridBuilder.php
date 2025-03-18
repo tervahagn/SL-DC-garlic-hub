@@ -20,65 +20,36 @@
 
 namespace App\Modules\Users\Helper\Overview;
 
-use App\Framework\Core\Session;
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\DataGrid\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Playlists\Helper\Overview\Parameters;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
 
-class FormCreator
+class DataGridBuilder
 {
-	private FormBuilder $formBuilder;
+	private BuildServiceLocator $buildServiceLocator;
 	private Translator $translator;
 	private Parameters $parameters;
-	private array $formElements = [];
+	private Config $config;
+	private array $dataGridBuild = [];
 
-	public function __construct(Parameters $parameters, FormBuilder $formBuilder, Translator $translator)
+	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator, Config $config)
 	{
+		$this->buildServiceLocator  = $buildServiceLocator;
 		$this->parameters   = $parameters;
-		$this->formBuilder  = $formBuilder;
 		$this->translator   = $translator;
+		$this->config       = $config;
 	}
-
-	public function init(Translator $translator, Session $session): static
+	public function getDataGridBuild(): array
 	{
-		$this->translator = $translator;
-		$this->UID      = $session->get('user')['UID'];
-		$this->username = $session->get('user')['username'];
-
-		return $this;
+		return $this->dataGridBuild;
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
-	public function buildForm(): array
-	{
-		$form = $this->collectFormElements();
-		return $this->formBuilder->formatForm($form);
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws ModuleException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 */
-	public function collectFormElements(): array
+	public function collectFormElements(): void
 	{
 		$form       = [];
-		$form[Parameters::PARAMETER_USERNAME] = $this->formBuilder->createField([
+		$form[Parameters::PARAMETER_USERNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
 			'type'  => FieldType::TEXT,
 			'id'    => Parameters::PARAMETER_USERNAME,
 			'name'  => Parameters::PARAMETER_USERNAME,
@@ -87,7 +58,7 @@ class FormCreator
 			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_USERNAME)
 		]);
 
-		$form[Parameters::PARAMETER_EMAIL] = $this->formBuilder->createField([
+		$form[Parameters::PARAMETER_EMAIL] = $this->buildServiceLocator->getFormBuilder()->createField([
 			'type'  => FieldType::TEXT,
 			'id'    => Parameters::PARAMETER_EMAIL,
 			'name'  => Parameters::PARAMETER_EMAIL,
@@ -98,7 +69,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_FIRSTNAME))
 		{
-			$form[Parameters::PARAMETER_FIRSTNAME] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_FIRSTNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_FIRSTNAME,
 				'name' => Parameters::PARAMETER_FIRSTNAME,
@@ -110,7 +81,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_SURNAME))
 		{
-			$form[Parameters::PARAMETER_SURNAME] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_SURNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_SURNAME,
 				'name' => Parameters::PARAMETER_SURNAME,
@@ -122,7 +93,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_COMPANY_NAME))
 		{
-			$form[Parameters::PARAMETER_COMPANY_NAME] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_COMPANY_NAME] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_COMPANY_NAME,
 				'name' => Parameters::PARAMETER_COMPANY_NAME,
@@ -134,7 +105,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(BaseFilterParameters::PARAMETER_COMPANY_ID))
 		{
-			$form[Parameters::PARAMETER_COMPANY_ID] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_COMPANY_ID] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_COMPANY_ID,
 				'name' => Parameters::PARAMETER_COMPANY_ID,
@@ -147,7 +118,7 @@ class FormCreator
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_STATUS))
 		{
-			$form[Parameters::PARAMETER_STATUS] = $this->formBuilder->createField([
+			$form[Parameters::PARAMETER_STATUS] = $this->buildServiceLocator->getFormBuilder()->createField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_STATUS,
 				'name' => Parameters::PARAMETER_STATUS,
@@ -158,7 +129,37 @@ class FormCreator
 			]);
 		}
 
-		return $form;
+		$this->dataGridBuild['form'] = $form;
 	}
 
+	public function createTableFields(): static
+	{
+		$this->buildServiceLocator->getResultsBuilder()->createField('username',true);
+		$this->buildServiceLocator->getResultsBuilder()->createField('created_at', true);
+		$this->buildServiceLocator->getResultsBuilder()->createField('status', false);
+		if ($this->config->getEdition() === Config::PLATFORM_EDITION_CORE || $this->config->getEdition() === Config::PLATFORM_EDITION_ENTERPRISE)
+		{
+			$this->buildServiceLocator->getResultsBuilder()->createField('firstname', false);
+			$this->buildServiceLocator->getResultsBuilder()->createField('surname', false);
+			$this->buildServiceLocator->getResultsBuilder()->createField('company_name', false);
+		}
+
+		$this->dataGridBuild['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+
+		return $this;
+	}
+
+	public function createPagination(int $resultCount): void
+	{
+		$this->dataGridBuild['pager'] = $this->buildServiceLocator->getPaginationBuilder()->configure($this->parameters, $resultCount, true)
+			->buildPagerLinks()
+			->getPagerLinks();
+	}
+
+	public function createDropDown(): void
+	{
+		$this->dataGridBuild['dropdown'] = $this->buildServiceLocator->getPaginationBuilder()
+			->createDropDown()
+			->getDropDownSettings();
+	}
 }

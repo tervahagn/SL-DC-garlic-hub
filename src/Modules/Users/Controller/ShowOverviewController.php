@@ -20,59 +20,36 @@
 
 namespace App\Modules\Users\Controller;
 
-use App\Framework\Core\Session;
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Modules\Users\Helper\Overview\Facade;
-use App\Modules\Users\Helper\Overview\FormBuilder;
-use App\Modules\Users\Helper\Overview\Parameters;
-use App\Modules\Users\Services\ResultsList;
-use App\Modules\Users\Services\UsersOverviewService;
+use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
 class ShowOverviewController
 {
-	private readonly Facade $facade;
-	private readonly Parameters $parameters;
-	private readonly UsersOverviewService $usersService;
-	private readonly PaginationManager $paginatorService;
-	private readonly ResultsList $resultsList;
-	private Translator $translator;
-	private Session $session;
-	private Messages $flash;
-	public function __construct(FormBuilder $formBuilder, Parameters $parameters, UsersOverviewService $usersService, PaginationManager $paginatorService, ResultsList $resultsList)
+	private DataGridFacadeInterface $facade;
+	private BaseDataGridTemplateFormatter $templateFormatter;
+	public function __construct(DataGridFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
 	{
-		$this->formBuilder      = $formBuilder;
-		$this->parameters       = $parameters;
-		$this->usersService     = $usersService;
-		$this->paginatorService = $paginatorService;
-		$this->resultsList      = $resultsList;
+		$this->facade            = $facade;
+		$this->templateFormatter = $templateFormatter;
 	}
 
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$this->parameters->setUserInputs($_GET);
-		$this->parameters->parseInputFilterAllUsers();
+		$this->facade->configure($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->facade->handleUserInput($_GET);
 
-		$this->setImportantAttributes($request);
-		$this->usersService->loadUsersForOverview($this->parameters);
+		$this->facade->prepareDataGrid();
+		$dataGrid = $this->facade->prepareTemplate();
 
-		$data = $this->buildForm();
+		$templateData = $this->templateFormatter->formatUITemplate($dataGrid);
 
-		$response->getBody()->write(serialize($data));
+		$response->getBody()->write(serialize($templateData));
+
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
-
-	private function setImportantAttributes(ServerRequestInterface $request): void
-	{
-		$this->translator = $request->getAttribute('translator');
-		$this->session    = $request->getAttribute('session');
-		$this->usersService->setUID($this->session->get('user')['UID']);
-		$this->flash      = $request->getAttribute('flash');
-	}
 
 }

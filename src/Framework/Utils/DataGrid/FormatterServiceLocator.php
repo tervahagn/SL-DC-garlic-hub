@@ -25,6 +25,10 @@ use App\Framework\Utils\DataGrid\Results\BodyDataFormatter;
 use App\Framework\Utils\DataGrid\Results\HeaderDataFormatter;
 use App\Framework\Utils\Html\FormBuilder;
 
+/**
+ * #
+ * The `FormatterServiceLocator` class implements the Service Locator pattern, which acts as a central registry for formatting data grids in the application.
+ */
 class FormatterServiceLocator
 {
 	private HeaderDataFormatter $headerFormatter;

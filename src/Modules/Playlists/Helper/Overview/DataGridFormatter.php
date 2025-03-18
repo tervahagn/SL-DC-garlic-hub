@@ -124,7 +124,6 @@ class DataGridFormatter
 							'playlists/compose/'.$playlist['playlist_id'],
 							'playlist_name_'.$playlist['playlist_id']
 						);
-
 						break;
 					case 'UID':
 						$resultElements['is_UID'] = $this->formatterServiceLocator->getBodyFormatter()->renderUID($playlist['UID'], $playlist['username']);

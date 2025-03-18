@@ -25,8 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\DataGridFacadeInterface;
+use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
@@ -78,8 +77,8 @@ class Facade implements DataGridFacadeInterface
 	public function prepareDataGrid(): static
 	{
 		$this->dataGridBuilder->collectFormElements();
-		$this->dataGridBuilder->createDropDown($this->playlistsService->getCurrentTotalResult());
 		$this->dataGridBuilder->createPagination($this->playlistsService->getCurrentTotalResult());
+		$this->dataGridBuilder->createDropDown();
 		$this->dataGridBuilder->createTableFields();
 
 		return $this;

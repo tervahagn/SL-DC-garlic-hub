@@ -21,28 +21,89 @@
 namespace App\Modules\Users\Helper\Overview;
 
 use App\Framework\Core\Session;
-use App\Framework\Utils\DataGridFacadeInterface;
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Modules\Users\Services\UsersOverviewService;
 
 class Facade implements DataGridFacadeInterface
 {
 
-	public function configure(Session $session): void
+	private readonly DataGridBuilder $dataGridBuilder;
+	private readonly DataGridFormatter $dataGridFormatter;
+	private readonly Parameters $parameters;
+	private readonly UsersOverviewService $usersService;
+	private int $UID;
+	private Translator $translator;
+
+	public function __construct(DataGridBuilder $dataGridBuilder, DataGridFormatter $dataGridFormatter, Parameters $parameters, UsersOverviewService $usersService)
 	{
-		// TODO: Implement init() method.
+		$this->dataGridBuilder = $dataGridBuilder;
+		$this->dataGridFormatter = $dataGridFormatter;
+		$this->parameters = $parameters;
+		$this->usersService = $usersService;
+	}
+	public function configure(Translator $translator, Session $session): void
+	{
+		$this->UID = $session->get('user')['UID'];
+		$this->usersService->setUID($this->UID);
+		$this->translator = $translator;
 	}
 
 	public function handleUserInput(array $userInputs): void
 	{
-		// TODO: Implement handleUserInput() method.
+		$this->parameters->setUserInputs($userInputs);
+		$this->parameters->parseInputFilterAllUsers();
+		$this->usersService->loadUsersForOverview($this->parameters);
 	}
 
 	public function prepareDataGrid(): static
 	{
-		// TODO: Implement prepareDataGrid() method.
+		$this->dataGridBuilder->collectFormElements();
+		$this->dataGridBuilder->createPagination($this->usersService->getCurrentTotalResult());
+		$this->dataGridBuilder->createDropDown();
+		$this->dataGridBuilder->createTableFields();
+
+		return $this;
 	}
 
-	public function prepareDataGridTemplate(): array
+	public function prepareTemplate(): array
 	{
-		// TODO: Implement renderDataGrid() method.
+		$this->dataGridFormatter->configurePagination($this->parameters);
+
+		$dataGridBuild = $this->dataGridBuilder->getDataGridBuild();
+
+		return [
+			'filter_elements'     => $this->dataGridFormatter->formatFilterForm($dataGridBuild['form']),
+			'pagination_dropdown' => $this->dataGridFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
+			'pagination_links'    => $this->dataGridFormatter->formatPaginationLinks($dataGridBuild['pager']),
+			'has_add'			  => $this->dataGridFormatter->formatAdd(),
+			'results_header'      => $this->dataGridFormatter->formatTableHeader($this->parameters, $dataGridBuild['header']),
+			'results_list'        => $this->formatList($dataGridBuild['header']),
+			'results_count'       => $this->usersService->getCurrentTotalResult(),
+			'title'               => $this->translator->translate('overview', 'playlists'),
+			'template_name'       => 'users/overview',
+			'module_name'		  => 'users',
+			'additional_css'      => ['/css/users/overview.css'],
+			'footer_modules'      => ['/js/users/overview/init.js'],
+			'sort'				  => [
+				'column' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
+				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER)
+			],
+			'page'      => [
+				'current' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
+				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
+			]
+		];
+	}
+
+	private function formatList(array $fields): array
+	{
+		$showedIds     = array_column($this->usersService->getCurrentFilterResults(), 'playlist_id');
+		return $this->dataGridFormatter->formatTableBody(
+			$this->usersService->getCurrentFilterResults(),
+			$fields,
+			$this->UID
+		);
 	}
 }

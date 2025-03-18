@@ -126,7 +126,6 @@ $dependencies[DataGridFormatter::class] = DI\factory(function (ContainerInterfac
 		$container->get(AclValidator::class)
 	);
 });
-
 $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new \App\Modules\Playlists\Helper\Overview\Facade(

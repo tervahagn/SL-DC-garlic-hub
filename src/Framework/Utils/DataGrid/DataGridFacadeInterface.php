@@ -18,14 +18,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils;
+namespace App\Framework\Utils\DataGrid;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 
 /**
  * Interface for managing the behavior of a data grid.
- * Use this Facaade for OverviewControllers
+ * Use this Facade for OverviewControllers
  */
 interface DataGridFacadeInterface
 {

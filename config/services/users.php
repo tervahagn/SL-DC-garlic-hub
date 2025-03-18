@@ -23,19 +23,22 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\FilteredList\Paginator\PaginationManager;
-use App\Framework\Utils\FilteredList\Results\ResultsServiceLocator;
+use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\DataGrid\BuildServiceLocator;
+use App\Framework\Utils\DataGrid\FormatterServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Users\Helper\Overview\Facade;
 use App\Modules\Users\Controller\ShowOverviewController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Users\Helper\Overview\DataGridBuilder;
+use App\Modules\Users\Helper\Overview\DataGridFormatter;
 use App\Modules\Users\Helper\Overview\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
-use App\Modules\Users\Services\ResultsList;
 use App\Modules\Users\Services\UsersOverviewService;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Helper\Psr16Adapter;
@@ -77,15 +80,6 @@ $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInte
 {
 	return new EditLocalesController($container->get(UsersService::class));
 });
-/*
-$dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new FormBuilder(
-		$container->get(Parameters::class),
-		$container->get(FormBuilder::class),
-		$container->get(Translator::class)
-	);
-});
 $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Parameters(
@@ -93,28 +87,53 @@ $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $cont
 		$container->get(Session::class)
 	);
 });
-$dependencies[ResultsList::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new ResultsList(
-		$container->get(AclValidator::class),
-		$container->get(Config::class),
-		$container->get(ResultsServiceLocator::class)
-	);
-});
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UsersController($container->get(UsersOverviewService::class), $container->get(Parameters::class));
+});
+$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowOverviewController(
+		$container->get(\App\Modules\Users\Helper\Overview\Facade::class),
+		$container->get(BaseDataGridTemplateFormatter::class)
+	);
+});
+
+$dependencies[DataGridBuilder::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new DataGridBuilder(
+		$container->get(BuildServiceLocator::class),
+		$container->get(Parameters::class),
+		$container->get(Translator::class),
+		$container->get(Config::class)
+	);
+});
+$dependencies[DataGridFormatter::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new DataGridFormatter(
+		$container->get(FormatterServiceLocator::class),
+		$container->get(Translator::class),
+		$container->get(AclValidator::class),
+		$container->get(Config::class)
+	);
+});
+$dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Facade(
+		$container->get(DataGridBuilder::class),
+		$container->get(DataGridFormatter::class),
+		$container->get(Parameters::class),
+		$container->get(UsersOverviewService::class)
+	);
 });
 
 $dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowOverviewController(
-		$container->get(FormBuilder::class),
-		$container->get(Parameters::class),
-		$container->get(UsersOverviewService::class),
-		$container->get(PaginationManager::class),
-		$container->get(ResultsList::class),
+		$container->get(Facade::class),
+		$container->get(BaseDataGridTemplateFormatter::class)
 	);
 });
-*/
+
+
 return $dependencies;
