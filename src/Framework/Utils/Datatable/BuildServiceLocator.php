@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\DataGrid;
+namespace App\Framework\Utils\Datatable;
 
 use App\Framework\Utils\Html\FormBuilder;
 

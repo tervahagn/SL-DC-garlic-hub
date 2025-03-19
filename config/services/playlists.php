@@ -22,16 +22,16 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\DataGrid\BuildServiceLocator;
-use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\DataGrid\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\BuildServiceLocator;
+use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\Datatable\FormatterServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowOverviewController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Playlists\Helper\Overview\DataGridBuilder;
-use App\Modules\Playlists\Helper\Overview\DataGridFormatter;
+use App\Modules\Playlists\Helper\Overview\DatatableBuilder;
+use App\Modules\Playlists\Helper\Overview\DatatableFormatter;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FilterBuilder;
 use App\Modules\Playlists\Helper\Settings\Parameters;
@@ -110,17 +110,17 @@ $dependencies[\App\Modules\Playlists\Helper\Overview\Parameters::class] = DI\fac
 		$container->get(Session::class)
 	);
 });
-$dependencies[DataGridBuilder::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DatatableBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new DataGridBuilder(
+	return new DatatableBuilder(
 		$container->get(BuildServiceLocator::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(Translator::class)
 	);
 });
-$dependencies[DataGridFormatter::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DatatableFormatter::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new DataGridFormatter(
+	return new DatatableFormatter(
 		$container->get(FormatterServiceLocator::class),
 		$container->get(Translator::class),
 		$container->get(AclValidator::class)
@@ -129,8 +129,8 @@ $dependencies[DataGridFormatter::class] = DI\factory(function (ContainerInterfac
 $dependencies[\App\Modules\Playlists\Helper\Overview\Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new \App\Modules\Playlists\Helper\Overview\Facade(
-		$container->get(DataGridBuilder::class),
-		$container->get(DataGridFormatter::class),
+		$container->get(DatatableBuilder::class),
+		$container->get(DatatableFormatter::class),
 		$container->get(\App\Modules\Playlists\Helper\Overview\Parameters::class),
 		$container->get(PlaylistsService::class)
 	);

@@ -24,7 +24,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\DataGrid\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\FormatterServiceLocator;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
@@ -33,7 +33,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DataGridFormatter
+class DatatableFormatter
 {
 
 	private FormatterServiceLocator $formatterServiceLocator;

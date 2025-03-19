@@ -18,25 +18,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\DataGrid\Results;
+namespace App\Framework\Utils\Datatable;
 
-class Builder
+use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
+
+/**
+ * Interface for managing the behavior of a datatables.
+ * Use this Facade for OverviewControllers
+ */
+interface DatatableFacadeInterface
 {
-	private array $tableHeaderFields = [];
-
-	public function getHeaderFields(): array
-	{
-		return $this->tableHeaderFields;
-	}
-
-	public function createField(string $fieldName, bool $sortable): void
-	{
-		$this->tableHeaderFields[] = $this->createHeaderField()->setName($fieldName)->sortable($sortable);
-	}
-
-	private function createHeaderField(): HeaderField
-	{
-		return new HeaderField();
-	}
-
+	public function configure(Translator $translator, Session $session): void;
+	public function handleUserInput(array $userInputs): void;
+	public function prepareDataGrid(): static;
+	public function prepareTemplate(): array;
 }

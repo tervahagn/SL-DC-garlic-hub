@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\DataGrid\Results;
+namespace App\Framework\Utils\Datatable\Results;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\FrameworkException;

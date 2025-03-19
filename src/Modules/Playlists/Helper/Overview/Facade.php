@@ -25,26 +25,26 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
+use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Facade implements DataGridFacadeInterface
+class Facade implements DatatableFacadeInterface
 {
-	private readonly DataGridBuilder $dataGridBuilder;
-	private readonly DataGridFormatter $dataGridFormatter;
+	private readonly DatatableBuilder $datatableBuilder;
+	private readonly DatatableFormatter $datatableFormatter;
 	private readonly Parameters $parameters;
 	private readonly PlaylistsService $playlistsService;
 	private int $UID;
 	private Translator $translator;
 
-	public function __construct(DataGridBuilder $dataGridBuilder, DataGridFormatter $dataGridFormatter, Parameters $parameters, PlaylistsService $playlistsService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatableFormatter $datatableFormatter, Parameters $parameters, PlaylistsService $playlistsService)
 	{
-		$this->dataGridBuilder = $dataGridBuilder;
-		$this->dataGridFormatter = $dataGridFormatter;
+		$this->datatableBuilder = $datatableBuilder;
+		$this->datatableFormatter = $datatableFormatter;
 		$this->parameters = $parameters;
 		$this->playlistsService = $playlistsService;
 	}
@@ -76,17 +76,17 @@ class Facade implements DataGridFacadeInterface
 	 */
 	public function prepareDataGrid(): static
 	{
-		$this->dataGridBuilder->collectFormElements();
-		$this->dataGridBuilder->createPagination($this->playlistsService->getCurrentTotalResult());
-		$this->dataGridBuilder->createDropDown();
-		$this->dataGridBuilder->createTableFields();
+		$this->datatableBuilder->collectFormElements();
+		$this->datatableBuilder->createPagination($this->playlistsService->getCurrentTotalResult());
+		$this->datatableBuilder->createDropDown();
+		$this->datatableBuilder->createTableFields();
 
 		return $this;
 	}
 
 	public function prepareContextMenu(): array
 	{
-		return $this->dataGridFormatter->formatPlaylistContextMenu();
+		return $this->datatableFormatter->formatPlaylistContextMenu();
 	}
 
 	/**
@@ -99,16 +99,16 @@ class Facade implements DataGridFacadeInterface
 	 */
 	public function prepareTemplate(): array
 	{
-		$this->dataGridFormatter->configurePagination($this->parameters);
+		$this->datatableFormatter->configurePagination($this->parameters);
 
-		$dataGridBuild = $this->dataGridBuilder->getDataGridBuild();
+		$dataGridBuild = $this->datatableBuilder->getDataGridBuild();
 
 		return [
-			'filter_elements'     => $this->dataGridFormatter->formatFilterForm($dataGridBuild['form']),
-			'pagination_dropdown' => $this->dataGridFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
-			'pagination_links'    => $this->dataGridFormatter->formatPaginationLinks($dataGridBuild['pager']),
-			'has_add'			  => $this->dataGridFormatter->formatAdd(),
-			'results_header'      => $this->dataGridFormatter->formatTableHeader($this->parameters, $dataGridBuild['header']),
+			'filter_elements'     => $this->datatableFormatter->formatFilterForm($dataGridBuild['form']),
+			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
+			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($dataGridBuild['pager']),
+			'has_add'			  => $this->datatableFormatter->formatAdd(),
+			'results_header'      => $this->datatableFormatter->formatTableHeader($this->parameters, $dataGridBuild['header']),
 			'results_list'        => $this->formatList($dataGridBuild['header']),
 			'results_count'       => $this->playlistsService->getCurrentTotalResult(),
 			'title'               => $this->translator->translate('overview', 'playlists'),
@@ -139,7 +139,7 @@ class Facade implements DataGridFacadeInterface
 	private function formatList(array $fields): array
 	{
 		$showedIds     = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
-		return $this->dataGridFormatter->formatTableBody(
+		return $this->datatableFormatter->formatTableBody(
 			$this->playlistsService->getCurrentFilterResults(),
 			$fields,
 			$this->playlistsService->getPlaylistsInUse($showedIds),

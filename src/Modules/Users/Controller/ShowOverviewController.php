@@ -20,17 +20,17 @@
 
 namespace App\Modules\Users\Controller;
 
-use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
+use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
 class ShowOverviewController
 {
-	private DataGridFacadeInterface $facade;
+	private DatatableFacadeInterface $facade;
 	private BaseDataGridTemplateFormatter $templateFormatter;
-	public function __construct(DataGridFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
+	public function __construct(DatatableFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
 	{
 		$this->facade            = $facade;
 		$this->templateFormatter = $templateFormatter;

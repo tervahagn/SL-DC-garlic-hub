@@ -22,24 +22,25 @@ namespace App\Modules\Users\Helper\Overview;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\DataGrid\DataGridFacadeInterface;
+use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Users\Services\UsersOverviewService;
 
-class Facade implements DataGridFacadeInterface
+class Facade implements DatatableFacadeInterface
 {
 
-	private readonly DataGridBuilder $dataGridBuilder;
-	private readonly DataGridFormatter $dataGridFormatter;
+	private readonly DatatableBuilder $datatableBuilder;
+	private readonly DatatableFormatter $datatableFormatter;
 	private readonly Parameters $parameters;
 	private readonly UsersOverviewService $usersService;
 	private int $UID;
 	private Translator $translator;
+	private DatatableFormatter $dataGridFormatter;
 
-	public function __construct(DataGridBuilder $dataGridBuilder, DataGridFormatter $dataGridFormatter, Parameters $parameters, UsersOverviewService $usersService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatableFormatter $datatableFormatter, Parameters $parameters, UsersOverviewService $usersService)
 	{
-		$this->dataGridBuilder = $dataGridBuilder;
-		$this->dataGridFormatter = $dataGridFormatter;
+		$this->datatableBuilder = $datatableBuilder;
+		$this->dataGridFormatter = $datatableFormatter;
 		$this->parameters = $parameters;
 		$this->usersService = $usersService;
 	}
@@ -59,10 +60,10 @@ class Facade implements DataGridFacadeInterface
 
 	public function prepareDataGrid(): static
 	{
-		$this->dataGridBuilder->collectFormElements();
-		$this->dataGridBuilder->createPagination($this->usersService->getCurrentTotalResult());
-		$this->dataGridBuilder->createDropDown();
-		$this->dataGridBuilder->createTableFields();
+		$this->datatableBuilder->collectFormElements();
+		$this->datatableBuilder->createPagination($this->usersService->getCurrentTotalResult());
+		$this->datatableBuilder->createDropDown();
+		$this->datatableBuilder->createTableFields();
 
 		return $this;
 	}
@@ -71,7 +72,7 @@ class Facade implements DataGridFacadeInterface
 	{
 		$this->dataGridFormatter->configurePagination($this->parameters);
 
-		$dataGridBuild = $this->dataGridBuilder->getDataGridBuild();
+		$dataGridBuild = $this->datatableBuilder->getDataGridBuild();
 
 		return [
 			'filter_elements'     => $this->dataGridFormatter->formatFilterForm($dataGridBuild['form']),

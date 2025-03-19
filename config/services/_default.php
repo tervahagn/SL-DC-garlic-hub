@@ -34,15 +34,15 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\Utils\DataGrid\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\DataGrid\BuildServiceLocator;
-use App\Framework\Utils\DataGrid\FormatterServiceLocator;
-use App\Framework\Utils\DataGrid\Paginator\Builder;
-use App\Framework\Utils\DataGrid\Paginator\Formatter;
-use App\Framework\Utils\DataGrid\Results\BodyDataFormatter;
-use App\Framework\Utils\DataGrid\Results\HeaderDataFormatter;
-use App\Framework\Utils\DataGrid\Results\TranslatorManager;
-use App\Framework\Utils\DataGrid\Results\UrlBuilder;
+use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\Datatable\BuildServiceLocator;
+use App\Framework\Utils\Datatable\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\Paginator\Builder;
+use App\Framework\Utils\Datatable\Paginator\Formatter;
+use App\Framework\Utils\Datatable\Results\BodyDataFormatter;
+use App\Framework\Utils\Datatable\Results\HeaderDataFormatter;
+use App\Framework\Utils\Datatable\Results\TranslatorManager;
+use App\Framework\Utils\Datatable\Results\UrlBuilder;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
@@ -195,7 +195,7 @@ $dependencies[BuildServiceLocator::class] = DI\factory(function (ContainerInterf
 	return new BuildServiceLocator(
 		$container->get(FormBuilder::class),
 		new Builder(),
-		new \App\Framework\Utils\DataGrid\Results\Builder()
+		new \App\Framework\Utils\Datatable\Results\Builder()
 	);
 });
 $dependencies[FormatterServiceLocator::class] = DI\factory(function (ContainerInterface $container)

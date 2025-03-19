@@ -18,11 +18,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\DataGrid;
+namespace App\Framework\Utils\Datatable;
 
-use App\Framework\Utils\DataGrid\Paginator\Formatter;
-use App\Framework\Utils\DataGrid\Results\BodyDataFormatter;
-use App\Framework\Utils\DataGrid\Results\HeaderDataFormatter;
+use App\Framework\Utils\Datatable\Paginator\Formatter;
+use App\Framework\Utils\Datatable\Results\BodyDataFormatter;
+use App\Framework\Utils\Datatable\Results\HeaderDataFormatter;
 use App\Framework\Utils\Html\FormBuilder;
 
 /**

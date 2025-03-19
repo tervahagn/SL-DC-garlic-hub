@@ -24,14 +24,14 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\DataGrid\BuildServiceLocator;
+use App\Framework\Utils\Datatable\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DataGridBuilder
+class DatatableBuilder
 {
 	private BuildServiceLocator $buildServiceLocator;
 	private Translator $translator;

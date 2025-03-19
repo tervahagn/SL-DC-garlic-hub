@@ -22,11 +22,11 @@ namespace App\Modules\Users\Helper\Overview;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\DataGrid\BuildServiceLocator;
+use App\Framework\Utils\Datatable\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
 
-class DataGridBuilder
+class DatatableBuilder
 {
 	private BuildServiceLocator $buildServiceLocator;
 	private Translator $translator;

@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\DataGrid\Paginator;
+namespace App\Framework\Utils\Datatable\Paginator;
 
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
