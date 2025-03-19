@@ -26,7 +26,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Playlists\Helper\Overview\Parameters;
+use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

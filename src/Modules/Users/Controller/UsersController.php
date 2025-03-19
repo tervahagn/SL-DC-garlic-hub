@@ -22,7 +22,7 @@ namespace App\Modules\Users\Controller;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\ScalarType;
-use App\Modules\Users\Helper\Overview\Parameters;
+use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Services\UsersOverviewService;
 use App\Modules\Users\UserStatus;
 use Psr\Http\Message\ResponseInterface;

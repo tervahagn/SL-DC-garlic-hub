@@ -18,7 +18,7 @@ The paginator consists of two classes that work together to create and preformat
 You must set the site route and base filtering options to initialize the paginator formatter:
 
 ``` php
-use App\Framework\Utils\DataGrid\Paginator\Formatter;
+use App\Framework\Utils\Datatable\Paginator\Formatter;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
 // Assume $baseFilter is already created and configured as required.

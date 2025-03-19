@@ -3,6 +3,10 @@
 The datatable component display all units of a module. E.g. player, user, playlists, templates etc.
 It is the standard component which should be displayed when the module name is settet in the url route.
 
+JavaScript is not used to generate datatables. Most free client based datatables scripts needs the complete table from the database.
+The garlic-hub datatables should be able to handle even huge amount of data like logs. This means our datatables request only the paginated parts from database. Currently every click reload the coplete site.
+In the future there will be asyncronous updates.
+
 **Remark: the Software is in status of developing. Docs can change**
 
 Unfortunately this is a complex topic. You had to create some classes as there are only partly generic functionalities. Especially the list elements part is mostly individual. 

@@ -30,7 +30,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class ShowOverviewController
+readonly class ShowDatatableController
 {
 	private DatatableFacadeInterface $facade;
 	private BaseDataGridTemplateFormatter $templateFormatter;

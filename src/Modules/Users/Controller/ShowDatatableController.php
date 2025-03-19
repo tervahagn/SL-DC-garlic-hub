@@ -26,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
-class ShowOverviewController
+class ShowDatatableController
 {
 	private DatatableFacadeInterface $facade;
 	private BaseDataGridTemplateFormatter $templateFormatter;

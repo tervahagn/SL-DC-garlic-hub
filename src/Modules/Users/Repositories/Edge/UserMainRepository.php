@@ -21,7 +21,7 @@
 namespace App\Modules\Users\Repositories\Edge;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Modules\Users\Helper\Overview\Parameters;
+use App\Modules\Users\Helper\Datatable\Parameters;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 

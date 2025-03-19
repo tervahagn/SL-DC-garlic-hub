@@ -29,7 +29,7 @@ use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
-use App\Modules\Playlists\Controller\ShowOverviewController;
+use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
@@ -49,13 +49,13 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->get('/logout', [LoginController::class, 'logout']);
 	$group->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
 
-	$group->get('/users', [\App\Modules\Users\Controller\ShowOverviewController::class, 'show']);
+	$group->get('/users', [\App\Modules\Users\Controller\ShowDatatableController::class, 'show']);
 	$group->get('/users/edit', [EditPasswordController::class, 'showForm']);
 	$group->post('/users/edit/password', [EditPasswordController::class, 'editPassword']);
 
 	$group->get('/mediapool', [ShowController::class, 'show']);
 
-	$group->get('/playlists', [ShowOverviewController::class, 'show']);
+	$group->get('/playlists', [ShowDatatableController::class, 'show']);
 	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [ShowSettingsController::class, 'newPlaylistForm']);
 	$group->get('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'editPlaylistForm']);
 	$group->delete('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'delete']);

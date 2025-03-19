@@ -23,7 +23,7 @@ namespace App\Modules\Playlists\Controller;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\Overview\Parameters;
+use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper\Overview;
+namespace App\Modules\Playlists\Helper\Datatable;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;

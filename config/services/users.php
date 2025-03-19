@@ -27,15 +27,15 @@ use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
 use App\Framework\Utils\Datatable\BuildServiceLocator;
 use App\Framework\Utils\Datatable\FormatterServiceLocator;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Users\Helper\Overview\Facade;
-use App\Modules\Users\Controller\ShowOverviewController;
+use App\Modules\Users\Helper\Datatable\Facade;
+use App\Modules\Users\Controller\ShowDatatableController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
-use App\Modules\Users\Helper\Overview\DatatableBuilder;
-use App\Modules\Users\Helper\Overview\DatatableFormatter;
-use App\Modules\Users\Helper\Overview\Parameters;
+use App\Modules\Users\Helper\Datatable\DatatableBuilder;
+use App\Modules\Users\Helper\Datatable\DatatableFormatter;
+use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
@@ -91,10 +91,10 @@ $dependencies[UsersController::class] = DI\factory(function (ContainerInterface 
 {
 	return new UsersController($container->get(UsersOverviewService::class), $container->get(Parameters::class));
 });
-$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ShowOverviewController(
-		$container->get(\App\Modules\Users\Helper\Overview\Facade::class),
+	return new ShowDatatableController(
+		$container->get(\App\Modules\Users\Helper\Datatable\Facade::class),
 		$container->get(BaseDataGridTemplateFormatter::class)
 	);
 });
@@ -127,9 +127,9 @@ $dependencies[Facade::class] = DI\factory(function (ContainerInterface $containe
 	);
 });
 
-$dependencies[ShowOverviewController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ShowOverviewController(
+	return new ShowDatatableController(
 		$container->get(Facade::class),
 		$container->get(BaseDataGridTemplateFormatter::class)
 	);

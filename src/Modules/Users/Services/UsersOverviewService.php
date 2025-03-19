@@ -24,7 +24,7 @@ use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractBaseService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Users\Helper\Overview\Parameters;
+use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use Psr\Log\LoggerInterface;
 
