@@ -24,8 +24,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\AbstractDatatableFormatter;
 use App\Framework\Utils\Datatable\FormatterServiceLocator;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use DateTime;
@@ -33,62 +33,19 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DatatableFormatter
+class DatatableFormatter extends AbstractDatatableFormatter
 {
-
-	private FormatterServiceLocator $formatterServiceLocator;
-	private Translator $translator;
-	private AclValidator $aclValidator;
+	private array $usedPlaylists;
 
 	public function __construct(FormatterServiceLocator $formatterServiceLocator, Translator $translator, AclValidator $aclValidator)
 	{
-		$this->formatterServiceLocator = $formatterServiceLocator;
-		$this->translator = $translator;
-		$this->aclValidator = $aclValidator;
+		parent::__construct('playlists', $formatterServiceLocator, $translator, $aclValidator);
 	}
 
-
-	public function formatFilterForm(array $dataGridBuild): array
+	public function setUsedPlaylists(array $usedPlaylists): static
 	{
-		return $this->formatterServiceLocator->getFormBuilder()->formatForm($dataGridBuild);
-	}
-
-	public function configurePagination(BaseFilterParameters $parameters): void
-	{
-		$this->formatterServiceLocator->getPaginationFormatter()
-			->setSite('playlists')
-			->setBaseFilter($parameters);
-	}
-	/**
-	 * @throws ModuleException
-	 */
-	public function formatPaginationDropDown(array $dropDownSettings): array
-	{
-		return $this->formatterServiceLocator->getPaginationFormatter()->formatDropdown($dropDownSettings);
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	public function formatPaginationLinks(array $paginationLinks): array
-	{
-		return $this->formatterServiceLocator->getPaginationFormatter()->formatLinks($paginationLinks);
-	}
-
-	public function formatTableHeader(BaseFilterParameters $parameters, array $fields): array
-	{
-		$this->formatterServiceLocator->getHeaderFormatter()->configure($parameters, 'playlists', ['playlists', 'main']);
-		return $this->formatterServiceLocator->getHeaderFormatter()->renderTableHeader($fields);
-	}
-
-	public function formatAdd(): array
-	{
-		return [
-			'ADD_BI_ICON' => 'folder-plus',
-			'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'playlists'),
-			'ELEMENTS_ADD_LINK' => '#'
-
-		];
+		$this->usedPlaylists = $usedPlaylists;
+		return $this;
 	}
 
 	/**
@@ -101,7 +58,7 @@ class DatatableFormatter
 	 * @throws ModuleException
 	 * @throws InvalidArgumentException
 	 */
-	public function formatTableBody(array $currentFilterResults, array $fields, $usedPlaylists, $currentUID): array
+	public function formatTableBody(array $currentFilterResults, array $fields, $currentUID): array
 	{
 		$body = [];
 		$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
@@ -158,7 +115,7 @@ class DatatableFormatter
 							'playlists/settings/'.$playlist['playlist_id'],
 							'edit', 'pencil')
 					];
-					if (!array_key_exists($playlist['playlist_id'], $usedPlaylists) &&
+					if (!array_key_exists($playlist['playlist_id'], $this->usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($currentUID, $playlist))
 					{
 						$list['has_delete'] = $this->formatterServiceLocator->getBodyFormatter()->renderActionDelete(
@@ -208,7 +165,7 @@ class DatatableFormatter
 		return $data;
 	}
 
-	function convertSeconds(string $seconds): string
+	private function convertSeconds(string $seconds): string
 	{
 		$dtT = new DateTime("@$seconds");
 		return (new DateTime("@0"))->diff($dtT)->format('%H:%I:%S');

@@ -21,6 +21,7 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
+use App\Framework\Core\Acl\AbstractAclValidatorInterface;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;

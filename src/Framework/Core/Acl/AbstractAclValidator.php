@@ -34,7 +34,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
  *
  * @see /docs/user-administration.md
  */
-abstract class AbstractAclValidator
+abstract class AbstractAclValidator implements AbstractAclValidatorInterface
 {
 	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
 	protected readonly string $moduleName;

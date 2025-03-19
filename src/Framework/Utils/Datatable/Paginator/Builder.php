@@ -21,6 +21,7 @@
 namespace App\Framework\Utils\Datatable\Paginator;
 
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 
 class Builder
 {
@@ -35,7 +36,7 @@ class Builder
 	 */
 	private array $dropDownSettings;
 
-	public function configure(BaseFilterParameters $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
+	public function configure(BaseFilterParametersInterface $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
 	{
 		$this->currentPage  = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
 		$this->itemsPerPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));

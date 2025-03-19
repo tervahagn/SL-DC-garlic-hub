@@ -26,7 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -84,6 +84,11 @@ class Facade implements DatatableFacadeInterface
 		return $this;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws CoreException
+	 */
 	public function prepareContextMenu(): array
 	{
 		return $this->datatableFormatter->formatPlaylistContextMenu();
@@ -101,15 +106,15 @@ class Facade implements DatatableFacadeInterface
 	{
 		$this->datatableFormatter->configurePagination($this->parameters);
 
-		$dataGridBuild = $this->datatableBuilder->getDataGridBuild();
+		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 
 		return [
-			'filter_elements'     => $this->datatableFormatter->formatFilterForm($dataGridBuild['form']),
-			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
-			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($dataGridBuild['pager']),
+			'filter_elements'     => $this->datatableFormatter->formatFilterForm($datatableStructure['form']),
+			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($datatableStructure['dropdown']),
+			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($datatableStructure['pager']),
 			'has_add'			  => $this->datatableFormatter->formatAdd(),
-			'results_header'      => $this->datatableFormatter->formatTableHeader($this->parameters, $dataGridBuild['header']),
-			'results_list'        => $this->formatList($dataGridBuild['header']),
+			'results_header'      => $this->datatableFormatter->formatTableHeader($datatableStructure['header'], ['playlists', 'main']),
+			'results_list'        => $this->formatList($datatableStructure['header']),
 			'results_count'       => $this->playlistsService->getCurrentTotalResult(),
 			'title'               => $this->translator->translate('overview', 'playlists'),
 			'template_name'       => 'playlists/datatable',
@@ -117,17 +122,18 @@ class Facade implements DatatableFacadeInterface
 			'additional_css'      => ['/css/playlists/overview.css'],
 			'footer_modules'      => ['/js/playlists/overview/init.js'],
 			'sort'				  => [
-				'column' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
-				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER)
+				'column' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN),
+				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER)
 			],
 			'page'      => [
-				'current' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
+				'current' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
+				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE),
 			]
 		];
 	}
 
 	/**
+	 * @param array $fields
 	 * @return array
 	 * @throws CoreException
 	 * @throws Exception
@@ -138,11 +144,13 @@ class Facade implements DatatableFacadeInterface
 	 */
 	private function formatList(array $fields): array
 	{
-		$showedIds     = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
+		$showedIds = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
+
+		$this->datatableFormatter->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
+
 		return $this->datatableFormatter->formatTableBody(
 			$this->playlistsService->getCurrentFilterResults(),
 			$fields,
-			$this->playlistsService->getPlaylistsInUse($showedIds),
 			$this->UID
 		);
 	}

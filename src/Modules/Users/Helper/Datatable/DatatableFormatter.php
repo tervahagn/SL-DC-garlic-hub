@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\AbstractDatatableFormatter;
 use App\Framework\Utils\Datatable\FormatterServiceLocator;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Users\Services\AclValidator;
@@ -33,63 +34,16 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DatatableFormatter
+class DatatableFormatter extends AbstractDatatableFormatter
 {
-
-	private FormatterServiceLocator $formatterServiceLocator;
-	private Translator $translator;
-	private AclValidator $aclValidator;
 	private Config $config;
 
 	public function __construct(FormatterServiceLocator $formatterServiceLocator, Translator $translator, AclValidator $aclValidator, Config $config)
 	{
-		$this->formatterServiceLocator = $formatterServiceLocator;
-		$this->translator = $translator;
-		$this->aclValidator = $aclValidator;
 		$this->config = $config;
+		parent::__construct('users', $formatterServiceLocator, $translator, $aclValidator);
 	}
 
-	public function formatFilterForm(array $dataGridBuild): array
-	{
-		return $this->formatterServiceLocator->getFormBuilder()->formatForm($dataGridBuild);
-	}
-
-	public function configurePagination(BaseFilterParameters $parameters): void
-	{
-		$this->formatterServiceLocator->getPaginationFormatter()
-			->setSite('users')
-			->setBaseFilter($parameters);
-	}
-	/**
-	 * @throws ModuleException
-	 */
-	public function formatPaginationDropDown(array $dropDownSettings): array
-	{
-		return $this->formatterServiceLocator->getPaginationFormatter()->formatDropdown($dropDownSettings);
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	public function formatPaginationLinks(array $paginationLinks): array
-	{
-		return $this->formatterServiceLocator->getPaginationFormatter()->formatLinks($paginationLinks);
-	}
-
-	public function formatTableHeader(BaseFilterParameters $parameters, array $fields): array
-	{
-		$this->formatterServiceLocator->getHeaderFormatter()->configure($parameters, 'users', ['users', 'main']);
-		return $this->formatterServiceLocator->getHeaderFormatter()->renderTableHeader($fields);
-	}
-
-	public function formatAdd(): array
-	{
-		return [
-			'ADD_BI_ICON' => 'person-add',
-			'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', 'users'),
-			'ELEMENTS_ADD_LINK' => '#'
-		];
-	}
 
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering

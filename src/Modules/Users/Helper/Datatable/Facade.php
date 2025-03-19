@@ -22,9 +22,15 @@ namespace App\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Modules\Users\Services\UsersOverviewService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Facade implements DatatableFacadeInterface
 {
@@ -35,12 +41,11 @@ class Facade implements DatatableFacadeInterface
 	private readonly UsersOverviewService $usersService;
 	private int $UID;
 	private Translator $translator;
-	private DatatableFormatter $dataGridFormatter;
 
 	public function __construct(DatatableBuilder $datatableBuilder, DatatableFormatter $datatableFormatter, Parameters $parameters, UsersOverviewService $usersService)
 	{
 		$this->datatableBuilder = $datatableBuilder;
-		$this->dataGridFormatter = $datatableFormatter;
+		$this->datatableFormatter = $datatableFormatter;
 		$this->parameters = $parameters;
 		$this->usersService = $usersService;
 	}
@@ -51,6 +56,9 @@ class Facade implements DatatableFacadeInterface
 		$this->translator = $translator;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function handleUserInput(array $userInputs): void
 	{
 		$this->parameters->setUserInputs($userInputs);
@@ -68,40 +76,55 @@ class Facade implements DatatableFacadeInterface
 		return $this;
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	public function prepareTemplate(): array
 	{
-		$this->dataGridFormatter->configurePagination($this->parameters);
+		$this->datatableFormatter->configurePagination($this->parameters);
 
-		$dataGridBuild = $this->datatableBuilder->getDataGridBuild();
+		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 
 		return [
-			'filter_elements'     => $this->dataGridFormatter->formatFilterForm($dataGridBuild['form']),
-			'pagination_dropdown' => $this->dataGridFormatter->formatPaginationDropDown($dataGridBuild['dropdown']),
-			'pagination_links'    => $this->dataGridFormatter->formatPaginationLinks($dataGridBuild['pager']),
-			'has_add'			  => $this->dataGridFormatter->formatAdd(),
-			'results_header'      => $this->dataGridFormatter->formatTableHeader($this->parameters, $dataGridBuild['header']),
-			'results_list'        => $this->formatList($dataGridBuild['header']),
+			'filter_elements'     => $this->datatableFormatter->formatFilterForm($datatableStructure['form']),
+			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($datatableStructure['dropdown']),
+			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($datatableStructure['pager']),
+			'has_add'			  => $this->datatableFormatter->formatAdd('person-add'),
+			'results_header'      => $this->datatableFormatter->formatTableHeader($datatableStructure['header'],  ['users', 'main']),
+			'results_list'        => $this->formatList($datatableStructure['header']),
 			'results_count'       => $this->usersService->getCurrentTotalResult(),
-			'title'               => $this->translator->translate('overview', 'playlists'),
+			'title'               => $this->translator->translate('overview', 'users'),
 			'template_name'       => 'users/datatable',
 			'module_name'		  => 'users',
 			'additional_css'      => ['/css/users/overview.css'],
 			'footer_modules'      => ['/js/users/overview/init.js'],
 			'sort'				  => [
-				'column' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN),
-				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER)
+				'column' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN),
+				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER)
 			],
 			'page'      => [
-				'current' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE),
+				'current' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
+				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE),
 			]
 		];
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	private function formatList(array $fields): array
 	{
-		$showedIds     = array_column($this->usersService->getCurrentFilterResults(), 'playlist_id');
-		return $this->dataGridFormatter->formatTableBody(
+		return $this->datatableFormatter->formatTableBody(
 			$this->usersService->getCurrentFilterResults(),
 			$fields,
 			$this->UID

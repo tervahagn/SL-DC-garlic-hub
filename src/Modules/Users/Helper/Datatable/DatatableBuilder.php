@@ -22,28 +22,19 @@ namespace App\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
 
-class DatatableBuilder
+class DatatableBuilder extends AbstractDatatableBuilder
 {
-	private BuildServiceLocator $buildServiceLocator;
-	private Translator $translator;
-	private Parameters $parameters;
 	private Config $config;
-	private array $dataGridBuild = [];
 
 	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator, Config $config)
 	{
-		$this->buildServiceLocator  = $buildServiceLocator;
-		$this->parameters   = $parameters;
-		$this->translator   = $translator;
-		$this->config       = $config;
-	}
-	public function getDataGridBuild(): array
-	{
-		return $this->dataGridBuild;
+		$this->config = $config;
+		parent::__construct($buildServiceLocator, $parameters, $translator);
 	}
 
 	public function collectFormElements(): void
@@ -129,7 +120,7 @@ class DatatableBuilder
 			]);
 		}
 
-		$this->dataGridBuild['form'] = $form;
+		$this->datatableStructure['form'] = $form;
 	}
 
 	public function createTableFields(): static
@@ -144,22 +135,8 @@ class DatatableBuilder
 			$this->buildServiceLocator->getResultsBuilder()->createField('company_name', false);
 		}
 
-		$this->dataGridBuild['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+		$this->datatableStructure['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
 
 		return $this;
-	}
-
-	public function createPagination(int $resultCount): void
-	{
-		$this->dataGridBuild['pager'] = $this->buildServiceLocator->getPaginationBuilder()->configure($this->parameters, $resultCount, true)
-			->buildPagerLinks()
-			->getPagerLinks();
-	}
-
-	public function createDropDown(): void
-	{
-		$this->dataGridBuild['dropdown'] = $this->buildServiceLocator->getPaginationBuilder()
-			->createDropDown()
-			->getDropDownSettings();
 	}
 }

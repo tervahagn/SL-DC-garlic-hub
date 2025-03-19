@@ -24,6 +24,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildServiceLocator;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
@@ -31,23 +32,12 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DatatableBuilder
+class DatatableBuilder extends AbstractDatatableBuilder
 {
-	private BuildServiceLocator $buildServiceLocator;
-	private Translator $translator;
-	private Parameters $parameters;
-	private array $dataGridBuild = [];
 
 	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator)
 	{
-		$this->buildServiceLocator  = $buildServiceLocator;
-		$this->parameters   = $parameters;
-		$this->translator   = $translator;
-	}
-
-	public function getDataGridBuild(): array
-	{
-		return $this->dataGridBuild;
+		parent::__construct($buildServiceLocator, $parameters, $translator);
 	}
 
 	/**
@@ -95,7 +85,7 @@ class DatatableBuilder
 			]);
 		}
 
-		$this->dataGridBuild['form'] = $form;
+		$this->datatableStructure['form'] = $form;
 	}
 
 	/**
@@ -113,21 +103,8 @@ class DatatableBuilder
 		$this->buildServiceLocator->getResultsBuilder()->createField('playlist_mode', true);
 		$this->buildServiceLocator->getResultsBuilder()->createField('duration', false);
 
-		$this->dataGridBuild['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+		$this->datatableStructure['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
 
 		return $this;
 	}
-
-	public function createPagination(int $resultCount): void
-	{
-		$this->dataGridBuild['pager'] = $this->buildServiceLocator->getPaginationBuilder()->configure($this->parameters, $resultCount, true)
-			->buildPagerLinks()
-			->getPagerLinks();
-	}
-
-	public function createDropDown(): void
-	{
-		$this->dataGridBuild['dropdown'] = $this->buildServiceLocator->getPaginationBuilder()->createDropDown()->getDropDownSettings();
-	}
-
 }
