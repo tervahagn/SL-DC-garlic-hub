@@ -83,7 +83,7 @@ class Facade implements DatatableFacadeInterface
 			'results_list'        => $this->formatList($dataGridBuild['header']),
 			'results_count'       => $this->usersService->getCurrentTotalResult(),
 			'title'               => $this->translator->translate('overview', 'playlists'),
-			'template_name'       => 'users/overview',
+			'template_name'       => 'users/datatable',
 			'module_name'		  => 'users',
 			'additional_css'      => ['/css/users/overview.css'],
 			'footer_modules'      => ['/js/users/overview/init.js'],
