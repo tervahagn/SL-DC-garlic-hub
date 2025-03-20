@@ -157,12 +157,10 @@ class BuilderTest extends TestCase
 
 		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
-	#[Group('units')]
 
+	#[Group('units')]
 	public function testBuildPagerLinksLong(): void
 	{
-
-
 		$this->builder->configure(2, 10, 100, true, true);
 		$this->builder->buildPagerLinks();
 
@@ -182,4 +180,16 @@ class BuilderTest extends TestCase
 
 		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
+
+	#[Group('units')]
+	public function testcreateDropdown(): void
+	{
+		$this->builder->createDropDown(10, 1000, 100);
+
+		$expected =  ['min' => 10, 'max' => 1000, 'steps' => 100];
+		$this->assertSame($expected, $this->builder->getDropDownSettings());
+
+	}
+
+
 }
