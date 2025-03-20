@@ -21,13 +21,22 @@
 namespace App\Framework\Utils\Datatable\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 
 class Preparer
 {
 	private BaseFilterParameters $baseFilter;
-	private string $site;
+	private UrlBuilder $urlBuilder;
+
+	/**
+	 * @param UrlBuilder $urlBuilder
+	 */
+	public function __construct(UrlBuilder $urlBuilder)
+	{
+		$this->urlBuilder = $urlBuilder;
+	}
 
 	public function setBaseFilter(BaseFilterParameters $baseFilter): static
 	{
@@ -37,24 +46,28 @@ class Preparer
 
 	public function setSite(string $site): static
 	{
-		$this->site = $site;
+		$this->urlBuilder->setSite($site);
 		return $this;
 	}
-
 
 	/**
 	 * @throws ModuleException
 	 */
 	public function prepareLinks(array $pageLinks): array
 	{
-		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
-			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
-			'&elements_per_page='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
+		$this->urlBuilder
+			->setSortColumn($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN))
+			->setSortOrder($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER))
+			->setElementsPerPage($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE))
+		;
+
 		$data = [];
 		foreach($pageLinks as $values)
 		{
+			$this->urlBuilder->setPage($values['page']);
+
 			$data[] = [
-				'ELEMENTS_PAGELINK'   => '/'.$this->site.'?elements_page='.$values['page'].$sortSuffix,
+				'ELEMENTS_PAGELINK'   => $this->urlBuilder->buildFilterUrl(),
 				'ELEMENTS_PAGENAME'   => $values['name'],
 				'ELEMENTS_PAGENUMBER' => $values['page']
 			];
@@ -68,9 +81,11 @@ class Preparer
 	 */
 	public function prepareDropdown(array $dropDownSettings): array
 	{
-		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
-			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
-			'&elements_page='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE);
+		$this->urlBuilder
+			->setSortColumn($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN))
+			->setSortOrder($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER))
+			->setPage($this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE))
+		;
 
 		$data = [];
 		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE);
@@ -78,7 +93,7 @@ class Preparer
 		{
 			$data[] = [
 				'ELEMENTS_PER_PAGE_VALUE' => $i,
-				'ELEMENTS_PER_PAGE_DATA_LINK' => '/'.$this->site.'?elements_per_page='.$i.$sortSuffix,
+				'ELEMENTS_PER_PAGE_DATA_LINK' => '/'.$this->urlBuilder->buildFilterUrl(),
 				'ELEMENTS_PER_PAGE_NAME' => $i,
 				'ELEMENTS_PER_PAGE_SELECTED' => ($i === $currentElementsPerPage) ? 'selected' : ''
 			];

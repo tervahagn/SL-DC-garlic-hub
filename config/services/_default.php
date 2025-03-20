@@ -200,12 +200,13 @@ $dependencies[BuildService::class] = DI\factory(function (ContainerInterface $co
 });
 $dependencies[PrepareService::class] = DI\factory(function (ContainerInterface $container)
 {
+	$urlBuilder = new UrlBuilder();
 	return new PrepareService(
 		$container->get(FormBuilder::class),
-		new Preparer(),
+		new Preparer($urlBuilder),
 		new HeaderPreparer(
 			new TranslatorManager($container->get(Translator::class)),
-			new UrlBuilder()
+			$urlBuilder
 		),
 		new BodyPreparer()
 	);

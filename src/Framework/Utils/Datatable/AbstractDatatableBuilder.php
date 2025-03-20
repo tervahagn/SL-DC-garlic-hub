@@ -61,7 +61,7 @@ abstract class AbstractDatatableBuilder
 	{
 		$pager = $this->buildService->buildPaginationLinks(
 			$this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
-			$this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
+			$this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE),
 			$resultCount,
 			$usePager,
 			$isShortened);
