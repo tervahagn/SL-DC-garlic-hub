@@ -33,6 +33,7 @@ use App\Framework\Exceptions\ModuleException;
  * This class is designed to be used within larger systems that require a consistent approach
  * to managing and applying filter parameters. The implementation supports flexible configuration
  * for default parameter values and ensures customizable behavior for extending classes.
+ *
  */
 abstract class BaseFilterParameters extends BaseParameters implements BaseFilterParametersInterface
 {

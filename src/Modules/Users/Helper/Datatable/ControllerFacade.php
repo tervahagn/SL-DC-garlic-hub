@@ -34,7 +34,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ControllerFacade implements DatatableFacadeInterface
 {
-
 	private readonly DatatableBuilder $datatableBuilder;
 	private readonly DatatablePreparer $datatableFormatter;
 	private readonly UsersDatatableService $usersService;

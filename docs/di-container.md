@@ -10,12 +10,12 @@ Your `config/services` directory should contain one PHP file for each module, wi
 
 config/
 └── services/
-├── _default.php
-├── auth.php
-├── player.php
-├── playlists.php
-├── templates.php
-└── mediapool.php
+├──── _default.php
+├──── auth.php
+├──── player.php
+├──── playlists.php
+├──── templates.php
+└──── mediapool.php
 
 
 ## Service Definition Example
