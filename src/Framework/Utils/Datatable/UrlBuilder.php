@@ -18,23 +18,18 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Utils\Datatable\Results;
+namespace App\Framework\Utils\Datatable;
 
-use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
 class UrlBuilder
 {
-	protected string $site = '';
-	private BaseFilterParameters $filterParameters;
+	private string $site = '';
+
+	private int $page;
+	private int $elementsPerPage;
+	private string $sortColumn;
+	private string $sortOrder;
 	private array $additionalUrlParameters;
-
-
-	public function setFilterParameters(BaseFilterParameters $filterParameters): UrlBuilder
-	{
-		$this->filterParameters = $filterParameters;
-		return $this;
-	}
 
 	public function setSite(string $site): static
 	{
@@ -42,16 +37,38 @@ class UrlBuilder
 		return $this;
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	public function buildSortUrl(HeaderField $headerField, string $sort_order): string
+	public function setPage(int $page): static
+	{
+		$this->page = $page;
+		return $this;
+	}
+
+	public function setElementsPerPage(int $elementsPerPage): static
+	{
+		$this->elementsPerPage = $elementsPerPage;
+		return $this;
+	}
+
+	public function setSortColumn(string $sortColumn): static
+	{
+		$this->sortColumn = $sortColumn;
+		return $this;
+	}
+
+	public function setSortOrder(string $sortOrder): static
+	{
+		$this->sortOrder = $sortOrder;
+		return $this;
+	}
+
+
+	public function buildFilterUrl(): string
 	{
 		$params = array(
-			'elements_page' => $this->filterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE),
-			'sort_column' => $headerField->getName(),
-			'sort_order' => $sort_order,
-			'elements_per_page' => $this->filterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
+			'elements_page' => $this->page,
+			'sort_column' => $this->sortColumn,
+			'sort_order' => $this->sortOrder,
+			'elements_per_page' =>$this->elementsPerPage
 		);
 
 		if ($this->hasAdditionalUrlParameters())

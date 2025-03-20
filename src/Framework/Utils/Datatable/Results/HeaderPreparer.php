@@ -21,14 +21,15 @@
 namespace App\Framework\Utils\Datatable\Results;
 
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 
 class HeaderPreparer
 {
 	private BaseFilterParameters $filterParameter;
 	private TranslatorManager $translatorManager;
 	private UrlBuilder $urlBuilder;
-	private string $site;
 
 	/**
 	 * @param TranslatorManager $translatorManager
@@ -43,7 +44,7 @@ class HeaderPreparer
 	public function configure(BaseFilterParameters $filterParameter, string $site, array $languageModules): void
 	{
 		$this->filterParameter = $filterParameter;
-		$this->site = $site;
+		$this->urlBuilder->setSite($site);
 		foreach ($languageModules as $module)
 		{
 			$this->translatorManager->addLanguageModule($module);
@@ -77,7 +78,7 @@ class HeaderPreparer
 	{
 		$sortableData = array();
 
-		if ($this->filterParameter->getValueOfParameter('sort_column') == $headerField->getName())
+		if ($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN) == $headerField->getName())
 		{
 			if ($this->filterParameter->getValueOfParameter('sort_order') == 'asc')
 			{
@@ -95,13 +96,18 @@ class HeaderPreparer
 			$sort_order_tmp = 'asc';
 			$sortableData['SORTABLE_ORDER'] = '◆';
 		}
+		$this->filterParameter->setValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER, $sort_order_tmp);
 
-		$sortableData['SORT_CONTROL_NAME']         = $headerField->getName();
-		$this->urlBuilder->setFilterParameters($this->filterParameter);
-		$this->urlBuilder->setSite($this->site);
-		$sortableData['LINK_CONTROL_SORT_ORDER']   = $this->urlBuilder->buildSortUrl($headerField, $sort_order_tmp);
+		$this->urlBuilder
+			->setPage($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE))
+			->setSortColumn($headerField->getName())
+			->setSortOrder($sort_order_tmp)
+			->setElementsPerPage($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE))
+		;
 
-		$sortableData['LANG_CONTROL_NAME']         = $this->translatorManager->translate($headerField);
+		$sortableData['SORT_CONTROL_NAME']       = $headerField->getName();
+		$sortableData['LINK_CONTROL_SORT_ORDER'] = $this->urlBuilder->buildFilterUrl();
+		$sortableData['LANG_CONTROL_NAME']       = $this->translatorManager->translate($headerField);
 
 		return $sortableData;
 	}
