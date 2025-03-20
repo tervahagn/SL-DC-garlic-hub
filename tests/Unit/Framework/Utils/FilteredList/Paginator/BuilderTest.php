@@ -21,35 +21,27 @@
 
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
-use App\Framework\Utils\FilteredList\Paginator\Builder;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\Datatable\Paginator\Builder;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class CreatorTest extends TestCase
+class BuilderTest extends TestCase
 {
-	private Builder $creator;
-	private BaseFilterParameters $baseFilterMock;
+	private Builder $builder;
 
 	protected function setUp(): void
 	{
-		$this->baseFilterMock = $this->createMock(BaseFilterParameters::class);
-		$this->creator = new Builder();
+		$this->builder = new Builder();
 	}
 
 	#[Group('units')]
 	public function testInitSetsPropertiesCorrectly(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 2],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
 
-		$this->creator->configure($this->baseFilterMock, 50, true, false);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(2, 10, 50, true, false);
+		$this->builder->buildPagerLinks();
 
-		$pagerLinks = $this->creator->getPagerLinks();
+		$pagerLinks = $this->builder->getPagerLinks();
 		$this->assertIsArray($pagerLinks);
 		$this->assertCount(9, $pagerLinks);
 
@@ -58,31 +50,20 @@ class CreatorTest extends TestCase
 	#[Group('units')]
 	public function testInitHandlesMinimumValues(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 0],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 1],
-			]);
-
-		$this->creator->configure($this->baseFilterMock, 1);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(0,1, 1, true, true);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [['name' => 1, 'page' => 1, 'active' => 1]];
-		$pagerLinks    = $this->creator->getPagerLinks();
+		$pagerLinks    = $this->builder->getPagerLinks();
 		$this->assertEquals($expectedLinks, $pagerLinks);
 	}
 
 	#[Group('units')]
 	public function testBuildPagerLinksWithPagerOnFirstPage(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 1],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
 
-		$this->creator->configure($this->baseFilterMock, 50, true);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(1, 10, 50, true, true);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '1', 'page' => 1, 'active' => true],
@@ -94,20 +75,14 @@ class CreatorTest extends TestCase
 			['name' => '»', 'page' => 5]
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
 	public function testBuildPagerLinksWithPagerOnMiddlePage(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 3],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
-
-		$this->creator->configure($this->baseFilterMock, 50, true);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(3, 10, 50, true, false);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '«', 'page' => 1],
@@ -121,20 +96,14 @@ class CreatorTest extends TestCase
 			['name' => '»', 'page' => 5]
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
 	public function testBuildPagerLinksWithPagerOnLastPage(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 5],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
-
-		$this->creator->configure($this->baseFilterMock, 50, true);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(5, 10, 50, true, true);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '«', 'page' => 1],
@@ -146,39 +115,28 @@ class CreatorTest extends TestCase
 			['name' => '5', 'page' => 5, 'active' => true]
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
-	#[Group('unsits')]
+	#[Group('units')]
 	public function testBuildPagerLinksWithPagerAndEmptyList(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 1],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
 
-		$this->creator->configure($this->baseFilterMock, 0, true);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(1,10, 0, true, true);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '1', 'page' => 1, 'active' => true],
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
 	public function testBuildPagerLinksLongAndShortenFalse(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 2],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
-
-		$this->creator->configure($this->baseFilterMock, 100, true, false);
-		$this->creator->buildPagerLinks();
+		$this->builder->configure(2, 10, 100, true, false);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '«', 'page' => 1],
@@ -197,20 +155,16 @@ class CreatorTest extends TestCase
 			['name' => '»', 'page' => 10],
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 	#[Group('units')]
 
 	public function testBuildPagerLinksLong(): void
 	{
-		$this->baseFilterMock->method('getValueOfParameter')
-			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, 2],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 10],
-			]);
 
-		$this->creator->configure($this->baseFilterMock, 100, true);
-		$this->creator->buildPagerLinks();
+
+		$this->builder->configure(2, 10, 100, true, true);
+		$this->builder->buildPagerLinks();
 
 		$expectedLinks = [
 			['name' => '«', 'page' => 1],
@@ -226,6 +180,6 @@ class CreatorTest extends TestCase
 			['name' => '»', 'page' => 10],
 		];
 
-		$this->assertSame($expectedLinks, $this->creator->getPagerLinks());
+		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 }
