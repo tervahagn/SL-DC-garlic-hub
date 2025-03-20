@@ -5,6 +5,26 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
+/**
+ * The BaseParameters class provides functionality to manage parameters configuration,
+ * including adding, removing, validating, sanitizing and retrieving parameters and their values.
+ * This class is designed to be extended and can include custom hooks for preprocessing and postprocessing
+ * of parameter values.
+ *
+ * Features include:
+ * - Adding parameters with detailed type constraints and optional default values.
+ * - Removing single or multiple parameters by name.
+ * - Retrieving and setting parameter values, including defaults.
+ * - Parsing parameter values leveraging sanitization methods.
+ * - Detecting and managing user input for parameter processing.
+ * - Support for custom hooks before and after parameter parsing.
+ *
+ * This class includes support for enforcing scalar data types via `ScalarType` and sanitization logic
+ * integrated with the `Sanitizer` utility.
+ *
+ * @throws ModuleException Various methods may throw ModuleException for invalid operations
+ *                         such as unsupported scalar types or missing parameters.
+ */
 abstract class BaseParameters
 {
 	const string PARAMETER_UID = 'UID';

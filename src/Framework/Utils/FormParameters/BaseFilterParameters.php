@@ -24,7 +24,17 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
-class BaseFilterParameters extends BaseParameters implements BaseFilterParametersInterface
+/**
+ * The BaseFilterParameters class serves as an abstract foundational class for defining and managing
+ * filtering parameters, specifically tailored for handling user requests. It includes functionalities
+ * that involve parsing and storing parameters in session, ensuring parameters are structured
+ * correctly, and facilitating parameter-related operations such as sorting and pagination used in datatables.
+ *
+ * This class is designed to be used within larger systems that require a consistent approach
+ * to managing and applying filter parameters. The implementation supports flexible configuration
+ * for default parameter values and ensures customizable behavior for extending classes.
+ */
+abstract class BaseFilterParameters extends BaseParameters implements BaseFilterParametersInterface
 {
 	protected readonly string $sessionStoreKey;
 

@@ -24,6 +24,11 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
+/**
+ * BaseFilterParametersInterface provides a structure to handle filter parameter operations which can be
+ * used in datatables, including default value management, nullification, parsing, session checks,
+ * and company addition.
+ */
 interface BaseFilterParametersInterface
 {
 	public const string PARAMETER_ELEMENTS_PER_PAGE = 'elements_per_page';
