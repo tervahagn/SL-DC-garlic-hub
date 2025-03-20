@@ -1,19 +1,19 @@
 CREATE TABLE `user_main` (
-    `UID` INTEGER PRIMARY KEY,
-    `company_id` INTEGER NOT NULL DEFAULT 1,
-    `last_access` TIMESTAMP DEFAULT NULL,
-    `login_time` TIMESTAMP DEFAULT NULL,
-    `num_logins` INTEGER NOT NULL DEFAULT 0,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `status` INTEGER NOT NULL DEFAULT 0,
-    `locale` CHAR(5) DEFAULT NULL,
-    `username` CHAR(50) DEFAULT '',
-    `password` CHAR(60) DEFAULT NULL,
-    `session_id` VARCHAR(60) DEFAULT NULL,
-    `gender` VARCHAR(10) DEFAULT NULL,
-    `email` VARCHAR(100) NOT NULL DEFAULT '',
-    `last_password_change` TIMESTAMP DEFAULT NULL,
-    UNIQUE (`email`)
+     `UID` INTEGER PRIMARY KEY,
+     `company_id` INTEGER NOT NULL DEFAULT 1,
+     `last_access` TIMESTAMP DEFAULT NULL,
+     `login_time` TIMESTAMP DEFAULT NULL,
+     `num_logins` INTEGER NOT NULL DEFAULT 0,
+     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     `status` INTEGER NOT NULL DEFAULT 0,
+     `locale` CHAR(5) COLLATE NOCASE DEFAULT NULL,
+     `username` CHAR(50) COLLATE NOCASE DEFAULT '',
+     `password` CHAR(60) DEFAULT NULL,
+     `session_id` VARCHAR(60) DEFAULT NULL,
+     `gender` VARCHAR(10) COLLATE NOCASE DEFAULT NULL,
+     `email` VARCHAR(100) COLLATE NOCASE NOT NULL DEFAULT '',
+     `last_password_change` TIMESTAMP DEFAULT NULL,
+     UNIQUE (`email`)
 );
 INSERT INTO `user_main`
 (`company_id`, `last_access`, `login_time`, `num_logins`, `created_at`, `status`, `locale`, `username`, `password`, `gender`, `email`, `last_password_change`)
@@ -85,8 +85,8 @@ CREATE TABLE mediapool_nodes (
     visibility INTEGER NOT NULL DEFAULT 0,
     last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `name` TEXT NOT NULL DEFAULT '',
-    media_location TEXT NOT NULL CHECK(media_location IN ('internal', 'dropbox', 'azure', 'google', 'webdav', 's3',
+    `name` TEXT COLLATE NOCASE NOT NULL DEFAULT '',
+    media_location TEXT COLLATE NOCASE NOT NULL CHECK(media_location IN ('internal', 'dropbox', 'azure', 'google', 'webdav', 's3',
                                                           'ftp')) DEFAULT `internal`,
     credentials TEXT
 );
@@ -118,10 +118,10 @@ CREATE TABLE mediapool_files (
      UID INTEGER NOT NULL DEFAULT 0,
      upload_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
      checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
-     mimetype VARCHAR(50) NOT NULL,
+     mimetype VARCHAR(50) COLLATE NOCASE NOT NULL,
      metadata TEXT DEFAULT NULL, --json encoded metadata
      tags TEXT DEFAULT NULL,
-     filename TEXT DEFAULT NULL,
+     filename TEXT COLLATE NOCASE DEFAULT NULL,
      extension varchar(10) DEFAULT NULL,
      thumb_extension varchar(10) DEFAULT NULL,
      media_description TEXT DEFAULT NULL
@@ -142,8 +142,8 @@ CREATE TABLE playlists (
     shuffle INTEGER NOT NULL DEFAULT 0,
     shuffle_picking INTEGER NOT NULL DEFAULT 0,
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    playlist_mode TEXT DEFAULT 'master' CHECK (playlist_mode IN ('master', 'internal', 'external', 'multizone', 'channel')),
-    playlist_name varchar(100) DEFAULT NULL,
+    playlist_mode TEXT COLLATE NOCASE DEFAULT 'master' CHECK (playlist_mode IN ('master', 'internal', 'external', 'multizone', 'channel')),
+    playlist_name varchar(100) COLLATE NOCASE DEFAULT NULL,
     external_playlist_link  varchar(100) DEFAULT NULL,
     multizone TEXT DEFAULT NULL
 );
