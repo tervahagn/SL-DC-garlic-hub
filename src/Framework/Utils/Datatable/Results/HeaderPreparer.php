@@ -80,7 +80,7 @@ class HeaderPreparer
 
 		if ($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN) == $headerField->getName())
 		{
-			if ($this->filterParameter->getValueOfParameter('sort_order') == 'asc')
+			if ($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER) == 'asc')
 			{
 				$sort_order_tmp = 'desc';
 				$sortableData['SORTABLE_ORDER']    = '▼';
