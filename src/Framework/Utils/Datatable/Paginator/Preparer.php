@@ -69,7 +69,8 @@ class Preparer
 			$data[] = [
 				'ELEMENTS_PAGELINK'   => $this->urlBuilder->buildFilterUrl(),
 				'ELEMENTS_PAGENAME'   => $values['name'],
-				'ELEMENTS_PAGENUMBER' => $values['page']
+				'ELEMENTS_PAGENUMBER' => $values['page'],
+				'ELEMENTS_ACTIVE_PAGE' => (isset($values['active']) && $values['active'] === true) ? 'active_page' : ''
 			];
 		}
 
