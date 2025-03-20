@@ -197,11 +197,16 @@ catch (Exception $e)
 
 ## 11. Commenting Style and Inline Documentation
 
-- **Inline Comments**: Use inline comments sparingly. Only comment on complex logic or decisions that are not immediately clear.
+Only comment complex logic that are not immediately clear. Also you can write why's about decisions.
+do not write babbling comments if it is obvious from the source code.
+
+- **Inline Comments**: Use inline comments sparingly with //
+- Write a comment when you temporarily comment out source code
 - Keep comments up-to-date with any code changes to ensure accuracy.
+- **PHPDoc comments** over methods: As PHP 8.3 is required methods do not need any parameter and return value as annotations
 
 ## 12. Attribute Placement Standards
-
+o
 - **Placement Rule**: Attributes must be placed **after the DocBlock comment**. They should be the first line of code in that block, directly above the method, property, or class they are applied to.
 
 ### Example
