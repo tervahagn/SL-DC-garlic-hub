@@ -38,5 +38,4 @@ class Builder
 	{
 		return new HeaderField();
 	}
-
 }
