@@ -27,7 +27,6 @@ use App\Framework\Exceptions\ModuleException;
 class BaseEditParameters extends BaseParameters
 {
 	public const string PARAMETER_CSRF_TOKEN  = 'csrf_token';
-	public const string PARAMETER_UID  = 'UID';
 
 	protected array $defaultParameters = array(
 		self::PARAMETER_CSRF_TOKEN  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
@@ -36,14 +35,6 @@ class BaseEditParameters extends BaseParameters
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
 	{
 		parent::__construct($moduleName, $sanitizer, $session);
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	public function addUID(int $defaultUID): void
-	{
-		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, $defaultUID);
 	}
 
 	/**

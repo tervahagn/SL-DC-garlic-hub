@@ -20,17 +20,16 @@
 
 namespace App\Modules\Users\Controller;
 
-use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Flash\Messages;
 
 class ShowDatatableController
 {
 	private DatatableFacadeInterface $facade;
-	private BaseDataGridTemplateFormatter $templateFormatter;
-	public function __construct(DatatableFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
+	private DatatableTemplatePreparer $templateFormatter;
+	public function __construct(DatatableFacadeInterface $facade, DatatableTemplatePreparer $templateFormatter)
 	{
 		$this->facade            = $facade;
 		$this->templateFormatter = $templateFormatter;
@@ -39,12 +38,12 @@ class ShowDatatableController
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->facade->configure($request->getAttribute('translator'), $request->getAttribute('session'));
-		$this->facade->handleUserInput($_GET);
+		$this->facade->processSubmittedUserInput($_GET);
 
 		$this->facade->prepareDataGrid();
-		$dataGrid = $this->facade->prepareTemplate();
+		$dataGrid = $this->facade->prepareUITemplate();
 
-		$templateData = $this->templateFormatter->formatUITemplate($dataGrid);
+		$templateData = $this->templateFormatter->preparerUITemplate($dataGrid);
 
 		$response->getBody()->write(serialize($templateData));
 

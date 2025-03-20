@@ -27,7 +27,16 @@ use App\Framework\Exceptions\ModuleException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class BaseDataGridTemplateFormatter
+/**
+ * Class DatatableTemplatePreparer
+ *
+ * This class is responsible for formatting data into a structured template for use in a datatable functionality.
+ * It processes various settings and properties of the $datalistSections array and transforms them into
+ * layout-specific arrays suitable for rendering UI elements.
+ *
+ * @see templates/generic/datatable.mustache
+ */
+class DatatableTemplatePreparer
 {
 
 	private Translator $translator;
@@ -44,7 +53,7 @@ class BaseDataGridTemplateFormatter
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function formatUITemplate(array $datalistSections): array
+	public function preparerUITemplate(array $datalistSections): array
 	{
 		return [
 			'main_layout' => [

@@ -20,10 +20,10 @@
 
 namespace App\Framework\Utils\Datatable\Results;
 
-class BodyDataFormatter
+class BodyPreparer
 {
 
-	public function renderLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array
+	public function formatLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array
 	{
 		return [
 			'CONTROL_ELEMENT_VALUE_NAME'  => $valueName,
@@ -34,7 +34,7 @@ class BodyDataFormatter
 		];
 	}
 
-	public function renderUID(int $UID, string $username): array
+	public function formatUID(int $UID, string $username): array
 	{
 		return [
 			'OWNER_UID'  => $UID,
@@ -42,13 +42,13 @@ class BodyDataFormatter
 		];
 	}
 
-	public function renderText(string $text): array
+	public function formatText(string $text): array
 	{
 		return [
 			'CONTROL_ELEMENT_VALUE_TEXT' => $text
 		];
 	}
-	public function renderAction(string $lang, string $link, string $name, string $cssClass): array
+	public function formatAction(string $lang, string $link, string $name, string $cssClass): array
 	{
 		return 	[
 				'LANG_ACTION'       => $lang,
@@ -58,7 +58,7 @@ class BodyDataFormatter
 			];
 	}
 
-	public function renderActionDelete(string $lang, string $langConfirm, string $link, string $id, string $cssClass): array
+	public function formatActionDelete(string $lang, string $langConfirm, string $link, string $id, string $cssClass): array
 	{
 		return 	[
 			'LANG_DELETE_ACTION'   => $lang,

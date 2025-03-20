@@ -23,7 +23,7 @@ namespace App\Modules\Playlists\Controller;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
+use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -33,32 +33,30 @@ use Psr\SimpleCache\InvalidArgumentException;
 readonly class ShowDatatableController
 {
 	private DatatableFacadeInterface $facade;
-	private BaseDataGridTemplateFormatter $templateFormatter;
-	public function __construct(DatatableFacadeInterface $facade, BaseDataGridTemplateFormatter $templateFormatter)
+	private DatatableTemplatePreparer $templateFormatter;
+	public function __construct(DatatableFacadeInterface $facade, DatatableTemplatePreparer $templateFormatter)
 	{
 		$this->facade            = $facade;
 		$this->templateFormatter = $templateFormatter;
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @return ResponseInterface
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @noinspection PhpPossiblePolymorphicInvocationInspection
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->facade->configure($request->getAttribute('translator'), $request->getAttribute('session'));
-		$this->facade->handleUserInput($_GET);
+		$this->facade->processSubmittedUserInput();
 
 		$this->facade->prepareDataGrid();
-		$dataGrid = $this->facade->prepareTemplate();
+		$dataGrid = $this->facade->prepareUITemplate();
 
-		$templateData = $this->templateFormatter->formatUITemplate($dataGrid);
+		$templateData = $this->templateFormatter->preparerUITemplate($dataGrid);
 		$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->facade->prepareContextMenu();
 
 		$response->getBody()->write(serialize($templateData));

@@ -23,7 +23,7 @@ namespace App\Framework\Utils\Datatable\Results;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 
-class HeaderDataFormatter
+class HeaderPreparer
 {
 	private BaseFilterParameters $filterParameter;
 	private TranslatorManager $translatorManager;
@@ -50,7 +50,7 @@ class HeaderDataFormatter
 		}
 	}
 
-	public function renderTableHeader(array $tableHeaderFields): array
+	public function prepareTableHeader(array $tableHeaderFields): array
 	{
 		$header = [];
 		/* @var $headerField HeaderField */
@@ -60,7 +60,7 @@ class HeaderDataFormatter
 			$controlName     = ['CONTROL_NAME' => $headerFieldName];
 
 			if ($headerField->isSortable())
-				$controlName['if_sortable'] = $this->renderSortableHeaderField($headerField);
+				$controlName['if_sortable'] = $this->prepareSortableHeaderField($headerField);
 			else
 				$controlName['LANG_CONTROL_NAME_2'] = $this->translatorManager->translate($headerField);
 
@@ -73,7 +73,7 @@ class HeaderDataFormatter
 	/**
 	 * @throws ModuleException
 	 */
-	protected function renderSortableHeaderField(HeaderField $headerField):array
+	protected function prepareSortableHeaderField(HeaderField $headerField):array
 	{
 		$sortableData = array();
 

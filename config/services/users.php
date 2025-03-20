@@ -23,9 +23,9 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\Datatable\BuildServiceLocator;
-use App\Framework\Utils\Datatable\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
+use App\Framework\Utils\Datatable\BuildService;
+use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Helper\Datatable\Facade;
 use App\Modules\Users\Controller\ShowDatatableController;
@@ -34,7 +34,7 @@ use App\Modules\Users\EditLocalesController;
 use App\Modules\Users\EditPasswordController;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
-use App\Modules\Users\Helper\Datatable\DatatableFormatter;
+use App\Modules\Users\Helper\Datatable\DatatablePreparer;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
@@ -95,23 +95,23 @@ $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerIn
 {
 	return new ShowDatatableController(
 		$container->get(\App\Modules\Users\Helper\Datatable\Facade::class),
-		$container->get(BaseDataGridTemplateFormatter::class)
+		$container->get(DatatableTemplatePreparer::class)
 	);
 });
 
 $dependencies[DatatableBuilder::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new DatatableBuilder(
-		$container->get(BuildServiceLocator::class),
+		$container->get(BuildService::class),
 		$container->get(Parameters::class),
 		$container->get(Translator::class),
 		$container->get(Config::class)
 	);
 });
-$dependencies[DatatableFormatter::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DatatablePreparer::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new DatatableFormatter(
-		$container->get(FormatterServiceLocator::class),
+	return new DatatablePreparer(
+		$container->get(PrepareService::class),
 		$container->get(Translator::class),
 		$container->get(AclValidator::class),
 		$container->get(Config::class)
@@ -121,7 +121,7 @@ $dependencies[Facade::class] = DI\factory(function (ContainerInterface $containe
 {
 	return new Facade(
 		$container->get(DatatableBuilder::class),
-		$container->get(DatatableFormatter::class),
+		$container->get(DatatablePreparer::class),
 		$container->get(Parameters::class),
 		$container->get(UsersOverviewService::class)
 	);
@@ -131,7 +131,7 @@ $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerIn
 {
 	return new ShowDatatableController(
 		$container->get(Facade::class),
-		$container->get(BaseDataGridTemplateFormatter::class)
+		$container->get(DatatableTemplatePreparer::class)
 	);
 });
 

@@ -48,6 +48,16 @@ abstract class AbstractAclValidator implements AbstractAclValidatorInterface
 		$this->config        = $config;
 	}
 
+	public function getUserService(): UsersService
+	{
+		return $this->userService;
+	}
+
+	public function getConfig(): Config
+	{
+		return $this->config;
+	}
+
 	/**
 	 * @param int $UID
 	 * @return bool

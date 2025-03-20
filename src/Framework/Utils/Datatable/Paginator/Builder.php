@@ -36,10 +36,10 @@ class Builder
 	 */
 	private array $dropDownSettings;
 
-	public function configure(BaseFilterParametersInterface $baseFilter, int $totalItems, bool $usePager = false, bool $shortened = true): static
+	public function configure(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager, bool $shortened): static
 	{
-		$this->currentPage  = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
-		$this->itemsPerPage = max(1, $baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));
+		$this->currentPage  = max(1, $currentPage);
+		$this->itemsPerPage = max(1, $itemsPerPage);
 		$this->totalItems   = max(0, $totalItems);
 		$this->usePager     = $usePager;
 		$this->shortened    = $shortened;
@@ -57,7 +57,7 @@ class Builder
 		return $this->dropDownSettings;
 	}
 
-	public function createDropDown(int $min = 10, int $max = 100, int $steps = 10): static
+	public function createDropDown(int $min, int $max, int $steps): static
 	{
 		$this->dropDownSettings = ['min' => $min, 'max' => $max, 'steps' => $steps];
 

@@ -20,31 +20,38 @@
 
 namespace App\Framework\Utils\Datatable;
 
-use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Utils\Datatable\BuildServiceLocator;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
-use App\Framework\Utils\Html\FieldType;
-use App\Modules\Users\Helper\Datatable\Parameters;
 
 abstract class AbstractDatatableBuilder
 {
-	protected BuildServiceLocator $buildServiceLocator;
 	protected Translator $translator;
+	protected BuildService $buildService;
 	protected BaseFilterParametersInterface $parameters;
 	protected array $datatableStructure = [];
 
-	public function __construct(BuildServiceLocator $buildServiceLocator, BaseFilterParametersInterface $parameters, Translator $translator)
+	public function __construct(BuildService $buildService, BaseFilterParametersInterface $parameters)
 	{
-		$this->buildServiceLocator  = $buildServiceLocator;
-		$this->translator           = $translator;
-		$this->parameters           = $parameters;
+		$this->buildService  = $buildService;
+		$this->parameters    = $parameters;
 	}
+
+	public function setTranslator(Translator $translator): AbstractDatatableBuilder
+	{
+		$this->translator = $translator;
+		return $this;
+	}
+
 	public function getDatatableStructure(): array
 	{
 		return $this->datatableStructure;
 	}
+
+	abstract public function buildTitle(): void;
+
+	abstract public function configureParameters(int $UID): void;
+
+	abstract public function determineParameters(): void;
 
 	abstract public function collectFormElements(): void;
 
@@ -52,15 +59,18 @@ abstract class AbstractDatatableBuilder
 
 	public function createPagination(int $resultCount, bool $usePager = true, bool $isShortened = true): void
 	{
-		$this->datatableStructure['pager'] = $this->buildServiceLocator->getPaginationBuilder()->configure($this->parameters, $resultCount, $usePager, $isShortened)
-			->buildPagerLinks()
-			->getPagerLinks();
+		$pager = $this->buildService->buildPaginationLinks(
+			$this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
+			$this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
+			$resultCount,
+			$usePager,
+			$isShortened);
+
+		$this->datatableStructure['pager'] = $pager;
 	}
 
 	public function createDropDown(int $min = 10, int $max = 100, int $steps = 10): void
 	{
-		$this->datatableStructure['dropdown'] = $this->buildServiceLocator->getPaginationBuilder()
-			->createDropDown($min, $max, $steps)
-			->getDropDownSettings();
+		$this->datatableStructure['dropdown'] = $this->buildService->buildPaginationDropDown($min, $max, $steps);
 	}
 }

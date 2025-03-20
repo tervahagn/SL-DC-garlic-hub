@@ -34,7 +34,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class FilterBuilder
+readonly class Builder
 {
 	private FormBuilder $formBuilder;
 	private Translator $translator;
@@ -73,7 +73,7 @@ readonly class FilterBuilder
 		if (!$this->aclValidator->isSimpleAdmin($this->UID))
 			return;
 
-		$this->parameters->addUID($this->UID);
+		$this->parameters->addOwner();
 
 		if ($this->isTimeLimitPlaylist($playlistMode))
 			$this->parameters->addTimeLimit();
@@ -91,7 +91,7 @@ readonly class FilterBuilder
 		if (!$this->aclValidator->isAdmin($this->UID, $playlist['company_id']))
 			return;
 
-		$this->parameters->addUID($this->UID);
+		$this->parameters->addOwner();
 
 		if ($this->isTimeLimitPlaylist($playlist['playlist_mode']))
 			$this->parameters->addTimeLimit();
@@ -109,7 +109,7 @@ readonly class FilterBuilder
 	{
 		$form = $this->collectFormElements($playlist);
 
-		return $this->formBuilder->formatForm($form);
+		return $this->formBuilder->prepareForm($form);
 	}
 
 	/**

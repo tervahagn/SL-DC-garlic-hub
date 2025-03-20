@@ -25,8 +25,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Datatable\AbstractDatatableFormatter;
-use App\Framework\Utils\Datatable\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
+use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Modules\Users\Services\AclValidator;
 use DateTime;
@@ -34,11 +34,11 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DatatableFormatter extends AbstractDatatableFormatter
+class DatatablePreparer extends AbstractDatatablePreparer
 {
 	private Config $config;
 
-	public function __construct(FormatterServiceLocator $formatterServiceLocator, Translator $translator, AclValidator $aclValidator, Config $config)
+	public function __construct(PrepareService $formatterServiceLocator, Translator $translator, AclValidator $aclValidator, Config $config)
 	{
 		$this->config = $config;
 		parent::__construct('users', $formatterServiceLocator, $translator, $aclValidator);
@@ -55,7 +55,7 @@ class DatatableFormatter extends AbstractDatatableFormatter
 	 * @throws ModuleException
 	 * @throws InvalidArgumentException
 	 */
-	public function formatTableBody(array $currentFilterResults, array $fields, $currentUID): array
+	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
 	{
 		$body = [];
 		foreach($currentFilterResults as $user)
@@ -73,10 +73,10 @@ class DatatableFormatter extends AbstractDatatableFormatter
 				{
 					case 'username':
 						if ($this->config->getEdition() == Config::PLATFORM_EDITION_EDGE)
-							$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText($user['username']);
+							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($user['username']);
 						else
 						{
-							$resultElements['is_link'] = $this->formatterServiceLocator->getBodyFormatter()->renderLink(
+							$resultElements['is_link'] = $this->prepareService->getBodyPreparer()->formatLink(
 								$user['username'],
 								$this->translator->translate('edit', 'main'),
 								'users/profile' . $user['UID'],
@@ -86,20 +86,18 @@ class DatatableFormatter extends AbstractDatatableFormatter
 						}
 						break;
 					case 'status':
-						$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText(
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText(
 							$this->translator->translateArrayForOptions('status_selects', 'users')[$user['status']]
 						);
 						break;
 					default:
-						$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText($user[$innerKey]);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($user[$innerKey]);
 						break;
 				}
 				$list['elements_result_element'][] = $resultElements;
 
 				if (
-					$user['UID'] == $currentUID ||
-					$this->aclValidator->isModuleAdmin($currentUID) ||
-					$this->aclValidator->isSubAdmin($currentUID))
+					$user['UID'] == $currentUID ||	$this->aclValidator->isSimpleAdmin($currentUID))
 				{
 					$list['has_action'] = [
 

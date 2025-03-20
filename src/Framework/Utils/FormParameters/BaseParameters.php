@@ -27,7 +27,7 @@ use App\Framework\Exceptions\ModuleException;
  */
 abstract class BaseParameters
 {
-	const string PARAMETER_UID = 'UID';
+	public const string PARAMETER_UID = 'UID';
 
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
@@ -48,6 +48,9 @@ abstract class BaseParameters
 		return $this;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function addOwner()
 	{
 		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, 0);

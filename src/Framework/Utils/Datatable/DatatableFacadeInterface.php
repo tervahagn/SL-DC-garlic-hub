@@ -30,7 +30,7 @@ use App\Framework\Core\Translate\Translator;
 interface DatatableFacadeInterface
 {
 	public function configure(Translator $translator, Session $session): void;
-	public function handleUserInput(array $userInputs): void;
+	public function processSubmittedUserInput(): void;
 	public function prepareDataGrid(): static;
-	public function prepareTemplate(): array;
+	public function prepareUITemplate(): array;
 }

@@ -32,12 +32,12 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class Facade
 {
-	private FilterBuilder $settingsFormBuilder;
+	private Builder $settingsFormBuilder;
 	private PlaylistsService $playlistsService;
 	private Parameters $settingsParameters;
 	private TemplateRenderer $renderer;
 
-	public function __construct(FilterBuilder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, TemplateRenderer $renderer)
+	public function __construct(Builder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, TemplateRenderer $renderer)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->playlistsService = $playlistsService;

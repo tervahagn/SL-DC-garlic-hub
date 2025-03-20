@@ -24,8 +24,8 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Datatable\AbstractDatatableFormatter;
-use App\Framework\Utils\Datatable\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
+use App\Framework\Utils\Datatable\PrepareService;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use DateTime;
@@ -33,13 +33,16 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class DatatableFormatter extends AbstractDatatableFormatter
+class DatatablePreparer extends AbstractDatatablePreparer
 {
 	private array $usedPlaylists;
 
-	public function __construct(FormatterServiceLocator $formatterServiceLocator, Translator $translator, AclValidator $aclValidator)
+	private AclValidator $aclValidator;
+
+	public function __construct(PrepareService $formatterServiceLocator, AclValidator $aclValidator, Parameters $parameters)
 	{
-		parent::__construct('playlists', $formatterServiceLocator, $translator, $aclValidator);
+		$this->aclValidator = $aclValidator;
+		parent::__construct('playlists', $formatterServiceLocator, $parameters);
 	}
 
 	public function setUsedPlaylists(array $usedPlaylists): static
@@ -58,7 +61,7 @@ class DatatableFormatter extends AbstractDatatableFormatter
 	 * @throws ModuleException
 	 * @throws InvalidArgumentException
 	 */
-	public function formatTableBody(array $currentFilterResults, array $fields, $currentUID): array
+	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
 	{
 		$body = [];
 		$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
@@ -75,7 +78,7 @@ class DatatableFormatter extends AbstractDatatableFormatter
 				switch ($innerKey)
 				{
 					case 'playlist_name':
-						$resultElements['is_link'] = $this->formatterServiceLocator->getBodyFormatter()->renderLink(
+						$resultElements['is_link'] = $this->prepareService->getBodyPreparer()->formatLink(
 							$playlist['playlist_name'],
 							$this->translator->translate('edit', 'main'),
 							'playlists/compose/'.$playlist['playlist_id'],
@@ -83,34 +86,32 @@ class DatatableFormatter extends AbstractDatatableFormatter
 						);
 						break;
 					case 'UID':
-						$resultElements['is_UID'] = $this->formatterServiceLocator->getBodyFormatter()->renderUID($playlist['UID'], $playlist['username']);
+						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($playlist['UID'], $playlist['username']);
 
 						break;
 					case 'duration':
-						$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText($this->convertSeconds($playlist['duration']));
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->convertSeconds($playlist['duration']));
 						break;
 					case 'playlist_mode':
-						$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText($selectableModes[$playlist['playlist_mode']]);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($selectableModes[$playlist['playlist_mode']]);
 						break;
 					case 'selector':
 						$resultElements['SELECT_DISABLED'] = ($playlist['playlist_mode'] == PlaylistMode::MULTIZONE || $playlist['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
 						break;
 					default:
-						$resultElements['is_text'] = $this->formatterServiceLocator->getBodyFormatter()->renderText($playlist[$innerKey]);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($playlist[$innerKey]);
 						break;
 				}
 				$list['elements_result_element'][] = $resultElements;
 
-				if ($playlist['UID'] == $currentUID ||
-					$this->aclValidator->isModuleAdmin($currentUID) ||
-					$this->aclValidator->isSubAdmin($currentUID))
+				if ($playlist['UID'] == $currentUID || $this->aclValidator->isSimpleAdmin($currentUID))
 				{
 					$list['has_action'] = [
-						$this->formatterServiceLocator->getBodyFormatter()->renderAction(
+						$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('copy_playlist', 'playlists'),
 							'playlists/?playlist_copy_id='.$playlist['playlist_id'],
 							'copy', 'copy'),
-						$this->formatterServiceLocator->getBodyFormatter()->renderAction(
+						$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('edit_settings', 'playlists'),
 							'playlists/settings/'.$playlist['playlist_id'],
 							'edit', 'pencil')
@@ -118,7 +119,7 @@ class DatatableFormatter extends AbstractDatatableFormatter
 					if (!array_key_exists($playlist['playlist_id'], $this->usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($currentUID, $playlist))
 					{
-						$list['has_delete'] = $this->formatterServiceLocator->getBodyFormatter()->renderActionDelete(
+						$list['has_delete'] = $this->prepareService->getBodyPreparer()->formatActionDelete(
 							$this->translator->translate('delete', 'main'),
 							$this->translator->translate('confirm_delete', 'playlists'),
 							'playlists/?delete_id='.$playlist['playlist_id'],

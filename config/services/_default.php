@@ -34,13 +34,13 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
-use App\Framework\Utils\Datatable\BaseDataGridTemplateFormatter;
-use App\Framework\Utils\Datatable\BuildServiceLocator;
-use App\Framework\Utils\Datatable\FormatterServiceLocator;
+use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
+use App\Framework\Utils\Datatable\BuildService;
+use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Paginator\Builder;
-use App\Framework\Utils\Datatable\Paginator\Formatter;
-use App\Framework\Utils\Datatable\Results\BodyDataFormatter;
-use App\Framework\Utils\Datatable\Results\HeaderDataFormatter;
+use App\Framework\Utils\Datatable\Paginator\Preparer;
+use App\Framework\Utils\Datatable\Results\BodyPreparer;
+use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
 use App\Framework\Utils\Datatable\Results\UrlBuilder;
 use App\Framework\Utils\Html\FieldsFactory;
@@ -190,29 +190,29 @@ $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $conta
 	$allowedTags = $container->get(Config::class)->getConfigValue('allowed_tags', 'main');
 	return new Sanitizer($allowedTags);
 });
-$dependencies[BuildServiceLocator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[BuildService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new BuildServiceLocator(
+	return new BuildService(
 		$container->get(FormBuilder::class),
 		new Builder(),
 		new \App\Framework\Utils\Datatable\Results\Builder()
 	);
 });
-$dependencies[FormatterServiceLocator::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PrepareService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FormatterServiceLocator(
+	return new PrepareService(
 		$container->get(FormBuilder::class),
-		new Formatter(),
-		new HeaderDataFormatter(
+		new Preparer(),
+		new HeaderPreparer(
 			new TranslatorManager($container->get(Translator::class)),
 			new UrlBuilder()
 		),
-		new BodyDataFormatter()
+		new BodyPreparer()
 	);
 });
-$dependencies[BaseDataGridTemplateFormatter::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[DatatableTemplatePreparer::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new BaseDataGridTemplateFormatter($container->get(Translator::class));
+	return new DatatableTemplatePreparer($container->get(Translator::class));
 });
 
 

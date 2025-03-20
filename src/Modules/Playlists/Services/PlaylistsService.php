@@ -37,23 +37,25 @@ class PlaylistsService extends AbstractBaseService
 	use SearchFilterParams;
 	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
+	private BaseParameters $parameters;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, BaseParameters $parameters, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistsRepository = $playlistsRepository;
 		$this->aclValidator = $aclValidator;
+		$this->parameters = $parameters;
 		parent::__construct($logger);
 	}
 
-	public function loadPlaylistsForOverview(Parameters $parameters): void
+	public function loadPlaylistsForOverview(): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{
-			$this->handleRequestModuleAdmin($this->playlistsRepository, $parameters);
+			$this->handleRequestModuleAdmin($this->playlistsRepository);
 		}
 		elseif ($this->aclValidator->isSubAdmin($this->UID))
 		{
-			$this->handleRequestSubAdmin($this->playlistsRepository, $parameters);
+			$this->handleRequestSubAdmin($this->playlistsRepository);
 		}
 		elseif ($this->aclValidator->isEditor($this->UID))
 		{
@@ -65,7 +67,7 @@ class PlaylistsService extends AbstractBaseService
 		}
 		else
 		{
-			$this->handleRequestUser($this->playlistsRepository, $parameters);
+			$this->handleRequestUser($this->playlistsRepository);
 		}
 
 	}
@@ -73,7 +75,7 @@ class PlaylistsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function handleRequestModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
+	public function handleRequestModuleAdmin(FilterBase $repository): static
 	{
 		// later		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
 		// for edge
@@ -81,16 +83,16 @@ class PlaylistsService extends AbstractBaseService
 
 		$this->setAllowedCompanyIds(array_keys($this->getCompanyArray()));
 
-		$total_elements 	   = $repository->countAllFiltered($parameters->getInputParametersArray());
-		$results	           = $repository->findAllFiltered($parameters->getInputParametersArray());
+		$total_elements 	   = $repository->countAllFiltered($this->parameters->getInputParametersArray());
+		$results	           = $repository->findAllFiltered($this->parameters->getInputParametersArray());
 
 		return $this->setAllResultData($total_elements,  $results);
 	}
 
-	public function handleRequestSubAdmin(FilterBase $repository, BaseParameters $parameters): static
+	public function handleRequestSubAdmin(FilterBase $repository): static
 	{
 		// companies to show names in dropdowns e.g.
-		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
+	/*	$this->setCompanyArray($this->getUser()->getAllCompanyIds());
 
 		$company_ids = $this->aclValidator->determineCompaniesForSubAdmin();
 		$this->setAllowedCompanyIds($company_ids);
@@ -107,13 +109,14 @@ class PlaylistsService extends AbstractBaseService
 			$this->getUser()->getUID()
 		);
 		return $this->setAllResultData($total_elements,  $results);
+*/		return $this;
 	}
 
 
-	public function handleRequestUser(FilterBase $repository, BaseParameters $parameters): static
+	public function handleRequestUser(FilterBase $repository): static
 	{
-		$total_elements = $repository->countAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
-		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
+		$total_elements = $repository->countAllFilteredByUID($this->parameters->getInputParametersArray(), $this->UID);
+		$results        = $repository->findAllFilteredByUID($this->parameters->getInputParametersArray(), $this->UID);
 
 		return $this->setAllResultData($total_elements, $results);
 	}

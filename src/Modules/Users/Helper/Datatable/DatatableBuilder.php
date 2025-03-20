@@ -23,7 +23,7 @@ namespace App\Modules\Users\Helper\Datatable;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
-use App\Framework\Utils\Datatable\BuildServiceLocator;
+use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
 
@@ -31,7 +31,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 {
 	private Config $config;
 
-	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator, Config $config)
+	public function __construct(BuildService $buildServiceLocator, Parameters $parameters, Translator $translator, Config $config)
 	{
 		$this->config = $config;
 		parent::__construct($buildServiceLocator, $parameters, $translator);

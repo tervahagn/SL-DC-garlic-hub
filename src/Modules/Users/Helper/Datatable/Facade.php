@@ -36,13 +36,13 @@ class Facade implements DatatableFacadeInterface
 {
 
 	private readonly DatatableBuilder $datatableBuilder;
-	private readonly DatatableFormatter $datatableFormatter;
+	private readonly DatatablePreparer $datatableFormatter;
 	private readonly Parameters $parameters;
 	private readonly UsersOverviewService $usersService;
 	private int $UID;
 	private Translator $translator;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatableFormatter $datatableFormatter, Parameters $parameters, UsersOverviewService $usersService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, Parameters $parameters, UsersOverviewService $usersService)
 	{
 		$this->datatableBuilder = $datatableBuilder;
 		$this->datatableFormatter = $datatableFormatter;
@@ -59,7 +59,7 @@ class Facade implements DatatableFacadeInterface
 	/**
 	 * @throws ModuleException
 	 */
-	public function handleUserInput(array $userInputs): void
+	public function processSubmittedUserInput(array $userInputs): void
 	{
 		$this->parameters->setUserInputs($userInputs);
 		$this->parameters->parseInputFilterAllUsers();
@@ -84,18 +84,18 @@ class Facade implements DatatableFacadeInterface
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function prepareTemplate(): array
+	public function prepareUITemplate(): array
 	{
-		$this->datatableFormatter->configurePagination($this->parameters);
+		$this->datatableFormatter->configure($this->parameters);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 
 		return [
-			'filter_elements'     => $this->datatableFormatter->formatFilterForm($datatableStructure['form']),
-			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($datatableStructure['dropdown']),
-			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($datatableStructure['pager']),
-			'has_add'			  => $this->datatableFormatter->formatAdd('person-add'),
-			'results_header'      => $this->datatableFormatter->formatTableHeader($datatableStructure['header'],  ['users', 'main']),
+			'filter_elements'     => $this->datatableFormatter->prepareFilterForm($datatableStructure['form']),
+			'pagination_dropdown' => $this->datatableFormatter->preparePaginationDropDown($datatableStructure['dropdown']),
+			'pagination_links'    => $this->datatableFormatter->preparePaginationLinks($datatableStructure['pager']),
+			'has_add'			  => $this->datatableFormatter->prepareAdd('person-add'),
+			'results_header'      => $this->datatableFormatter->prepareTableHeader($datatableStructure['header'],  ['users', 'main']),
 			'results_list'        => $this->formatList($datatableStructure['header']),
 			'results_count'       => $this->usersService->getCurrentTotalResult(),
 			'title'               => $this->translator->translate('overview', 'users'),
@@ -124,7 +124,7 @@ class Facade implements DatatableFacadeInterface
 	 */
 	private function formatList(array $fields): array
 	{
-		return $this->datatableFormatter->formatTableBody(
+		return $this->datatableFormatter->prepareTableBody(
 			$this->usersService->getCurrentFilterResults(),
 			$fields,
 			$this->UID

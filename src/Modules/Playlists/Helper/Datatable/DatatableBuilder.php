@@ -20,24 +20,63 @@
 
 namespace App\Modules\Playlists\Helper\Datatable;
 
-use App\Framework\Core\Translate\Translator;
+use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
-use App\Framework\Utils\Datatable\BuildServiceLocator;
+use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
+use App\Modules\Playlists\Services\AclValidator;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableBuilder extends AbstractDatatableBuilder
 {
+	private AclValidator $aclValidator;
 
-	public function __construct(BuildServiceLocator $buildServiceLocator, Parameters $parameters, Translator $translator)
+	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
 	{
-		parent::__construct($buildServiceLocator, $parameters, $translator);
+		$this->aclValidator = $aclValidator;
+		parent::__construct($buildService, $parameters);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function configureParameters(int $UID): void
+	{
+		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_CORE)
+			return;
+
+		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
+		{
+			$this->parameters->addOwner();
+			$this->parameters->addCompany();
+		}
+	}
+
+
+
+	public function determineParameters(): void
+	{
+		$this->parameters->setUserInputs($_GET);
+		$this->parameters->parseInputFilterAllUsers();
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function buildTitle(): void
+	{
+		$this->datatableStructure['title'] = $this->translator->translate('overview', 'playlists');
 	}
 
 	/**
@@ -50,7 +89,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	public function collectFormElements(): void
 	{
 		$form       = [];
-		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->buildServiceLocator->getFormBuilder()->createField([
+		$form[Parameters::PARAMETER_PLAYLIST_NAME] = $this->buildService->buildFormField([
 			'type' => FieldType::TEXT,
 			'id' => Parameters::PARAMETER_PLAYLIST_NAME,
 			'name' => Parameters::PARAMETER_PLAYLIST_NAME,
@@ -61,7 +100,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
 		{
-			$form[BaseParameters::PARAMETER_UID] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[BaseParameters::PARAMETER_UID] = $this->buildService->buildFormField([
 				'type' => FieldType::AUTOCOMPLETE,
 				'id' => 'UID',
 				'name' => 'UID',
@@ -74,7 +113,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
 		{
-			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildService->buildFormField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_PLAYLIST_MODE,
 				'name' => Parameters::PARAMETER_PLAYLIST_MODE,
@@ -95,16 +134,17 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	 */
 	public function createTableFields(): static
 	{
-		$this->buildServiceLocator->getResultsBuilder()->createField('playlist_name', true);
+		$this->buildService->createDatatableField('playlist_name', true);
 
 		if ($this->parameters->hasParameter('UID'))
-			$this->buildServiceLocator->getResultsBuilder()->createField('UID', true);
+			$this->buildService->createDatatableField('UID', true);
 
-		$this->buildServiceLocator->getResultsBuilder()->createField('playlist_mode', true);
-		$this->buildServiceLocator->getResultsBuilder()->createField('duration', false);
+		$this->buildService->createDatatableField('playlist_mode', true);
+		$this->buildService->createDatatableField('duration', false);
 
-		$this->datatableStructure['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+		$this->datatableStructure['header'] = $this->buildService->getDatatableFields();
 
 		return $this;
 	}
+
 }

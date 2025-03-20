@@ -20,17 +20,10 @@
 
 namespace App\Framework\Utils\Datatable;
 
+use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
 
-/**
- * BuildServiceLocator is an implementation of the so-called “Service Locator” design pattern.
- *
- * The class stores twxhree objects of the type:
- * - `FormBuilder` - Creates and formats form fields.
- * - `Paginator\Builder` - Generates paging components for dividing large amounts of data into several pages.
- * - `Results\Builder` - Manages the creation of table-like outputs or result sets.
- */
-class BuildServiceLocator
+class BuildService
 {
 	private FormBuilder $formBuilder;
 	private Results\Builder $resultsBuilder;
@@ -48,14 +41,9 @@ class BuildServiceLocator
 		$this->paginationBuilder = $paginationBuilder;
 	}
 
-	public function getFormBuilder(): FormBuilder
+	public function buildFormField(array $attributes = []): FieldInterface
 	{
-		return $this->formBuilder;
-	}
-
-	public function getPaginationBuilder(): Paginator\Builder
-	{
-		return $this->paginationBuilder;
+		return $this->formBuilder->createField($attributes);
 	}
 
 	public function getResultsBuilder(): Results\Builder
@@ -63,4 +51,25 @@ class BuildServiceLocator
 		return $this->resultsBuilder;
 	}
 
+	public function createDatatableField(string $fieldName, bool $sortable)
+	{
+		$this->resultsBuilder->createField($fieldName, $sortable);
+	}
+
+	public function getDatatableFields(): array
+	{
+		return $this->resultsBuilder->getHeaderFields();
+	}
+
+	public function buildPaginationDropDown(int $min = 10, int $max = 100, int $steps = 10): array
+	{
+		return $this->paginationBuilder->createDropDown($min, $max, $steps)->getDropDownSettings();
+	}
+
+	public function buildPaginationLinks(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager = false, bool $shortened = true): array
+	{
+		return $this->paginationBuilder->configure($currentPage, $itemsPerPage, $totalItems, $usePager, $shortened)
+			->buildPagerLinks()
+			->getPagerLinks();
+	}
 }

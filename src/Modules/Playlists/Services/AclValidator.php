@@ -22,6 +22,7 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AbstractAclValidatorInterface;
+use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
@@ -32,7 +33,7 @@ class AclValidator extends AbstractAclValidator
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
+	 * @throws Exception|ModuleException
 	 */
 	public function isPlaylistEditable(int $UID, array $playlist): bool
 	{
@@ -42,7 +43,9 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isModuleAdmin($UID))
 			return true;
 
-		// Edge Edition will not move further as there is not subadmin
+		if ($this->config->getEdition() === Config::PLATFORM_EDITION_EDGE)
+			return false;
+
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
 
@@ -88,6 +91,7 @@ class AclValidator extends AbstractAclValidator
 
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
+
 		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 

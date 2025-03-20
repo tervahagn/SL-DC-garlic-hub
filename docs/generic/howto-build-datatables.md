@@ -1,32 +1,30 @@
 # How to create a Datatable for Modules
 
 The datatable component display all units of a module. E.g. player, user, playlists, templates etc.
-It is the standard component which should be displayed when the module name is settet in the url route.
+It is the standard component which should be displayed when module name only is in the url route.
 
 JavaScript is not used to generate datatables. Most free client based datatables scripts needs the complete table from the database.
-The garlic-hub datatables should be able to handle even huge amount of data like logs. This means our datatables request only the paginated parts from database. Currently every click reload the coplete site.
-In the future there will be asyncronous updates.
+The garlic-hub datatables should be able to handle even huge amounts of data like logs. This means our datatables request only the paginated parts from database. 
+
+In the future there will be asyncronous updates. Currently, every click reloads the complete site.
 
 **Remark: the Software is in status of developing. Docs can change**
 
-Unfortunately this is a complex topic. You had to create some classes as there are only partly generic functionalities. Especially the list elements part is mostly individual. 
-
-Let's see if we can handle this most hassle-free.
+Unfortunately this is a complex topic. You had to create four helper classes plus the controller as there are only partly generic functionalities. Especially the list elements part is mostly individual. 
 
 ## Required Files and Directories
-It is recommended to follow the scripted way and use name the classes identicylly to make it as easy as possible.
+It is recommended to follow the scripted way and use name the classes identically to make it as easy as possible.
 
 ### Controller
 Create ShowDatatableController.php in the Controller directory of the module.
-To keep the number of dependencies low, only a facade and a template formatter are required.
+To keep the number of dependencies low, only the [DatatableFacadeInterface](../../src/Framework/Utils/Datatable/DatatableFacadeInterface.php)facade and [DataGridTemplateFormatter.php](../../src/Framework/Utils/Datatable/DataGridTemplateFormatter.php) are required.
 
 ### Directories
-Create an Overview dir in the Helper dir of the module. 
+Create a Datatable dir in the Helper dir of the module. 
 
 ### Parameter Class
-Create a `Parameter` class derivative from [BaseFilterParameters](../../src/Framework/Utils/FormParameters/BaseFilterParameters.php)
-
-This class sanitizes and handles user inputs. You can set also the parameters according to the rights handled in modules `AclValidator`
+Derivate a `Parameter` class from [BaseFilterParameters](../../src/Framework/Utils/FormParameters/BaseFilterParameters.php) to sanitizes and handles user inputs.
+You can set also the parameters according to the rights handled in modules `AclValidator`
 BaseFilterParameters require [Sanitizer.php](../../src/Framework/Core/Sanitizer.php) and [Session.php](../../src/Framework/Core/Session.php) a module name and a sessio nstorage name.
 The session storage will store the last entered filter values of the user.
 

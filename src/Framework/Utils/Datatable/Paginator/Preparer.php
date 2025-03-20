@@ -22,8 +22,9 @@ namespace App\Framework\Utils\Datatable\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 
-class Formatter
+class Preparer
 {
 	private BaseFilterParameters $baseFilter;
 	private string $site;
@@ -44,7 +45,7 @@ class Formatter
 	/**
 	 * @throws ModuleException
 	 */
-	public function formatLinks(array $pageLinks): array
+	public function prepareLinks(array $pageLinks): array
 	{
 		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
@@ -65,14 +66,14 @@ class Formatter
 	/**
 	 * @throws ModuleException
 	 */
-	public function formatDropdown(array $dropDownSettings): array
+	public function prepareDropdown(array $dropDownSettings): array
 	{
 		$sortSuffix = '&sort_column='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN).
 			'&sort_order='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_SORT_ORDER).
 			'&elements_page='.$this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE);
 
 		$data = [];
-		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE);
+		$currentElementsPerPage = (int) $this->baseFilter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE);
 		for ($i = $dropDownSettings['min']; $i <= $dropDownSettings['max']; $i += $dropDownSettings['steps'])
 		{
 			$data[] = [

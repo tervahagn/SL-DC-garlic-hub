@@ -26,44 +26,46 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Facade implements DatatableFacadeInterface
+class ControllerFacade implements DatatableFacadeInterface
 {
 	private readonly DatatableBuilder $datatableBuilder;
-	private readonly DatatableFormatter $datatableFormatter;
-	private readonly Parameters $parameters;
+	private readonly DatatablePreparer $datatableFormatter;
 	private readonly PlaylistsService $playlistsService;
 	private int $UID;
-	private Translator $translator;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatableFormatter $datatableFormatter, Parameters $parameters, PlaylistsService $playlistsService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, PlaylistsService $playlistsService)
 	{
 		$this->datatableBuilder = $datatableBuilder;
 		$this->datatableFormatter = $datatableFormatter;
-		$this->parameters = $parameters;
 		$this->playlistsService = $playlistsService;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function configure(Translator $translator, Session $session): void
 	{
 		$this->UID = $session->get('user')['UID'];
 		$this->playlistsService->setUID($this->UID);
-		$this->translator = $translator;
+		$this->datatableBuilder->configureParameters($this->UID);
+		$this->datatableFormatter->setTranslator($translator);
+		$this->datatableBuilder->setTranslator($translator);
 	}
 
 	/**
 	 * @throws ModuleException
 	 */
-	public function handleUserInput(array $userInputs): void
+	public function processSubmittedUserInput(): void
 	{
-		$this->parameters->setUserInputs($userInputs);
-		$this->parameters->parseInputFilterAllUsers();
-		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
+		$this->datatableBuilder->determineParameters();
+		$this->playlistsService->loadPlaylistsForOverview();
 	}
 
 	/**
@@ -76,6 +78,7 @@ class Facade implements DatatableFacadeInterface
 	 */
 	public function prepareDataGrid(): static
 	{
+		$this->datatableBuilder->buildTitle();
 		$this->datatableBuilder->collectFormElements();
 		$this->datatableBuilder->createPagination($this->playlistsService->getCurrentTotalResult());
 		$this->datatableBuilder->createDropDown();
@@ -102,33 +105,26 @@ class Facade implements DatatableFacadeInterface
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function prepareTemplate(): array
+	public function prepareUITemplate(): array
 	{
-		$this->datatableFormatter->configurePagination($this->parameters);
-
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
+		$pagination         = $this->datatableFormatter->preparePagination($datatableStructure['pager'], $datatableStructure['dropdown']);
 
 		return [
-			'filter_elements'     => $this->datatableFormatter->formatFilterForm($datatableStructure['form']),
-			'pagination_dropdown' => $this->datatableFormatter->formatPaginationDropDown($datatableStructure['dropdown']),
-			'pagination_links'    => $this->datatableFormatter->formatPaginationLinks($datatableStructure['pager']),
-			'has_add'			  => $this->datatableFormatter->formatAdd(),
-			'results_header'      => $this->datatableFormatter->formatTableHeader($datatableStructure['header'], ['playlists', 'main']),
-			'results_list'        => $this->formatList($datatableStructure['header']),
+			'filter_elements'     => $this->datatableFormatter->prepareFilterForm($datatableStructure['form']),
+			'pagination_dropdown' => $pagination['dropdown'],
+			'pagination_links'    => $pagination['links'],
+			'has_add'			  => $this->datatableFormatter->prepareAdd(),
+			'results_header'      => $this->datatableFormatter->prepareTableHeader($datatableStructure['header'], ['playlists', 'main']),
+			'results_list'        => $this->prepareList($datatableStructure['header']),
 			'results_count'       => $this->playlistsService->getCurrentTotalResult(),
-			'title'               => $this->translator->translate('overview', 'playlists'),
+			'title'               => $datatableStructure['title'],
 			'template_name'       => 'playlists/datatable',
 			'module_name'		  => 'playlists',
 			'additional_css'      => ['/css/playlists/overview.css'],
 			'footer_modules'      => ['/js/playlists/overview/init.js'],
-			'sort'				  => [
-				'column' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN),
-				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER)
-			],
-			'page'      => [
-				'current' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
-				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE),
-			]
+			'sort'				  => $this->datatableFormatter->prepareSort(),
+			'page'      		  => $this->datatableFormatter->preparePage()
 		];
 	}
 
@@ -142,13 +138,13 @@ class Facade implements DatatableFacadeInterface
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException ´
 	 */
-	private function formatList(array $fields): array
+	private function prepareList(array $fields): array
 	{
 		$showedIds = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
 
 		$this->datatableFormatter->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
 
-		return $this->datatableFormatter->formatTableBody(
+		return $this->datatableFormatter->prepareTableBody(
 			$this->playlistsService->getCurrentFilterResults(),
 			$fields,
 			$this->UID
