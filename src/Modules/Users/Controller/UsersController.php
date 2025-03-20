@@ -23,17 +23,17 @@ namespace App\Modules\Users\Controller;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\ScalarType;
 use App\Modules\Users\Helper\Datatable\Parameters;
-use App\Modules\Users\Services\UsersOverviewService;
+use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\UserStatus;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UsersController
 {
-	private UsersOverviewService $usersService;
+	private UsersDatatableService $usersService;
 	private readonly Parameters $parameters;
 
-	public function __construct(UsersOverviewService $usersService, Parameters $parameters)
+	public function __construct(UsersDatatableService $usersService, Parameters $parameters)
 	{
 		$this->usersService = $usersService;
 		$this->parameters = $parameters;

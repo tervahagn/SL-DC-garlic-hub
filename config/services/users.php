@@ -27,7 +27,7 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Users\Helper\Datatable\Facade;
+use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Controller\ShowDatatableController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\EditLocalesController;
@@ -39,7 +39,7 @@ use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
-use App\Modules\Users\Services\UsersOverviewService;
+use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
@@ -61,10 +61,11 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 		$container->get(Psr16Adapter::class)
 	);
 });
-$dependencies[UsersOverviewService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[UsersDatatableService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UsersOverviewService(
+	return new UsersDatatableService(
 		new UserMainRepository($container->get('SqlConnection')),
+		$container->get(Parameters::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
@@ -89,12 +90,12 @@ $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $cont
 });
 $dependencies[UsersController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UsersController($container->get(UsersOverviewService::class), $container->get(Parameters::class));
+	return new UsersController($container->get(UsersDatatableService::class), $container->get(Parameters::class));
 });
 $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowDatatableController(
-		$container->get(\App\Modules\Users\Helper\Datatable\Facade::class),
+		$container->get(\App\Modules\Users\Helper\Datatable\ControllerFacade::class),
 		$container->get(DatatableTemplatePreparer::class)
 	);
 });
@@ -104,33 +105,30 @@ $dependencies[DatatableBuilder::class] = DI\factory(function (ContainerInterface
 	return new DatatableBuilder(
 		$container->get(BuildService::class),
 		$container->get(Parameters::class),
-		$container->get(Translator::class),
-		$container->get(Config::class)
+		$container->get(AclValidator::class)
 	);
 });
 $dependencies[DatatablePreparer::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new DatatablePreparer(
 		$container->get(PrepareService::class),
-		$container->get(Translator::class),
 		$container->get(AclValidator::class),
-		$container->get(Config::class)
+		$container->get(Parameters::class)
 	);
 });
-$dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ControllerFacade::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new Facade(
+	return new ControllerFacade(
 		$container->get(DatatableBuilder::class),
 		$container->get(DatatablePreparer::class),
-		$container->get(Parameters::class),
-		$container->get(UsersOverviewService::class)
+		$container->get(UsersDatatableService::class)
 	);
 });
 
 $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowDatatableController(
-		$container->get(Facade::class),
+		$container->get(ControllerFacade::class),
 		$container->get(DatatableTemplatePreparer::class)
 	);
 });

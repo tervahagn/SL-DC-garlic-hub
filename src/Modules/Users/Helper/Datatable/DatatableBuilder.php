@@ -22,25 +22,59 @@ namespace App\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FieldType;
+use App\Modules\Users\Services\AclValidator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableBuilder extends AbstractDatatableBuilder
 {
-	private Config $config;
+	private AclValidator $aclValidator;
 
-	public function __construct(BuildService $buildServiceLocator, Parameters $parameters, Translator $translator, Config $config)
+	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
 	{
-		$this->config = $config;
-		parent::__construct($buildServiceLocator, $parameters, $translator);
+		$this->aclValidator = $aclValidator;
+		parent::__construct($buildService, $parameters);
+	}
+
+	public function configureParameters(int $UID): void
+	{
+		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
+			return;
+
+		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
+		{
+			$this->parameters->addOwner();
+			$this->parameters->addCompany();
+		}
+	}
+
+	public function determineParameters(): void
+	{
+		$this->parameters->setUserInputs($_GET);
+		$this->parameters->parseInputFilterAllUsers();
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	public function buildTitle(): void
+	{
+		$this->datatableStructure['title'] = $this->translator->translate('overview', 'playlists');
 	}
 
 	public function collectFormElements(): void
 	{
 		$form       = [];
-		$form[Parameters::PARAMETER_USERNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
+		$form[Parameters::PARAMETER_USERNAME] = $this->buildService->buildFormField([
 			'type'  => FieldType::TEXT,
 			'id'    => Parameters::PARAMETER_USERNAME,
 			'name'  => Parameters::PARAMETER_USERNAME,
@@ -49,7 +83,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_USERNAME)
 		]);
 
-		$form[Parameters::PARAMETER_EMAIL] = $this->buildServiceLocator->getFormBuilder()->createField([
+		$form[Parameters::PARAMETER_EMAIL] = $this->buildService->buildFormField([
 			'type'  => FieldType::TEXT,
 			'id'    => Parameters::PARAMETER_EMAIL,
 			'name'  => Parameters::PARAMETER_EMAIL,
@@ -60,7 +94,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_FIRSTNAME))
 		{
-			$form[Parameters::PARAMETER_FIRSTNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_FIRSTNAME] = $this->buildService->buildFormField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_FIRSTNAME,
 				'name' => Parameters::PARAMETER_FIRSTNAME,
@@ -72,7 +106,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_SURNAME))
 		{
-			$form[Parameters::PARAMETER_SURNAME] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_SURNAME] = $this->buildService->buildFormField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_SURNAME,
 				'name' => Parameters::PARAMETER_SURNAME,
@@ -84,7 +118,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_COMPANY_NAME))
 		{
-			$form[Parameters::PARAMETER_COMPANY_NAME] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_COMPANY_NAME] = $this->buildService->buildFormField([
 				'type' => FieldType::TEXT,
 				'id' => Parameters::PARAMETER_COMPANY_NAME,
 				'name' => Parameters::PARAMETER_COMPANY_NAME,
@@ -96,7 +130,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(BaseFilterParameters::PARAMETER_COMPANY_ID))
 		{
-			$form[Parameters::PARAMETER_COMPANY_ID] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_COMPANY_ID] = $this->buildService->buildFormField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_COMPANY_ID,
 				'name' => Parameters::PARAMETER_COMPANY_ID,
@@ -109,7 +143,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_STATUS))
 		{
-			$form[Parameters::PARAMETER_STATUS] = $this->buildServiceLocator->getFormBuilder()->createField([
+			$form[Parameters::PARAMETER_STATUS] = $this->buildService->buildFormField([
 				'type' => FieldType::DROPDOWN,
 				'id' => Parameters::PARAMETER_STATUS,
 				'name' => Parameters::PARAMETER_STATUS,
@@ -125,17 +159,17 @@ class DatatableBuilder extends AbstractDatatableBuilder
 
 	public function createTableFields(): static
 	{
-		$this->buildServiceLocator->getResultsBuilder()->createField('username',true);
-		$this->buildServiceLocator->getResultsBuilder()->createField('created_at', true);
-		$this->buildServiceLocator->getResultsBuilder()->createField('status', false);
-		if ($this->config->getEdition() === Config::PLATFORM_EDITION_CORE || $this->config->getEdition() === Config::PLATFORM_EDITION_ENTERPRISE)
+		$this->buildService->getResultsBuilder()->createField('username',true);
+		$this->buildService->getResultsBuilder()->createField('created_at', true);
+		$this->buildService->getResultsBuilder()->createField('status', false);
+		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_CORE || $this->aclValidator->getConfig()->getEdition()  === Config::PLATFORM_EDITION_ENTERPRISE)
 		{
-			$this->buildServiceLocator->getResultsBuilder()->createField('firstname', false);
-			$this->buildServiceLocator->getResultsBuilder()->createField('surname', false);
-			$this->buildServiceLocator->getResultsBuilder()->createField('company_name', false);
+			$this->buildService->getResultsBuilder()->createField('firstname', false);
+			$this->buildService->getResultsBuilder()->createField('surname', false);
+			$this->buildService->getResultsBuilder()->createField('company_name', false);
 		}
 
-		$this->datatableStructure['header'] = $this->buildServiceLocator->getResultsBuilder()->getHeaderFields();
+		$this->datatableStructure['header'] = $this->buildService->getResultsBuilder()->getHeaderFields();
 
 		return $this;
 	}

@@ -27,47 +27,46 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
-use App\Modules\Users\Services\UsersOverviewService;
+use App\Modules\Users\Services\UsersDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Facade implements DatatableFacadeInterface
+class ControllerFacade implements DatatableFacadeInterface
 {
 
 	private readonly DatatableBuilder $datatableBuilder;
 	private readonly DatatablePreparer $datatableFormatter;
-	private readonly Parameters $parameters;
-	private readonly UsersOverviewService $usersService;
+	private readonly UsersDatatableService $usersService;
 	private int $UID;
-	private Translator $translator;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, Parameters $parameters, UsersOverviewService $usersService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, UsersDatatableService $usersService)
 	{
 		$this->datatableBuilder = $datatableBuilder;
 		$this->datatableFormatter = $datatableFormatter;
-		$this->parameters = $parameters;
 		$this->usersService = $usersService;
 	}
 	public function configure(Translator $translator, Session $session): void
 	{
 		$this->UID = $session->get('user')['UID'];
 		$this->usersService->setUID($this->UID);
-		$this->translator = $translator;
+		$this->datatableBuilder->configureParameters($this->UID);
+		$this->datatableFormatter->setTranslator($translator);
+		$this->datatableBuilder->setTranslator($translator);
 	}
 
 	/**
 	 * @throws ModuleException
 	 */
-	public function processSubmittedUserInput(array $userInputs): void
+	public function processSubmittedUserInput(): void
 	{
-		$this->parameters->setUserInputs($userInputs);
-		$this->parameters->parseInputFilterAllUsers();
-		$this->usersService->loadUsersForOverview($this->parameters);
+		$this->datatableBuilder->determineParameters();
+		$this->usersService->loadUsersForOverview();
 	}
 
 	public function prepareDataGrid(): static
 	{
+		$this->datatableBuilder->buildTitle();
 		$this->datatableBuilder->collectFormElements();
 		$this->datatableBuilder->createPagination($this->usersService->getCurrentTotalResult());
 		$this->datatableBuilder->createDropDown();
@@ -86,31 +85,24 @@ class Facade implements DatatableFacadeInterface
 	 */
 	public function prepareUITemplate(): array
 	{
-		$this->datatableFormatter->configure($this->parameters);
-
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
+		$pagination         = $this->datatableFormatter->preparePagination($datatableStructure['pager'], $datatableStructure['dropdown']);
 
 		return [
 			'filter_elements'     => $this->datatableFormatter->prepareFilterForm($datatableStructure['form']),
-			'pagination_dropdown' => $this->datatableFormatter->preparePaginationDropDown($datatableStructure['dropdown']),
-			'pagination_links'    => $this->datatableFormatter->preparePaginationLinks($datatableStructure['pager']),
+			'pagination_dropdown' => $pagination['dropdown'],
+			'pagination_links'    => $pagination['links'],
 			'has_add'			  => $this->datatableFormatter->prepareAdd('person-add'),
 			'results_header'      => $this->datatableFormatter->prepareTableHeader($datatableStructure['header'],  ['users', 'main']),
 			'results_list'        => $this->formatList($datatableStructure['header']),
 			'results_count'       => $this->usersService->getCurrentTotalResult(),
-			'title'               => $this->translator->translate('overview', 'users'),
+			'title'               => $datatableStructure['title'],
 			'template_name'       => 'users/datatable',
 			'module_name'		  => 'users',
 			'additional_css'      => ['/css/users/overview.css'],
 			'footer_modules'      => ['/js/users/overview/init.js'],
-			'sort'				  => [
-				'column' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN),
-				'order' =>  $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER)
-			],
-			'page'      => [
-				'current' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE),
-				'num_elements' => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE),
-			]
+			'sort'				  => $this->datatableFormatter->prepareSort(),
+			'page'      		  => $this->datatableFormatter->preparePage()
 		];
 	}
 

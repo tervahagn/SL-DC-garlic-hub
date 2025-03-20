@@ -28,49 +28,50 @@ use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use Psr\Log\LoggerInterface;
 
-class UsersOverviewService extends AbstractBaseService
+class UsersDatatableService extends AbstractBaseService
 {
 	use SearchFilterParams;
 	private readonly UserMainRepository $userMainRepository;
 	private readonly AclValidator $aclValidator;
+	private BaseParameters $parameters;
 
-	public function __construct(UserMainRepository $userMainRepository, AclValidator $aclValidator,  LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, BaseParameters $parameters,  AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->aclValidator = $aclValidator;
+		$this->parameters = $parameters;
 		parent::__construct($logger);
 	}
 
-	public function loadUsersForOverview(Parameters $parameters): void
+	public function loadUsersForOverview(): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{
-			$this->handleRequestModuleAdmin($this->userMainRepository, $parameters);
+			$this->handleRequestModuleAdmin($this->userMainRepository);
 		}
 		elseif ($this->aclValidator->isSubAdmin($this->UID))
 		{
-			$this->handleRequestSubAdmin($this->userMainRepository, $parameters);
+			$this->handleRequestSubAdmin($this->userMainRepository);
 		}
 	}
 
-	public function handleRequestModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
+	public function handleRequestModuleAdmin(FilterBase $repository): static
 	{
 		// later		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
-		// for edge
-		$this->setCompanyArray([[1 => 'local']]);
+		// for edge$this->setCompanyArray([[1 => 'local']]);
 
 		$this->setAllowedCompanyIds(array_keys($this->getCompanyArray()));
 
-		$total_elements 	   = $repository->countAllFiltered($parameters->getInputParametersArray());
-		$results	           = $repository->findAllFiltered($parameters->getInputParametersArray());
+		$total_elements 	   = $repository->countAllFiltered($this->parameters->getInputParametersArray());
+		$results	           = $repository->findAllFiltered($this->parameters->getInputParametersArray());
 
 		return $this->setAllResultData($total_elements,  $results);
 	}
 
-	public function handleRequestSubAdmin(FilterBase $repository, BaseParameters $parameters): static
+	public function handleRequestSubAdmin(FilterBase $repository): static
 	{
 		// companies to show names in dropdowns e.g.
-		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
+/*		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
 
 		$company_ids = $this->aclValidator->determineCompaniesForSubAdmin();
 		$this->setAllowedCompanyIds($company_ids);
@@ -87,5 +88,7 @@ class UsersOverviewService extends AbstractBaseService
 			$this->getUser()->getUID()
 		);
 		return $this->setAllResultData($total_elements,  $results);
+*/
+		return $this;
 	}
 }

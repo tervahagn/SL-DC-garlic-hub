@@ -39,10 +39,10 @@ class DatatablePreparer extends AbstractDatatablePreparer
 
 	private AclValidator $aclValidator;
 
-	public function __construct(PrepareService $formatterServiceLocator, AclValidator $aclValidator, Parameters $parameters)
+	public function __construct(PrepareService $prepareService, AclValidator $aclValidator, Parameters $parameters)
 	{
 		$this->aclValidator = $aclValidator;
-		parent::__construct('playlists', $formatterServiceLocator, $parameters);
+		parent::__construct('playlists', $prepareService, $parameters);
 	}
 
 	public function setUsedPlaylists(array $usedPlaylists): static

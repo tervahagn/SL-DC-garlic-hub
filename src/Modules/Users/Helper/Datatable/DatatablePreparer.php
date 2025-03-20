@@ -36,14 +36,13 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparer extends AbstractDatatablePreparer
 {
-	private Config $config;
+	private AclValidator $aclValidator;
 
-	public function __construct(PrepareService $formatterServiceLocator, Translator $translator, AclValidator $aclValidator, Config $config)
+	public function __construct(PrepareService $prepareService, AclValidator $aclValidator, Parameters $parameters)
 	{
-		$this->config = $config;
-		parent::__construct('users', $formatterServiceLocator, $translator, $aclValidator);
+		$this->aclValidator = $aclValidator;
+		parent::__construct('users', $prepareService, $parameters);
 	}
-
 
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering
@@ -72,7 +71,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 				switch ($innerKey)
 				{
 					case 'username':
-						if ($this->config->getEdition() == Config::PLATFORM_EDITION_EDGE)
+						if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($user['username']);
 						else
 						{

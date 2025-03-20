@@ -141,7 +141,6 @@ class ControllerFacade implements DatatableFacadeInterface
 	private function prepareList(array $fields): array
 	{
 		$showedIds = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
-
 		$this->datatableFormatter->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
 
 		return $this->datatableFormatter->prepareTableBody(

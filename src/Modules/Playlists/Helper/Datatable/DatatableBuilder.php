@@ -37,7 +37,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 {
 	private AclValidator $aclValidator;
 
-	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
+	public function __construct(BuildService $buildService, AclValidator $aclValidator, Parameters $parameters)
 	{
 		$this->aclValidator = $aclValidator;
 		parent::__construct($buildService, $parameters);
@@ -50,7 +50,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	 */
 	public function configureParameters(int $UID): void
 	{
-		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_CORE)
+		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return;
 
 		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
@@ -59,8 +59,6 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			$this->parameters->addCompany();
 		}
 	}
-
-
 
 	public function determineParameters(): void
 	{
