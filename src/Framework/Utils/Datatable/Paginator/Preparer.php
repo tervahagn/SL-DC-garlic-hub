@@ -94,7 +94,7 @@ class Preparer
 		{
 			$data[] = [
 				'ELEMENTS_PER_PAGE_VALUE' => $i,
-				'ELEMENTS_PER_PAGE_DATA_LINK' => '/'.$this->urlBuilder->buildFilterUrl(),
+				'ELEMENTS_PER_PAGE_DATA_LINK' => $this->urlBuilder->buildFilterUrl(),
 				'ELEMENTS_PER_PAGE_NAME' => $i,
 				'ELEMENTS_PER_PAGE_SELECTED' => ($i === $currentElementsPerPage) ? 'selected' : ''
 			];
