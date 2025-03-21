@@ -78,9 +78,9 @@ Probably ready at May 2025. But this depends on my real life, time schedule.
   authorization via OAuth2 (completed) 
 - **Mediapool**: Organize multimedia content with tree folders in a central place. Uploads from different sources 
   including local files, external links, screencasts, camera, stock platforms (Pixabay, Unsplash, Pexels)
-  (almost completed)
+  (completed)
 - **SMIL-Based Playlists**: Organize playlists with a playlist manager. and export them in the 
-  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players.
+  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players (in work).
 - **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences.
 - **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts.
 - **Player** supports one local media player
