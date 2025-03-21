@@ -63,7 +63,6 @@ abstract class AbstractDatatablePreparer
 		return $this->prepareService->preparePagination($paginationLinks, $dropDownSettings);
 	}
 
-
 	public function prepareTableHeader(array $fields, array $langModules): array
 	{
 		return $this->prepareService->prepareDatatableHeader($fields, $langModules);
@@ -81,7 +80,6 @@ abstract class AbstractDatatablePreparer
 			'ADD_BI_ICON' => $iconClass,
 			'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', $this->moduleName),
 			'ELEMENTS_ADD_LINK' => '#'
-
 		];
 	}
 
