@@ -20,7 +20,6 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\PasswordRenderer;
 use PHPUnit\Framework\Attributes\Group;

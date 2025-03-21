@@ -40,7 +40,6 @@ class FormBuilderTest extends TestCase
 	private FieldsFactory       $fieldsFactoryMock;
 	private FieldsRenderFactory $fieldsRenderFactoryMock;
 	private FormBuilder         $formBuilder;
-	private Session 			$sessionMock;
 
 	/**
 	 * @throws Exception
@@ -49,11 +48,11 @@ class FormBuilderTest extends TestCase
 	{
 		$this->fieldsFactoryMock       = $this->createMock(FieldsFactory::class);
 		$this->fieldsRenderFactoryMock = $this->createMock(FieldsRenderFactory::class);
-		$this->sessionMock             = $this->createMock(Session::class);
+		$sessionMock = $this->createMock(Session::class);
 		$this->formBuilder             = new FormBuilder(
 			$this->fieldsFactoryMock,
 			$this->fieldsRenderFactoryMock,
-			$this->sessionMock
+			$sessionMock
 		);
 	}
 

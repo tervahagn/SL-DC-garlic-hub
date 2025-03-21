@@ -7,6 +7,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class TranslatorManagerTest extends TestCase
@@ -14,12 +15,18 @@ class TranslatorManagerTest extends TestCase
 	private Translator $translator;
 	private TranslatorManager $translatorManager;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->translator = $this->createMock(Translator::class);
 		$this->translatorManager = new TranslatorManager($this->translator);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTranslateShouldReturnEmptyStringWhenTranslationIsSkipped(): void
 	{
@@ -31,6 +38,9 @@ class TranslatorManagerTest extends TestCase
 		$this->assertSame('', $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTranslateShouldUseSpecificLangModuleWhenProvided(): void
 	{
@@ -50,6 +60,9 @@ class TranslatorManagerTest extends TestCase
 		$this->assertSame('translated_value', $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTranslateShouldIterateOverLanguageModulesAndReturnFirstTranslatedValue(): void
 	{
@@ -70,6 +83,9 @@ class TranslatorManagerTest extends TestCase
 		$this->assertSame('translated_value', $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTranslateShouldReturnEmptyStringWhenNoTranslationIsFound(): void
 	{
@@ -87,6 +103,9 @@ class TranslatorManagerTest extends TestCase
 		$this->assertSame('', $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testTranslateShouldHandleFrameworkExceptionGracefully(): void
 	{

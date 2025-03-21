@@ -31,7 +31,7 @@ class BodyPreparerTest extends TestCase
 	public function testFormatActionWithValidParameters(): void
 	{
 		$lang = 'en';
-		$link = 'http://example.com/action';
+		$link = 'https://example.com/action';
 		$name = 'Example Action';
 		$cssClass = 'icon-class';
 
@@ -39,7 +39,7 @@ class BodyPreparerTest extends TestCase
 
 		$this->assertEquals([
 			'LANG_ACTION' => 'en',
-			'LINK_ACTION' => 'http://example.com/action',
+			'LINK_ACTION' => 'https://example.com/action',
 			'ACTION_NAME' => 'Example Action',
 			'ACTION_ICON_CLASS' => 'icon-class',
 		], $result);
@@ -67,7 +67,7 @@ class BodyPreparerTest extends TestCase
 	public function testFormatActionWithSpecialCharacters(): void
 	{
 		$lang = '!lang123';
-		$link = 'http://example.com?action=1&data=special';
+		$link = 'https://example.com?action=1&data=special';
 		$name = 'Name@Action!';
 		$cssClass = '.icon#special';
 
@@ -75,7 +75,7 @@ class BodyPreparerTest extends TestCase
 
 		$this->assertEquals([
 			'LANG_ACTION' => '!lang123',
-			'LINK_ACTION' => 'http://example.com?action=1&data=special',
+			'LINK_ACTION' => 'https://example.com?action=1&data=special',
 			'ACTION_NAME' => 'Name@Action!',
 			'ACTION_ICON_CLASS' => '.icon#special',
 		], $result);
@@ -109,7 +109,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$valueName = 'testValue';
 		$title = 'Test Title';
-		$href = 'http://example.com';
+		$href = 'https://example.com';
 		$valueId = '123';
 		$cssClass = 'test-class';
 
@@ -118,7 +118,7 @@ class BodyPreparerTest extends TestCase
 		$this->assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'testValue',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
-			'CONTROL_ELEMENT_VALUE_LINK' => 'http://example.com',
+			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
 			'CONTROL_ELEMENT_VALUE_CLASS' => 'test-class'
 		], $result);
@@ -129,7 +129,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$valueName = 'testValue';
 		$title = 'Test Title';
-		$href = 'http://example.com';
+		$href = 'https://example.com';
 		$valueId = '123';
 
 		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId);
@@ -137,7 +137,7 @@ class BodyPreparerTest extends TestCase
 		$this->assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'testValue',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
-			'CONTROL_ELEMENT_VALUE_LINK' => 'http://example.com',
+			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
 			'CONTROL_ELEMENT_VALUE_CLASS' => ''
 		], $result);
@@ -146,7 +146,7 @@ class BodyPreparerTest extends TestCase
 	#[Group('units')]
 	public function testFormatLinkWithEmptyValues(): void
 	{
-		$result = $this->bodyPreparer->formatLink('', '', '', '', '');
+		$result = $this->bodyPreparer->formatLink('', '', '', '');
 
 		$this->assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => '',
@@ -162,7 +162,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$valueName = 'val@123';
 		$title = 'Title & More';
-		$href = 'http://example.com?page=1&name=test';
+		$href = 'https://example.com?page=1&name=test';
 		$valueId = 'id-456';
 		$cssClass = '.some-class#unique';
 
@@ -171,7 +171,7 @@ class BodyPreparerTest extends TestCase
 		$this->assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'val@123',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Title & More',
-			'CONTROL_ELEMENT_VALUE_LINK' => 'http://example.com?page=1&name=test',
+			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com?page=1&name=test',
 			'CONTROL_ELEMENT_VALUE_ID' => 'id-456',
 			'CONTROL_ELEMENT_VALUE_CLASS' => '.some-class#unique'
 		], $result);
@@ -238,7 +238,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = 'delete';
 		$langConfirm = 'Are you sure?';
-		$link = 'http://example.com/delete';
+		$link = 'https://example.com/delete';
 		$id = '456';
 		$cssClass = 'delete-icon';
 
@@ -246,7 +246,7 @@ class BodyPreparerTest extends TestCase
 
 		$this->assertEquals([
 			'LANG_DELETE_ACTION' => 'delete',
-			'LINK_DELETE_ACTION' => 'http://example.com/delete',
+			'LINK_DELETE_ACTION' => 'https://example.com/delete',
 			'DELETE_ID' => '456',
 			'LANG_CONFIRM_DELETE' => 'Are you sure?',
 			'ELEMENT_DELETE_CLASS' => 'delete-icon',
@@ -278,7 +278,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = 'del@ete';
 		$langConfirm = 'Conf!rm@tion??';
-		$link = 'http://example.com?act=del&id=123';
+		$link = 'https://example.com?act=del&id=123';
 		$id = 'del-123#456';
 		$cssClass = '.del-class#special';
 
@@ -286,7 +286,7 @@ class BodyPreparerTest extends TestCase
 
 		$this->assertEquals([
 			'LANG_DELETE_ACTION' => 'del@ete',
-			'LINK_DELETE_ACTION' => 'http://example.com?act=del&id=123',
+			'LINK_DELETE_ACTION' => 'https://example.com?act=del&id=123',
 			'DELETE_ID' => 'del-123#456',
 			'LANG_CONFIRM_DELETE' => 'Conf!rm@tion??',
 			'ELEMENT_DELETE_CLASS' => '.del-class#special',

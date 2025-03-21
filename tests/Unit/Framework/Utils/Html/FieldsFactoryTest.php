@@ -78,6 +78,7 @@ class FieldsFactoryTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	#[Group('units')]
 	public function testCreateCsrfTokenField(): void

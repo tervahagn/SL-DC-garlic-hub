@@ -9,6 +9,7 @@ use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class HeaderPreparerTest extends TestCase
@@ -18,6 +19,9 @@ class HeaderPreparerTest extends TestCase
 	private BaseFilterParameters $filterParametersMock;
 	private HeaderPreparer $headerPreparer;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->translatorManagerMock = $this->createMock(TranslatorManager::class);
@@ -58,6 +62,9 @@ class HeaderPreparerTest extends TestCase
 		$this->assertNotNull($this->headerPreparer);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableField(): void
 	{
@@ -81,7 +88,7 @@ class HeaderPreparerTest extends TestCase
 
 		$this->urlBuilderMock->expects($this->once())
 			->method('buildFilterUrl')
-			->willReturn('http://test.com/sort');
+			->willReturn('https://test.com/sort');
 
 		$this->translatorManagerMock->expects($this->once())
 			->method('translate')
@@ -94,7 +101,7 @@ class HeaderPreparerTest extends TestCase
 				'if_sortable' => [
 					'SORTABLE_ORDER' => '▼',
 					'SORT_CONTROL_NAME' => 'column1',
-					'LINK_CONTROL_SORT_ORDER' => 'http://test.com/sort',
+					'LINK_CONTROL_SORT_ORDER' => 'https://test.com/sort',
 					'LANG_CONTROL_NAME' => 'Translated Column 1',
 				],
 			],
@@ -105,6 +112,9 @@ class HeaderPreparerTest extends TestCase
 		$this->assertEquals($expectedResult, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableFieldDESC(): void
 	{
@@ -128,7 +138,7 @@ class HeaderPreparerTest extends TestCase
 
 		$this->urlBuilderMock->expects($this->once())
 			->method('buildFilterUrl')
-			->willReturn('http://test.com/sort');
+			->willReturn('https://test.com/sort');
 
 		$this->translatorManagerMock->expects($this->once())
 			->method('translate')
@@ -141,7 +151,7 @@ class HeaderPreparerTest extends TestCase
 				'if_sortable' => [
 					'SORTABLE_ORDER' => '▲',
 					'SORT_CONTROL_NAME' => 'column1',
-					'LINK_CONTROL_SORT_ORDER' => 'http://test.com/sort',
+					'LINK_CONTROL_SORT_ORDER' => 'https://test.com/sort',
 					'LANG_CONTROL_NAME' => 'Translated Column 1',
 				],
 			],
@@ -152,6 +162,9 @@ class HeaderPreparerTest extends TestCase
 		$this->assertEquals($expectedResult, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableFieldNotEqual(): void
 	{
@@ -175,7 +188,7 @@ class HeaderPreparerTest extends TestCase
 
 		$this->urlBuilderMock->expects($this->once())
 			->method('buildFilterUrl')
-			->willReturn('http://test.com/sort');
+			->willReturn('https://test.com/sort');
 
 		$this->translatorManagerMock->expects($this->once())
 			->method('translate')
@@ -188,7 +201,7 @@ class HeaderPreparerTest extends TestCase
 				'if_sortable' => [
 					'SORTABLE_ORDER' => '◆',
 					'SORT_CONTROL_NAME' => 'column_alternative',
-					'LINK_CONTROL_SORT_ORDER' => 'http://test.com/sort',
+					'LINK_CONTROL_SORT_ORDER' => 'https://test.com/sort',
 					'LANG_CONTROL_NAME' => 'Translated Column 1',
 				],
 			],
@@ -200,6 +213,9 @@ class HeaderPreparerTest extends TestCase
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForNonSortableField(): void
 	{

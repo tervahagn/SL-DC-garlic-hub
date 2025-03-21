@@ -22,7 +22,6 @@ namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\CsrfTokenRenderer;
-use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
