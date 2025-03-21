@@ -24,9 +24,8 @@ use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
+use App\Framework\Services\SearchFilterParamsTrait;
 use App\Framework\Utils\FormParameters\BaseParameters;
-use App\Framework\Utils\FormParameters\Traits\SearchFilterParams;
-use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -34,7 +33,7 @@ use Psr\Log\LoggerInterface;
 
 class PlaylistsService extends AbstractBaseService
 {
-	use SearchFilterParams;
+	use SearchFilterParamsTrait;
 	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
 	private BaseParameters $parameters;

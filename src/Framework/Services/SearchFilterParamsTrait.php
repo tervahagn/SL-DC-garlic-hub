@@ -1,10 +1,10 @@
 <?php
-namespace App\Framework\Utils\FormParameters\Traits;
+namespace App\Framework\Services;
 
 /**
  * trait to store the filter/search parameters
  */
-trait SearchFilterParams
+trait SearchFilterParamsTrait
 {
 	protected array $currentFilterParams = [];
 	protected int $currentTotalResult = 0;
