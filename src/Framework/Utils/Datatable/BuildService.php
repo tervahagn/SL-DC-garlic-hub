@@ -20,6 +20,7 @@
 
 namespace App\Framework\Utils\Datatable;
 
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
 
@@ -29,11 +30,6 @@ class BuildService
 	private Results\Builder $resultsBuilder;
 	private Paginator\Builder $paginationBuilder;
 
-	/**
-	 * @param FormBuilder $formBuilder
-	 * @param Results\Builder $resultsBuilder
-	 * @param Paginator\Builder $paginationManager
-	 */
 	public function __construct(FormBuilder $formBuilder, Paginator\Builder $paginationBuilder, Results\Builder $resultsBuilder)
 	{
 		$this->formBuilder = $formBuilder;
@@ -41,6 +37,9 @@ class BuildService
 		$this->paginationBuilder = $paginationBuilder;
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function buildFormField(array $attributes = []): FieldInterface
 	{
 		return $this->formBuilder->createField($attributes);
@@ -51,7 +50,7 @@ class BuildService
 		return $this->resultsBuilder;
 	}
 
-	public function createDatatableField(string $fieldName, bool $sortable)
+	public function createDatatableField(string $fieldName, bool $sortable): void
 	{
 		$this->resultsBuilder->createField($fieldName, $sortable);
 	}

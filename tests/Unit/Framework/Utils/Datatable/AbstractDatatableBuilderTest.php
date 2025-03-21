@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Utils\Datatable;
+namespace Tests\Unit\Framework\Utils\Datatable;
 
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildService;

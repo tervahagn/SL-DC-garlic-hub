@@ -3,13 +3,18 @@
 namespace Tests\Unit\Framework\Utils\Datatable;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ConcreteDatatablePreparer extends AbstractDatatablePreparer
 {
@@ -21,6 +26,9 @@ class AbstractDatatablePreparerTest extends TestCase
 	private PrepareService $prepareServiceMock;
 	private BaseFilterParameters $parametersMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->prepareServiceMock = $this->createMock(PrepareService::class);
@@ -37,6 +45,9 @@ class AbstractDatatablePreparerTest extends TestCase
 		$this->datatablePreparer->prepareFilterForm($params);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testPreparePagination()
 	{
@@ -57,6 +68,13 @@ class AbstractDatatablePreparerTest extends TestCase
 		$this->datatablePreparer->prepareTableHeader($params1, $params2);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareAddWithoutParams()
 	{
@@ -77,6 +95,13 @@ class AbstractDatatablePreparerTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareAddWithParam()
 	{
