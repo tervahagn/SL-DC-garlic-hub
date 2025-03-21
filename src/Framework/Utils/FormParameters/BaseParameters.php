@@ -48,33 +48,13 @@ abstract class BaseParameters
 		return $this;
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	public function addOwner()
+	public function addOwner(): void
 	{
 		$this->addParameter(self::PARAMETER_UID, ScalarType::INT, 0);
 	}
 
-	/**
-	 *@throws ModuleException
-	 */
 	public function addParameter(string $parameter_name, ScalarType $scalarType, mixed $default_value = null): static
 	{
-		if ($scalarType != ScalarType::INT &&
-			$scalarType != ScalarType::FLOAT &&
-			$scalarType != ScalarType::BOOLEAN &&
-			$scalarType !== ScalarType::STRING &&
-			$scalarType !== ScalarType::NUMERIC_ARRAY  &&
-			$scalarType !== ScalarType::STRING_ARRAY  &&
-			$scalarType !== ScalarType::HTML_STRING &&
-			$scalarType !== ScalarType::JSON &&
-			$scalarType !== ScalarType::JSON_HTML &&
-			$scalarType !== ScalarType::MEDIAPOOL_FILE)
-		{
-			throw new ModuleException($this->moduleName, 'Unsupported scalar type: ' . $scalarType->value);
-		}
-
 		$this->currentParameters[$parameter_name] = array('scalar_type' => $scalarType, 'default_value' => $default_value, 'parsed' => false);
 		return $this;
 	}
@@ -96,9 +76,9 @@ abstract class BaseParameters
 	/**
 	 * method to remove multiple parameters at once
 	 */
-	public function removeParameters(array $parameter_names): static
+	public function removeParameters(array $parameterNames): static
 	{
-		foreach($parameter_names as $parameter)
+		foreach($parameterNames as $parameter)
 		{
 			$this->removeParameter($parameter);
 		}
@@ -165,7 +145,6 @@ abstract class BaseParameters
 		return array_keys($this->currentParameters);
 	}
 
-
 	/**
 	 * iterates over parameters and parse them
 	 * can be used by async calls directly, without using the session store
@@ -216,20 +195,20 @@ abstract class BaseParameters
 		if (array_key_exists($parameterName, $this->userInputs))
 			$parameterValue = $this->userInputs[$parameterName];
 		else
-			$parameterValue = $this->getDefaultValueOfParameter($parameterName);
+			$parameterValue = $this->currentParameters[$parameterName]['default_value'];
 
 		$parameter = $this->beforeParseHook($parameterName, $this->currentParameters[$parameterName]);
 		$value = match ($parameter['scalar_type'])
 		{
-			ScalarType::INT            => $this->sanitizer->int($parameterValue, (int)$parameter['default_value']),
-			ScalarType::FLOAT          => $this->sanitizer->float($parameterValue, $parameter['default_value']),
-			ScalarType::STRING         => $this->sanitizer->string($parameterValue, $parameter['default_value']),
+			ScalarType::INT            => $this->sanitizer->int($parameterValue),
+			ScalarType::FLOAT          => $this->sanitizer->float($parameterValue),
+			ScalarType::STRING         => $this->sanitizer->string($parameterValue),
 			ScalarType::NUMERIC_ARRAY  => $this->sanitizer->intArray($parameterValue),
 			ScalarType::STRING_ARRAY   => $this->sanitizer->stringArray($parameterValue),
-			ScalarType::HTML_STRING    => $this->sanitizer->html($parameterValue, $parameter['default_value']),
-			ScalarType::JSON           => $this->sanitizer->jsonArray($parameterValue, $parameter['default_value']),
-			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameterValue, $parameter['default_value']),
-			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue, $parameter['default_value']),
+			ScalarType::HTML_STRING    => $this->sanitizer->html($parameterValue),
+			ScalarType::JSON           => $this->sanitizer->jsonArray($parameterValue),
+			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameterValue),
+			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue),
 			default => throw new ModuleException($this->moduleName, 'Unknown scalar type: ' . $parameter['scalar_type']),
 		};
 

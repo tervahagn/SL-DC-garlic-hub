@@ -29,71 +29,58 @@ class Sanitizer
 		$this->allowedTags = $allowedTags;
 	}
 
-	public function string(?string $value, string $default = ''): string
+	public function string(?string $value): string
 	{
-		return htmlspecialchars($value ?? $default, ENT_QUOTES, 'UTF-8');
+		return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 	}
 
-	public function html(?string $value, string $default = ''): string
+	public function html(?string $value): string
 	{
-		return strip_tags($value ?? $default, $this->allowedTags);
+		return strip_tags($value, $this->allowedTags);
 	}
 
-	public function int(?string $value, int $default = 0): int
+	public function int(?string $value): int
 	{
-		return (int)($value ?? $default);
+		return (int)$value;
 	}
 
-	public function float(?string $value, float $default = 0.0): float
+	public function float(?string $value): float
 	{
-		return (float)($value ?? $default); // Simple cast for sanitization
+		return (float) $value; // Simple cast for sanitization
 	}
 
-	public function bool(?string $value, bool $default = false): bool
+	public function bool(?string $value): bool
 	{
-		return (bool)($value ?? $default);
+		return (bool) $value;
 	}
 
-
-	public function stringArray(?array $values, array $default = []): array
+	public function stringArray(?array $values): array
 	{
-		if (!is_array($values))
-			return $default;
-
-		return array_map(function ($s) {
+		return array_map(function ($s){
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		}, $values);
 	}
 
-	public function intArray(?array $values, array $default = []): array
+	public function intArray(?array $values): array
 	{
-		if (!is_array($values))
-			return $default;
-
 		return array_map(function ($i) {
 			return (int)$i;
 		}, $values);
 	}
 
-	public function floatArray(?array $values, array $default = []): array
+	public function floatArray(?array $values): array
 	{
-		if (!is_array($values))
-			return $default;
-
 		return array_map(function ($f) {
 			return (float)$f;
 		}, $values);
 	}
 
-	public function jsonArray(?string $jsonString, array $default = []): array
+	public function jsonArray(?string $jsonString): array
 	{
-		if ($jsonString === null)
-			return $default;
-
 		$data = json_decode($jsonString, true);
 
 		if (json_last_error() !== JSON_ERROR_NONE || !is_array($data))
-			return $default;
+			return [];
 
 		return $data;
 	}
