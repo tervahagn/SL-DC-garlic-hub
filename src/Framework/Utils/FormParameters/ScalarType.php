@@ -20,7 +20,8 @@
 
 namespace App\Framework\Utils\FormParameters;
 
-enum ScalarType: int {
+enum ScalarType: int
+{
 	case INT = 1;
 	case STRING = 2;
 	case NUMERIC_ARRAY = 3;

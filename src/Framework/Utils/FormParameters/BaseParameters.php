@@ -55,7 +55,7 @@ abstract class BaseParameters
 
 	public function addParameter(string $parameter_name, ScalarType $scalarType, mixed $default_value = null): static
 	{
-		$this->currentParameters[$parameter_name] = array('scalar_type' => $scalarType, 'default_value' => $default_value, 'parsed' => false);
+		$this->currentParameters[$parameter_name] = ['scalar_type' => $scalarType, 'default_value' => $default_value, 'parsed' => false];
 		return $this;
 	}
 
@@ -198,6 +198,7 @@ abstract class BaseParameters
 			$parameterValue = $this->currentParameters[$parameterName]['default_value'];
 
 		$parameter = $this->beforeParseHook($parameterName, $this->currentParameters[$parameterName]);
+
 		$value = match ($parameter['scalar_type'])
 		{
 			ScalarType::INT            => $this->sanitizer->int($parameterValue),
@@ -208,8 +209,7 @@ abstract class BaseParameters
 			ScalarType::HTML_STRING    => $this->sanitizer->html($parameterValue),
 			ScalarType::JSON           => $this->sanitizer->jsonArray($parameterValue),
 			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameterValue),
-			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue),
-			default => throw new ModuleException($this->moduleName, 'Unknown scalar type: ' . $parameter['scalar_type']),
+			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue)
 		};
 
 		$parameter['value'] = $value;
