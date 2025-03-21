@@ -49,7 +49,6 @@ class DatatableTemplatePreparer
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
@@ -90,7 +89,4 @@ class DatatableTemplatePreparer
 			]
 		];
 	}
-
-
-
 }
