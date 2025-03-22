@@ -22,7 +22,6 @@ namespace App\Framework\Core;
 
 class BaseValidator
 {
-
 	public function isEmail(string $value): bool
 	{
 		return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
@@ -33,5 +32,4 @@ class BaseValidator
 		json_decode($value); // Just decode, don't need the result for validation
 		return json_last_error() === JSON_ERROR_NONE;
 	}
-
 }
