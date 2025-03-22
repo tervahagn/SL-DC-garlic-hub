@@ -30,6 +30,7 @@ use PHPUnit\Framework\TestCase;
 class MimeTypeDetectorTest extends TestCase
 {
 	private MimeTypeDetector $mimeTypeDetector;
+	private string $baseDirectory;
 
 	protected function setUp(): void
 	{

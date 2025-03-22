@@ -29,7 +29,7 @@ class Sanitizer
 		$this->allowedTags = $allowedTags;
 	}
 
-	public function string(?string $value): string
+	public function string(string $value): string
 	{
 		return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 	}
@@ -75,7 +75,7 @@ class Sanitizer
 		}, $values);
 	}
 
-	public function jsonArray(?string $jsonString): array
+	public function jsonArray(string $jsonString): array
 	{
 		$data = json_decode($jsonString, true);
 

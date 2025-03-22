@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 class ZipFilesystemFactoryTest extends TestCase
 {
+	private string $baseDirectory;
 	protected function setUp(): void
 	{
 		$this->baseDirectory = getenv('TEST_BASE_DIR') . '/resources/widgets';

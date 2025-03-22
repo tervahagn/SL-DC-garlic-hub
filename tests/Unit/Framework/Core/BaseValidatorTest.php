@@ -66,10 +66,5 @@ class BaseValidatorTest extends TestCase
 		$this->assertFalse($this->baseValidator->isJson(''));
 	}
 
-	#[Group('units')]
-	public function testIsJsonNull(): void
-	{
-		$this->expectException(TypeError::class);
-		$this->baseValidator->isJson(null);
-	}
+
 }

@@ -45,6 +45,7 @@ class LoginControllerTest extends TestCase
 	private ResponseInterface $responseMock;
 	private Session $sessionMock;
 	private AuthService $authServiceMock;
+	private LoggerInterface $loggerMock;
 
 	/**
 	 * @throws Exception

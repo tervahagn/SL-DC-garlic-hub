@@ -70,7 +70,6 @@ class SanitizerTest extends TestCase
 		$this->assertTrue($this->sanitizer->bool('true'));
 	}
 
-
 	#[Group('units')]
 	public function testStringArraySanitization(): void
 	{
@@ -92,11 +91,6 @@ class SanitizerTest extends TestCase
 		$this->assertSame(
 			[],
 			$this->sanitizer->stringArray([])
-		);
-
-		$this->assertSame(
-			['&lt;invalid&gt;', '', '&quot;quotes&quot; here'],
-			$this->sanitizer->stringArray(['<invalid>', null, '"quotes" here'])
 		);
 	}
 
@@ -176,8 +170,6 @@ class SanitizerTest extends TestCase
 		$this->assertSame([], $this->sanitizer->jsonArray('null'));
 
 		$this->assertSame([], $this->sanitizer->jsonArray('{"incomplete":'));
-
-		$this->assertSame([], $this->sanitizer->jsonArray(null));
 
 		$this->assertSame([], $this->sanitizer->jsonArray(''));
 	}

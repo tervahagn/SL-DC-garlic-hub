@@ -34,6 +34,7 @@ use PHPUnit\Framework\TestCase;
 class MiscellaneousTest extends TestCase
 {
 	private readonly Filesystem $filesystemMock;
+	private readonly Miscellaneous $misc;
 
 	/**
 	 * @throws Exception
@@ -43,7 +44,6 @@ class MiscellaneousTest extends TestCase
 	{
 		$configMock = $this->createMock(Config::class);
 		$this->filesystemMock = $this->createMock(Filesystem::class);
-		$this->imagickMock = $this->createMock(Imagick::class);
 
 		$configMock->method('getConfigValue')
 			->willReturnMap([
