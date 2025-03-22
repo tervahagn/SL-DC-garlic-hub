@@ -86,7 +86,6 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 		return $this;
 	}
 
-
 	/**
 	 * checks if parameters are stored in session from previous visit
 	 * iterates over all parameters and sets the values
@@ -109,7 +108,6 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	{
 		return !empty($this->sessionStoreKey);
 	}
-
 
 	public function addCompany(): void
 	{
@@ -137,13 +135,9 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	/**
 	 * @throws ModuleException
 	 */
-	protected function getStoredSearchParamsFromSession(): string|array|null
+	protected function getStoredSearchParamsFromSession(): array
 	{
-		if ($this->storedParametersInSessionExists())
-		{
-			return $this->session->get($this->sessionStoreKey);
-		}
-		throw new ModuleException($this->moduleName, 'Can not find key ' . $this->sessionStoreKey . ' in session store');
+		return $this->session->get($this->sessionStoreKey);
 	}
 
 }

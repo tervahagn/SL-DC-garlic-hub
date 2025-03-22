@@ -25,7 +25,6 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
-use App\Framework\Utils\FormParameters\BaseParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +37,7 @@ class ConcreteEditBaseParameters extends BaseEditParameters
 		parent::__construct('testModule', $sanitizer, $session);
 	}
 
-	public function addDefaultParameter()
+	public function addDefaultParameter(): void
 	{
 		$this->currentParameters =$this->defaultParameters;
 	}
@@ -46,16 +45,18 @@ class ConcreteEditBaseParameters extends BaseEditParameters
 
 class BaseEditParametersTest extends TestCase
 {
-
-	private readonly Sanitizer $sanitizerMock;
+	private readonly Session $sessionMock;
 	private BaseEditParameters $baseEditParameters;
 
+	/**
+	 * @throws Exception
+	 */
 	public function setUp(): void
 	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
+		$sanitizerMock = $this->createMock(Sanitizer::class);
 		$this->sessionMock = $this->createMock(Session::class);
 
-		$this->baseEditParameters = new ConcreteEditBaseParameters($this->sanitizerMock, $this->sessionMock);
+		$this->baseEditParameters = new ConcreteEditBaseParameters($sanitizerMock, $this->sessionMock);
 	}
 
 	#[Group('units')]
@@ -77,6 +78,9 @@ class BaseEditParametersTest extends TestCase
 		$this->baseEditParameters->checkCsrfToken();
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testCheckCsrfTokenThrowsExceptionIfTokenMissmatch(): void
 	{
@@ -91,6 +95,9 @@ class BaseEditParametersTest extends TestCase
 		$this->baseEditParameters->checkCsrfToken();
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testCheckCsrfTokenPasses(): void
 	{
@@ -103,6 +110,4 @@ class BaseEditParametersTest extends TestCase
 
 		$this->assertTrue(true);
 	}
-
-
 }

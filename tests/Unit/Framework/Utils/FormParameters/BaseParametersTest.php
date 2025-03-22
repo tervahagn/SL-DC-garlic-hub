@@ -22,11 +22,11 @@
 namespace Tests\Unit\Framework\Utils\FormParameters;
 
 use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteBaseParameters extends BaseParameters
@@ -39,6 +39,9 @@ class BaseParametersTest extends TestCase
 	private readonly Sanitizer $sanitizerMock;
 	private BaseParameters $baseParameters;
 
+	/**
+	 * @throws Exception
+	 */
 	public function setUp(): void
 	{
 		$this->sanitizerMock = $this->createMock(Sanitizer::class);
@@ -46,6 +49,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters = new ConcreteBaseParameters('testModule', $this->sanitizerMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testGetInputValuesArrayReturnsCorrectValues(): void
 	{
@@ -70,6 +76,9 @@ class BaseParametersTest extends TestCase
 		$this->assertSame([], $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testGetInputValuesArrayBehavesCorrectlyWithUnsetValues(): void
 	{
@@ -139,7 +148,6 @@ class BaseParametersTest extends TestCase
 	#[Group('units')]
 	public function testRemoveParameters()
 	{
-		$module_name = 'my_module';
 		$current_filter_count = 0;
 
 		$this->assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param1', ScalarType::STRING, 'default_this_is1'));
@@ -163,6 +171,9 @@ class BaseParametersTest extends TestCase
 		$this->assertCount($current_filter_count + 1, $filters);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testGetValueOfParameterReturnsExpectedValue(): void
 	{
@@ -196,6 +207,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->getValueOfParameter('testParam');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testSetValueOfParameterSuccessfullySetsValue(): void
 	{
@@ -219,6 +233,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->setValueOfParameter('invalidParam', 'value');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testSetDefaultForParameterSuccessfullySetsDefaultValue(): void
 	{
@@ -244,6 +261,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->setDefaultForParameter('invalidParam', 'value');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testSetDefaultForParameterCorrectlyUpdatesDefaultValue(): void
 	{
@@ -263,7 +283,7 @@ class BaseParametersTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testGetDefaultForParameteFails(): void
+	public function testGetDefaultForParameterFails(): void
 	{
 		$this->baseParameters->addParameter('testParam', ScalarType::STRING, 'defaultValue');
 
@@ -302,6 +322,9 @@ class BaseParametersTest extends TestCase
 		$this->assertSame(42, $this->baseParameters->getValueOfParameter('param2'));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testParseInputAllParametersParsesValuesFromUserInputs(): void
 	{
@@ -318,6 +341,9 @@ class BaseParametersTest extends TestCase
 		$this->assertSame(84, $this->baseParameters->getValueOfParameter('param2'));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testParseInputAllParametersMarksParametersAsParsed(): void
 	{
@@ -343,6 +369,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->parseInputFilterByName('testParam');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testParseInputFilterSetParsedFalse(): void
 	{
@@ -366,6 +395,9 @@ class BaseParametersTest extends TestCase
 
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testParseInputFilterNotParseDouble(): void
 	{
@@ -385,6 +417,9 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->parseInputFilterByName('testParam');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testParseInputFilterByNameHandlesScalarTypeSanitization(): void
 	{

@@ -87,7 +87,7 @@ class AbstractDatatableBuilderTest extends TestCase
 			->method('getValueOfParameter')
 			->willReturnMap([
 				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, $currentPage],
-				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, $itemsPerPage],
+				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, $itemsPerPage]
 			]);
 
 		$this->buildServiceMock

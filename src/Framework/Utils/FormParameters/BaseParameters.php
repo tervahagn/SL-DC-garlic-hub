@@ -221,7 +221,7 @@ abstract class BaseParameters
 	 * Hook that can be overwritten in your class.
 	 * Will be called after parsing
 	 */
-	protected function afterParseHook($parameter_name, $parameter): array
+	protected function afterParseHook(string $parameter_name, array $parameter): array
 	{
 		return $parameter;
 	}
@@ -230,7 +230,7 @@ abstract class BaseParameters
 	 * Hook that can be overwritten in your class
 	 * Will be called before parsing, but if the parameter has not already been parsed
 	 **/
-	protected function beforeParseHook($parameter_name, $parameter): array
+	protected function beforeParseHook(string $parameterName, array $parameter): array
 	{
 		return $parameter;
 	}
