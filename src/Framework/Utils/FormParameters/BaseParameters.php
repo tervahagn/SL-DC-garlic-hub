@@ -31,15 +31,13 @@ abstract class BaseParameters
 
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
-	protected readonly Session $session;
 	protected array $currentParameters;
 	protected array $userInputs;
 
-	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
+	public function __construct(string $moduleName, Sanitizer $sanitizer)
 	{
 		$this->moduleName = $moduleName;
 		$this->sanitizer  = $sanitizer;
-		$this->session    = $session;
 	}
 
 	public function setUserInputs(array $userInputs): static

@@ -34,9 +34,9 @@ class Parameters extends BaseEditParameters
 	const string PARAMETER_TIME_LIMIT     = 'time_limit';
 	const string PARAMETER_MULTIZONE      = 'multizone';
 
-	protected array $moduleParameters = array(
+	protected array $moduleParameters = [
 		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
-	);
+	];
 
 	public function __construct(Sanitizer $sanitizer, Session $session)
 	{

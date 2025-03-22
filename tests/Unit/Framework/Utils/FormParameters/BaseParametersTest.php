@@ -37,8 +37,14 @@ class ConcreteBaseParameters extends BaseParameters
 class BaseParametersTest extends TestCase
 {
 	private readonly Sanitizer $sanitizerMock;
-	private readonly Session $sessionMock;
 	private BaseParameters $baseParameters;
+
+	public function setUp(): void
+	{
+		$this->sanitizerMock = $this->createMock(Sanitizer::class);
+
+		$this->baseParameters = new ConcreteBaseParameters('testModule', $this->sanitizerMock);
+	}
 
 	#[Group('units')]
 	public function testGetInputValuesArrayReturnsCorrectValues(): void
@@ -74,14 +80,6 @@ class BaseParametersTest extends TestCase
 		$result = $this->baseParameters->getInputValuesArray();
 
 		$this->assertSame(['value1'], $result);
-	}
-
-	public function setUp(): void
-	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock = $this->createMock(Session::class);
-
-		$this->baseParameters = new ConcreteBaseParameters('testModule', $this->sanitizerMock, $this->sessionMock);
 	}
 
 	#[Group('units')]

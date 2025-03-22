@@ -24,8 +24,10 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
-class BaseEditParameters extends BaseParameters
+abstract class BaseEditParameters extends BaseParameters
 {
+	protected Session $session;
+
 	public const string PARAMETER_CSRF_TOKEN  = 'csrf_token';
 
 	protected array $defaultParameters = array(
@@ -34,7 +36,8 @@ class BaseEditParameters extends BaseParameters
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
 	{
-		parent::__construct($moduleName, $sanitizer, $session);
+		$this->session = $session;
+		parent::__construct($moduleName, $sanitizer);
 	}
 
 	/**

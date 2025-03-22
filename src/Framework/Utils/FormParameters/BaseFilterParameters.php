@@ -38,6 +38,7 @@ use App\Framework\Exceptions\ModuleException;
 abstract class BaseFilterParameters extends BaseParameters implements BaseFilterParametersInterface
 {
 	protected readonly string $sessionStoreKey;
+	protected readonly Session $session;
 
 	protected array $defaultParameters = array(
 		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,    'parsed' => false),
@@ -48,8 +49,10 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session, string $session_key_store = '')
 	{
-		parent::__construct($moduleName, $sanitizer, $session);
+		$this->session           = $session;
 		$this->sessionStoreKey   = $session_key_store;
+
+		parent::__construct($moduleName, $sanitizer);
 	}
 
 	/**
