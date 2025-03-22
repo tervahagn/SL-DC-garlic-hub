@@ -73,17 +73,17 @@ class UserMainRepository extends FilterBase
 		return $this->fetchAssociative($queryBuilder);
 	}
 
-	protected function prepareJoin()
+	protected function prepareJoin(): array
 	{
 		return [];
 	}
 
-	protected function prepareSelectFiltered()
+	protected function prepareSelectFiltered(): array
 	{
 		return [$this->table.'.*'];
 	}
 
-	protected function prepareSelectFilteredForUser()
+	protected function prepareSelectFilteredForUser(): array
 	{
 		return [$this->table.'.*'];
 	}

@@ -109,11 +109,11 @@ abstract class FilterBase extends Sql
 	}
 
 
-	abstract protected function prepareJoin();
+	abstract protected function prepareJoin(): array;
 
-	abstract protected function prepareSelectFiltered();
+	abstract protected function prepareSelectFiltered(): array;
 
-	abstract protected function prepareSelectFilteredForUser();
+	abstract protected function prepareSelectFilteredForUser(): array;
 
 	protected function prepareOrderBy(array $fields, $useUserMain = true): array
 	{

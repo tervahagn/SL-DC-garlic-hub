@@ -151,12 +151,11 @@ abstract class Sql
 			$compare  = $parameter['compare'] ?? '=';
 			$logic    = $parameter['logic'] ?? 'AND';
 
-			$gavno = str_replace('.', '', $field); // because DBAl do not accept SQL-dots like table.field
-
+			$govno = str_replace('.', '', $field); // because DBAl do not accept SQL-dots like table.field
 			if ($compare === 'IN')
-				$placeholder = "(:$gavno)";
+				$placeholder = "(:$govno)";
 			else
-				$placeholder = ":$gavno";
+				$placeholder = ":$govno";
 
 			switch ($logic)
 			{
@@ -168,7 +167,7 @@ abstract class Sql
 					$queryBuilder->andWhere("$field $compare $placeholder");
 			}
 
-			$queryBuilder->setParameter($gavno, $value);
+			$queryBuilder->setParameter($govno, $value);
 		}
 	}
 
