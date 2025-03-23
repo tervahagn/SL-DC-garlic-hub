@@ -20,6 +20,7 @@
 
 namespace App\Framework\Database\BaseRepositories;
 
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use Doctrine\DBAL\Exception;
 
 abstract class FilterBase extends Sql
@@ -45,7 +46,10 @@ abstract class FilterBase extends Sql
 		$where 	  = $this->prepareWhereForFiltering($fields);
 		$orderBy  = [$this->prepareOrderBy($fields)];
 		$join     = $this->prepareJoin();
-		$limit    = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
+		$limit    = $this->determineLimit(
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE]['value'],
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE]['value']
+		);
 
 		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
@@ -69,7 +73,10 @@ abstract class FilterBase extends Sql
 		$where   = $this->buildRestrictedWhereForCountAndFindSearch($companyIds,  $fields, $UID);
 		$join    = $this->prepareJoin();
 		$orderBy = [$this->prepareOrderBy($fields)];
-		$limit   = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
+		$limit    = $this->determineLimit(
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE]['value'],
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE]['value']
+		);
 
 		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
@@ -94,7 +101,10 @@ abstract class FilterBase extends Sql
 		$where   = $this->prepareWhereForFiltering($fields);
 		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
 		$orderBy = [$this->prepareOrderBy($fields)];
-		$limit   = $this->determineLimit($fields['elements_page']['value'], $fields['elements_per_page']['value']);
+		$limit    = $this->determineLimit(
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE]['value'],
+			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE]['value']
+		);
 
 		return $this->findAllByWithFields($selects, $where, [], $limit, '', $orderBy);
 	}
@@ -108,7 +118,6 @@ abstract class FilterBase extends Sql
 		return $where;
 	}
 
-
 	abstract protected function prepareJoin(): array;
 
 	abstract protected function prepareSelectFiltered(): array;
@@ -118,11 +127,13 @@ abstract class FilterBase extends Sql
 	protected function prepareOrderBy(array $fields, $useUserMain = true): array
 	{
 		// no sort column
-		if (!array_key_exists('sort_column', $fields) || empty($fields['sort_column']) || !array_key_exists('value', $fields['sort_column']))
+		if (!array_key_exists(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN, $fields) ||
+			empty($fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]) ||
+			!array_key_exists('value', $fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]))
 			return [];
 
 		// validate ordering
-		$sort_order = (array_key_exists('sort_order', $fields)) ? $fields['sort_order']['value'] : 'ASC';
+		$sort_order = (array_key_exists(BaseFilterParametersInterface::PARAMETER_SORT_ORDER, $fields)) ? $fields[BaseFilterParametersInterface::PARAMETER_SORT_ORDER]['value'] : 'ASC';
 
 		if (strcasecmp($sort_order, 'desc') != 0 && strcasecmp($sort_order, 'asc') != 0)
 		{
@@ -130,14 +141,14 @@ abstract class FilterBase extends Sql
 		}
 
 		// sort by user
-		if ($fields['sort_column']['value'] == 'UID' ||
-			$fields['sort_column']['value'] == 'usr_nickname')
+		if ($fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'] == 'UID' ||
+			$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'] == 'usr_nickname')
 		{
 			$table = ($useUserMain === true) ?  'user_main.' : '';
 			return ['sort' => $table . 'username ', 'order' => $sort_order];
 		}
 
-		return ['sort' => $this->table.'.'.$fields['sort_column']['value'], 'order' => $sort_order];
+		return ['sort' => $this->table.'.'.$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'], 'order' => $sort_order];
 	}
 
 	protected function buildWhereByCompanyIds(array $companyIds): array
@@ -154,13 +165,14 @@ abstract class FilterBase extends Sql
 
 	protected function determineWhereForFiltering($key, $parameter): array
 	{
+
 		$where = [];
 		switch ($key)
 		{
-			case 'elements_per_page':
-			case 'elements_page':
-			case 'sort_column':
-			case 'sort_order':
+			case BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE:
+			case BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE:
+			case BaseFilterParametersInterface::PARAMETER_SORT_COLUMN:
+			case BaseFilterParametersInterface::PARAMETER_SORT_ORDER:
 				break;
 
 			case 'UID':

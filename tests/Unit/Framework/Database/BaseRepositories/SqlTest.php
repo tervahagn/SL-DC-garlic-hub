@@ -34,7 +34,6 @@ class SqlTest extends TestCase
 	private Connection	 $connectionMock;
 	private QueryBuilder $queryBuilderMock;
 	private SqlConcrete $repository;
-	private Result $resultMock;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception
@@ -43,7 +42,6 @@ class SqlTest extends TestCase
 	{
 		$this->connectionMock   = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
-		$this->resultMock       = $this->createMock(Result::class);
 		$this->repository       = new SqlConcrete($this->connectionMock, 'table', 'id');
 	}
 
