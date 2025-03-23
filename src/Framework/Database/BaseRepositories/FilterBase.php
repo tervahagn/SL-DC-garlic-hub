@@ -150,17 +150,8 @@ abstract class FilterBase extends Sql
 		return [];
 	}
 
-	protected function prepareWhereForFiltering(array $filterFields): array
-	{
-		$where             = array();
-		foreach ($filterFields as $key => $parameter)
-		{
-			$clause = $this->determineWhereForFiltering($key, $parameter);
-			if (!empty($clause))
-				$where[] = $clause;
-		}
-		return $where;
-	}
+	abstract protected function prepareWhereForFiltering(array $filterFields): array;
+
 	protected function determineWhereForFiltering($key, $parameter): array
 	{
 		$where = [];
@@ -183,9 +174,7 @@ abstract class FilterBase extends Sql
 
 			case 'company_id':
 				if ((int) $parameter['value'] > 0)
-				{
-					$where['user_main.'.$key] = ['value' => $parameter['value'], 'operator' => '='];
-				}
+					$where['user_main.'.$key] = $this->generateWhereClause($parameter['value'], '=');
 				break;
 
 			default:
