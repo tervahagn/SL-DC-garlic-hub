@@ -45,6 +45,7 @@ class ControllerFacade implements DatatableFacadeInterface
 		$this->datatableFormatter = $datatableFormatter;
 		$this->usersService = $usersService;
 	}
+
 	public function configure(Translator $translator, Session $session): void
 	{
 		$this->UID = $session->get('user')['UID'];
