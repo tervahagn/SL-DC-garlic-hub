@@ -58,7 +58,6 @@ readonly class ShowDatatableController
 
 		$templateData = $this->templateFormatter->preparerUITemplate($dataGrid);
 		$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->facade->prepareContextMenu();
-
 		$response->getBody()->write(serialize($templateData));
 
 		return $response->withHeader('Content-Type', 'text/html');

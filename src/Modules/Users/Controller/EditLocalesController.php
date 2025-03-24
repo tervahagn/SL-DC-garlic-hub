@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Users;
+namespace App\Modules\Users\Controller;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
@@ -36,8 +36,6 @@ class EditLocalesController
 		$this->userService = $userService;
 	}
 
-	/**
-	 */
 	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface
 	{

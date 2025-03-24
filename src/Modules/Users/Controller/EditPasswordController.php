@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Users;
+namespace App\Modules\Users\Controller;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;

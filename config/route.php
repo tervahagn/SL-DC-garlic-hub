@@ -31,8 +31,8 @@ use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
-use App\Modules\Users\EditLocalesController;
-use App\Modules\Users\EditPasswordController;
+use App\Modules\Users\Controller\EditLocalesController;
+use App\Modules\Users\Controller\EditPasswordController;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
