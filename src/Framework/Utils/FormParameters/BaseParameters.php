@@ -113,19 +113,19 @@ abstract class BaseParameters
 	/**
 	 * @throws ModuleException
 	 */
-	public function setDefaultForParameter($parameter_name, $default_value): static
+	public function setDefaultForParameter(string $parameterName, $default_value): static
 	{
-		if (!$this->hasParameter($parameter_name))
-			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameter_name . ' is not found.');
+		if (!$this->hasParameter($parameterName))
+			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');
 
-		$this->currentParameters[$parameter_name]['default_value'] = $default_value;
+		$this->currentParameters[$parameterName]['default_value'] = $default_value;
 		return $this;
 	}
 
 
-	public function hasParameter($parameter_name): bool
+	public function hasParameter(string $parameterName): bool
 	{
-		return (array_key_exists($parameter_name, $this->currentParameters));
+		return (array_key_exists($parameterName, $this->currentParameters));
 	}
 
 	public function getInputParametersArray(): array

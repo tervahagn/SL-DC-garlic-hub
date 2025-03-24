@@ -21,14 +21,14 @@
 namespace App\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildService;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Modules\Users\Services\AclValidator;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -42,6 +42,11 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		parent::__construct($buildService, $parameters);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function configureParameters(int $UID): void
 	{
 		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
@@ -71,6 +76,12 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		$this->datatableStructure['title'] = $this->translator->translate('overview', 'playlists');
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function collectFormElements(): void
 	{
 		$form       = [];
@@ -128,15 +139,15 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			]);
 		}
 
-		if ($this->parameters->hasParameter(BaseFilterParameters::PARAMETER_COMPANY_ID))
+		if ($this->parameters->hasParameter(BaseFilterParametersInterface::PARAMETER_COMPANY_ID))
 		{
-			$form[Parameters::PARAMETER_COMPANY_ID] = $this->buildService->buildFormField([
-				'type' => FieldType::DROPDOWN,
-				'id' => Parameters::PARAMETER_COMPANY_ID,
-				'name' => Parameters::PARAMETER_COMPANY_ID,
-				'title' => $this->translator->translate('belongs_company', 'main'),
-				'label' => $this->translator->translate('belongs_company', 'main'),
-				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_COMPANY_ID),
+			$form[BaseFilterParametersInterface::PARAMETER_COMPANY_ID] = $this->buildService->buildFormField([
+				'type'   => FieldType::DROPDOWN,
+				'id'     => BaseFilterParametersInterface::PARAMETER_COMPANY_ID,
+				'name'   => BaseFilterParametersInterface::PARAMETER_COMPANY_ID,
+				'title'  => $this->translator->translate('belongs_company', 'main'),
+				'label'  => $this->translator->translate('belongs_company', 'main'),
+				'value'  => $this->parameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_COMPANY_ID),
 				'options' => []
 			]);
 		}
