@@ -57,10 +57,10 @@ abstract class FilterBase extends Sql
 	/**
 	 * @throws Exception
 	 */
-	public function countAllFilteredByUIDCompanyReseller(array $company_ids, array $search_fields, $user_id): int
+	public function countAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, $UID): int
 	{
 		$join  = $this->prepareJoin();
-		$where  = $this->buildRestrictedWhereForCountAndFindSearch($company_ids, $search_fields, $user_id);
+		$where = $this->buildRestrictedWhereForCountAndFindSearch($companyIds, $fields, $UID);
 		return $this->countAllBy($where, $join);
 	}
 
@@ -109,11 +109,13 @@ abstract class FilterBase extends Sql
 		return $this->findAllByWithFields($selects, $where, [], $limit, '', $orderBy);
 	}
 
-	private function buildRestrictedWhereForCountAndFindSearch(array $company_ids, array $search_fields, $UID): array
+	private function buildRestrictedWhereForCountAndFindSearch(array $companyIds, array $search_fields, $UID): array
 	{
-		$where   = $this->prepareWhereForFiltering($search_fields);
-		$where[] = [$this->table.'.UID' => $this->generateWhereClause($UID)];
-		$where[] = $this->buildWhereByCompanyIds($company_ids);
+		$where                      = $this->prepareWhereForFiltering($search_fields);
+		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
+
+		if (!empty($companyIds))
+			$where['user_main.company_id'] = $this->generateWhereClause(implode(',', $companyIds), 'IN', 'OR');
 
 		return $where;
 	}
@@ -132,33 +134,23 @@ abstract class FilterBase extends Sql
 			!array_key_exists('value', $fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]))
 			return [];
 
-		// validate ordering
+		// validate
+		// No Ordering uses default ASC
 		$sort_order = (array_key_exists(BaseFilterParametersInterface::PARAMETER_SORT_ORDER, $fields)) ? $fields[BaseFilterParametersInterface::PARAMETER_SORT_ORDER]['value'] : 'ASC';
 
+		// default when wrong order command
 		if (strcasecmp($sort_order, 'desc') != 0 && strcasecmp($sort_order, 'asc') != 0)
-		{
 			$sort_order = 'ASC';
-		}
 
 		// sort by user
 		if ($fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'] == 'UID' ||
-			$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'] == 'usr_nickname')
+			$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'] == 'username')
 		{
 			$table = ($useUserMain === true) ?  'user_main.' : '';
-			return ['sort' => $table . 'username ', 'order' => $sort_order];
+			return ['sort' => $table . 'username', 'order' => $sort_order];
 		}
 
 		return ['sort' => $this->table.'.'.$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'], 'order' => $sort_order];
-	}
-
-	protected function buildWhereByCompanyIds(array $companyIds): array
-	{
-		if (!empty($companyIds))
-		{
-			return ['user_main.company_id' => $this->generateWhereClause(implode(',', $companyIds), 'IN', 'OR')];
-		}
-
-		return [];
 	}
 
 	abstract protected function prepareWhereForFiltering(array $filterFields): array;

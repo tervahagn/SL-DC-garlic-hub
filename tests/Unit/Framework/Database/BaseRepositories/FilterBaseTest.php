@@ -76,6 +76,8 @@ class FilterBaseTest extends TestCase
 		$this->resultMock       = $this->createMock(Result::class);
 
 		$this->FilterBase = new ConcreteFilterBase($this->connectionMock, 'table', 'id');
+
+		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 	}
 
 	/**
@@ -90,7 +92,7 @@ class FilterBaseTest extends TestCase
 			'randomfield' => ['value' => 'randomvalue']
 		];
 
-		$this->setStandardMocksForCounts();
+		$this->setStandardMocksForCount();
 
 		$this->queryBuilderMock->expects($this->exactly(3))->method('andWhere')
 			->willReturnMap([
@@ -107,7 +109,6 @@ class FilterBaseTest extends TestCase
 				]
 			);
 
-		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 
 		$expectedCount = 42;
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
@@ -128,7 +129,7 @@ class FilterBaseTest extends TestCase
 			'randomfield' => ['value' => '']
 		];
 
-		$this->setStandardMocksForCounts();
+		$this->setStandardMocksForCount();
 
 		$this->queryBuilderMock->expects($this->never())->method('andWhere');
 		$this->queryBuilderMock->expects($this->never())->method('setParameter');
@@ -145,7 +146,7 @@ class FilterBaseTest extends TestCase
 	{
 		$fields = [];
 
-		$this->setStandardMocksForCounts();
+		$this->setStandardMocksForCount();
 
 		$expectedCount = 888;
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
@@ -153,19 +154,22 @@ class FilterBaseTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testFindAllFiltered(): void
+	public function testFindAllFilteredSortByUsername(): void
 	{
 		$fields = [
 			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE => ['value' => 0],
 			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE => ['value' => 10],
-			BaseFilterParametersInterface::PARAMETER_SORT_COLUMN => ['value' => 'column_name'],
+			BaseFilterParametersInterface::PARAMETER_SORT_COLUMN => ['value' => 'username'],
 			BaseFilterParametersInterface::PARAMETER_SORT_ORDER  => ['value' => 'DESC']
 		];
 
-		$this->setStandardMocksForFinds();
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('selected_fitered_user')->willReturnSelf();
+
+		$this->setStandardMocks();
 
 		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')
-			->with('table.column_name', 'DESC');
+			->with('user_main.username', 'DESC');
 
 		$expectedResults = [
 			['id' => 1, 'name' => 'John Doe'],
@@ -178,30 +182,166 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedResults, $result);
 	}
 
-
-	private function setStandardMocksForCounts(): void
+	#[Group('units')]
+	public function testCountAllFilteredByUIDCompanyReseller(): void
 	{
-		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$fields = ['unit_name' => ['value' => 'internal']];
+		$companyId = [3, 5, 6];
+		$UID = 12;
+		$this->setStandardMocksForCount();
+
+		$this->queryBuilderMock->expects($this->exactly(2))->method('andWhere')
+			->willReturnMap([
+					['table.unit_name LIKE :tableunit_name', $this->queryBuilderMock],
+					['table.UID = :tableUID', $this->queryBuilderMock],
+				]
+			);
+
+		$this->queryBuilderMock->expects($this->once())->method('orWhere')
+			->with('user_main.company_id IN (:user_maincompany_id)')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->exactly(3))->method('setParameter')
+			->willReturnMap([
+					['tableunit_name', '%internal%', $this->queryBuilderMock],
+					['tableUID', $UID, $this->queryBuilderMock],
+					['user_maincompany_id', '3,5,6', $this->queryBuilderMock]
+				]
+			);
+
+		$expectedCount = 6934;
+		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
+
+		$result = $this->FilterBase->countAllFilteredByUIDCompanyReseller($companyId, $fields, $UID);
+		$this->assertSame($expectedCount, $result);
+	}
+
+	#[Group('units')]
+	public function testFindAllFilteredByUIDCompanyReseller(): void
+	{
+		$fields = [
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE => ['value' => 0],
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE => ['value' => 0],
+		];
+		$companyId = [3, 5, 6];
+		$UID = 12;
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('selected_fitered')->willReturnSelf();
+
+		$this->setStandardMocks();
+
+		$this->queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('table.UID = :tableUID')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('orWhere')
+			->with('user_main.company_id IN (:user_maincompany_id)')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->exactly(2))->method('setParameter')
+			->willReturnMap([
+					['tableUID', $UID, $this->queryBuilderMock],
+					['user_maincompany_id', '3,5,6', $this->queryBuilderMock]
+				]
+			);
+
+		$this->queryBuilderMock->expects($this->never())->method('addOrderBy');
+
+
+		$expectedResults = [
+			['id' => 1, 'name' => 'John Doe'],
+			['id' => 2, 'name' => 'Jane Doe']
+		];
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
+
+		$result = $this->FilterBase->findAllFilteredByUIDCompanyReseller($companyId, $fields, $UID);
+		$this->assertSame($expectedResults, $result);
+
+	}
+
+	#[Group('units')]
+	public function testCountAllFilteredByUID(): void
+	{
+		$fields = [];
+		$UID = 14;
+
 		$this->queryBuilderMock->expects($this->once())->method('select')
 			->with('COUNT(1)')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('from')
 			->with('table')->willReturnSelf();
-		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
-			->with('table', 'user_main', '', 'test.UID = user_main.UID')->willReturnSelf();
+
+		// no left join
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('table.UID = :tableUID')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')
+			->with('tableUID', $UID)->willReturn($this->queryBuilderMock);
+
+		$expectedCount = 34;
+		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
+
+		$result = $this->FilterBase->countAllFilteredByUID($fields, $UID);
+		$this->assertSame($expectedCount, $result);
 	}
 
-	private function setStandardMocksForFinds(): void
+	#[Group('units')]
+	public function testFindAllFilteredByUIDAndFakeSortOrder(): void
 	{
-		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$fields = [
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE => ['value' => 0],
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE => ['value' => 10],
+			BaseFilterParametersInterface::PARAMETER_SORT_COLUMN => ['value' => 'column_name'],
+			BaseFilterParametersInterface::PARAMETER_SORT_ORDER  => ['value' => 'SHOULD_RESULTIN_AN_ASC']
+		];
+		$UID = 14;
+
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('selected_fitered_user')->willReturnSelf();
+			->with('selected_fitered')->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('from')
+			->with('table')->willReturnSelf();
+
+		// no left join
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('table.UID = :tableUID')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')
+			->with('tableUID', $UID)->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')
+			->with('table.column_name', 'ASC');
+
+		$expectedResults = [['id' => 1, 'name' => 'John Doe']];
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
+
+		$result = $this->FilterBase->findAllFilteredByUID($fields, $UID);
+		$this->assertSame($expectedResults, $result);
+	}
+
+
+
+	private function setStandardMocksForCount(): void
+	{
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('COUNT(1)')->willReturnSelf();
+
+		$this->setStandardMocks();
+	}
+
+	private function setStandardMocks(): void
+	{
 		$this->queryBuilderMock->expects($this->once())->method('from')
 			->with('table')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
 			->with('table', 'user_main', '', 'test.UID = user_main.UID')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 	}
-
 
 }

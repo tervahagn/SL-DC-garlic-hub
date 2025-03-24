@@ -153,7 +153,8 @@ trait FindOperationsTrait
 
 		foreach ($orderBy as $order)
 		{
-			$queryBuilder->addOrderBy($order['sort'], $order['order'] ?? 'ASC');
+			if (!empty($order))
+				$queryBuilder->addOrderBy($order['sort'], $order['order'] ?? 'ASC');
 		}
 
 		return $queryBuilder;
