@@ -52,7 +52,7 @@ abstract class AbstractBaseService
 		return !empty($this->errorMessages);
 	}
 
-	protected function addErrorMessage(string $message)
+	protected function addErrorMessage(string $message): void
 	{
 		$this->errorMessages[] = $message;
 	}
