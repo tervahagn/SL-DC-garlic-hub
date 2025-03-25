@@ -21,7 +21,7 @@
 namespace App\Framework\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use App\Framework\Utils\FormParameters\BaseParameters;
 use Doctrine\DBAL\Exception;
 
 abstract class AbstractDatatableService extends AbstractBaseService
@@ -33,7 +33,7 @@ abstract class AbstractDatatableService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	protected function fetchForModuleAdmin(FilterBase $repository, BaseFilterParametersInterface $parameters): static
+	protected function fetchForModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
 	{
 		$total_elements 	   = $repository->countAllFiltered($parameters->getInputParametersArray());
 		$results	           = $repository->findAllFiltered($parameters->getInputParametersArray());
@@ -44,7 +44,7 @@ abstract class AbstractDatatableService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	protected function fetchForUser(FilterBase $repository, BaseFilterParametersInterface $parameters): static
+	protected function fetchForUser(FilterBase $repository, BaseParameters $parameters): static
 	{
 		$total_elements = $repository->countAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
 		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
