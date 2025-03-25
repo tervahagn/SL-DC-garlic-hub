@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Modules\Users\Repositories\Edge;
 
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -30,9 +31,10 @@ use PHPUnit\Framework\TestCase;
 
 class UserMainRepositoryTest extends TestCase
 {
-	private Connection	 $connectionMock;
-	private QueryBuilder $queryBuilderMock;
-	private Result $resultMock;
+	private readonly Connection	 $connectionMock;
+	private readonly QueryBuilder $queryBuilderMock;
+	private readonly Result $resultMock;
+	private readonly UserMainRepository $userMain;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception
@@ -42,6 +44,9 @@ class UserMainRepositoryTest extends TestCase
 		$this->connectionMock   = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 		$this->resultMock       = $this->createMock(Result::class);
+
+		$this->userMain = new UserMainRepository($this->connectionMock);
+
 	}
 
 	/**
@@ -50,7 +55,6 @@ class UserMainRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindByIdentifierForValidEmail()
 	{
-		$userMain = new UserMainRepository($this->connectionMock);
 		$identifier = 'test@example.com';
 		$userData = [
 			'UID' => 1,
@@ -73,7 +77,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn($userData);
 
-		$this->assertEquals($userData, $userMain->findByIdentifier($identifier));
+		$this->assertEquals($userData, $this->userMain->findByIdentifier($identifier));
 	}
 
 	/**
@@ -82,7 +86,6 @@ class UserMainRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testLoadUserByIdentifierForValidUsername()
 	{
-		$userMain = new UserMainRepository($this->connectionMock);
 		$identifier = 'testuser';
 		$userData = [
 			'UID' => 1,
@@ -106,7 +109,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn($userData);
 
-		$this->assertEquals($userData, $userMain->findByIdentifier($identifier));
+		$this->assertEquals($userData, $this->userMain->findByIdentifier($identifier));
 	}
 
 	/**
@@ -115,7 +118,6 @@ class UserMainRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindByIdReturnsResults(): void
 	{
-		$userMain = new UserMainRepository($this->connectionMock);
 		$UID = 123;
 		$userData = [
 			['UID' => 123, 'company_id' => 1, 'status' => 'active', 'locale' => 'en_US'],
@@ -144,8 +146,52 @@ class UserMainRepositoryTest extends TestCase
 			->willReturn($userData);
 
 
-		$result = $userMain->findById($UID);
+		$result = $this->userMain->findById($UID);
 		$this->assertEquals($userData, $result);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testPrepareMethods(): void
+	{
+		$fields = [
+			'username' => ['value' => 'johndoe'],
+			'from_status' => ['value' => 3],
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE => ['value' => 0],
+			BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE => ['value' => 10],
+		];
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('user_main.*')->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('from')
+			->with('user_main')->willReturnSelf();
+		$this->queryBuilderMock->expects($this->never())->method('leftJoin');
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+
+		$this->queryBuilderMock->expects($this->exactly(2))->method('andWhere')
+			->willReturnMap([
+					['user_main.username LIKE :user_mainusername', $this->queryBuilderMock],
+					['status >= :status', $this->queryBuilderMock]
+				]
+			);
+		$this->queryBuilderMock->expects($this->exactly(2))->method('setParameter')
+			->willReturnMap([
+					['user_mainusername', '%johndoe%', $this->queryBuilderMock],
+					['status', 3, $this->queryBuilderMock]
+				]
+			);
+
+		$this->queryBuilderMock->expects($this->never())->method('addOrderBy');
+
+		$expectedResults = [['id' => 1, 'name' => 'John Doe']];
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
+
+		$result = $this->userMain->findAllFiltered($fields);
+		$this->assertSame($expectedResults, $result);
 	}
 
 }

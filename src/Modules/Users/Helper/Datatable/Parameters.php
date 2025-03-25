@@ -34,6 +34,8 @@ class Parameters extends BaseFilterParameters
 	const string PARAMETER_SURNAME      = 'surname';
 	const string PARAMETER_COMPANY_NAME = 'company_name';
 	const string PARAMETER_STATUS       = 'status';
+
+	// because we need also a db operation that includes the higher user statuses
 	const string PARAMETER_FROM_STATUS  = 'from_status';
 	const string PARAMETER_ONLINE       = 'is_online';
 

@@ -157,7 +157,6 @@ abstract class FilterBase extends Sql
 
 	protected function determineWhereForFiltering($key, $parameter): array
 	{
-
 		$where = [];
 		switch ($key)
 		{

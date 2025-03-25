@@ -39,12 +39,12 @@ class ConcreteFilterBase extends FilterBase
 
 	protected function prepareSelectFiltered(): array
 	{
-		return ['selected_fitered'];
+		return ['selected_filtered'];
 	}
 
 	protected function prepareSelectFilteredForUser(): array
 	{
-		return ['selected_fitered_user'];
+		return ['selected_filtered_user'];
 	}
 
 	protected function prepareWhereForFiltering(array $filterFields): array
@@ -141,6 +141,9 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCountAllFilteredReturnsAllEmpty(): void
 	{
@@ -153,6 +156,9 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllFilteredSortByUsername(): void
 	{
@@ -164,7 +170,7 @@ class FilterBaseTest extends TestCase
 		];
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('selected_fitered_user')->willReturnSelf();
+			->with('selected_filtered_user')->willReturnSelf();
 
 		$this->setStandardMocks();
 
@@ -182,6 +188,9 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedResults, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCountAllFilteredByUIDCompanyReseller(): void
 	{
@@ -216,6 +225,9 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedCount, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllFilteredByUIDCompanyReseller(): void
 	{
@@ -226,7 +238,7 @@ class FilterBaseTest extends TestCase
 		$companyId = [3, 5, 6];
 		$UID = 12;
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('selected_fitered')->willReturnSelf();
+			->with('selected_filtered')->willReturnSelf();
 
 		$this->setStandardMocks();
 
@@ -260,6 +272,9 @@ class FilterBaseTest extends TestCase
 
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCountAllFilteredByUID(): void
 	{
@@ -288,6 +303,9 @@ class FilterBaseTest extends TestCase
 		$this->assertSame($expectedCount, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllFilteredByUIDAndFakeSortOrder(): void
 	{
@@ -300,7 +318,7 @@ class FilterBaseTest extends TestCase
 		$UID = 14;
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('selected_fitered')->willReturnSelf();
+			->with('selected_filtered')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('from')
 			->with('table')->willReturnSelf();
 
@@ -314,8 +332,7 @@ class FilterBaseTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')
 			->with('tableUID', $UID)->willReturn($this->queryBuilderMock);
 
-		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')
-			->with('table.column_name', 'ASC');
+		$this->queryBuilderMock->expects($this->once())->method('addOrderBy')->with('table.column_name', 'ASC');
 
 		$expectedResults = [['id' => 1, 'name' => 'John Doe']];
 
@@ -324,8 +341,6 @@ class FilterBaseTest extends TestCase
 		$result = $this->FilterBase->findAllFilteredByUID($fields, $UID);
 		$this->assertSame($expectedResults, $result);
 	}
-
-
 
 	private function setStandardMocksForCount(): void
 	{

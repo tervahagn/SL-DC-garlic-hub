@@ -85,7 +85,7 @@ class UserMainRepository extends FilterBase
 
 	protected function prepareSelectFilteredForUser(): array
 	{
-		return [$this->table.'.*'];
+		return $this->prepareSelectFiltered();
 	}
 
 	protected function prepareWhereForFiltering(array $filterFields): array
