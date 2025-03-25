@@ -167,12 +167,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->setTranslator($translator);
 
 		$translator->method('translate')
-			->with('overview', 'playlists')
+			->with('overview', 'users')
 			->willReturn($expectedTitle);
 
 		$this->builder->buildTitle();
 
-		$this->assertEquals($expectedTitle, $this->builder->getDatatableStructure()['title']);
+		$this->assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
 	}
 
 	/**

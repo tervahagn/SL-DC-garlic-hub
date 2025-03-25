@@ -35,7 +35,6 @@ class Parameters extends BaseFilterParameters
 	const string PARAMETER_COMPANY_NAME = 'company_name';
 	const string PARAMETER_STATUS       = 'status';
 	const string PARAMETER_FROM_STATUS  = 'from_status';
-
 	const string PARAMETER_ONLINE       = 'is_online';
 
 	protected array $moduleParameters = array(
@@ -54,5 +53,7 @@ class Parameters extends BaseFilterParameters
 
 		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_UID);
 	}
+
+
 
 }

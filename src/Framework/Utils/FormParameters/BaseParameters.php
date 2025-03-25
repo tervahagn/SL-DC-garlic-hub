@@ -173,6 +173,16 @@ abstract class BaseParameters
 		return $this->currentParameters[$parameter_name]['default_value'];
 	}
 
+	public function getModuleName(): string
+	{
+		return $this->moduleName;
+	}
+
+	public function getCurrentParameters(): array
+	{
+		return $this->currentParameters;
+	}
+
 	/**
 	 * @throws  ModuleException
 	 */

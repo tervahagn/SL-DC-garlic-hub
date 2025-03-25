@@ -64,6 +64,12 @@ class ControllerFacade implements DatatableFacadeInterface
 		$this->usersService->loadUsersForOverview();
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function prepareDataGrid(): static
 	{
 		$this->datatableBuilder->buildTitle();
