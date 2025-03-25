@@ -112,5 +112,4 @@ class AbstractDatatableServiceTest extends TestCase
 		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
 	}
 
-
 }
