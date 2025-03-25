@@ -34,7 +34,7 @@ use Psr\Cache\InvalidArgumentException;
 
 class UserServiceTest extends TestCase
 {
-	private UsersService $userService;
+	private UsersService $usersService;
 	private UserEntityFactory $entityFactoryMock;
 	private Psr16Adapter $cacheMock;
 	private UserMainRepository $userMainRepositoryMock;
@@ -51,7 +51,7 @@ class UserServiceTest extends TestCase
 		$repositoryFactoryMock->method('create')
 			->willReturn(['main' => $this->userMainRepositoryMock]);
 
-		$this->userService = new UsersService(
+		$this->usersService = new UsersService(
 			$repositoryFactoryMock,
 			$this->entityFactoryMock,
 			$this->cacheMock
@@ -66,10 +66,46 @@ class UserServiceTest extends TestCase
 	{
 		$this->userMainRepositoryMock->method('update')->with($this->isInt(), $this->isArray())->willReturn(12);
 
-		$this->assertEquals(12, $this->userService->updatePassword(1, 'hurz'));
+		$this->assertEquals(12, $this->usersService->updatePassword(1, 'hurz'));
 
 	}
 
+	#[Group('units')]
+	public function testUpdateUserStatsSuccess(): void
+	{
+		$UID = 123;
+		$sessionId = 'abc-123';
+		$expectedData = [
+			'login_time' => date('Y-m-d H:i:s'),
+			'num_logins' => 'num_logins + 1',
+			'session_id' => $sessionId,
+		];
+		$this->userMainRepositoryMock
+			->expects($this->once())
+			->method('update')
+			->with($UID, $this->equalTo($expectedData))
+			->willReturn(1);
+
+		$result = $this->usersService->updateUserStats($UID, $sessionId);
+
+		$this->assertEquals(1, $result);
+	}
+
+	#[Group('units')]
+	public function testUpdateUserStatsFailure(): void
+	{
+		$UID = 123;
+		$sessionId = 'invalid-session';
+		$this->userMainRepositoryMock
+			->expects($this->once())
+			->method('update')
+			->with($UID, $this->arrayHasKey('login_time'))
+			->willReturn(0);
+
+		$result = $this->usersService->updateUserStats($UID, $sessionId);
+
+		$this->assertEquals(0, $result);
+	}
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
@@ -85,7 +121,7 @@ class UserServiceTest extends TestCase
 			->with($identifier)
 			->willReturn($mockUserData);
 
-		$result = $this->userService->findUser($identifier);
+		$result = $this->usersService->findUser($identifier);
 
 		$this->assertEquals($mockUserData, $result);
 	}
@@ -103,7 +139,7 @@ class UserServiceTest extends TestCase
 			->with($identifier)
 			->willReturn([]);
 
-		$this->assertEmpty($this->userService->findUser($identifier));
+		$this->assertEmpty($this->usersService->findUser($identifier));
 	}
 
 	/**
@@ -127,7 +163,7 @@ class UserServiceTest extends TestCase
 			->with($cachedData)
 			->willReturn($mockUserEntity);
 
-		$result = $this->userService->getUserById($UID);
+		$result = $this->usersService->getUserById($UID);
 		$this->assertEquals($mockUserEntity, $result);
 	}
 
@@ -153,7 +189,7 @@ class UserServiceTest extends TestCase
 			->with(['main' => $userData])
 			->willReturn($mockUserEntity);
 
-		$result = $this->userService->getUserById($UID);
+		$result = $this->usersService->getUserById($UID);
 
 		$this->assertEquals($mockUserEntity, $result);
 	}
@@ -170,7 +206,7 @@ class UserServiceTest extends TestCase
 		$this->cacheMock->expects($this->once())->method('delete')
 			->with('user_'.$UID)
 		;
-		$this->userService->invalidateCache($UID);
+		$this->usersService->invalidateCache($UID);
 
 	}
 

@@ -42,6 +42,9 @@ class UsersController
 
 	/**
 	 * @throws ModuleException
+	 * @throws \App\Framework\Exceptions\CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
 	 */
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -53,7 +56,7 @@ class UsersController
 
 		$session = $request->getAttribute('session');
 		$this->usersService->setUID($session->get('user')['UID']);
-		$this->usersService->loadUsersForOverview($this->parameters);
+		$this->usersService->loadDatatable();
 		$results = [];
 		foreach ($this->usersService->getCurrentFilterResults() as $value)
 		{

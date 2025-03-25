@@ -58,6 +58,11 @@ abstract class AbstractAclValidator implements AbstractAclValidatorInterface
 		return $this->config;
 	}
 
+	public function getModuleName(): string
+	{
+		return $this->moduleName;
+	}
+
 	/**
 	 * @param int $UID
 	 * @return bool

@@ -95,7 +95,7 @@ class ControllerFacadeTest extends TestCase
 		// Arrange
 		$this->mockDatatableBuilder->expects($this->once())->method('determineParameters');
 
-		$this->mockUsersService->expects($this->once())->method('loadUsersForOverview');
+		$this->mockUsersService->expects($this->once())->method('loadDatatable');
 
 		$this->controllerFacade->processSubmittedUserInput();
 	}

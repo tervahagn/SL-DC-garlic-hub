@@ -81,7 +81,7 @@ class UsersControllerTest extends TestCase
 		$this->parametersMock->expects($this->once())->method('parseInputAllParameters');
 
 		$this->usersServiceMock->expects($this->once())->method('setUID')->with(123);
-		$this->usersServiceMock->expects($this->once())->method('loadUsersForOverview')->with($this->parametersMock);
+		$this->usersServiceMock->expects($this->once())->method('loadDatatable');
 
 		$this->usersServiceMock->method('getCurrentFilterResults')->willReturn([
 			['UID' => 1, 'username' => 'JohnDoe'],

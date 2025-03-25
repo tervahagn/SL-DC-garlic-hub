@@ -21,18 +21,23 @@
 namespace App\Modules\Users\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Services\AbstractBaseService;
+use App\Framework\Services\AbstractDatatableService;
 use App\Framework\Services\SearchFilterParamsTrait;
 use App\Framework\Utils\FormParameters\BaseParameters;
+use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
-class UsersDatatableService extends AbstractBaseService
+class UsersDatatableService extends AbstractDatatableService
 {
-	use SearchFilterParamsTrait;
 	private readonly UserMainRepository $userMainRepository;
+	private readonly Parameters $parameters;
 	private readonly AclValidator $aclValidator;
-	private BaseParameters $parameters;
+
 
 	public function __construct(UserMainRepository $userMainRepository, BaseParameters $parameters,  AclValidator $aclValidator, LoggerInterface $logger)
 	{
@@ -42,52 +47,38 @@ class UsersDatatableService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function loadUsersForOverview(): void
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
+	public function loadDatatable(): void
 	{
+
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{
-			$this->handleRequestModuleAdmin($this->userMainRepository);
+			$this->fetchForModuleAdmin($this->userMainRepository, $this->parameters);
 		}
-		elseif ($this->aclValidator->isSubAdmin($this->UID))
+		/*		elseif ($this->aclValidator->isSubAdmin($this->UID))
+				{
+					$this->handleRequestSubAdmin($this->userMainRepository);
+				}
+				elseif ($this->aclValidator->isEditor($this->UID))
+				{
+					// Todo
+				}
+				elseif ($this->aclValidator->isViewer($this->UID))
+				{
+					// Todo
+				}
+		*/
+		else
 		{
-			$this->handleRequestSubAdmin($this->userMainRepository);
+			$this->fetchForUser($this->userMainRepository, $this->parameters);
 		}
 	}
 
-	public function handleRequestModuleAdmin(FilterBase $repository): static
-	{
-		// later		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
-		// for edge$this->setCompanyArray([[1 => 'local']]);
 
-		$this->setAllowedCompanyIds(array_keys($this->getCompanyArray()));
 
-		$total_elements 	   = $repository->countAllFiltered($this->parameters->getInputParametersArray());
-		$results	           = $repository->findAllFiltered($this->parameters->getInputParametersArray());
 
-		return $this->setAllResultData($total_elements,  $results);
-	}
-
-	public function handleRequestSubAdmin(FilterBase $repository): static
-	{
-		// companies to show names in dropdowns e.g.
-/*		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
-
-		$company_ids = $this->aclValidator->determineCompaniesForSubAdmin();
-		$this->setAllowedCompanyIds($company_ids);
-
-		$total_elements = $repository->countAllFilteredByUIDCompanyReseller(
-			$company_ids,
-			$parameters->getInputParametersArray(),
-			$this->getUser()->getUID()
-		);
-
-		$results = $repository->findAllFilteredByUIDCompanyReseller(
-			$company_ids,
-			$parameters->getInputParametersArray(),
-			$this->getUser()->getUID()
-		);
-		return $this->setAllResultData($total_elements,  $results);
-*/
-		return $this;
-	}
 }

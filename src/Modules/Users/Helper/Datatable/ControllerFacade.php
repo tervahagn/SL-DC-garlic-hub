@@ -46,6 +46,11 @@ class ControllerFacade implements DatatableFacadeInterface
 		$this->usersService = $usersService;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function configure(Translator $translator, Session $session): void
 	{
 		$this->UID = $session->get('user')['UID'];
@@ -56,12 +61,14 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function processSubmittedUserInput(): void
 	{
 		$this->datatableBuilder->determineParameters();
-		$this->usersService->loadUsersForOverview();
+		$this->usersService->loadDatatable();
 	}
 
 	/**
