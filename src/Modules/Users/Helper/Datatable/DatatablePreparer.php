@@ -64,7 +64,6 @@ class DatatablePreparer extends AbstractDatatablePreparer
 			foreach ($fields as $HeaderField)
 			{
 				$innerKey = $HeaderField->getName();
-				$sort = $HeaderField->isSortable();
 
 				$resultElements = [];
 				$resultElements['CONTROL_NAME_BODY'] = $innerKey;

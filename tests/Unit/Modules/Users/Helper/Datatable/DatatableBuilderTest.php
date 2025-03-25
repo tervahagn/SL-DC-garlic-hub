@@ -339,9 +339,6 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->createTableFields();
 	}
 
-	/**
-	 * Validates that createTableFields adds limited fields for EDGE edition.
-	 */
 	#[Group('units')]
 	public function testCreateTableFieldsAddsLimitedFieldsForEdgeEdition(): void
 	{
