@@ -23,7 +23,7 @@ class PlaylistControllerTest extends TestCase
 	private readonly Parameters $parametersMock;
 	private readonly ResponseInterface $responseMock;
 	private readonly ServerRequestInterface $requestMock;
-	private readonly  StreamInterface $streamInterfaceMock;
+	private readonly StreamInterface $streamInterfaceMock;
 	private readonly Session $sessionMock;
 	/**
 	 * @throws Exception

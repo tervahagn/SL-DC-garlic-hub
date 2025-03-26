@@ -27,34 +27,35 @@ use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
 use App\Modules\Users\Services\UsersDatatableService;
+use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ControllerFacadeTest extends TestCase
 {
-	private ControllerFacade $controllerFacade;
-	private MockObject $mockDatatableBuilder;
-	private MockObject $mockDatatableFormatter;
-	private MockObject $mockUsersService;
-	private MockObject $mockTranslator;
-	private MockObject $mockSession;
+	private readonly ControllerFacade $controllerFacade;
+	private readonly DatatableBuilder $datatableBuilderMock;
+	private readonly DatatablePreparer $datatablePreparerMock;
+	private readonly UsersDatatableService $usersServiceMock;
+	private readonly Translator $translatorMock;
+	private readonly Session $sessionMock;
 
 	protected function setUp(): void
 	{
-		$this->mockDatatableBuilder = $this->createMock(DatatableBuilder::class);
-		$this->mockDatatableFormatter = $this->createMock(DatatablePreparer::class);
-		$this->mockUsersService = $this->createMock(UsersDatatableService::class);
-		$this->mockTranslator = $this->createMock(Translator::class);
-		$this->mockSession = $this->createMock(Session::class);
+		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
+		$this->datatablePreparerMock = $this->createMock(DatatablePreparer::class);
+		$this->usersServiceMock = $this->createMock(UsersDatatableService::class);
+		$this->translatorMock = $this->createMock(Translator::class);
+		$this->sessionMock = $this->createMock(Session::class);
 
 		$this->controllerFacade = new ControllerFacade(
-			$this->mockDatatableBuilder,
-			$this->mockDatatableFormatter,
-			$this->mockUsersService
+			$this->datatableBuilderMock,
+			$this->datatablePreparerMock,
+			$this->usersServiceMock
 		);
 
-		$this->mockUsersService->method('getCurrentTotalResult')->willReturn(42);
+		$this->usersServiceMock->method('getCurrentTotalResult')->willReturn(42);
 	}
 
 
@@ -64,38 +65,37 @@ class ControllerFacadeTest extends TestCase
 		$mockUID = 12345;
 		$mockUserData = ['UID' => $mockUID];
 
-		$this->mockSession->expects($this->once())
+		$this->sessionMock->expects($this->once())
 			->method('get')
 			->with('user')
 			->willReturn($mockUserData);
 
-		$this->mockUsersService->expects($this->once())
+		$this->usersServiceMock->expects($this->once())
 			->method('setUID')
 			->with($mockUID);
 
-		$this->mockDatatableBuilder->expects($this->once())
+		$this->datatableBuilderMock->expects($this->once())
 			->method('configureParameters')
 			->with($mockUID);
 
-		$this->mockDatatableBuilder->expects($this->once())
+		$this->datatableBuilderMock->expects($this->once())
 			->method('setTranslator')
-			->with($this->mockTranslator);
+			->with($this->translatorMock);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('setTranslator')
-			->with($this->mockTranslator);
+			->with($this->translatorMock);
 
-		$this->controllerFacade->configure($this->mockTranslator, $this->mockSession);
+		$this->controllerFacade->configure($this->translatorMock, $this->sessionMock);
 
 	}
 
 	#[Group('units')]
 	public function testProcessSubmittedUserInput(): void
 	{
-		// Arrange
-		$this->mockDatatableBuilder->expects($this->once())->method('determineParameters');
+		$this->datatableBuilderMock->expects($this->once())->method('determineParameters');
 
-		$this->mockUsersService->expects($this->once())->method('loadDatatable');
+		$this->usersServiceMock->expects($this->once())->method('loadDatatable');
 
 		$this->controllerFacade->processSubmittedUserInput();
 	}
@@ -104,13 +104,13 @@ class ControllerFacadeTest extends TestCase
 	public function testPrepareDataGrid(): void
 	{
 		// Arrange
-		$this->mockDatatableBuilder->expects($this->once())->method('buildTitle');
-		$this->mockDatatableBuilder->expects($this->once())->method('collectFormElements');
-		$this->mockDatatableBuilder->expects($this->once())
+		$this->datatableBuilderMock->expects($this->once())->method('buildTitle');
+		$this->datatableBuilderMock->expects($this->once())->method('collectFormElements');
+		$this->datatableBuilderMock->expects($this->once())
 			->method('createPagination')
 			->with(42);
-		$this->mockDatatableBuilder->expects($this->once())->method('createDropDown');
-		$this->mockDatatableBuilder->expects($this->once())->method('createTableFields');
+		$this->datatableBuilderMock->expects($this->once())->method('createDropDown');
+		$this->datatableBuilderMock->expects($this->once())->method('createTableFields');
 
 		// Act
 		$result = $this->controllerFacade->prepareDataGrid();
@@ -126,10 +126,10 @@ class ControllerFacadeTest extends TestCase
 		$mockUID = 12345;
 		$mockUserData = ['UID' => $mockUID];
 
-		$this->mockSession->expects($this->once())->method('get')
+		$this->sessionMock->expects($this->once())->method('get')
 			->with('user')
 			->willReturn($mockUserData);
-		$this->controllerFacade->configure($this->mockTranslator, $this->mockSession);
+		$this->controllerFacade->configure($this->translatorMock, $this->sessionMock);
 
 		$mockDatatableStructure = [
 			'pager' => ['page_1', 'page_2'],
@@ -147,45 +147,45 @@ class ControllerFacadeTest extends TestCase
 		$mockFormattedList = ['row_1', 'row_2'];
 		$currentTotalResult = 42;
 
-		$this->mockDatatableBuilder->expects($this->once())
+		$this->datatableBuilderMock->expects($this->once())
 			->method('getDatatableStructure')
 			->willReturn($mockDatatableStructure);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('preparePagination')
 			->with($mockDatatableStructure['pager'], $mockDatatableStructure['dropdown'])
 			->willReturn($mockPagination);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareFilterForm')
 			->with($mockDatatableStructure['form'])
 			->willReturn(['prepared_filter_form']);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareAdd')
 			->with('person-add')
 			->willReturn(['prepared_add']);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareTableHeader')
 			->with($mockDatatableStructure['header'], ['users', 'main'])
 			->willReturn(['prepared_header']);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareSort')
 			->willReturn(['prepared_sort']);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('preparePage')
 			->willReturn(['prepared_page']);
 
-		$this->mockUsersService->expects($this->once())
+		$this->usersServiceMock->expects($this->once())
 			->method('getCurrentTotalResult')
 			->willReturn($currentTotalResult);
 
-		$this->mockDatatableFormatter->expects($this->once())
+		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareTableBody')
-			->with($this->mockUsersService->getCurrentFilterResults(), $mockDatatableStructure['header'], $this->anything())
+			->with($this->usersServiceMock->getCurrentFilterResults(), $mockDatatableStructure['header'], $this->anything())
 			->willReturn($mockFormattedList);
 
 		// Act
