@@ -43,7 +43,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableBuilderTest extends TestCase
 {
-
 	private readonly BuildService $buildServiceMock;
 	private readonly Parameters $parametersMock;
 	private readonly AclValidator $aclValidatorMock;
@@ -55,7 +54,7 @@ class DatatableBuilderTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->buildServiceMock = $this->createMock(BuildService::class);
-		$this->parametersMock   = $this->createMock(Parameters::class);
+		$this->parametersMock = $this->createMock(Parameters::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 
 		$this->builder = new DatatableBuilder($this->buildServiceMock, $this->parametersMock, $this->aclValidatorMock);
@@ -189,13 +188,13 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->setTranslator($translator);
 
 		$this->parametersMock->method('hasParameter')
-		->willReturnMap([
-			[Parameters::PARAMETER_FIRSTNAME, true],
-			[Parameters::PARAMETER_SURNAME, true],
-			[Parameters::PARAMETER_COMPANY_NAME, true],
-			[BaseFilterParametersInterface::PARAMETER_COMPANY_ID, true],
-			[Parameters::PARAMETER_STATUS, true]
-		]);
+			->willReturnMap([
+				[Parameters::PARAMETER_FIRSTNAME, true],
+				[Parameters::PARAMETER_SURNAME, true],
+				[Parameters::PARAMETER_COMPANY_NAME, true],
+				[BaseFilterParametersInterface::PARAMETER_COMPANY_ID, true],
+				[Parameters::PARAMETER_STATUS, true]
+			]);
 
 
 		$this->parametersMock->method('getValueOfParameter')

@@ -109,18 +109,15 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			]);
 		}
 
-		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
-		{
-			$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildService->buildFormField([
-				'type' => FieldType::DROPDOWN,
-				'id' => Parameters::PARAMETER_PLAYLIST_MODE,
-				'name' => Parameters::PARAMETER_PLAYLIST_MODE,
-				'title' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
-				'label' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
-				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_MODE),
-				'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
-			]);
-		}
+		$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildService->buildFormField([
+			'type' => FieldType::DROPDOWN,
+			'id' => Parameters::PARAMETER_PLAYLIST_MODE,
+			'name' => Parameters::PARAMETER_PLAYLIST_MODE,
+			'title' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
+			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_MODE),
+			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
+		]);
 
 		$this->datatableStructure['form'] = $form;
 	}
@@ -134,7 +131,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	{
 		$this->buildService->createDatatableField('playlist_name', true);
 
-		if ($this->parameters->hasParameter('UID'))
+		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
 			$this->buildService->createDatatableField('UID', true);
 
 		$this->buildService->createDatatableField('playlist_mode', true);
