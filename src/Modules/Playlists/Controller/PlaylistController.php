@@ -65,6 +65,7 @@ class PlaylistController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
+	/*
 	public function shuffle(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
@@ -86,7 +87,7 @@ class PlaylistController
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-
+*/
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
@@ -97,7 +98,7 @@ class PlaylistController
 		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
 		$multizone = $this->playlistsService->loadPlaylistForMultizone($playlistId);
-		if ( $this->playlistsService->hasErrorMessages())
+		if ($this->playlistsService->hasErrorMessages())
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $this->playlistsService->getErrorMessages()]);
 
 		return $this->jsonResponse($response, ['success' => true, 'zones' => $multizone]);
@@ -119,6 +120,9 @@ class PlaylistController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->parameters->setUserInputs($args);
@@ -126,7 +130,7 @@ class PlaylistController
 
 		$this->session = $request->getAttribute('session');
 		$this->playlistsService->setUID($this->session->get('user')['UID']);
-		$this->playlistsService->loadPlaylistsForOverview($this->parameters);
+		$this->playlistsService->loadPlaylistsForOverview();
 		$results = [];
 		foreach ($this->playlistsService->getCurrentFilterResults() as $value)
 		{
@@ -150,7 +154,6 @@ class PlaylistController
 		return $this->jsonResponse($response, $result);
 
 	}
-
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
