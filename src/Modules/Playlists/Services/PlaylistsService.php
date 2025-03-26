@@ -54,7 +54,7 @@ class PlaylistsService extends AbstractBaseService
 		}
 		elseif ($this->aclValidator->isSubAdmin($this->UID))
 		{
-			$this->handleRequestSubAdmin($this->playlistsRepository);
+	//		$this->handleRequestSubAdmin($this->playlistsRepository);
 		}
 		elseif ($this->aclValidator->isEditor($this->UID))
 		{
@@ -88,7 +88,7 @@ class PlaylistsService extends AbstractBaseService
 		return $this->setAllResultData($total_elements,  $results);
 	}
 
-	public function handleRequestSubAdmin(FilterBase $repository): static
+/*	public function handleRequestSubAdmin(FilterBase $repository): static
 	{
 		// companies to show names in dropdowns e.g.
 	/*	$this->setCompanyArray($this->getUser()->getAllCompanyIds());
@@ -108,10 +108,10 @@ class PlaylistsService extends AbstractBaseService
 			$this->getUser()->getUID()
 		);
 		return $this->setAllResultData($total_elements,  $results);
-*/		return $this;
+		return $this;
 	}
 
-
+*/
 	public function handleRequestUser(FilterBase $repository): static
 	{
 		$total_elements = $repository->countAllFilteredByUID($this->parameters->getInputParametersArray(), $this->UID);
