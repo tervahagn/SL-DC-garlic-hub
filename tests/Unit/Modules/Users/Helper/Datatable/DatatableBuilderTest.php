@@ -44,9 +44,9 @@ use Psr\SimpleCache\InvalidArgumentException;
 class DatatableBuilderTest extends TestCase
 {
 
-	private readonly BuildService $buildService;
-	private readonly Parameters $parameters;
-	private readonly AclValidator $aclValidator;
+	private readonly BuildService $buildServiceMock;
+	private readonly Parameters $parametersMock;
+	private readonly AclValidator $aclValidatorMock;
 	private readonly DatatableBuilder $builder;
 
 	/**
@@ -54,11 +54,11 @@ class DatatableBuilderTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->buildService = $this->createMock(BuildService::class);
-		$this->parameters = $this->createMock(Parameters::class);
-		$this->aclValidator = $this->createMock(AclValidator::class);
+		$this->buildServiceMock = $this->createMock(BuildService::class);
+		$this->parametersMock   = $this->createMock(Parameters::class);
+		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 
-		$this->builder = new DatatableBuilder($this->buildService, $this->parameters, $this->aclValidator);
+		$this->builder = new DatatableBuilder($this->buildServiceMock, $this->parametersMock, $this->aclValidatorMock);
 
 	}
 
@@ -71,12 +71,12 @@ class DatatableBuilderTest extends TestCase
 	#[Group('units')]
 	public function testConfigureParametersDoesNothingForEdgeEdition(): void
 	{
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => Config::PLATFORM_EDITION_EDGE]));
 
-		$this->parameters->expects($this->never())->method('addOwner');
-		$this->parameters->expects($this->never())->method('addCompany');
+		$this->parametersMock->expects($this->never())->method('addOwner');
+		$this->parametersMock->expects($this->never())->method('addCompany');
 
 		$this->builder->configureParameters(123);
 	}
@@ -90,21 +90,21 @@ class DatatableBuilderTest extends TestCase
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForModuleAdmin(): void
 	{
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => 'some_other_edition']));
 
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('isModuleAdmin')
 			->with(123)
 			->willReturn(true);
 
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('isSubAdmin')
 			->willReturn(false);
 
-		$this->parameters->expects($this->once())->method('addOwner');
-		$this->parameters->expects($this->once())->method('addCompany');
+		$this->parametersMock->expects($this->once())->method('addOwner');
+		$this->parametersMock->expects($this->once())->method('addCompany');
 
 		$this->builder->configureParameters(123);
 	}
@@ -118,21 +118,21 @@ class DatatableBuilderTest extends TestCase
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForSubAdmin(): void
 	{
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => 'some_other_edition']));
 
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('isModuleAdmin')
 			->willReturn(false);
 
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('isSubAdmin')
 			->with(456)
 			->willReturn(true);
 
-		$this->parameters->expects($this->once())->method('addOwner');
-		$this->parameters->expects($this->once())->method('addCompany');
+		$this->parametersMock->expects($this->once())->method('addOwner');
+		$this->parametersMock->expects($this->once())->method('addCompany');
 
 		$this->builder->configureParameters(456);
 	}
@@ -142,11 +142,11 @@ class DatatableBuilderTest extends TestCase
 	{
 		$_GET = ['test_key' => 'test_value'];
 
-		$this->parameters->expects($this->once())
+		$this->parametersMock->expects($this->once())
 			->method('setUserInputs')
 			->with($_GET);
 
-		$this->parameters->expects($this->once())
+		$this->parametersMock->expects($this->once())
 			->method('parseInputFilterAllUsers');
 
 		$this->builder->determineParameters();
@@ -188,7 +188,7 @@ class DatatableBuilderTest extends TestCase
 		$translator = $this->createMock(Translator::class);
 		$this->builder->setTranslator($translator);
 
-		$this->parameters->method('hasParameter')
+		$this->parametersMock->method('hasParameter')
 		->willReturnMap([
 			[Parameters::PARAMETER_FIRSTNAME, true],
 			[Parameters::PARAMETER_SURNAME, true],
@@ -198,7 +198,7 @@ class DatatableBuilderTest extends TestCase
 		]);
 
 
-		$this->parameters->method('getValueOfParameter')
+		$this->parametersMock->method('getValueOfParameter')
 			->willReturnMap([
 				[Parameters::PARAMETER_USERNAME, 'test_username'],
 				[Parameters::PARAMETER_EMAIL, 'test_email@example.com'],
@@ -232,7 +232,7 @@ class DatatableBuilderTest extends TestCase
 		$companyIdMock        = $this->createMock(DropdownField::class);
 		$statusMock           = $this->createMock(DropdownField::class);
 
-		$this->buildService->method('buildFormField')->willReturnMap([
+		$this->buildServiceMock->method('buildFormField')->willReturnMap([
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_USERNAME, 'name' => Parameters::PARAMETER_USERNAME, 'title' => 'Username', 'label' => 'Username', 'value' => 'test_username'], $userFieldMock],
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_EMAIL, 'name' => Parameters::PARAMETER_EMAIL, 'title' => 'Email', 'label' => 'Email', 'value' => 'test_email@example.com'], $emailFieldMock],
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_FIRSTNAME, 'name' => Parameters::PARAMETER_FIRSTNAME, 'title' => 'First Name', 'label' => 'First Name', 'value' => 'John'], $firstNameFieldMock],
@@ -278,9 +278,9 @@ class DatatableBuilderTest extends TestCase
 		$translator = $this->createMock(Translator::class);
 		$this->builder->setTranslator($translator);
 
-		$this->parameters->method('hasParameter')->willReturn(false);
+		$this->parametersMock->method('hasParameter')->willReturn(false);
 
-		$this->parameters->method('getValueOfParameter')
+		$this->parametersMock->method('getValueOfParameter')
 			->willReturnMap([
 				[Parameters::PARAMETER_USERNAME, 'test_username'],
 				[Parameters::PARAMETER_EMAIL, 'test_email@example.com']
@@ -298,7 +298,7 @@ class DatatableBuilderTest extends TestCase
 		$userFieldMock        = $this->createMock(TextField::class);
 		$emailFieldMock       = $this->createMock(EmailField::class);
 
-		$this->buildService->method('buildFormField')->willReturnMap([
+		$this->buildServiceMock->method('buildFormField')->willReturnMap([
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_USERNAME, 'name' => Parameters::PARAMETER_USERNAME, 'title' => 'Username', 'label' => 'Username', 'value' => 'test_username'], $userFieldMock],
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_EMAIL, 'name' => Parameters::PARAMETER_EMAIL, 'title' => 'Email', 'label' => 'Email', 'value' => 'test_email@example.com'], $emailFieldMock],
 		]);
@@ -318,12 +318,12 @@ class DatatableBuilderTest extends TestCase
 	#[Group('units')]
 	public function testCreateTableFieldsAddsCorrectFieldsForCoreAndEnterpriseEditions(): void
 	{
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => Config::PLATFORM_EDITION_CORE]));
 
 		$resultsBuilderMock = $this->createMock(\App\Framework\Utils\Datatable\Results\Builder::class);
-		$this->buildService->method('getResultsBuilder')->willReturn($resultsBuilderMock);
+		$this->buildServiceMock->method('getResultsBuilder')->willReturn($resultsBuilderMock);
 
 		$resultsBuilderMock->expects($this->exactly(6))
 			->method('createField')
@@ -342,12 +342,12 @@ class DatatableBuilderTest extends TestCase
 	#[Group('units')]
 	public function testCreateTableFieldsAddsLimitedFieldsForEdgeEdition(): void
 	{
-		$this->aclValidator
+		$this->aclValidatorMock
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => Config::PLATFORM_EDITION_EDGE]));
 
 		$resultsBuilderMock = $this->createMock(\App\Framework\Utils\Datatable\Results\Builder::class);
-		$this->buildService->method('getResultsBuilder')->willReturn($resultsBuilderMock);
+		$this->buildServiceMock->method('getResultsBuilder')->willReturn($resultsBuilderMock);
 
 		$resultsBuilderMock->expects($this->exactly(3))
 			->method('createField')
