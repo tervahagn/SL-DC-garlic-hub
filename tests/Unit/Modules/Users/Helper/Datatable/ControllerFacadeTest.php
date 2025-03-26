@@ -188,10 +188,8 @@ class ControllerFacadeTest extends TestCase
 			->with($this->usersServiceMock->getCurrentFilterResults(), $mockDatatableStructure['header'], $this->anything())
 			->willReturn($mockFormattedList);
 
-		// Act
 		$result = $this->controllerFacade->prepareUITemplate();
 
-		// Assert
 		$this->assertEquals([
 			'filter_elements' => ['prepared_filter_form'],
 			'pagination_dropdown' => 'mock_dropdown',

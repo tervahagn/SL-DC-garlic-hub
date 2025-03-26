@@ -46,7 +46,7 @@ class PlaylistsService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function loadPlaylistsForOverview(): void
+	public function loadDatatable(): void
 	{
 		if ($this->aclValidator->isModuleAdmin($this->UID))
 		{

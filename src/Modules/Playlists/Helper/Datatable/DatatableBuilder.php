@@ -37,7 +37,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 {
 	private AclValidator $aclValidator;
 
-	public function __construct(BuildService $buildService, AclValidator $aclValidator, Parameters $parameters)
+	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
 	{
 		$this->aclValidator = $aclValidator;
 		parent::__construct($buildService, $parameters);

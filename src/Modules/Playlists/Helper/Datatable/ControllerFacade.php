@@ -34,15 +34,15 @@ use Psr\SimpleCache\InvalidArgumentException;
 class ControllerFacade implements DatatableFacadeInterface
 {
 	private readonly DatatableBuilder $datatableBuilder;
-	private readonly DatatablePreparer $datatableFormatter;
+	private readonly DatatablePreparer $datatablePreparer;
 	private readonly PlaylistsService $playlistsService;
 	private int $UID;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, PlaylistsService $playlistsService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatablePreparer, PlaylistsService $playlistsService)
 	{
-		$this->datatableBuilder = $datatableBuilder;
-		$this->datatableFormatter = $datatableFormatter;
-		$this->playlistsService = $playlistsService;
+		$this->datatableBuilder  = $datatableBuilder;
+		$this->datatablePreparer = $datatablePreparer;
+		$this->playlistsService  = $playlistsService;
 	}
 
 	/**
@@ -55,7 +55,7 @@ class ControllerFacade implements DatatableFacadeInterface
 		$this->UID = $session->get('user')['UID'];
 		$this->playlistsService->setUID($this->UID);
 		$this->datatableBuilder->configureParameters($this->UID);
-		$this->datatableFormatter->setTranslator($translator);
+		$this->datatablePreparer->setTranslator($translator);
 		$this->datatableBuilder->setTranslator($translator);
 	}
 
@@ -65,7 +65,7 @@ class ControllerFacade implements DatatableFacadeInterface
 	public function processSubmittedUserInput(): void
 	{
 		$this->datatableBuilder->determineParameters();
-		$this->playlistsService->loadPlaylistsForOverview();
+		$this->playlistsService->loadDatatable();
 	}
 
 	/**
@@ -94,7 +94,7 @@ class ControllerFacade implements DatatableFacadeInterface
 	 */
 	public function prepareContextMenu(): array
 	{
-		return $this->datatableFormatter->formatPlaylistContextMenu();
+		return $this->datatablePreparer->formatPlaylistContextMenu();
 	}
 
 	/**
@@ -108,14 +108,14 @@ class ControllerFacade implements DatatableFacadeInterface
 	public function prepareUITemplate(): array
 	{
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$pagination         = $this->datatableFormatter->preparePagination($datatableStructure['pager'], $datatableStructure['dropdown']);
+		$pagination         = $this->datatablePreparer->preparePagination($datatableStructure['pager'], $datatableStructure['dropdown']);
 
 		return [
-			'filter_elements'     => $this->datatableFormatter->prepareFilterForm($datatableStructure['form']),
+			'filter_elements'     => $this->datatablePreparer->prepareFilterForm($datatableStructure['form']),
 			'pagination_dropdown' => $pagination['dropdown'],
 			'pagination_links'    => $pagination['links'],
-			'has_add'			  => $this->datatableFormatter->prepareAdd(),
-			'results_header'      => $this->datatableFormatter->prepareTableHeader($datatableStructure['header'], ['playlists', 'main']),
+			'has_add'			  => $this->datatablePreparer->prepareAdd(),
+			'results_header'      => $this->datatablePreparer->prepareTableHeader($datatableStructure['header'], ['playlists', 'main']),
 			'results_list'        => $this->prepareList($datatableStructure['header']),
 			'results_count'       => $this->playlistsService->getCurrentTotalResult(),
 			'title'               => $datatableStructure['title'],
@@ -123,8 +123,8 @@ class ControllerFacade implements DatatableFacadeInterface
 			'module_name'		  => 'playlists',
 			'additional_css'      => ['/css/playlists/overview.css'],
 			'footer_modules'      => ['/js/playlists/overview/init.js'],
-			'sort'				  => $this->datatableFormatter->prepareSort(),
-			'page'      		  => $this->datatableFormatter->preparePage()
+			'sort'				  => $this->datatablePreparer->prepareSort(),
+			'page'      		  => $this->datatablePreparer->preparePage()
 		];
 	}
 
@@ -141,9 +141,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	private function prepareList(array $fields): array
 	{
 		$showedIds = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
-		$this->datatableFormatter->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
+		$this->datatablePreparer->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
 
-		return $this->datatableFormatter->prepareTableBody(
+		return $this->datatablePreparer->prepareTableBody(
 			$this->playlistsService->getCurrentFilterResults(),
 			$fields,
 			$this->UID

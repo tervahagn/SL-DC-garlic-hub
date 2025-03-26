@@ -130,7 +130,7 @@ class PlaylistController
 
 		$this->session = $request->getAttribute('session');
 		$this->playlistsService->setUID($this->session->get('user')['UID']);
-		$this->playlistsService->loadPlaylistsForOverview();
+		$this->playlistsService->loadDatatable();
 		$results = [];
 		foreach ($this->playlistsService->getCurrentFilterResults() as $value)
 		{

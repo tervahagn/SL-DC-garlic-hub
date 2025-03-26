@@ -202,12 +202,12 @@ class PlaylistControllerTest extends TestCase
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
 
-		$this->playlistsServiceMock->expects($this->once())->method('loadPlaylistsForOverview');
+		$this->playlistsServiceMock->expects($this->once())->method('loadDatatable');
 		$playlists = [
-			['playlist_id' => 1, 'playlist_name' => 'playlist1', 'playlist_description' => 'description1'],
-			['playlist_id' => 2, 'playlist_name' => 'playlist2', 'playlist_description' => 'description2'],
-			['playlist_id' => 3, 'playlist_name' => 'playlist3', 'playlist_description' => 'description3'],
-			['playlist_id' => 4, 'playlist_name' => 'playlist4', 'playlist_description' => 'description4'],
+			['playlist_id' => 1, 'playlist_name' => 'playlist1', 'description' => 'description1'],
+			['playlist_id' => 2, 'playlist_name' => 'playlist2', 'description' => 'description2'],
+			['playlist_id' => 3, 'playlist_name' => 'playlist3', 'description' => 'description3'],
+			['playlist_id' => 4, 'playlist_name' => 'playlist4', 'description' => 'description4'],
 		];
 
 		$this->playlistsServiceMock->expects($this->once())->method('getCurrentFilterResults')->willReturn($playlists);
