@@ -43,38 +43,10 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function isPlaylistEditable(int $UID, array $playlist): bool
 	{
-		if ($UID == $playlist['UID'])
-			return true;
-
-		if ($this->isModuleAdmin($UID))
-			return true;
-
-		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
-			return false;
-
-		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
-			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
-
-		if ($this->isSubAdminWithAccessOnCompany($UID, $playlist['company_id']))
+		if ($this->isAllowedToDeletePlaylist($UID, $playlist))
 			return true;
 
 		if($this->isEditorWithAccessOnUnit($UID, $playlist['playlist_id']))
-			return true;
-
-		return false;
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
-	public function isAdmin($UID, $companyId): bool
-	{
-		if ($this->isModuleAdmin($UID))
-			return true;
-
-		if ($this->isSubAdminWithAccessOnCompany($UID, $companyId))
 			return true;
 
 		return false;
@@ -95,15 +67,32 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isModuleAdmin($UID))
 			return true;
 
+		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
+			return false;
+
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
 
 		if ($this->isSubadminWithAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 
-
 		return false;
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isAdmin($UID, $companyId): bool
+	{
+		if ($this->isModuleAdmin($UID))
+			return true;
+
+		if ($this->isSubAdminWithAccessOnCompany($UID, $companyId))
+			return true;
+
+		return false;
+	}
 }
