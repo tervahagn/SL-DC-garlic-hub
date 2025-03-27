@@ -115,7 +115,7 @@ class AclHelper
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function hasVip(int $UID, string $vipName, int|string $id): bool
+	private function hasVip(int $UID, string $vipName, int|string $id): bool
 	{
 		$userEntity = $this->userService->getUserById($UID);
 		$vips = $userEntity->getVip();
