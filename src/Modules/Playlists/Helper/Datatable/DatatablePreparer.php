@@ -64,7 +64,6 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
 	{
 		$body = [];
-		$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
 		foreach($currentFilterResults as $playlist)
 		{
 			$list            = [];
@@ -93,10 +92,8 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->convertSeconds($playlist['duration']));
 						break;
 					case 'playlist_mode':
+						$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($selectableModes[$playlist['playlist_mode']]);
-						break;
-					case 'selector':
-						$resultElements['SELECT_DISABLED'] = ($playlist['playlist_mode'] == PlaylistMode::MULTIZONE || $playlist['playlist_mode'] == PlaylistMode::EXTERNAL) ? 'disabled' : '';
 						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($playlist[$innerKey]);
