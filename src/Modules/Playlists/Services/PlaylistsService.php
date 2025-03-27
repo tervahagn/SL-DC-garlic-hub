@@ -20,12 +20,9 @@
 
 namespace App\Modules\Playlists\Services;
 
-use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
-use App\Framework\Services\SearchFilterParamsTrait;
-use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -35,13 +32,11 @@ class PlaylistsService extends AbstractBaseService
 {
 	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
-	private BaseParameters $parameters;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, BaseParameters $parameters, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistsRepository = $playlistsRepository;
 		$this->aclValidator = $aclValidator;
-		$this->parameters = $parameters;
 		parent::__construct($logger);
 	}
 
@@ -64,7 +59,7 @@ class PlaylistsService extends AbstractBaseService
 	public function update(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
-		$playlist = $this->playlistsRepository->getFirstDataSet($this->playlistsRepository->findById($playlistId));
+		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
@@ -85,7 +80,7 @@ class PlaylistsService extends AbstractBaseService
 	 */
 	public function delete(int $playlistId): int
 	{
-		$playlist = $this->playlistsRepository->getFirstDataSet($this->playlistsRepository->findById($playlistId));
+		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
@@ -138,11 +133,11 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
-
 	public function saveZones(int $playlistId, $zones): int
 	{
 		try
 		{
+			$count = 0;
 			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 			if (empty($playlist))
 				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');

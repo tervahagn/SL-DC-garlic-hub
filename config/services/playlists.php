@@ -19,7 +19,6 @@
 */
 
 use App\Framework\Core\Acl\AclHelper;
-use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -60,7 +59,6 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
-		$container->get(Parameters::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
