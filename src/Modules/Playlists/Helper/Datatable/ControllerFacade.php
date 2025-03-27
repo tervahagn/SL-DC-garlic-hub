@@ -26,7 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -35,10 +35,10 @@ class ControllerFacade implements DatatableFacadeInterface
 {
 	private readonly DatatableBuilder $datatableBuilder;
 	private readonly DatatablePreparer $datatablePreparer;
-	private readonly PlaylistsService $playlistsService;
+	private readonly PlaylistsDatatableService $playlistsService;
 	private int $UID;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatablePreparer, PlaylistsService $playlistsService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatablePreparer, PlaylistsDatatableService $playlistsService)
 	{
 		$this->datatableBuilder  = $datatableBuilder;
 		$this->datatablePreparer = $datatablePreparer;

@@ -41,8 +41,8 @@ use App\Modules\Playlists\Helper\Settings\TemplateRenderer;
 use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
-use App\Modules\Users\Services\UsersService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -60,7 +60,7 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
-		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class),
+		$container->get(Parameters::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
@@ -106,6 +106,15 @@ $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInt
 
 // Datatable
 
+$dependencies[PlaylistsDatatableService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlaylistsDatatableService(
+		$container->get(PlaylistsRepository::class),
+		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class),
+		$container->get(AclValidator::class),
+		$container->get('ModuleLogger')
+	);
+});
 $dependencies[\App\Modules\Playlists\Helper\Datatable\Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new \App\Modules\Playlists\Helper\Datatable\Parameters(
@@ -134,7 +143,7 @@ $dependencies[ControllerFacade::class] = DI\factory(function (ContainerInterface
 	return new ControllerFacade(
 		$container->get(DatatableBuilder::class),
 		$container->get(DatatablePreparer::class),
-		$container->get(PlaylistsService::class)
+		$container->get(PlaylistsDatatableService::class)
 	);
 });
 

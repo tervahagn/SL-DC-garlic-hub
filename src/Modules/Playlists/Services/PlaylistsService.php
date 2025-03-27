@@ -33,7 +33,6 @@ use Psr\Log\LoggerInterface;
 
 class PlaylistsService extends AbstractBaseService
 {
-	use SearchFilterParamsTrait;
 	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
 	private BaseParameters $parameters;
@@ -44,88 +43,6 @@ class PlaylistsService extends AbstractBaseService
 		$this->aclValidator = $aclValidator;
 		$this->parameters = $parameters;
 		parent::__construct($logger);
-	}
-
-	public function loadDatatable(): void
-	{
-		if ($this->aclValidator->isModuleAdmin($this->UID))
-		{
-			$this->handleRequestModuleAdmin($this->playlistsRepository);
-		}
-		elseif ($this->aclValidator->isSubAdmin($this->UID))
-		{
-	//		$this->handleRequestSubAdmin($this->playlistsRepository);
-		}
-		elseif ($this->aclValidator->isEditor($this->UID))
-		{
-			// Todo
-		}
-		elseif ($this->aclValidator->isViewer($this->UID))
-		{
-			// Todo
-		}
-		else
-		{
-			$this->handleRequestUser($this->playlistsRepository);
-		}
-
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function handleRequestModuleAdmin(FilterBase $repository): static
-	{
-		// later		$this->setCompanyArray($this->getUser()->getAllCompanyIds());
-		// for edge
-		$this->setCompanyArray([[1 => 'local']]);
-
-		$this->setAllowedCompanyIds(array_keys($this->getCompanyArray()));
-
-		$total_elements 	   = $repository->countAllFiltered($this->parameters->getInputParametersArray());
-		$results	           = $repository->findAllFiltered($this->parameters->getInputParametersArray());
-
-		return $this->setAllResultData($total_elements,  $results);
-	}
-
-/*	public function handleRequestSubAdmin(FilterBase $repository): static
-	{
-		// companies to show names in dropdowns e.g.
-	/*	$this->setCompanyArray($this->getUser()->getAllCompanyIds());
-
-		$company_ids = $this->aclValidator->determineCompaniesForSubAdmin();
-		$this->setAllowedCompanyIds($company_ids);
-
-		$total_elements = $repository->countAllFilteredByUIDCompanyReseller(
-			$company_ids,
-			$parameters->getInputParametersArray(),
-			$this->getUser()->getUID()
-		);
-
-		$results = $repository->findAllFilteredByUIDCompanyReseller(
-			$company_ids,
-			$parameters->getInputParametersArray(),
-			$this->getUser()->getUID()
-		);
-		return $this->setAllResultData($total_elements,  $results);
-		return $this;
-	}
-
-*/
-	public function handleRequestUser(FilterBase $repository): static
-	{
-		$total_elements = $repository->countAllFilteredByUID($this->parameters->getInputParametersArray(), $this->UID);
-		$results        = $repository->findAllFilteredByUID($this->parameters->getInputParametersArray(), $this->UID);
-
-		return $this->setAllResultData($total_elements, $results);
-	}
-
-	public function getPlaylistsInUse(array $playlistIds)
-	{
-		if (empty($playlistIds))
-			return [];
-
-		return $this->arePlayListsInUse($playlistIds);
 	}
 
 	/**
@@ -268,30 +185,6 @@ class PlaylistsService extends AbstractBaseService
 			$this->addErrorMessage($e->getMessage());
 			return [];
 		}
-	}
-
-	protected function arePlayListsInUse(array $playlistIds)
-	{
-		$results = [];
-		/* later
-			// Todo: Find some smarter way to this
-			foreach($this->playerRepository->findPlaylistIdsByPlaylistIds($playlistIds) as $value)
-			{
-				$results[$value['playlist_id']] = true;
-			}
-			foreach($this->itemRepository->findMediaIdsByPlaylistId($playlistIds) as $value)
-			{
-				$results[$value['media_id']] = true;
-			}
-	*/
-		/* no channels currently
-			foreach($this->channelRepository->findTableIdsByPlaylistIds($playlistIds) as $value)
-			{
-				$results[$value['table_id']] = true;
-			}
-			*/
-
-		return $results;
 	}
 
 	/**

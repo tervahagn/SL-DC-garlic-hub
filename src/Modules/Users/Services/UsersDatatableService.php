@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
 class UsersDatatableService extends AbstractDatatableService
 {
 	private readonly UserMainRepository $userMainRepository;
-	private readonly Parameters $parameters;
+	private readonly BaseParameters $parameters;
 	private readonly AclValidator $aclValidator;
 
 
