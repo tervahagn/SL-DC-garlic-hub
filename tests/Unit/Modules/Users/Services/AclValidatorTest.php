@@ -21,13 +21,8 @@
 
 namespace Tests\Unit\Modules\Users\Services;
 
-use App\Framework\Core\Config\Config;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Core\Acl\AclHelper;
 use App\Modules\Users\Services\AclValidator;
-use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Services\UsersService;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -35,14 +30,16 @@ use PHPUnit\Framework\TestCase;
 class AclValidatorTest extends TestCase
 {
 	private readonly AclValidator $aclValidator;
-	private readonly UsersService $userServiceMock;
-	private readonly Config $configMock;
+	private readonly AclHelper $aclHelperMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
-		$this->userServiceMock = $this->createMock(UsersService::class);
-		$this->configMock = $this->createMock(Config::class);
-		$this->aclValidator = new AclValidator('users', $this->userServiceMock, $this->configMock);
+		$this->aclHelperMock = $this->createMock(AclHelper::class);
+
+		$this->aclValidator    = new AclValidator($this->aclHelperMock);
 	}
 
 	/**

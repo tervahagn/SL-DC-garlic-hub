@@ -36,6 +36,11 @@ abstract class AbstractAclValidator
 		$this->moduleName    = $moduleName;
 	}
 
+	public function getModuleName(): string
+	{
+		return $this->moduleName;
+	}
+
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
