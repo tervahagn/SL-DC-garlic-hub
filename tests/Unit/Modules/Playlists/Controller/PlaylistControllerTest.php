@@ -7,6 +7,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
+use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,6 +21,7 @@ class PlaylistControllerTest extends TestCase
 {
 	private readonly PlaylistController $controller;
 	private readonly PlaylistsService $playlistsServiceMock;
+	private readonly PlaylistsDatatableService $playlistsDatatableServiceMock;
 	private readonly Parameters $parametersMock;
 	private readonly ResponseInterface $responseMock;
 	private readonly ServerRequestInterface $requestMock;
@@ -31,13 +33,14 @@ class PlaylistControllerTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
+		$this->playlistsDatatableServiceMock = $this->createMock(PlaylistsDatatableService::class);
 		$this->parametersMock       = $this->createMock(Parameters::class);
 		$this->requestMock          = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock         = $this->createMock(ResponseInterface::class);
 		$this->streamInterfaceMock  = $this->createMock(StreamInterface::class);
 		$this->sessionMock          = $this->createMock(Session::class);
 
-		$this->controller = new PlaylistController($this->playlistsServiceMock, $this->parametersMock);
+		$this->controller = new PlaylistController($this->playlistsServiceMock, $this->playlistsDatatableServiceMock, $this->parametersMock);
 	}
 
 	/**
@@ -52,7 +55,7 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->method('delete')->with(789)->willReturn(1);
 		$this->mockJsonResponse(['success' => true]);
 
-		$result = $this->controller->delete($this->requestMock, $this->responseMock, ['playlist_id' => 789]);
+		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 789]);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
@@ -68,7 +71,7 @@ class PlaylistControllerTest extends TestCase
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$this->playlistsServiceMock->expects($this->never())->method('delete');
-		$result = $this->controller->delete($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
+		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 0]);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
@@ -84,7 +87,7 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->method('delete')->with(12)->willReturn(0);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
 
-		$result = $this->controller->delete($this->requestMock, $this->responseMock, ['playlist_id' => 12]);
+		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 12]);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
@@ -200,9 +203,9 @@ class PlaylistControllerTest extends TestCase
 
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
-		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('setUID')->with(456);
 
-		$this->playlistsServiceMock->expects($this->once())->method('loadDatatable');
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('loadDatatable');
 		$playlists = [
 			['playlist_id' => 1, 'playlist_name' => 'playlist1', 'description' => 'description1'],
 			['playlist_id' => 2, 'playlist_name' => 'playlist2', 'description' => 'description2'],
@@ -210,7 +213,7 @@ class PlaylistControllerTest extends TestCase
 			['playlist_id' => 4, 'playlist_name' => 'playlist4', 'description' => 'description4'],
 		];
 
-		$this->playlistsServiceMock->expects($this->once())->method('getCurrentFilterResults')->willReturn($playlists);
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('getCurrentFilterResults')->willReturn($playlists);
 
 		$output = [
 			['id' => 1, 'name' => 'playlist1'],

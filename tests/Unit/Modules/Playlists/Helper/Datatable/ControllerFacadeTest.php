@@ -10,6 +10,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
+use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -22,7 +23,7 @@ class ControllerFacadeTest extends TestCase
 	private readonly ControllerFacade $controllerFacade;
 	private readonly DatatableBuilder $datatableBuilderMock;
 	private readonly DatatablePreparer $datatablePreparerMock;
-	private readonly PlaylistsService $playlistsServiceMock;
+	private readonly PlaylistsDatatableService $playlistsServiceMock;
 	private readonly Translator $translatorMock;
 	private readonly Session $sessionMock;
 
@@ -33,7 +34,7 @@ class ControllerFacadeTest extends TestCase
 	{
 		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
 		$this->datatablePreparerMock = $this->createMock(DatatablePreparer::class);
-		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
+		$this->playlistsServiceMock = $this->createMock(PlaylistsDatatableService::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->sessionMock = $this->createMock(Session::class);
 

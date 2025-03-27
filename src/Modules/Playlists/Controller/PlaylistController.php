@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
+use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -33,17 +34,20 @@ use Psr\Http\Message\ServerRequestInterface;
 class PlaylistController
 {
 	private readonly PlaylistsService $playlistsService;
+	private readonly PlaylistsDatatableService $playlistsDatatableService;
 	private readonly Parameters $parameters;
 	private Session $session;
 
 	/**
 	 * @param PlaylistsService $playlistsService
+	 * @param PlaylistsDatatableService $playlistsDatatableService
 	 * @param Parameters $parameters
 	 */
-	public function __construct(PlaylistsService $playlistsService, Parameters $parameters)
+	public function __construct(PlaylistsService $playlistsService, PlaylistsDatatableService $playlistsDatatableService, Parameters $parameters)
 	{
-		$this->playlistsService = $playlistsService;
-		$this->parameters = $parameters;
+		$this->playlistsService          = $playlistsService;
+		$this->playlistsDatatableService = $playlistsDatatableService;
+		$this->parameters                = $parameters;
 	}
 
 
@@ -53,7 +57,7 @@ class PlaylistController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function delete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function delete(ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
@@ -121,7 +125,10 @@ class PlaylistController
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws Exception
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -129,10 +136,10 @@ class PlaylistController
 		$this->parameters->parseInputAllParameters();
 
 		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-		$this->playlistsService->loadDatatable();
+		$this->playlistsDatatableService->setUID($this->session->get('user')['UID']);
+		$this->playlistsDatatableService->loadDatatable();
 		$results = [];
-		foreach ($this->playlistsService->getCurrentFilterResults() as $value)
+		foreach ($this->playlistsDatatableService->getCurrentFilterResults() as $value)
 		{
 			$results[] = ['id' => $value['playlist_id'], 'name' => $value['playlist_name']];
 		}
