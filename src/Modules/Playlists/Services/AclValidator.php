@@ -21,7 +21,7 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
-use App\Framework\Core\Acl\AbstractAclValidatorInterface;
+use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -30,6 +30,12 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class AclValidator extends AbstractAclValidator
 {
+
+	public function __construct(AclHelper $aclHelper)
+	{
+		parent::__construct('playlists', $aclHelper);
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -43,16 +49,16 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isModuleAdmin($UID))
 			return true;
 
-		if ($this->config->getEdition() === Config::PLATFORM_EDITION_EDGE)
+		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return false;
 
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
 
-		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
+		if ($this->isSubAdminWithAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 
-		if($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $playlist['playlist_id']))
+		if($this->isEditorWithAccessOnUnit($UID, $playlist['playlist_id']))
 			return true;
 
 		return false;
@@ -68,7 +74,7 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isModuleAdmin($UID))
 			return true;
 
-		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $companyId))
+		if ($this->isSubAdminWithAccessOnCompany($UID, $companyId))
 			return true;
 
 		return false;
@@ -92,7 +98,7 @@ class AclValidator extends AbstractAclValidator
 		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
 			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
 
-		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $playlist['company_id']))
+		if ($this->isSubadminWithAccessOnCompany($UID, $playlist['company_id']))
 			return true;
 
 

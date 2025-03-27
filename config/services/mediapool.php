@@ -18,6 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Utils\Ffmpeg;
@@ -47,11 +48,7 @@ $dependencies[NodesRepository::class] = DI\factory(function (ContainerInterface 
 });
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new AclValidator(
-		'mediapool',
-		$container->get(UsersService::class),
-		$container->get(Config::class),
-	);
+	return new AclValidator($container->get(AclHelper::class));
 });
 $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $container)
 {

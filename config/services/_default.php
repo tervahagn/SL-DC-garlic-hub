@@ -19,6 +19,7 @@
 */
 
 use App\Commands\MigrateCommand;
+use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
@@ -47,6 +48,7 @@ use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Services\AclValidator;
+use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -123,6 +125,7 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 		$container->get(Psr16Adapter::class)
 	);
 });
+
 $dependencies[AdapterInterface::class] = DI\factory(function ()
 {
 	$mustacheEngine = new Mustache_Engine([
@@ -196,6 +199,13 @@ $dependencies[BuildService::class] = DI\factory(function (ContainerInterface $co
 		$container->get(FormBuilder::class),
 		new Builder(),
 		new \App\Framework\Utils\Datatable\Results\Builder()
+	);
+});
+$dependencies[AclHelper::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new AclHelper(
+		$container->get(UsersService::class),
+		$container->get(Config::class)
 	);
 });
 $dependencies[PrepareService::class] = DI\factory(function (ContainerInterface $container)

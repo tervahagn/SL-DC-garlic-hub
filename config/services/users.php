@@ -19,6 +19,7 @@
 */
 
 
+use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
@@ -46,11 +47,7 @@ use Psr\Container\ContainerInterface;
 $dependencies = [];
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new AclValidator(
-		'users',
-		$container->get(UsersService::class),
-		$container->get(Config::class),
-	);
+	return new AclValidator($container->get(AclHelper::class));
 });
 $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $container)
 {

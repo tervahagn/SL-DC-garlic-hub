@@ -21,8 +21,13 @@
 namespace App\Modules\Users\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
+use App\Framework\Core\Acl\AclHelper;
 
 class AclValidator extends AbstractAclValidator
 {
+	public function __construct(AclHelper $aclValidatorHelper)
+	{
+		parent::__construct('users', $aclValidatorHelper);
+	}
 
 }

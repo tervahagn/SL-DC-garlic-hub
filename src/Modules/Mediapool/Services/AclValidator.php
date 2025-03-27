@@ -3,19 +3,26 @@ namespace App\Modules\Mediapool\Services;
 
 
 use App\Framework\Core\Acl\AbstractAclValidator;
+use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use League\Flysystem\Visibility;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class AclValidator extends AbstractAclValidator
 {
+	const int VISIBILITY_PUBLIC = 1;
 
-	const VISIBILITY_PUBLIC = 1;
+	public function __construct(AclHelper $aclHelper)
+	{
+		parent::__construct('mediapool', $aclHelper);
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws ModuleException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function checkDirectoryPermissions(int $UID, array $directory): array
 	{
@@ -29,13 +36,13 @@ class AclValidator extends AbstractAclValidator
 			return ['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'];
 
 		// Edge Edition will not move further as there is not subadmin
-		if ($this->isSubAdmin($UID) && $this->hasSubAdminAccessOnCompany($UID, $directory['company_id']))
+		if ($this->isSubAdminWithAccessOnCompany($UID, $directory['company_id']))
 			$permissions = ['create' => true, 'read' => true, 'edit' => true, 'share' => 'company'];
 
-		if ($this->isEditor($UID) && $this->hasEditorAccessOnUnit($UID, $directory['node_id']))
+		if ($this->isEditorWithAccessOnUnit($UID, $directory['node_id']))
 			$permissions = ['create' => true, 'read' => true, 'edit' => false, 'share' => ''];
 
-		if ($this->isViewer($UID) && $this->hasViewerAccessOnUnit($UID, $directory['node_id']))
+		if ($this->isViewerWithAccessOnUnit($UID, $directory['node_id']))
 			$permissions['read'] = true;
 
 		if ($directory['visibility'] === self::VISIBILITY_PUBLIC)
