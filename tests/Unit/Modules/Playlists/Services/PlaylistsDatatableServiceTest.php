@@ -90,9 +90,45 @@ class PlaylistsDatatableServiceTest extends TestCase
 			->with(['empty'], 789)
 			->willReturn(['result']);
 
-		$this->service-> loadDatatable();
+		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
 		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+	}
+
+	/**
+	 */
+	#[Group('units')]
+	public function testGetPlaylistsInUseWithEmptyIds(): void
+	{
+		$result = $this->service->getPlaylistsInUse([]);
+		$this->assertSame([], $result);
+	}
+
+	/**
+	 */
+	#[Group('units')]
+	public function testGetPlaylistsInUseWithValidIds(): void
+	{
+		$playlistIds = [1, 2, 3];
+		$expectedResult = [
+			1 => true,
+			2 => true,
+			3 => true,
+		];
+
+		$serviceMock = $this->getMockBuilder(PlaylistsDatatableService::class)
+			->setConstructorArgs([$this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->loggerMock])
+			->onlyMethods(['arePlayListsInUse'])
+			->getMock();
+
+		$serviceMock->expects($this->once())
+			->method('arePlayListsInUse')
+			->with($playlistIds)
+			->willReturn($expectedResult);
+
+		$result = $serviceMock->getPlaylistsInUse($playlistIds);
+
+		$this->assertSame($expectedResult, $result);
 	}
 }
