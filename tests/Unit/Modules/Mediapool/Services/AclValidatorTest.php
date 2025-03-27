@@ -37,6 +37,7 @@ class AclValidatorTest extends TestCase
 	private readonly AclValidator $aclValidator;
 	private readonly UsersService $userServiceMock;
 	private readonly Config $configMock;
+	private readonly UserEntity $userEntityMock;
 
 	/**
 	 * @throws Exception
@@ -45,6 +46,8 @@ class AclValidatorTest extends TestCase
 	{
 		$this->userServiceMock = $this->createMock(UsersService::class);
 		$this->configMock      = $this->createMock(Config::class);
+		$this->userEntityMock  = $this->createMock(UserEntity::class);
+
 		$this->aclValidator    = new AclValidator('mediapool', $this->userServiceMock, $this->configMock);
 	}
 
@@ -78,10 +81,8 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => $UID, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
 
-
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'Mediapool', 'acl' => 0]]);
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'Mediapool', 'acl' => 0]]);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
@@ -100,12 +101,11 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 8]]);
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 8]]);
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
@@ -124,13 +124,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
-		$userEntityMock->method('getVip')->willReturn([]);
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
+		$this->userEntityMock->method('getVip')->willReturn([]);
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
@@ -149,14 +148,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
 
-
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 2]]); // different company
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 2]]); // different company
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
@@ -175,13 +172,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 4]]); // same company
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 4]]); // same company
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => 'company'], $permissions);
@@ -200,13 +196,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 2]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_editor' => 3]]); // wrong Node-id
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 2]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_editor' => 3]]); // wrong Node-id
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
@@ -225,13 +220,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 4]]); // same company
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 4]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_subadmin' => 4]]); // same company
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'company'], $permissions);
@@ -250,13 +244,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 2]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_editor' => 1]]); // same node
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 2]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_editor' => 1]]); // same node
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
@@ -275,13 +268,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 1]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_viewer' => 13]]); // wrong node
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 1]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_viewer' => 13]]); // wrong node
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
@@ -300,13 +292,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 1]]);
-		$userEntityMock->method('getVip')->willReturn([['mediapool_viewer' => 1]]); // same node
+		$this->userEntityMock->method('getAcl')->willReturn([['module' => 'mediapool', 'acl' => 1]]);
+		$this->userEntityMock->method('getVip')->willReturn([['mediapool_viewer' => 1]]); // same node
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
@@ -325,13 +316,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => AclValidator::VISIBILITY_PUBLIC, 'parent_id' => 0];
 
-		$userEntityMock = $this->createMock(UserEntity::class);
-		$userEntityMock->method('getAcl')->willReturn([]);
-		$userEntityMock->expects($this->never())->method('getVip');
+		$this->userEntityMock->method('getAcl')->willReturn([]);
+		$this->userEntityMock->expects($this->never())->method('getVip');
 
 		$this->mockConfigValues();
 
-		$this->userServiceMock->method('getUserById')->willReturn($userEntityMock);
+		$this->userServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
 		$this->assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
