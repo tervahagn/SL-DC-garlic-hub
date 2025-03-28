@@ -71,13 +71,15 @@ class ShowSettingsController
 	public function editPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
+
+		$this->initFacade($request);
+
 		if ($playlistId === 0)
 		{
 			$this->flash->addMessage('error', 'Playlist ID not valid.');
 			return $response->withHeader('Location', '/playlists')->withStatus(302);
 		}
 
-		$this->initFacade($request);
 		$playlist = $this->facade->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
 		{
@@ -128,9 +130,9 @@ class ShowSettingsController
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 */
-	private function outputRenderedForm(ResponseInterface $response, $post): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
 	{
-		$data = $this->facade->render($post);
+		$data = $this->facade->render($userInput);
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
