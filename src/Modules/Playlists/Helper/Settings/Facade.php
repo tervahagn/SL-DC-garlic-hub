@@ -55,7 +55,7 @@ readonly class Facade
 
 	public function init(Translator $translator, Session $session): void
 	{
-		$this->settingsFormBuilder->init($translator, $session);
+		$this->settingsFormBuilder->init($session);
 		$this->playlistsService->setUID($session->get('user')['UID']);
 	}
 

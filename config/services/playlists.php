@@ -33,6 +33,7 @@ use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
+use App\Modules\Playlists\Helper\Settings\Collector;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Parameters;
@@ -83,7 +84,7 @@ $dependencies[Builder::class] = DI\factory(function (ContainerInterface $contain
 		$container->get(AclValidator::class),
 		$container->get(Parameters::class),
 		$container->get(Validator::class),
-		$container->get(FormBuilder::class),
+		new Collector($container->get(FormBuilder::class), $container->get(Translator::class)),
 	);
 });
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
