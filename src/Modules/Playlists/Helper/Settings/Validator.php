@@ -60,7 +60,7 @@ class Validator extends BaseValidator
 			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
 
 		// we need userInput here as getValueOfParameter will throw an exception if not set
-		if (!isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !isset($userInputs[Parameters::PARAMETER_PLAYLIST_ID]))
+		if (!isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) || !isset($userInputs[Parameters::PARAMETER_PLAYLIST_ID]))
 			$errors[] = $this->translator->translate('parameters_missing', 'playlists');
 
 		if (isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($userInputs))
