@@ -32,21 +32,17 @@ class PlaylistsRepository extends FilterBase
 		parent::__construct($connection,'playlists', 'playlist_id');
 	}
 
-
-
 	/**
 	 * @throws Exception
 	 */
 	public function findFirstWithUserName(int $playlistId): array
 	{
-		$select = [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
+		$select = $this->prepareSelectFilteredForUser();
 		$join   = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where  = ['playlist_id' => ['value' => $playlistId, 'operator' => '=']];
-
-		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		$result =  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		return $result;
 	}
-
-	public function findPlaylistIdsByPlaylistIds(array $playlistIds) {}
 
 	protected function prepareJoin(): array
 	{
@@ -60,7 +56,7 @@ class PlaylistsRepository extends FilterBase
 
 	protected function prepareSelectFilteredForUser(): array
 	{
-		return [$this->table.'.*', 'user_main.username', 'user_main.company_id'];
+		return array_merge($this->prepareSelectFiltered(),['user_main.username', 'user_main.company_id']);
 	}
 
 	protected function prepareWhereForFiltering(array $filterFields): array

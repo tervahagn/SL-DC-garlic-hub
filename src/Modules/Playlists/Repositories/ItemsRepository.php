@@ -28,6 +28,7 @@ class ItemsRepository extends Sql
 
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'playlists_items', 'item_id');
+		parent::__construct($connection, 'playlists_items', 'item_id');
 	}
+
 }
