@@ -297,15 +297,14 @@ class ShowSettingsControllerTest extends TestCase
 	{
 		$translatorMock = $this->createMock(Translator::class);
 		$sessionMock = $this->createMock(Session::class);
-		$this->requestMock->expects($this->exactly(3))->method('getAttribute')
+		$this->requestMock->expects($this->exactly(2))->method('getAttribute')
 			->willReturnMap([
 				['flash', null, $this->flashMock],
-				['translator', null, $translatorMock],
 				['session', null, $sessionMock]
 			]);
 
 		$this->facadeMock->expects($this->once())->method('init')
-			->with($translatorMock, $sessionMock);
+			->with($sessionMock);
 
 	}
 }

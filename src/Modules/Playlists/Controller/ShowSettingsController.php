@@ -140,6 +140,6 @@ class ShowSettingsController
 	private function initFacade(ServerRequestInterface $request): void
 	{
 		$this->flash      = $request->getAttribute('flash');
-		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->facade->init($request->getAttribute('session'));
 	}
 }

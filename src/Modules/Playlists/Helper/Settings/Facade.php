@@ -40,9 +40,15 @@ readonly class Facade
 	public function __construct(Builder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, TemplateRenderer $renderer)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
-		$this->playlistsService = $playlistsService;
-		$this->settingsParameters = $settingsParameters;
-		$this->renderer = $renderer;
+		$this->playlistsService    = $playlistsService;
+		$this->settingsParameters  = $settingsParameters;
+		$this->renderer            = $renderer;
+	}
+
+	public function init(Session $session): void
+	{
+		$this->settingsFormBuilder->init($session);
+		$this->playlistsService->setUID($session->get('user')['UID']);
 	}
 
 	/**
@@ -53,11 +59,6 @@ readonly class Facade
 		return $this->playlistsService->loadPlaylistForEdit($playlistId);
 	}
 
-	public function init(Translator $translator, Session $session): void
-	{
-		$this->settingsFormBuilder->init($session);
-		$this->playlistsService->setUID($session->get('user')['UID']);
-	}
 
 	/**
 	 * @throws ModuleException
