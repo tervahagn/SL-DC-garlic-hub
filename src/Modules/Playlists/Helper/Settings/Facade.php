@@ -72,11 +72,11 @@ readonly class Facade
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
 		{
 			$playlist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
-			$this->settingsFormBuilder->buildEditParameter($playlist);
+			$this->settingsFormBuilder->configEditParameter($playlist);
 		}
 		else
 		{
-			$this->settingsFormBuilder->buildCreateNewParameter($post['playlist_mode']);
+			$this->settingsFormBuilder->configNewParameter($post['playlist_mode']);
 		}
 
 		return $this->settingsFormBuilder->handleUserInput($post);
@@ -110,7 +110,7 @@ readonly class Facade
 	 */
 	public function buildCreateNewParameter(string $playlistMode): void
 	{
-		$this->settingsFormBuilder->buildCreateNewParameter($playlistMode);
+		$this->settingsFormBuilder->configNewParameter($playlistMode);
 	}
 
 	/**
@@ -121,7 +121,7 @@ readonly class Facade
 	 */
 	public function buildEditParameter(array $playlist): void
 	{
-		$this->settingsFormBuilder->buildEditParameter($playlist);
+		$this->settingsFormBuilder->configEditParameter($playlist);
 	}
 
 	/**

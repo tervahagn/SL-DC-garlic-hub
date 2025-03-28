@@ -26,6 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
+use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Helper\PlaylistMode;
@@ -51,10 +52,11 @@ readonly class Builder
 		$this->collector    = $collector;
 	}
 
-	public function init( Session $session): static
+	public function init(Session $session): static
 	{
-		$this->UID      = $session->get('user')['UID'];
-		$this->username = $session->get('user')['username'];
+		$user = $session->get('user');
+		$this->UID      = $user['UID'];
+		$this->username = $user['username'];
 
 		return $this;
 	}
@@ -65,7 +67,7 @@ readonly class Builder
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function buildCreateNewParameter(string $playlistMode): void
+	public function configNewParameter(string $playlistMode): void
 	{
 		$this->parameters->addPlaylistMode();
 		if (!$this->aclValidator->isSimpleAdmin($this->UID))
@@ -83,7 +85,7 @@ readonly class Builder
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function buildEditParameter(array $playlist): void
+	public function configEditParameter(array $playlist): void
 	{
 		$this->parameters->addPlaylistId();
 		if (!$this->aclValidator->isAdmin($this->UID, $playlist['company_id']))
@@ -93,7 +95,6 @@ readonly class Builder
 
 		if ($this->isTimeLimitPlaylist($playlist['playlist_mode']))
 			$this->parameters->addTimeLimit();
-
 	}
 
 	/**
@@ -113,7 +114,7 @@ readonly class Builder
 		if ($this->parameters->hasParameter(BaseEditParameters::PARAMETER_UID))
 		{
 			$form['UID'] = $this->collector->createUIDField(
-				$playlist[BaseEditParameters::PARAMETER_UID] ?? $this->UID,
+				$playlist[BaseParameters::PARAMETER_UID] ?? $this->UID,
 				$playlist['username'] ?? $this->username,
 				$this->UID
 			);
