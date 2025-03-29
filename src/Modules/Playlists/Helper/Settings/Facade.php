@@ -35,6 +35,7 @@ readonly class Facade
 	private Builder $settingsFormBuilder;
 	private PlaylistsService $playlistsService;
 	private Parameters $settingsParameters;
+	private array $oldPlaylist;
 	private Translator $translator;
 
 	public function __construct(Builder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters)
@@ -56,7 +57,9 @@ readonly class Facade
 	 */
 	public function loadPlaylistForEdit($playlistId): array
 	{
-		return $this->playlistsService->loadPlaylistForEdit($playlistId);
+		$this->oldPlaylist = $this->playlistsService->loadPlaylistForEdit($playlistId);
+
+		return $this->oldPlaylist;
 	}
 
 
@@ -72,8 +75,8 @@ readonly class Facade
 	{
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
 		{
-			$playlist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
-			$this->settingsFormBuilder->configEditParameter($playlist);
+			$this->loadPlaylistForEdit($post['playlist_id']);
+			$this->settingsFormBuilder->configEditParameter($this->oldPlaylist);
 		}
 		else
 		{
@@ -134,8 +137,9 @@ readonly class Facade
 	 */
 	public function prepareUITemplate(array $post): array
 	{
+		$playlistMode = strtolower($post['playlist_mode'] ?? $this->oldPlaylist['playlist_mode']);
 		$title =  $this->translator->translate('settings', 'playlists'). ' - ' .
-			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($post['playlist_mode'])];
+			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[$playlistMode];
 
 		$dataSections                      = $this->settingsFormBuilder->buildForm($post);
 		$dataSections['title']             = $title;

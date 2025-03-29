@@ -1,0 +1,75 @@
+		<h1>{{{LANG_PAGE_HEADER}}}</h1>
+		<header>
+			<input type="hidden" id="playlist_id" value="{{{SMIL_PLAYLIST_ID}}}" />
+			<a href="#" title="{{{LANG_INSERT}}}" class="bi bi-plus-square" id="addItems"></a>
+			<template id="insertItemsMenuTemplate">
+				<ul class="context-menu">
+					<li id="insertMedia">{{{LANG_INSERT_MEDIA}}}</li>
+					<li id="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</li>
+					{{#can_playlists}}
+						<li id="insertPlaylists">{{{LANG_INSERT_PLAYLISTS}}}</li>
+						<li id="insertExternalPlaylists">{{{LANG_INSERT_EXTERNAL_PLAYLISTS}}}</li>
+					{{/can_playlists}}
+					{{#can_templates}}
+						<li id="insertTemplates">{{{LANG_INSERT_TEMPLATES}}}</li>
+					{{/can_templates}}
+					{{#can_channels}}
+						<li id="insertChannels">{{{LANG_INSERT_CHANNELS}}}</li>
+					{{/can_channels}}
+				</ul>
+			</template>
+
+			<section class="information">
+				<div>{{{LANG_PLAYLIST_DURATION}}}: <span id="playlistDuration">00:00:00</span></div>
+				<div>{{{LANG_TOTAL}}}: <span id="totalMedia">0</span></div>
+				<div>{{{LANG_TOTAL_FILESIZE}}}: <span id="totalFilesize">0 MB</span></div>
+				{{#has_time_limit}}
+					<div>{{{LANG_PLAYLIST_REMAIN_DURATION}}}: <span id="remain_playlist_duration"></span></div>
+				{{/has_time_limit}}
+			</section>
+
+			<section class="actions">
+				<div><label for="check_shuffle"><input type="checkbox" value="1" id="check_shuffle" /> {{{LANG_SHUFFLE}}}</label></div>
+				<div>
+					 <select name="edit_picking" id="edit_picking">
+						 <option value="all">{{{LANG_PICKING_OPTION_ALL}}}</option>
+					 </select> <label for="edit_picking">{{{LANG_PICKING_MEDIA_PER_CYCLE}}}</label>
+				</div>
+				<div>
+					<button id="saveChanges">{{{LANG_SAVE_CHANGES}}}</button>
+					<button id="preview">{{{LANG_PLAYLIST_PREVIEW}}}</button>
+				</div>
+			</section>
+		</header>
+
+		<section id="editor">
+			<section id="itemSelectContainer">
+				<div id="wrapSelectorType">
+					<aside id="directoriesList">
+					</aside>
+					<div id="content"></div>
+				</div>
+			</section>
+
+			<section id="playList" class="item-list-list-view" aria-labelledby="item-list-title"></section>
+
+			<template id="playlistItemTemplate">
+				<div class="playlist_item">
+					<img class="thumbnail" src="" alt="" />
+					<div class="properties">
+						<div class="actions">
+							<span class="item_duration"></span>
+							<button class="bi bi-link link_playlist" title="{{{LANG_LINK_PLAYLIST}}}" data-template-content-id=""></button>
+							<button class="bi bi-pencil edit_template" title="{{{LANG_EDIT_TEMPLATE}}}" data-template-content-id=""></button>
+							<button class="bi bi-alarm conditional_play" title="{{{LANG_CONDITIONAL_PLAY_EDIT}}}" data-conditional-play-id=""></button>
+							<button class="bi bi-lightning trigger_edit" title="{{{LANG_TRIGGER_EDIT}}}" data-trigger-id=""></button>
+							<button class="bi bi-pencil edit_widget" title="{{{LANG_WIDGET_EDIT}}}" data-widget-id=""></button>
+							<button class="bi bi-gear open_edit_dialog" title="{{{LANG_SETTINGS}}}" data-properties-id=""></button>
+							<button class="bi bi-copy copy_item" title="{{{LANG_COPY_ITEM}}}" data-copy-id=""></button>
+							<button class="bi bi-trash delete_item" title="{{{LANG_DELETE_ITEM}}}" data-delete-id=""></button>
+						</div>
+						<p class="item_name"></p>
+					</div>
+				</div>
+			</template>
+		</section>

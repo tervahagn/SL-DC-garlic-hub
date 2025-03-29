@@ -60,7 +60,6 @@ foreach ($directoryIterator as $file)
 }
 $container     = $containerBuilder->build();
 
-
 if (php_sapi_name() !== 'cli')
 {
 	$middlewareLoader = require $systemDir.'/config/middleware.php';

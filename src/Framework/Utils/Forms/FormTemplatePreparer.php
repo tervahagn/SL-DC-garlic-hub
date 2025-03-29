@@ -53,7 +53,7 @@ class FormTemplatePreparer
 				'template' => $dataSections['template_name'], // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $dataSections['title'],
-					'FORM_ACTION' => '/'. $dataSections['form_action'],
+					'FORM_ACTION' => $dataSections['form_action'],
 					'element_hidden' => $dataSections['hidden'],
 					'form_element' => $dataSections['visible'],
 					'form_button' => [

@@ -31,6 +31,8 @@ use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Helper\Compose\RightsChecker;
+use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
@@ -104,7 +106,6 @@ $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInt
 });
 
 // Datatable
-
 $dependencies[PlaylistsDatatableService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlaylistsDatatableService(
@@ -157,12 +158,18 @@ $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInte
 {
 	return new ShowComposeController(
 		$container->get(PlaylistsService::class),
+		new UiTemplatesPreparer(
+			$container->get(Translator::class),
+			new RightsChecker(
+				$container->get(Translator::class), $container->get(AclValidator::class))
+		)
 	);
 });
 $dependencies[PlaylistController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlaylistController(
 		$container->get(PlaylistsService::class),
+		$container->get(PlaylistsDatatableService::class),
 		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class)
 	);
 });

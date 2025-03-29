@@ -1,0 +1,13 @@
+main header
+{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+    main header section
+    {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
