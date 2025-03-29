@@ -19,6 +19,21 @@
 */
 
 // phpinfo();
-$app = require __DIR__ . '/../config/bootstrap.php';
+use Slim\Psr7\Response;
 
+$app = require __DIR__ . '/../config/bootstrap.php';
+// redirect an / for better SEO
+$app->add(function ($request, $handler)
+{
+	$uri = $request->getUri();
+	$path = $uri->getPath();
+
+	if ($path !== '/' && str_ends_with($path, '/')) {
+		return (new Response())
+			->withHeader('Location', rtrim($path, '/'))
+			->withStatus(301);
+	}
+
+	return $handler->handle($request);
+});
 $app->run();
