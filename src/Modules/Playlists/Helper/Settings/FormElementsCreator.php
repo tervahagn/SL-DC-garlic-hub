@@ -12,7 +12,7 @@ use App\Framework\Utils\Html\FormBuilder;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Collector
+class FormElementsCreator
 {
 	private readonly FormBuilder $formBuilder;
 

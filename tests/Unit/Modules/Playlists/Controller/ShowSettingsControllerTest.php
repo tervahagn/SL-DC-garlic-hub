@@ -43,7 +43,7 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildCreateNewParameter')
 			->with('master');
 
-		$this->facadeMock->expects($this->once())->method('render')
+		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
 			->with(['playlist_mode' => 'master'])
 			->willReturn(['rendered_template' => 'example']);
 
@@ -69,7 +69,7 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildCreateNewParameter')
 			->with('channel');
 
-		$this->facadeMock->expects($this->once())->method('render')
+		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
 			->with(['playlist_mode' => 'channel'])
 			->willReturn(['rendered_template' => 'example']);
 
@@ -150,7 +150,7 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildEditParameter')
 			->with($playlist);
 
-		$this->facadeMock->expects($this->once())->method('render')
+		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
 			->with($playlist)
 			->willReturn(['rendered_template' => 'example']);
 
@@ -276,7 +276,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with($post)
 			->willReturn(0);
 
-		$this->facadeMock->expects($this->once())->method('render')
+		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
 			->with($post)
 			->willReturn(['rendered_template' => 'example']);
 

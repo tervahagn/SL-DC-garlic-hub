@@ -7,7 +7,7 @@ use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Playlists\Helper\Settings\Collector;
+use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -15,14 +15,14 @@ class CollectorTest extends TestCase
 {
 	private readonly FormBuilder $formBuilderMock;
 	private readonly Translator $translatorMock;
-	private readonly Collector $collector;
+	private readonly FormElementsCreator $collector;
 
 	protected function setUp(): void
 	{
 		$this->formBuilderMock = $this->createMock(FormBuilder::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 
-		$this->collector = new Collector($this->formBuilderMock, $this->translatorMock);
+		$this->collector = new FormElementsCreator($this->formBuilderMock, $this->translatorMock);
 	}
 
 	#[Group('units')]

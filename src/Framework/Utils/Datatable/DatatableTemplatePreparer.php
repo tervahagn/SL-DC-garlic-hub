@@ -52,39 +52,39 @@ class DatatableTemplatePreparer
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function preparerUITemplate(array $datalistSections): array
+	public function preparerUITemplate(array $dataSections): array
 	{
 		return [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => $datalistSections['title'],
-				'additional_css'  => $datalistSections['additional_css'],
-				'footer_modules'   => $datalistSections['footer_modules']
+				'LANG_PAGE_TITLE' => $dataSections['title'],
+				'additional_css'  => $dataSections['additional_css'],
+				'footer_modules'   => $dataSections['footer_modules']
 			],
 			'this_layout' => [
-				'template' => $datalistSections['template_name'],
+				'template' => $dataSections['template_name'],
 				'data' => [
-					'LANG_PAGE_HEADER'     => $datalistSections['title'],
-					'FORM_ACTION'          => '/'. $datalistSections['module_name'],
-					'element_hidden'       => $datalistSections['filter_elements']['hidden'],
-					'form_element'         => $datalistSections['filter_elements']['visible'],
+					'LANG_PAGE_HEADER'     => $dataSections['title'],
+					'FORM_ACTION'          => '/'. $dataSections['module_name'],
+					'element_hidden'       => $dataSections['filter_elements']['hidden'],
+					'form_element'         => $dataSections['filter_elements']['visible'],
 					'LANG_ELEMENTS_FILTER' => $this->translator->translate('filter', 'main'),
-					'SORT_COLUMN'          => $datalistSections['sort']['column'],
-					'SORT_ORDER'           => $datalistSections['sort']['order'],
-					'ELEMENTS_PAGE'        => $datalistSections['page']['current'],
-					'ELEMENTS_PER_PAGE'    => $datalistSections['page']['num_elements'],
-					'elements_per_page'    => $datalistSections['pagination_dropdown'],
+					'SORT_COLUMN'          => $dataSections['sort']['column'],
+					'SORT_ORDER'           => $dataSections['sort']['order'],
+					'ELEMENTS_PAGE'        => $dataSections['page']['current'],
+					'ELEMENTS_PER_PAGE'    => $dataSections['page']['num_elements'],
+					'elements_per_page'    => $dataSections['pagination_dropdown'],
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
 							'ELEMENT_BUTTON_NAME' => 'submit',
 						]
 					],
-					'has_add'                     => $datalistSections['has_add'],
+					'has_add'                     => $dataSections['has_add'],
 					'LANG_ELEMENTS_PER_PAGE'      => $this->translator->translate('elements_per_page', 'main'),
-					'LANG_COUNT_SEARCH_RESULTS'   => sprintf($this->translator->translateWithPlural('count_search_results', $datalistSections['module_name'], $datalistSections['results_count']), $datalistSections['results_count']),
-					'elements_pager'              => $datalistSections['pagination_links'],
-					'elements_result_header'      => $datalistSections['results_header'],
-					'elements_results'            => $datalistSections['results_list']
+					'LANG_COUNT_SEARCH_RESULTS'   => sprintf($this->translator->translateWithPlural('count_search_results', $dataSections['module_name'], $dataSections['results_count']), $dataSections['results_count']),
+					'elements_pager'              => $dataSections['pagination_links'],
+					'elements_result_header'      => $dataSections['results_header'],
+					'elements_results'            => $dataSections['results_list']
 				]
 			]
 		];

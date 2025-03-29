@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -35,18 +36,18 @@ readonly class Facade
 	private Builder $settingsFormBuilder;
 	private PlaylistsService $playlistsService;
 	private Parameters $settingsParameters;
-	private TemplateRenderer $renderer;
+	private Translator $translator;
 
-	public function __construct(Builder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters, TemplateRenderer $renderer)
+	public function __construct(Builder $settingsFormBuilder, PlaylistsService $playlistsService, Parameters $settingsParameters)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->playlistsService    = $playlistsService;
 		$this->settingsParameters  = $settingsParameters;
-		$this->renderer            = $renderer;
 	}
 
-	public function init(Session $session): void
+	public function init(Translator $translator, Session $session): void
 	{
+		$this->translator = $translator;
 		$this->settingsFormBuilder->init($session);
 		$this->playlistsService->setUID($session->get('user')['UID']);
 	}
@@ -132,11 +133,20 @@ readonly class Facade
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function render($post): array
+	public function prepareUITemplate(array $post): array
 	{
-		$elements = $this->settingsFormBuilder->buildForm($post);
+		$title =  $this->translator->translate('settings', 'playlists'). ' - ' .
+			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($post['playlist_mode'])];
 
-		return $this->renderer->renderTemplate($elements, $post['playlist_mode']);
+		$dataSections                      = $this->settingsFormBuilder->buildForm($post);
+		$dataSections['title']             = $title;
+		$dataSections['additional_css']    = ['/css/playlists/settings.css'];
+		$dataSections['footer_modules']    = ['/js/playlists/settings/init.js'];
+		$dataSections['template_name']     = 'playlists/edit';
+		$dataSections['form_action']       = '/playlists/settings';
+		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
+
+		return $dataSections;
 	}
 
 }

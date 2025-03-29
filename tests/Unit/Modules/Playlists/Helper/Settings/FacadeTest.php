@@ -3,10 +3,10 @@
 namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Session;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Parameters;
-use App\Modules\Playlists\Helper\Settings\TemplateRenderer;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +16,7 @@ class FacadeTest extends TestCase
 	private readonly Builder $settingsFormBuilder;
 	private readonly PlaylistsService $playlistsService;
 	private readonly Parameters $settingsParameters;
-	private readonly TemplateRenderer $renderer;
+	private readonly FormTemplatePreparer $renderer;
 	private readonly Facade $facade;
 
 	protected function setUp(): void
@@ -24,7 +24,7 @@ class FacadeTest extends TestCase
 		$this->settingsFormBuilder = $this->createMock(Builder::class);
 		$this->playlistsService    = $this->createMock(PlaylistsService::class);
 		$this->settingsParameters  = $this->createMock(Parameters::class);
-		$this->renderer            = $this->createMock(TemplateRenderer::class);
+		$this->renderer            = $this->createMock(FormTemplatePreparer::class);
 		$this->facade = new Facade(
 			$this->settingsFormBuilder,
 			$this->playlistsService,
@@ -205,11 +205,11 @@ class FacadeTest extends TestCase
 			->willReturn($expectedElements);
 
 		$this->renderer->expects($this->once())
-			->method('renderTemplate')
+			->method('preparerUITemplate')
 			->with($expectedElements, $post['playlist_mode'])
 			->willReturn($expectedResult);
 
-		$result = $this->facade->render($post);
+		$result = $this->facade->prepaareTemplate($post);
 
 		$this->assertSame($expectedResult, $result);
 	}

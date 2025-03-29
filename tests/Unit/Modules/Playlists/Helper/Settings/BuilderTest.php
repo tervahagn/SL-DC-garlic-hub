@@ -7,7 +7,7 @@ use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Modules\Playlists\Helper\Settings\Builder;
-use App\Modules\Playlists\Helper\Settings\Collector;
+use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Services\AclValidator;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
 {
-	private readonly Collector $collectorMock;
+	private readonly FormElementsCreator $collectorMock;
 	private readonly AclValidator $aclValidatorMock;
 	private readonly Validator $validatorMock;
 	private readonly Parameters $parametersMock;
@@ -25,7 +25,7 @@ class BuilderTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->collectorMock    = $this->createMock(Collector::class);
+		$this->collectorMock    = $this->createMock(FormElementsCreator::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 		$this->validatorMock    = $this->createMock(Validator::class);
 		$this->parametersMock   = $this->createMock(Parameters::class);

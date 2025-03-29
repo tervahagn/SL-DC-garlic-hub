@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper\Settings;
+namespace App\Framework\Utils\Forms;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
@@ -26,7 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class TemplateRenderer
+class FormTemplatePreparer
 {
 	private Translator $translator;
 
@@ -41,29 +41,26 @@ class TemplateRenderer
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function renderTemplate(array $elements, string $playlistMode): array
+	public function preparerUITemplate(array $dataSections): array
 	{
-		$title = $this->translator->translate('settings', 'playlists'). ' - ' .
-			$this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists')[strtolower($playlistMode)];
-
 		return [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/settings.css'],
-				'footer_modules' => ['/js/playlists/settings/init.js']
+				'LANG_PAGE_TITLE' => $dataSections['title'],
+				'additional_css'  => $dataSections['additional_css'],
+				'footer_modules'   => $dataSections['footer_modules']
 			],
 			'this_layout' => [
-				'template' => 'playlists/edit', // Template-name
+				'template' => $dataSections['template_name'], // Template-name
 				'data' => [
-					'LANG_PAGE_HEADER' => $title,
-					'FORM_ACTION' => '/playlists/settings',
-					'element_hidden' => $elements['hidden'],
-					'form_element' => $elements['visible'],
+					'LANG_PAGE_HEADER' => $dataSections['title'],
+					'FORM_ACTION' => '/'. $dataSections['form_action'],
+					'element_hidden' => $dataSections['hidden'],
+					'form_element' => $dataSections['visible'],
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
 							'ELEMENT_BUTTON_NAME' => 'submit',
-							'LANG_ELEMENT_BUTTON' => $this->translator->translate('save', 'main')
+							'LANG_ELEMENT_BUTTON' => $dataSections['save_button_label'],
 						]
 					]
 				]

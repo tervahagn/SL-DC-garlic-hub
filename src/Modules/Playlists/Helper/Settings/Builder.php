@@ -37,19 +37,19 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class Builder
 {
-	private readonly Collector $collector;
+	private readonly FormElementsCreator $formElementsCreator;
 	private readonly AclValidator $aclValidator;
 	private readonly Validator $validator;
 	private readonly Parameters $parameters;
 	private readonly int $UID;
 	private readonly string $username;
 
-	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, Collector $collector)
+	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
-		$this->aclValidator = $aclValidator;
-		$this->parameters   = $parameters;
-		$this->validator    = $validator;
-		$this->collector    = $collector;
+		$this->aclValidator         = $aclValidator;
+		$this->parameters           = $parameters;
+		$this->validator            = $validator;
+		$this->formElementsCreator  = $formElementsCreator;
 	}
 
 	public function init(Session $session): static
@@ -107,13 +107,13 @@ readonly class Builder
 	public function buildForm(array $playlist): array
 	{
 		$form       = [];
-		$form['playlist_name'] = $this->collector->createPlaylistNameField(
+		$form['playlist_name'] = $this->formElementsCreator->createPlaylistNameField(
 			$playlist[Parameters::PARAMETER_PLAYLIST_NAME] ?? ''
 		);
 
 		if ($this->parameters->hasParameter(BaseEditParameters::PARAMETER_UID))
 		{
-			$form['UID'] = $this->collector->createUIDField(
+			$form['UID'] = $this->formElementsCreator->createUIDField(
 				$playlist[BaseParameters::PARAMETER_UID] ?? $this->UID,
 				$playlist['username'] ?? $this->username,
 				$this->UID
@@ -122,21 +122,21 @@ readonly class Builder
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT))
 		{
-			$form['time_limit'] = $this->collector->createTimeLimitField(
+			$form['time_limit'] = $this->formElementsCreator->createTimeLimitField(
 				$playlist[Parameters::PARAMETER_TIME_LIMIT] ?? $this->parameters->getDefaultValueOfParameter(Parameters::PARAMETER_TIME_LIMIT),
 				$this->parameters->getDefaultValueOfParameter(Parameters::PARAMETER_TIME_LIMIT)
 			);
 		}
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID))
-			$form['playlist_id'] = $this->collector->createHiddenPlaylistIdField($playlist[Parameters::PARAMETER_PLAYLIST_ID]);
+			$form['playlist_id'] = $this->formElementsCreator->createHiddenPlaylistIdField($playlist[Parameters::PARAMETER_PLAYLIST_ID]);
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE))
-			$form['playlist_mode'] = $this->collector->createPlaylistModeField($playlist[Parameters::PARAMETER_PLAYLIST_MODE]);
+			$form['playlist_mode'] = $this->formElementsCreator->createPlaylistModeField($playlist[Parameters::PARAMETER_PLAYLIST_MODE]);
 
-		$form['csrf_token'] = $this->collector->createCSRFTokenField();
+		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
 
-		return $this->collector->prepareForm($form);
+		return $this->formElementsCreator->prepareForm($form);
 	}
 
 	/**

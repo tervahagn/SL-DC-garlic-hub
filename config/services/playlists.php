@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
@@ -33,11 +34,10 @@ use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
-use App\Modules\Playlists\Helper\Settings\Collector;
-use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Builder;
+use App\Modules\Playlists\Helper\Settings\Facade;
+use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
-use App\Modules\Playlists\Helper\Settings\TemplateRenderer;
 use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
@@ -84,7 +84,7 @@ $dependencies[Builder::class] = DI\factory(function (ContainerInterface $contain
 		$container->get(AclValidator::class),
 		$container->get(Parameters::class),
 		$container->get(Validator::class),
-		new Collector($container->get(FormBuilder::class), $container->get(Translator::class)),
+		new FormElementsCreator($container->get(FormBuilder::class), $container->get(Translator::class)),
 	);
 });
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
@@ -92,14 +92,14 @@ $dependencies[Facade::class] = DI\factory(function (ContainerInterface $containe
 	return new Facade(
 		$container->get(Builder::class),
 		$container->get(PlaylistsService::class),
-		$container->get(Parameters::class),
-		new TemplateRenderer($container->get(Translator::class))
+		$container->get(Parameters::class)
 	);
 });
 $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowSettingsController(
-		$container->get(Facade::class)
+		$container->get(Facade::class),
+		new FormTemplatePreparer($container->get(Translator::class))
 	);
 });
 

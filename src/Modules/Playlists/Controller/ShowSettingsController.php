@@ -23,6 +23,7 @@ namespace App\Modules\Playlists\Controller;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -34,11 +35,13 @@ use Slim\Flash\Messages;
 class ShowSettingsController
 {
 	private readonly Facade $facade;
+	private readonly FormTemplatePreparer $formElementPreparer;
 	private Messages $flash;
 
-	public function __construct(Facade $facade)
+	public function __construct(Facade $facade, FormTemplatePreparer $formElementPreparer)
 	{
 		$this->facade              = $facade;
+		$this->formElementPreparer = $formElementPreparer;
 	}
 
 	/**
@@ -132,7 +135,8 @@ class ShowSettingsController
 	 */
 	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
 	{
-		$data = $this->facade->render($userInput);
+		$elements = $this->facade->prepareUITemplate($userInput);
+		$data = $this->formElementPreparer->preparerUITemplate($elements);
 		$response->getBody()->write(serialize($data));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
@@ -140,6 +144,6 @@ class ShowSettingsController
 	private function initFacade(ServerRequestInterface $request): void
 	{
 		$this->flash      = $request->getAttribute('flash');
-		$this->facade->init($request->getAttribute('session'));
+		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
 	}
 }
