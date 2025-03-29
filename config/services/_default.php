@@ -44,6 +44,7 @@ use App\Framework\Utils\Datatable\Results\BodyPreparer;
 use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
 use App\Framework\Utils\Datatable\UrlBuilder;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
@@ -224,6 +225,10 @@ $dependencies[PrepareService::class] = DI\factory(function (ContainerInterface $
 $dependencies[DatatableTemplatePreparer::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new DatatableTemplatePreparer($container->get(Translator::class));
+});
+$dependencies[FormTemplatePreparer::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new FormTemplatePreparer($container->get(Translator::class));
 });
 
 

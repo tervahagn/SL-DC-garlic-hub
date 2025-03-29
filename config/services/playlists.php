@@ -99,7 +99,7 @@ $dependencies[ShowSettingsController::class] = DI\factory(function (ContainerInt
 {
 	return new ShowSettingsController(
 		$container->get(Facade::class),
-		new FormTemplatePreparer($container->get(Translator::class))
+		$container->get(FormTemplatePreparer::class)
 	);
 });
 
