@@ -3,24 +3,32 @@
 namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
-class CollectorTest extends TestCase
+class FormElementsCreatorTest extends TestCase
 {
 	private readonly FormBuilder $formBuilderMock;
 	private readonly Translator $translatorMock;
 	private readonly FormElementsCreator $collector;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->formBuilderMock = $this->createMock(FormBuilder::class);
-		$this->translatorMock = $this->createMock(Translator::class);
+		$this->translatorMock  = $this->createMock(Translator::class);
 
 		$this->collector = new FormElementsCreator($this->formBuilderMock, $this->translatorMock);
 	}
@@ -43,6 +51,13 @@ class CollectorTest extends TestCase
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCreatePlaylistNameField(): void
 	{
@@ -73,6 +88,13 @@ class CollectorTest extends TestCase
 		$this->assertSame($expectedField, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCreateUIDField(): void
 	{
@@ -106,6 +128,9 @@ class CollectorTest extends TestCase
 		$this->assertSame($expectedField, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateTimeLimitField(): void
 	{
@@ -134,9 +159,12 @@ class CollectorTest extends TestCase
 			])
 			->willReturn($expectedField);
 
-		$result = $this->collector->createTimeLimitField($value, $defaultValue);
+		$this->collector->createTimeLimitField($value, $defaultValue);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateHiddenPlaylistIdField(): void
 	{
@@ -159,6 +187,9 @@ class CollectorTest extends TestCase
 		$this->assertSame($expectedField, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreatePlaylistModeField(): void
 	{
@@ -180,6 +211,9 @@ class CollectorTest extends TestCase
 		$this->assertSame($expectedField, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateCSRFTokenField(): void
 	{

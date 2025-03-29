@@ -3,12 +3,13 @@
 namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Session;
-use App\Framework\Utils\Forms\FormTemplatePreparer;
+use App\Framework\Core\Translate\Translator;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class FacadeTest extends TestCase
@@ -16,20 +17,22 @@ class FacadeTest extends TestCase
 	private readonly Builder $settingsFormBuilder;
 	private readonly PlaylistsService $playlistsService;
 	private readonly Parameters $settingsParameters;
-	private readonly FormTemplatePreparer $renderer;
+	private readonly Translator $translatorMock;
 	private readonly Facade $facade;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->settingsFormBuilder = $this->createMock(Builder::class);
 		$this->playlistsService    = $this->createMock(PlaylistsService::class);
 		$this->settingsParameters  = $this->createMock(Parameters::class);
-		$this->renderer            = $this->createMock(FormTemplatePreparer::class);
+		$this->translatorMock      = $this->createMock(Translator::class);
 		$this->facade = new Facade(
 			$this->settingsFormBuilder,
 			$this->playlistsService,
 			$this->settingsParameters,
-			$this->renderer
 		);
 	}
 
@@ -51,7 +54,7 @@ class FacadeTest extends TestCase
 			->method('setUID')
 			->with(123);
 
-		$this->facade->init($sessionMock);
+		$this->facade->init($this->translatorMock, $sessionMock);
 	}
 
 	#[Group('units')]
@@ -193,24 +196,44 @@ class FacadeTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testRender(): void
+	public function testPrepareUITemplateWithValidMode(): void
 	{
-		$post = ['playlist_mode' => 'edit', 'name' => 'Test Playlist'];
-		$expectedElements = ['element1' => 'value1', 'element2' => 'value2'];
-		$expectedResult = ['rendered_html' => true];
+		$post = ['playlist_mode' => 'create', 'some_key' => 'value'];
+		$translatedTitle = 'Playlists Settings - Create';
+		$formData = ['field_1' => 'value_1', 'field_2' => 'value_2'];
+		$expectedResult = array_merge($formData, [
+			'title' => $translatedTitle,
+			'additional_css' => ['/css/playlists/settings.css'],
+			'footer_modules' => ['/js/playlists/settings/init.js'],
+			'template_name' => 'playlists/edit',
+			'form_action' => '/playlists/settings',
+			'save_button_label' => 'Save',
+		]);
+
+		$sessionMock = $this->createMock(Session::class);
+		$sessionMock->expects($this->once())->method('get')->willReturn(['UID' => 123]);;
+		$this->facade->init($this->translatorMock, $sessionMock);
+
+		$this->translatorMock->expects($this->exactly(2))
+			->method('translate')
+			->willReturnMap([
+				['settings', 'playlists', [], 'Playlists Settings'],
+				['save', 'main', [], 'Save']
+			]);
+
+		$this->translatorMock->expects($this->once())
+			->method('translateArrayForOptions')
+			->with('playlist_mode_selects', 'playlists')
+			->willReturn(['create' => 'Create']);
 
 		$this->settingsFormBuilder->expects($this->once())
 			->method('buildForm')
 			->with($post)
-			->willReturn($expectedElements);
+			->willReturn($formData);
 
-		$this->renderer->expects($this->once())
-			->method('preparerUITemplate')
-			->with($expectedElements, $post['playlist_mode'])
-			->willReturn($expectedResult);
-
-		$result = $this->facade->prepaareTemplate($post);
+		$result = $this->facade->prepareUITemplate($post);
 
 		$this->assertSame($expectedResult, $result);
 	}
+
 }

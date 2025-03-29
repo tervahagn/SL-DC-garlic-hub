@@ -135,9 +135,10 @@ class ShowSettingsController
 	 */
 	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
 	{
-		$elements = $this->facade->prepareUITemplate($userInput);
-		$data = $this->formElementPreparer->preparerUITemplate($elements);
-		$response->getBody()->write(serialize($data));
+		$dataSections = $this->facade->prepareUITemplate($userInput);
+		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
+
+		$response->getBody()->write(serialize($templateData));
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 

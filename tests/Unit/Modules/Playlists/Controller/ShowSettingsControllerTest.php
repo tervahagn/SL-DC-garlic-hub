@@ -4,35 +4,56 @@ namespace Tests\Unit\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Helper\Settings\Facade;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
 class ShowSettingsControllerTest extends TestCase
 {
 	private readonly Facade $facadeMock;
-	private readonly ShowSettingsController $controller;
 	private readonly ServerRequestInterface $requestMock;
 	private readonly ResponseInterface $responseMock;
 	private readonly StreamInterface $streamInterfaceMock;
+	private readonly FormTemplatePreparer $formElementPreparerMock;
 	private readonly Messages $flashMock;
+	private readonly ShowSettingsController $controller;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
-		$this->facadeMock           = $this->createMock(Facade::class);
-		$this->requestMock          = $this->createMock(ServerRequestInterface::class);
-		$this->responseMock         = $this->createMock(ResponseInterface::class);
-		$this->streamInterfaceMock  = $this->createMock(StreamInterface::class);
-		$this->flashMock            = $this->createMock(Messages::class);
+		$this->facadeMock              = $this->createMock(Facade::class);
+		$this->requestMock             = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock            = $this->createMock(ResponseInterface::class);
+		$this->streamInterfaceMock     = $this->createMock(StreamInterface::class);
+		$this->flashMock               = $this->createMock(Messages::class);
+		$this->formElementPreparerMock = $this->createMock(FormTemplatePreparer::class);
 
-		$this->controller = new ShowSettingsController($this->facadeMock);
+		$this->controller = new ShowSettingsController($this->facadeMock, $this->formElementPreparerMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testNewPlaylistFormWithDefaultMode(): void
 	{
@@ -43,12 +64,17 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildCreateNewParameter')
 			->with('master');
 
-		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
+		$dataSections = ['data_sections'];
+		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with(['playlist_mode' => 'master'])
+			->willReturn($dataSections);
+
+		$this->formElementPreparerMock->expects($this->once())->method('prepareUITemplate')
+			->with($dataSections)
 			->willReturn(['rendered_template' => 'example']);
 
 		$this->responseMock->expects($this->once())->method('getBody')
-			->willReturn($this->createMock(\Psr\Http\Message\StreamInterface::class));
+			->willReturn($this->createMock(StreamInterface::class));
 
 		$this->responseMock	->expects($this->once())->method('withHeader')
 			->with('Content-Type', 'text/html')
@@ -59,6 +85,15 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testNewPlaylistForm(): void
 	{
@@ -69,12 +104,17 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildCreateNewParameter')
 			->with('channel');
 
-		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
+		$dataSections = ['data_sections'];
+		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with(['playlist_mode' => 'channel'])
+			->willReturn($dataSections);
+
+		$this->formElementPreparerMock->expects($this->once())->method('prepareUITemplate')
+			->with($dataSections)
 			->willReturn(['rendered_template' => 'example']);
 
 		$this->responseMock->expects($this->once())->method('getBody')
-			->willReturn($this->createMock(\Psr\Http\Message\StreamInterface::class));
+			->willReturn($this->createMock(StreamInterface::class));
 
 		$this->responseMock	->expects($this->once())->method('withHeader')
 			->with('Content-Type', 'text/html')
@@ -85,6 +125,14 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException|Exception
+	 */
 	#[Group('units')]
 	public function testEditPlaylistFormWithInvalidPlaylistId(): void
 	{
@@ -108,6 +156,14 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testEditPlaylistFormWithNonExistentPlaylist(): void
 	{
@@ -135,6 +191,15 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testEditPlaylistFormWithValidPlaylistId(): void
 	{
@@ -150,12 +215,12 @@ class ShowSettingsControllerTest extends TestCase
 		$this->facadeMock->expects($this->once())->method('buildEditParameter')
 			->with($playlist);
 
-		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
+		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with($playlist)
 			->willReturn(['rendered_template' => 'example']);
 
 		$this->responseMock->expects($this->once())->method('getBody')
-			->willReturn($this->createMock(\Psr\Http\Message\StreamInterface::class));
+			->willReturn($this->createMock(StreamInterface::class));
 
 		$this->responseMock->expects($this->once())->method('withHeader')
 			->with('Content-Type', 'text/html')
@@ -166,6 +231,14 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException|Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistSuccessfully(): void
 	{
@@ -198,6 +271,15 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistWithErrorMessages(): void
 	{
@@ -231,6 +313,15 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistWithInvalidPostData(): void
 	{
@@ -260,6 +351,15 @@ class ShowSettingsControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistFailsStore(): void
 	{
@@ -276,7 +376,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with($post)
 			->willReturn(0);
 
-		$this->facadeMock->expects($this->once())->method('prepaareTemplate')
+		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with($post)
 			->willReturn(['rendered_template' => 'example']);
 
@@ -293,18 +393,22 @@ class ShowSettingsControllerTest extends TestCase
 	}
 
 
-	private function setStandardMocks()
+	/**
+	 * @throws Exception
+	 */
+	private function setStandardMocks(): void
 	{
 		$translatorMock = $this->createMock(Translator::class);
 		$sessionMock = $this->createMock(Session::class);
-		$this->requestMock->expects($this->exactly(2))->method('getAttribute')
+		$this->requestMock->expects($this->exactly(3))->method('getAttribute')
 			->willReturnMap([
 				['flash', null, $this->flashMock],
+				['translator', null, $translatorMock],
 				['session', null, $sessionMock]
 			]);
 
 		$this->facadeMock->expects($this->once())->method('init')
-			->with($sessionMock);
+			->with($translatorMock, $sessionMock);
 
 	}
 }

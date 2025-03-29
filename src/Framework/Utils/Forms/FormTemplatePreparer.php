@@ -41,7 +41,7 @@ class FormTemplatePreparer
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function preparerUITemplate(array $dataSections): array
+	public function prepareUITemplate(array $dataSections): array
 	{
 		return [
 			'main_layout' => [
