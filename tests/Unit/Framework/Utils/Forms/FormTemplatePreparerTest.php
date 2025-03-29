@@ -26,7 +26,7 @@ class FormTemplatePreparerTest extends TestCase
 			'additional_css' => ['style.css'],
 			'footer_modules' => ['module.js'],
 			'template_name' => 'form_template',
-			'form_action' => 'submit-form',
+			'form_action' => '/submit-form',
 			'hidden' => ['hidden_field' => 'value'],
 			'visible' => ['field1' => 'value1', 'field2' => 'value2'],
 			'save_button_label' => 'Save Changes',
@@ -85,7 +85,7 @@ class FormTemplatePreparerTest extends TestCase
 				'template' => '',
 				'data' => [
 					'LANG_PAGE_HEADER' => '',
-					'FORM_ACTION' => '/',
+					'FORM_ACTION' => '',
 					'element_hidden' => [],
 					'form_element' => [],
 					'form_button' => [

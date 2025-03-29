@@ -39,8 +39,29 @@ class ValidatorTest extends TestCase
 		$errors = $this->validator->validateUserInput([Parameters::PARAMETER_PLAYLIST_MODE => 'unsupported']);
 		$expectedErrors = [
 			'Playlist name is missing.',
-			'Parameter are missing.',
 			 'Unsupported Playlist.'
+		];
+		$this->assertEquals($expectedErrors, $errors);
+	}
+
+	#[Group('units')]
+	public function testValidateUserInputWithErrors2(): void
+	{
+		$this->parametersMock->method('getValueOfParameter')
+			->with(Parameters::PARAMETER_PLAYLIST_NAME)
+			->willReturn(null);
+
+		$this->translatorMock->method('translate')
+			->willReturnMap([
+				['no_playlist_name', 'playlists', [], 'Playlist name is missing.'],
+				['parameters_missing', 'playlists', [], 'Parameter are missing.'],
+				['playlist_mode_unsupported', 'playlists', [], 'Unsupported Playlist.']
+			]);
+
+		$errors = $this->validator->validateUserInput([]);
+		$expectedErrors = [
+			'Playlist name is missing.',
+			'Parameter are missing.'
 		];
 		$this->assertEquals($expectedErrors, $errors);
 	}

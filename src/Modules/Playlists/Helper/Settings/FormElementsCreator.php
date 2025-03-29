@@ -12,11 +12,11 @@ use App\Framework\Utils\Html\FormBuilder;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class FormElementsCreator
+readonly class FormElementsCreator
 {
-	private readonly FormBuilder $formBuilder;
+	private FormBuilder $formBuilder;
 
-	private readonly Translator $translator;
+	private Translator $translator;
 
 
 	public function __construct(FormBuilder $formBuilder, Translator $translator)
@@ -25,7 +25,7 @@ class FormElementsCreator
 		$this->translator = $translator;
 	}
 
-	public function prepareForm(array $form)
+	public function prepareForm(array $form): array
 	{
 		return $this->formBuilder->prepareForm($form);
 	}
@@ -70,6 +70,12 @@ class FormElementsCreator
 		]);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function createTimeLimitField(int $value, int $defaultValue): FieldInterface
 	{
 		return $this->formBuilder->createField([
@@ -84,6 +90,9 @@ class FormElementsCreator
 		]);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function createHiddenPlaylistIdField(int $value): FieldInterface
 	{
 		return $this->formBuilder->createField([
@@ -94,7 +103,10 @@ class FormElementsCreator
 		]);
 	}
 
-	public function createPlaylistModeField(int $value): FieldInterface
+	/**
+	 * @throws FrameworkException
+	 */
+	public function createPlaylistModeField(string $value): FieldInterface
 	{
 		return $this->formBuilder->createField([
 			'type' => FieldType::HIDDEN,
@@ -104,6 +116,9 @@ class FormElementsCreator
 		]);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function createCSRFTokenField(): FieldInterface
 	{
 		return $this->formBuilder->createField([
