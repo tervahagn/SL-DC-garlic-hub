@@ -22,6 +22,7 @@ export class TreeViewElements
 	#mediapoolTree    = document.getElementById("mediapoolTree");
 	#currentPath      = document.getElementById("currentPath");
 	#treeViewFilter   = document.getElementById("treeViewFilter");
+
 	#editFolderDialog = document.getElementById("editFolderDialog");
 	#closeEditDialog  = document.getElementById("closeEditDialog");
 	#menuTemplate     = document.getElementById("treeViewContextMenuTemplate");
@@ -51,6 +52,16 @@ export class TreeViewElements
 		return this.#closeEditDialog;
 	}
 
+	initialize()
+	{
+		this.#mediapoolTree    = document.getElementById("mediapoolTree");
+		this.#currentPath      = document.getElementById("currentPath");
+		this.#treeViewFilter   = document.getElementById("treeViewFilter");
+
+		this.#editFolderDialog = document.getElementById("editFolderDialog");
+		this.#closeEditDialog  = document.getElementById("closeEditDialog");
+		this.#menuTemplate     = document.getElementById("treeViewContextMenuTemplate");
+	}
 
 	get menuTemplate()
 	{

@@ -21,8 +21,6 @@ export class FetchClient
 {
     #xhr = null;
 
-
-
     async fetchData(url, options = {})
     {
         const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' } };

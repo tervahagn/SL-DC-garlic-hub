@@ -1,8 +1,8 @@
 		<h1>{{{LANG_PAGE_HEADER}}}</h1>
 		<header>
 			<input type="hidden" id="playlist_id" value="{{{SMIL_PLAYLIST_ID}}}" />
-			<a href="#" title="{{{LANG_INSERT}}}" class="bi bi-plus-square" id="addItems"></a>
-			<template id="insertItemsMenuTemplate">
+			<div id="insertMenu" tabindex="0" title="{{{LANG_INSERT}}}">
+				<i title="{{{LANG_INSERT}}}" class="bi bi-plus-circle"></i>
 				<ul class="context-menu">
 					<li id="insertMedia">{{{LANG_INSERT_MEDIA}}}</li>
 					<li id="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</li>
@@ -17,8 +17,7 @@
 						<li id="insertChannels">{{{LANG_INSERT_CHANNELS}}}</li>
 					{{/can_channels}}
 				</ul>
-			</template>
-
+			</div>
 			<section class="information">
 				<div>{{{LANG_PLAYLIST_DURATION}}}: <span id="playlistDuration">00:00:00</span></div>
 				<div>{{{LANG_TOTAL}}}: <span id="totalMedia">0</span></div>
@@ -44,11 +43,6 @@
 
 		<section id="editor">
 			<section id="itemSelectContainer">
-				<div id="wrapSelectorType">
-					<aside id="directoriesList">
-					</aside>
-					<div id="content"></div>
-				</div>
 			</section>
 
 			<section id="playList" class="item-list-list-view" aria-labelledby="item-list-title"></section>

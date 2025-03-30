@@ -22,9 +22,6 @@ export class WunderbaumWrapper
 	constructor(treeViewElements)
 	{
 		this.#treeViewElements = treeViewElements;
-		this.#initDefaultConfig();
-
-		this.#tree = new Wunderbaum(this.#defaultConfig);
 	}
 
 	activateNodeByTarget(target)
@@ -36,9 +33,16 @@ export class WunderbaumWrapper
 		return node;
 	}
 
-	addDragNDrop()
+	initTree()
 	{
-		this.#initDragnDropConfig()
+		this.treeViewElements.initialize();
+		this.#initDefaultConfig();
+		this.#tree = new Wunderbaum(this.#defaultConfig);
+	}
+
+	addDragNDrop() // find out why this did not work
+	{
+		this.#initDragNDropConfig();
 		this.#tree.setOption("dnd", this.#dndConfig);
 	}
 
@@ -47,7 +51,7 @@ export class WunderbaumWrapper
 		this.#tree.addChildren({ key:  key, title: folderName, isFolder: true });
 	}
 
-	addSubFolder()
+	addSubFolder(key, folderName)
 	{
 		this.#activeNode.addChildren({ key:  key, title: folder_name, isFolder: true });
 	}
@@ -111,9 +115,13 @@ export class WunderbaumWrapper
 			},
 			filter: {autoApply: true, mode: "hide"}
 		}
+		this.#treeViewElements.treeViewFilter.addEventListener("input", (event) => {
+			this.#tree.filterNodes(event.target.value, { mode: "hide" });
+		})
+
 	}
 
-	#initDragnDropConfig()
+	#initDragNDropConfig()
 	{
 		this.#dndConfig = {
 			effectAllowed: "move",
@@ -162,10 +170,6 @@ export class WunderbaumWrapper
 		// prevent a drag into this field
 		this.#treeViewElements.treeViewFilter.addEventListener('dragover', (event) => event.preventDefault());
 		this.#treeViewElements.treeViewFilter.addEventListener('drop', (event) => event.preventDefault());
-		this.#treeViewElements.treeViewFilter.addEventListener("input", (event) => {
-			this.#tree.filterNodes(event.target.value, { mode: "hide" });
-		})
-
 	}
 
 	#loadMediaInDirectory(key)

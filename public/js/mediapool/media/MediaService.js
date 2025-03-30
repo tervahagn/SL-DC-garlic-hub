@@ -41,6 +41,22 @@ export class MediaService
 		return result.media_list;
     }
 
+	async loadFilteredMediaByNodeId(nodeId, filter)
+	{
+		const url    = MediaApiConfig.LIST_URI;
+		const result = await this.#sendRequest(url, "GET", null);
+
+		return result.media_list;
+	}
+
+	async loadSelectorTemplate()
+	{
+		const url    = MediaApiConfig.SELECTOR;
+		const result = await this.#sendRequest(url, "GET", null);
+
+		return result.template;
+	}
+
 	async getMediaById(mediaId)
 	{
 		const url = MediaApiConfig.BASE_URI + "/" + mediaId;

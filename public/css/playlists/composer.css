@@ -11,3 +11,14 @@ main header
         gap: 1rem;
         align-items: center;
     }
+#insertMenu{cursor: pointer;}
+#insertMenu .context-menu
+{
+    display: none;
+    position: absolute;
+    top:0;
+}
+#insertMenu:hover .context-menu {display: block;}
+
+/*#insertMenu:focus .context-menu {display: block;}
+#addItems:focus .context-menu {display: block;}*/

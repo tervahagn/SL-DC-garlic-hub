@@ -16,14 +16,13 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+"use strict";
 
-export const MediaApiConfig = {
-	BASE_URI: "/async/mediapool/media",
-	LIST_URI: "/async/mediapool/media/list",
-	MOVE_URI: "/async/mediapool/media/move",
-	EDIT_URI: "/async/mediapool/media/edit",
-	CLONE_URI: "/async/mediapool/media/clone",
-	SELECTOR: "/async/mediapool/selector",
-	PYR_CSS_PATH: "/css/external/plyr.css",
-	PYR_JS_PATH: "/js/external/plyr.js"
-};
+import {InsertContextMenu} from "./InsertContextMenu.js";
+import {SelectorFactory}   from "./SelectorFactory.js";
+
+document.addEventListener("DOMContentLoaded", function ()
+{
+	const insertContextMenu = new InsertContextMenu(new SelectorFactory());
+	insertContextMenu.init();
+});

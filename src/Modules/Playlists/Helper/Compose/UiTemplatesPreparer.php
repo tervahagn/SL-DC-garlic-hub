@@ -35,7 +35,9 @@ readonly class UiTemplatesPreparer
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/external.css'],
+				'additional_css' => [
+					'/css/playlists/external.css'
+				],
 				'footer_modules' => ['/js/playlists/compose/external/init.js']
 			],
 			'this_layout' => [
@@ -123,14 +125,16 @@ readonly class UiTemplatesPreparer
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/composer.css'],
+				'additional_css' => ['/css/playlists/composer.css',
+					'/css/external/wunderbaum.css',
+				],
 				'footer_modules' => ['/js/playlists/compose/standard/init.js']
 			],
 			'this_layout' => [
 				'template' => 'playlists/compose', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
-					'LANG_INSERT' => $this->translator->translate('insert', 'main'),
+					'LANG_INSERT' => $this->translator->translate('insert', self::MODULE_NAME),
 					'LANG_INSERT_MEDIA' => $this->translator->translate('insert_media', self::MODULE_NAME),
 					'LANG_INSERT_EXTERNAL_MEDIA' => $this->translator->translate('insert_external_media', self::MODULE_NAME),
 					'can_playlists' => $this->rightsChecker->checkInsertPlaylist($playlist['time_limit']),

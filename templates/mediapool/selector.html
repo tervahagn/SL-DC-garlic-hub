@@ -1,0 +1,29 @@
+<aside>
+			<label id="wrap_tree_filter">
+				<input id="treeViewFilter" type="search" placeholder="Filter">
+			</label>
+
+			<nav aria-label="Directory Structure">
+				<div id="mediapoolTree" class="wb-skeleton wb-initializing wb-fade-expander"></div>
+			</nav>
+		</aside>
+
+		<section class="content">
+			<div id="mediaList" class="media-list-list-view" aria-labelledby="media-list-title">
+			</div>
+
+			<template id="media-template">
+				<article class="media-item" draggable="false">
+					<figure draggable="false">
+						<i class="media-drag-icon bi bi-grip-vertical" draggable="true"></i>
+						<img src="" alt="Media Thumbnail" draggable="false">
+						<a href="" class="glightbox media-view-icon bi-eye bi"
+						   data-glightbox="descPosition: left; zoomable: true;" draggable="false">
+						</a>
+						<i class="media-type-icon bi" draggable="false"></i>
+						<figcaption class="media-filename" draggable="false">
+						</figcaption>
+					</figure>
+				</article>
+			</template>
+		</section>
