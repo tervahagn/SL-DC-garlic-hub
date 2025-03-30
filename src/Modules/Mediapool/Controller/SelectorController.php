@@ -20,7 +20,7 @@ readonly class SelectorController
 
 	public function loadTemplate(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$filePath = $this->config->getPaths('templateDir').'/selector.html';
+		$filePath = $this->config->getPaths('templateDir').'/mediapool/selector.html';
 		$template = file_get_contents($filePath);
 
 		$data = ['success' => true, 'template' => $template];

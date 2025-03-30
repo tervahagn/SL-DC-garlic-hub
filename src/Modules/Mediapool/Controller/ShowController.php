@@ -54,7 +54,7 @@ class ShowController
 				'LANG_PAGE_TITLE' => $translator->translate('mediapool', 'menu'),
 				'additional_css' => [
 					'/css/external/bootstrap-icons.min.css',
-					'/css/external/wunderbaum.min.css',
+					'/css/external/wunderbaum.css',
 					'/css/external/glightbox.min.css',
 					'/css/mediapool/overview.css',
 					'/css/mediapool/media-list.css',

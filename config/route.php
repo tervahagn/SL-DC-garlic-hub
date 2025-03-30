@@ -25,6 +25,7 @@ use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
+use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Playlists\Controller\PlaylistController;
@@ -95,7 +96,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/media/edit', [MediaController::class, 'edit']);
 	$group->post('/mediapool/media/move', [MediaController::class, 'move']);
 	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
-	$group->post('/mediapool/media/selector', [SelectorController::class, 'loadTemplate']);
+	$group->get('/mediapool/selector', [SelectorController::class, 'loadTemplate']);
 
 	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}/{playlist_name}', [PlaylistController::class, 'findByName']);
 	$group->get('/playlists/findbyId/{playlist_id:\d+}', [PlaylistController::class, 'findById']);
