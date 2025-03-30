@@ -104,7 +104,7 @@ export class TreeViewDialog
 						// again no needs to check rights
 						result = await this.#treeViewService.addNode(0, folderName);
 						this.#directoryView.addRootChild(result.data.id, result.data.new_name);
-						break;w
+						break;
 					case "add_sub_folder":
 						if (!activeNodeRights.create)
 							throw new Error('Missing create right for this node.');
