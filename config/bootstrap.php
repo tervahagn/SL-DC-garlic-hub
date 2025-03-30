@@ -31,6 +31,7 @@ $paths = [
 	'cacheDir' => $systemDir . '/var/cache',
 	'logDir' => $systemDir . '/var/logs',
 	'keysDir' => $systemDir . '/var/keys',
+	'templateDir' => $systemDir . '/templates',
 	'translationDir' => $systemDir . '/translations',
 	'configDir' => $systemDir . '/config',
 	'migrationDir' => $systemDir . '/migrations',

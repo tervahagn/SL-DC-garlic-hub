@@ -19,6 +19,7 @@
 */
 
 use App\Framework\Core\Acl\AclHelper;
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -27,6 +28,7 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Playlists\Controller\PlaylistController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
@@ -174,5 +176,11 @@ $dependencies[PlaylistController::class] = DI\factory(function (ContainerInterfa
 	);
 });
 
+$dependencies[SelectorController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SelectorController(
+		$container->get(Config::class)
+	);
+});
 
 return $dependencies;
