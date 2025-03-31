@@ -2,7 +2,7 @@ export class MediaSelector
 {
 	#dom_tree = "";
 	#dom_media = "";
-	#radio_filter = "";
+	#filter = "";
 	#selected_media_id = 0;
 	#selected_media_link = "";
 	#selected_media_ext = "";
@@ -14,13 +14,14 @@ export class MediaSelector
 	constructor(treeViewWrapper, mediaService, selectorView)
 	{
 		this.#treeViewWrapper = treeViewWrapper;
-		this.#mediaService    = mediaService;
-		this.#selectorView    = selectorView;
+		this.#mediaService = mediaService;
+		this.#selectorView = selectorView;
+		this.#initEvents();
 	}
 
 	setMediaFilter(filter)
 	{
-		this.#radio_filter = filter;
+		this.#filter = filter;
 	}
 
 	setDomContainer(tree_container, content_container)
@@ -46,9 +47,14 @@ export class MediaSelector
 		this.#treeViewWrapper.initTree();
 	}
 
-	async loadMedia(nodeId, filter)
+	async loadMedia(nodeId)
 	{
-		return await this.#mediaService.loadFilteredMediaByNodeId(nodeId, filter);
+		return await this.#mediaService.loadFilteredMediaByNodeId(nodeId, this.#filter);
+	}
+
+	displayMediaList(mediaList)
+	{
+		this.#selectorView.displayMediaList(mediaList);
 	}
 	
 	getSelectedMedia()
@@ -61,8 +67,14 @@ export class MediaSelector
 		};
 	}
 
-	fillMediaArea(mediaObj)
+
+	#initEvents()
 	{
-		this.#selectorView.listMedia();
+		this.#treeViewWrapper.on("loadMediaInDirectory", async (args) =>
+		{
+			const results = await this.loadMedia(args.node_id);
+			this.displayMediaList(results);
+		});
 	}
+
 }

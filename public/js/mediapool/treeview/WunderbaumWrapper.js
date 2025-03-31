@@ -104,7 +104,9 @@ export class WunderbaumWrapper
 			},
 			activate: (e) =>
 			{
-				this.#treeViewElements.currentPath.innerText = " / " + e.node.getPath(true, "title", " / ");
+				if (this.#treeViewElements.currentPath !== null)
+					this.#treeViewElements.currentPath.innerText = " / " + e.node.getPath(true, "title", " / ");
+
 				this.#activeNode = e.node;
 
 				const parentList = e.node.getParentList(false, true);

@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function()
 
 	const mediaList     = new MediaList(
 		document.getElementById("mediaList"),
-		new MediaFactory(document.getElementById('media-template')),
+		new MediaFactory(document.getElementById('mediaTemplate')),
         new ContextMenuMediaFactory(
 			document.getElementById('media-contextmenu-template'),
 			new MediaEditDialog(mediaService),

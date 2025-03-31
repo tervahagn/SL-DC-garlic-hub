@@ -43,7 +43,7 @@ export class MediaService
 
 	async loadFilteredMediaByNodeId(nodeId, filter)
 	{
-		const url    = MediaApiConfig.LIST_URI;
+		const url    = MediaApiConfig.LIST_URI + "/" + nodeId + '?filter=' + filter;
 		const result = await this.#sendRequest(url, "GET", null);
 
 		return result.media_list;

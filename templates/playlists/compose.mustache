@@ -41,14 +41,15 @@
 			</section>
 		</header>
 
-		<section id="editor">
+		<section class="playlist-composer">
 			<section id="itemSelectContainer">
 			</section>
 
-			<section id="playList" class="item-list-list-view" aria-labelledby="item-list-title"></section>
+			<ul id="thePlaylist">
+			</ul>
 
 			<template id="playlistItemTemplate">
-				<div class="playlist_item">
+				<li class="playlist-item">
 					<img class="thumbnail" src="" alt="" />
 					<div class="properties">
 						<div class="actions">
@@ -64,6 +65,6 @@
 						</div>
 						<p class="item_name"></p>
 					</div>
-				</div>
+				</li>
 			</template>
 		</section>

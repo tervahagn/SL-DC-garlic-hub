@@ -125,8 +125,11 @@ readonly class UiTemplatesPreparer
 		return [
 			'main_layout' => [
 				'LANG_PAGE_TITLE' => $title,
-				'additional_css' => ['/css/playlists/composer.css',
+				'additional_css' => [
 					'/css/external/wunderbaum.css',
+					'/css/mediapool/media-list.css',
+					'/css/mediapool/selector.css',
+					'/css/playlists/composer.css'
 				],
 				'footer_modules' => ['/js/playlists/compose/standard/init.js']
 			],

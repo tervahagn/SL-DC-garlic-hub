@@ -1,0 +1,28 @@
+#itemSelectContainer
+{
+    display: flex;
+    gap: 1rem;
+}
+    #itemSelectContainer aside, #treeViewFilter
+    {
+        width:220px;
+        overflow-y: auto;
+    }
+
+    #itemSelectContainer .media-list-grid-view
+    {
+        flex-grow: 1;
+        display:grid;
+        grid-template-columns: repeat(auto-fill, 100px);
+        grid-template-rows: repeat(auto-fill, 100px);
+        gap: 1em;
+        padding: 1em;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+
+div.wunderbaum
+{
+    background-color: transparent;
+    border:0;
+}

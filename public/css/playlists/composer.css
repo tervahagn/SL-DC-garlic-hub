@@ -2,8 +2,11 @@ main header
 {
     display: flex;
     gap: 1rem;
+    margin:0 0 0.5rem 0;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+    background-color: #f3f3f3;
+    padding: 0.5rem;
 }
     main header section
     {
@@ -11,7 +14,7 @@ main header
         gap: 1rem;
         align-items: center;
     }
-#insertMenu{cursor: pointer;}
+#insertMenu{cursor: pointer;margin-right: auto;}
 #insertMenu .context-menu
 {
     display: none;
@@ -19,6 +22,26 @@ main header
     top:0;
 }
 #insertMenu:hover .context-menu {display: block;}
+.playlist-composer
+{
+    display: flex;
+    gap: 1rem;
+}
+    .playlist-composer #itemSelectContainer
+    {
+        width:60%;
+        border:1px solid #ccc;
+        height:74vh;
+    }
+    .playlist-composer #thePlaylist
+    {
+        width:40%;
+        border:1px solid #ccc;
+        height:74vh;
+        overflow-y: auto;
+        padding: 0;
+        margin:0;
+    }
 
 /*#insertMenu:focus .context-menu {display: block;}
 #addItems:focus .context-menu {display: block;}*/
