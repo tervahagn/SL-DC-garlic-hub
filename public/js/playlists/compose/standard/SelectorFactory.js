@@ -1,7 +1,7 @@
 import {MediaService}      from "../../../mediapool/media/MediaService.js";
 import {FetchClient}       from "../../../core/FetchClient.js";
 import {SelectorView}      from "../../../mediapool/selector/SelectorView.js";
-import {MediaSelector}     from "../../../mediapool/selector/MediaSelector.js";
+import {Selector}          from "../../../mediapool/selector/Selector.js";
 import {WunderbaumWrapper} from "../../../mediapool/treeview/WunderbaumWrapper.js";
 import {TreeViewElements}  from "../../../mediapool/treeview/TreeViewElements.js";
 import {MediaFactory}      from "../../../mediapool/selector/MediaFactory.js";
@@ -14,7 +14,7 @@ export class SelectorFactory
 		switch (type)
 		{
 			case 'mediaselector':
-				return new MediaSelector(
+				return new Selector(
 					new WunderbaumWrapper(new TreeViewElements()),
 					new MediaService(new FetchClient()),
 					new SelectorView(new MediaFactory())
