@@ -21,15 +21,20 @@ import { Media } from "./Media.js";
 
 export class MediaFactory
 {
-    #templateElement = null;
+    #mediaTemplate = null;
 
-    constructor(templateElement)
+    constructor(mediaTemplate)
     {
-        this.#templateElement = templateElement;
-    }
+        this.#mediaTemplate = mediaTemplate;
+	}
 
-    create()
+	set mediaTemplate(value)
+	{
+		this.#mediaTemplate = value;
+	}
+
+	create(mediaData)
     {
-        return new Media(this.#templateElement.content.cloneNode(true));
+        return new Media(this.#mediaTemplate.content.cloneNode(true), mediaData);
     }
 }

@@ -44,12 +44,22 @@
 		<section class="playlist-composer">
 			<section id="itemSelectContainer">
 			</section>
+			<template id="mediaTemplate">
+				<article class="media-item" draggable="true">
+					<figure draggable="false">
+						<img src="" alt="Media Thumbnail" draggable="false">
+						<i class="media-type-icon bi" draggable="false"></i>
+						<figcaption class="media-filename" draggable="false">
+						</figcaption>
+					</figure>
+				</article>
+			</template>
 
 			<ul id="thePlaylist">
 			</ul>
 
 			<template id="playlistItemTemplate">
-				<li class="playlist-item">
+				<li class="playlist-item" draggable="true">
 					<img class="thumbnail" src="" alt="" />
 					<div class="properties">
 						<div class="actions">

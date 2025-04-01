@@ -97,7 +97,7 @@ export class Selector
 			mediaItem.addEventListener("dragstart", (event) =>
 			{
 				this.#dragItem = event.target;
-				event.dataTransfer.effectAllowed = 'move';
+				event.dataTransfer.effectAllowed = 'copy';
 			});
 		}
 		this.#dropTarget.addEventListener('dragover', (event) => {
@@ -105,11 +105,37 @@ export class Selector
 		});
 		this.#dropTarget.addEventListener('drop', (event) => {
 			event.preventDefault();
-//			this.#dropTarget.appendChild(this.#dragItem);
+			this.#dropTarget.appendChild(this.#createPlaylistItem(this.#dragItem));
 			this.#emitter.emit('loadMediaInDirectory', { item: this.#dragItem });
 			this.#dragItem = null;
 		});
 	}
 
+
+	#createPlaylistItem(mediaItem)
+	{
+		const template = document.getElementById("playlistItemTemplate");
+		const playlistItem = template.content.cloneNode(true);
+
+		const listItem = playlistItem.querySelector('.playlist-item');
+		listItem.dataset.mediaId = mediaItem.id;
+
+		const thumbnail = playlistItem.querySelector('.thumbnail');
+	//	thumbnail.src = mediaItem.thumbnail;
+		thumbnail.alt = mediaItem.name;
+
+		const itemName = playlistItem.querySelector('.item_name');
+		itemName.textContent = mediaItem.name;
+
+		const itemDuration = playlistItem.querySelector('.item_duration');
+		itemDuration.textContent = mediaItem.duration;
+
+		// Set data attributes for buttons if needed, e.g.:
+		const linkPlaylistButton = playlistItem.querySelector('.link_playlist');
+		linkPlaylistButton.dataset.templateContentId = mediaItem.template_content_id;
+
+		return playlistItem;
+
+	}
 
 }

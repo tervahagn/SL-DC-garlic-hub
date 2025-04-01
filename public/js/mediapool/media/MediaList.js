@@ -83,8 +83,8 @@ export class MediaList
 
     #addMediaToList(media)
     {
-        const mediaObject = this.#mediaFactory.create();
-        const mediaItem   = mediaObject.buildMediaItem(media);
+        const mediaObject = this.#mediaFactory.create(media);
+        const mediaItem   = mediaObject.buildElementForDisplayInMediaPool();
 
         this.#addContextMenu(mediaItem);
 

@@ -22,45 +22,62 @@ import {DirectoryView} from "../treeview/DirectoryView.js";
 export class Media
 {
     #mediaElement = null;
+	#mediaId       = ""
+	#thumbnailPath = "";
+	#originalPath  = "";
+	#fileName      = "";
+	#mimetype      = "";
+	#description   = ""
+	#filesize      = 0;
+	#username      = "";
+	#dimensions    = "";
+	#duration      = 0;
 
-    constructor(mediaElement)
+	constructor(mediaElement, mediaData)
     {
         this.#mediaElement = mediaElement;
+		this.#mediaId       = mediaData.media_id;
+		this.#thumbnailPath = "/var/mediapool/thumbs/"+mediaData.checksum+"." + mediaData.thumb_extension;
+		this.#originalPath  = "/var/mediapool/originals/"+mediaData.checksum+"." + mediaData.extension;
+		this.#fileName      = mediaData.filename;
+		this.#mimetype		= mediaData.mimetype;
+		this.#description   = mediaData.media_description
+		this.#username      = mediaData.username;
+		this.#filesize     	= mediaData.metadata.size
+		if (mediaData.metadata.dimensions !== undefined && Object.keys(mediaData.metadata.dimensions).length > 0 )
+			this.#dimensions = mediaData.metadata.dimensions.width + "x" + mediaData.metadata.dimensions.height;
+		if (mediaData.metadata.duration !== undefined && mediaData.metadata.duration > 0)
+			this.#duration = mediaData.metadata.duration;
     }
 
-
-    buildMediaItem(media)
+	buildElementForDisplayInMediaPool()
     {
-        this.#mediaElement.querySelector(".media-type-icon").classList.add(this.#detectMediaType(media.mimetype));
-        this.#mediaElement.querySelector(".media-item").setAttribute("data-media-id", media.media_id);
-        const img = this.#mediaElement.querySelector("img");
-        img.src = "/var/mediapool/thumbs/"+media.checksum+"." + media.thumb_extension;
-        img.alt = "Thumbnail: " + media.filename;
-		img.setAttribute("data-title", media.filename);
-		img.setAttribute("data-description", media.media_description);
+		this.#createThumbnail()
 
 		const a = this.#mediaElement.querySelector("a");
-		if (this.#hasDetailedView(media.mimetype))
-			a.href  = "/var/mediapool/originals/"+media.checksum+"." + media.extension;
+		if (this.#hasDetailedView(this.#mimetype))
+			a.href  = this.#originalPath;
 		else
 		{
 			a.classList.remove("glightbox");
 			a.style.display = "none";
 		}
-        this.#mediaElement.querySelector(".media-owner").textContent    = media.username;
-        this.#mediaElement.querySelector(".media-filename").textContent = media.filename;
-        this.#mediaElement.querySelector(".media-filesize").textContent = this.#formatBytes(media.metadata.size);
-        this.#mediaElement.querySelector(".media-mimetype").textContent = media.mimetype;
+        this.#mediaElement.querySelector(".media-owner").textContent    = this.#username;
+        this.#mediaElement.querySelector(".media-filename").textContent = this.#fileName;
+        this.#mediaElement.querySelector(".media-filesize").textContent = this.#formatBytes(this.#filesize);
+        this.#mediaElement.querySelector(".media-mimetype").textContent = this.#mimetype;
+
         const dimensionsElement = this.#mediaElement.querySelector(".media-dimensions");
-        if (media.metadata.dimensions !== undefined && Object.keys(media.metadata.dimensions).length > 0 )
+        if (this.#dimensions !== "")
         {
-            dimensionsElement.textContent = media.metadata.dimensions.width + "x" + media.metadata.dimensions.height;
+            dimensionsElement.textContent = this.#dimensions;
             dimensionsElement.parentElement.style.display = "block";
         }
+
         const durationElement = this.#mediaElement.querySelector(".media-duration");
-        if (media.metadata.duration !== undefined && media.metadata.duration > 0 )
+        if (this.#duration > 0 )
         {
-            durationElement.textContent = this.#formatSeconds(media.metadata.duration);
+            durationElement.textContent = this.#formatSeconds(this.#duration);
             durationElement.parentElement.style.display = "block";
         }
 
@@ -71,6 +88,23 @@ export class Media
 
         return mediaItem;
     }
+
+	buildMediaItem()
+	{
+		this.#createThumbnail();
+
+		return this.#mediaElement.querySelector(".media-item");
+	}
+
+	#createThumbnail()
+	{
+		this.#mediaElement.querySelector(".media-type-icon").classList.add(this.#detectMediaType(this.#mimetype));
+		this.#mediaElement.querySelector(".media-item").setAttribute("data-media-id", this.#mediaId);
+		const img = this.#mediaElement.querySelector("img");
+		img.src = this.#thumbnailPath;
+		img.alt = "Thumbnail: " + this.#fileName;
+		img.setAttribute("data-title", this.#fileName);
+	}
 
 	#hasDetailedView(mimetype)
 	{

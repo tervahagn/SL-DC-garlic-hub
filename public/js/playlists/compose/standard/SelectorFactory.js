@@ -4,7 +4,7 @@ import {SelectorView}      from "../../../mediapool/selector/SelectorView.js";
 import {Selector}          from "../../../mediapool/selector/Selector.js";
 import {WunderbaumWrapper} from "../../../mediapool/treeview/WunderbaumWrapper.js";
 import {TreeViewElements}  from "../../../mediapool/treeview/TreeViewElements.js";
-import {MediaFactory}      from "../../../mediapool/selector/MediaFactory.js";
+import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
 
 export class SelectorFactory
 {
@@ -17,7 +17,7 @@ export class SelectorFactory
 				return new Selector(
 					new WunderbaumWrapper(new TreeViewElements()),
 					new MediaService(new FetchClient()),
-					new SelectorView(new MediaFactory())
+					new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
 				);
 		}
 	}
