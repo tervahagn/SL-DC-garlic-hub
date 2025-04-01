@@ -84,7 +84,7 @@ export class MediaList
     #addMediaToList(media)
     {
         const mediaObject = this.#mediaFactory.create(media);
-        const mediaItem   = mediaObject.buildElementForDisplayInMediaPool();
+        const mediaItem   = mediaObject.renderForDisplayInMediaPool();
 
         this.#addContextMenu(mediaItem);
 

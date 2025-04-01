@@ -29,7 +29,7 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Controller\SelectorController;
-use App\Modules\Playlists\Controller\PlaylistController;
+use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
@@ -167,9 +167,9 @@ $dependencies[ShowComposeController::class] = DI\factory(function (ContainerInte
 		)
 	);
 });
-$dependencies[PlaylistController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlaylistsController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlaylistController(
+	return new PlaylistsController(
 		$container->get(PlaylistsService::class),
 		$container->get(PlaylistsDatatableService::class),
 		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class)

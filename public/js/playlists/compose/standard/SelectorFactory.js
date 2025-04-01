@@ -8,17 +8,24 @@ import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
 
 export class SelectorFactory
 {
+	#mediaSelector = null;
 
 	create(type)
 	{
 		switch (type)
 		{
 			case 'mediaselector':
-				return new Selector(
-					new WunderbaumWrapper(new TreeViewElements()),
-					new MediaService(new FetchClient()),
-					new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
-				);
+				if (this.#mediaSelector === null)
+				{
+					this.#mediaSelector = new Selector(
+						new WunderbaumWrapper(new TreeViewElements()),
+						new MediaService(new FetchClient()),
+						new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
+					);
+					this.#mediaSelector.dropTarget = document.getElementById("thePlaylist");
+				}
+
+				return this.#mediaSelector;
 		}
 	}
 }

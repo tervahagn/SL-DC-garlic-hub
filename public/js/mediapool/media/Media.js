@@ -22,16 +22,19 @@ import {DirectoryView} from "../treeview/DirectoryView.js";
 export class Media
 {
     #mediaElement = null;
+	#mediaData     = null;
 	#mediaId       = ""
 	#thumbnailPath = "";
 	#originalPath  = "";
-	#fileName      = "";
+	#filename      = "";
 	#mimetype      = "";
 	#description   = ""
 	#filesize      = 0;
 	#username      = "";
 	#dimensions    = "";
 	#duration      = 0;
+	#mediaItem     = null;
+
 
 	constructor(mediaElement, mediaData)
     {
@@ -39,18 +42,59 @@ export class Media
 		this.#mediaId       = mediaData.media_id;
 		this.#thumbnailPath = "/var/mediapool/thumbs/"+mediaData.checksum+"." + mediaData.thumb_extension;
 		this.#originalPath  = "/var/mediapool/originals/"+mediaData.checksum+"." + mediaData.extension;
-		this.#fileName      = mediaData.filename;
+		this.#filename      = mediaData.filename;
 		this.#mimetype		= mediaData.mimetype;
 		this.#description   = mediaData.media_description
 		this.#username      = mediaData.username;
-		this.#filesize     	= mediaData.metadata.size
+		this.#filesize     	= this.#formatBytes(mediaData.metadata.size);
 		if (mediaData.metadata.dimensions !== undefined && Object.keys(mediaData.metadata.dimensions).length > 0 )
 			this.#dimensions = mediaData.metadata.dimensions.width + "x" + mediaData.metadata.dimensions.height;
 		if (mediaData.metadata.duration !== undefined && mediaData.metadata.duration > 0)
 			this.#duration = mediaData.metadata.duration;
+		this.#mediaData = mediaData;
     }
 
-	buildElementForDisplayInMediaPool()
+	get mediaId()
+	{
+		return this.#mediaId;
+	}
+
+	get thumbnailPath()
+	{
+		return this.#thumbnailPath;
+	}
+
+	get originalPath()
+	{
+		return this.#originalPath;
+	}
+
+	get filename()
+	{
+		return this.#filename;
+	}
+
+	get filesize()
+	{
+		return this.#filesize;
+	}
+
+	get dimensions()
+	{
+		return this.#formatSeconds(this.#dimensions);
+	}
+
+	get duration()
+	{
+		return this.#duration;
+	}
+
+	get mediaItem()
+	{
+		return this.#mediaItem;
+	}
+
+	renderForDisplayInMediaPool()
     {
 		this.#createThumbnail()
 
@@ -63,8 +107,8 @@ export class Media
 			a.style.display = "none";
 		}
         this.#mediaElement.querySelector(".media-owner").textContent    = this.#username;
-        this.#mediaElement.querySelector(".media-filename").textContent = this.#fileName;
-        this.#mediaElement.querySelector(".media-filesize").textContent = this.#formatBytes(this.#filesize);
+        this.#mediaElement.querySelector(".media-filename").textContent = this.#filename;
+        this.#mediaElement.querySelector(".media-filesize").textContent = this.#filesize;
         this.#mediaElement.querySelector(".media-mimetype").textContent = this.#mimetype;
 
         const dimensionsElement = this.#mediaElement.querySelector(".media-dimensions");
@@ -81,19 +125,21 @@ export class Media
             durationElement.parentElement.style.display = "block";
         }
 
-        const mediaItem = this.#mediaElement.querySelector(".media-item");
-        mediaItem.addEventListener("dragstart", (event) => {
+		this.#mediaItem = this.#mediaElement.querySelector(".media-item");
+		this.#mediaItem .addEventListener("dragstart", (event) => {
 			DirectoryView.workaroundShitForMediaIdBecauseOfChrome = mediaItem.getAttribute("data-media-id");
         });
 
-        return mediaItem;
+        return this.#mediaItem;
     }
 
-	buildMediaItem()
+	renderSimple()
 	{
 		this.#createThumbnail();
 
-		return this.#mediaElement.querySelector(".media-item");
+		this.#mediaItem =  this.#mediaElement.querySelector(".media-item");
+
+		return this.#mediaItem;
 	}
 
 	#createThumbnail()
@@ -102,8 +148,8 @@ export class Media
 		this.#mediaElement.querySelector(".media-item").setAttribute("data-media-id", this.#mediaId);
 		const img = this.#mediaElement.querySelector("img");
 		img.src = this.#thumbnailPath;
-		img.alt = "Thumbnail: " + this.#fileName;
-		img.setAttribute("data-title", this.#fileName);
+		img.alt = "Thumbnail: " + this.#filename;
+		img.setAttribute("data-title", this.#filename);
 	}
 
 	#hasDetailedView(mimetype)

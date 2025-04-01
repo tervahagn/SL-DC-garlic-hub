@@ -5,7 +5,7 @@ namespace Tests\Unit\Modules\Playlists\Controller;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Controller\PlaylistController;
+use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -19,7 +19,7 @@ use Psr\Http\Message\StreamInterface;
 
 class PlaylistControllerTest extends TestCase
 {
-	private readonly PlaylistController $controller;
+	private readonly PlaylistsController $controller;
 	private readonly PlaylistsService $playlistsServiceMock;
 	private readonly PlaylistsDatatableService $playlistsDatatableServiceMock;
 	private readonly Parameters $parametersMock;
@@ -40,7 +40,7 @@ class PlaylistControllerTest extends TestCase
 		$this->streamInterfaceMock  = $this->createMock(StreamInterface::class);
 		$this->sessionMock          = $this->createMock(Session::class);
 
-		$this->controller = new PlaylistController($this->playlistsServiceMock, $this->playlistsDatatableServiceMock, $this->parametersMock);
+		$this->controller = new PlaylistsController($this->playlistsServiceMock, $this->playlistsDatatableServiceMock, $this->parametersMock);
 	}
 
 	/**

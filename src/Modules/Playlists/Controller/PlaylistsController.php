@@ -31,7 +31,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlaylistController
+class PlaylistsController
 {
 	private readonly PlaylistsService $playlistsService;
 	private readonly PlaylistsDatatableService $playlistsDatatableService;

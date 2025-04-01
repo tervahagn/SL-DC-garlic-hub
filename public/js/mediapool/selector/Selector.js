@@ -91,12 +91,11 @@ export class Selector
 
 	#prepareDragDrop()
 	{
-		this.#dropTarget = document.getElementById("thePlaylist");
-		for (const mediaItem of this.#selectorView.mediaItems)
+		for (const media of this.#selectorView.mediaItems)
 		{
-			mediaItem.addEventListener("dragstart", (event) =>
+			media.mediaItem.addEventListener("dragstart", (event) =>
 			{
-				this.#dragItem = event.target;
+				this.#dragItem = media;
 				event.dataTransfer.effectAllowed = 'copy';
 			});
 		}
@@ -105,37 +104,40 @@ export class Selector
 		});
 		this.#dropTarget.addEventListener('drop', (event) => {
 			event.preventDefault();
-			this.#dropTarget.appendChild(this.#createPlaylistItem(this.#dragItem));
-			this.#emitter.emit('loadMediaInDirectory', { item: this.#dragItem });
+			this.#createPlaylistItem(this.#dragItem);
+			this.#emitter.emit('loadMediaInDirectory', { media: this.#dragItem });
 			this.#dragItem = null;
+
+
 		});
 	}
 
 
-	#createPlaylistItem(mediaItem)
+	/**
+	 *
+	 * @param {Media} media
+	 * @returns {Node}
+	 */
+	#createPlaylistItem(media)
 	{
 		const template = document.getElementById("playlistItemTemplate");
 		const playlistItem = template.content.cloneNode(true);
 
 		const listItem = playlistItem.querySelector('.playlist-item');
-		listItem.dataset.mediaId = mediaItem.id;
+		listItem.dataset.mediaId = media.mediaId;
 
-		const thumbnail = playlistItem.querySelector('.thumbnail');
-	//	thumbnail.src = mediaItem.thumbnail;
-		thumbnail.alt = mediaItem.name;
+		const thumbnail = playlistItem.querySelector('img');
+		thumbnail.src = media.thumbnailPath;
+		thumbnail.alt = media.filename;
 
-		const itemName = playlistItem.querySelector('.item_name');
-		itemName.textContent = mediaItem.name;
+		const itemName = playlistItem.querySelector('.item-name');
+		itemName.textContent = media.filename;
 
-		const itemDuration = playlistItem.querySelector('.item_duration');
-		itemDuration.textContent = mediaItem.duration;
+		const itemDuration = playlistItem.querySelector('.item-duration');
+		itemDuration.textContent = media.duration;
 
-		// Set data attributes for buttons if needed, e.g.:
-		const linkPlaylistButton = playlistItem.querySelector('.link_playlist');
-		linkPlaylistButton.dataset.templateContentId = mediaItem.template_content_id;
 
-		return playlistItem;
-
+		this.#dropTarget.appendChild(playlistItem);
 	}
 
 }

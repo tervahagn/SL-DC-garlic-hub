@@ -4,7 +4,6 @@ export class SelectorView
 	#mediaList = null;
 	#mediaItems = [];
 
-
 	constructor(mediaFactory)
 	{
 		this.#mediaFactory = mediaFactory;
@@ -23,10 +22,8 @@ export class SelectorView
 		for (const mediaData of mediaDataList)
 		{
 			let media = this.#mediaFactory.create(mediaData);
-			let mediaItem = media.buildMediaItem();
-			this.#mediaItems.push(mediaItem);
-			this.#mediaList.appendChild(mediaItem);
-
+			this.#mediaItems.push(media);
+			this.#mediaList.appendChild(media.renderSimple());
 		}
 	}
 

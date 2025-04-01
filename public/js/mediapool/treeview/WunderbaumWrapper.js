@@ -13,7 +13,7 @@ export class WunderbaumWrapper
 	 * @property {Wunderbaum} #tree
 	 * @property {WunderbaumNode} #activeNode
 	 */
-	#tree               = {};
+	#tree               = null;
 	#activeNode         = null;
 	#dndConfig          = null;
 	#defaultConfig       = null;

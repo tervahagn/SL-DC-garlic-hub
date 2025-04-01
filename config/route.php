@@ -28,7 +28,7 @@ use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
-use App\Modules\Playlists\Controller\PlaylistController;
+use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
@@ -98,10 +98,10 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
 	$group->get('/mediapool/selector', [SelectorController::class, 'loadTemplate']);
 
-	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}/{playlist_name}', [PlaylistController::class, 'findByName']);
-	$group->get('/playlists/findbyId/{playlist_id:\d+}', [PlaylistController::class, 'findById']);
-	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistController::class, 'loadZone']);
-	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistController::class, 'saveZone']);
+	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}/{playlist_name}', [PlaylistsController::class, 'findByName']);
+	$group->get('/playlists/findbyId/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
+	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
+	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
 
 //	$group->post('/playlists/items/move', [ItemController::class, 'move']);
 //	$group->delete('/playlists/item', [ItemController::class, 'delete']);
