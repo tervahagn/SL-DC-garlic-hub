@@ -148,4 +148,27 @@ CREATE TABLE playlists (
     multizone TEXT DEFAULT NULL
 );
 
-CREATE INDEX idx_playlist_mode ON playlists(playlist_mode);
+CREATE TABLE playlists_items (
+    item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    playlist_id INTEGER NOT NULL DEFAULT 0,
+    UID INTEGER NOT NULL DEFAULT 0,
+    item_duration INTEGER NOT NULL DEFAULT 0,
+    item_filesize INTEGER NOT NULL DEFAULT 0,
+    item_order INTEGER NOT NULL DEFAULT 0,
+    foreign_id INTEGER NOT NULL DEFAULT 0, -- playlists and channels
+    last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    item_type CHAR(12) NOT NULL DEFAULT 'media', -- enum in Mariadb 'media', 'media_url', 'playlist', 'playlist_url', 'template', 'channel'
+    file_resource CHAR(36) NOT NULL DEFAULT '', -- file or symlink name for media and templates
+    datasource VARCHAR(8) COLLATE NOCASE DEFAULT 'file' CHECK (datasource IN ('file', 'stream', 'video_in')),
+    media_type VARCHAR(12) COLLATE NOCASE DEFAULT 'image' CHECK (media_type IN ('image', 'video', 'audio', 'widget', 'html', 'text', 'document', 'application')),
+    item_name TEXT NOT NULL DEFAULT '',
+    conditional TEXT,
+    properties TEXT, -- scaling, position, name, flags like locked, disabled, loggable, categories
+    content_data TEXT, -- depends on item and media type: can be url or Widget parameters
+    begin_trigger TEXT,
+    end_trigger TEXT
+);
+
+CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
+CREATE INDEX idx_item_type_resource ON playlists_items (item_type, file_resource);
+CREATE INDEX idx_item_type_id ON playlists_items (item_type, foreign_id);
