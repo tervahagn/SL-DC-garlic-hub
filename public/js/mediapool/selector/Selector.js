@@ -107,6 +107,7 @@ export class Selector
 			this.#createPlaylistItem(this.#dragItem);
 			this.#emitter.emit('loadMediaInDirectory', { media: this.#dragItem });
 			this.#dragItem = null;
+			this.#emitter.emit('playlist_drop');
 
 
 		});
