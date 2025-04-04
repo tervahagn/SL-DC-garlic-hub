@@ -112,12 +112,12 @@ INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UI
 VALUES (1, 1, 2, 1, 10, 11, 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'firmware');
 
 CREATE TABLE mediapool_files (
-     media_id CHAR(36) PRIMARY KEY, -- UUID as Text field
+     media_id BLOB(16) PRIMARY KEY, -- UUID as 16-byte BLOB
      node_id INTEGER NOT NULL,
      deleted INTEGER NOT NULL DEFAULT 0,
      UID INTEGER NOT NULL DEFAULT 0,
      upload_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     checksum CHAR(64) NOT NULL, -- SHA-256 Hash of the file content
+     checksum BLOB(32) NOT NULL, -- SHA-256 Hash of the file content
      mimetype VARCHAR(50) COLLATE NOCASE NOT NULL,
      metadata TEXT DEFAULT NULL, --json encoded metadata
      tags TEXT DEFAULT NULL,
@@ -127,10 +127,8 @@ CREATE TABLE mediapool_files (
      media_description TEXT DEFAULT NULL
 );
 
-CREATE INDEX idx_mediapool_node_id ON mediapool_files (node_id);
+CREATE INDEX idx_mediapool_node_id ON mediapool_files (node_id, deleted);
 CREATE INDEX idx_mediapool_checksum ON mediapool_files (checksum);
-CREATE INDEX idx_mediapool_mimetype ON mediapool_files (mimetype);
-CREATE INDEX idx_mediapool_deleted ON mediapool_files (deleted);
 
 CREATE TABLE playlists (
     playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -155,10 +153,9 @@ CREATE TABLE playlists_items (
     item_duration INTEGER NOT NULL DEFAULT 0,
     item_filesize INTEGER NOT NULL DEFAULT 0,
     item_order INTEGER NOT NULL DEFAULT 0,
-    foreign_id INTEGER NOT NULL DEFAULT 0, -- playlists and channels
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     item_type CHAR(12) NOT NULL DEFAULT 'media', -- enum in Mariadb 'media', 'media_url', 'playlist', 'playlist_url', 'template', 'channel'
-    file_resource CHAR(36) NOT NULL DEFAULT '', -- file or symlink name for media and templates
+    file_resource BLOB(16) NOT NULL DEFAULT '', -- file or symlink name or numeric ID for media and templates
     datasource VARCHAR(8) COLLATE NOCASE DEFAULT 'file' CHECK (datasource IN ('file', 'stream', 'video_in')),
     media_type VARCHAR(12) COLLATE NOCASE DEFAULT 'image' CHECK (media_type IN ('image', 'video', 'audio', 'widget', 'html', 'text', 'document', 'application')),
     item_name TEXT NOT NULL DEFAULT '',
@@ -171,4 +168,3 @@ CREATE TABLE playlists_items (
 
 CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
 CREATE INDEX idx_item_type_resource ON playlists_items (item_type, file_resource);
-CREATE INDEX idx_item_type_id ON playlists_items (item_type, foreign_id);
