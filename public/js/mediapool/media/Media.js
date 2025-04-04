@@ -127,7 +127,7 @@ export class Media
 
 		this.#mediaItem = this.#mediaElement.querySelector(".media-item");
 		this.#mediaItem .addEventListener("dragstart", (event) => {
-			DirectoryView.workaroundShitForMediaIdBecauseOfChrome = mediaItem.getAttribute("data-media-id");
+			DirectoryView.workaroundShitForMediaIdBecauseOfChrome = this.#mediaItem.getAttribute("data-media-id");
         });
 
         return this.#mediaItem;
