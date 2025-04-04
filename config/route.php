@@ -28,6 +28,7 @@ use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
@@ -102,6 +103,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/playlists/findbyId/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
+	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);
 
 //	$group->post('/playlists/items/move', [ItemController::class, 'move']);
 //	$group->delete('/playlists/item', [ItemController::class, 'delete']);

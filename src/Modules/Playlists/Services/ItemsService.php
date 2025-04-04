@@ -5,6 +5,7 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
 class ItemsService extends AbstractBaseService
@@ -26,7 +27,19 @@ class ItemsService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-
+	/**
+	 * @throws Exception
+	 */
+	public function insert(int $playlist_id, string $id, string $source): int
+	{
+		$saveData = [
+			'playlist_id' => $playlist_id,
+			'datasource' => 'file',
+			'media_type' => 'image',
+			'file_resource' => $id
+		];
+		return $this->itemsRepository->insert($saveData);
+	}
 
 
 }

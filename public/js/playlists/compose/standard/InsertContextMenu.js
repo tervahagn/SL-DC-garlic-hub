@@ -9,10 +9,12 @@ export class InsertContextMenu
 	#insertMenu              = document.getElementById("insertMenu");
 	#selectorFactory         = null;
 	#itemSelectContainer     = document.getElementById("itemSelectContainer");
-
-	constructor(selectorFactory)
+	#itemService             = null;
+	#playlistId              = document.getElementById("playlist_id").value;
+	constructor(selectorFactory, itemService)
 	{
 		this.#selectorFactory = selectorFactory;
+		this.#itemService     = itemService;
 	}
 
 	init()
@@ -21,7 +23,12 @@ export class InsertContextMenu
 		{
 			const selector = this.#selectorFactory.create("mediaselector");
 			selector.showSelector(this.#itemSelectContainer);
-		//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
+			selector.on("mediapool:selector:drop", async (args) =>
+			{
+				this.#itemService.insertFromMediaPool(args.id, this.#playlistId);
+			});
+
+			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});
 
 		this.#insertExternalMedia.addEventListener("click", () =>

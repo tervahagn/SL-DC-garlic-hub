@@ -29,6 +29,8 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Controller\SelectorController;
+use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
@@ -43,8 +45,10 @@ use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Psr\Container\ContainerInterface;
@@ -54,6 +58,10 @@ $dependencies = [];
 $dependencies[PlaylistsRepository::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlaylistsRepository($container->get('SqlConnection'));
+});
+$dependencies[ItemsRepository::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ItemsRepository($container->get('SqlConnection'));
 });
 
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
@@ -180,6 +188,24 @@ $dependencies[SelectorController::class] = DI\factory(function (ContainerInterfa
 {
 	return new SelectorController(
 		$container->get(Config::class)
+	);
+});
+
+// Items
+$dependencies[ItemsController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ItemsController(
+		$container->get(ItemsService::class),
+		$container->get(MediaService::class)
+	);
+});
+$dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ItemsService(
+		$container->get(ItemsRepository::class),
+		$container->get(PlaylistsRepository::class),
+		$container->get(AclValidator::class),
+		$container->get('ModuleLogger')
 	);
 });
 

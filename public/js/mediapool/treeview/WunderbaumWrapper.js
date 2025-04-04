@@ -176,16 +176,16 @@ export class WunderbaumWrapper
 
 	#loadMediaInDirectory(key)
 	{
-		this.#emitter.emit('loadMediaInDirectory', { node_id: key });
+		this.#emitter.emit('treeview:loadMediaInDirectory', { node_id: key });
 	}
 
 	#moveMediaTo(mediaId, nodeId)
 	{
-		this.#emitter.emit('moveMediaTo', { media_id: mediaId, node_id: nodeId });
+		this.#emitter.emit('treeview:moveMediaTo', { media_id: mediaId, node_id: nodeId });
 	}
 
 	#moveNodeTo(e)
 	{
-		this.#emitter.emit('moveNodeTo', { event: e });
+		this.#emitter.emit('treeview:moveNodeTo', { event: e });
 	}
 }

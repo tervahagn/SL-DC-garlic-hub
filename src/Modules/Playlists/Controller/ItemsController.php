@@ -21,6 +21,8 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Services\ItemsService;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,16 +38,24 @@ class ItemsController
 		$this->mediaService = $mediaService;
 	}
 
-	public function addMediapoolItem(ServerRequestInterface $request, ResponseInterface $response)
+	/**
+	 * @throws Exception
+	 */
+	public function insert(ServerRequestInterface $request, ResponseInterface $response)
 	{
 		$requestData = $request->getParsedBody();
-		if (!isset($requestData['playlist_id']) || $requestData['playlist_id'] === 0)
+		if (!isset($requestData['playlist_id']) && $requestData['playlist_id'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		if (!isset($requestData['media_id']) || $requestData['media_id'] === 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Media ID not valid.']);
+		if (empty($requestData['id'])) // more performant as isset and check for 0 or ''
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Content ID not valid.']);
 
+		if (!isset($requestData['source']) && $requestData['source'] === '')
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source not valid.']);
 
+		$this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
+
+		$this->jsonResponse($response, ['success' => true]);
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface

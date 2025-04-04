@@ -19,10 +19,12 @@
 "use strict";
 
 import {InsertContextMenu} from "./InsertContextMenu.js";
-import {SelectorFactory}   from "./SelectorFactory.js";
+import {SelectorFactory} from "./SelectorFactory.js";
+import {ItemsService}    from "./ItemsService.js";
+import {FetchClient}     from "../../../core/FetchClient.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
-	const insertContextMenu = new InsertContextMenu(new SelectorFactory());
+	const insertContextMenu = new InsertContextMenu(new SelectorFactory(), new ItemsService(new FetchClient()));
 	insertContextMenu.init();
 });

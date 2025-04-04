@@ -82,7 +82,7 @@ export class Selector
 
 	#initEvents()
 	{
-		this.#treeViewWrapper.on("loadMediaInDirectory", async (args) =>
+		this.#treeViewWrapper.on("treeview:loadMediaInDirectory", async (args) =>
 		{
 			const results = await this.loadMedia(args.node_id);
 			this.displayMediaList(results);
@@ -105,14 +105,10 @@ export class Selector
 		this.#dropTarget.addEventListener('drop', (event) => {
 			event.preventDefault();
 			this.#createPlaylistItem(this.#dragItem);
-			this.#emitter.emit('loadMediaInDirectory', { media: this.#dragItem });
+			this.#emitter.emit('mediapool:selector:drop', { id: this.#dragItem.mediaId });
 			this.#dragItem = null;
-			this.#emitter.emit('playlist_drop');
-
-
 		});
 	}
-
 
 	/**
 	 *
