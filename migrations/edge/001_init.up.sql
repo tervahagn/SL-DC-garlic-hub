@@ -150,6 +150,7 @@ CREATE TABLE playlists_items (
     item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     playlist_id INTEGER NOT NULL DEFAULT 0,
     UID INTEGER NOT NULL DEFAULT 0,
+    flags INTEGER NOT NULL DEFAULT 0, -- flags like disabled in edge and locked, loggable
     item_duration INTEGER NOT NULL DEFAULT 0,
     item_filesize INTEGER NOT NULL DEFAULT 0,
     item_order INTEGER NOT NULL DEFAULT 0,
@@ -157,13 +158,13 @@ CREATE TABLE playlists_items (
     item_type CHAR(12) NOT NULL DEFAULT 'media', -- enum in Mariadb 'media', 'media_url', 'playlist', 'playlist_url', 'template', 'channel'
     file_resource BLOB(16) NOT NULL DEFAULT '', -- file or symlink name or numeric ID for media and templates
     datasource VARCHAR(8) COLLATE NOCASE DEFAULT 'file' CHECK (datasource IN ('file', 'stream', 'video_in')),
-    media_type VARCHAR(12) COLLATE NOCASE DEFAULT 'image' CHECK (media_type IN ('image', 'video', 'audio', 'widget', 'html', 'text', 'document', 'application')),
+    mimetype VARCHAR(50) COLLATE NOCASE NOT NULL,
     item_name TEXT NOT NULL DEFAULT '',
-    conditional TEXT,
-    properties TEXT, -- scaling, position, name, flags like locked, disabled, loggable, categories
-    content_data TEXT, -- depends on item and media type: can be url or Widget parameters
-    begin_trigger TEXT,
-    end_trigger TEXT
+    conditional TEXT NOT NULL DEFAULT '',
+    properties TEXT NOT NULL DEFAULT '', -- scaling, position, name, categories
+    content_data TEXT NOT NULL DEFAULT '', -- depends on item and media type: can be url or Widget parameters
+    begin_trigger TEXT NOT NULL DEFAULT '',
+    end_trigger TEXT NOT NULL DEFAULT ''
 );
 
 CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
