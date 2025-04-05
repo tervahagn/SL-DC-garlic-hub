@@ -56,7 +56,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function update(array $postData): int
+	public function updateSecure(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
 		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
@@ -67,7 +67,12 @@ class PlaylistsService extends AbstractBaseService
 			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
 		}
 
-		$saveData = $this->collectDataForUpdate($postData);
+		return $this->update($playlistId, $postData);
+	}
+
+	public function update(int $playlistId, array $saveData): int
+	{
+		$saveData = $this->collectDataForUpdate($saveData);
 
 		return $this->playlistsRepository->update($playlistId, $saveData);
 	}

@@ -107,7 +107,7 @@ class PlaylistsServiceTest extends TestCase
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Error updating playlist. Original Playlist is not editable');
 
-		$this->service->update($postData);
+		$this->service->updateSecure($postData);
 	}
 
 	#[Group('units')]
@@ -130,7 +130,7 @@ class PlaylistsServiceTest extends TestCase
 		$this->playlistsRepositoryMock->expects($this->once())->method('update')
 			->with(1, $saveData);
 
-		$this->service->update($postData);
+		$this->service->updateSecure($postData);
 	}
 
 	#[Group('units')]
