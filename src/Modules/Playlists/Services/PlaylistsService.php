@@ -187,6 +187,12 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+	public function findAllByItemsAsPlaylistAndMediaId(mixed $fileResource): array
+	{
+		return $this->playlistsRepository->findAllByItemsAsPlaylistAndMediaId($fileResource);
+	}
+
+
 	/**
 	 */
 	private function collectDataForInsert(array $postData): array

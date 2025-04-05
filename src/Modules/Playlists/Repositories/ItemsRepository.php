@@ -20,15 +20,83 @@
 
 namespace App\Modules\Playlists\Repositories;
 
+use App\Framework\Database\BaseRepositories\FindOperationsTrait;
 use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\TransactionsTrait;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class ItemsRepository extends Sql
 {
+	CONST int FLAG_DISABLED = 1;
+	CONST  int FLAG_LOCKED   = 2;
+	CONST  int FLAG_LOGGABLE  = 4;
+
+	use TransactionsTrait;
+	use FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection, 'playlists_items', 'item_id');
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function sumDurationOfEnabledByPlaylistId(int $playlist_id): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('SUM(item_filesize) as total')
+			->from($this->table)
+			->where('playlist_id = '.$playlist_id)
+			->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')
+			->groupBy('playlist_id');
+
+		$result = $queryBuilder->fetchOne();
+		if (!isset($result['total']))
+		{
+			return  0;
+		}
+		return $result['total'];
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function sumDurationOfItemsByUIDAndPlaylistId(int $UID, int $playlist_id): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('SUM(item_filesize) as total')
+			->from($this->table)
+			->where('playlist_id = '.$playlist_id)
+			->andWhere('UID = '.$UID)
+			->andWhere('flags & 1 <> 0')
+			->groupBy('playlist_id');
+
+		$result = $queryBuilder->fetchOne();
+		if (!isset($result['total']))
+		{
+			return  0;
+		}
+		return $result['total'];
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function sumSizeByPlaylistId(int $playlist_id): int
+	{
+		$select = 'SUM(item_filesize) as total';
+		$where['playlist_id']  = $this->generateWhereClause($playlist_id);
+
+		return $this->findOneValueBy($select, $where, [], 'playlist_id');
+	}
+
+
+	public function updateItemOrder($itemId, $newOrder): int
+	{
+		return  $this->update($itemId,['item_order' => $newOrder]);
 	}
 
 }

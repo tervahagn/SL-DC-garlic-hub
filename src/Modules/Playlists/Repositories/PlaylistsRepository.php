@@ -21,6 +21,7 @@
 namespace App\Modules\Playlists\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Modules\Playlists\Helper\ItemType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -43,6 +44,21 @@ class PlaylistsRepository extends FilterBase
 		$result =  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 		return $result;
 	}
+
+	public function findAllByItemsAsPlaylistAndMediaId(mixed $fileResource): array
+	{
+		$itemsTable = 'playlists_items';
+
+		$fields = [$this->table.'.*'];
+		$join   = [$itemsTable => $itemsTable.'.playlist_id = '.$this->table.'.playlist_id'];
+		$where  = [
+			$itemsTable . '.file_resource' => $this->generateWhereClause($fileResource),
+			$itemsTable . '.item_type' => $this->generateWhereClause(ItemType::PLAYLIST->value)
+		];
+
+		return $this->findAllByWithFields($fields, $where, $join);
+	}
+
 
 	protected function prepareJoin(): array
 	{

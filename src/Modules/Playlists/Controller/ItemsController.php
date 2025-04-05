@@ -29,13 +29,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class ItemsController
 {
 	private readonly ItemsService $itemsService;
-	private readonly MediaService $mediaService;
 
-
-	public function __construct(ItemsService $itemsService, MediaService $mediaService)
+	public function __construct(ItemsService $itemsService)
 	{
 		$this->itemsService = $itemsService;
-		$this->mediaService = $mediaService;
 	}
 
 	/**
@@ -53,9 +50,15 @@ class ItemsController
 		if (!isset($requestData['source']) && $requestData['source'] === '')
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source not valid.']);
 
-		$this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
+		$session = $request->getAttribute('session');
+		$this->itemsService->setUID($session->get('user')['UID']);
 
-		$this->jsonResponse($response, ['success' => true]);
+		$id = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
+
+		if($id > 0)
+			$this->jsonResponse($response, ['success' => true]);
+		else
+			$this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface

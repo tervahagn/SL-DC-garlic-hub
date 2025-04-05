@@ -48,6 +48,7 @@ use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\DurationCalculatorService;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -195,16 +196,20 @@ $dependencies[SelectorController::class] = DI\factory(function (ContainerInterfa
 $dependencies[ItemsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ItemsController(
-		$container->get(ItemsService::class),
-		$container->get(MediaService::class)
+		$container->get(ItemsService::class)
 	);
 });
 $dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ItemsService(
 		$container->get(ItemsRepository::class),
-		$container->get(PlaylistsRepository::class),
-		$container->get(AclValidator::class),
+		$container->get(PlaylistsService::class),
+		$container->get(MediaService::class),
+		new DurationCalculatorService(
+			$container->get(ItemsRepository::class),
+			$container->get(AclValidator::class),
+			$container->get(Config::class),
+		),
 		$container->get('ModuleLogger')
 	);
 });
