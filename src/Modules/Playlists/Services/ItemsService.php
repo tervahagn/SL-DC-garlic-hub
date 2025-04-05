@@ -56,6 +56,7 @@ class ItemsService extends AbstractBaseService
 				'datasource'    => 'file',
 				'item_duration' => $media['duration'] ?? self::DURATION_DEFAULT,
 				'item_filesize' => $media['metadata']['size'],
+				'item_name'     => $media['filename'],
 				'item_type'     => 'media',
 				'file_resource' => $media['checksum'],
 				'mimetype'      => $media['mimetype'],
@@ -104,7 +105,6 @@ class ItemsService extends AbstractBaseService
 		{
 			$this->updatePlaylistDurationAndFileSize($values);
 		}
-
 		return $this;
 	}
 
