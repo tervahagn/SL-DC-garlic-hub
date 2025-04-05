@@ -20,7 +20,6 @@
 
 use App\Controller\HomeController;
 use App\Framework\Middleware\FinalRenderMiddleware;
-use App\Framework\Middleware\LayoutDataMiddleware;
 use App\Modules\Auth\LoginController;
 use App\Modules\Auth\OAuth2Controller;
 use App\Modules\Mediapool\Controller\MediaController;
@@ -35,6 +34,7 @@ use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Users\Controller\EditLocalesController;
 use App\Modules\Users\Controller\EditPasswordController;
+use App\Modules\Users\Controller\UsersController;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -80,7 +80,7 @@ $app->group('/api', function (RouteCollectorProxy $group)
 
 $app->group('/async', function (RouteCollectorProxy $group)
 {
-	$group->get('/users/find/{username}', [\App\Modules\Users\Controller\UsersController::class, 'findByName']);
+	$group->get('/users/find/{username}', [UsersController::class, 'findByName']);
 
 	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
 	$group->post('/mediapool/node', [NodesController::class, 'add']);
@@ -100,7 +100,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/mediapool/selector', [SelectorController::class, 'loadTemplate']);
 
 	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}/{playlist_name}', [PlaylistsController::class, 'findByName']);
-	$group->get('/playlists/findbyId/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
+	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
 	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);

@@ -20,7 +20,6 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Services\ItemsService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -38,16 +37,16 @@ class ItemsController
 	/**
 	 * @throws Exception
 	 */
-	public function insert(ServerRequestInterface $request, ResponseInterface $response)
+	public function insert(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$requestData = $request->getParsedBody();
-		if (!isset($requestData['playlist_id']) && $requestData['playlist_id'] === 0)
+		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		if (empty($requestData['id'])) // more performant as isset and check for 0 or ''
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Content ID not valid.']);
 
-		if (!isset($requestData['source']) && $requestData['source'] === '')
+		if (empty($requestData['source']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source not valid.']);
 
 		$session = $request->getAttribute('session');
@@ -56,9 +55,9 @@ class ItemsController
 		$id = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
 
 		if($id > 0)
-			$this->jsonResponse($response, ['success' => true]);
+			return $this->jsonResponse($response, ['success' => true]);
 		else
-			$this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface

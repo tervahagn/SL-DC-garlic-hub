@@ -203,8 +203,8 @@ $dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $co
 {
 	return new ItemsService(
 		$container->get(ItemsRepository::class),
-		$container->get(PlaylistsService::class),
 		$container->get(MediaService::class),
+		$container->get(PlaylistsService::class),
 		new DurationCalculatorService(
 			$container->get(ItemsRepository::class),
 			$container->get(AclValidator::class),
