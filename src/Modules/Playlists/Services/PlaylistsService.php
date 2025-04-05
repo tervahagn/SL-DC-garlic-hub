@@ -67,13 +67,16 @@ class PlaylistsService extends AbstractBaseService
 			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
 		}
 
+		$saveData = $this->collectDataForUpdate($postData);
+
 		return $this->update($playlistId, $postData);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function update(int $playlistId, array $saveData): int
 	{
-		$saveData = $this->collectDataForUpdate($saveData);
-
 		return $this->playlistsRepository->update($playlistId, $saveData);
 	}
 
@@ -192,9 +195,6 @@ class PlaylistsService extends AbstractBaseService
 		return $this->playlistsRepository->findAllByItemsAsPlaylistAndMediaId($fileResource);
 	}
 
-
-	/**
-	 */
 	private function collectDataForInsert(array $postData): array
 	{
 		if (array_key_exists('UID', $postData))
@@ -207,8 +207,6 @@ class PlaylistsService extends AbstractBaseService
 		return $this->collectCommon($postData, $saveData);
 	}
 
-	/**
-	 */
 	private function collectDataForUpdate(array $postData): array
 	{
 		$saveData = [];
@@ -219,15 +217,15 @@ class PlaylistsService extends AbstractBaseService
 		return $this->collectCommon($postData, $saveData);
 	}
 
-	/**
-	 */
 	private function collectCommon(array $postData, array $saveData): array
 	{
-		$saveData['playlist_name'] = $postData['playlist_name'];
-		if (array_key_exists('time_limit', $postData))
+		if (isset($postData['playlist_name']))
+			$saveData['playlist_name'] = $postData['playlist_name'];
+
+		if (isset($postData['time_limit']))
 			$saveData['time_limit'] = $postData['time_limit'];
 
-		if (array_key_exists('multizone', $postData))
+		if (isset($postData['multizone']))
 			$saveData['multizone'] = $postData['multizone'];
 
 		return $saveData;

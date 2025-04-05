@@ -137,6 +137,7 @@ readonly class UiTemplatesPreparer
 				'template' => 'playlists/compose', // Template-name
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
+					'PLAYLIST_ID' => $playlist['playlist_id'],
 					'LANG_INSERT' => $this->translator->translate('insert', self::MODULE_NAME),
 					'LANG_INSERT_MEDIA' => $this->translator->translate('insert_media', self::MODULE_NAME),
 					'LANG_INSERT_EXTERNAL_MEDIA' => $this->translator->translate('insert_external_media', self::MODULE_NAME),

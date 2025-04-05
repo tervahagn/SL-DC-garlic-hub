@@ -55,7 +55,7 @@ class ItemsService extends AbstractBaseService
 				'playlist_id'   => $playlistId,
 				'datasource'    => 'file',
 				'item_duration' => $media['duration'] ?? self::DURATION_DEFAULT,
-				'item_filesize' => $media['filesize'],
+				'item_filesize' => $media['metadata']['size'],
 				'item_type'     => 'media',
 				'file_resource' => $media['checksum'],
 				'mimetype'      => $media['mimetype'],
@@ -96,13 +96,13 @@ class ItemsService extends AbstractBaseService
 			'item_duration'     => $this->durationCalculatorService->getDuration(),
 			'item_filesize'     => $this->durationCalculatorService->getFileSize()
 		);
-		$this->itemsRepository->update($playlistData['smil_playlist_id'], $saveItem);
+		$this->itemsRepository->update($playlistData['playlist_id'], $saveItem);
 
 		// find all playlist which have inserted this playlist
-		$ar_playlist_data = $this->playlistsService->findAllByItemsAsPlaylistAndMediaId($playlistData['playlist_id']);
-		foreach($ar_playlist_data as $playlist_values) // recurse all playlist which have this playlist as item for updating durations
+		$tmp = $this->playlistsService->findAllByItemsAsPlaylistAndMediaId($playlistData['playlist_id']);
+		foreach($tmp as $values) // recurse all playlist which have this playlist as item for updating durations
 		{
-			$this->updatePlaylistDurationAndFileSize($playlist_values);
+			$this->updatePlaylistDurationAndFileSize($values);
 		}
 
 		return $this;
