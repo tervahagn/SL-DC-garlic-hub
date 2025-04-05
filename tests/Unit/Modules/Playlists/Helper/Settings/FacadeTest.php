@@ -136,7 +136,7 @@ class FacadeTest extends TestCase
 			->willReturn($expectedValues);
 
 		$this->playlistsService->expects($this->once())
-			->method('update')
+			->method('updateSecure')
 			->with(['id' => 42, 'name' => 'Updated Playlist'])
 			->willReturn($expectedId);
 

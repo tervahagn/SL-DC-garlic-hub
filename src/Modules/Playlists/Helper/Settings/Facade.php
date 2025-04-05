@@ -99,7 +99,7 @@ readonly class Facade
 			$this->settingsParameters->getInputValuesArray()
 		);
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
-			$id = $this->playlistsService->update($saveData);
+			$id = $this->playlistsService->updateSecure($saveData);
 		else
 			$id = $this->playlistsService->createNew($saveData);
 
