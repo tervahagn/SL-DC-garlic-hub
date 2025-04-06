@@ -19,7 +19,13 @@ export class ItemsService
 		return this.#sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
 
-	async loadItemsByPlaylistId(playlistId)
+	async delete(playlistId, itemId)
+	{
+		const url = ItemsApiConfig.REMOVE_URI + "/" + itemId;
+		return await this.#sendRequest(url, "GET",  []);
+	}
+
+	async loadByPlaylistId(playlistId)
 	{
 		const url = ItemsApiConfig.LOAD_PLAYLIST_ITEMS_URI + "/" + playlistId;
 		return await this.#sendRequest(url, "GET",  []);

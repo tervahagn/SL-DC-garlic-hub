@@ -46,9 +46,17 @@ main header
 /*#insertMenu:focus .context-menu {display: block;}
 #addItems:focus .context-menu {display: block;}*/
 
-.playlist-item {width:100%;margin: 0.5rem 0;display:flex; gap:0.5rem; background-color:#ccc; }
-.playlist-item:nth-child(2n+1) {background-color: #f1f1f1;}
+.playlist-item {width:100%;margin: 0.5rem 0; padding:0.5rem;display:flex; gap:0.5rem; background-color:#eee; }
+.playlist-item:hover, .playlist-item:nth-child(2n+1):hover {background-color:#9eeaf9;}
+.playlist-item:nth-child(2n+1) {background-color: #f9f9f9;}
     .playlist-item img{width:100px; height:100px;object-fit: cover;}
-    .playlist-item .actions{display:flex; gap:0.5rem;}
-    .playlist-item .item-duration{width:100%;margin: 0.5rem 0;display:flex; gap:0.5rem;}
+    .playlist-item .properties {flex: 1;}
+    .playlist-item .actions
+    {
+        display:flex;
+        gap:0.5rem;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    .playlist-item .item-duration{margin-right: auto;}
 
