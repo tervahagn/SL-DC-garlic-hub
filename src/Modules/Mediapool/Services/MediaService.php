@@ -91,7 +91,10 @@ class MediaService
 				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
 
 			$media['metadata'] = json_decode($media['metadata'], true);
-
+			$mediaPath = $this->aclValidator->getConfig()->getConfigValue('thumbnails', 'mediapool', 'directories');
+			$media['paths']['originals']  = $mediaPath.'/originals/'.$mediaId.'.'.$media['extension'];
+			$media['paths']['previews']  = $mediaPath.'/previews/'.$mediaId.'.'.$media['extension'];
+			$media['paths']['thumbs'] = $mediaPath.'/thumbs/'.$mediaId.'.'.$media['thumb_extension'];
 			return $media;
 		}
 		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
