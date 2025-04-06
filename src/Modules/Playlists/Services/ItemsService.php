@@ -41,8 +41,12 @@ class ItemsService extends AbstractBaseService
 		foreach($this->itemsRepository->findAllByPlaylistId($playlistId) as $value)
 		{
 			$tmp = $value;
+			if (str_starts_with($value['mimetype'], 'image/'))
+				$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
+			else
+				$ext = 'jpg';
 
-			$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.jpg';
+			$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.'.$ext;
 
 			$items[] = $tmp;
 		}

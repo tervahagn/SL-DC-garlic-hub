@@ -25,17 +25,17 @@ main header
 .playlist-composer
 {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 }
     .playlist-composer #itemSelectContainer
     {
-        width:60%;
+        width:50%;
         border:1px solid #ccc;
         height:74vh;
     }
     .playlist-composer #thePlaylist
     {
-        width:40%;
+        width:50%;
         border:1px solid #ccc;
         height:74vh;
         overflow-y: auto;
