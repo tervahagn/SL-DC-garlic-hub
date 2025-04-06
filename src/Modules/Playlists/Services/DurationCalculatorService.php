@@ -122,7 +122,7 @@ class DurationCalculatorService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function calculateRemainingDuration(array $playlist, array $media = [])
+	public function calculateRemainingItemDuration(array $playlist, array $media = [])
 	{
 		$default_duration = $this->config->getConfigValue('duration', 'playlists', 'Defaults');
 

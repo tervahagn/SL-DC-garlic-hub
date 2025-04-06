@@ -2,16 +2,17 @@
 
 namespace App\Modules\Playlists\Services;
 
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
 class ItemsService extends AbstractBaseService
 {
-	CONST int DURATION_DEFAULT = 15;
 	private readonly ItemsRepository $itemsRepository;
 	private readonly PlaylistsService $playlistsService;
 	private readonly MediaService $mediaService;#
@@ -31,7 +32,7 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function insert(int $playlistId, string $id, string $source): int
+	public function insert(int $playlistId, string $id, string $source): array
 	{
 		try
 		{
@@ -51,10 +52,11 @@ class ItemsService extends AbstractBaseService
 			if (!$this->allowedByTimeLimit($playlistId, $playlistData['time_limit']))
 				throw new ModuleException('items', 'Playlist time limit exceeds');
 
+			$itemDuration =  $this->durationCalculatorService->calculateRemainingItemDuration($playlistData, $media);
 			$saveItem = [
 				'playlist_id'   => $playlistId,
 				'datasource'    => 'file',
-				'item_duration' => $media['duration'] ?? self::DURATION_DEFAULT,
+				'item_duration' => $itemDuration,
 				'item_filesize' => $media['metadata']['size'],
 				'item_name'     => $media['filename'],
 				'item_type'     => 'media',
@@ -62,17 +64,29 @@ class ItemsService extends AbstractBaseService
 				'mimetype'      => $media['mimetype'],
 			];
 			$id = $this->itemsRepository->insert($saveItem);
+			if ($id === 0)
+				throw new ModuleException('items', 'Playlist item could not inserted.');
+
+			$saveItem['item_id'] = $id;
 
 			$this->updatePlaylistDurationAndFileSize($playlistData);
 
+			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
+			$saveItem = array_merge($saveItem, [
+				'playlist_filesize'          => $this->durationCalculatorService->getFileSize(),
+				'playlist_duration'          => $this->durationCalculatorService->getDuration(),
+				'playlist_owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
+			]);
+
 			$this->itemsRepository->commitTransaction();
-			return $id;
+
+			return $saveItem;
 		}
-		catch (Exception | ModuleException $e)
+		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
 		{
 			$this->itemsRepository->rollBackTransaction();
 			$this->logger->error('Error insert media: ' . $e->getMessage());
-			return 0;
+			return [];
 		}
 	}
 
@@ -81,22 +95,21 @@ class ItemsService extends AbstractBaseService
 		if (empty($playlistData) || !isset($playlistData['playlist_id']))
 			return $this;
 
-		$this->durationCalculatorService->calculatePlaylistDurationFromItems($playlistData);
-		$this->durationCalculatorService->calculatePlaylistFilesizeFromItems($playlistData['playlist_id']);
+		$this->calculateDurations($playlistData);
 
-		$savePlaylist = array(
+		$savePlaylist = [
 			'filesize'          => $this->durationCalculatorService->getFileSize(),
 			'duration'          => $this->durationCalculatorService->getDuration(),
 			'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
-		);
+		];
 		$this->playlistsService->update($playlistData['playlist_id'], $savePlaylist); // update playlist durations in table
 
 
 		//now update all higher level playlists
-		$saveItem = array(
+		$saveItem = [
 			'item_duration'     => $this->durationCalculatorService->getDuration(),
 			'item_filesize'     => $this->durationCalculatorService->getFileSize()
-		);
+		];
 		$this->itemsRepository->update($playlistData['playlist_id'], $saveItem);
 
 		// find all playlist which have inserted this playlist
@@ -106,6 +119,13 @@ class ItemsService extends AbstractBaseService
 			$this->updatePlaylistDurationAndFileSize($values);
 		}
 		return $this;
+	}
+
+	private function calculateDurations(array $playlistData): void
+	{
+		$this->durationCalculatorService->calculatePlaylistDurationFromItems($playlistData);
+		$this->durationCalculatorService->calculatePlaylistFilesizeFromItems($playlistData['playlist_id']);
+
 	}
 
 	private function allowedByTimeLimit(int $playlistId, int $timeLimit): bool

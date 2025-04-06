@@ -52,10 +52,10 @@ class ItemsController
 		$session = $request->getAttribute('session');
 		$this->itemsService->setUID($session->get('user')['UID']);
 
-		$id = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
+		$item = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
 
-		if($id > 0)
-			return $this->jsonResponse($response, ['success' => true]);
+		if(!empty($item))
+			return $this->jsonResponse($response, ['success' => true, 'item' => $item]);
 		else
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
