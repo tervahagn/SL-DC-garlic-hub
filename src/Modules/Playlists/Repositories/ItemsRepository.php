@@ -43,6 +43,17 @@ class ItemsRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
+	public function findAllByPlaylistId(int $playlistId): array
+	{
+		$where   = ['playlist_id' => $this->generateWhereClause($playlistId)];
+		$orderBy = [['sort' => 'item_order', 'order' => 'ASC']];
+
+		return $this->findAllBy($where,[], [], '', $orderBy);
+	}
+
+	/**
+	 * @throws Exception
+	 */
 	public function sumDurationOfEnabledByPlaylistId(int $playlist_id): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -94,9 +105,13 @@ class ItemsRepository extends Sql
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	public function updateItemOrder($itemId, $newOrder): int
 	{
 		return  $this->update($itemId,['item_order' => $newOrder]);
 	}
+
 
 }

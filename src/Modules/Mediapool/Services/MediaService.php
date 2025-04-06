@@ -63,6 +63,11 @@ class MediaService
 		$this->UID = $UID;
 	}
 
+	public function getPathTumbnails(): string
+	{
+		return $this->pathTumbnails;
+	}
+
 	public function listMedia(int $nodeId): array
 	{
 		try
@@ -78,9 +83,10 @@ class MediaService
 			foreach ($result as &$media)
 			{
 				$media['metadata'] = json_decode($media['metadata'], true);
-				$media['paths']['originals']  = $this->pathOriginals.'/'.$media['media_id'].'.'.$media['extension'];
-				$media['paths']['previews']  = $this->pathPreviews.'/'.$media['media_id'].'.'.$media['extension'];
-				$media['paths']['thumbs'] = $this->pathTumbnails.'/'.$media['media_id'].'.'.$media['thumb_extension'];
+
+				$media['paths']['original']  = $this->pathOriginals.'/'.$media['checksum'].'.'.$media['extension'];
+				$media['paths']['preview']   = $this->pathPreviews.'/'.$media['checksum'].'.'.$media['extension'];
+				$media['paths']['thumbnail'] = $this->pathTumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
 			}
 
 			return $result;
@@ -105,9 +111,9 @@ class MediaService
 
 			$media['metadata'] = json_decode($media['metadata'], true);
 
-			$media['paths']['originals']  = $this->pathOriginals.'/'.$mediaId.'.'.$media['extension'];
-			$media['paths']['previews']  = $this->pathPreviews.'/'.$mediaId.'.'.$media['extension'];
-			$media['paths']['thumbs'] = $this->pathTumbnails.'/'.$mediaId.'.'.$media['thumb_extension'];
+			$media['paths']['original']  = $this->pathOriginals.'/'.$media['checksum'].'.'.$media['extension'];
+			$media['paths']['preview']   = $this->pathPreviews.'/'.$media['checksum'].'.'.$media['extension'];
+			$media['paths']['thumbnail'] = $this->pathTumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
 			return $media;
 		}
 		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)

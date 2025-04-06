@@ -32,6 +32,32 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
+	public function loadItemsByPlaylistId(int $playlistId): array
+	{
+		$this->playlistsService->setUID($this->UID);
+
+		$items = [];
+		$thumbnailPath  = $this->mediaService->getPathTumbnails();
+		foreach($this->itemsRepository->findAllByPlaylistId($playlistId) as $value)
+		{
+			$tmp = $value;
+
+			$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.jpg';
+
+			$items[] = $tmp;
+		}
+
+		// playlistService checks rights on the playlist
+		return [
+			'playlist' =>  $this->playlistsService->loadPlaylistForEdit($playlistId),
+			'items' => $items
+		];
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
 	public function insert(int $playlistId, string $id, string $source): array
 	{
 		try
@@ -75,7 +101,8 @@ class ItemsService extends AbstractBaseService
 			$saveItem = array_merge($saveItem, [
 				'playlist_filesize'          => $this->durationCalculatorService->getFileSize(),
 				'playlist_duration'          => $this->durationCalculatorService->getDuration(),
-				'playlist_owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
+				'playlist_owner_duration'    => $this->durationCalculatorService->getOwnerDuration(),
+				'paths'                      => $media['paths']
 			]);
 
 			$this->itemsRepository->commitTransaction();
@@ -135,6 +162,7 @@ class ItemsService extends AbstractBaseService
 
 		return true;
 	}
+
 
 
 }

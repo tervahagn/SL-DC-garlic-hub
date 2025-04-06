@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\Session;
 use App\Modules\Playlists\Services\ItemsService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -33,6 +34,19 @@ class ItemsController
 	{
 		$this->itemsService = $itemsService;
 	}
+
+	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$playlistId = (int) $args['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$this->determineUID($request->getAttribute('session'));
+		$list = $this->itemsService->loadItemsByPlaylistId($playlistId);
+
+		return $this->jsonResponse($response, ['success' => true, 'list' => $list]);
+	}
+
 
 	/**
 	 * @throws Exception
@@ -49,8 +63,7 @@ class ItemsController
 		if (empty($requestData['source']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source not valid.']);
 
-		$session = $request->getAttribute('session');
-		$this->itemsService->setUID($session->get('user')['UID']);
+		$this->determineUID($request->getAttribute('session'));
 
 		$item = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
 
@@ -60,6 +73,10 @@ class ItemsController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
 
+	private function determineUID(Session $session)
+	{
+		$this->itemsService->setUID($session->get('user')['UID']);
+	}
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
 		$response->getBody()->write(json_encode($data));
