@@ -19,12 +19,29 @@
 "use strict";
 
 import {InsertContextMenu} from "./InsertContextMenu.js";
-import {SelectorFactory} from "./SelectorFactory.js";
-import {ItemsService}    from "./ItemsService.js";
-import {FetchClient}     from "../../../core/FetchClient.js";
+import {SelectorFactory}   from "./SelectorFactory.js";
+import {ItemsService}      from "./ItemsService.js";
+import {FetchClient}       from "../../../core/FetchClient.js";
+import ItemList            from "./ItemList.js";
+import {ItemFactory}       from "./ItemFactory.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
-	const insertContextMenu = new InsertContextMenu(new SelectorFactory(), new ItemsService(new FetchClient()));
-	insertContextMenu.init();
+	const dropTarget = document.getElementById("thePlaylist");
+	const playlistId = document.getElementById("playlist_id").value;
+
+	const itemsService = new ItemsService(new FetchClient());
+	const itemsList = new ItemList(new ItemFactory(), itemsService, dropTarget);
+
+	const insertContextMenu = new InsertContextMenu(
+		new SelectorFactory(dropTarget),
+		itemsList,
+		itemsService
+	);
+
+	insertContextMenu.init(playlistId);
+	itemsList.displayPlaylist(playlistId);
+
+
+
 });

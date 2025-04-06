@@ -104,37 +104,8 @@ export class Selector
 		});
 		this.#dropTarget.addEventListener('drop', (event) => {
 			event.preventDefault();
-			this.#createPlaylistItem(this.#dragItem);
-			this.#emitter.emit('mediapool:selector:drop', { id: this.#dragItem.mediaId });
+			this.#emitter.emit('mediapool:selector:drop', {media: this.#dragItem });
 			this.#dragItem = null;
 		});
 	}
-
-	/**
-	 *
-	 * @param {Media} media
-	 * @returns {Node}
-	 */
-	#createPlaylistItem(media)
-	{
-		const template = document.getElementById("playlistItemTemplate");
-		const playlistItem = template.content.cloneNode(true);
-
-		const listItem = playlistItem.querySelector('.playlist-item');
-		listItem.dataset.mediaId = media.mediaId;
-
-		const thumbnail = playlistItem.querySelector('img');
-		thumbnail.src = media.thumbnailPath;
-		thumbnail.alt = media.filename;
-
-		const itemName = playlistItem.querySelector('.item-name');
-		itemName.textContent = media.filename;
-
-		const itemDuration = playlistItem.querySelector('.item-duration');
-		itemDuration.textContent = media.duration;
-
-
-		this.#dropTarget.appendChild(playlistItem);
-	}
-
 }

@@ -10,22 +10,25 @@ export class InsertContextMenu
 	#selectorFactory         = null;
 	#itemSelectContainer     = document.getElementById("itemSelectContainer");
 	#itemService             = null;
-	#playlistId              = document.getElementById("playlist_id").value;
-	constructor(selectorFactory, itemService)
+	#itemList                = null;
+
+	constructor(selectorFactory, itemList, itemService)
 	{
 		this.#selectorFactory = selectorFactory;
 		this.#itemService     = itemService;
+		this.#itemList        = itemList;
 	}
 
-	init()
+	init(playlistId)
 	{
-		this.#insertMedia.addEventListener("click", () =>
+		this.#insertMedia.addEventListener("click", async () =>
 		{
 			const selector = this.#selectorFactory.create("mediaselector");
 			selector.showSelector(this.#itemSelectContainer);
 			selector.on("mediapool:selector:drop", async (args) =>
 			{
-				this.#itemService.insertFromMediaPool(args.id, this.#playlistId);
+				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, playlistId);
+				this.#itemList.createPlaylistItem(result.item);
 			});
 
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
