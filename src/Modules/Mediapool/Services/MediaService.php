@@ -39,13 +39,23 @@ class MediaService
 
 	private readonly LoggerInterface $logger;
 	private int $UID;
+	private string $pathOriginals;
+	private string $pathPreviews;
+	private string $pathTumbnails;
 
+	/**
+	 * @throws CoreException
+	 */
 	public function __construct(FilesRepository $mediaRepository, NodesRepository $nodesRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->mediaRepository = $mediaRepository;
 		$this->nodesRepository = $nodesRepository;
 		$this->aclValidator    = $aclValidator;
 		$this->logger          = $logger;
+
+		$this->pathOriginals = $aclValidator->getConfig()->getConfigValue('originals', 'mediapool', 'directories');
+		$this->pathPreviews  = $aclValidator->getConfig()->getConfigValue('previews', 'mediapool', 'directories');
+		$this->pathTumbnails = $aclValidator->getConfig()->getConfigValue('thumbnails', 'mediapool', 'directories');
 	}
 
 	public function setUID(int $UID): void
@@ -68,6 +78,9 @@ class MediaService
 			foreach ($result as &$media)
 			{
 				$media['metadata'] = json_decode($media['metadata'], true);
+				$media['paths']['originals']  = $this->pathOriginals.'/'.$media['media_id'].'.'.$media['extension'];
+				$media['paths']['previews']  = $this->pathPreviews.'/'.$media['media_id'].'.'.$media['extension'];
+				$media['paths']['thumbs'] = $this->pathTumbnails.'/'.$media['media_id'].'.'.$media['thumb_extension'];
 			}
 
 			return $result;
@@ -91,10 +104,10 @@ class MediaService
 				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
 
 			$media['metadata'] = json_decode($media['metadata'], true);
-			$mediaPath = $this->aclValidator->getConfig()->getConfigValue('thumbnails', 'mediapool', 'directories');
-			$media['paths']['originals']  = $mediaPath.'/originals/'.$mediaId.'.'.$media['extension'];
-			$media['paths']['previews']  = $mediaPath.'/previews/'.$mediaId.'.'.$media['extension'];
-			$media['paths']['thumbs'] = $mediaPath.'/thumbs/'.$mediaId.'.'.$media['thumb_extension'];
+
+			$media['paths']['originals']  = $this->pathOriginals.'/'.$mediaId.'.'.$media['extension'];
+			$media['paths']['previews']  = $this->pathPreviews.'/'.$mediaId.'.'.$media['extension'];
+			$media['paths']['thumbs'] = $this->pathTumbnails.'/'.$mediaId.'.'.$media['thumb_extension'];
 			return $media;
 		}
 		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
