@@ -88,7 +88,7 @@ class DurationCalculatorService
 	public function determineTotalPlaylistProperties($playlistId): int
 	{
 		$result = $this->itemsRepository->sumAndCountByPlaylistId($playlistId);
-		$this->fileSize     = $result['totalSize'];
+		$this->fileSize     = (int) $result['totalSize']; // when no items => null, so we need conversion
 		$this->totalEntries = $result['totalEntries'];
 
 		return $this->getFileSize();
