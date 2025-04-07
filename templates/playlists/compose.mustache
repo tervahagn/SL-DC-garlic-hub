@@ -1,6 +1,7 @@
 		<h1>{{{LANG_PAGE_HEADER}}}</h1>
 		<header>
 			<input type="hidden" id="playlist_id" value="{{{PLAYLIST_ID}}}" />
+			<input type="hidden" id="cms_edition" value="{{{CMS_EDITION}}}" />
 			<div id="insertMenu" tabindex="0" title="{{{LANG_INSERT}}}">
 				<i title="{{{LANG_INSERT}}}" class="bi bi-plus-circle"></i>
 				<ul class="context-menu">
@@ -59,19 +60,19 @@
 			</ul>
 
 			<template id="playlistItemTemplate">
-				<li class="playlist-item" draggable="true">
+				<li class="playlist-item" draggable="true" id="">
 					<img class="thumbnail" src="" alt="" />
 					<div class="properties">
-						<div class="actions">
+						<div class="actions" data-item-id="">
 							<span class="item-duration">00:00:00</span>
-							<button class="bi bi-link link-playlist" title="{{{LANG_LINK_PLAYLIST}}}" data-template-content-id=""></button>
-							<button class="bi bi-pencil template-edit" title="{{{LANG_EDIT_TEMPLATE}}}" data-template-content-id=""></button>
-							<button class="bi bi-alarm conditional-play" title="{{{LANG_CONDITIONAL_PLAY_EDIT}}}" data-conditional-play-id=""></button>
-							<button class="bi bi-lightning trigger-edit" title="{{{LANG_TRIGGER_EDIT}}}" data-trigger-id=""></button>
-							<button class="bi bi-pencil widget-edit" title="{{{LANG_WIDGET_EDIT}}}" data-widget-id=""></button>
-							<button class="bi bi-gear settings-edit" title="{{{LANG_SETTINGS}}}" data-properties-id=""></button>
-							<button class="bi bi-copy copy-item" title="{{{LANG_COPY_ITEM}}}" data-copy-id=""></button>
-							<button class="bi bi-trash delete-item" title="{{{LANG_DELETE_ITEM}}}" data-delete-id=""></button>
+							<button class="bi bi-link link-playlist" title="{{{LANG_LINK_PLAYLIST}}}"></button>
+							<button class="bi bi-pencil edit-template" title="{{{LANG_EDIT_TEMPLATE}}}"></button>
+							<button class="bi bi-alarm conditional-play" title="{{{LANG_CONDITIONAL_PLAY_EDIT}}}"></button>
+							<button class="bi bi-lightning edit-trigger" title="{{{LANG_TRIGGER_EDIT}}}"></button>
+							<button class="bi bi-pencil edit-widget" title="{{{LANG_WIDGET_EDIT}}}"></button>
+							<button class="bi bi-gear edit-settings" title="{{{LANG_SETTINGS}}}"></button>
+							<button class="bi bi-copy copy-item" title="{{{LANG_COPY_ITEM}}}"> </button>
+							<button class="bi bi-trash delete-item" title="{{{LANG_DELETE_ITEM}}}"></button>
 						</div>
 						<p class="item-name"></p>
 					</div>

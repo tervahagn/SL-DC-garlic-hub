@@ -42,6 +42,4 @@ document.addEventListener("DOMContentLoaded", function ()
 	insertContextMenu.init(playlistId);
 	itemsList.displayPlaylist(playlistId);
 
-
-
 });

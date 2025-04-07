@@ -28,6 +28,11 @@ class RightsChecker
 		$this->aclValidator = $aclValidator;
 	}
 
+	public function checkEdition(): string
+	{
+		return $this->aclValidator->getConfig()->getEdition();
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
