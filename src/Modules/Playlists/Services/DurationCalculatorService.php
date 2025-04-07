@@ -137,7 +137,8 @@ class DurationCalculatorService
 
 		// only videos have a duration > 0. Using the constant for other media.
 		// this is only used, when inserting new items
-		$duration = (array_key_exists('duration', $media) && $media['duration'] > 0) ? $media['duration'] : $default_duration;
+
+		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $default_duration;
 
 		if ($playlist['time_limit'] > 0 && !$this->aclValidator->isSimpleAdmin($this->UID))
 		{

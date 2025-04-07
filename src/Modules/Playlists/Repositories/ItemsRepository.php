@@ -57,18 +57,17 @@ class ItemsRepository extends Sql
 	public function sumDurationOfEnabledByPlaylistId(int $playlist_id): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('SUM(item_filesize) as total')
+		$queryBuilder->select('SUM(item_duration) as total')
 			->from($this->table)
 			->where('playlist_id = '.$playlist_id)
-			->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')
+		/*	->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')*/
 			->groupBy('playlist_id');
 
 		$result = $queryBuilder->fetchOne();
-		if (!isset($result['total']))
-		{
+		if ($result === false)
 			return  0;
-		}
-		return $result['total'];
+
+		return (int) $result;
 	}
 
 	/**

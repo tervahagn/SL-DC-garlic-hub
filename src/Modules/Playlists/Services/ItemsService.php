@@ -153,6 +153,7 @@ class ItemsService extends AbstractBaseService
 			$this->updatePlaylistDurationAndFileSize($playlistData);
 			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
 			$this->durationCalculatorService->determineTotalPlaylistProperties($playlistId);
+
 			$this->itemsRepository->commitTransaction();
 
 			$playlist = ['count_items'       => $this->durationCalculatorService->getTotalEntries(),
@@ -160,6 +161,7 @@ class ItemsService extends AbstractBaseService
 				'duration'          => $this->durationCalculatorService->getDuration(),
 				'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
 			];
+
 
 			return ['playlist' => $playlist, 'delete_id' => $deleteId];
 		}
