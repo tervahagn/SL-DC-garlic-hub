@@ -65,7 +65,15 @@ class ItemsController
 
 		$this->determineUID($request->getAttribute('session'));
 
-		$item = $this->itemsService->insert((int)$requestData['playlist_id'], $requestData['id'], $requestData['source']);
+		switch ($requestData['source'])
+		{
+			case 'media':
+			case 'mediapool':
+				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id']);
+				break;
+			default:
+				$item = [];
+		}
 
 		if(!empty($item))
 			return $this->jsonResponse($response, ['success' => true, 'item' => $item]);

@@ -14,7 +14,7 @@ export class ItemsService
 		const data = {
 			playlist_id: playlistId,
 			"id": id,
-			"source": "mediapool"
+			"source": "media"
 		};
 		return this.#sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}

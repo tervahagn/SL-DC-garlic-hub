@@ -6,6 +6,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -62,7 +63,7 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function insert(int $playlistId, string $id, string $source): array
+	public function insertMedia(int $playlistId, string $id): array
 	{
 		try
 		{
@@ -89,7 +90,7 @@ class ItemsService extends AbstractBaseService
 				'item_duration' => $itemDuration,
 				'item_filesize' => $media['metadata']['size'],
 				'item_name'     => $media['filename'],
-				'item_type'     => 'media',
+				'item_type'     => ItemType::MEDIA->value,
 				'file_resource' => $media['checksum'],
 				'mimetype'      => $media['mimetype'],
 			];
