@@ -110,7 +110,6 @@ export class Item
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
 
-
 		if (this.#itemData.mimetype === "application/widget")
 			this.#editWidgetAction  = this.#playlistItem.querySelector('.edit-widget');
 		else

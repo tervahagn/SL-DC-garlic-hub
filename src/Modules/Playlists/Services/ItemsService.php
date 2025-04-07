@@ -20,7 +20,11 @@ class ItemsService extends AbstractBaseService
 	private readonly DurationCalculatorService $durationCalculatorService;
 
 
-	public function __construct(ItemsRepository $itemsRepository, MediaService $mediaService, PlaylistsService $playlistsService, DurationCalculatorService $durationCalculatorService, LoggerInterface $logger)
+	public function __construct(ItemsRepository $itemsRepository,
+								MediaService $mediaService,
+								PlaylistsService $playlistsService,
+								DurationCalculatorService $durationCalculatorService,
+								LoggerInterface $logger)
 	{
 		$this->itemsRepository  = $itemsRepository;
 		$this->playlistsService = $playlistsService;
@@ -51,12 +55,10 @@ class ItemsService extends AbstractBaseService
 
 			$items[] = $tmp;
 		}
+		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
+		$playlist['count_items'] = count($items);
 
-		// playlistService checks rights on the playlist
-		return [
-			'playlist' =>  $this->playlistsService->loadPlaylistForEdit($playlistId),
-			'items' => $items
-		];
+		return ['playlist' =>  $playlist, 'items' => $items];
 	}
 
 
@@ -99,20 +101,23 @@ class ItemsService extends AbstractBaseService
 				throw new ModuleException('items', 'Playlist item could not inserted.');
 
 			$saveItem['item_id'] = $id;
+			$saveItem['paths'] = $media['paths'];
 
 			$this->updatePlaylistDurationAndFileSize($playlistData);
 
 			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
-			$saveItem = array_merge($saveItem, [
-				'playlist_filesize'          => $this->durationCalculatorService->getFileSize(),
-				'playlist_duration'          => $this->durationCalculatorService->getDuration(),
-				'playlist_owner_duration'    => $this->durationCalculatorService->getOwnerDuration(),
-				'paths'                      => $media['paths']
-			]);
+			$this->durationCalculatorService->determineTotalPlaylistProperties($playlistId);
+
+			$playlist = [
+				'count_items'       => $this->durationCalculatorService->getTotalEntries(),
+				'filesize'          => $this->durationCalculatorService->getFileSize(),
+				'duration'          => $this->durationCalculatorService->getDuration(),
+				'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
+			];
 
 			$this->itemsRepository->commitTransaction();
 
-			return $saveItem;
+			return ['playlist' => $playlist, 'item' => $saveItem];
 		}
 		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
 		{
@@ -122,6 +127,56 @@ class ItemsService extends AbstractBaseService
 		}
 	}
 
+	public function delete(int $playlistId, int $itemId): array
+	{
+		try
+		{
+			$this->itemsRepository->beginTransaction();
+			$this->playlistsService->setUID($this->UID);
+			$this->durationCalculatorService->setUID($this->UID);
+
+			$playlistData = $this->playlistsService->loadPlaylistForEdit($playlistId); // also checks rights
+			if (empty($playlistData))
+				throw new ModuleException('items', 'Playlist is not accessible');
+
+			$item = $this->itemsRepository->findById($itemId);
+
+			// todo for Core / Enterprise: Check if item belongs to an admin
+
+			if (empty($item))
+				throw new ModuleException('items', 'Item not found');
+
+			$deleteId = $this->itemsRepository->delete($itemId);
+			if ($deleteId === 0)
+				throw new ModuleException('items', 'Item could not deleted');
+
+			$this->updatePlaylistDurationAndFileSize($playlistData);
+			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
+			$this->durationCalculatorService->determineTotalPlaylistProperties($playlistId);
+			$this->itemsRepository->commitTransaction();
+
+			$playlist = ['count_items'       => $this->durationCalculatorService->getTotalEntries(),
+				'filesize'          => $this->durationCalculatorService->getFileSize(),
+				'duration'          => $this->durationCalculatorService->getDuration(),
+				'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
+			];
+
+			return ['playlist' => $playlist, 'delete_id' => $deleteId];
+		}
+		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->itemsRepository->rollBackTransaction();
+			$this->logger->error('Error insert media: ' . $e->getMessage());
+			return [];
+		}
+
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	private function updatePlaylistDurationAndFileSize(array $playlistData)
 	{
 		if (empty($playlistData) || !isset($playlistData['playlist_id']))
@@ -135,7 +190,6 @@ class ItemsService extends AbstractBaseService
 			'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
 		];
 		$this->playlistsService->update($playlistData['playlist_id'], $savePlaylist); // update playlist durations in table
-
 
 		//now update all higher level playlists
 		$saveItem = [
@@ -153,13 +207,20 @@ class ItemsService extends AbstractBaseService
 		return $this;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	private function calculateDurations(array $playlistData): void
 	{
 		$this->durationCalculatorService->calculatePlaylistDurationFromItems($playlistData);
-		$this->durationCalculatorService->calculatePlaylistFilesizeFromItems($playlistData['playlist_id']);
-
+		$this->durationCalculatorService->determineTotalPlaylistProperties($playlistData['playlist_id']);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function allowedByTimeLimit(int $playlistId, int $timeLimit): bool
 	{
 		if ($timeLimit > 0)
@@ -167,7 +228,5 @@ class ItemsService extends AbstractBaseService
 
 		return true;
 	}
-
-
 
 }

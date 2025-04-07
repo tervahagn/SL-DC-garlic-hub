@@ -28,7 +28,8 @@ export class InsertContextMenu
 			selector.on("mediapool:selector:drop", async (args) =>
 			{
 				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, playlistId);
-				this.#itemList.createPlaylistItem(result.item);
+				this.#itemList.createPlaylistItem(result.data.item);
+				this.#itemList.displayPlaylistProperties(result.data.playlist);
 			});
 
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";

@@ -35,8 +35,8 @@ class DurationCalculatorService
 	private AclValidator $aclValidator;
 	private Config $config;
 	private int $UID;
+	private int $totalEntries;
 	private int $ownerDuration;
-
 	private int $duration;
 	private int $fileSize;
 
@@ -45,6 +45,11 @@ class DurationCalculatorService
 		$this->itemsRepository     = $itemsRepository;
 		$this->aclValidator     = $aclValidator;
 		$this->config           = $config;
+	}
+
+	public function getTotalEntries(): int
+	{
+		return $this->totalEntries;
 	}
 
 	public function getDuration(): int
@@ -70,6 +75,7 @@ class DurationCalculatorService
 
 	public function reset(): static
 	{
+		$this->totalEntries  = 0;
 		$this->fileSize      = 0;
 		$this->duration      = 0;
 		$this->ownerDuration = 0;
@@ -79,9 +85,12 @@ class DurationCalculatorService
 	/**
 	 * @throws Exception
 	 */
-	public function calculatePlaylistFileSizeFromItems($playlistId): int
+	public function determineTotalPlaylistProperties($playlistId): int
 	{
-		$this->fileSize = $this->itemsRepository->sumSizeByPlaylistId($playlistId);
+		$result = $this->itemsRepository->sumAndCountByPlaylistId($playlistId);
+		$this->fileSize     = $result['totalSize'];
+		$this->totalEntries = $result['totalEntries'];
+
 		return $this->getFileSize();
 	}
 

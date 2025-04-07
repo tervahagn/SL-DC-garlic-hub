@@ -96,12 +96,12 @@ class ItemsRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
-	public function sumSizeByPlaylistId(int $playlist_id): int
+	public function sumAndCountByPlaylistId(int $playlist_id): array
 	{
-		$select = 'SUM(item_filesize) as total';
+		$select = ['SUM(item_filesize) as totalSize', 'COUNT(item_id) as totalEntries'];
 		$where['playlist_id']  = $this->generateWhereClause($playlist_id);
 
-		return $this->findOneValueBy($select, $where, [], 'playlist_id');
+		return $this->getFirstDataSet($this->findAllByWithFields($select, $where));
 	}
 
 

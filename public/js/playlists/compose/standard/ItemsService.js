@@ -21,8 +21,12 @@ export class ItemsService
 
 	async delete(playlistId, itemId)
 	{
-		const url = ItemsApiConfig.REMOVE_URI + "/" + itemId;
-		return await this.#sendRequest(url, "GET",  []);
+		const url = ItemsApiConfig.BASE_URI;
+		const data = {
+			playlist_id: playlistId,
+			"item_id": itemId
+		};
+		return await this.#sendRequest(url, "DELETE", data);
 	}
 
 	async loadByPlaylistId(playlistId)

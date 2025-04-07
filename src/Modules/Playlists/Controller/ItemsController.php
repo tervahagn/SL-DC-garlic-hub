@@ -35,6 +35,9 @@ class ItemsController
 		$this->itemsService = $itemsService;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
@@ -44,7 +47,7 @@ class ItemsController
 		$this->determineUID($request->getAttribute('session'));
 		$list = $this->itemsService->loadItemsByPlaylistId($playlistId);
 
-		return $this->jsonResponse($response, ['success' => true, 'list' => $list]);
+		return $this->jsonResponse($response, ['success' => true, 'data' => $list]);
 	}
 
 
@@ -76,15 +79,36 @@ class ItemsController
 		}
 
 		if(!empty($item))
-			return $this->jsonResponse($response, ['success' => true, 'item' => $item]);
+			return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
 		else
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
+
+	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$requestData = $request->getParsedBody();
+		if (empty($requestData['playlist_id']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
+
+		$this->determineUID($request->getAttribute('session'));
+
+		$item = $this->itemsService->delete((int)$requestData['playlist_id'], (int) $requestData['item_id']);
+
+		if(!empty($item))
+			return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
+		else
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error deleting item.']);
+	}
+
 
 	private function determineUID(Session $session)
 	{
 		$this->itemsService->setUID($session->get('user')['UID']);
 	}
+
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
 		$response->getBody()->write(json_encode($data));
