@@ -1,3 +1,5 @@
+import {Utils} from "../../../core/Utils.js";
+
 export default class ItemList
 {
 	#itemFactory = null;
@@ -40,9 +42,9 @@ export default class ItemList
 
 	displayPlaylistProperties(playlistProperties)
 	{
-		this.#playlistDuration.innerHTML = playlistProperties.duration;
+		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistProperties.duration);
 		this.#totalItems.innerHTML       = playlistProperties.count_items;
-		this.#totalFilesize.innerHTML    = playlistProperties.filesize;
+		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistProperties.filesize);
 		// properties.owner_duration;
 	}
 

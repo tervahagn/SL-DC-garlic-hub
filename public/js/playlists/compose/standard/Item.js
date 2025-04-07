@@ -1,3 +1,5 @@
+import {Utils} from "../../../core/Utils.js";
+
 export class Item
 {
 	#itemData = null
@@ -77,7 +79,8 @@ export class Item
 		itemName.textContent = this.#itemData.item_name;
 
 		const itemDuration = playlistItem.querySelector('.item-duration');
-		itemDuration.textContent = this.#formatSecondsToTime();
+
+		itemDuration.textContent = Utils.formatSecondsToTime(this.#itemData.item_duration);
 
 		playlistItem.querySelector('.actions').setAttribute('data-item-id', this.#itemData.item_id)
 		this.#initActions();
@@ -121,18 +124,6 @@ export class Item
 			this.#playlistItem.querySelector('.copy-item').remove();
 
 		this.#deleteItemAction = this.#playlistItem.querySelector('.delete-item');
-	}
-
-	#formatSecondsToTime()
-	{
-		const seconds = this.#itemData.item_duration
-		const hours = Math.floor(seconds / 3600);
-		const minutes = Math.floor((seconds % 3600) / 60);
-		const secs = seconds % 60;
-
-		const pad = (num) => String(num).padStart(2, '0');
-
-		return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
 	}
 
 
