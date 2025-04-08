@@ -541,7 +541,7 @@ declare module "deferred" {
     }
 }
 declare module "wb_node" {
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { AddChildrenOptions, ApplyCommandOptions, ApplyCommandType, ChangeType, CheckboxOption, ExpandAllOptions, IconOption, InsertNodeType, MakeVisibleOptions, MatcherCallback, NavigateOptions, NavigationType, NodeAnyCallback, NodeStatusType, NodeStringCallback, NodeToDictCallback, NodeVisitCallback, NodeVisitResponse, RenderOptions, ResetOrderOptions, ScrollIntoViewOptions, SetActiveOptions, SetExpandedOptions, SetSelectedOptions, SetStatusOptions, SortByPropertyOptions, SortCallback, SourceType, TooltipOption, TristateType, WbNodeData } from "types";
     /**
      * A single tree node.
@@ -1486,7 +1486,7 @@ declare module "types" {
      * @VERSION, @DATE (https://github.com/mar10/wunderbaum)
      */
     import { WunderbaumNode } from "wb_node";
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     /** A value that can either be true, false, or undefined. */
     export type TristateType = boolean | undefined;
     /** Show/hide checkbox or display a radiobutton icon instead. */
@@ -2583,7 +2583,7 @@ declare module "types" {
 }
 declare module "wb_extension_base" {
     import { WunderbaumOptions } from "wb_options";
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     export type ExtensionsDict = {
         [key: string]: WunderbaumExtension<any>;
     };
@@ -2605,7 +2605,7 @@ declare module "wb_extension_base" {
 }
 declare module "wb_ext_filter" {
     import { FilterNodesOptions, FilterOptionsType, NodeFilterCallback } from "types";
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { WunderbaumExtension } from "wb_extension_base";
     export class FilterExtension extends WunderbaumExtension<FilterOptionsType> {
         queryInput: HTMLInputElement | null;
@@ -2651,7 +2651,7 @@ declare module "wb_ext_keynav" {
      * @VERSION, @DATE (https://github.com/mar10/wunderbaum)
      */
     import { KeynavOptionsType } from "types";
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { WunderbaumExtension } from "wb_extension_base";
     export class KeynavExtension extends WunderbaumExtension<KeynavOptionsType> {
         constructor(tree: Wunderbaum);
@@ -2668,7 +2668,7 @@ declare module "wb_ext_logger" {
      */
     import { LoggerOptionsType } from "types";
     import { WunderbaumExtension } from "wb_extension_base";
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     export class LoggerExtension extends WunderbaumExtension<LoggerOptionsType> {
         readonly prefix: string;
         protected ignoreEvents: Set<string>;
@@ -2678,7 +2678,7 @@ declare module "wb_ext_logger" {
     }
 }
 declare module "wb_ext_dnd" {
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { WunderbaumExtension } from "wb_extension_base";
     import { WunderbaumNode } from "wb_node";
     import { DndOptionsType, DropEffectType, DropRegionType, DropRegionTypeSet } from "types";
@@ -2799,7 +2799,7 @@ declare module "wb_ext_grid" {
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
      * @VERSION, @DATE (https://github.com/mar10/wunderbaum)
      */
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { WunderbaumExtension } from "wb_extension_base";
     import { DragCallbackArgType, DragObserver } from "drag_observer";
     import { GridOptionsType } from "types";
@@ -2819,7 +2819,7 @@ declare module "wb_ext_edit" {
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
      * @VERSION, @DATE (https://github.com/mar10/wunderbaum)
      */
-    import { Wunderbaum } from "wunderbaum";
+    import { Wunderbaum } from "js/external/wunderbaum";
     import { WunderbaumExtension } from "wb_extension_base";
     import { WunderbaumNode } from "wb_node";
     import { EditOptionsType, InsertNodeType, WbNodeData } from "types";
@@ -2849,7 +2849,7 @@ declare module "wb_ext_edit" {
         createNode(mode?: InsertNodeType, node?: WunderbaumNode | null, init?: string | WbNodeData): void;
     }
 }
-declare module "wunderbaum" {
+declare module "js/external/wunderbaum" {
     /*!
      * wunderbaum.ts
      *

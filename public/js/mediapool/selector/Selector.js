@@ -21,6 +21,7 @@ export class Selector
 		this.#treeViewWrapper = treeViewWrapper;
 		this.#mediaService = mediaService;
 		this.#selectorView = selectorView;
+
 		this.#initEvents();
 	}
 
@@ -64,6 +65,9 @@ export class Selector
 		element.innerHTML = await this.#mediaService.loadSelectorTemplate();
 
 		this.#treeViewWrapper.initTree();
+		if (this.#isDragDrop === true)
+			this.#prepareDrop();
+
 	}
 
 	async loadMedia(nodeId)
@@ -74,9 +78,8 @@ export class Selector
 	displayMediaList(mediaList)
 	{
 		this.#selectorView.displayMediaList(mediaList);
-
 		if (this.#isDragDrop === true)
-			this.#prepareDragDrop();
+			this.#prepareDrag();
 	}
 
 
@@ -89,7 +92,7 @@ export class Selector
 		});
 	}
 
-	#prepareDragDrop()
+	#prepareDrag()
 	{
 		for (const media of this.#selectorView.mediaItems)
 		{
@@ -99,10 +102,15 @@ export class Selector
 				event.dataTransfer.effectAllowed = 'copy';
 			});
 		}
+	}
+
+	#prepareDrop()
+	{
 		this.#dropTarget.addEventListener('dragover', (event) => {
 			event.preventDefault();
 		});
 		this.#dropTarget.addEventListener('drop', (event) => {
+
 			event.preventDefault();
 			this.#emitter.emit('mediapool:selector:drop', {media: this.#dragItem });
 			this.#dragItem = null;
