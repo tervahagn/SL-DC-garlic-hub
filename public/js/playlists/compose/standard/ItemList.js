@@ -37,7 +37,7 @@ export default class ItemList
 		const item = this.#itemFactory.create(itemData);
 		this.#itemsList[itemData.item_id] = item;
 
-		console.log('Listenlänge', this.#dropTarget.children.length, 'Position', position);
+		// console.log('Listenlänge', this.#dropTarget.children.length, 'Position', position);
 
 		if (position === null || this.#dropTarget.children.length < position)
 			this.#dropTarget.appendChild(item.buildItemElement());

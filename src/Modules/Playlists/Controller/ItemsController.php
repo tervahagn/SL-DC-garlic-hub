@@ -87,6 +87,21 @@ class ItemsController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 	}
 
+	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$requestData = $request->getParsedBody();
+		if (empty($requestData['playlist_id']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		if (empty($requestData['items_positions']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Items Position array is not valid.']);
+
+		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$this->itemsService->updateItemOrder($requestData['playlist_id'], $requestData['items_positions']);
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$requestData = $request->getParsedBody();

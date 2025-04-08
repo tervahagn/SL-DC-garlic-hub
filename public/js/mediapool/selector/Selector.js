@@ -7,11 +7,6 @@ export class Selector
 	#selectedMediaLink = "";
 	#emitter = new EventEmitter();
 
-	#dragItem = null;
-	#isDragDrop = true;
-	#dropTarget = null;
-
-
 	#treeViewWrapper  = {};
 	#mediaService = {};
 	#selectorView = {};
@@ -30,6 +25,16 @@ export class Selector
 		this.#filter = value;
 	}
 
+	getMediaItemsContainer()
+	{
+		return this.#selectorView.mediaListElement;
+	}
+
+	getMediaItems()
+	{
+		return this.#selectorView.mediaItems;
+	}
+
 	get selectedMediaId()
 	{
 		return this.#selectedMediaId;
@@ -38,16 +43,6 @@ export class Selector
 	get selectedMediaLink()
 	{
 		return this.#selectedMediaLink;
-	}
-
-	set dropTarget(value)
-	{
-		this.#dropTarget = value;
-	}
-
-	set isDragDrop(value)
-	{
-		this.#isDragDrop = value;
 	}
 
 	on(eventName, listener)
@@ -65,8 +60,6 @@ export class Selector
 		element.innerHTML = await this.#mediaService.loadSelectorTemplate();
 
 		this.#treeViewWrapper.initTree();
-	//	if (this.#isDragDrop === true)
-	//		this.#prepareDrop();
 
 	}
 
@@ -78,10 +71,7 @@ export class Selector
 	displayMediaList(mediaList)
 	{
 		this.#selectorView.displayMediaList(mediaList);
-		if (this.#isDragDrop === true)
-			this.#prepareDragula();
 	}
-
 
 	#initEvents()
 	{
@@ -89,71 +79,7 @@ export class Selector
 		{
 			const results = await this.loadMedia(args.node_id);
 			this.displayMediaList(results);
-		});
-	}
-
-	#prepareDragula()
-	{
-		const options = {
-			copy: true,
-			accepts: (el, target, source, sibling) => {
-				return target === this.#dropTarget;
-			}
-		};
-
-		dragula([this.#selectorView.mediaListElement, this.#dropTarget], options)
-			.on('drag', (el) => {
-				this.#dragItem = this.#selectorView.mediaItems[el.getAttribute('data-media-id')];
-				el.className = "media-item";
-			})
-			.on('shadow', (el, container) => {
-
-
-			})
-			.on('drop',  (el, target, source, sibling) => {
-				if (target !== this.#dropTarget)
-					return;
-
-				let droppedIndex;
-				if (sibling === null) // element dropped at end of list
-				{
-					droppedIndex = target.children.length;
-				}
-				else // Element dropped before 'sibling'
-				{
-					// We find the index of 'sibling' in the  'target'-Container
-					droppedIndex = Array.from(target.children).indexOf(sibling);
-				}
-
-				el.remove();
-				this.#emitter.emit('mediapool:selector:drop', {media: this.#dragItem, position: droppedIndex});
-				this.#dragItem = null;
-		});
-
-	}
-
-	#prepareDrag()
-	{
-		for (const media of this.#selectorView.mediaItems)
-		{
-			media.mediaItem.addEventListener("dragstart", (event) =>
-			{
-				this.#dragItem = media;
-				event.dataTransfer.effectAllowed = 'copy';
-			});
-		}
-	}
-
-	#prepareDrop()
-	{
-		this.#dropTarget.addEventListener('dragover', (event) => {
-			event.preventDefault();
-		});
-		this.#dropTarget.addEventListener('drop', (event) => {
-
-			event.preventDefault();
-			this.#emitter.emit('mediapool:selector:drop', {media: this.#dragItem });
-			this.#dragItem = null;
+			this.#emitter.emit('mediapool:selector:loaded', {nodeId: args.node_id });
 		});
 	}
 }

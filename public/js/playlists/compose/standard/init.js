@@ -24,6 +24,7 @@ import {ItemsService}      from "./ItemsService.js";
 import {FetchClient}       from "../../../core/FetchClient.js";
 import ItemList            from "./ItemList.js";
 import {ItemFactory}       from "./ItemFactory.js";
+import {DragDropHandler}   from "./DragDropHandler.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
@@ -33,11 +34,10 @@ document.addEventListener("DOMContentLoaded", function ()
 	const itemsService = new ItemsService(new FetchClient());
 	const itemsList = new ItemList(new ItemFactory(), itemsService, dropTarget);
 
-	const insertContextMenu = new InsertContextMenu(
-		new SelectorFactory(dropTarget),
-		itemsList,
-		itemsService
-	);
+	const dragDropHandler = new DragDropHandler(dropTarget, itemsService, itemsList);
+	dragDropHandler.playlistId = playlistId;
+
+	const insertContextMenu = new InsertContextMenu(new SelectorFactory(), dragDropHandler);
 
 	insertContextMenu.init(playlistId);
 	itemsList.displayPlaylist(playlistId);

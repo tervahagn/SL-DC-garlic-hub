@@ -9,12 +9,6 @@ import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
 export class SelectorFactory
 {
 	#mediaSelector = null;
-	#dropTarget = null;
-
-	constructor(dropTarget)
-	{
-		this.#dropTarget = dropTarget;
-	}
 
 	create(type)
 	{
@@ -28,7 +22,6 @@ export class SelectorFactory
 						new MediaService(new FetchClient()),
 						new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
 					);
-					this.#mediaSelector.dropTarget = this.#dropTarget;
 				}
 
 				return this.#mediaSelector;

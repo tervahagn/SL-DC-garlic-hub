@@ -107,6 +107,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/playlists/items/load/{playlist_id:\d+}', [ItemsController::class, 'loadItems']);
 	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);
 	$group->delete('/playlists/items', [ItemsController::class, 'delete']);
+	$group->patch('/playlists/items', [ItemsController::class, 'updateItemOrders']);
 
 //	$group->post('/playlists/items/move', [ItemController::class, 'move']);
 //	$group->delete('/playlists/item', [ItemController::class, 'delete']);

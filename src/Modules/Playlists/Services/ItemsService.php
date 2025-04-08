@@ -130,6 +130,18 @@ class ItemsService extends AbstractBaseService
 		}
 	}
 
+	public function updateItemOrder(mixed $playlist_id, array $itemsOrder): void
+	{
+		$this->playlistsService->setUID($this->UID);
+		$this->playlistsService->loadPlaylistForEdit($playlist_id); // will check for rights
+
+		foreach ($itemsOrder as $key => $itemId)
+		{
+			$this->itemsRepository->updateItemOrder($itemId, $key + 1);
+		}
+
+	}
+
 	public function delete(int $playlistId, int $itemId): array
 	{
 		try

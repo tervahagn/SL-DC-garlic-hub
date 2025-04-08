@@ -8,15 +8,13 @@ export class InsertContextMenu
 	#insertChannels          = document.getElementById("insertChannels");
 	#insertMenu              = document.getElementById("insertMenu");
 	#selectorFactory         = null;
+	#dragDropHandler         = null;
 	#itemSelectContainer     = document.getElementById("itemSelectContainer");
-	#itemService             = null;
-	#itemList                = null;
 
-	constructor(selectorFactory, itemList, itemService)
+	constructor(selectorFactory, dragDropHandler)
 	{
 		this.#selectorFactory = selectorFactory;
-		this.#itemService     = itemService;
-		this.#itemList        = itemList;
+		this.#dragDropHandler = dragDropHandler;
 	}
 
 	init(playlistId)
@@ -25,13 +23,8 @@ export class InsertContextMenu
 		{
 			const selector = this.#selectorFactory.create("mediaselector");
 			selector.showSelector(this.#itemSelectContainer);
-			selector.on("mediapool:selector:drop", async (args) =>
-			{
-				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, playlistId, args.position);
-				this.#itemList.createPlaylistItem(result.data.item, args.position);
-				this.#itemList.displayPlaylistProperties(result.data.playlist);
-			});
-
+			this.#dragDropHandler.setDropSource(selector.getMediaItemsContainer);
+			this.#dragDropHandler.mediaItems = selector.getMediaItems;
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});
 

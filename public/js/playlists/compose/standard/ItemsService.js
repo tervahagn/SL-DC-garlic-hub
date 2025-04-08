@@ -20,6 +20,16 @@ export class ItemsService
 		return this.#sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
 
+	async updateItemsOrders(playlistId, itemsPositions)
+	{
+		const url = ItemsApiConfig.BASE_URI;
+		const data = {
+			playlist_id: playlistId,
+			items_positions: itemsPositions
+		};
+		return await this.#sendRequest(url, "PATCH", data);
+	}
+
 	async delete(playlistId, itemId)
 	{
 		const url = ItemsApiConfig.BASE_URI;
