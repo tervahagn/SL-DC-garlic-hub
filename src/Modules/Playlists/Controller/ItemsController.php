@@ -66,13 +66,16 @@ class ItemsController
 		if (empty($requestData['source']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Source not valid.']);
 
+		if (empty($requestData['position']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Position not valid.']);
+
 		$this->determineUID($request->getAttribute('session'));
 
 		switch ($requestData['source'])
 		{
 			case 'media':
 			case 'mediapool':
-				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id']);
+				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
 				break;
 			default:
 				$item = [];

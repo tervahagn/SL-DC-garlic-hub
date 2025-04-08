@@ -32,11 +32,21 @@ export default class ItemList
 		this.displayPlaylistProperties(results.data.playlist)
 	}
 
-	createPlaylistItem(itemData)
+	createPlaylistItem(itemData, position = null)
 	{
 		const item = this.#itemFactory.create(itemData);
 		this.#itemsList[itemData.item_id] = item;
-		this.#dropTarget.appendChild(item.buildItemElement());
+
+		console.log('Listenlänge', this.#dropTarget.children.length, 'Position', position);
+
+		if (position === null || this.#dropTarget.children.length < position)
+			this.#dropTarget.appendChild(item.buildItemElement());
+		else
+		{
+			const prevItem = this.#dropTarget.children[position - 1];
+			this.#dropTarget.insertBefore(item.buildItemElement(), prevItem);
+		}
+
 		this.#createActions(item);
 	}
 

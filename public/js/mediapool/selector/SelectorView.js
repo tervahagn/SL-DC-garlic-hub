@@ -1,8 +1,8 @@
 export class SelectorView
 {
 	#mediaFactory = null;
-	#mediaList = null;
-	#mediaItems = [];
+	#mediaListElement = null;
+	#mediaItems = {};
 
 	constructor(mediaFactory)
 	{
@@ -14,16 +14,21 @@ export class SelectorView
 		return this.#mediaItems;
 	}
 
+	get mediaListElement()
+	{
+		return this.#mediaListElement;
+	}
+
 	displayMediaList(mediaDataList)
 	{
-		this.#mediaList = document.getElementById("mediaList");
-		this.#mediaList.innerHTML = "";
+		this.#mediaListElement = document.getElementById("mediaList");
+		this.#mediaListElement.innerHTML = "";
 
 		for (const mediaData of mediaDataList)
 		{
 			let media = this.#mediaFactory.create(mediaData);
-			this.#mediaItems.push(media);
-			this.#mediaList.appendChild(media.renderSimple());
+			this.#mediaItems[media.mediaId] = media;
+			this.#mediaListElement.appendChild(media.renderSimple());
 		}
 	}
 

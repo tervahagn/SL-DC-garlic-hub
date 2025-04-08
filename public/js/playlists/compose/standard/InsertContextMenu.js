@@ -27,8 +27,8 @@ export class InsertContextMenu
 			selector.showSelector(this.#itemSelectContainer);
 			selector.on("mediapool:selector:drop", async (args) =>
 			{
-				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, playlistId);
-				this.#itemList.createPlaylistItem(result.data.item);
+				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, playlistId, args.position);
+				this.#itemList.createPlaylistItem(result.data.item, args.position);
 				this.#itemList.displayPlaylistProperties(result.data.playlist);
 			});
 

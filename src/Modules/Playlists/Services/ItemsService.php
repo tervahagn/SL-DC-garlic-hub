@@ -65,7 +65,7 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function insertMedia(int $playlistId, string $id): array
+	public function insertMedia(int $playlistId, string $id, int $position): array
 	{
 		try
 		{
@@ -86,11 +86,14 @@ class ItemsService extends AbstractBaseService
 				throw new ModuleException('items', 'Playlist time limit exceeds');
 
 			$itemDuration =  $this->durationCalculatorService->calculateRemainingItemDuration($playlistData, $media);
+			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
+
 			$saveItem = [
 				'playlist_id'   => $playlistId,
 				'datasource'    => 'file',
 				'item_duration' => $itemDuration,
 				'item_filesize' => $media['metadata']['size'],
+				'item_order'    => $position,
 				'item_name'     => $media['filename'],
 				'item_type'     => ItemType::MEDIA->value,
 				'file_resource' => $media['checksum'],

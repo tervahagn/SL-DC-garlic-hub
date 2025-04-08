@@ -91,6 +91,20 @@ class ItemsRepository extends Sql
 		return $result['total'];
 	}
 
+	public function updatePositionsWhenInserted(int $playlistId, int $position): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->getTable());
+
+		$queryBuilder->set('item_order', 'item_order + 1');
+
+		$queryBuilder->where('playlist_id = :playlist_id');
+		$queryBuilder->setParameter('playlist_id', $playlistId);
+		$queryBuilder->andWhere('item_order >= :item_order');
+		$queryBuilder->setParameter('item_order', $position);
+
+		return (int) $queryBuilder->executeStatement();
+	}
 
 	/**
 	 * @throws Exception
@@ -102,7 +116,6 @@ class ItemsRepository extends Sql
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where));
 	}
-
 
 	/**
 	 * @throws Exception

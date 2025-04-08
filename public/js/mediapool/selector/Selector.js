@@ -65,8 +65,8 @@ export class Selector
 		element.innerHTML = await this.#mediaService.loadSelectorTemplate();
 
 		this.#treeViewWrapper.initTree();
-		if (this.#isDragDrop === true)
-			this.#prepareDrop();
+	//	if (this.#isDragDrop === true)
+	//		this.#prepareDrop();
 
 	}
 
@@ -79,7 +79,7 @@ export class Selector
 	{
 		this.#selectorView.displayMediaList(mediaList);
 		if (this.#isDragDrop === true)
-			this.#prepareDrag();
+			this.#prepareDragula();
 	}
 
 
@@ -90,6 +90,46 @@ export class Selector
 			const results = await this.loadMedia(args.node_id);
 			this.displayMediaList(results);
 		});
+	}
+
+	#prepareDragula()
+	{
+		const options = {
+			copy: true,
+			accepts: (el, target, source, sibling) => {
+				return target === this.#dropTarget;
+			}
+		};
+
+		dragula([this.#selectorView.mediaListElement, this.#dropTarget], options)
+			.on('drag', (el) => {
+				this.#dragItem = this.#selectorView.mediaItems[el.getAttribute('data-media-id')];
+				el.className = "media-item";
+			})
+			.on('shadow', (el, container) => {
+
+
+			})
+			.on('drop',  (el, target, source, sibling) => {
+				if (target !== this.#dropTarget)
+					return;
+
+				let droppedIndex;
+				if (sibling === null) // element dropped at end of list
+				{
+					droppedIndex = target.children.length;
+				}
+				else // Element dropped before 'sibling'
+				{
+					// We find the index of 'sibling' in the  'target'-Container
+					droppedIndex = Array.from(target.children).indexOf(sibling);
+				}
+
+				el.remove();
+				this.#emitter.emit('mediapool:selector:drop', {media: this.#dragItem, position: droppedIndex});
+				this.#dragItem = null;
+		});
+
 	}
 
 	#prepareDrag()

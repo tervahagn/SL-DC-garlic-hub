@@ -9,11 +9,12 @@ export class ItemsService
 		this.fetchClient      = fetchClient;
 	}
 
-	insertFromMediaPool(id, playlistId)
+	insertFromMediaPool(id, playlistId, position)
 	{
 		const data = {
 			playlist_id: playlistId,
 			"id": id,
+			"position": position,
 			"source": "media"
 		};
 		return this.#sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);

@@ -127,11 +127,11 @@ readonly class UiTemplatesPreparer
 				'LANG_PAGE_TITLE' => $title,
 				'additional_css' => [
 					'/css/external/wunderbaum.css',
-					'/css/mediapool/media-list.css',
+					'/css/external/dragula.min.css',
 					'/css/mediapool/selector.css',
 					'/css/playlists/composer.css'
 				],
-				'footer_modules' => ['/js/playlists/compose/standard/init.js']
+				'footer_modules' => ['/js/external/dragula.min.js','/js/playlists/compose/standard/init.js']
 			],
 			'this_layout' => [
 				'template' => 'playlists/compose', // Template-name
