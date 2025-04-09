@@ -28,7 +28,6 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;

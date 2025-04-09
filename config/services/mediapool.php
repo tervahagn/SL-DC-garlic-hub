@@ -24,6 +24,7 @@ use App\Framework\Core\ShellExecutor;
 use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
+use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
@@ -36,7 +37,6 @@ use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use App\Modules\Mediapool\Utils\ZipFilesystemFactory;
-use App\Modules\Users\Services\UsersService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
@@ -107,7 +107,12 @@ $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $co
 		$container->get('ModuleLogger')
 	);
 });
-
+$dependencies[SelectorController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SelectorController(
+		$container->get(Config::class)
+	);
+});
 $dependencies[MediaController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new MediaController($container->get(MediaService::class));

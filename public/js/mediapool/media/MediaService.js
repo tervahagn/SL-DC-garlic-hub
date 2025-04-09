@@ -51,7 +51,7 @@ export class MediaService
 
 	async loadSelectorTemplate()
 	{
-		const url    = MediaApiConfig.SELECTOR;
+		const url    = MediaApiConfig.SELECTOR_URI;
 		const result = await this.#sendRequest(url, "GET", null);
 
 		return result.template;

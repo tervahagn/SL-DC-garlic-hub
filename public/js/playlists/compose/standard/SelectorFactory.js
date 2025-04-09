@@ -5,10 +5,13 @@ import {Selector}          from "../../../mediapool/selector/Selector.js";
 import {WunderbaumWrapper} from "../../../mediapool/treeview/WunderbaumWrapper.js";
 import {TreeViewElements}  from "../../../mediapool/treeview/TreeViewElements.js";
 import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
+import {PlaylistsService}  from "./playlists/PlaylistsService.js";
+import {PlaylistsSelector} from "./selectors/PlaylistsSelector.js";
 
 export class SelectorFactory
 {
 	#mediaSelector = null;
+	#playlistsSelector = null;
 
 	create(type)
 	{
@@ -23,7 +26,14 @@ export class SelectorFactory
 						new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
 					);
 				}
-
+				return this.#mediaSelector;
+			case 'playlistselector':
+				if (this.#playlistsSelector === null)
+				{
+					this.#playlistsSelector = new PlaylistsSelector(
+						new PlaylistsService(new FetchClient())
+					);
+				}
 				return this.#mediaSelector;
 		}
 	}
