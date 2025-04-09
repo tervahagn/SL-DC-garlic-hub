@@ -75,12 +75,11 @@ export class DragDropHandler
 					{
 						itemsPosition[index + 1] = child.getAttribute('id').split('-')[1];
 					});
-					console.log(itemsPosition);
+					// for debug onlyconsole.log(itemsPosition);
 
 					await this.#itemService.updateItemsOrders(this.#playlistId, itemsPosition);
 					return;
 				}
-
 
 				let droppedIndex;
 				if (sibling === null) // element dropped at end of list
@@ -97,66 +96,8 @@ export class DragDropHandler
 				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
 				this.#itemList.displayPlaylistProperties(result.data.playlist);
 
-				console.log('Element:','Position: ', droppedIndex);
+				// for debug only console.log('Element:','Position: ', droppedIndex);
 				el.remove();
 			});
-		;
-	}
-
-	prepareDragDropOld()
-	{
-		const options = {
-			copy: (el, target) =>{ // copy only if source
-				return el.classList.contains('media-item') === true;
-			},
-			accepts: (el, target, source) => {
-				if (source === this.#dropSource)
-					return target === this.#dropTarget;
-
-				return source === this.#dropTarget && target === this.#dropTarget;
-
-			}
-		};
-
-		this.#drake = dragula([this.#dropSource, this.#dropTarget], options)
-			.on('drag', (el, source) => {
-				if (source === this.#dropSource)
-					this.#dragItem = this.#mediaItems[el.getAttribute('data-media-id')];
-			})
-			.on('shadow', (el) => {
-				if (el.classList.contains('media-item'))
-					el.classList.add('dragula-shadow');
-			})
-			.on('over', (el, container, source) => {
-				if (source === this.#dropSource)
-					return;
-
-				el.classList.add('dragula-shadow');
-			})
-			.on('drop', async (el, target, source, sibling) => {
-				if (source === this.#dropSource && target !== this.#dropTarget )
-					return;
-
-				if (source === this.#dropTarget)
-					target = source;
-
-				let droppedIndex;
-				if (sibling === null) // element dropped at end of list
-				{
-					droppedIndex = target.children.length;
-				}
-				else // Element dropped before 'sibling'
-				{
-					// We find the index of 'sibling' in the  'target'-Container
-					droppedIndex = Array.from(target.children).indexOf(sibling);
-				}
-
-				let result = await this.#itemService.insertFromMediaPool(args.media.mediaId, this.#playlistId, args.position);
-				this.#itemList.createPlaylistItem(result.data.item, args.position);
-				this.#itemList.displayPlaylistProperties(result.data.playlist);
-
-				el.remove();
-			});
-
 	}
 }

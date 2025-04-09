@@ -1,3 +1,9 @@
+.results-listing li
+{
+    white-space: nowrap; /* Verhindert, dass der Text umbricht */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .results-listing .playlist_name {width:59%;}
 .results-listing .UID {width:20%;}
 .results-listing .playlist_mode {width:7%;}
