@@ -137,7 +137,7 @@ class ItemsService extends AbstractBaseService
 
 		foreach ($itemsOrder as $key => $itemId)
 		{
-			$this->itemsRepository->updateItemOrder($itemId, $key + 1);
+			$this->itemsRepository->updateItemOrder($itemId, $key);
 		}
 
 	}
