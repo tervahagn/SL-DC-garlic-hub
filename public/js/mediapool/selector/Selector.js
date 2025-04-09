@@ -27,7 +27,7 @@ export class Selector
 
 	getMediaItemsContainer()
 	{
-		return this.#selectorView.mediaListElement;
+		return this.#selectorView.getMediaListElement();
 	}
 
 	getMediaItems()

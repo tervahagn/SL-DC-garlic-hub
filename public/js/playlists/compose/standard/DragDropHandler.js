@@ -23,11 +23,12 @@ export class DragDropHandler
 		this.#playlistId = value;
 	}
 
-	setDropSource(value)
+	addDropSource(value)
 	{
 		this.#dropSource = value;
-		if (!this.#drake.containers.includes(value))
-			this.#drake.containers.push(value);
+		this.#drake.destroy();
+		this.#drake = null;
+		this.preparePlaylistDragDrop(true);
 	}
 
 	set mediaItems(value)
@@ -35,10 +36,10 @@ export class DragDropHandler
 		this.#mediaItems = value;
 	}
 
-	preparePlaylistDragDrop()
+	preparePlaylistDragDrop(hasDropSource = false)
 	{
 		const options = {
-			copy: (el) =>{ // copy only if source
+			copy: (el) =>{ // copy allowed only if source is another container
 				return el.classList.contains('media-item') === true;
 			},
 			accepts: (el, target, source) => {
@@ -50,8 +51,23 @@ export class DragDropHandler
 			}
 		};
 
-		this.#drake   = dragula([this.#dropTarget], options)
+		let dropContainers = [this.#dropTarget];
+		if (hasDropSource === true)
+			dropContainers.push(this.#dropSource);
+
+		this.#drake   = dragula(dropContainers, options)
+			.on('drag', (el, source) => {
+				if (source === this.#dropSource)
+					this.#dragItem = this.#mediaItems[el.getAttribute('data-media-id')];
+			})
+			.on('shadow', (el) => {
+				if (el.classList.contains('media-item'))
+					el.classList.add('dragula-shadow');
+			})
 			.on('drop', async (el, target, source, sibling) => {
+				if (target === null)
+					return; // prevent error when drop is canceled
+
 				if (source === target)
 				{
 					const itemsPosition = {};
@@ -65,6 +81,7 @@ export class DragDropHandler
 					return;
 				}
 
+
 				let droppedIndex;
 				if (sibling === null) // element dropped at end of list
 				{
@@ -75,10 +92,13 @@ export class DragDropHandler
 					// We find the index of 'sibling' in the  'target'-Container
 					droppedIndex = Array.from(target.children).indexOf(sibling);
 				}
+				const mediaId = el.getAttribute('data-media-id');
+				let result = await this.#itemService.insertFromMediaPool(mediaId, this.#playlistId, droppedIndex);
+				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
+				this.#itemList.displayPlaylistProperties(result.data.playlist);
 
 				console.log('Element:','Position: ', droppedIndex);
 				el.remove();
-
 			});
 		;
 	}
@@ -98,7 +118,7 @@ export class DragDropHandler
 			}
 		};
 
-		dragula([this.#dropSource, this.#dropTarget], options)
+		this.#drake = dragula([this.#dropSource, this.#dropTarget], options)
 			.on('drag', (el, source) => {
 				if (source === this.#dropSource)
 					this.#dragItem = this.#mediaItems[el.getAttribute('data-media-id')];

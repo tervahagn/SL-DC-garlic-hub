@@ -1,7 +1,6 @@
 export class SelectorView
 {
 	#mediaFactory = null;
-	#mediaListElement = null;
 	#mediaItems = {};
 
 	constructor(mediaFactory)
@@ -14,21 +13,22 @@ export class SelectorView
 		return this.#mediaItems;
 	}
 
-	get mediaListElement()
+	getMediaListElement()
 	{
-		return this.#mediaListElement;
+		// because cache can prevent to execute displayMediaList
+		return document.getElementById("mediaList");
 	}
 
 	displayMediaList(mediaDataList)
 	{
-		this.#mediaListElement = document.getElementById("mediaList");
-		this.#mediaListElement.innerHTML = "";
+		const mediaListElement = document.getElementById("mediaList");
+		mediaListElement.innerHTML = "";
 
 		for (const mediaData of mediaDataList)
 		{
 			let media = this.#mediaFactory.create(mediaData);
 			this.#mediaItems[media.mediaId] = media;
-			this.#mediaListElement.appendChild(media.renderSimple());
+			mediaListElement.appendChild(media.renderSimple());
 		}
 	}
 

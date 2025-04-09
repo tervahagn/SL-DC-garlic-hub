@@ -6,7 +6,7 @@ export class InsertContextMenu
 	#insertExternalPlaylists = document.getElementById("insertExternalPlaylists");
 	#insertTemplates         = document.getElementById("insertTemplates");
 	#insertChannels          = document.getElementById("insertChannels");
-	#insertMenu              = document.getElementById("insertMenu");
+	// unused? #insertMenu              = document.getElementById("insertMenu");
 	#selectorFactory         = null;
 	#dragDropHandler         = null;
 	#itemSelectContainer     = document.getElementById("itemSelectContainer");
@@ -17,14 +17,15 @@ export class InsertContextMenu
 		this.#dragDropHandler = dragDropHandler;
 	}
 
-	init(playlistId)
+	init()
 	{
 		this.#insertMedia.addEventListener("click", async () =>
 		{
 			const selector = this.#selectorFactory.create("mediaselector");
-			selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.setDropSource(selector.getMediaItemsContainer);
-			this.#dragDropHandler.mediaItems = selector.getMediaItems;
+			await selector.showSelector(this.#itemSelectContainer);
+			this.#dragDropHandler.mediaItems = selector.getMediaItems();
+			const container = selector.getMediaItemsContainer();
+			this.#dragDropHandler.addDropSource(container);
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});
 
