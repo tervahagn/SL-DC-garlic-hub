@@ -1,7 +1,7 @@
 import {MediaService}      from "../../../mediapool/media/MediaService.js";
 import {FetchClient}       from "../../../core/FetchClient.js";
-import {SelectorView}      from "../../../mediapool/selector/SelectorView.js";
-import {Selector}          from "../../../mediapool/selector/Selector.js";
+import {MediaSelectorView} from "../../../mediapool/selector/MediaSelectorView.js";
+import {MediaSelector}     from "../../../mediapool/selector/MediaSelector.js";
 import {WunderbaumWrapper} from "../../../mediapool/treeview/WunderbaumWrapper.js";
 import {TreeViewElements}  from "../../../mediapool/treeview/TreeViewElements.js";
 import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
@@ -20,10 +20,10 @@ export class SelectorFactory
 			case 'mediaselector':
 				if (this.#mediaSelector === null)
 				{
-					this.#mediaSelector = new Selector(
+					this.#mediaSelector = new MediaSelector(
 						new WunderbaumWrapper(new TreeViewElements()),
 						new MediaService(new FetchClient()),
-						new SelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
+						new MediaSelectorView(new MediaFactory(document.getElementById('mediaTemplate')))
 					);
 				}
 				return this.#mediaSelector;

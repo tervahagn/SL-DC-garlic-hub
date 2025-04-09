@@ -1,6 +1,6 @@
 import {EventEmitter} from "../../core/EventEmitter.js";
 
-export class Selector
+export class MediaSelector
 {
 	#filter = "";
 	#selectedMediaId = 0;

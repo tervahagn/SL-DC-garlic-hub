@@ -9,5 +9,11 @@ export class PlaylistsSelector
 		this.#playlistsService = playlistsService;
 	}
 
+	async showSelector(element)
+	{
+		element.innerHTML = await this.#playlistsService.loadSelectorTemplate();
 
+		//this.#treeViewWrapper.initTree();
+
+	}
 }
