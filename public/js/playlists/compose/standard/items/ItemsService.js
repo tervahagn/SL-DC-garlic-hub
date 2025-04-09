@@ -1,14 +1,8 @@
 import {ItemsApiConfig} from "./ItemsApiConfig.js";
+import {BaseService}    from "../../../../core/Base/BaseService.js";
 
-export class ItemsService
+export class ItemsService extends BaseService
 {
-	fetchClient       = null;
-
-	constructor(fetchClient)
-	{
-		this.fetchClient      = fetchClient;
-	}
-
 	insertFromMediaPool(id, playlistId, position)
 	{
 		const data = {
@@ -17,7 +11,7 @@ export class ItemsService
 			"position": position,
 			"source": "media"
 		};
-		return this.#sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
+		return this._sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
 
 	async updateItemsOrders(playlistId, itemsPositions)
@@ -27,7 +21,7 @@ export class ItemsService
 			playlist_id: playlistId,
 			items_positions: itemsPositions
 		};
-		return await this.#sendRequest(url, "PATCH", data);
+		return await this._sendRequest(url, "PATCH", data);
 	}
 
 	async delete(playlistId, itemId)
@@ -37,31 +31,12 @@ export class ItemsService
 			playlist_id: playlistId,
 			"item_id": itemId
 		};
-		return await this.#sendRequest(url, "DELETE", data);
+		return await this._sendRequest(url, "DELETE", data);
 	}
 
 	async loadByPlaylistId(playlistId)
 	{
 		const url = ItemsApiConfig.LOAD_PLAYLIST_ITEMS_URI + "/" + playlistId;
-		return await this.#sendRequest(url, "GET",  []);
-	}
-
-	async #sendRequest(url, method, data)
-	{
-		let options = {};
-
-		if (method === "GET")
-			options = {method, headers: { 'Content-Type': 'application/json' }};
-		else
-			options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
-
-		const result  = await this.fetchClient.fetchData(url, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_message);
-
-		return result;
+		return await this._sendRequest(url, "GET",  []);
 	}
 }

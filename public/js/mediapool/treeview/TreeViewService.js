@@ -17,46 +17,29 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 import { TreeViewApiConfig } from "./TreeViewApiConfig.js";
+import {BaseService}         from "../../core/Base/BaseService.js";
 
-export class TreeViewService
+export class TreeViewService extends BaseService
 {
-	constructor(fetchClient)
-	{
-		this.fetchClient = fetchClient;
-	}
-
 	async addNode(nodeId, name)
 	{
-		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "POST", { node_id: nodeId, name });
+		return this._sendRequest(TreeViewApiConfig.BASE_NODE_URI, "POST", { node_id: nodeId, name });
 	}
 
 	async editNode(nodeId, name)
 	{
-		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "PATCH", { node_id: nodeId, name });
+		return this._sendRequest(TreeViewApiConfig.BASE_NODE_URI, "PATCH", { node_id: nodeId, name });
 	}
 
 	async deleteNode(nodeId)
 	{
-		return this.sendRequest(TreeViewApiConfig.BASE_NODE_URI, "DELETE", { node_id: nodeId });
+		return this._sendRequest(TreeViewApiConfig.BASE_NODE_URI, "DELETE", { node_id: nodeId });
 	}
 
 	async moveNodeTo(sourceKey, targetKey, targetRegion)
 	{
 		const data = { src_node_id: sourceKey, target_node_id: targetKey, target_region: targetRegion };
-		return this.sendRequest(TreeViewApiConfig.MOVE_NODE_URI, "POST", data);
+		return this._sendRequest(TreeViewApiConfig.MOVE_NODE_URI, "POST", data);
 	}
 
-	async sendRequest(url, method, data)
-	{
-		const options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
-
-		const result  = await this.fetchClient.fetchData(url, options).catch(error => {
-			throw new Error(error.message);
-		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_message);
-
-		return result;
-	}
 }
