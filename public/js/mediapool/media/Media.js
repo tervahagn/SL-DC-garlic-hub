@@ -18,6 +18,7 @@
 */
 
 import {DirectoryView} from "../treeview/DirectoryView.js";
+import {Utils}         from "../../core/Utils.js";
 
 export class Media
 {
@@ -46,7 +47,7 @@ export class Media
 		this.#mimetype		= mediaData.mimetype;
 		this.#description   = mediaData.media_description
 		this.#username      = mediaData.username;
-		this.#filesize     	= this.#formatBytes(mediaData.metadata.size);
+		this.#filesize     	= Utils.formatBytes(mediaData.metadata.size);
 		if (mediaData.metadata.dimensions !== undefined && Object.keys(mediaData.metadata.dimensions).length > 0 )
 			this.#dimensions = mediaData.metadata.dimensions.width + "x" + mediaData.metadata.dimensions.height;
 		if (mediaData.metadata.duration !== undefined && mediaData.metadata.duration > 0)
@@ -81,7 +82,7 @@ export class Media
 
 	get dimensions()
 	{
-		return this.#formatSeconds(this.#dimensions);
+		return this.#dimensions;
 	}
 
 	get duration()
@@ -121,7 +122,7 @@ export class Media
         const durationElement = this.#mediaElement.querySelector(".media-duration");
         if (this.#duration > 0 )
         {
-            durationElement.textContent = this.#formatSeconds(this.#duration);
+            durationElement.textContent = Utils.formatSecondsToTime(this.#duration);
             durationElement.parentElement.style.display = "block";
         }
 
@@ -185,26 +186,4 @@ export class Media
 
         return "bi-file-earmark";
     }
-
-    #formatBytes(bytes)
-    {
-        if (bytes >= 1073741824)  // 1 GB
-            return (bytes / 1073741824).toFixed(2) + " GB";
-        else if (bytes >= 1048576)  // 1 MB
-            return (bytes / 1048576).toFixed(2) + " MB";
-        else if (bytes >= 1024)  // 1 KB
-            return (bytes / 1024).toFixed(2) + " KB";
-        else
-            return bytes + " Bytes"; // less 1 KB
-    }
-
-    #formatSeconds(seconds)
-    {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-
-        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    }
-
-}
+	}
