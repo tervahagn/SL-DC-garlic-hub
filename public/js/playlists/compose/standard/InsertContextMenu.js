@@ -29,20 +29,26 @@ export class InsertContextMenu
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});
 
-		this.#insertExternalMedia.addEventListener("click", () =>
+		if (this.#insertExternalMedia !== null)
 		{
-			alert("Insert external media");
-		});
+			this.#insertExternalMedia.addEventListener("click", () =>
+			{
+				alert("Insert external media");
+			});
+		}
 
 		this.#insertPlaylists.addEventListener("click", () =>
 		{
 			alert("Insert playlists");
 		});
 
-		this.#insertExternalPlaylists.addEventListener("click", () =>
+		if (this.#insertExternalPlaylists !== null)
 		{
-			alert("Insert external playlists");
-		});
+			this.#insertExternalPlaylists.addEventListener("click", () =>
+			{
+				alert("Insert external playlists");
+			});
+		}
 		if (this.#insertTemplates !== null)
 		{
 			this.#insertTemplates.addEventListener("click", () =>

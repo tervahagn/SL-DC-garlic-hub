@@ -15,6 +15,7 @@ class RightsChecker
 {
 	CONST string MODULE_NAME = 'playlists';
 
+	private string $edition;
 	private readonly Translator $translator;
 	private readonly AclValidator $aclValidator;
 
@@ -24,13 +25,24 @@ class RightsChecker
 	 */
 	public function __construct(Translator $translator, AclValidator $aclValidator)
 	{
-		$this->translator = $translator;
+		$this->translator   = $translator;
 		$this->aclValidator = $aclValidator;
+		$this->edition      = $this->aclValidator->getConfig()->getEdition();
 	}
 
 	public function checkEdition(): string
 	{
-		return $this->aclValidator->getConfig()->getEdition();
+		return $this->edition;
+	}
+
+	public function checkInsertExternalMedia(): array
+	{
+		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
+			return [];
+
+		return [
+			'LANG_INSERT_EXTERNAL_MEDIA' => $this->translator->translate('insert_external_media', self::MODULE_NAME),
+		];
 	}
 
 	/**
@@ -46,6 +58,15 @@ class RightsChecker
 
 		return [
 			'LANG_INSERT_PLAYLISTS' => $this->translator->translate('insert_playlists', self::MODULE_NAME),
+		];
+	}
+
+	public function checkInsertExternalPlaylist(int $timeLimit): array
+	{
+		if ($this->edition === Config::PLATFORM_EDITION_EDGE || $timeLimit > 0)
+			return [];
+
+		return [
 			'LANG_INSERT_EXTERNAL_PLAYLISTS' => $this->translator->translate('insert_external_playlists', self::MODULE_NAME)
 		];
 	}
@@ -58,7 +79,7 @@ class RightsChecker
 	 */
 	public function checkInsertTemplates(): array
 	{
-		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
+		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
 			return [];
 
 		return [
@@ -69,7 +90,7 @@ class RightsChecker
 
 	public function checkInsertChannels():array
 	{
-		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
+		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
 			return [];
 
 		return [

@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Helper\Settings;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
@@ -43,6 +44,7 @@ readonly class Builder
 	private readonly Parameters $parameters;
 	private readonly int $UID;
 	private readonly string $username;
+	private string $edition;
 
 	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
@@ -50,6 +52,7 @@ readonly class Builder
 		$this->parameters           = $parameters;
 		$this->validator            = $validator;
 		$this->formElementsCreator  = $formElementsCreator;
+		$this->edition              = $this->aclValidator->getConfig()->getEdition();
 	}
 
 	public function init(Session $session): static
@@ -75,7 +78,7 @@ readonly class Builder
 
 		$this->parameters->addOwner();
 
-		if ($this->isTimeLimitPlaylist($playlistMode))
+		if ($this->edition !== Config::PLATFORM_EDITION_EDGE && $this->isTimeLimitPlaylist($playlistMode))
 			$this->parameters->addTimeLimit();
 	}
 
@@ -93,7 +96,7 @@ readonly class Builder
 
 		$this->parameters->addOwner();
 
-		if ($this->isTimeLimitPlaylist($playlist['playlist_mode']))
+		if ($this->edition !== Config::PLATFORM_EDITION_EDGE && $this->isTimeLimitPlaylist($playlist['playlist_mode']))
 			$this->parameters->addTimeLimit();
 	}
 

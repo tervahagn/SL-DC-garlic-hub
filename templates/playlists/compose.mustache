@@ -6,11 +6,15 @@
 				<i title="{{{LANG_INSERT}}}" class="bi bi-plus-circle"></i>
 				<ul class="context-menu">
 					<li id="insertMedia">{{{LANG_INSERT_MEDIA}}}</li>
-					<li id="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</li>
+					{{#can_external_media}}
+						<li id="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</li>
+					{{/can_external_media}}
 					{{#can_playlists}}
 						<li id="insertPlaylists">{{{LANG_INSERT_PLAYLISTS}}}</li>
-						<li id="insertExternalPlaylists">{{{LANG_INSERT_EXTERNAL_PLAYLISTS}}}</li>
 					{{/can_playlists}}
+					{{#can_external_playlists}}
+						<li id="insertExternalPlaylists">{{{LANG_INSERT_EXTERNAL_PLAYLISTS}}}</li>
+					{{/can_external_playlists}}
 					{{#can_templates}}
 						<li id="insertTemplates">{{{LANG_INSERT_TEMPLATES}}}</li>
 					{{/can_templates}}

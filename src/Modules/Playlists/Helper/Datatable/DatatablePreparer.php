@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Helper\Datatable;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -153,14 +154,26 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	{
 		$list = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
 		$data = [];
+		$edition = $this->aclValidator->getConfig()->getEdition();
 		foreach ($list as $key => $value)
 		{
+			if ($edition === Config::PLATFORM_EDITION_EDGE && !$this->isPlaylistModeAllowedInEdge($key))
+				continue;
+
 			$data[] = [
 				'CREATE_PLAYLIST_MODE' => $key,
 				'LANG_CREATE_PLAYLIST_MODE' => $value
 			];
 		}
 		return $data;
+	}
+
+	private function isPlaylistModeAllowedInEdge(string $key): bool
+	{
+		if ($key === PlaylistMode::CHANNEL->value)
+			return false;
+
+		return true;
 	}
 
 	private function convertSeconds(string $seconds): string
