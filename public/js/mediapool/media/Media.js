@@ -186,4 +186,4 @@ export class Media
 
         return "bi-file-earmark";
     }
-	}
+}
