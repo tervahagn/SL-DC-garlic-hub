@@ -5,7 +5,7 @@ export class DragDropHandler
 	#dragItem    = null;
 	#itemService = null;
 	#itemList    = null;
-	#mediaItems   = null;
+	#items   = null;
 	#drake        = null;
 	#playlistId     = 0;
 
@@ -31,9 +31,9 @@ export class DragDropHandler
 		this.preparePlaylistDragDrop(true);
 	}
 
-	set mediaItems(value)
+	set items(value)
 	{
-		this.#mediaItems = value;
+		this.#items = value;
 	}
 
 	preparePlaylistDragDrop(hasDropSource = false)
@@ -58,7 +58,7 @@ export class DragDropHandler
 		this.#drake   = dragula(dropContainers, options)
 			.on('drag', (el, source) => {
 				if (source === this.#dropSource)
-					this.#dragItem = this.#mediaItems[el.getAttribute('data-media-id')];
+					this.#dragItem = this.#items[el.getAttribute('data-media-id')];
 			})
 			.on('shadow', (el) => {
 				if (el.classList.contains('media-item'))

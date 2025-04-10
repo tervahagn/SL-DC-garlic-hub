@@ -103,6 +103,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
 	$group->get('/playlists/selector', [\App\Modules\Playlists\Controller\SelectorController::class, 'loadTemplate']);
+	$group->get('/playlists/find', [\App\Modules\Playlists\Controller\SelectorController::class, 'find']);
 
 	$group->get('/playlists/items/load/{playlist_id:\d+}', [ItemsController::class, 'loadItems']);
 	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);

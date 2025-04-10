@@ -31,6 +31,7 @@ use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
+use App\Modules\Playlists\Controller\SelectorController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
@@ -187,7 +188,8 @@ $dependencies[PlaylistsController::class] = DI\factory(function (ContainerInterf
 $dependencies[SelectorController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new SelectorController(
-		$container->get(Config::class)
+		$container->get(Config::class),
+		$container->get(PlaylistsDatatableService::class)
 	);
 });
 

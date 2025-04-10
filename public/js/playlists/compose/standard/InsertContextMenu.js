@@ -21,7 +21,7 @@ export class InsertContextMenu
 	{
 		this.#insertMedia.addEventListener("click", async () =>
 		{
-			const selector = this.#selectorFactory.create("mediaselector");
+			const selector = this.#selectorFactory.create("media");
 			await selector.showSelector(this.#itemSelectContainer);
 			this.#dragDropHandler.mediaItems = selector.getMediaItems();
 			const container = selector.getMediaItemsContainer();
@@ -37,9 +37,14 @@ export class InsertContextMenu
 			});
 		}
 
-		this.#insertPlaylists.addEventListener("click", () =>
+		this.#insertPlaylists.addEventListener("click",  async () =>
 		{
-			alert("Insert playlists");
+			const selector = this.#selectorFactory.create("playlists");
+			await selector.showSelector(this.#itemSelectContainer);
+			this.#dragDropHandler.mediaItems = selector.getItems();
+			const container = selector.getMediaItemsContainer();
+			this.#dragDropHandler.addDropSource(container);
+			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});
 
 		if (this.#insertExternalPlaylists !== null)

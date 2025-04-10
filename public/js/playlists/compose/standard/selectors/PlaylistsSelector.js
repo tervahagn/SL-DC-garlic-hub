@@ -1,11 +1,9 @@
 export class PlaylistsSelector
 {
-	#itemsService = null;
 	#playlistsService = null;
 
-	constructor(itemsService, playlistsService)
+	constructor(playlistsService)
 	{
-		this.#itemsService     = itemsService;
 		this.#playlistsService = playlistsService;
 	}
 
@@ -13,7 +11,6 @@ export class PlaylistsSelector
 	{
 		element.innerHTML = await this.#playlistsService.loadSelectorTemplate();
 
-		//this.#treeViewWrapper.initTree();
-
+		this.#playlistsService.loadInternalPlaylists();
 	}
 }

@@ -17,7 +17,7 @@ export class SelectorFactory
 	{
 		switch (type)
 		{
-			case 'mediaselector':
+			case 'media':
 				if (this.#mediaSelector === null)
 				{
 					this.#mediaSelector = new MediaSelector(
@@ -27,14 +27,14 @@ export class SelectorFactory
 					);
 				}
 				return this.#mediaSelector;
-			case 'playlistselector':
+			case 'playlists':
 				if (this.#playlistsSelector === null)
 				{
 					this.#playlistsSelector = new PlaylistsSelector(
 						new PlaylistsService(new FetchClient())
 					);
 				}
-				return this.#mediaSelector;
+				return this.#playlistsSelector;
 		}
 	}
 }

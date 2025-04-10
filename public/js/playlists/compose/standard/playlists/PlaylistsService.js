@@ -11,5 +11,14 @@ export class PlaylistsService extends BaseService
 		return result.template;
 	}
 
+	async loadSelectorTemplate()
+	{
+		const url    = PlaylistsApiConfig.FIND_URI;
+		const result = await this._sendRequest(url, "GET", null);
+
+		return result.template;
+	}
+
+
 }
 
