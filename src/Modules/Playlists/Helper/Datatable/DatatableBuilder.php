@@ -28,6 +28,7 @@ use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldType;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -36,6 +37,10 @@ use Psr\SimpleCache\InvalidArgumentException;
 class DatatableBuilder extends AbstractDatatableBuilder
 {
 	private AclValidator $aclValidator;
+	/**
+	 * @var array|mixed
+	 */
+	private array $allowedPlaylistModes;
 
 	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
 	{
@@ -108,7 +113,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 				'data-label' => ''
 			]);
 		}
-
+		$allowedPlaylistModes = $this->determineAllowedPlaylistModes();
 		$form[Parameters::PARAMETER_PLAYLIST_MODE] = $this->buildService->buildFormField([
 			'type' => FieldType::DROPDOWN,
 			'id' => Parameters::PARAMETER_PLAYLIST_MODE,
@@ -116,7 +121,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			'title' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
 			'label' => $this->translator->translate(Parameters::PARAMETER_PLAYLIST_MODE, 'playlists'),
 			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_MODE),
-			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_PLAYLIST_MODE.'_selects', 'playlists')
+			'options' => $allowedPlaylistModes
 		]);
 
 		$this->datatableStructure['form'] = $form;
@@ -140,6 +145,27 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		$this->datatableStructure['header'] = $this->buildService->getDatatableFields();
 
 		return $this;
+	}
+
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 */
+	public function determineAllowedPlaylistModes(): array
+	{
+		$list = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
+		$allowedPlaylistModes = [];
+		$edition = $this->aclValidator->getConfig()->getEdition();
+		foreach ($list as $key => $value)
+		{
+			if ($edition === Config::PLATFORM_EDITION_EDGE && $key === PlaylistMode::CHANNEL->value)
+				continue;
+
+			$allowedPlaylistModes[$key] = $value;
+		}
+
+		return $allowedPlaylistModes;
 	}
 
 }
