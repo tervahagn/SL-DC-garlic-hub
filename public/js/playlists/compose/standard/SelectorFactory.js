@@ -1,12 +1,13 @@
-import {MediaService}      from "../../../mediapool/media/MediaService.js";
-import {FetchClient}       from "../../../core/FetchClient.js";
-import {MediaSelectorView} from "../../../mediapool/selector/MediaSelectorView.js";
-import {MediaSelector}     from "../../../mediapool/selector/MediaSelector.js";
-import {WunderbaumWrapper} from "../../../mediapool/treeview/WunderbaumWrapper.js";
-import {TreeViewElements}  from "../../../mediapool/treeview/TreeViewElements.js";
-import {MediaFactory}      from "../../../mediapool/media/MediaFactory.js";
-import {PlaylistsService}  from "./playlists/PlaylistsService.js";
-import {PlaylistsSelector} from "./selectors/PlaylistsSelector.js";
+import {MediaService}          from "../../../mediapool/media/MediaService.js";
+import {FetchClient}           from "../../../core/FetchClient.js";
+import {MediaSelectorView}     from "../../../mediapool/selector/MediaSelectorView.js";
+import {MediaSelector}         from "../../../mediapool/selector/MediaSelector.js";
+import {WunderbaumWrapper}     from "../../../mediapool/treeview/WunderbaumWrapper.js";
+import {TreeViewElements}      from "../../../mediapool/treeview/TreeViewElements.js";
+import {MediaFactory}          from "../../../mediapool/media/MediaFactory.js";
+import {PlaylistsService}      from "./playlists/PlaylistsService.js";
+import {PlaylistsSelector}     from "./selectors/PlaylistsSelector.js";
+import {PlaylistsSelectorView} from "./selectors/PlaylistsSelectorView.js";
 
 export class SelectorFactory
 {
@@ -31,7 +32,7 @@ export class SelectorFactory
 				if (this.#playlistsSelector === null)
 				{
 					this.#playlistsSelector = new PlaylistsSelector(
-						new PlaylistsService(new FetchClient())
+						new PlaylistsService(new FetchClient(), new PlaylistsSelectorView())
 					);
 				}
 				return this.#playlistsSelector;

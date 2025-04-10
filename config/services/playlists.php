@@ -187,10 +187,7 @@ $dependencies[PlaylistsController::class] = DI\factory(function (ContainerInterf
 
 $dependencies[SelectorController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new SelectorController(
-		$container->get(Config::class),
-		$container->get(PlaylistsDatatableService::class)
-	);
+	return new SelectorController($container->get(Config::class));
 });
 
 // Items

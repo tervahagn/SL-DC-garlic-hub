@@ -41,8 +41,8 @@ export class InsertContextMenu
 		{
 			const selector = this.#selectorFactory.create("playlists");
 			await selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.mediaItems = selector.getItems();
-			const container = selector.getMediaItemsContainer();
+			this.#dragDropHandler.mediaItems = selector.items;
+			const container = selector.getItemsContainer();
 			this.#dragDropHandler.addDropSource(container);
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
 		});

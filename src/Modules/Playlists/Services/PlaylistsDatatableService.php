@@ -74,8 +74,8 @@ class PlaylistsDatatableService extends AbstractDatatableService
 		{
 			$this->fetchForUser($this->playlistsRepository, $this->parameters);
 		}
-
 	}
+
 
 	public function getPlaylistsInUse(array $playlistIds)
 	{
