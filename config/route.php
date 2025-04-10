@@ -98,7 +98,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
 	$group->get('/mediapool/selector', [\App\Modules\Mediapool\Controller\SelectorController::class, 'loadTemplate']);
 
-	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}/[playlist_name]', [PlaylistsController::class, 'findByName']);
+	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}[/{playlist_name}]', [PlaylistsController::class, 'findByName']);
 	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);

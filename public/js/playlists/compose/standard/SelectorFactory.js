@@ -32,7 +32,8 @@ export class SelectorFactory
 				if (this.#playlistsSelector === null)
 				{
 					this.#playlistsSelector = new PlaylistsSelector(
-						new PlaylistsService(new FetchClient(), new PlaylistsSelectorView())
+						new PlaylistsService(new FetchClient()),
+						new PlaylistsSelectorView()
 					);
 				}
 				return this.#playlistsSelector;

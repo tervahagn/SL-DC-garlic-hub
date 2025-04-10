@@ -33,7 +33,8 @@ export class PlaylistsService extends BaseService
 	async findPlaylists(playlistMode, playlistName)
 	{
 		const url     = `${PlaylistsApiConfig.FIND_URI}/${playlistMode}/${playlistName}`;
-		return await this._sendRequest(url, "GET", null);
+		const response    = await fetch(url);
+		return await response.json();
 	}
 
 

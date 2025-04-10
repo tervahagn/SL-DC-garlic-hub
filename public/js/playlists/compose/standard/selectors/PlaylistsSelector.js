@@ -23,7 +23,7 @@ export class PlaylistsSelector
 	#playlistsService = null;
 	#items = null;
 
-	constructor(playlistSelectorView, playlistsService)
+	constructor(playlistsService, playlistSelectorView)
 	{
 		this.#playlistSelectorView = playlistSelectorView;
 		this.#playlistsService = playlistsService;
@@ -43,6 +43,7 @@ export class PlaylistsSelector
 	{
 		element.innerHTML = await this.#playlistsService.loadSelectorTemplate();
 
-		this.#items = this.#playlistsService.findPlaylists('internal', '');
+		this.#items = await this.#playlistsService.findPlaylists('internal', '');
+		this.#playlistSelectorView.displayList(this.#items);
 	}
 }

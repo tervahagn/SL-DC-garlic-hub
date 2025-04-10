@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class SelectorView
+export class PlaylistsSelectorView
 {
 	#items = {};
 
@@ -36,17 +36,26 @@ export class SelectorView
 		return document.getElementById("playlistsList");
 	}
 
-	displayList(dataList)
+	displayList(items)
 	{
-		const mediaListElement = document.getElementById("playlistsList");
+		const playlistsListElement = document.getElementById("playlistsList");
 		playlistsListElement.innerHTML = "";
 
-		for (const playlist of dataList)
+		for (const item of items)
 		{
-			let media = this.#mediaFactory.create(mediaData);
-			this.#items[media.mediaId] = media;
-			mediaListElement.appendChild(media.renderSimple());
+			const articleElement = document.createElement('article');
+
+			playlistsListElement.appendChild(this.#createArticleElement(item));
 		}
+	}
+
+	#createArticleElement(item)
+	{
+		const articleElement = document.createElement('article');
+		articleElement.className = 'playlist-item';
+		articleElement.dataset.id = item.id;
+		articleElement.textContent = item.name;
+		return articleElement;
 	}
 
 }
