@@ -50,7 +50,9 @@ export class PlaylistsSelectorView
 		const element = this.#itemTemplate.content.cloneNode(true);
 		const el = element.querySelector(".playlist-item");
 		el.dataset.id  = item.id;
-		el.textContent = item.name;
+		const span = element.querySelector(".playlist-name");
+
+		span.textContent = item.name;
 
 		return el;
 	}

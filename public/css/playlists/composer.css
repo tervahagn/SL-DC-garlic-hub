@@ -60,3 +60,27 @@ main header
     }
     .playlist-item .item-duration{margin-right: auto;}
 
+#playlistsList
+{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+    grid-template-rows: repeat(auto-fill, 100px);
+    gap: 1em;
+    padding: 1em;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+    #playlistsList i
+    {
+        width: 100%;
+        height:90%;
+        display: block;
+        background-size: contain;
+    }
+
+    #playlistsList span
+    {
+        width: 100%;
+        height:8%;
+        font-size: 0.8rem;
+    }
