@@ -73,7 +73,6 @@ class ItemsController
 
 		switch ($requestData['source'])
 		{
-			case 'media':
 			case 'mediapool':
 				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
 				break;

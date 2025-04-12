@@ -65,7 +65,7 @@ class ItemsService extends AbstractBaseService
 		{
 			switch ($value['item_type'])
 			{
-				case ItemType::MEDIA->value:
+				case ItemType::MEDIAPOOL->value:
 					$tmp = $value;
 					if (str_starts_with($value['mimetype'], 'image/'))
 						$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
@@ -123,7 +123,7 @@ class ItemsService extends AbstractBaseService
 				'item_filesize' => $media['metadata']['size'],
 				'item_order'    => $position,
 				'item_name'     => $media['filename'],
-				'item_type'     => ItemType::MEDIA->value,
+				'item_type'     => ItemType::MEDIAPOOL->value,
 				'file_resource' => $media['checksum'],
 				'mimetype'      => $media['mimetype'],
 			];

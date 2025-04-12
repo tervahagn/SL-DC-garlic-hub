@@ -155,10 +155,10 @@ CREATE TABLE playlists_items (
     item_filesize INTEGER NOT NULL DEFAULT 0,
     item_order INTEGER NOT NULL DEFAULT 0,
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    item_type CHAR(12) NOT NULL DEFAULT 'media', -- enum in Mariadb 'media', 'media_url', 'playlist', 'playlist_url', 'template', 'channel'
+    item_type CHAR(12) NOT NULL DEFAULT 'mediapool', -- enum in Mariadb 'mediapool', 'media_url', 'playlist', 'playlist_url', 'template', 'channel'
     file_resource BLOB(16) NOT NULL DEFAULT '', -- file or symlink name or numeric ID for media and templates
     datasource VARCHAR(8) COLLATE NOCASE DEFAULT 'file' CHECK (datasource IN ('file', 'stream', 'video_in')),
-    mimetype VARCHAR(50) COLLATE NOCASE NOT NULL,
+    mimetype VARCHAR(50) COLLATE NOCASE NOT NULL DEFAULT '',
     item_name TEXT NOT NULL DEFAULT '',
     conditional TEXT NOT NULL DEFAULT '',
     properties TEXT NOT NULL DEFAULT '', -- scaling, position, name, categories

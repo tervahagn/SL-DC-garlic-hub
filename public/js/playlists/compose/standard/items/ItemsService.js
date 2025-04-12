@@ -28,7 +28,7 @@ export class ItemsService extends BaseService
 			playlist_id: playlistId,
 			"id": id,
 			"position": position,
-			"source": "media"
+			"source": "mediapool"
 		};
 		return this._sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
