@@ -86,7 +86,7 @@ export class Item
 		const playlistItem = template.content.cloneNode(true);
 		this.#playlistItem = playlistItem;
 
-		const listItem = playlistItem.querySelector('.playlist-item');
+		const listItem = playlistItem.querySelector(".playlist-item");
 		listItem.dataset.mediaId = this.#itemData.file_resource;
 		listItem.id = "itemId-" + this.#itemData.item_id;
 

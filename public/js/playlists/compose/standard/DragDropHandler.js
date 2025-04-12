@@ -65,7 +65,7 @@ export class DragDropHandler
 	{
 		const options = {
 			copy: (el) =>{ // copy allowed only if source is another container
-				return el.classList.contains('media-item') === true;
+				return el.hasAttribute("select-data-id") === true;
 			},
 			accepts: (el, target, source) => {
 				if (source === this.#dropSource)

@@ -59,7 +59,7 @@ export class PlaylistsSelectorView
 
 	#getTemplateElement()
 	{
-		this.#itemTemplate =  document.getElementById("playlistItemTemplate");
+		this.#itemTemplate =  document.getElementById("playlistSelectTemplate");
 	}
 
 }

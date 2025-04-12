@@ -63,15 +63,25 @@ class ItemsService extends AbstractBaseService
 		$thumbnailPath  = $this->mediaService->getPathTumbnails();
 		foreach($this->itemsRepository->findAllByPlaylistId($playlistId) as $value)
 		{
-			$tmp = $value;
-			if (str_starts_with($value['mimetype'], 'image/'))
-				$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
-			else
-				$ext = 'jpg';
+			switch ($value['item_type'])
+			{
+				case ItemType::MEDIA->value:
+					$tmp = $value;
+					if (str_starts_with($value['mimetype'], 'image/'))
+						$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
+					else
+						$ext = 'jpg';
 
-			$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.'.$ext;
+					$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.'.$ext;
+					$items[] = $tmp;
+					break;
+				case ItemType::PLAYLIST->value:
+					$tmp = $value;
+					$tmp['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
+					$items[] = $tmp;
+					break;
 
-			$items[] = $tmp;
+			}
 		}
 		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
 		$playlist['count_items'] = count($items);
@@ -187,6 +197,7 @@ class ItemsService extends AbstractBaseService
 				throw new ModuleException('items', 'Playlist item could not inserted.');
 
 			$saveItem['item_id'] = $id;
+			$saveItem['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
 
 			$this->updatePlaylistDurationAndFileSize($playlistData);
 
