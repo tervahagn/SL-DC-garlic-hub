@@ -77,6 +77,9 @@ class ItemsController
 			case 'mediapool':
 				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
 				break;
+			case 'playlist':
+				$item = $this->itemsService->insertPlaylist((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
+				break;
 			default:
 				$item = [];
 		}

@@ -49,7 +49,7 @@ export class PlaylistsSelectorView
 	{
 		const element = this.#itemTemplate.content.cloneNode(true);
 		const el = element.querySelector(".playlist-select-item");
-		el.setAttribute("data-playlist-id", item.id);
+		el.setAttribute("data-select-id", item.id);
 		const span = element.querySelector(".playlist-select-name");
 
 		span.textContent = item.name;

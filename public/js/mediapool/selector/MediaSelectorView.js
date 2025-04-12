@@ -48,7 +48,7 @@ export class MediaSelectorView
 			let media = this.#mediaFactory.create(mediaData);
 			this.#mediaItems[media.mediaId] = media;
 			const mediaItem = media.renderSimple();
-			mediaItem.setAttribute("select-data-id", media.mediaId);
+			mediaItem.setAttribute("data-select-id", media.mediaId);
 			mediaListElement.appendChild(mediaItem);
 		}
 	}

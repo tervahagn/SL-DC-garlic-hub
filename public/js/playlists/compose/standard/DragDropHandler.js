@@ -116,7 +116,7 @@ export class DragDropHandler
 					// We find the index of 'sibling' in the  'target'-Container
 					droppedIndex = Array.from(target.children).indexOf(sibling);
 				}
-				const selectDataId = el.getAttribute('select-data-id');
+				const selectDataId = el.getAttribute('data-select-id');
 
 				let result = null;
 				switch (this.#source)

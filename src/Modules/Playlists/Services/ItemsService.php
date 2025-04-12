@@ -103,7 +103,7 @@ class ItemsService extends AbstractBaseService
 			if (!$this->allowedByTimeLimit($playlistId, $playlistData['time_limit']))
 				throw new ModuleException('items', 'Playlist time limit exceeds');
 
-			$itemDuration =  $this->durationCalculatorService->calculateRemainingItemDuration($playlistData, $media);
+			$itemDuration =  $this->durationCalculatorService->calculateRemainingMediaDuration($playlistData, $media);
 			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
 
 			$saveItem = [
@@ -147,6 +147,71 @@ class ItemsService extends AbstractBaseService
 			return [];
 		}
 	}
+
+	public function insertPlaylist(int $playlistId, string $id, int $position): array
+	{
+		try
+		{
+			$this->itemsRepository->beginTransaction();
+			$this->mediaService->setUID($this->UID);
+			$this->playlistsService->setUID($this->UID);
+			$this->durationCalculatorService->setUID($this->UID);
+
+			$playlistData = $this->playlistsService->loadPlaylistForEdit($playlistId); // checks rights
+			if (empty($playlistData))
+				throw new ModuleException('items', 'Target playlist is not accessible');
+
+			$playlistSourceData = $this->playlistsService->loadPlaylistForEdit($id); // also checks rights
+			if (empty($playlistSourceData))
+				throw new ModuleException('items', 'Source playlist is not accessible');
+
+			if (!$this->allowedByTimeLimit($playlistId, $playlistData['time_limit']))
+				throw new ModuleException('items', 'Playlist time limit exceeds');
+
+			$itemDuration = $playlistSourceData['duration'];
+			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
+
+			$saveItem = [
+				'playlist_id'   => $playlistId,
+				'datasource'    => 'file',
+				'item_duration' => $playlistSourceData['duration'],
+				'item_filesize' => $playlistSourceData['filesize'],
+				'item_order'    => $position,
+				'item_name'     => $playlistSourceData['playlist_name'],
+				'item_type'     => ItemType::PLAYLIST->value,
+				'file_resource' => $id,
+				'mimetype'      => ''
+			];
+			$id = $this->itemsRepository->insert($saveItem);
+			if ($id === 0)
+				throw new ModuleException('items', 'Playlist item could not inserted.');
+
+			$saveItem['item_id'] = $id;
+
+			$this->updatePlaylistDurationAndFileSize($playlistData);
+
+			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
+			$this->durationCalculatorService->determineTotalPlaylistProperties($playlistId);
+
+			$playlist = [
+				'count_items'       => $this->durationCalculatorService->getTotalEntries(),
+				'filesize'          => $this->durationCalculatorService->getFileSize(),
+				'duration'          => $this->durationCalculatorService->getDuration(),
+				'owner_duration'    => $this->durationCalculatorService->getOwnerDuration()
+			];
+
+			$this->itemsRepository->commitTransaction();
+
+			return ['playlist' => $playlist, 'item' => $saveItem];
+		}
+		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->itemsRepository->rollBackTransaction();
+			$this->logger->error('Error insert media: ' . $e->getMessage());
+			return [];
+		}
+	}
+
 
 	public function updateItemOrder(mixed $playlist_id, array $itemsOrder): void
 	{
