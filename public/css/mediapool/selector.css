@@ -1,15 +1,15 @@
-#itemSelectContainer
+.mediaSelectContainer
 {
     display: flex;
     gap: 1rem;
 }
-    #itemSelectContainer aside, #treeViewFilter
+    .mediaSelectContainer aside, #treeViewFilter
     {
         width:220px;
         overflow-y: auto;
     }
 
-    #itemSelectContainer .media-list-grid-view
+    .mediaSelectContainer .media-list-grid-view
     {
         flex-grow: 1;
         display:grid;
