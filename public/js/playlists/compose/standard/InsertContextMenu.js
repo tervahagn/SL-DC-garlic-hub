@@ -23,7 +23,8 @@ export class InsertContextMenu
 		{
 			const selector = this.#selectorFactory.create("media");
 			await selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.mediaItems = selector.getMediaItems();
+			this.#dragDropHandler.source = "mediapool";
+			this.#dragDropHandler.items = selector.getMediaItems();
 			const container = selector.getMediaItemsContainer();
 			this.#dragDropHandler.addDropSource(container);
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
@@ -41,7 +42,8 @@ export class InsertContextMenu
 		{
 			const selector = this.#selectorFactory.create("playlists");
 			await selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.mediaItems = selector.items;
+			this.#dragDropHandler.source = "playlists";
+			this.#dragDropHandler.items = selector.items;
 			const container = selector.getItemsContainer();
 			this.#dragDropHandler.addDropSource(container);
 			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";

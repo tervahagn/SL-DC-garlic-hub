@@ -27,6 +27,7 @@ export class DragDropHandler
 	#items   = null;
 	#drake        = null;
 	#playlistId     = 0;
+	#source         = "";
 
 	constructor(dropTarget, itemService, itemList)
 	{
@@ -48,6 +49,11 @@ export class DragDropHandler
 		this.#drake.destroy();
 		this.#drake = null;
 		this.preparePlaylistDragDrop(true);
+	}
+
+	set source(value)
+	{
+		this.#source = value;
 	}
 
 	set items(value)
@@ -77,10 +83,10 @@ export class DragDropHandler
 		this.#drake   = dragula(dropContainers, options)
 			.on('drag', (el, source) => {
 				if (source === this.#dropSource)
-					this.#dragItem = this.#items[el.getAttribute('data-media-id')];
+					this.#dragItem = this.#items[el.getAttribute('select-data-id')];
 			})
 			.on('shadow', (el) => {
-				if (el.classList.contains('media-item'))
+				if (el.hasAttribute("select-data-id") === true)
 					el.classList.add('dragula-shadow');
 			})
 			.on('drop', async (el, target, source, sibling) => {
@@ -110,8 +116,21 @@ export class DragDropHandler
 					// We find the index of 'sibling' in the  'target'-Container
 					droppedIndex = Array.from(target.children).indexOf(sibling);
 				}
-				const mediaId = el.getAttribute('data-media-id');
-				let result = await this.#itemService.insertFromMediaPool(mediaId, this.#playlistId, droppedIndex);
+				const selectDataId = el.getAttribute('select-data-id');
+
+				let result = null;
+				switch (this.#source)
+				{
+					case "mediapool":
+						result = await this.#itemService.insertFromMediaPool(selectDataId, this.#playlistId, droppedIndex);
+						break;
+					case "playlists":
+						result = await this.#itemService.insertPlaylist(selectDataId, this.#playlistId, droppedIndex);
+						break;
+					default:
+						throw new Error("Unknown source");
+				}
+
 				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
 				this.#itemList.displayPlaylistProperties(result.data.playlist);
 
