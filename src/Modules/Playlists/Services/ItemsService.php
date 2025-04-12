@@ -172,7 +172,7 @@ class ItemsService extends AbstractBaseService
 			if (empty($playlistData))
 				throw new ModuleException('items', 'Playlist is not accessible');
 
-			$item = $this->itemsRepository->findById($itemId);
+			$item = $this->itemsRepository->findFirstBy(['item_id' => $itemId]);
 
 			// todo for Core / Enterprise: Check if item belongs to an admin
 
@@ -182,6 +182,8 @@ class ItemsService extends AbstractBaseService
 			$deleteId = $this->itemsRepository->delete($itemId);
 			if ($deleteId === 0)
 				throw new ModuleException('items', 'Item could not deleted');
+
+			$this->itemsRepository->updatePositionsWhenDeleted($playlistId, $item['item_order']);
 
 			$this->updatePlaylistDurationAndFileSize($playlistData);
 			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
