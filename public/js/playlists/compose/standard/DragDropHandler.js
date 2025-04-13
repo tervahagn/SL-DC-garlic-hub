@@ -86,7 +86,6 @@ export class DragDropHandler
 					this.#dragItem = this.#items[el.getAttribute('select-data-id')];
 			})
 			.on('shadow', (el) => {
-				if (el.hasAttribute("select-data-id") === true)
 					el.classList.add('dragula-shadow');
 			})
 			.on('drop', async (el, target, source, sibling) => {
