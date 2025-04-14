@@ -21,6 +21,9 @@ export class MediaSelectorView
 {
 	#mediaFactory = null;
 	#mediaItems = {};
+	#mediaListElement = document.getElementById("mediaList");
+	#selectorTemplate = document.getElementById("mediaSelectorTemplate");
+	#selectorElement = null;
 
 	constructor(mediaFactory)
 	{
@@ -38,10 +41,16 @@ export class MediaSelectorView
 		return document.getElementById("mediaList");
 	}
 
+	loadSelectorTemplate()
+	{
+		return this.#selectorTemplate.content.cloneNode(true);
+	}
+
+
 	displayMediaList(mediaDataList)
 	{
-		const mediaListElement = document.getElementById("mediaList");
-		mediaListElement.innerHTML = "";
+		this.#mediaListElement = this.getMediaListElement();
+		this.#mediaListElement.innerHTML = "";
 
 		for (const mediaData of mediaDataList)
 		{
@@ -49,7 +58,7 @@ export class MediaSelectorView
 			this.#mediaItems[media.mediaId] = media;
 			const mediaItem = media.renderSimple();
 			mediaItem.setAttribute("data-select-id", media.mediaId);
-			mediaListElement.appendChild(mediaItem);
+			this.#mediaListElement.appendChild(mediaItem);
 		}
 	}
 

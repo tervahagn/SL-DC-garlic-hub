@@ -24,7 +24,6 @@ use App\Framework\Core\ShellExecutor;
 use App\Framework\Utils\Ffmpeg;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
-use App\Modules\Mediapool\Controller\SelectorController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Repositories\FilesRepository;
@@ -105,12 +104,6 @@ $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $co
 		$container->get(NodesRepository::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
-	);
-});
-$dependencies[SelectorController::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new SelectorController(
-		$container->get(Config::class)
 	);
 });
 $dependencies[MediaController::class] = DI\factory(function (ContainerInterface $container)

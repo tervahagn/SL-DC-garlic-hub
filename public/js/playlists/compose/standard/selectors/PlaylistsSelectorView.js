@@ -19,30 +19,29 @@
 
 export class PlaylistsSelectorView
 {
-	#itemTemplate = null;
+	#itemTemplate         = document.getElementById("playlistTemplate")
+	#selectorTemplate     = document.getElementById("playlistsSelectorTemplate");
+	#playlistsListElement = null;
 
 	constructor()
 	{
 	}
 
-	getPlaylistsListElement()
-	{
-		// because cache can prevent to execute
-		return document.getElementById("playlistsList");
-	}
 
-	 displayList(items)
+	displayList(items)
 	{
-		const playlistsListElement = document.getElementById("playlistsList");
-		playlistsListElement.innerHTML = "";
-		this.#getTemplateElement();
+		this.#playlistsListElement = document.getElementById("playlistsList");
+		this.#playlistsListElement.innerHTML = "";
 
 		for (const item of items)
 		{
-			const articleElement = document.createElement('article');
-
-			playlistsListElement.appendChild( this.#createArticleElement(item));
+			this.#playlistsListElement.appendChild(this.#createArticleElement(item));
 		}
+	}
+
+	loadSelectorTemplate()
+	{
+		return this.#selectorTemplate.content.cloneNode(true);
 	}
 
 	#createArticleElement(item)
@@ -55,11 +54,6 @@ export class PlaylistsSelectorView
 		span.textContent = item.name;
 
 		return el;
-	}
-
-	#getTemplateElement()
-	{
-		this.#itemTemplate =  document.getElementById("playlistSelectTemplate");
 	}
 
 }

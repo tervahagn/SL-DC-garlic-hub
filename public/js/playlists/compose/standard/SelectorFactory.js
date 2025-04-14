@@ -18,7 +18,7 @@ export class SelectorFactory
 	{
 		switch (type)
 		{
-			case 'media':
+			case "mediapool":
 				if (this.#mediaSelector === null)
 				{
 					this.#mediaSelector = new MediaSelector(
@@ -28,7 +28,7 @@ export class SelectorFactory
 					);
 				}
 				return this.#mediaSelector;
-			case 'playlists':
+			case "playlists":
 				if (this.#playlistsSelector === null)
 				{
 					this.#playlistsSelector = new PlaylistsSelector(

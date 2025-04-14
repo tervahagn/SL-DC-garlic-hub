@@ -44,14 +44,6 @@ export class MediaService extends BaseService
 		return result.media_list;
 	}
 
-	async loadSelectorTemplate()
-	{
-		const url    = MediaApiConfig.SELECTOR_URI;
-		const result = await this._sendRequest(url, "GET", null);
-
-		return result.template;
-	}
-
 	async getMediaById(mediaId)
 	{
 		const url = MediaApiConfig.BASE_URI + "/" + mediaId;

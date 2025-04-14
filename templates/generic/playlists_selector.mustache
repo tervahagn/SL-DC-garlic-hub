@@ -1,17 +1,18 @@
-		<label>
-			<input id="playlistsFilter" type="search" placeholder="Filter">
-		</label>
-		<section id="playlistsList" class="playlists-grid-view">
-
-		</section>
-		<template id="playlistSelectTemplate">
+		<template id="playlistsSelectorTemplate">
+			<label>
+				<input id="playlistsFilter" type="search" placeholder="Filter">
+			</label>
+			<section id="playlistsList" class="playlists-grid-view">
+			</section>
+		</template>
+		<template id="playlistTemplate">
 			<article class="playlist-select-item">
 				<img src="/images/icons/playlist.svg" alt="Playlist icon">
 				<span class="playlist-select-name"></span>
 			</article>
 		</template>
 
-		<template id="externalSelectTemplate">
+		<template id="externalSelectorTemplate">
 			<article class="external-select-item">
 				<label>
 					{{LANG_MEDIA_URL}}_

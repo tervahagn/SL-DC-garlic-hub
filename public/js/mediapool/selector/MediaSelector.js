@@ -75,10 +75,8 @@ export class MediaSelector
 
 	async showSelector(element)
 	{
-		element.innerHTML = await this.#mediaService.loadSelectorTemplate();
-
+		element.replaceChildren(this.#selectorView.loadSelectorTemplate());
 		this.#treeViewWrapper.initTree();
-
 	}
 
 	async loadMedia(nodeId)

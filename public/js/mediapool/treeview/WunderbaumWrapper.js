@@ -51,11 +51,19 @@ export class WunderbaumWrapper
 		return node;
 	}
 
+	get tree()
+	{
+		return this.#tree;
+	}
+
 	initTree()
 	{
 		this.treeViewElements.initialize();
-		this.#initDefaultConfig();
-		this.#tree = new Wunderbaum(this.#defaultConfig);
+		if (this.#treeViewElements.treeViewFilter !== null)
+		{
+			this.#initDefaultConfig();
+			this.#tree = new Wunderbaum(this.#defaultConfig);
+		}
 	}
 
 	addDragNDrop() // find out why this did not work

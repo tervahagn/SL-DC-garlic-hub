@@ -21,7 +21,7 @@ export class InsertContextMenu
 	{
 		this.#insertMedia.addEventListener("click", async () =>
 		{
-			const selector = this.#selectorFactory.create("media");
+			const selector = this.#selectorFactory.create("mediapool");
 			await selector.showSelector(this.#itemSelectContainer);
 			this.#dragDropHandler.source = "mediapool";
 			this.#dragDropHandler.items = selector.getMediaItems();

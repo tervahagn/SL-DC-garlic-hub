@@ -41,7 +41,7 @@ export class PlaylistsSelector
 
 	async showSelector(element)
 	{
-		element.innerHTML = await this.#playlistsService.loadSelectorTemplate();
+		element.replaceChildren(this.#playlistSelectorView.loadSelectorTemplate());
 
 		this.#items = await this.#playlistsService.findPlaylists('internal', '');
 		this.#playlistSelectorView.displayList(this.#items);
