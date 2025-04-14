@@ -19,6 +19,7 @@
 
 import {PlaylistsApiConfig} from "./PlaylistsApiConfig.js";
 import {BaseService}        from "../../../../core/Base/BaseService.js";
+import {ItemsApiConfig}     from "../items/ItemsApiConfig.js";
 
 export class PlaylistsService extends BaseService
 {
@@ -29,6 +30,16 @@ export class PlaylistsService extends BaseService
 		const response    = await fetch(url);
 		return await response.json();
 	}
+
+	async delete(playlistId)
+	{
+		const url = PlaylistsApiConfig.BASE_URI;
+		const data = {
+			playlist_id: playlistId
+		};
+		return await this._sendRequest(url, "DELETE", data);
+	}
+
 
 
 }

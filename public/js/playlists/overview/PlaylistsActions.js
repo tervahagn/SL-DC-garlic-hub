@@ -16,20 +16,28 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
-import {CreateContextMenu} from "./CreateContextMenu.js";
-import {PlaylistsActions}  from "./PlaylistsActions.js";
-import {PlaylistsService}  from "../compose/standard/playlists/PlaylistsService.js";
-import {FetchClient}       from "../../core/FetchClient.js";
-
-document.addEventListener("DOMContentLoaded", function()
+export class PlaylistsActions
 {
- 	const createContextMenu = new CreateContextMenu(
-		document.getElementById("createUnitAction"),
-		document.getElementById("playlistContextMenuTemplate")
-	);
-	createContextMenu.init();
+	#deleteActions = document.getElementsByClassName("delete-playlist");
+	#playlistsService = null;
 
-	const playlistsActions = new PlaylistsActions(new PlaylistsService(new FetchClient()));
-	playlistsActions.init()
-});
+	constructor(playlistsService)
+	{
+		this.#playlistsService = playlistsService;
+	}
+	
+	init()
+	{
+		for (const action of this.#deleteActions)
+		{
+			action.addEventListener('click', async (event) =>
+			{
+				if (!confirm(event.target.dataset.confirm))
+					return;
+
+				await this.#playlistsService.delete(event.target.dataset.deleteId);
+				window.location.href = "/playlists";
+			});
+		}
+	}
+}

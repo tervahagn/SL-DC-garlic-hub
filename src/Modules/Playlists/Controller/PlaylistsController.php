@@ -57,11 +57,15 @@ class PlaylistsController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function delete(ResponseInterface $response, array $args): ResponseInterface
+	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$post        = $request->getParsedBody();
+		$playlistId = (int) $post['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
 		if ($this->playlistsService->delete($playlistId) === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);

@@ -33,6 +33,16 @@ class PlaylistsRepository extends FilterBase
 		parent::__construct($connection,'playlists', 'playlist_id');
 	}
 
+	public function delete(int|string $id): int
+	{
+		$platform = $this->connection->getDatabasePlatform();
+		$driverName = strtolower(str_replace('Doctrine\DBAL\Platforms\\', '', get_class($platform)));
+		if ($driverName === 'sqliteplatform')
+			$this->connection->executeQuery('PRAGMA foreign_keys = ON');
+
+		return parent::delete($id);
+	}
+
 	/**
 	 * @throws Exception
 	 */
