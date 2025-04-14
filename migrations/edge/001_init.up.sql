@@ -164,7 +164,8 @@ CREATE TABLE playlists_items (
     properties TEXT NOT NULL DEFAULT '', -- scaling, position, name, categories
     content_data TEXT NOT NULL DEFAULT '', -- depends on item and media type: can be url or Widget parameters
     begin_trigger TEXT NOT NULL DEFAULT '',
-    end_trigger TEXT NOT NULL DEFAULT ''
+    end_trigger TEXT NOT NULL DEFAULT '',
+    FOREIGN KEY (playlist_id) REFERENCES playlists(playlist_id)
 );
 
 CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
