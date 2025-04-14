@@ -162,6 +162,9 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			if ($edition === Config::PLATFORM_EDITION_EDGE && $key === PlaylistMode::CHANNEL->value)
 				continue;
 
+			if ($edition === Config::PLATFORM_EDITION_EDGE && $key === PlaylistMode::EXTERNAL->value)
+				continue;
+
 			$allowedPlaylistModes[$key] = $value;
 		}
 

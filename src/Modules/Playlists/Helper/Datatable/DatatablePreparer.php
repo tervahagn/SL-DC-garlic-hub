@@ -173,6 +173,9 @@ class DatatablePreparer extends AbstractDatatablePreparer
 		if ($key === PlaylistMode::CHANNEL->value)
 			return false;
 
+		if ($key === PlaylistMode::EXTERNAL->value)
+			return false;
+
 		return true;
 	}
 
