@@ -117,12 +117,12 @@ class DatatablePreparer extends AbstractDatatablePreparer
 					if (!array_key_exists($playlist['playlist_id'], $this->usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($currentUID, $playlist))
 					{
+						$deleteText = $this->translator->translate('confirm_delete', 'playlists');
 						$list['has_delete'] = $this->prepareService->getBodyPreparer()->formatActionDelete(
 							$this->translator->translate('delete', 'main'),
-							$this->translator->translate('confirm_delete', 'playlists'),
-							'playlists/?delete_id='.$playlist['playlist_id'],
+							sprintf($deleteText, $playlist['playlist_name']),
 							$playlist['playlist_id'],
-							''
+							'delete-playlist'
 						);
 					}
 

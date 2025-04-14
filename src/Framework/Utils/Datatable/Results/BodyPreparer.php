@@ -58,11 +58,10 @@ class BodyPreparer
 			];
 	}
 
-	public function formatActionDelete(string $lang, string $langConfirm, string $link, string $id, string $cssClass): array
+	public function formatActionDelete(string $lang, string $langConfirm, string $id, string $cssClass): array
 	{
 		return 	[
 			'LANG_DELETE_ACTION'   => $lang,
-			'LINK_DELETE_ACTION'   => $link,
 			'DELETE_ID'            => $id,
 			'LANG_CONFIRM_DELETE'  => $langConfirm,
 			'ELEMENT_DELETE_CLASS' => $cssClass
