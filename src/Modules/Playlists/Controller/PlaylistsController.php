@@ -95,12 +95,21 @@ class PlaylistsController
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$post        = $request->getParsedBody();
 
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$this->session    = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
 		$shufflePicking = (int) $post['shuffle_picking'] ?? 0; // is all
 

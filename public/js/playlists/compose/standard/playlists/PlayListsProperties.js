@@ -16,17 +16,24 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+import {Utils} from "../../../../core/Utils.js";
+
 export class PlayListsProperties
 {
-	#toggleShuffle = null;
-	#shufflePicking = null;
-	#playlistsService = null;
+	#playlistDuration = document.getElementById('playlistDuration');
+	#totalItems       = document.getElementById('totalItems');
+	#totalFilesize    = document.getElementById('totalFilesize');
+	#toggleShuffle    = document.getElementById("toggleShuffle");
+	#shufflePicking    = document.getElementById("shufflePicking");
 
-	constructor(toggleShuffle, shufflePicking, playlistsService)
+	#playlistsService = null;
+	#lang             = null;
+
+
+	constructor(playlistsService, lang)
 	{
-		this.#toggleShuffle = toggleShuffle;
-		this.#shufflePicking = shufflePicking;
 		this.#playlistsService = playlistsService;
+		this.#lang = lang;
 	}
 
 	init(playlistId)
@@ -35,6 +42,27 @@ export class PlayListsProperties
 		{
 			await this.#playlistsService.toggleShuffle(playlistId);
 		});
-
+		this.#shufflePicking.addEventListener('change', async () =>
+		{
+			await this.#playlistsService.shufflePicking(playlistId, this.#shufflePicking.value);
+		});
 	}
+
+	display(playlistProperties)
+	{
+		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistProperties.duration);
+		this.#totalItems.innerHTML = playlistProperties.count_items;
+
+		this.#shufflePicking.innerHTML = Array.from({length: playlistProperties.count_items})
+			.map((_, i) => `<option value="${i}">${i === 0 ? lang['picking_all'] : i}</option>`)
+			.join('');
+		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistProperties.filesize);
+		// properties.owner_duration;
+
+
+		this.#toggleShuffle.checked = playlistProperties.shuffle === 1;
+		this.#shufflePicking.value = playlistProperties.shuffle_picking;
+	}
+
+
 }

@@ -42,14 +42,9 @@ document.addEventListener("DOMContentLoaded", function ()
 	const playlistsService = new PlaylistsService(new FetchClient());
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
+	const playlistsProperties = new PlayListsProperties(playlistsService, lang);
 	insertContextMenu.init(playlistId);
-	itemsList.displayPlaylist(playlistId);
-
-	const playlistsProperties = new PlayListsProperties(
-		document.getElementById("toggleShuffle"),
-		document.getElementById("shufflePicking"),
-		playlistsService
-	);
+	itemsList.displayPlaylist(playlistId, playlistsProperties);
 
 	playlistsProperties.init(playlistId);
 

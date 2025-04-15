@@ -26,9 +26,6 @@ export default class ItemList
 	#itemsService = null;
 	#itemsList   = {};
 	#playlistId = 0;
-	#playlistDuration = document.getElementById('playlistDuration');
-	#totalItems       = document.getElementById('totalItems');
-	#totalFilesize    = document.getElementById('totalFilesize');
 
 	constructor(itemFactory, itemsService, dropTarget)
 	{
@@ -37,7 +34,7 @@ export default class ItemList
 		this.#itemsService = itemsService;
 	}
 
-	async displayPlaylist(playlistId)
+	async displayPlaylist(playlistId, playlistProperties)
 	{
 		this.#playlistId = playlistId;
 		const results = await this.#itemsService.loadByPlaylistId(playlistId);
@@ -48,7 +45,8 @@ export default class ItemList
 		{
 			this.createPlaylistItem(item);
 		}
-		this.displayPlaylistProperties(results.data.playlist)
+
+		playlistProperties.display(results.data.playlist);
 	}
 
 	createPlaylistItem(itemData, position = null)
@@ -68,15 +66,6 @@ export default class ItemList
 
 		this.#createActions(item);
 	}
-
-	displayPlaylistProperties(playlistProperties)
-	{
-		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistProperties.duration);
-		this.#totalItems.innerHTML       = playlistProperties.count_items;
-		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistProperties.filesize);
-		// properties.owner_duration;
-	}
-
 
 	#createActions(item)
 	{

@@ -49,6 +49,16 @@ export class PlaylistsService extends BaseService
 		return await this._sendRequest(url, "PATCH", data);
 	}
 
+	async shufflePicking(playlistId, shufflePicking)
+	{
+		const url = PlaylistsApiConfig.PICKING_URI;
+		const data = {
+			playlist_id: playlistId,
+			shuffle_picking: shufflePicking
+		};
+		return await this._sendRequest(url, "PATCH", data);
+	}
+
 
 }
 
