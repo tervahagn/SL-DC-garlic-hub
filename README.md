@@ -5,7 +5,9 @@ Garlic-Hub will become a robust Digital Signage Management Platform designed to 
 > **Note**: Garlic-Hub is currently in heavily development.Core functionalities are still under construction, with some 
 > modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
 
-## Installation
+## Installation for developer
+
+Install for user will be released togehtehr with MVP.
 
 ### Prerequisites
 Ensure your environment meets the following requirements:
