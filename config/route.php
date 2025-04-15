@@ -102,6 +102,8 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
+	$group->patch('/playlists/shuffle', [PlaylistsController::class, 'toggleShuffle']);
+	$group->patch('/playlists/picking', [PlaylistsController::class, 'shufflePicking']);
 
 	$group->get('/playlists/items/load/{playlist_id:\d+}', [ItemsController::class, 'loadItems']);
 	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);

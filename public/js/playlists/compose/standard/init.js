@@ -25,6 +25,8 @@ import {FetchClient}     from "../../../core/FetchClient.js";
 import ItemList          from "./items/ItemList.js";
 import {ItemFactory}     from "./items/ItemFactory.js";
 import {DragDropHandler} from "./DragDropHandler.js";
+import {PlayListsProperties} from "./playlists/PlayListsProperties.js";
+import {PlaylistsService} from "./playlists/PlaylistsService.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
@@ -37,9 +39,18 @@ document.addEventListener("DOMContentLoaded", function ()
 	const dragDropHandler = new DragDropHandler(dropTarget, itemsService, itemsList);
 	dragDropHandler.playlistId = playlistId;
 
-	const insertContextMenu = new InsertContextMenu(new SelectorFactory(), dragDropHandler);
+	const playlistsService = new PlaylistsService(new FetchClient());
+	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
 	insertContextMenu.init(playlistId);
 	itemsList.displayPlaylist(playlistId);
+
+	const playlistsProperties = new PlayListsProperties(
+		document.getElementById("toggleShuffle"),
+		document.getElementById("shufflePicking"),
+		playlistsService
+	);
+
+	playlistsProperties.init(playlistId);
 
 });

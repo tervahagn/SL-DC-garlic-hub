@@ -56,6 +56,52 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
+	public function toggleShuffle(int $playlistId)
+	{
+		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
+
+		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error updating playlist. '.$playlist['playlist_name'].' is not editable');
+			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
+		}
+
+		if ($playlist['shuffle'] === 0)
+			$saveData['shuffle'] = 1;
+		else
+			$saveData['shuffle'] = 0;
+
+		return $this->update($playlistId, $saveData);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function shufflePicking(int $playlistId, int $shufflePicking = 0)
+	{
+		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
+
+		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
+			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
+		}
+
+		$saveData['shuffle_picking'] = $shufflePicking;
+
+		return $this->update($playlistId, $saveData);
+	}
+
+
+		/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function updateSecure(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
@@ -69,7 +115,7 @@ class PlaylistsService extends AbstractBaseService
 
 		$saveData = $this->collectDataForUpdate($postData);
 
-		return $this->update($playlistId, $postData);
+		return $this->update($playlistId, $saveData);
 	}
 
 	/**

@@ -40,6 +40,14 @@ export class PlaylistsService extends BaseService
 		return await this._sendRequest(url, "DELETE", data);
 	}
 
+	async toggleShuffle(playlistId)
+	{
+		const url = PlaylistsApiConfig.SHUFFLE_URI;
+		const data = {
+			playlist_id: playlistId
+		};
+		return await this._sendRequest(url, "PATCH", data);
+	}
 
 
 }

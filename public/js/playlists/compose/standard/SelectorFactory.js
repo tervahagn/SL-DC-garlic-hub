@@ -13,6 +13,12 @@ export class SelectorFactory
 {
 	#mediaSelector = null;
 	#playlistsSelector = null;
+	#playlistsService = null;
+
+	constructor(playlistsService)
+	{
+		this.#playlistsService = playlistsService;
+	}
 
 	create(type)
 	{
@@ -32,7 +38,7 @@ export class SelectorFactory
 				if (this.#playlistsSelector === null)
 				{
 					this.#playlistsSelector = new PlaylistsSelector(
-						new PlaylistsService(new FetchClient()),
+						this.#playlistsService,
 						new PlaylistsSelectorView()
 					);
 				}

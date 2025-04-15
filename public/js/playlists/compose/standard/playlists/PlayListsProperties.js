@@ -16,10 +16,25 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+export class PlayListsProperties
+{
+	#toggleShuffle = null;
+	#shufflePicking = null;
+	#playlistsService = null;
 
-export const PlaylistsApiConfig = {
-	BASE_URI: "/async/playlists",
-	SHUFFLE_URI: "/async/playlists/shuffle",
-	PICKING_URI: "/async/playlists/picking",
-	FIND_URI: "/async/playlists/find"
-};
+	constructor(toggleShuffle, shufflePicking, playlistsService)
+	{
+		this.#toggleShuffle = toggleShuffle;
+		this.#shufflePicking = shufflePicking;
+		this.#playlistsService = playlistsService;
+	}
+
+	init(playlistId)
+	{
+		this.#toggleShuffle.addEventListener('click', async () =>
+		{
+			await this.#playlistsService.toggleShuffle(playlistId);
+		});
+
+	}
+}

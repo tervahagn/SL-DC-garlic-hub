@@ -33,11 +33,11 @@
 			</section>
 
 			<section class="actions">
-				<div><label for="check_shuffle"><input type="checkbox" value="1" id="check_shuffle" /> {{{LANG_SHUFFLE}}}</label></div>
+				<div><label for="toggleShuffle"><input type="checkbox" value="1" id="toggleShuffle" /> {{{LANG_SHUFFLE}}}</label></div>
 				<div>
-					 <select name="edit_picking" id="edit_picking">
-						 <option value="all">{{{LANG_PICKING_OPTION_ALL}}}</option>
-					 </select> <label for="edit_picking">{{{LANG_PICKING_MEDIA_PER_CYCLE}}}</label>
+					 <select id="shufflePicking">
+						 <option value="0">{{{LANG_PICKING_OPTION_ALL}}}</option>
+					 </select> <label for="shufflePicking">{{{LANG_PICKING_MEDIA_PER_CYCLE}}}</label>
 				</div>
 				<div>
 					<button id="saveChanges">{{{LANG_SAVE_CHANGES}}}</button>

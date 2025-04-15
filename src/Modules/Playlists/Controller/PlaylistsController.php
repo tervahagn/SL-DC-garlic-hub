@@ -73,29 +73,44 @@ class PlaylistsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-	/*
-	public function shuffle(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function toggleShuffle(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
-		if ($playlistId === 0)
+		$post        = $request->getParsedBody();
+		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		// Todo:
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+
+		if ($this->playlistsService->toggleShuffle($post['playlist_id']) === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-	public function picking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+
+	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
-		if ($playlistId === 0)
+		$post        = $request->getParsedBody();
+
+		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		// Todo:
+		$shufflePicking = (int) $post['shuffle_picking'] ?? 0; // is all
+
+		if ($this->playlistsService->shufflePicking($post['playlist_id'], $shufflePicking) === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
+
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-*/
+
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;

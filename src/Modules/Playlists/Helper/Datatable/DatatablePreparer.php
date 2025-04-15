@@ -105,10 +105,10 @@ class DatatablePreparer extends AbstractDatatablePreparer
 				if ($playlist['UID'] == $currentUID || $this->aclValidator->isSimpleAdmin($currentUID))
 				{
 					$list['has_action'] = [
-						$this->prepareService->getBodyPreparer()->formatAction(
+				/*		$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('copy_playlist', 'playlists'),
 							'playlists/?playlist_copy_id='.$playlist['playlist_id'],
-							'copy', 'copy'),
+							'copy', 'copy'), */
 						$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('edit_settings', 'playlists'),
 							'playlists/settings/'.$playlist['playlist_id'],
