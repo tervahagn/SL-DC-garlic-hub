@@ -53,6 +53,15 @@ The login will be created with the following credentials:
 - **login**: admin
 - **password**: thymian
 
+## Debian
+
+Packages needed:
+```bash
+apt install curl php-http php-zip php-simplexml php-curl php-intl php-imagick php-cli php-mbstring git unzip
+```
+ 
+
+
 ## Development Roadmap
 
 Garlic-Hub is being developed in a phased approach to ensure stability and optimal performance across different usage scenarios. The platform will be rolled out in three primary editions, each tailored to distinct needs:
