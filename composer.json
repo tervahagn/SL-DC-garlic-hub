@@ -43,7 +43,6 @@
         "phpunit/phpunit": "^11.5",
         "phpstan/phpstan": "^2.0",
         "phpmd/phpmd": "^2.15",
-        "phpstan/phpstan-phpunit": "^2.0",
-      "ext-http": "*"
+        "phpstan/phpstan-phpunit": "^2.0"
     }
 }
