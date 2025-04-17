@@ -77,9 +77,11 @@ form {margin: 0 auto;}
 
 	input:hover, input:focus, textarea:hover, textarea:focus select:hover, select:focus{border: 1px solid #000;}
 	button *, a.button, select, input *{color:#000;text-decoration: none;}
+    button, a.button{padding: 0.25rem 0.5rem;display: inline-block; line-height: normal; }
 	button:hover, a.button:hover{color:#000;border: 1px solid #000;}
 	.trumbowyg-button-pane button{min-width:0;}
 
+    a.button {}
 dialog
 {
     border:0;

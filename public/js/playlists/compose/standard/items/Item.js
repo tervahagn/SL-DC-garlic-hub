@@ -110,7 +110,10 @@ export class Item
 	#initActions()
 	{
 		if (this.#itemData.item_type === "playlist")
+		{
 			this.#linkPlaylistAction = this.#playlistItem.querySelector('.link-playlist');
+			this.#linkPlaylistAction.href = "/playlists/compose/" + this.#itemData.item_id;
+		}
 		else
 			this.#playlistItem.querySelector('.link-playlist').remove();
 
@@ -137,7 +140,7 @@ export class Item
 		else
 			this.#playlistItem.querySelector('.edit-widget').remove();
 
-		if (this.#itemData.item_type === "template" || this.#itemData.item_type === "playlist")
+		if (this.#cmsEdition !== "edge" && (this.#itemData.item_type === "template" || this.#itemData.item_type === "playlist"))
 			this.#copyItemAction = this.#playlistItem.querySelector('.copy-item');
 		else
 			this.#playlistItem.querySelector('.copy-item').remove();

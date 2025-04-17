@@ -77,8 +77,6 @@ export default class ItemList
 				if (!results.success)
 					return;
 
-				this.displayPlaylistProperties(results.data.playlist)
-
 				document.getElementById("itemId-" + id).remove();
 			});
 		}

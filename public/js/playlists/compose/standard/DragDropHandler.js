@@ -65,7 +65,7 @@ export class DragDropHandler
 	{
 		const options = {
 			copy: (el) =>{ // copy allowed only if source is another container
-				return el.hasAttribute("select-data-id") === true;
+				return el.hasAttribute("data-select-id") === true;
 			},
 			accepts: (el, target, source) => {
 				if (source === this.#dropSource)
@@ -131,7 +131,6 @@ export class DragDropHandler
 				}
 
 				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
-				this.#itemList.displayPlaylistProperties(result.data.playlist);
 
 				// for debug only console.log('Element:','Position: ', droppedIndex);
 				el.remove();
