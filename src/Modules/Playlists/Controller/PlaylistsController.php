@@ -66,8 +66,6 @@ class PlaylistsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-
-
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException

@@ -20,9 +20,11 @@
 
 namespace App\Modules\Playlists\Repositories;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Database\BaseRepositories\FindOperationsTrait;
 use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\TransactionsTrait;
+use App\Modules\Playlists\Helper\ItemType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -49,6 +51,54 @@ class ItemsRepository extends Sql
 		$orderBy = [['sort' => 'item_order', 'order' => 'ASC']];
 
 		return $this->findAllBy($where,[], [], '', $orderBy);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function findAllByPlaylistIdWithJoins(int $playlistId, string $edition): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->from($this->table);
+		$queryBuilder->where('playlist_id = :playlist_id'.$playlistId);
+		$queryBuilder->set('playlist_id', $playlistId);
+		$queryBuilder->orderBy('item_order', 'ASC');
+		$queryBuilder->leftJoin(
+			'playlists_items',
+			'mediapool_files',
+			'mediapool_files',
+			'item_type='.ItemType::MEDIAPOOL->value.' AND  playlists_items.file_resource = mediapool_files.checksum'
+		);
+
+		$select = 'item_id, playlist_id, playlists_items.UID, item_type, item_order,
+					file_resource, datasource, item_duration, item_filesize, mimetype, item_name, properties, conditional begin_trigger, end_trigger, mediapool_files.extension';
+
+		if ($edition === Config::PLATFORM_EDITION_CORE || $edition === Config::PLATFORM_EDITION_ENTERPRISE)
+		{
+			$select .= ', templates_content.filetype, templates_content.media_type';
+			$queryBuilder->leftJoin(
+				'playlists_items',
+				'templates_content',
+				'',
+				'item_type='.ItemType::TEMPLATE->value.' AND  playlists_items.file_resource = templates_content.content_id'
+			);
+		}
+
+		if ($edition === Config::PLATFORM_EDITION_ENTERPRISE)
+		{
+			$select .= ', channels.channel_type, channels.view_mode, channels.vendor';
+			$queryBuilder->leftJoin(
+				'playlists_items',
+				'channels',
+				'',
+				'item_type='.ItemType::CHANNEL->value.' AND  playlists_items.file_resource = channels.channel_id'
+			);
+		}
+
+		$queryBuilder->select($select);
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative() ;
+
 	}
 
 	/**

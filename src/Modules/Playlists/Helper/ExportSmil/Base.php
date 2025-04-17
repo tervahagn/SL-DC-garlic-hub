@@ -1,6 +1,8 @@
 <?php
-namespace App\Modules\Playlists\Helper\export;
+namespace App\Modules\Playlists\Helper\ExportSmil;
 
+
+use App\Framework\Exceptions\ModuleException;
 
 /**
  * Export playlist items from db and write the SMIL-file body to disc
@@ -12,7 +14,7 @@ namespace App\Modules\Playlists\Helper\export;
  *
  * Real playlist duration and filesize needs be calculated after export and set to database
  */
-abstract class Base extends BaseItemController
+abstract class Base
 {
 	/**
 	 * @var string
@@ -29,16 +31,9 @@ abstract class Base extends BaseItemController
 	 */
 	protected $templates_path;
 
-	/**
-	 * @param string    $module_name
-	 * @param Config    $Config
-	 * @param Model     $PlaylistModel
-	 * @param ItemsModel $itemsModel
-	 */
-	public function  __construct($module_name, Config $Config, Model $PlaylistModel, ItemsModel $itemsModel)
+	public function  __construct(Config $Config, ItemsRepositoryFactory $repositoryFactory)
 	{
-		$this->setModuleName($module_name)
-			 ->setPlaylistModel($PlaylistModel)
+		$this->setPlaylistModel($PlaylistModel)
 			 ->setItemsModel($itemsModel)
 			 ->setConfig($Config);
 	}
@@ -46,18 +41,12 @@ abstract class Base extends BaseItemController
 	abstract public function createMediaSymlinks(Content $Content);
 	abstract public function createTemplatesSymlinks(Content $Content);
 
-	/**
-	 * @param   string  $path
-	 * @return  $this
-	 * @throws  ModuleException
-	 */
-	public function setPlaylistBasePath($path)
+
+	public function setPlaylistBasePath($path): static
 	{
 		$real_path = realpath(_BasePath . $path);
 		if ($real_path === false)
-		{
-			throw new ModuleException($this->getModuleName(), 'Playlist path of ' . $real_path . ' does not exists');
-		}
+			throw new ModuleException($this->moduleName, 'Playlist path of ' . $real_path . ' does not exists');
 
 		$this->playlist_base_path =  $real_path . DIRECTORY_SEPARATOR;
 		return $this;

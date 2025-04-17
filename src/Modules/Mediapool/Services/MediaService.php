@@ -68,6 +68,11 @@ class MediaService
 		return $this->pathTumbnails;
 	}
 
+	public function getPathOriginals(): string
+	{
+		return $this->pathOriginals;
+	}
+
 	public function listMedia(int $nodeId): array
 	{
 		try

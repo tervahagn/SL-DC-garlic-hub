@@ -1,5 +1,5 @@
 <?php
-namespace App\Modules\Playlists\Helper\export\items;
+namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
 
 interface ItemInterface

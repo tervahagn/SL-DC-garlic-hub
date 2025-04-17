@@ -51,6 +51,7 @@ export class PlayListsProperties
 		});
 		this.#saveChanges.addEventListener('click', async () =>
 		{
+			await this.#playlistsService.export(playlistId);
 			PlayListsProperties.removeSave();
 		});
 	}

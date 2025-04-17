@@ -48,6 +48,7 @@ use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\DurationCalculatorService;
+use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
@@ -72,6 +73,7 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
+		new ExportService($container->get(Config::class), $container->get(ItemsRepository::class)),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);

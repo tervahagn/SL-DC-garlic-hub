@@ -1,18 +1,8 @@
 <?php
 namespace Thymian\modules\playlists\export;
 
-use Symfony\Component\Yaml\Exception\RuntimeException;
-use Thymian\framework\core\Config;
-use Thymian\framework\core\Directory;
-use Thymian\framework\exceptions\BaseException;
-use Thymian\framework\exceptions\ModuleException;
-use Thymian\framework\logging\Logger;
-use Thymian\framework\model\File;
-use Thymian\framework\model\GenericFactory;
-use Thymian\modules\player\PlayerModel;
-use Thymian\modules\playlists\Content;
-use Thymian\modules\playlists\ItemsModel;
-use Thymian\modules\playlists\Model;
+use App\Framework\Core\Config\Config;
+use League\Flysystem\Filesystem;
 
 class SmilLocal extends Base
 {
@@ -20,42 +10,17 @@ class SmilLocal extends Base
 	 * @var Directory
 	 */
 	protected $Directory;
+	protected Config $config;
 
-	/**
-	 * @var GenericFactory
-	 */
-	protected $GenericFactory;
 
-	/**
-	 * @param string            $module_name
-	 * @param Config            $Config
-	 * @param Model             $PlaylistModel
-	 * @param ItemsModel        $itemsModel
-	 * @param GenericFactory    $genericFactory
-	 */
-	public function  __construct($module_name, Config $Config, Model $PlaylistModel, ItemsModel $itemsModel, GenericFactory $genericFactory)
+	protected Filesystem $fileSystem;
+
+
+	public function  __construct(Config $Config, Model $PlaylistModel, ItemsModel $itemsModel, Filesystem $filesystem)
 	{
-		$this->setGenericFactory($genericFactory);
-		parent::__construct($module_name, $Config, $PlaylistModel, $itemsModel);
+		$this->fileSystem = $filesystem;
 	}
 
-	/**
-	 * @return GenericFactory
-	 */
-	public function getGenericFactory()
-	{
-		return $this->GenericFactory;
-	}
-
-	/**
-	 * @param GenericFactory $GenericFactory
-	 * @return $this
-	 */
-	public function setGenericFactory($GenericFactory)
-	{
-		$this->GenericFactory = $GenericFactory;
-		return $this;
-	}
 
 	/**
 	 * some thing we need to initialise first
@@ -119,7 +84,7 @@ class SmilLocal extends Base
 		try
 		{
 			// prefetch.smil
-			$File = $this->getGenericFactory()->createFileInstance($this->buildLocalPath() . 'prefetch.smil');
+			$File = $this->getFileSystem()->createFileInstance($this->buildLocalPath() . 'prefetch.smil');
 			$File->setData($Content->getPrefetchContent())->writeData();
 
 			if ($fix_permissions === true)
@@ -128,7 +93,7 @@ class SmilLocal extends Base
 			}
 
 			// items.smil
-			$File = $this->getGenericFactory()->createFileInstance($this->buildLocalPath() . 'items.smil');
+			$File = $this->getFileSystem()->createFileInstance($this->buildLocalPath() . 'items.smil');
 			$File->setData($Content->getElementsContent())->writeData();
 
 			if ($fix_permissions === true)
@@ -137,7 +102,7 @@ class SmilLocal extends Base
 			}
 
 			// exclusive.smil
-			$File = $this->getGenericFactory()->createFileInstance($this->buildLocalPath() . 'exclusive.smil');
+			$File = $this->getFileSystem()->createFileInstance($this->buildLocalPath() . 'exclusive.smil');
 			$File->setData($Content->getExclusiveContent())->writeData();
 
 			if ($fix_permissions === true)
@@ -146,7 +111,7 @@ class SmilLocal extends Base
 			}
 
 			// preview.smil
-			$File = $this->getGenericFactory()->createFileInstance($this->buildLocalPath() . 'preview.smil');
+			$File = $this->getFileSystem()->createFileInstance($this->buildLocalPath() . 'preview.smil');
 			$File->setData($Content->getPreviewContent())->writeData();
 
 			if ($fix_permissions === true)

@@ -31,12 +31,14 @@ use Psr\Log\LoggerInterface;
 class PlaylistsService extends AbstractBaseService
 {
 	private readonly PlaylistsRepository $playlistsRepository;
+	private readonly ExportService $exportService;
 	private readonly AclValidator $aclValidator;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, ExportService $exportService, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistsRepository = $playlistsRepository;
-		$this->aclValidator = $aclValidator;
+		$this->exportService       = $exportService;
+		$this->aclValidator        = $aclValidator;
 		parent::__construct($logger);
 	}
 
@@ -97,6 +99,14 @@ class PlaylistsService extends AbstractBaseService
 
 	public function exportToSmil(int $playlistId): int
 	{
+		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
+
+		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+		{
+			$this->logger->error('Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
+			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
+		}
+
 
 	}
 

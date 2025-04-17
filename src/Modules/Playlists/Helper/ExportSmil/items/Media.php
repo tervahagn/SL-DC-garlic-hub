@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper\export\items;
+namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
 /**
  * Class to export SMIL media
