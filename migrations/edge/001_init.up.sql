@@ -146,6 +146,14 @@ CREATE TABLE playlists (
     multizone TEXT DEFAULT NULL
 );
 
+CREATE TRIGGER update_playlists_last_update
+    AFTER UPDATE ON playlists
+BEGIN
+    UPDATE playlists
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE playlist_id = NEW.playlist_id;
+END;
+
 CREATE TABLE playlists_items (
     item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     playlist_id INTEGER NOT NULL DEFAULT 0,
