@@ -107,7 +107,7 @@ class PlaylistsService extends AbstractBaseService
 			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
 		}
 
-
+		$this->exportService->export($playlistId);
 	}
 
 	/**

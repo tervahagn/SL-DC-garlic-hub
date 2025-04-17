@@ -25,7 +25,6 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
  */
 class Container extends Base implements ItemInterface
 {
-	protected array $item       = [];
 	protected array $properties = [];
 
 	public function getExclusive(): string

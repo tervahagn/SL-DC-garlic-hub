@@ -20,28 +20,30 @@
 
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
+use App\Framework\Exceptions\CoreException;
+
 /**
  * Class to export SMIL media
  */
 class Media extends Base implements ItemInterface
 {
-	const MEDIA_TYPE_IMAGE       = 'image';
-	const MEDIA_TYPE_VIDEO       = 'video';
-	const MEDIA_TYPE_AUDIO       = 'audio';
-	const MEDIA_TYPE_WIDGET      = 'widget';
-	const MEDIA_TYPE_DOWNLOAD    = 'download';
-	const MEDIA_TYPE_APPLICATION = 'application';
-	const MEDIA_TYPE_TEXT        = 'text';
+	const string MEDIA_TYPE_IMAGE       = 'image';
+	const string MEDIA_TYPE_VIDEO       = 'video';
+	const string MEDIA_TYPE_AUDIO       = 'audio';
+	const string MEDIA_TYPE_WIDGET      = 'widget';
+	const string MEDIA_TYPE_DOWNLOAD    = 'download';
+	const string MEDIA_TYPE_APPLICATION = 'application';
+	const string MEDIA_TYPE_TEXT        = 'text';
 
-	const MEDIA_ID_PREFIX        = 'm';
+	const string MEDIA_ID_PREFIX        = 'm';
 
-	const FITTING_FILL          = 1;
-	const FITTING_MEET          = 2;
-	const FITTING_MEETBEST      = 3;
-	const FITTING_SLICE         = 4;
-	const FITTING_SCROLL        = 5;
+	const int FITTING_FILL          = 1;
+	const int FITTING_MEET          = 2;
+	const int FITTING_MEETBEST      = 3;
+	const int FITTING_SLICE         = 4;
+	const int FITTING_SCROLL        = 5;
 
-	protected $link = '';
+	protected string $link = '';
 
 	public function setLink($link):static
 	{
@@ -70,34 +72,6 @@ class Media extends Base implements ItemInterface
 			return '';
 
 		return $this->setCategories($this->selectTag());
-	}
-
-	public function getElementForPreview(): string
-	{
-		switch($this->item['media_type'])
-		{
-			case self::MEDIA_TYPE_IMAGE:
-				$media_link = ($this->item['item_type'] == ItemsModel::ITEM_TYPE_MEDIA) ? $this->link : './resources/icons/image.png';
-				return '<img src="' . $media_link . '" dur="'.$this->item['item_duration'].'s" '.$this->getFit().' title="'.$this->item['item_name'].'" />'."\n";
-			case self::MEDIA_TYPE_VIDEO:
-				// check if intern media or external
-				$media_link = ($this->item['item_type'] == ItemsModel::ITEM_TYPE_MEDIA) ? $this->link : './resources/icons/video.png';
-				return '<video src="' . $media_link . '" soundLevel="'.$this->properties['volume'].'%"'.' '.$this->getFit().' title="'.$this->item['item_name'].'" />'."\n";
-
-			case self::MEDIA_TYPE_AUDIO:
-				// check if intern media or external
-				$media_link = ($this->item['item_type'] == ItemsModel::ITEM_TYPE_MEDIA) ? $this->link : './resources/icons/audio.png';
-				return '<audio src="' . $media_link . '" soundLevel="'.$this->properties['volume'].'%" title="'.$this->item['item_name'].'" />'."\n";
-
-			case self::MEDIA_TYPE_WIDGET:
-			case self::MEDIA_TYPE_DOWNLOAD:
-			case self::MEDIA_TYPE_APPLICATION:
-			case self::MEDIA_TYPE_TEXT:
-				return '<img src="./resources/icons/html5.png" dur="'.$this->item['item_duration'].'s" '.$this->getFit().' title="'.$this->item['item_name'].'"/>'."\n";
-
-			default:
-				return '';
-		}
 	}
 
 	public function getPrefetch(): string
@@ -147,7 +121,7 @@ class Media extends Base implements ItemInterface
 	/**
 	 * @return string
 	 */
-	public function setAudioTag()
+	public function setAudioTag(): string
 	{
 		$duration = '';
 		if (($this->item['bearer'] == 1 AND $this->item['item_duration'] > 0))
@@ -165,7 +139,7 @@ class Media extends Base implements ItemInterface
 	/**
 	 * @return string
 	 */
-	public function setVideoTag()
+	public function setVideoTag(): string
 	{
 		$duration = '';
 		if (($this->item['bearer'] == 1 AND $this->item['item_duration'] > 0) OR $this->item['bearer'] == 2)
@@ -182,12 +156,8 @@ class Media extends Base implements ItemInterface
 		return $ret;
 	}
 
-// ========================= protected methods ==============================================
 
-	/**
-	 * @return string
-	 */
-	protected function insertXmlIdWhenMaster()
+	protected function insertXmlIdWhenMaster(): string
 	{
 		if (!$this->is_master)
 			return '';
@@ -198,7 +168,7 @@ class Media extends Base implements ItemInterface
 	/**
 	 * @return string
 	 */
-	protected function selectTag()
+	protected function selectTag(): string
 	{
 		switch($this->item['media_type'])
 		{
@@ -224,10 +194,7 @@ class Media extends Base implements ItemInterface
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getFit()
+	protected function getFit(): string
 	{
 		if (!array_key_exists('fit', $this->properties))
 		{
@@ -256,10 +223,7 @@ class Media extends Base implements ItemInterface
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getMediaAlign()
+	protected function getMediaAlign(): string
 	{
 		if (!array_key_exists('media_align', $this->properties))
 		{
@@ -274,10 +238,7 @@ class Media extends Base implements ItemInterface
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function setParameters()
+	protected function setParameters(): string
 	{
 		$ret = '';
 		if (is_null($this->item['content_data'] || empty($this->item['content_data'])))
@@ -293,11 +254,7 @@ class Media extends Base implements ItemInterface
 		return $ret;
 	}
 
-	/**
-	 * @param   string  $tag
-	 * @return  string
-	 */
-	protected function setCategories($tag)
+	protected function setCategories($tag): string
 	{
 		if (array_key_exists('categories', $this->properties) &&
 			is_array($this->properties['categories']) &&
@@ -316,7 +273,7 @@ class Media extends Base implements ItemInterface
 	}
 
 	/**
-	 * @return $this
+	 * @throws CoreException
 	 */
 	protected function getProperties(): static
 	{
@@ -365,4 +322,8 @@ class Media extends Base implements ItemInterface
 		return $ret;
 	}
 
+	public function getElementForPreview()
+	{
+		// TODO: Implement getElementForPreview() method.
+	}
 }

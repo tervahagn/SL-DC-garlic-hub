@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -20,9 +20,31 @@
 
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
-interface ItemInterface
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Helper\ItemType;
+
+class ItemsFactory
 {
-    public function getPrefetch();
-	public function getElement();
-	public function getElementForPreview();
+	private Config $config;
+
+	public function __construct($config)
+	{
+		$this->config = $config;
+	}
+
+	public function createItem($item)
+	{
+		switch ($item['item_type'])
+		{
+			case ItemType::MEDIAPOOL->value:
+				return new Media($this->config, $item);
+			case ItemType::PLAYLIST->value:
+				return new Container($this->config, $item);
+			default:
+				new ModuleException('playlists', 'Unknown item type '. $item['item_type'].'.');
+
+		}
+
+	}
 }

@@ -27,20 +27,15 @@ class Base
 {
 	protected array $item = [];
 	protected readonly Config $config;
+
 	protected bool $isMaster = false;
 	protected string $trigger = '';
 	protected array $properties = [];
 
-	public function __construct(Config $config)
+	public function __construct(Config $config, array $item)
 	{
 		$this->config = $config;
-	}
-
-	public function set(array $item): static
-	{
-		$this->item       = $item;
-		$this->getProperties();
-		return $this;
+		$this->item   = $item;
 	}
 
 	protected function determineBeginEndTrigger(): string

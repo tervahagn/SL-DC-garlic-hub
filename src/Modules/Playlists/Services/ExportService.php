@@ -22,7 +22,9 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Modules\Playlists\Repositories\ItemsRepository;
+use Doctrine\DBAL\Exception;
 
 class ExportService
 {
@@ -39,13 +41,52 @@ class ExportService
 		$this->itemsRepository = $itemsRepository;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function export(int $playlistId)
 	{
 		$results = $this->itemsRepository->findAllByPlaylistIdWithJoins($playlistId, $this->config->getEdition());
+		foreach ($results as $item)
+		{
+			switch ($item->type)
+			{
+				
+			}
 
+		}
 
 
 	}
 
+	/**
+	 * @throws CoreException
+	 */
+	protected function handleCreateMediaSymlinks(Content $Content)
+	{
+		if ($this->config->getConfigValue('content_server_url', 'mediapool'))
+		{
+			$this->getExportRemote()->createMediaSymlinks($Content);
+		}
+		else
+		{
+			$this->getExportLocal()->createMediaSymlinks($Content);
+		}
 
+		return $this;
+	}
+
+	protected function handleCreateTemplateSymlinks(Content $Content)
+	{
+		if ($this->config->getConfigValue('_template_content_server_url', 'templates') != '' && !\Thymian::isTemplateServer())
+		{
+			$this->getExportRemote()->createTemplatesSymlinks($Content);
+		}
+		else
+		{
+			$this->getExportLocal()->createTemplatesSymlinks($Content);
+		}
+
+		return $this;
+	}
 }

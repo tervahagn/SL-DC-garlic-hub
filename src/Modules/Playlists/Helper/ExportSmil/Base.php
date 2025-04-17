@@ -1,12 +1,31 @@
 <?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 namespace App\Modules\Playlists\Helper\ExportSmil;
 
-
+use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\ModuleException;
 
 /**
  * Export playlist items from db and write the SMIL-file body to disc
- * Channels and internal playlists are asigned as placeholders like {XYZ_ITEM_2}
+ * Channels and internal playlists are assigned as placeholders like {XYZ_ITEM_2}
  * It also creates a SMIL-file for the Javascript SMIL preview-player
  *
  * Class player_playlist creates at least complete SMIL head and body from the
@@ -16,26 +35,14 @@ use App\Framework\Exceptions\ModuleException;
  */
 abstract class Base
 {
-	/**
-	 * @var string
-	 */
-	protected $playlist_base_path;
+	protected Config $config;
+	protected string $playlist_base_path;
+	protected string $media_pool_path;
+	protected string $templates_path;
 
-	/**
-	 * @var string
-	 */
-	protected $media_pool_path;
-
-	/**
-	 * @var string
-	 */
-	protected $templates_path;
-
-	public function  __construct(Config $Config, ItemsRepositoryFactory $repositoryFactory)
+	public function  __construct(Config $config)
 	{
-		$this->setPlaylistModel($PlaylistModel)
-			 ->setItemsModel($itemsModel)
-			 ->setConfig($Config);
+		$this->config = $config;
 	}
 
 	abstract public function createMediaSymlinks(Content $Content);
