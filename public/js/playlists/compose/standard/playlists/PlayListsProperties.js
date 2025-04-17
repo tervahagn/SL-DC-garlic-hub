@@ -24,7 +24,8 @@ export class PlayListsProperties
 	#totalItems       = document.getElementById('totalItems');
 	#totalFilesize    = document.getElementById('totalFilesize');
 	#toggleShuffle    = document.getElementById("toggleShuffle");
-	#shufflePicking    = document.getElementById("shufflePicking");
+	#shufflePicking   = document.getElementById("shufflePicking");
+	#saveChanges      = document.getElementById("saveChanges");
 
 	#playlistsService = null;
 	#lang             = null;
@@ -41,12 +42,29 @@ export class PlayListsProperties
 		this.#toggleShuffle.addEventListener('click', async () =>
 		{
 			await this.#playlistsService.toggleShuffle(playlistId);
+			PlayListsProperties.notifySave();
 		});
 		this.#shufflePicking.addEventListener('change', async () =>
 		{
 			await this.#playlistsService.shufflePicking(playlistId, this.#shufflePicking.value);
+			PlayListsProperties.notifySave();
+		});
+		this.#saveChanges.addEventListener('click', async () =>
+		{
+			PlayListsProperties.removeSave();
 		});
 	}
+
+	static notifySave()
+	{
+		document.getElementById("saveChanges").classList.add("notify-save");
+	}
+
+	static removeSave()
+	{
+		document.getElementById("saveChanges").classList.remove("notify-save");
+	}
+
 
 	display(playlistProperties)
 	{

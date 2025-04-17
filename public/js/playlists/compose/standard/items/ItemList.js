@@ -16,8 +16,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-import {Utils} from "../../../../core/Utils.js";
+import {PlayListsProperties} from "../playlists/PlayListsProperties.js";
 
 export default class ItemList
 {
@@ -77,6 +76,7 @@ export default class ItemList
 				if (!results.success)
 					return;
 
+				PlayListsProperties.notifySave();
 				document.getElementById("itemId-" + id).remove();
 			});
 		}

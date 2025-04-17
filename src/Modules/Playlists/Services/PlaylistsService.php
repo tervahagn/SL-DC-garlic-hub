@@ -56,7 +56,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function toggleShuffle(int $playlistId)
+	public function toggleShuffle(int $playlistId): int
 	{
 		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
@@ -80,7 +80,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function shufflePicking(int $playlistId, int $shufflePicking = 0)
+	public function shufflePicking(int $playlistId, int $shufflePicking = 0): int
 	{
 		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
@@ -95,8 +95,12 @@ class PlaylistsService extends AbstractBaseService
 		return $this->update($playlistId, $saveData);
 	}
 
+	public function exportToSmil(int $playlistId): int
+	{
 
-		/**
+	}
+
+	/**
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

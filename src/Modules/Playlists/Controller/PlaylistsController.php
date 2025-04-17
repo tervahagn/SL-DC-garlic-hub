@@ -50,6 +50,23 @@ class PlaylistsController
 		$this->parameters                = $parameters;
 	}
 
+	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$post        = $request->getParsedBody();
+		$playlistId = (int) $post['playlist_id'] ?? 0;
+		if ($playlistId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
+
+		if ($this->playlistsService->exportToSmil($playlistId) === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
+
 
 	/**
 	 * @throws ModuleException

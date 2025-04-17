@@ -100,3 +100,9 @@ main header
         font-size: 0.7rem;
         text-align: center;
     }
+
+.notify-save
+{
+    background-color: red;
+    color: white;
+}
