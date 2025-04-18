@@ -58,12 +58,12 @@ export class PlaylistsProperties
 
 	static notifySave()
 	{
-		document.getElementById("saveChanges").classList.add("notify-save");
+		document.getElementById("playerExport").classList.add("notify-save");
 	}
 
 	static removeSave()
 	{
-		document.getElementById("saveChanges").classList.remove("notify-save");
+		document.getElementById("playerExport").classList.remove("notify-save");
 	}
 
 
