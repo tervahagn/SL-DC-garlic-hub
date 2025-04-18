@@ -53,7 +53,7 @@ class Container extends Base implements ItemInterface
 	public function getSequentialTag(): string
 	{
 		return 	"\t\t\t\t".'<seq '.$this->setExprAttribute().$this->trigger.'title="'.$this->encodeItemNameForTitleTag().'">'."\n".
-		'{ITEMS_'.$this->item['media_id'].'}'."\n".
+		'{ITEMS_'.$this->item['file_resource'].'}'."\n".
 		"\t\t\t\t".'</seq>'."\n";
 	}
 
@@ -68,13 +68,14 @@ class Container extends Base implements ItemInterface
 
 	public function getPrefetch(): string
 	{
-		return '{PREFETCH_'.$this->item['media_id'].'}'."\n";
+		return '{PREFETCH_'.$this->item['file_resource'].'}'."\n";
 	}
 
 	public function getElementForPreview(): string
 	{
 		return '<seq id="playlist_'.$this->item['media_id'].'" title="'.$this->item['media_id'].'"/>'."\n";
 	}
+
 	protected function getProperties(): static
 	{
 		if (!is_array($this->item['properties']) ||

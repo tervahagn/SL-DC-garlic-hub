@@ -36,6 +36,13 @@ class Base
 	{
 		$this->config = $config;
 		$this->item   = $item;
+		$this->getProperties();
+	}
+
+	public function setIsMasterPlaylist(bool $is): static
+	{
+		$this->isMaster = $is;
+		return $this;
 	}
 
 	protected function determineBeginEndTrigger(): string
@@ -165,6 +172,9 @@ class Base
 
 	protected function hasBeginTrigger(): bool
 	{
+		if (empty($this->item['begin_trigger']))
+			return false;
+
 		return (is_array($this->item['begin_trigger']) && count($this->item['begin_trigger']) > 0);
 	}
 
@@ -173,6 +183,9 @@ class Base
 	 */
 	protected function hasEndTrigger(): bool
 	{
+		if (empty($this->item['end_trigger']))
+			return false;
+
 		return (is_array($this->item['end_trigger']) && count($this->item['end_trigger']) > 0);
 	}
 
@@ -181,38 +194,43 @@ class Base
 	 */
 	protected function setExprAttribute(): string
 	{
+		if (empty($this->item['conditional']))
+			return '';
+
+		$conditional = unserialize($this->item['conditional']);
+
 		$expr = '';
-		if ($this->item['date_from'] != '0000-00-00')
+		if ($conditional['date_from'] != '0000-00-00')
 		{
 			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->item['date_from']."')&gt;=0";
 		}
-		if ($this->item['date_until'] != '0000-00-00')
+		if ($conditional['date_until'] != '0000-00-00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
 			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->item['date_until']."')&lt;=0";
 		}
-		if ($this->item['time_from'] != '00:00:00')
+		if ($conditional['time_from'] != '00:00:00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
 			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$this->item['time_from']."')&gt;=0";
 		}
-		if ($this->item['time_until'] != '00:00:00')
+		if ($conditional['time_until'] != '00:00:00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
-			if ($this->item['time_until'] == '00:00:00')
+			if ($conditional['time_until'] == '00:00:00')
 				$time_until = '23:59:59';
 			else
-				$time_until = $this->item['time_until'];
+				$time_until = $conditional['time_until'];
 			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$time_until."')&lt;=0";
 		}
 		$weektimes = '';
 
 		$this->initialiseWeekTimes();
 
-		if (count($this->item['weektimes']) > 0)
+		if (count($conditional['weektimes']) > 0)
 		{
 			if ($expr != '')
 			{
@@ -221,13 +239,13 @@ class Base
 			$j = 0;
 			for ($i = 0; $j < 128; $j=pow(2, $i++))
 			{
-				if(isset($this->item['weektimes'][$j]))
+				if(isset($conditional['weektimes'][$j]))
 				{
 					if ($weektimes != '')
 						$weektimes .= ' or ';
 
-					$from = $this->convertSeconds($this->item['weektimes'][$j]['from']*15*60);
-					$until = $this->convertSeconds($this->item['weektimes'][$j]['until']*15*60);
+					$from = $this->convertSeconds($conditional['weektimes'][$j]['from']*15*60);
+					$until = $this->convertSeconds($conditional['weektimes'][$j]['until']*15*60);
 					if ($until == '00:00:00')
 						$until = '23:59:59';
 					$weektimes .= "(".($i-1)."=adapi-weekday() and adapi-compare(substring-after(adapi-date(), 'T'), '$from')&gt;=0 and adapi-compare(substring-after(adapi-date(), 'T'), '$until')&lt;=0)";
@@ -244,7 +262,7 @@ class Base
 		return $expr;
 	}
 
-	protected function convertSeconds($seconds): string
+	protected function convertSeconds($seconds): \DateInterval
 	{
 		$dtT = new DateTime("@$seconds");
 		return (new DateTime("@0"))->diff($dtT);

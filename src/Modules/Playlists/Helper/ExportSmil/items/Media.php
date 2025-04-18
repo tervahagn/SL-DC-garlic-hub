@@ -21,6 +21,8 @@
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
 use App\Framework\Exceptions\CoreException;
+use App\Modules\Playlists\Helper\ItemDatasource;
+use App\Modules\Playlists\Helper\ItemFlags;
 
 /**
  * Class to export SMIL media
@@ -36,12 +38,6 @@ class Media extends Base implements ItemInterface
 	const string MEDIA_TYPE_TEXT        = 'text';
 
 	const string MEDIA_ID_PREFIX        = 'm';
-
-	const int FITTING_FILL          = 1;
-	const int FITTING_MEET          = 2;
-	const int FITTING_MEETBEST      = 3;
-	const int FITTING_SLICE         = 4;
-	const int FITTING_SCROLL        = 5;
 
 	protected string $link = '';
 
@@ -77,7 +73,7 @@ class Media extends Base implements ItemInterface
 	public function getPrefetch(): string
 	{
 		$ret = '';
-		if ($this->item['media_type'] != self::MEDIA_TYPE_TEXT) // to not set prefetch for websites
+		if ($this->item['mimetype'] !== 'text/html') // to not set prefetch for websites
 			$ret = $this->setCategories("\t\t\t\t\t\t\t".'<prefetch src="'.$this->link.'" />'."\n");
 
 		return $ret;
@@ -124,13 +120,14 @@ class Media extends Base implements ItemInterface
 	public function setAudioTag(): string
 	{
 		$duration = '';
-		if (($this->item['bearer'] == 1 AND $this->item['item_duration'] > 0))
+		if (($this->item['datasource'] == ItemDatasource::FILE->value && $this->item['item_duration'] > 0))
 			$duration = 'dur="'.$this->item['item_duration'].'s" ';
 		$ret  = "\t\t\t\t\t\t\t".'<audio '.$this->insertXmlIdWhenMaster().$this->setExprAttribute().$this->trigger.'region="screen" src="'.$this->link.'" '.$duration.'soundLevel="'.$this->properties['volume'].'%" title="'.$this->encodeItemNameForTitleTag().'">'."\n";
 		$ret .= $this->checkLoggable();
-		if ($this->item['bearer'] == 0)
+
+		if ($this->item['datasource'] == ItemDatasource::FILE->value)
 			$ret .= "\t\t\t\t\t\t\t\t".'<param name="cacheControl" value="onlyIfCached" />'."\n";
-		elseif ($this->item['bearer'] == 1)
+		elseif ($this->item['datasource'] == ItemDatasource::STREAM->value)
 			$ret .= "\t\t\t\t\t\t\t\t".'<param name="stream" value="true" />'."\n";
 		$ret .= "\t\t\t\t\t\t\t".'</audio>'."\n";
 		return $ret;
@@ -142,24 +139,32 @@ class Media extends Base implements ItemInterface
 	public function setVideoTag(): string
 	{
 		$duration = '';
-		if (($this->item['bearer'] == 1 AND $this->item['item_duration'] > 0) OR $this->item['bearer'] == 2)
+		if (($this->item['datasource'] == ItemDatasource::FILE->value && $this->item['item_duration'] > 0))
 			$duration = 'dur="'.$this->item['item_duration'].'s" ';
+
 		$ret  = "\t\t\t\t\t\t\t".'<video '.$this->insertXmlIdWhenMaster().$this->setExprAttribute().$this->trigger.'region="screen" src="'.$this->link.'" '.$duration.'soundLevel="'.$this->properties['volume'].'%"'.' '.$this->getFit().' title="'.$this->encodeItemNameForTitleTag().'">'."\n";
-		if ($this->item['bearer'] == 2 AND $this->item['videoin_input'] != '')
+
+		/*
+		if ($this->item['datasource'] == ItemDatasource::STREAM->value && $this->item['videoin_input'] != '')
 			$ret .= "\t\t\t\t\t\t\t\t".'<param name="adapi:videoInput" value="'.$this->item['videoin_input'].'" />'."\n";
+		*/
+
 		$ret .= $this->checkLoggable();
-		if ($this->item['bearer'] == 0)
+
+		if ($this->item['datasource'] == ItemDatasource::FILE->value)
 			$ret .= "\t\t\t\t\t\t\t\t".'<param name="cacheControl" value="onlyIfCached" />'."\n";
-		elseif ($this->item['bearer'] == 1)
+		elseif ($this->item['datasource'] == ItemDatasource::STREAM->value)
 			$ret .= "\t\t\t\t\t\t\t\t".'<param name="stream" value="true" />'."\n";
+
 		$ret .= "\t\t\t\t\t\t\t".'</video>'."\n";
+
 		return $ret;
 	}
 
 
 	protected function insertXmlIdWhenMaster(): string
 	{
-		if (!$this->is_master)
+		if (!$this->isMaster)
 			return '';
 
 		return 'xml:id="'.self::MEDIA_ID_PREFIX.$this->item['smil_playlist_item_id'].'" ';
@@ -170,7 +175,9 @@ class Media extends Base implements ItemInterface
 	 */
 	protected function selectTag(): string
 	{
-		switch($this->item['media_type'])
+		$mediaType = explode('/', $this->item['mimetype'], 2)[0];
+
+		switch($mediaType)
 		{
 			case self::MEDIA_TYPE_IMAGE:
 				return $this->setImageTag();
@@ -194,33 +201,15 @@ class Media extends Base implements ItemInterface
 		}
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	protected function getFit(): string
 	{
-		if (!array_key_exists('fit', $this->properties))
-		{
-			return '';
-		}
+		if (!isset($this->properties['fit']))
+			return 'fit="'.$this->config->getConfigValue('fit', 'playlists', 'Defaults').'"';
 
-		switch ($this->properties['fit'])
-		{
-			case self::FITTING_FILL:
-				return 'fit="fill"';
-
-			case self::FITTING_MEET:
-				return 'fit="meet"';
-
-			case self::FITTING_MEETBEST:
-				return 'fit="meetBest"';
-
-			case self::FITTING_SLICE:
-				return 'fit="slice"';
-
-			case self::FITTING_SCROLL:
-				return 'fit="scroll"';
-
-			default:
-				return '';
-		}
+		return 'fit="'.$this->properties['fit'].'"';
 	}
 
 	protected function getMediaAlign(): string
@@ -277,22 +266,22 @@ class Media extends Base implements ItemInterface
 	 */
 	protected function getProperties(): static
 	{
-		if (!array_key_exists('properties', $this->item) || !is_array($this->item['properties']) || empty($this->item['properties']))
+		if (empty($this->item['properties']) || !is_array($this->item['properties']))
 		{
 			$this->item['properties'] = array(
-				'transition' => $this->config->getConfigValue('_transition', 'smil_playlists'),
-				'fit'        => $this->config->getConfigValue('_fit', 'smil_playlists'),
-				'media_align'=> $this->config->getConfigValue('_media_align', 'smil_playlists'),
-				'volume'     => $this->config->getConfigValue('_volume', 'smil_playlists'),
-				'categories' => array(),
-				'animation'  => array(
+				'transition' => $this->config->getConfigValue('transition', 'playlists', 'Defaults'),
+				'fit'        => $this->config->getConfigValue('fit', 'playlists', 'Defaults'),
+				'media_align'=> $this->config->getConfigValue('media_align', 'playlists', 'Defaults'),
+				'volume'     => $this->config->getConfigValue('volume', 'playlists', 'Defaults'),
+				'categories' => [],
+				'animation'  => [
 					'animate'        => 0,
 					'attribute_name' => '',
 					'from'           => 0,
 					'to'             => 0,
 					'begin'          => 0,
 					'duration'       => 0
-				)
+				]
 			);
 		}
 
@@ -317,7 +306,7 @@ class Media extends Base implements ItemInterface
 	private function checkLoggable(): string
 	{
 		$ret = '';
-		if ($this->item['loggable'] == 1)
+		if (($this->item['flags'] & ItemFlags::loggable->value) > 0)
 			$ret =  "\t\t\t\t\t\t\t\t".'<param name="logContentId" value="'.$this->item['smil_playlist_item_id'].'" />'."\n";
 		return $ret;
 	}

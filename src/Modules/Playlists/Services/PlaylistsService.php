@@ -23,8 +23,10 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
+use League\Flysystem\FilesystemException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
@@ -97,17 +99,40 @@ class PlaylistsService extends AbstractBaseService
 		return $this->update($playlistId, $saveData);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws FilesystemException
+	 */
 	public function exportToSmil(int $playlistId): int
 	{
 		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
+
+		$count = 0;
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
 			$this->logger->error('Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
 			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
 		}
+		if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
+		{
+			$zones = unserialize($playlist['multizone']);
+			foreach ($zones as $zone)
+			{
+				$this->exportService->export($this->playlistsRepository->findFirstWithUserName($zone['zones']['zone_playlist_id']));
+				$count++;
+			}
+		}
+		else
+		{
+			$this->exportService->export($playlist);
+			$count++;
+		}
 
-		$this->exportService->export($playlistId);
+		return $count;
 	}
 
 	/**
@@ -250,6 +275,8 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+
+
 	public function findAllByItemsAsPlaylistAndMediaId(mixed $fileResource): array
 	{
 		return $this->playlistsRepository->findAllByItemsAsPlaylistAndMediaId($fileResource);
@@ -270,7 +297,7 @@ class PlaylistsService extends AbstractBaseService
 	private function collectDataForUpdate(array $postData): array
 	{
 		$saveData = [];
-		// only moduleadmin are allowed to change UID
+		// only module admin are allowed to change UID
 		if (array_key_exists('UID', $postData))
 			$saveData['UID'] = $postData['UID'];
 

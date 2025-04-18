@@ -28,7 +28,7 @@ class ItemsFactory
 {
 	private Config $config;
 
-	public function __construct($config)
+	public function __construct(Config $config)
 	{
 		$this->config = $config;
 	}
@@ -41,6 +41,10 @@ class ItemsFactory
 				return new Media($this->config, $item);
 			case ItemType::PLAYLIST->value:
 				return new Container($this->config, $item);
+			case ItemType::TEMPLATE->value:
+				return new Template($this->config, $item);
+			case ItemType::CHANNEL->value:
+				return new Channel($this->config, $item);
 			default:
 				new ModuleException('playlists', 'Unknown item type '. $item['item_type'].'.');
 

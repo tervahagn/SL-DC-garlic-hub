@@ -60,18 +60,17 @@ class ItemsRepository extends Sql
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->from($this->table);
-		$queryBuilder->where('playlist_id = :playlist_id'.$playlistId);
-		$queryBuilder->set('playlist_id', $playlistId);
+		$queryBuilder->where('playlist_id = :playlistId');
+		$queryBuilder->setParameter('playlistId', $playlistId);
 		$queryBuilder->orderBy('item_order', 'ASC');
 		$queryBuilder->leftJoin(
 			'playlists_items',
 			'mediapool_files',
-			'mediapool_files',
-			'item_type='.ItemType::MEDIAPOOL->value.' AND  playlists_items.file_resource = mediapool_files.checksum'
+			'',
+			'playlists_items.file_resource = mediapool_files.checksum'
 		);
 
-		$select = 'item_id, playlist_id, playlists_items.UID, item_type, item_order,
-					file_resource, datasource, item_duration, item_filesize, mimetype, item_name, properties, conditional begin_trigger, end_trigger, mediapool_files.extension';
+		$select = 'item_id, flags, playlist_id, playlists_items.UID, item_type, item_order, file_resource, datasource, item_duration, item_filesize, playlists_items.mimetype, item_name, properties, conditional begin_trigger, end_trigger, mediapool_files.extension';
 
 		if ($edition === Config::PLATFORM_EDITION_CORE || $edition === Config::PLATFORM_EDITION_ENTERPRISE)
 		{
@@ -98,7 +97,6 @@ class ItemsRepository extends Sql
 		$queryBuilder->select($select);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative() ;
-
 	}
 
 	/**

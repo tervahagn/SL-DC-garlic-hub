@@ -39,6 +39,9 @@ use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
+use App\Modules\Playlists\Helper\ExportSmil\items\ItemsFactory;
+use App\Modules\Playlists\Helper\ExportSmil\LocalSmilWriter;
+use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
@@ -64,7 +67,6 @@ $dependencies[ItemsRepository::class] = DI\factory(function (ContainerInterface 
 {
 	return new ItemsRepository($container->get('SqlConnection'));
 });
-
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new AclValidator($container->get(AclHelper::class));
@@ -73,7 +75,13 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
-		new ExportService($container->get(Config::class), $container->get(ItemsRepository::class)),
+		new ExportService(
+			$container->get(Config::class),
+			$container->get(ItemsRepository::class),
+			new LocalSmilWriter($container->get(Config::class), $container->get('LocalFileSystem')),
+			new PlaylistContent(new ItemsFactory($container->get(Config::class)), $container->get(Config::class),
+			)
+		),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
