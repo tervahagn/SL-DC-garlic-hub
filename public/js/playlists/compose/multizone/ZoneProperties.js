@@ -288,7 +288,7 @@ export class ZoneProperties
 
 		try
 		{
-			const url      = "/async/playlists/findbyId/" + this.ActiveGroup.zone_playlist_id;
+			const url      = "/async/playlists/find/" + this.ActiveGroup.zone_playlist_id;
 			const response = await fetch(url);
 			const playlist = await response.json();
 

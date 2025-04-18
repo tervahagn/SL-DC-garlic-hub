@@ -295,6 +295,7 @@ export class CanvasEvents
 		});
 		document.getElementById("playerExport").addEventListener('click', async () =>
 		{
+			const playlistId = document.getElementById("playlist_id").value;
 			await this.#playlistsService.export(playlistId);
 		});
 

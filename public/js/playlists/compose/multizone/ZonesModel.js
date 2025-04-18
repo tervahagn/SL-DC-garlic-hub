@@ -112,7 +112,7 @@ export class ZonesModel
 	{
 		try
 		{
-			const url      = "/async/playlists/findbyId/" + playlist_id;
+			const url      = "/async/playlists/find/" + playlist_id;
 			const response = await fetch(url);
 			const playlist = await response.json();
 
