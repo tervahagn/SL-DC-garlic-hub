@@ -36,16 +36,18 @@ export class CanvasEvents
 	MyZonesModel = {};
 	MyCanvasView = {};
 	MyZoneProperties = {};
+	#playlistsService = null;
 	is_autoresize = true;
 	snap_to_grid = 10;
 
-	constructor(MyZonesModel, MyContextMenu, MyCanvasView, MyZoneProperties, MyLabeledZoneFactory)
+	constructor(MyZonesModel, MyContextMenu, MyCanvasView, MyZoneProperties, MyLabeledZoneFactory, playlistsService)
 	{
-		this.MyZonesModel = MyZonesModel;
-		this.MyContextMenu = MyContextMenu;
-		this.MyCanvasView = MyCanvasView;
-		this.MyZoneProperties = MyZoneProperties;
+		this.MyZonesModel         = MyZonesModel;
+		this.MyContextMenu        = MyContextMenu;
+		this.MyCanvasView         = MyCanvasView;
+		this.MyZoneProperties     = MyZoneProperties;
 		this.MyLabeledZoneFactory = MyLabeledZoneFactory;
+		this.#playlistsService    = playlistsService;
 	}
 
 	isAutoResize() {
@@ -291,6 +293,11 @@ export class CanvasEvents
 			this.MyZonesModel.saveToDataBase();
 			this.MyCanvasView.setChanged(false);
 		});
+		document.getElementById("playerExport").addEventListener('click', async () =>
+		{
+			await this.#playlistsService.export(playlistId);
+		});
+
 	}
 
 	#initCloseEvent()

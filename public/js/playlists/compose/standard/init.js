@@ -25,7 +25,7 @@ import {FetchClient}     from "../../../core/FetchClient.js";
 import ItemList          from "./items/ItemList.js";
 import {ItemFactory}     from "./items/ItemFactory.js";
 import {DragDropHandler} from "./DragDropHandler.js";
-import {PlayListsProperties} from "./playlists/PlayListsProperties.js";
+import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
 import {PlaylistsService} from "./playlists/PlaylistsService.js";
 
 document.addEventListener("DOMContentLoaded", function ()
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function ()
 	const playlistsService = new PlaylistsService(new FetchClient());
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
-	const playlistsProperties = new PlayListsProperties(playlistsService, lang);
+	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
 	insertContextMenu.init(playlistId);
 	itemsList.displayPlaylist(playlistId, playlistsProperties);
 

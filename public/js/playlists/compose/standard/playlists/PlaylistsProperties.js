@@ -18,14 +18,14 @@
 */
 import {Utils} from "../../../../core/Utils.js";
 
-export class PlayListsProperties
+export class PlaylistsProperties
 {
 	#playlistDuration = document.getElementById('playlistDuration');
 	#totalItems       = document.getElementById('totalItems');
 	#totalFilesize    = document.getElementById('totalFilesize');
 	#toggleShuffle    = document.getElementById("toggleShuffle");
 	#shufflePicking   = document.getElementById("shufflePicking");
-	#saveChanges      = document.getElementById("saveChanges");
+	#playerExport      = document.getElementById("playerExport");
 
 	#playlistsService = null;
 	#lang             = null;
@@ -42,17 +42,17 @@ export class PlayListsProperties
 		this.#toggleShuffle.addEventListener('click', async () =>
 		{
 			await this.#playlistsService.toggleShuffle(playlistId);
-			PlayListsProperties.notifySave();
+			PlaylistsProperties.notifySave();
 		});
 		this.#shufflePicking.addEventListener('change', async () =>
 		{
 			await this.#playlistsService.shufflePicking(playlistId, this.#shufflePicking.value);
-			PlayListsProperties.notifySave();
+			PlaylistsProperties.notifySave();
 		});
-		this.#saveChanges.addEventListener('click', async () =>
+		this.#playerExport.addEventListener('click', async () =>
 		{
 			await this.#playlistsService.export(playlistId);
-			PlayListsProperties.removeSave();
+			PlaylistsProperties.removeSave();
 		});
 	}
 

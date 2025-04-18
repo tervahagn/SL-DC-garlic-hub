@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {PlayListsProperties} from "./playlists/PlayListsProperties.js";
+import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
 
 export class DragDropHandler
 {
@@ -104,7 +104,7 @@ export class DragDropHandler
 					// for debug onlyconsole.log(itemsPosition);
 
 					await this.#itemService.updateItemsOrders(this.#playlistId, itemsPosition);
-					PlayListsProperties.notifySave();
+					PlaylistsProperties.notifySave();
 					return;
 				}
 
@@ -134,7 +134,7 @@ export class DragDropHandler
 				}
 
 				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
-				PlayListsProperties.notifySave();
+				PlaylistsProperties.notifySave();
 
 				// for debug only console.log('Element:','Position: ', droppedIndex);
 				el.remove();

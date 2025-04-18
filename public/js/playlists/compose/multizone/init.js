@@ -23,6 +23,8 @@ import { ZoneProperties } from './ZoneProperties.js';
 import { ZonesModel } from './ZonesModel.js';
 import { CanvasEvents } from './CanvasEvents.js';
 import { AutocompleteFactory } from '../../../core/AutocompleteFactory.js';
+import { PlaylistsService } from "../standard/playlists/PlaylistsService.js";
+import { FetchClient } from "../../../core/FetchClient.js";
 
 window.onload = async function ()
 {
@@ -39,7 +41,14 @@ window.onload = async function ()
     let MyContextMenu           = new ContextMenu(MyCanvasView);
     let MyZoneProperties        = new ZoneProperties(MyCanvasView, MyPlaylistSearch);
     let MyZonesModel            = new ZonesModel(MyCanvasView);
-    let MyCanvasEvents          = new CanvasEvents(MyZonesModel, MyContextMenu, MyCanvasView, MyZoneProperties, MyLabeledZoneFactory);
+    let MyCanvasEvents          = new CanvasEvents(
+        MyZonesModel,
+        MyContextMenu,
+        MyCanvasView,
+        MyZoneProperties,
+        MyLabeledZoneFactory,
+        new PlaylistsService(new FetchClient())
+    );
 
     let playlist_id = document.getElementById("playlist_id").value;
 
@@ -47,7 +56,7 @@ window.onload = async function ()
     {
         await MyZonesModel.loadFromDataBase(playlist_id);
 
-        MyCanvasEvents.buildUI();
+        await MyCanvasEvents.buildUI();
         MyCanvasEvents.initInteractions();
     }
     catch(error)
