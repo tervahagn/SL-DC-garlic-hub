@@ -18,12 +18,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
-interface ItemInterface
+class Audio extends Video
 {
-    public function getPrefetchTag(): string;
-	public function getSmilElementTag(): string;
-	public function getExclusive(): string;
-	// public function getElementForPreview();
+
+	public function getSmilElementTag(): string
+	{
+		$ret  = "\t\t\t\t\t\t\t".'<audio '.$this->collectMediaAttributes().'">'."\n";
+		$ret .= $this->collectParameters();
+		$ret .= "\t\t\t\t\t\t\t".'</audio>'."\n";
+
+		return $ret;
+	}
+
 }

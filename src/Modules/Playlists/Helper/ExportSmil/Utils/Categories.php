@@ -18,12 +18,26 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
-interface ItemInterface
+namespace App\Modules\Playlists\Helper\ExportSmil\Utils;
+
+class Categories
 {
-    public function getPrefetchTag(): string;
-	public function getSmilElementTag(): string;
-	public function getExclusive(): string;
-	// public function getElementForPreview();
+	protected function setCategories($tag): string
+	{
+		if (array_key_exists('categories', $this->properties) &&
+			is_array($this->properties['categories']) &&
+			count($this->properties['categories']) > 0)
+		{
+			sort($this->properties['categories'], SORT_NUMERIC);
+			$categories = implode(';', $this->properties['categories']);
+			if (strlen($categories) > 0)
+			{
+				$begin = '<!-- begin_categories '.$categories.' -->'."\n";
+				$end   = '<!-- end_categories '.$categories.' -->'."\n";
+				$tag   = $begin.$tag.$end;
+			}
+		}
+		return $tag;
+	}
 }

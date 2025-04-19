@@ -20,10 +20,17 @@
 
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
-interface ItemInterface
+class Image extends Media
 {
-    public function getPrefetchTag(): string;
-	public function getSmilElementTag(): string;
-	public function getExclusive(): string;
-	// public function getElementForPreview();
+
+	public function getSmilElementTag(): string
+	{
+		$ret  =  "\t\t\t\t\t\t\t".'<img '.$this->collectMediaAttributes().'>'."\n";
+		$ret .= $this->collectParameters();
+		$ret .=  "\t\t\t\t\t\t\t".'</img>'."\n";
+
+		return $ret;
+	}
+
+
 }

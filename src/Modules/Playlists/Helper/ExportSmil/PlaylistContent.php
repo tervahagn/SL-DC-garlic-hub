@@ -23,7 +23,6 @@ class PlaylistContent
 	private array $playlist  = [];
 	private array $items     = [];
 
-
 	/**
 	 * @throws CoreException
 	 */
@@ -116,11 +115,7 @@ class PlaylistContent
 		$link = $this->export_base_path.$this->playlist['playlist_id'].'/'. $itemData['file_resource'].'.'. $itemData['extension'];
 		$item->setLink($this->config->getConfigValue('content_server_url', 'mediapool') . $link);
 
-		$content_exclusive  = $item->getExclusive();
-		$content_element    = $item->getElement();
-		$content_prefetch   = $item->getPrefetch();
-
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	private function buildMediaExternal(array $itemData): void
@@ -129,33 +124,23 @@ class PlaylistContent
 		$contentData = @unserialize($itemData['content_data']);
 		$item->setLink(str_replace('&', '&amp;', $contentData['url']));
 
-		$content_exclusive  = $item->getExclusive();
-		$content_element    = $item->getElement();
-		$content_prefetch   = $item->getPrefetch();
-
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	private function buildPlaylist(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
 
-		$content_exclusive  = $item->getExclusive();
-		$content_element    = $item->getElement();
-		$content_prefetch   = $item->getPrefetch();
-
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	private function buildPlaylistExternal(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
 
-		$content_exclusive   = '';
 		$content_element     = $item->getElementLink();
-		$content_prefetch    = '';
 
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getElementLink(), '', '');
 	}
 
 	private function buildTemplate(array $itemData): void
@@ -163,23 +148,14 @@ class PlaylistContent
 		$item = $this->itemsFactory->createItem($itemData);
 		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do do the link to media inside class
 
-		$content_exclusive  = $item->getExclusive();
-		$content_element    = $item->getElement();
-		$content_prefetch   = $item->getPrefetch();
-
-
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	private function buildChannel(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
 
-		$content_exclusive  = $item->getExclusive();
-		$content_element    = $item->getElement();
-		$content_prefetch   = $item->getPrefetch();
-
-		$this->addContentParts($itemData, $content_element, $content_prefetch, $content_exclusive);
+		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	private function addShuffle(): void

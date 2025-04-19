@@ -169,7 +169,8 @@ CREATE TABLE playlists_items (
     mimetype VARCHAR(50) COLLATE NOCASE NOT NULL DEFAULT '',
     item_name TEXT NOT NULL DEFAULT '',
     conditional TEXT NOT NULL DEFAULT '',
-    properties TEXT NOT NULL DEFAULT '', -- scaling, position, name, categories
+    properties TEXT NOT NULL DEFAULT '', -- scaling, position, name
+    categories TEXT NOT NULL DEFAULT '',
     content_data TEXT NOT NULL DEFAULT '', -- depends on item and media type: can be url or Widget parameters
     begin_trigger TEXT NOT NULL DEFAULT '',
     end_trigger TEXT NOT NULL DEFAULT '',

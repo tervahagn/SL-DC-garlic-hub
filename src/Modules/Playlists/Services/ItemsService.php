@@ -224,6 +224,9 @@ class ItemsService extends AbstractBaseService
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	public function updateItemOrder(mixed $playlist_id, array $itemsOrder): void
 	{
 		$this->playlistsService->setUID($this->UID);
@@ -233,7 +236,6 @@ class ItemsService extends AbstractBaseService
 		{
 			$this->itemsRepository->updateItemOrder($itemId, $key);
 		}
-
 	}
 
 	public function delete(int $playlistId, int $itemId): array

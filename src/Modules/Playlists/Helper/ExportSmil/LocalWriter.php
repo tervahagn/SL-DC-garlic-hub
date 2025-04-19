@@ -25,7 +25,7 @@ use App\Framework\Exceptions\CoreException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 
-class LocalSmilWriter
+class LocalWriter
 {
 	private Config $config;
 	private Filesystem $fileSystem;
@@ -48,7 +48,6 @@ class LocalSmilWriter
 	{
 		$this->playlistId = $playlistId;
 	}
-
 
 	/**
 	 * @throws FilesystemException

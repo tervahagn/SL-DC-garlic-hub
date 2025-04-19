@@ -24,7 +24,7 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\ExportSmil\LocalSmilWriter;
+use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
 use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use Doctrine\DBAL\Exception;
@@ -35,13 +35,13 @@ class ExportService
 {
 	private Config $config;
 	private ItemsRepository $itemsRepository;
-	private LocalSmilWriter $localSmilWriter;
+	private LocalWriter $localSmilWriter;
 	private PlaylistContent $playlistContent;
 
 	/**
 	 * @throws CoreException
 	 */
-	public function __construct(Config $config, ItemsRepository $itemsRepository, LocalSmilWriter $localSmilWriter, PlaylistContent $playlistContent)
+	public function __construct(Config $config, ItemsRepository $itemsRepository, LocalWriter $localSmilWriter, PlaylistContent $playlistContent)
 	{
 		$this->config          = $config;
 		$this->itemsRepository = $itemsRepository;

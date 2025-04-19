@@ -20,10 +20,35 @@
 
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
-interface ItemInterface
+/**
+ * Class for exporting to SMIL container tags (seq, par, excl, priorityClass)
+ */
+class SeqContainer extends Base implements ItemInterface
 {
-    public function getPrefetchTag(): string;
-	public function getSmilElementTag(): string;
-	public function getExclusive(): string;
-	// public function getElementForPreview();
+
+	public function getSmilElementTag(): string
+	{
+		if ($this->begin->hasTriggers())
+			return '';
+
+		return "\t\t\t\t\t\t\t" .'<seq '.$this->collectAttributes().'">'."\n".
+			"\t\t\t\t\t\t\t\t".'{ITEMS_'.$this->item['file_resource'].'}'."\n".
+			"\t\t\t\t".'</seq>'."\n";
+
+	}
+
+	public function getElementLink(): string
+	{
+		$ret = '';
+		if ($this->properties['scheduled_start_date'] == '0000-00-00')
+			$ret = '{ITEMS_0#'.$this->item['external_link'].'}'."\n";
+
+		return $ret;
+	}
+
+	public function getPrefetchTag(): string
+	{
+		return '{PREFETCH_'.$this->item['file_resource'].'}'."\n";
+	}
+
 }
