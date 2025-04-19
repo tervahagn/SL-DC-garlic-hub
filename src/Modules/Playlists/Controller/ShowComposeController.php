@@ -35,13 +35,10 @@ use Slim\Flash\Messages;
 class ShowComposeController
 {
 	private readonly PlaylistsService $playlistsService;
+
 	private readonly UiTemplatesPreparer $uiTemplatesPreparer;
 	private Messages $flash;
 
-	/**
-	 * @param PlaylistsService $playlistsService
-	 * @param UiTemplatesPreparer $uiTemplatesPreparer
-	 */
 	public function __construct(PlaylistsService $playlistsService, UiTemplatesPreparer $uiTemplatesPreparer)
 	{
 		$this->playlistsService = $playlistsService;

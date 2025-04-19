@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
+use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
@@ -48,25 +49,6 @@ class PlaylistsController
 		$this->playlistsService          = $playlistsService;
 		$this->playlistsDatatableService = $playlistsDatatableService;
 		$this->parameters                = $parameters;
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
-		$post = $request->getParsedBody();
-		$playlistId = (int) $post['playlist_id'] ?? 0;
-		if ($playlistId === 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
-
-		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
-		if ($this->playlistsService->exportToSmil($playlistId) === 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
-
-		return $this->jsonResponse($response, ['success' => true]);
 	}
 
 	/**

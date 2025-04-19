@@ -33,13 +33,11 @@ use Psr\Log\LoggerInterface;
 class PlaylistsService extends AbstractBaseService
 {
 	private readonly PlaylistsRepository $playlistsRepository;
-	private readonly ExportService $exportService;
 	private readonly AclValidator $aclValidator;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, ExportService $exportService, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistsRepository = $playlistsRepository;
-		$this->exportService       = $exportService;
 		$this->aclValidator        = $aclValidator;
 		parent::__construct($logger);
 	}
@@ -55,20 +53,12 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function toggleShuffle(int $playlistId): int
 	{
-		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
-
-		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-		{
-			$this->logger->error('Error updating playlist. '.$playlist['playlist_name'].' is not editable');
-			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
-		}
+		$playlist = $this->loadPureById($playlistId);
 
 		if ($playlist['shuffle'] === 0)
 			$saveData['shuffle'] = 1;
@@ -79,78 +69,26 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function shufflePicking(int $playlistId, int $shufflePicking = 0): int
 	{
-		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-
-		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-		{
-			$this->logger->error('Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
-			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
-		}
-
+		$playlist = $this->loadPureById($playlistId);
 		$saveData['shuffle_picking'] = $shufflePicking;
 
-		return $this->update($playlistId, $saveData);
+		return $this->update($playlist['playlist_id'], $saveData);
 	}
 
 	/**
 	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 * @throws FilesystemException
-	 */
-	public function exportToSmil(int $playlistId): int
-	{
-		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-
-		$count = 0;
-
-		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-		{
-			$this->logger->error('Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
-			throw new ModuleException('playlists', 'Error updating playlist. ' . $playlist['playlist_name'] . ' is not editable');
-		}
-		if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
-		{
-			$zones = unserialize($playlist['multizone']);
-			foreach ($zones as $zone)
-			{
-				$this->exportService->export($this->playlistsRepository->findFirstWithUserName($zone['zones']['zone_playlist_id']));
-				$count++;
-			}
-		}
-		else
-		{
-			$this->exportService->export($playlist);
-			$count++;
-		}
-
-		return $count;
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
 	public function updateSecure(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
-		$playlist   = $this->playlistsRepository->findFirstWithUserName($playlistId);
 
-		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-		{
-			$this->logger->error('Error updating playlist. '.$playlist['playlist_name'].' is not editable');
-			throw new ModuleException('playlists', 'Error updating playlist. '.$playlist['playlist_name'].' is not editable');
-		}
+		$this->loadWithUserById($playlistId);
 
 		$saveData = $this->collectDataForUpdate($postData);
 
@@ -208,13 +146,47 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function loadPureById(int $playlistId): array
+	{
+		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
+		if (empty($playlist))
+			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+
+		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
+
+		return $playlist;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function loadWithUserById(int $playlistId): array
+	{
+		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
+		if (empty($playlist))
+			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+
+		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
+
+		return $playlist;
+	}
+
 	public function loadNameById(int $playlistId): array
 	{
 		try
 		{
-			$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
-			if (empty($playlist))
-				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+			$playlist = $this->loadPureById($playlistId);
 
 			return array('playlist_id' => $playlistId, 'name' => $playlist['playlist_name']);
 		}
@@ -231,15 +203,10 @@ class PlaylistsService extends AbstractBaseService
 		try
 		{
 			$count = 0;
-			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-			if (empty($playlist))
-				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
-
-			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
+			$playlist = $this->loadWithUserById($playlistId);
 
 			if (!empty($zones))
-				$count = $this->playlistsRepository->update($playlistId, ['multizone' => serialize($zones)]);
+				$count = $this->playlistsRepository->update($playlist['playlist_id'], ['multizone' => serialize($zones)]);
 
 			return $count;
 		}
@@ -251,21 +218,11 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
-	/**
-	 * @throws Exception
-	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
 		try
 		{
-			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-			if (empty($playlist))
-				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
-
-			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
-
-			return $playlist;
+			return $this->loadWithUserById($playlistId);
 		}
 		catch(\Exception $e)
 		{
@@ -274,8 +231,6 @@ class PlaylistsService extends AbstractBaseService
 			return [];
 		}
 	}
-
-
 
 	public function findAllByItemsAsPlaylistAndMediaId(mixed $fileResource): array
 	{

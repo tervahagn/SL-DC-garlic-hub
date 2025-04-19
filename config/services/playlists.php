@@ -29,6 +29,7 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
@@ -75,13 +76,6 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
-		new ExportService(
-			$container->get(Config::class),
-			$container->get(ItemsRepository::class),
-			new LocalWriter($container->get(Config::class), $container->get('LocalFileSystem')),
-			new PlaylistContent(new ItemsFactory($container->get(Config::class)), $container->get(Config::class),
-			)
-		),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
@@ -214,6 +208,21 @@ $dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $co
 		),
 		$container->get('ModuleLogger')
 	);
+});
+$dependencies[ExportService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ExportService(
+		$container->get(Config::class),
+		$container->get(PlaylistsService::class),
+		$container->get(ItemsService::class),
+		new LocalWriter($container->get(Config::class), $container->get('LocalFileSystem')),
+		new PlaylistContent(new ItemsFactory($container->get(Config::class)), $container->get(Config::class)),
+		$container->get('ModuleLogger')
+	);
+});
+$dependencies[ExportController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ExportController($container->get(ExportService::class));
 });
 
 return $dependencies;

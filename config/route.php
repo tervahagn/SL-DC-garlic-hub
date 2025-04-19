@@ -26,6 +26,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
@@ -99,7 +100,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 
 	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}[/{playlist_name}]', [PlaylistsController::class, 'findByName']);
 	$group->delete('/playlists', [PlaylistsController::class, 'delete']);
-	$group->put('/playlists', [PlaylistsController::class, 'export']);
+	$group->put('/playlists', [ExportController::class, 'export']);
 	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
 	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
 	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);

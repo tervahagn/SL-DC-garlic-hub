@@ -24,26 +24,74 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
 use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
-use App\Modules\Playlists\Repositories\ItemsRepository;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Log\LoggerInterface;
 
-class ExportService
+class ExportService extends AbstractBaseService
 {
 	private Config $config;
-	private ItemsRepository $itemsRepository;
+	private PlaylistsService $playlistsService;
+	private ItemsService $itemsService;
 	private LocalWriter $localSmilWriter;
 	private PlaylistContent $playlistContent;
 
-	public function __construct(Config $config, ItemsRepository $itemsRepository, LocalWriter $localSmilWriter, PlaylistContent $playlistContent)
+	public function __construct(Config $config, PlaylistsService $playlistsService, ItemsService $itemsService, LocalWriter $localSmilWriter, PlaylistContent $playlistContent, LoggerInterface $logger )
 	{
 		$this->config          = $config;
-		$this->itemsRepository = $itemsRepository;
+		$this->playlistsService = $playlistsService;
+		$this->itemsService    = $itemsService;
 		$this->localSmilWriter = $localSmilWriter;
 		$this->playlistContent = $playlistContent;
 
+		parent::__construct($logger);
+	}
+
+	public function exportToSmil(int $playlistId): int
+	{
+		try
+		{
+			$this->playlistsService->setUID($this->UID);
+			$this->itemsService->setUID($this->UID);
+
+			$playlist = $this->playlistsService->loadPureById($playlistId); // checks rightzs
+
+			$count = 0;
+
+			if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
+			{
+				$zones = unserialize($playlist['multizone']);
+				$properties = ['filesize' => 0, 'duration' => 0, 'owner_duration' => 0];
+				foreach ($zones as $zone)
+				{
+					$tmp = $this->export($this->playlistsService->loadPureById($zone['zones']['zone_playlist_id']));
+					$count++;
+					// use the highest values for a multizone.
+					$properties['filesize'] = max($properties['filesize'], $tmp['filesize']);
+					$properties['duration'] = max($properties['duration'], $tmp['duration']);
+					$properties['owner_duration'] = max($properties['owner_duration'], $tmp['owner_duration']);
+				}
+			} else
+			{
+				$properties = $this->export($playlist);
+				$count++;
+			}
+			if ($this->playlistsService->update($playlistId, $properties) === 0)
+				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist properties.');
+
+
+			return $count;
+		}
+		catch (ModuleException|CoreException|Exception|FilesystemException|PhpfastcacheSimpleCacheException $e)
+		{
+			$this->logger->error('Error export SMIL playlist: ' . $e->getMessage());
+			return 0;
+		}
 	}
 
 	/**
@@ -52,41 +100,15 @@ class ExportService
 	 * @throws FilesystemException
 	 * @throws ModuleException
 	 */
-	public function export(array $playlist): void
+	public function export(array $playlist): array
 	{
-		$items = $this->sanitizeArrays($this->itemsRepository->findAllByPlaylistIdWithJoins($playlist['playlist_id'], $this->config->getEdition()));
+		$results = $this->itemsService->loadByPlaylistForExport($playlist, $this->config->getEdition());
 
-		$this->playlistContent->init($playlist, $items)->build();
-
+		$this->playlistContent->init($playlist, $results['items'])->build();
 		$this->localSmilWriter->initExport($playlist['playlist_id']);
-
 		$this->localSmilWriter->writeSMILFiles($this->playlistContent);
+
+		return $results['properties'];
 	}
-
-	public function sanitizeArrays(array $items): array
-	{
-		$ar = [];
-		foreach ($items as $item)
-		{
-			$item['conditional']   = $this->sanitize($item['conditional']);
-			$item['properties']    = $this->sanitize($item['properties']);
-			$item['categories']    = $this->sanitize($item['categories']);
-			$item['content_data']  = $this->sanitize($item['content_data']);
-			$item['begin_trigger'] = $this->sanitize($item['begin_trigger']);
-			$item['end_trigger']   = $this->sanitize($item['end_trigger']);
-			$ar[] = $item;
-		}
-
-		return $ar;
-	}
-
-	public function sanitize(string $value): array
-	{
-		if ($value === '')
-			return [];
-
-		return unserialize($value);
-	}
-
 
 }

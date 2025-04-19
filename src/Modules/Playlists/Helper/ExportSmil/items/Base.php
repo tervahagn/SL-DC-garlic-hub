@@ -61,10 +61,10 @@ abstract class Base implements ItemInterface
 	protected function determineBeginEndTrigger(): string
 	{
 		$ret = '';
-		if (!$this->begin->hasTriggers())
+		if ($this->begin->hasTriggers())
 			$ret .= 'begin="'.$this->begin->determineTrigger().'" ';
 
-		if (!$this->end->hasTriggers())
+		if ($this->end->hasTriggers())
 			$ret .= 'end="'.$this->end->determineTrigger().'" ';
 
 		return $ret;
@@ -75,7 +75,7 @@ abstract class Base implements ItemInterface
 		return $this->insertXmlId().
 			$this->conditional->determineExprAttribute().
 			$this->determineBeginEndTrigger().
-			' title="'.$this->encodeItemNameForTitleTag().'"';
+			$this->encodeItemNameForTitleTag();
 	}
 
 	protected function insertXmlId(): string
@@ -106,7 +106,7 @@ abstract class Base implements ItemInterface
 	 */
 	protected function encodeItemNameForTitleTag(): string
 	{
-		return htmlspecialchars($this->item['item_name'], ENT_XML1);
+		return 'title="'.htmlspecialchars($this->item['item_name'], ENT_XML1).'" ';
 	}
 
 	protected function determineDuration(): string

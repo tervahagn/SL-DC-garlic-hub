@@ -49,8 +49,7 @@ abstract class Media extends Base
 		return $this->collectAttributes().
 			'region="screen" src="'.$this->link.'" '. $this->determineDuration().
 			$this->properties->getFit().
-			$this->properties->getMediaAlign().
-			'title="'.$this->encodeItemNameForTitleTag().'"';
+			$this->properties->getMediaAlign();
 	}
 
 	protected function collectParameters(): string

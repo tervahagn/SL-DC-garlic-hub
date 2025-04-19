@@ -55,7 +55,60 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function loadItemsByPlaylistId(int $playlistId): array
+	public function loadByPlaylistForExport(array $playlist, string $edition): array
+	{
+		$filesize       = 0;
+		$duration       = 0;
+		$ownerDuration = 0;
+
+		$items           = [];
+		$countOwnerItems = 0;
+		$results         = $this->itemsRepository->findAllByPlaylistIdWithJoins($playlist['playlist_id'], $edition);
+		$countResults    = count($results);
+		foreach ($results as $item)
+		{
+			$item['conditional']   = $this->sanitize($item['conditional']);
+			$item['properties']    = $this->sanitize($item['properties']);
+			$item['categories']    = $this->sanitize($item['categories']);
+			$item['content_data']  = $this->sanitize($item['content_data']);
+			$item['begin_trigger'] = $this->sanitize($item['begin_trigger']);
+			$item['end_trigger']   = $this->sanitize($item['end_trigger']);
+			$items[] = $item;
+
+			$filesize += $item['item_filesize'];
+			$duration += $item['item_duration'];
+
+			if ($playlist['UID'] === $item['UID'])
+			{
+				$countOwnerItems++;
+				$ownerDuration += $item['item_duration'];
+			}
+		}
+		if ($playlist['shuffle'] > 0 && $countResults > 0) // calculate average durations when shuffle only when results otherwise we have a division with 0.
+		{
+			$duration = floor($duration / count($results) * max($playlist['shuffle_picking'], 1));
+			if ($countOwnerItems > 0)
+			{
+				$avgOwnerItemDuration = $ownerDuration / $countOwnerItems;
+				$probability          = $countOwnerItems / $countResults;
+				$expectedOwnerItems = $probability * max($playlist['shuffle_picking'], 1);
+				$ownerDuration = floor($avgOwnerItemDuration * $expectedOwnerItems);
+				$ownerDuration = min($ownerDuration, $duration); // secure owner duration cannot be higher than avg duration
+			}
+			else
+				$ownerDuration = 0;
+		}
+
+		return [
+			'properties' => ['filesize' => $filesize, 'duration' => $duration, 'owner_duration' => $ownerDuration],
+			'items' => $items
+		];
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function loadItemsByPlaylistIdForComposer(int $playlistId): array
 	{
 		$this->playlistsService->setUID($this->UID);
 
@@ -119,6 +172,7 @@ class ItemsService extends AbstractBaseService
 			$saveItem = [
 				'playlist_id'   => $playlistId,
 				'datasource'    => 'file',
+				'UID'           => $this->UID,
 				'item_duration' => $itemDuration,
 				'item_filesize' => $media['metadata']['size'],
 				'item_order'    => $position,
@@ -158,7 +212,7 @@ class ItemsService extends AbstractBaseService
 		}
 	}
 
-	public function insertPlaylist(int $playlistId, string $id, int $position): array
+	public function insertPlaylist(int $targetId, string $insertId, int $position): array
 	{
 		try
 		{
@@ -167,29 +221,29 @@ class ItemsService extends AbstractBaseService
 			$this->playlistsService->setUID($this->UID);
 			$this->durationCalculatorService->setUID($this->UID);
 
-			$playlistData = $this->playlistsService->loadPlaylistForEdit($playlistId); // checks rights
-			if (empty($playlistData))
+			$playlistTargetData = $this->playlistsService->loadPlaylistForEdit($targetId); // checks rights
+			if (empty($playlistTargetData))
 				throw new ModuleException('items', 'Target playlist is not accessible');
 
-			$playlistSourceData = $this->playlistsService->loadPlaylistForEdit($id); // also checks rights
-			if (empty($playlistSourceData))
-				throw new ModuleException('items', 'Source playlist is not accessible');
+			$playlistInsertData = $this->playlistsService->loadPlaylistForEdit($insertId); // also checks rights
+			if (empty($playlistInsertData))
+				throw new ModuleException('items', 'Insert playlist is not accessible');
 
-			if (!$this->allowedByTimeLimit($playlistId, $playlistData['time_limit']))
+			if (!$this->allowedByTimeLimit($targetId, $playlistTargetData['time_limit']))
 				throw new ModuleException('items', 'Playlist time limit exceeds');
 
-			$itemDuration = $playlistSourceData['duration'];
-			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
+			$this->itemsRepository->updatePositionsWhenInserted($targetId, $position);
 
 			$saveItem = [
-				'playlist_id'   => $playlistId,
+				'playlist_id'   => $targetId,
 				'datasource'    => 'file',
-				'item_duration' => $playlistSourceData['duration'],
-				'item_filesize' => $playlistSourceData['filesize'],
+				'UID'           => $this->UID,
+				'item_duration' => $playlistInsertData['duration'],
+				'item_filesize' => $playlistInsertData['filesize'],
 				'item_order'    => $position,
-				'item_name'     => $playlistSourceData['playlist_name'],
+				'item_name'     => $playlistInsertData['playlist_name'],
 				'item_type'     => ItemType::PLAYLIST->value,
-				'file_resource' => $id,
+				'file_resource' => $insertId,
 				'mimetype'      => ''
 			];
 			$id = $this->itemsRepository->insert($saveItem);
@@ -199,10 +253,10 @@ class ItemsService extends AbstractBaseService
 			$saveItem['item_id'] = $id;
 			$saveItem['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
 
-			$this->updatePlaylistDurationAndFileSize($playlistData);
+			$this->updatePlaylistDurationAndFileSize($playlistTargetData);
 
-			$this->calculateDurations($playlistData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
-			$this->durationCalculatorService->determineTotalPlaylistProperties($playlistId);
+			$this->calculateDurations($playlistTargetData); // one time, because of the recursive calls in updatePlaylistDurationAndFileSize
+			$this->durationCalculatorService->determineTotalPlaylistProperties($targetId);
 
 			$playlist = [
 				'count_items'       => $this->durationCalculatorService->getTotalEntries(),
@@ -237,6 +291,7 @@ class ItemsService extends AbstractBaseService
 			$this->itemsRepository->updateItemOrder($itemId, $key);
 		}
 	}
+
 
 	public function delete(int $playlistId, int $itemId): array
 	{
@@ -292,10 +347,12 @@ class ItemsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	private function updatePlaylistDurationAndFileSize(array $playlistData)
+	private function updatePlaylistDurationAndFileSize(array $playlistData): void
 	{
 		if (empty($playlistData) || !isset($playlistData['playlist_id']))
-			return $this;
+		{
+			return;
+		}
 
 		$this->calculateDurations($playlistData);
 
@@ -319,7 +376,6 @@ class ItemsService extends AbstractBaseService
 		{
 			$this->updatePlaylistDurationAndFileSize($values);
 		}
-		return $this;
 	}
 
 	/**
@@ -343,5 +399,14 @@ class ItemsService extends AbstractBaseService
 
 		return true;
 	}
+
+	public function sanitize(string $value): array
+	{
+		if ($value === '')
+			return [];
+
+		return unserialize($value);
+	}
+
 
 }

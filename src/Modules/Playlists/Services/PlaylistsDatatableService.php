@@ -20,10 +20,7 @@
 
 namespace App\Modules\Playlists\Services;
 
-use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
-use App\Framework\Services\AbstractBaseService;
 use App\Framework\Services\AbstractDatatableService;
 use App\Framework\Services\SearchFilterParamsTrait;
 use App\Framework\Utils\FormParameters\BaseParameters;
@@ -77,7 +74,7 @@ class PlaylistsDatatableService extends AbstractDatatableService
 	}
 
 
-	public function getPlaylistsInUse(array $playlistIds)
+	public function getPlaylistsInUse(array $playlistIds): array
 	{
 		if (empty($playlistIds))
 			return [];
@@ -86,7 +83,7 @@ class PlaylistsDatatableService extends AbstractDatatableService
 	}
 
 
-	protected function arePlayListsInUse(array $playlistIds)
+	protected function arePlayListsInUse(array $playlistIds): array
 	{
 		$results = [];
 		/* later

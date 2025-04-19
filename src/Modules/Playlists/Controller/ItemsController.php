@@ -45,7 +45,7 @@ class ItemsController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$this->determineUID($request->getAttribute('session'));
-		$list = $this->itemsService->loadItemsByPlaylistId($playlistId);
+		$list = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $list]);
 	}

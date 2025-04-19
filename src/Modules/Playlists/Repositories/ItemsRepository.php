@@ -95,8 +95,12 @@ class ItemsRepository extends Sql
 		}
 
 		$queryBuilder->select($select);
+		// important! otherwise left join will grap a additional mediapool_files.checksum if exists
+		// remeber: mediapool recognise double files.
+		$queryBuilder->groupBy('playlists_items.item_id');
 
-		return $queryBuilder->executeQuery()->fetchAllAssociative() ;
+		$sql = $queryBuilder->getSql();
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
