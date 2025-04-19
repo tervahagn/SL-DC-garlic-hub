@@ -112,7 +112,7 @@ export class Item
 		if (this.#itemData.item_type === "playlist")
 		{
 			this.#linkPlaylistAction = this.#playlistItem.querySelector('.link-playlist');
-			this.#linkPlaylistAction.href = "/playlists/compose/" + this.#itemData.item_id;
+			this.#linkPlaylistAction.href = "/playlists/compose/" + this.#itemData.file_resource;
 		}
 		else
 			this.#playlistItem.querySelector('.link-playlist').remove();
