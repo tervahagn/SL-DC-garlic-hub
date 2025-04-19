@@ -102,7 +102,7 @@ abstract class Base implements ItemInterface
 
 	/**
 	 * Ampersand (&) in title tag can cause an XML validation error
-	 * Bug occured in garlic-player Android Rewe 2021-09-17
+	 * Bug occurred in garlic-player Android Rewe 2021-09-17
 	 */
 	protected function encodeItemNameForTitleTag(): string
 	{

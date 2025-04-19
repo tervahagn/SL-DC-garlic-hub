@@ -5,6 +5,7 @@ namespace App\Modules\Playlists\Helper\ExportSmil;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Helper\ExportSmil\items\Base;
 use App\Modules\Playlists\Helper\ExportSmil\items\ItemsFactory;
 use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
@@ -15,7 +16,6 @@ class PlaylistContent
 {
 	private ItemsFactory $itemsFactory;
 	private Config $config;
-	private string $export_base_path;
 	private string $contentElements;
 	private string $contentPrefetch;
 	private string $contentExclusive;
@@ -23,14 +23,10 @@ class PlaylistContent
 	private array $playlist  = [];
 	private array $items     = [];
 
-	/**
-	 * @throws CoreException
-	 */
 	public function __construct(ItemsFactory $itemsFactory, Config $config)
 	{
 		$this->itemsFactory     = $itemsFactory;
 		$this->config           = $config;
-		$this->export_base_path = $config->getConfigValue('path_playlists', 'playlists');
 	}
 
 	public function init(array $playlist, array $items): static
@@ -112,12 +108,18 @@ class PlaylistContent
 		$item = $this->itemsFactory->createItem($itemData);
 		$item->setIsMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
-		$link = $this->export_base_path.$this->playlist['playlist_id'].'/'. $itemData['file_resource'].'.'. $itemData['extension'];
-		$item->setLink($this->config->getConfigValue('content_server_url', 'mediapool') . $link);
+		$link = $this->config->getConfigValue('content_server_url', 'mediapool').'/'.
+				str_replace('public/', '', $this->config->getConfigValue('originals', 'mediapool', 'directories')).'/'.
+				$itemData['file_resource'].'.'. $itemData['extension'];
+
+		$item->setLink($link);
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	private function buildMediaExternal(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
@@ -127,6 +129,9 @@ class PlaylistContent
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	private function buildPlaylist(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
@@ -134,23 +139,27 @@ class PlaylistContent
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	private function buildPlaylistExternal(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
-
-		$content_element     = $item->getElementLink();
 
 		$this->addContentParts($itemData, $item->getElementLink(), '', '');
 	}
 
 	private function buildTemplate(array $itemData): void
 	{
-		$item = $this->itemsFactory->createItem($itemData);
+/*		$item = $this->itemsFactory->createItem($itemData);
 		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do do the link to media inside class
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
-	}
+*/	}
 
+	/**
+	 * @throws CoreException
+	 */
 	private function buildChannel(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
@@ -167,13 +176,13 @@ class PlaylistContent
 		$picking = min($this->countEnabled, $this->playlist['shuffle_picking']);
 
 		if ($picking == 0)
-			$shuffle = "\t\t\t\t\t\t".'<metadata><meta name="adapi:pickingAlgorithm" content="shuffle"/></metadata>'."\n";
+			$shuffle = Base::TABSTOPS_TAG.'<metadata><meta name="adapi:pickingAlgorithm" content="shuffle"/></metadata>'."\n";
 		else
-			$shuffle = "\t\t\t\t\t\t".'<metadata>'."\n"
-				."\t\t\t\t\t\t\t".'<meta name="adapi:pickingAlgorithm" content="shuffle"/>'."\n"
-				."\t\t\t\t\t\t\t".'<meta name="adapi:pickingBehavior" content="pickN"/>'."\n"
-				."\t\t\t\t\t\t\t".'<meta name="adapi:pickNumber" content="'.$picking.'"/>'."\n"
-				."\t\t\t\t\t\t".'</metadata>'."\n";
+			$shuffle = Base::TABSTOPS_TAG.'<metadata>'."\n"
+				.Base::TABSTOPS_PARAMETER.'<meta name="adapi:pickingAlgorithm" content="shuffle"/>'."\n"
+				.Base::TABSTOPS_PARAMETER.'<meta name="adapi:pickingBehavior" content="pickN"/>'."\n"
+				.Base::TABSTOPS_PARAMETER.'<meta name="adapi:pickNumber" content="'.$picking.'"/>'."\n"
+				.Base::TABSTOPS_TAG.'</metadata>'."\n";
 
 		$this->contentElements  = $shuffle . $this->contentElements;
 	}

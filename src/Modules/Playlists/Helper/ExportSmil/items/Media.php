@@ -29,6 +29,7 @@ abstract class Media extends Base
 
 	public function setLink($link):static
 	{
+
 		$this->link = $link;
 
 		return $this;
