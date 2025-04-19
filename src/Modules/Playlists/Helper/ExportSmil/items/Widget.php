@@ -26,11 +26,9 @@ class Widget extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  =  "\t\t\t\t\t\t\t".'<ref '.$this->collectMediaAttributes().'>'."\n";
+		$ret  = self::TABSTOPS_TAG.'<ref '.$this->collectMediaAttributes().'>'."\n";
 		$ret .= $this->collectParameters();
-		$ret .=  "\t\t\t\t\t\t\t\t".'<param name="cacheControl" value="onlyIfCached" />'."\n";
-		$ret .= $this->collectParameters();
-		$ret .=  "\t\t\t\t\t\t\t".'</ref>'."\n";
+		$ret .= self::TABSTOPS_TAG.'</ref>'."\n";
 		return $ret;
 	}
 
@@ -55,7 +53,7 @@ class Widget extends Media
 
 		foreach ($parameters as $key => $value)
 		{
-			$ret .=  "\t\t\t\t\t\t\t\t".'<param name="'.$key.'" value="'.$value.'" />'."\n";
+			$ret .=  self::TABSTOPS_PARAMETER.'<param name="'.$key.'" value="'.$value.'" />'."\n";
 		}
 		return $ret;
 	}

@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
+use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 
 abstract class Media extends Base
@@ -37,7 +38,7 @@ abstract class Media extends Base
 	{
 		$ret = '';
 		if ($this->item['mimetype'] !== 'text/html') // to not set prefetch for websites
-			$ret = '<prefetch src="'.$this->link.'" />'."\n";
+			$ret = self::TABSTOPS_TAG.'<prefetch src="'.$this->link.'" />'."\n";
 
 		return $ret;
 	}
@@ -48,19 +49,22 @@ abstract class Media extends Base
 			'region="screen" src="'.$this->link.'" '. $this->determineDuration().
 			$this->properties->getFit().
 			$this->properties->getMediaAlign().
-			' title="'.$this->encodeItemNameForTitleTag().'"';
+			'title="'.$this->encodeItemNameForTitleTag().'"';
 	}
 
 	protected function collectParameters(): string
 	{
-		return $this->checkLoggable().
-			"\t\t\t\t\t\t\t\t".'<param name="cacheControl" value="onlyIfCached" />'."\n";
+		$param = '';
+		if ($this->item['datasource'] == ItemDatasource::FILE->value)
+			$param = self::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
+
+		return $this->checkLoggable().$param;
 	}
 
 	protected function checkLoggable(): string
 	{
 		if (($this->item['flags'] & ItemFlags::loggable->value) > 0)
-			return "\t\t\t\t\t\t\t\t".'<param name="logContentId" value="'.$this->item['smil_playlist_item_id'].'" />'."\n";
+			return self::TABSTOPS_PARAMETER.'<param name="logContentId" value="'. $this->item['smil_playlist_item_id'].'" />'."\n";
 
 		return '';
 	}

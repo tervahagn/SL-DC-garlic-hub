@@ -70,7 +70,7 @@ class ItemsRepository extends Sql
 			'playlists_items.file_resource = mediapool_files.checksum'
 		);
 
-		$select = 'item_id, flags, playlist_id, playlists_items.UID, item_type, item_order, file_resource, datasource, item_duration, item_filesize, playlists_items.mimetype, item_name, properties, conditional begin_trigger, end_trigger, mediapool_files.extension';
+		$select = 'item_id, flags, playlist_id, playlists_items.UID, item_type, item_order, file_resource, datasource, item_duration, item_filesize, playlists_items.mimetype, item_name, properties, conditional, categories, content_data, begin_trigger, end_trigger, mediapool_files.extension';
 
 		if ($edition === Config::PLATFORM_EDITION_CORE || $edition === Config::PLATFORM_EDITION_ENTERPRISE)
 		{

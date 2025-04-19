@@ -25,9 +25,9 @@ class Image extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  =  "\t\t\t\t\t\t\t".'<img '.$this->collectMediaAttributes().'>'."\n";
+		$ret  = self::TABSTOPS_TAG.'<img '.$this->collectMediaAttributes().'>'."\n";
 		$ret .= $this->collectParameters();
-		$ret .=  "\t\t\t\t\t\t\t".'</img>'."\n";
+		$ret .= self::TABSTOPS_TAG.'</img>'."\n";
 
 		return $ret;
 	}

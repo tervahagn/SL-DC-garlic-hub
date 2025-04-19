@@ -32,7 +32,7 @@ class Conditional
 
 	public function hasConditional(): bool
 	{
-		return empty($this->conditional);
+		return !empty($this->conditional);
 	}
 
 	public function determineExprAttribute(): string

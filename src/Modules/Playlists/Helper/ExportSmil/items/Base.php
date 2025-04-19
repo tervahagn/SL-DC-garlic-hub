@@ -28,6 +28,9 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 abstract class Base implements ItemInterface
 {
 	const string MASTER_ID_PREFIX        = 'm';
+	const string TABSTOPS_TAG       = "\t\t\t\t\t\t\t";
+	const string TABSTOPS_PARAMETER = "\t\t\t\t\t\t\t\t";
+	const string TABSTOPS_PRIORITY  = "\t\t\t\t";
 
 	protected array $item = [];
 	protected readonly Config $config;
@@ -57,7 +60,9 @@ abstract class Base implements ItemInterface
 
 	protected function determineBeginEndTrigger(): string
 	{
-		$ret = 'begin="'.$this->begin->determineTrigger().'" ';
+		$ret = '';
+		if (!$this->begin->hasTriggers())
+			$ret .= 'begin="'.$this->begin->determineTrigger().'" ';
 
 		if (!$this->end->hasTriggers())
 			$ret .= 'end="'.$this->end->determineTrigger().'" ';
@@ -87,9 +92,9 @@ abstract class Base implements ItemInterface
 			return '';
 
 		$this->trigger = $this->determineBeginEndTrigger();
-		$ret           = "\t\t\t".'<priorityClass>'."\n";
+		$ret           = self::TABSTOPS_PRIORITY.'<priorityClass>'."\n";
 		$ret          .= $this->getSmilElementTag();
-		$ret           .= "\t\t\t".'</priorityClass>'."\n";
+		$ret           .= self::TABSTOPS_PRIORITY.'</priorityClass>'."\n";
 		$this->trigger = '';
 
 		return $ret;

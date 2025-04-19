@@ -39,7 +39,7 @@ class Trigger
 
 	public function hasTriggers(): bool
 	{
-		return empty($this->trigger);
+		return !empty($this->trigger);
 	}
 
 	public function determineTrigger(): string

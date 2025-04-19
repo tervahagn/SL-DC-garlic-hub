@@ -53,7 +53,7 @@ class ItemsFactory
 		switch ($item['item_type'])
 		{
 			case ItemType::MEDIAPOOL->value:
-				return $this->createMedia($item['properties']);
+				return $this->createMedia($item);
 			case ItemType::PLAYLIST->value:
 				return new SeqContainer(
 					$this->config,

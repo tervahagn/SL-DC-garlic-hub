@@ -31,9 +31,9 @@ class SeqContainer extends Base implements ItemInterface
 		if ($this->begin->hasTriggers())
 			return '';
 
-		return "\t\t\t\t\t\t\t" .'<seq '.$this->collectAttributes().'">'."\n".
-			"\t\t\t\t\t\t\t\t".'{ITEMS_'.$this->item['file_resource'].'}'."\n".
-			"\t\t\t\t".'</seq>'."\n";
+		return self::TABSTOPS_TAG.'<seq '.$this->collectAttributes().'">'."\n".
+			self::TABSTOPS_PARAMETER.'{ITEMS_'. $this->item['file_resource'].'}'."\n".
+			self::TABSTOPS_TAG.'</seq>'."\n";
 
 	}
 
@@ -41,14 +41,14 @@ class SeqContainer extends Base implements ItemInterface
 	{
 		$ret = '';
 		if ($this->properties['scheduled_start_date'] == '0000-00-00')
-			$ret = '{ITEMS_0#'.$this->item['external_link'].'}'."\n";
+			$ret =  self::TABSTOPS_TAG.'{ITEMS_0#'.$this->item['external_link'].'}'."\n";
 
 		return $ret;
 	}
 
 	public function getPrefetchTag(): string
 	{
-		return '{PREFETCH_'.$this->item['file_resource'].'}'."\n";
+		return  self::TABSTOPS_TAG.'{PREFETCH_'.$this->item['file_resource'].'}'."\n";
 	}
 
 }
