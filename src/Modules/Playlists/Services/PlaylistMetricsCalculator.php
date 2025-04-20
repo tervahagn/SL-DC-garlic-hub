@@ -21,6 +21,7 @@
 namespace App\Modules\Playlists\Services;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -106,6 +107,11 @@ class PlaylistMetricsCalculator
 		return $this;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function calculateFromItems(array $playlist, array $items): static
 	{
 		$this->reset();
@@ -122,10 +128,48 @@ class PlaylistMetricsCalculator
 				$this->ownerDuration += $item['item_duration'];
 			}
 		}
+		// calculate average durations if shuffle only when results to avoid division through 0.
+		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
+			$this->adjustForShuffle($playlist['shuffle_picking']);
+
+		if ($this->exceedTimeLimit($playlist))
+			new ModuleException('playlist_export',
+				'Exceeds time limit '.$playlist['time_limit'].'s of playlist: '.$playlist['name']);
+
+		return $this;
+	}
+
+	/**
+	 * @return $this
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function calculateFromPlaylistData(array $playlist): static
+	{
+		// nothing to do?
+		// sometimes we get an item just with default values, but no playlist id, so ignore them as well
+		if (empty($playlist) || !isset($playlist['playlist_id']))
+		{
+			$this->reset();
+			return $this;
+		}
+
+		$tmp = $this->itemsRepository->sumAndCountMetricsByPlaylistIdAndOwner($playlist['playlist_id'], $playlist['UID']);
+
+		$this->countEntries      = $tmp['count_items'] ?? 0;
+		$this->countOwnerEntries = $tmp['count_owner_items'] ?? 0;
+		$this->fileSize          = $tmp['filesize'] ?? 0;
+		$this->duration          = (int) $tmp['duration'] ?? 0;
+		$this->ownerDuration     = (int) $tmp['owner_duration'] ?? 0; // because some videos are floats!
 
 		// calculate average durations if shuffle only when results to avoid division through 0.
 		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
 			$this->adjustForShuffle($playlist['shuffle_picking']);
+
+		if ($this->exceedTimeLimit($playlist))
+			new ModuleException('playlist_export',
+				'Exceeds time limit '.$playlist['time_limit'].'s of playlist: '.$playlist['name']);
 
 		return $this;
 	}
@@ -157,37 +201,22 @@ class PlaylistMetricsCalculator
 		return $duration;
 	}
 
-
 	/**
-	 * use self::getDuration() and self::getOwnerDuration()
-	 * to get the result
-	 *
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
 	 * @throws Exception
 	 */
-	public function calculateFromPlaylistData(array $playlist): static
+	public function exceedTimeLimit(array $playlist): bool
 	{
-		// nothing to do?
-		// sometimes we get an item just with default values, but no playlist id, so ignore them as well
-		if (empty($playlist) || !isset($playlist['playlist_id']))
+		if ($playlist['time_limit'] > 0 &&
+			$this->ownerDuration > $playlist['time_limit'] &&
+			!$this->aclValidator->isSimpleAdmin($this->UID)) // Check more intense for real Admin needs company_id
 		{
-			$this->reset();
-			return $this;
+			return true;
 		}
-
-		$tmp = $this->itemsRepository->sumAndCountMetricsByPlaylistIdAndOwner($playlist['playlist_id'], $playlist['UID']);
-
-		$this->countEntries      = $tmp['count_items'] ?? 0;
-		$this->countOwnerEntries = $tmp['count_owner_items'] ?? 0;
-		$this->fileSize          = $tmp['filesize'] ?? 0;
-		$this->duration          = (int) $tmp['duration'] ?? 0;
-		$this->ownerDuration     = (int) $tmp['owner_duration'] ?? 0; // because some videos are floats!
-
-		// calculate average durations if shuffle only when results to avoid division through 0.
-		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
-			$this->adjustForShuffle($playlist['shuffle_picking']);
-
-		return $this;
+		return false;
 	}
+
 
 	private function adjustForShuffle(int $shufflePicking): void
 	{

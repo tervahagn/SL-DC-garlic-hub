@@ -67,24 +67,24 @@ class ExportService extends AbstractBaseService
 			if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
 			{
 				$zones = unserialize($playlist['multizone']);
-				$properties = ['filesize' => 0, 'duration' => 0, 'owner_duration' => 0];
+				$metrics = ['filesize' => 0, 'duration' => 0, 'owner_duration' => 0];
 				foreach ($zones as $zone)
 				{
 					$tmp = $this->export($this->playlistsService->loadPureById($zone['zones']['zone_playlist_id']));
 					$count++;
 					// use the highest values for the duration of multizone.
-					$properties['filesize'] = max($properties['filesize'], $tmp['filesize']);
-					$properties['duration'] = max($properties['duration'], $tmp['duration']);
-					$properties['owner_duration'] = max($properties['owner_duration'], $tmp['owner_duration']);
+					$metrics['filesize'] = max($metrics['filesize'], $tmp['filesize']);
+					$metrics['duration'] = max($metrics['duration'], $tmp['duration']);
+					$metrics['owner_duration'] = max($metrics['owner_duration'], $tmp['owner_duration']);
 				}
 			}
 			else
 			{
-				$properties = $this->export($playlist);
+				$metrics = $this->export($playlist);
 				$count++;
 			}
-			if ($this->playlistsService->update($playlistId, $properties) === 0)
-				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist properties.');
+			if ($this->playlistsService->update($playlistId, $metrics) === 0)
+				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist metrics.');
 
 			$this->itemsService->getItemsRepository()->commitTransaction();
 			return $count;
@@ -102,18 +102,18 @@ class ExportService extends AbstractBaseService
 	 * @throws Exception
 	 * @throws FilesystemException
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function export(array $playlist): array
 	{
 		$results = $this->itemsService->loadByPlaylistForExport($playlist, $this->config->getEdition());
-		$this->itemsService->updatePlaylistMetrics($playlist['playlist_id'], $results['playlist_metrics']);
-		$this->itemsService->updatePlaylistMetricsRecursively($playlist['playlist_id']);
+		$this->itemsService->updateMetricsRecursively($playlist['playlist_id']);
 
 		$this->playlistContent->init($playlist, $results['items'])->build();
 		$this->localSmilWriter->initExport($playlist['playlist_id']);
 		$this->localSmilWriter->writeSMILFiles($this->playlistContent);
 
-		return $results['properties'];
+		return $results['playlist_metrics'];
 	}
 
 }
