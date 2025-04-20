@@ -138,7 +138,7 @@ class ItemsRepository extends Sql
 			$this->table.'.item_type' => $this->generateWhereClause(ItemType::PLAYLIST->value)
 		];
 
-		return $this->findAllByWithFields($fields, $where, $join);
+		return $this->findAllByWithFields($fields, $where, $join, [], $this->table.'.playlist_id');
 	}
 
 

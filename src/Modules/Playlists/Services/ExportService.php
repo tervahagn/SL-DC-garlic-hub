@@ -83,6 +83,7 @@ class ExportService extends AbstractBaseService
 				$metrics = $this->export($playlist);
 				$count++;
 			}
+
 			if ($this->playlistsService->update($playlistId, $metrics) === 0)
 				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist metrics.');
 
@@ -107,6 +108,16 @@ class ExportService extends AbstractBaseService
 	public function export(array $playlist): array
 	{
 		$results = $this->itemsService->loadByPlaylistForExport($playlist, $this->config->getEdition());
+		$this->itemsService->updateItemsMetrics($playlist['playlist_id']);
+		/*
+			    1. Save metrics in exported playlist (did with results as last, but doesn't matter)
+				2. Save metrics in all items wich represent this playlist.
+				3. find all playlists which have the exported playlist nested
+				4. calculate metrics for the new playlists
+				5. save metrics in new playlists
+				6. save metrics in all items which represent the new playlist
+				7. recurse to 3.
+		 */
 		$this->itemsService->updateMetricsRecursively($playlist['playlist_id']);
 
 		$this->playlistContent->init($playlist, $results['items'])->build();

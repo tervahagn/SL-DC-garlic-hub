@@ -283,6 +283,28 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @throws Exception
+	 */
+	public function updateItemsMetrics(int $playlistId): void
+	{
+		$saveItem = [
+			'item_duration' => $this->playlistMetricsCalculator->getDuration(),
+			'item_filesize' => $this->playlistMetricsCalculator->getFilesize()
+		];
+		$this->itemsRepository->updateWithWhere($saveItem, ['file_resource' => $playlistId]);
+	}
+
+
+	/**
+	 *
+	 * 1. Save metrics in exported playlist (did in export-class)
+	 * 2. Save metrics in all items wich represent this playlist. (did in export-class)
+	 * 3. find all playlists which have the exported playlist nested (here we go)
+	 * 4. calculate metrics for the new playlists
+	 * 5. save metrics in new playlists
+	 * 6. save metrics in all items which represent the new playlist
+	 * 7. recurse to 3.
+	 *
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
@@ -292,7 +314,9 @@ class ItemsService extends AbstractBaseService
 		$tmp = $this->itemsRepository->findAllPlaylistsContainingPlaylist($playlistId);
 		foreach($tmp as $playlistData)
 		{
-			$this->updateMetrics($playlistData);
+			$this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData);
+			$this->updateItemsMetrics($playlistData['playlist_id']);
+			$this->updatePlaylistMetrics($playlistData['playlist_id']);
 
 			$this->updateMetricsRecursively($playlistData['playlist_id']);
 		}
@@ -301,18 +325,9 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	private function updateMetrics(array $playlistData): void
+	private function updatePlaylistMetrics(int $playlistId): void
 	{
-		$this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData);
-		$this->playlistsService->update(
-			$playlistData['playlist_id'],
-			$this->playlistMetricsCalculator->getMetricsForPlaylistTable()
-		);
-		$saveItem = [
-			'item_duration' => $this->playlistMetricsCalculator->getDuration(),
-			'item_filesize' => $this->playlistMetricsCalculator->getFilesize()
-		];
-		$this->itemsRepository->update($playlistData['item_id'], $saveItem);
+		$this->playlistsService->update($playlistId, $this->playlistMetricsCalculator->getMetricsForPlaylistTable());
 	}
 
 	/**
@@ -327,17 +342,6 @@ class ItemsService extends AbstractBaseService
 			throw new ModuleException('items', 'Playlist is not accessible');
 
 		return $playlistData;
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	private function allowedByTimeLimit(int $playlistId, int $timeLimit): bool
-	{
-	/*	if ($timeLimit > 0)
-			return ($this->itemsRepository->sumDurationOfItemsByUIDAndPlaylistId($this->UID, $playlistId) <= $timeLimit);
-*/
-		return true;
 	}
 
 	public function sanitize(string $value): array
