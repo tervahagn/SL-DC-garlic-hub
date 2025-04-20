@@ -131,7 +131,7 @@ class ItemsRepository extends Sql
 	{
 		$playlistsTable = 'playlists';
 
-		$fields = [$this->table.'.*'];
+		$fields = [$this->table.'.item_id, '.$playlistsTable.'.*'];
 		$join   = [$playlistsTable => $playlistsTable.'.playlist_id = '.$this->table.'.playlist_id'];
 		$where  = [
 			$this->table.'.file_resource' => $this->generateWhereClause($playlistId),
