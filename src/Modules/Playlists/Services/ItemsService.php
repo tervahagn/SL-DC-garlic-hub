@@ -61,9 +61,6 @@ class ItemsService extends AbstractBaseService
 		return $this->itemsRepository;
 	}
 
-	/**
-	 * @throws Exception
-	 */
 	public function loadByPlaylistForExport(array $playlist, string $edition): array
 	{
 		$items   = [];
@@ -128,111 +125,6 @@ class ItemsService extends AbstractBaseService
 		return ['playlist_metrics' =>  $playlistMetrics, 'items' => $items];
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	public function insertMedia(int $playlistId, string $id, int $position): array
-	{
-		try
-		{
-			$this->itemsRepository->beginTransaction();
-			$this->mediaService->setUID($this->UID);
-			$playlistData = $this->checkPlaylistAcl($playlistId);
-
-			$media = $this->mediaService->fetchMedia($id); // checks rights, too
-			if (empty($media))
-				throw new ModuleException('items', 'Media is not accessible');
-
-/*			if (!$this->allowedByTimeLimit($playlistId, $playlistData['time_limit']))
-				throw new ModuleException('items', 'Playlist time limit exceeds');
-*/
-			$itemDuration =  $this->playlistMetricsCalculator->calculateRemainingMediaDuration($playlistData, $media);
-			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
-			$saveItem = [
-				'playlist_id'   => $playlistId,
-				'datasource'    => 'file',
-				'UID'           => $this->UID,
-				'item_duration' => $itemDuration,
-				'item_filesize' => $media['metadata']['size'],
-				'item_order'    => $position,
-				'item_name'     => $media['filename'],
-				'item_type'     => ItemType::MEDIAPOOL->value,
-				'file_resource' => $media['checksum'],
-				'mimetype'      => $media['mimetype'],
-			];
-			$id = $this->itemsRepository->insert($saveItem);
-			if ($id === 0)
-				throw new ModuleException('items', 'Playlist item could not inserted.');
-
-			$saveItem['item_id'] = $id;
-			$saveItem['paths'] = $media['paths'];
-
-			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
-
-			$this->itemsRepository->commitTransaction();
-
-			return ['playlist_metrics' => $playlistMetrics, 'item' => $saveItem];
-		}
-		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
-		{
-			$this->itemsRepository->rollBackTransaction();
-			$this->logger->error('Error insert media: ' . $e->getMessage());
-			return [];
-		}
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function insertPlaylist(int $targetId, string $insertId, int $position): array
-	{
-		try
-		{
-			$this->itemsRepository->beginTransaction();
-			$this->mediaService->setUID($this->UID);
-
-			$playlistTargetData = $this->checkPlaylistAcl($targetId);
-			$playlistInsertData = $this->checkPlaylistAcl($insertId);
-
-			if ($this->checkForRecursiveInserts($playlistTargetData['playlist_id'], $playlistInsertData['playlist_id']))
-				throw new ModuleException('items', 'Playlist recursion alert.');
-
-/*			if (!$this->allowedByTimeLimit($targetId, $playlistTargetData['time_limit']))
-				throw new ModuleException('items', 'Playlist time limit exceeds');
-*/
-			$this->itemsRepository->updatePositionsWhenInserted($targetId, $position);
-			$saveItem = [
-				'playlist_id'   => $targetId,
-				'datasource'    => 'file',
-				'UID'           => $this->UID,
-				'item_duration' => $playlistInsertData['duration'],
-				'item_filesize' => $playlistInsertData['filesize'],
-				'item_order'    => $position,
-				'item_name'     => $playlistInsertData['playlist_name'],
-				'item_type'     => ItemType::PLAYLIST->value,
-				'file_resource' => $insertId,
-				'mimetype'      => ''
-			];
-			$id = $this->itemsRepository->insert($saveItem);
-			if ($id === 0)
-				throw new ModuleException('items', 'Playlist item could not inserted.');
-
-			$saveItem['item_id'] = $id;
-			$saveItem['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
-
-			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistTargetData)->getMetricsForFrontend();
-
-			$this->itemsRepository->commitTransaction();
-
-			return ['playlist_metrics' => $playlistMetrics, 'item' => $saveItem];
-		}
-		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
-		{
-			$this->itemsRepository->rollBackTransaction();
-			$this->logger->error('Error insert playlist: ' . $e->getMessage());
-			return [];
-		}
-	}
 
 	/**
 	 * @throws Exception
@@ -346,21 +238,6 @@ class ItemsService extends AbstractBaseService
 		return $playlistData;
 	}
 
-	private function checkForRecursiveInserts(int $targetId, int $insertId): bool
-	{
-		if ($targetId == $insertId)
-			return true;
-
-		foreach ($this->itemsRepository->findAllPlaylistItemsByPlaylistId($insertId) as $value)
-		{
-			if (isset($value['file_resource']) && $this->checkForRecursiveInserts($targetId, $value['file_resource']) === true)
-				return true;
-		}
-
-		return false;
-	}
-
-
 	private function sanitize(string $value): array
 	{
 		if ($value === '')
@@ -368,6 +245,4 @@ class ItemsService extends AbstractBaseService
 
 		return unserialize($value);
 	}
-
-
 }

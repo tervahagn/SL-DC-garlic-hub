@@ -51,6 +51,7 @@ use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\ItemsService;
@@ -189,10 +190,26 @@ $dependencies[PlaylistsController::class] = DI\factory(function (ContainerInterf
 });
 
 // Items
+$dependencies[InsertItemFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new InsertItemFactory(
+		$container->get(MediaService::class),
+		$container->get(ItemsRepository::class),
+		$container->get(PlaylistsService::class),
+		$container->get(PlaylistMetricsCalculator::class),
+		$container->get('ModuleLogger')
+	);
+});
 $dependencies[ItemsController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ItemsController(
-		$container->get(ItemsService::class)
+	return new ItemsController($container->get(ItemsService::class), $container->get(InsertItemFactory::class));
+});
+$dependencies[PlaylistMetricsCalculator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return 		new PlaylistMetricsCalculator(
+		$container->get(ItemsRepository::class),
+		$container->get(AclValidator::class),
+		$container->get(Config::class),
 	);
 });
 $dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $container)
@@ -201,11 +218,7 @@ $dependencies[ItemsService::class] = DI\factory(function (ContainerInterface $co
 		$container->get(ItemsRepository::class),
 		$container->get(MediaService::class),
 		$container->get(PlaylistsService::class),
-		new PlaylistMetricsCalculator(
-			$container->get(ItemsRepository::class),
-			$container->get(AclValidator::class),
-			$container->get(Config::class),
-		),
+		$container->get(PlaylistMetricsCalculator::class),
 		$container->get('ModuleLogger')
 	);
 });

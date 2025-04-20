@@ -21,6 +21,7 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
+use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\ItemsService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -29,10 +30,12 @@ use Psr\Http\Message\ServerRequestInterface;
 class ItemsController
 {
 	private readonly ItemsService $itemsService;
+	private readonly InsertItemFactory $insertItemFactory;
 
-	public function __construct(ItemsService $itemsService)
+	public function __construct(ItemsService $itemsService, InsertItemFactory $insertItemFactory)
 	{
 		$this->itemsService = $itemsService;
+		$this->insertItemFactory = $insertItemFactory;
 	}
 
 	/**
@@ -50,10 +53,6 @@ class ItemsController
 		return $this->jsonResponse($response, ['success' => true, 'data' => $list]);
 	}
 
-
-	/**
-	 * @throws Exception
-	 */
 	public function insert(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$requestData = $request->getParsedBody();
@@ -69,24 +68,16 @@ class ItemsController
 		if (empty($requestData['position']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Position not valid.']);
 
-		$this->determineUID($request->getAttribute('session'));
 
-		switch ($requestData['source'])
-		{
-			case 'mediapool':
-				$item = $this->itemsService->insertMedia((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
-				break;
-			case 'playlist':
-				$item = $this->itemsService->insertPlaylist((int)$requestData['playlist_id'], $requestData['id'], $requestData['position']);
-				break;
-			default:
-				$item = [];
-		}
-
-		if(!empty($item))
-			return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
-		else
+		$insertItem = $this->insertItemFactory->create($requestData['source']);
+		if($insertItem === null)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
+
+		$insertItem->setUID($request->getAttribute('session')->get('user')['UID']);
+		$item = $insertItem->insert($requestData['playlist_id'], $requestData['id'], $requestData['position']);
+
+		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
+
 	}
 
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -127,6 +118,7 @@ class ItemsController
 	private function determineUID(Session $session)
 	{
 		$this->itemsService->setUID($session->get('user')['UID']);
+
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
