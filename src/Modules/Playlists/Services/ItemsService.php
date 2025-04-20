@@ -72,7 +72,7 @@ class ItemsService extends AbstractBaseService
 		$properties = $this->playlistMetricsCalculator
 			->reset()
 			->calculateFromItems($playlist, $results)
-			->getMetricsForFrontend();
+			->getMetricsForPlaylistTable();
 
 		return ['properties' => $properties, 'items' => $items];
 	}

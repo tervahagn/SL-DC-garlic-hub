@@ -76,7 +76,8 @@ class ExportService extends AbstractBaseService
 					$properties['duration'] = max($properties['duration'], $tmp['duration']);
 					$properties['owner_duration'] = max($properties['owner_duration'], $tmp['owner_duration']);
 				}
-			} else
+			}
+			else
 			{
 				$properties = $this->export($playlist);
 				$count++;
