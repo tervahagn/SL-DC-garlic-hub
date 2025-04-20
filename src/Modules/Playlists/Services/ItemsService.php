@@ -194,9 +194,8 @@ class ItemsService extends AbstractBaseService
 			$playlistTargetData = $this->checkPlaylistAcl($targetId);
 			$playlistInsertData = $this->checkPlaylistAcl($insertId);
 
-			if ($this->checkForRecursiveInserts($playlistTargetData['smil_playlist_id'], $playlistInsertData['smil_playlist_id']))
+			if ($this->checkForRecursiveInserts($playlistTargetData['playlist_id'], $playlistInsertData['playlist_id']))
 				throw new ModuleException('items', 'Playlist recursion alert.');
-
 
 /*			if (!$this->allowedByTimeLimit($targetId, $playlistTargetData['time_limit']))
 				throw new ModuleException('items', 'Playlist time limit exceeds');
@@ -230,7 +229,7 @@ class ItemsService extends AbstractBaseService
 		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
 		{
 			$this->itemsRepository->rollBackTransaction();
-			$this->logger->error('Error insert media: ' . $e->getMessage());
+			$this->logger->error('Error insert playlist: ' . $e->getMessage());
 			return [];
 		}
 	}
@@ -298,7 +297,6 @@ class ItemsService extends AbstractBaseService
 		$this->itemsRepository->updateWithWhere($saveItem, ['file_resource' => $playlistId]);
 	}
 
-
 	/**
 	 *
 	 * 1. Save metrics in exported playlist (did in export-class)
@@ -347,6 +345,21 @@ class ItemsService extends AbstractBaseService
 
 		return $playlistData;
 	}
+
+	private function checkForRecursiveInserts(int $targetId, int $insertId): bool
+	{
+		if ($targetId == $insertId)
+			return true;
+
+		foreach ($this->itemsRepository->findAllPlaylistItemsByPlaylistId($insertId) as $value)
+		{
+			if (isset($value['file_resource']) && $this->checkForRecursiveInserts($targetId, $value['file_resource']) === true)
+				return true;
+		}
+
+		return false;
+	}
+
 
 	private function sanitize(string $value): array
 	{

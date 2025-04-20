@@ -103,6 +103,16 @@ class ItemsRepository extends Sql
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
+	public function findAllPlaylistItemsByPlaylistId($playlist_id): array
+	{
+		$where = [
+			'playlist_id' => $this->generateWhereClause($playlist_id),
+			'item_type'  => $this->generateWhereClause(ItemType::PLAYLIST->value)
+		];
+		return $this->findAllBy($where);
+	}
+
+
 	/**
 	 * @throws Exception
 	 */
