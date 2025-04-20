@@ -22,7 +22,7 @@ import {BaseService}    from "../../../../core/Base/BaseService.js";
 
 export class ItemsService extends BaseService
 {
-	insertFromMediaPool(id, playlistId, position)
+	insertMedia(id, playlistId, position)
 	{
 		const data = {
 			playlist_id: playlistId,

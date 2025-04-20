@@ -106,41 +106,22 @@ class ItemsRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
-	public function sumDurationOfEnabledByPlaylistId(int $playlist_id): int
+	public function sumAndCountMetricsByPlaylistIdAndOwner(int $playlistId, int $owner): array
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('SUM(item_duration)')
-			->from($this->table)
-			->where('playlist_id = '.$playlist_id)
-		/*	->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')*/
-			->groupBy('playlist_id');
+		$qb = $this->connection->createQueryBuilder();
+		$qb->select(
+			'COUNT(*) AS count_items',
+			'COUNT(CASE WHEN UID = '.$owner.' THEN 1 ELSE NULL END) AS count_owner_items',
+			'SUM(item_filesize) AS filesize',
+			'SUM(item_duration) AS duration',
+			'SUM(CASE WHEN UID = '.$owner.' THEN item_duration ELSE 0 END) AS owner_duration'
+		)
+		   ->from($this->table)
+		   ->where('playlist_id = :playlist_id')
+			/*	->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')*/
+		   ->setParameter('playlist_id', $playlistId);
 
-		$result = $queryBuilder->fetchOne();
-		if ($result === false)
-			return  0;
-
-		return (int) $result;
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function sumDurationOfItemsByUIDAndPlaylistId(int $UID, int $playlist_id): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('SUM(item_filesize) as total')
-			->from($this->table)
-			->where('playlist_id = '.$playlist_id)
-			->andWhere('UID = '.$UID)
-			->andWhere('flags & 1 <> 0')
-			->groupBy('playlist_id');
-
-		$result = $queryBuilder->fetchOne();
-		if (!isset($result['total']))
-		{
-			return  0;
-		}
-		return $result['total'];
+		return $qb->executeQuery()->fetchAssociative();
 	}
 
 	public function updatePositionsWhenInserted(int $playlistId, int $position): int

@@ -33,18 +33,17 @@ document.addEventListener("DOMContentLoaded", function ()
 	const dropTarget = document.getElementById("thePlaylist");
 	const playlistId = document.getElementById("playlist_id").value;
 
-	const itemsService = new ItemsService(new FetchClient());
-	const itemsList = new ItemList(new ItemFactory(), itemsService, dropTarget);
-
-	const dragDropHandler = new DragDropHandler(dropTarget, itemsService, itemsList);
+	const playlistsService    = new PlaylistsService(new FetchClient());
+	const itemsService        = new ItemsService(new FetchClient());
+	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
+	const itemsList           = new ItemList(new ItemFactory(), itemsService, dropTarget, playlistsProperties);
+	const dragDropHandler     = new DragDropHandler(dropTarget, itemsService, itemsList);
 	dragDropHandler.playlistId = playlistId;
 
-	const playlistsService = new PlaylistsService(new FetchClient());
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
-	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
 	insertContextMenu.init(playlistId);
-	itemsList.displayPlaylist(playlistId, playlistsProperties);
+	itemsList.displayPlaylist(playlistId);
 
 	playlistsProperties.init(playlistId);
 

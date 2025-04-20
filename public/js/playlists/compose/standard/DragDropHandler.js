@@ -124,7 +124,7 @@ export class DragDropHandler
 				switch (this.#source)
 				{
 					case "mediapool":
-						result = await this.#itemService.insertFromMediaPool(selectDataId, this.#playlistId, droppedIndex);
+						result = await this.#itemService.insertMedia(selectDataId, this.#playlistId, droppedIndex);
 						break;
 					case "playlists":
 						result = await this.#itemService.insertPlaylist(selectDataId, this.#playlistId, droppedIndex);

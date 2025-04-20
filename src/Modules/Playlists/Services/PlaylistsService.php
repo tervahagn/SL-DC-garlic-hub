@@ -232,7 +232,7 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
-	public function findAllByItemsAsPlaylistAndMediaId(mixed $fileResource): array
+	public function findAllPlaylistsWhichIncludedThisPlaylistAsItem(mixed $fileResource): array
 	{
 		return $this->playlistsRepository->findAllByItemsAsPlaylistAndMediaId($fileResource);
 	}

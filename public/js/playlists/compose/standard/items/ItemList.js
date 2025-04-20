@@ -24,16 +24,18 @@ export default class ItemList
 	#dropTarget = null;
 	#itemsService = null;
 	#itemsList   = {};
+	#playlistProperties = null;
 	#playlistId = 0;
 
-	constructor(itemFactory, itemsService, dropTarget)
+	constructor(itemFactory, itemsService, dropTarget, playlistProperties)
 	{
 		this.#itemFactory  = itemFactory;
 		this.#dropTarget   = dropTarget;
 		this.#itemsService = itemsService;
+		this.#playlistProperties = playlistProperties;
 	}
 
-	async displayPlaylist(playlistId, playlistProperties)
+	async displayPlaylist(playlistId)
 	{
 		this.#playlistId = playlistId;
 		const results = await this.#itemsService.loadByPlaylistId(playlistId);
@@ -45,7 +47,7 @@ export default class ItemList
 			this.createPlaylistItem(item);
 		}
 
-		playlistProperties.display(results.data.playlist);
+		this.#playlistProperties.display(results.data.playlist);
 	}
 
 	createPlaylistItem(itemData, position = null)

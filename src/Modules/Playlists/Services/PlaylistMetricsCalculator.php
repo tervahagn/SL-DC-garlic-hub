@@ -1,0 +1,208 @@
+<?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or  modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+namespace App\Modules\Playlists\Services;
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
+use App\Modules\Playlists\Repositories\ItemsRepository;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+
+/**
+ * class for calculating and manipulating durations of
+ * playlist
+ */
+class PlaylistMetricsCalculator
+{
+	private ItemsRepository $itemsRepository;
+	private AclValidator $aclValidator;
+	private Config $config;
+	private int $UID;
+	private int $countEntries;
+	private int $countOwnerEntries;
+	private int $ownerDuration;
+	private int $duration;
+	private int $fileSize;
+
+	public function __construct(ItemsRepository $itemsRepository, AclValidator $aclValidator, Config $config)
+	{
+		$this->itemsRepository     = $itemsRepository;
+		$this->aclValidator     = $aclValidator;
+		$this->config           = $config;
+	}
+
+	public function getCountEntries(): int
+	{
+		return $this->countEntries;
+	}
+
+	public function getDuration(): int
+	{
+		return $this->duration;
+	}
+
+	public function getOwnerDuration(): int
+	{
+		return $this->ownerDuration;
+	}
+
+	public function getFileSize(): int
+	{
+		return $this->fileSize;
+	}
+
+	public function setUID(int $UID): static
+	{
+		$this->UID = $UID;
+		return $this;
+	}
+
+	public function getMetricsForFrontend(): array
+	{
+		return [
+			'count_items'       => $this->countEntries,
+			'count_owner_items' => $this->countEntries,
+			'filesize'          => $this->fileSize,
+			'duration'          => $this->duration,
+			'owner_duration'    => $this->ownerDuration
+		];
+	}
+
+	public function getMetricsForPlaylistTable(): array
+	{
+		return [
+			'filesize'          => $this->fileSize,
+			'duration'          => $this->duration,
+			'owner_duration'    => $this->ownerDuration
+		];
+	}
+
+
+	public function reset(): static
+	{
+		$this->countEntries      = 0;
+		$this->countOwnerEntries = 0;
+		$this->fileSize          = 0;
+		$this->duration          = 0;
+		$this->ownerDuration     = 0;
+
+		return $this;
+	}
+
+	public function calculateFromItems(array $playlist, array $items): static
+	{
+		$this->reset();
+		$this->countEntries = count($items);
+
+		foreach ($items as $item)
+		{
+			$this->fileSize += $item['item_filesize'];
+			$this->duration += $item['item_duration'];
+
+			if ($playlist['UID'] === $item['UID'])
+			{
+				$this->countOwnerEntries++;
+				$this->ownerDuration += $item['item_duration'];
+			}
+		}
+
+		// calculate average durations if shuffle only when results to avoid division through 0.
+		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
+			$this->adjustForShuffle($playlist['shuffle_picking']);
+
+		return $this;
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function calculateRemainingMediaDuration(array $playlist, array $media = [])
+	{
+		$default_duration = $this->config->getConfigValue('duration', 'playlists', 'Defaults');
+
+		// only videos have a duration > 0. Using the constant for other media.
+		// this is only used, when inserting new items
+		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $default_duration;
+
+		if ($playlist['time_limit'] > 0 && !$this->aclValidator->isSimpleAdmin($this->UID))
+		{
+			$this->calculateFromPlaylistData($playlist);
+			$remaining_duration = $playlist['time_limit'] - $this->getOwnerDuration();
+
+			if ($remaining_duration <= 0)
+				$duration = 0;
+			elseif ($remaining_duration < $duration)
+				$duration = $remaining_duration;
+		}
+
+		return $duration;
+	}
+
+
+	/**
+	 * use self::getDuration() and self::getOwnerDuration()
+	 * to get the result
+	 *
+	 * @throws Exception
+	 */
+	public function calculateFromPlaylistData(array $playlist): static
+	{
+		// nothing to do?
+		// sometimes we get an item just with default values, but no playlist id, so ignore them as well
+		if (empty($playlist) || !isset($playlist['playlist_id']))
+		{
+			$this->reset();
+			return $this;
+		}
+
+		$tmp = $this->itemsRepository->sumAndCountMetricsByPlaylistIdAndOwner($playlist['playlist_id'], $playlist['UID']);
+
+		$this->countEntries      = $tmp['count_items'];
+		$this->countOwnerEntries = $tmp['count_owner_items'];
+		$this->fileSize          = $tmp['filesize'];
+		$this->duration          = $tmp['duration'];
+		$this->ownerDuration     = $tmp['owner_duration'];
+
+		// calculate average durations if shuffle only when results to avoid division through 0.
+		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
+			$this->adjustForShuffle($playlist['shuffle_picking']);
+
+		return $this;
+	}
+
+	private function adjustForShuffle(int $shufflePicking): void
+	{
+		$this->duration = (int) round($this->duration / $this->countEntries * max($shufflePicking, 1));
+		if ($this->countOwnerEntries > 0)
+		{
+			$avgOwnerItemDuration = $this->ownerDuration / $this->countOwnerEntries;
+			$probability          = $this->countOwnerEntries / $this->countEntries;
+			$expectedOwnerItems   = $probability * max($shufflePicking, 1);
+
+			// secure owner duration cannot be higher than avg duration
+			$this->ownerDuration  = min((int) round($avgOwnerItemDuration * $expectedOwnerItems), $this->duration);
+		}
+		else
+			$this->ownerDuration = 0;
+	}
+
+}
