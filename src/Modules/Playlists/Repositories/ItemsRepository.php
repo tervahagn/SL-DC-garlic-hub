@@ -124,6 +124,24 @@ class ItemsRepository extends Sql
 		return $qb->executeQuery()->fetchAssociative();
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function findAllPlaylistsContainingPlaylist(int $playlistId): array
+	{
+		$playlistsTable = 'playlists';
+
+		$fields = [$this->table.'.*'];
+		$join   = [$playlistsTable => $playlistsTable.'.playlist_id = '.$this->table.'.playlist_id'];
+		$where  = [
+			$this->table.'.file_resource' => $this->generateWhereClause($playlistId),
+			$this->table.'.item_type' => $this->generateWhereClause(ItemType::PLAYLIST->value)
+		];
+
+		return $this->findAllByWithFields($fields, $where, $join);
+	}
+
+
 	public function updatePositionsWhenInserted(int $playlistId, int $position): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -152,17 +170,6 @@ class ItemsRepository extends Sql
 		$queryBuilder->setParameter('item_order', $position);
 
 		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function sumAndCountByPlaylistId(int $playlist_id): array
-	{
-		$select = ['SUM(item_filesize) as totalSize', 'COUNT(item_id) as totalEntries'];
-		$where['playlist_id']  = $this->generateWhereClause($playlist_id);
-
-		return $this->getFirstDataSet($this->findAllByWithFields($select, $where));
 	}
 
 	/**

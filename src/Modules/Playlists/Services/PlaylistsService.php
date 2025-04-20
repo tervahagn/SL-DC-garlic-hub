@@ -81,8 +81,10 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function updateSecure(array $postData): int
 	{
@@ -230,11 +232,6 @@ class PlaylistsService extends AbstractBaseService
 			$this->addErrorMessage($e->getMessage());
 			return [];
 		}
-	}
-
-	public function findAllPlaylistsWhichIncludedThisPlaylistAsItem(mixed $fileResource): array
-	{
-		return $this->playlistsRepository->findAllByItemsAsPlaylistAndMediaId($fileResource);
 	}
 
 	private function collectDataForInsert(array $postData): array

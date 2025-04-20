@@ -30,6 +30,11 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
+/**+
+ * Todo Concept:
+ * Adding, deleting or duration change pflaylist needs to check for time limit directly
+ * Exporting will set recursively item times and should stop, if a higher leveled playlist time limit will exceed
+ */
 class ItemsService extends AbstractBaseService
 {
 	private readonly ItemsRepository $itemsRepository;
@@ -51,6 +56,11 @@ class ItemsService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	public function getItemsRepository(): ItemsRepository
+	{
+		return $this->itemsRepository;
+	}
+
 	/**
 	 * @throws Exception
 	 */
@@ -69,12 +79,12 @@ class ItemsService extends AbstractBaseService
 			$items[] = $item;
 		}
 
-		$properties = $this->playlistMetricsCalculator
+		$playlistMetrics = $this->playlistMetricsCalculator
 			->reset()
 			->calculateFromItems($playlist, $results)
 			->getMetricsForPlaylistTable();
 
-		return ['properties' => $properties, 'items' => $items];
+		return ['playlist_metrics' =>  $playlistMetrics, 'items' => $items];
 	}
 
 	/**
@@ -112,10 +122,10 @@ class ItemsService extends AbstractBaseService
 
 			}
 		}
-		$playlist = $this->playlistsService->loadPureById($playlistId);
-		$playlist_metrics = $this->playlistMetricsCalculator->calculateFromItems($playlist, $result)->getMetricsForFrontend();
+		$playlistData    = $this->playlistsService->loadPureById($playlistId);
+		$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
-		return ['playlist_metrics' =>  $playlist_metrics, 'items' => $items];
+		return ['playlist_metrics' =>  $playlistMetrics, 'items' => $items];
 	}
 
 	/**
@@ -157,9 +167,7 @@ class ItemsService extends AbstractBaseService
 			$saveItem['item_id'] = $id;
 			$saveItem['paths'] = $media['paths'];
 
-			$playlistMetrics = $this->updateCurrentPlaylistMetrics($playlistData);
-			// required before recursion otherwise it will overwrite current PlaylistsMetrics
-			$this->updatePlaylistMetricsRecursively($playlistData['playlist_id']);
+			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
 			$this->itemsRepository->commitTransaction();
 
@@ -209,9 +217,7 @@ class ItemsService extends AbstractBaseService
 			$saveItem['item_id'] = $id;
 			$saveItem['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
 
-			$playlistMetrics = $this->updateCurrentPlaylistMetrics($playlistTargetData);
-			// required before recursion otherwise it will overwrite current PlaylistsMetrics
-			$this->updatePlaylistMetricsRecursively($playlistTargetData['playlist_id']);
+			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistTargetData)->getMetricsForFrontend();
 
 			$this->itemsRepository->commitTransaction();
 
@@ -261,9 +267,7 @@ class ItemsService extends AbstractBaseService
 
 			$this->itemsRepository->updatePositionsWhenDeleted($playlistId, $item['item_order']);
 
-			$playlistMetrics = $this->updateCurrentPlaylistMetrics($playlistData);
-			// required before recursion otherwise it will overwrite current PlaylistsMetrics
-			$this->updatePlaylistMetricsRecursively($playlistData['playlist_id']);
+			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
 			$this->itemsRepository->commitTransaction();
 
@@ -296,9 +300,9 @@ class ItemsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	private function updatePlaylistMetricsRecursively(int $playlistId): void
+	public function updatePlaylistMetricsRecursively(int $playlistId): void
 	{
-		$tmp = $this->playlistsService->findAllPlaylistsWhichIncludedThisPlaylistAsItem($playlistId);
+		$tmp = $this->itemsRepository->findAllPlaylistsContainingPlaylist($playlistId);
 		foreach($tmp as $playlistData)
 		{
 			$this->updateMetrics($playlistData);
@@ -309,16 +313,16 @@ class ItemsService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	private function updateMetrics($playlistData): void
+	public function updatePlaylistMetrics(int $playlistId, array $metrics): void
 	{
-		$this->playlistsService->update(
-			$playlistData['playlist_id'],
-			$this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForPlaylistTable()
-		);
+		$this->playlistsService->update($playlistId, $metrics);
+	}
 
+	public function updateItemMetrics(array $itemId, array $metrics): void
+	{
 		// update the item dataset
 		$saveItem = [
-			'item_duration'     => $this->playlistMetricsCalculator->getDuration(),
+			'item_duration'     => $metrics['duration'],
 			'item_filesize'     => $this->playlistMetricsCalculator->getFileSize()
 		];
 		$this->itemsRepository->update($playlistData['playlist_id'], $saveItem);

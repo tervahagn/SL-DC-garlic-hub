@@ -56,6 +56,7 @@ class ExportService extends AbstractBaseService
 	{
 		try
 		{
+			$this->itemsService->getItemsRepository()->beginTransaction();
 			$this->playlistsService->setUID($this->UID);
 			$this->itemsService->setUID($this->UID);
 
@@ -71,7 +72,7 @@ class ExportService extends AbstractBaseService
 				{
 					$tmp = $this->export($this->playlistsService->loadPureById($zone['zones']['zone_playlist_id']));
 					$count++;
-					// use the highest values for a multizone.
+					// use the highest values for the duration of multizone.
 					$properties['filesize'] = max($properties['filesize'], $tmp['filesize']);
 					$properties['duration'] = max($properties['duration'], $tmp['duration']);
 					$properties['owner_duration'] = max($properties['owner_duration'], $tmp['owner_duration']);
@@ -85,11 +86,12 @@ class ExportService extends AbstractBaseService
 			if ($this->playlistsService->update($playlistId, $properties) === 0)
 				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist properties.');
 
-
+			$this->itemsService->getItemsRepository()->commitTransaction();
 			return $count;
 		}
 		catch (ModuleException|CoreException|Exception|FilesystemException|PhpfastcacheSimpleCacheException $e)
 		{
+			$this->itemsService->getItemsRepository()->rollBackTransaction();
 			$this->logger->error('Error export SMIL playlist: ' . $e->getMessage());
 			return 0;
 		}
@@ -104,6 +106,8 @@ class ExportService extends AbstractBaseService
 	public function export(array $playlist): array
 	{
 		$results = $this->itemsService->loadByPlaylistForExport($playlist, $this->config->getEdition());
+		$this->itemsService->updatePlaylistMetrics($playlist['playlist_id'], $results['playlist_metrics']);
+		$this->itemsService->updatePlaylistMetricsRecursively($playlist['playlist_id']);
 
 		$this->playlistContent->init($playlist, $results['items'])->build();
 		$this->localSmilWriter->initExport($playlist['playlist_id']);
