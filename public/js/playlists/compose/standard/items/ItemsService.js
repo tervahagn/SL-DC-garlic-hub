@@ -44,7 +44,6 @@ export class ItemsService extends BaseService
 		return this._sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
 
-
 	async updateItemsOrders(playlistId, itemsPositions)
 	{
 		const url = ItemsApiConfig.BASE_URI;

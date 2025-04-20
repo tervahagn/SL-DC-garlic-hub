@@ -35,7 +35,7 @@ export default class ItemList
 		this.#playlistProperties = playlistProperties;
 	}
 
-	async displayPlaylist(playlistId)
+	async buildPlaylist(playlistId)
 	{
 		this.#playlistId = playlistId;
 		const results = await this.#itemsService.loadByPlaylistId(playlistId);
@@ -47,7 +47,12 @@ export default class ItemList
 			this.createPlaylistItem(item);
 		}
 
-		this.#playlistProperties.display(results.data.playlist);
+		this.displayPlaylistMetrics(results.data.playlist_metrics);
+	}
+
+	displayPlaylistMetrics(playlistMetrics)
+	{
+		this.#playlistProperties.display(playlistMetrics);
 	}
 
 	createPlaylistItem(itemData, position = null)
@@ -78,6 +83,7 @@ export default class ItemList
 				if (!results.success)
 					return;
 
+				this.displayPlaylistMetrics(results.data.playlist_metrics)
 				PlaylistsProperties.notifySave();
 				document.getElementById("itemId-" + id).remove();
 			});

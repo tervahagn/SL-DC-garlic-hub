@@ -176,11 +176,11 @@ class PlaylistMetricsCalculator
 
 		$tmp = $this->itemsRepository->sumAndCountMetricsByPlaylistIdAndOwner($playlist['playlist_id'], $playlist['UID']);
 
-		$this->countEntries      = $tmp['count_items'];
-		$this->countOwnerEntries = $tmp['count_owner_items'];
-		$this->fileSize          = $tmp['filesize'];
-		$this->duration          = $tmp['duration'];
-		$this->ownerDuration     = $tmp['owner_duration'];
+		$this->countEntries      = $tmp['count_items'] ?? 0;
+		$this->countOwnerEntries = $tmp['count_owner_items'] ?? 0;
+		$this->fileSize          = $tmp['filesize'] ?? 0;
+		$this->duration          = (int) $tmp['duration'] ?? 0;
+		$this->ownerDuration     = (int) $tmp['owner_duration'] ?? 0; // because some videos are floats!
 
 		// calculate average durations if shuffle only when results to avoid division through 0.
 		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)

@@ -78,6 +78,9 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
 	public function loadItemsByPlaylistIdForComposer(int $playlistId): array
@@ -86,7 +89,8 @@ class ItemsService extends AbstractBaseService
 
 		$items = [];
 		$thumbnailPath  = $this->mediaService->getPathTumbnails();
-		foreach($this->itemsRepository->findAllByPlaylistId($playlistId) as $value)
+		$result = $this->itemsRepository->findAllByPlaylistId($playlistId);
+		foreach($result as $value)
 		{
 			switch ($value['item_type'])
 			{
@@ -108,10 +112,10 @@ class ItemsService extends AbstractBaseService
 
 			}
 		}
-		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
-		$playlist['count_items'] = count($items);
+		$playlist = $this->playlistsService->loadPureById($playlistId);
+		$playlist_metrics = $this->playlistMetricsCalculator->calculateFromItems($playlist, $result)->getMetricsForFrontend();
 
-		return ['playlist' =>  $playlist, 'items' => $items];
+		return ['playlist_metrics' =>  $playlist_metrics, 'items' => $items];
 	}
 
 	/**
@@ -169,6 +173,9 @@ class ItemsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function insertPlaylist(int $targetId, string $insertId, int $position): array
 	{
 		try
@@ -232,6 +239,9 @@ class ItemsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function delete(int $playlistId, int $itemId): array
 	{
 		try

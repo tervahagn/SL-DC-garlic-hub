@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function ()
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
 	insertContextMenu.init(playlistId);
-	itemsList.displayPlaylist(playlistId);
+	itemsList.buildPlaylist(playlistId);
 
 	playlistsProperties.init(playlistId);
 

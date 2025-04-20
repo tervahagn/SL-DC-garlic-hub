@@ -30,7 +30,6 @@ export class PlaylistsProperties
 	#playlistsService = null;
 	#lang             = null;
 
-
 	constructor(playlistsService, lang)
 	{
 		this.#playlistsService = playlistsService;
@@ -66,21 +65,20 @@ export class PlaylistsProperties
 		document.getElementById("playerExport").classList.remove("notify-save");
 	}
 
-
-	display(playlistProperties)
+	display(playlistMetrics)
 	{
-		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistProperties.duration);
-		this.#totalItems.innerHTML = playlistProperties.count_items;
+		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistMetrics.duration);
+		this.#totalItems.innerHTML = playlistMetrics.count_items;
 
-		this.#shufflePicking.innerHTML = Array.from({length: playlistProperties.count_items})
+		this.#shufflePicking.innerHTML = Array.from({length: playlistMetrics.count_items})
 			.map((_, i) => `<option value="${i}">${i === 0 ? lang['picking_all'] : i}</option>`)
 			.join('');
-		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistProperties.filesize);
+		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistMetrics.filesize);
 		// properties.owner_duration;
 
 
-		this.#toggleShuffle.checked = playlistProperties.shuffle === 1;
-		this.#shufflePicking.value = playlistProperties.shuffle_picking;
+		this.#toggleShuffle.checked = playlistMetrics.shuffle === 1;
+		this.#shufflePicking.value = playlistMetrics.shuffle_picking;
 	}
 
 
