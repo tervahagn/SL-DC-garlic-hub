@@ -194,6 +194,10 @@ class ItemsService extends AbstractBaseService
 			$playlistTargetData = $this->checkPlaylistAcl($targetId);
 			$playlistInsertData = $this->checkPlaylistAcl($insertId);
 
+			if ($this->checkForRecursiveInserts($playlistTargetData['smil_playlist_id'], $playlistInsertData['smil_playlist_id']))
+				throw new ModuleException('items', 'Playlist recursion alert.');
+
+
 /*			if (!$this->allowedByTimeLimit($targetId, $playlistTargetData['time_limit']))
 				throw new ModuleException('items', 'Playlist time limit exceeds');
 */
@@ -344,7 +348,7 @@ class ItemsService extends AbstractBaseService
 		return $playlistData;
 	}
 
-	public function sanitize(string $value): array
+	private function sanitize(string $value): array
 	{
 		if ($value === '')
 			return [];
