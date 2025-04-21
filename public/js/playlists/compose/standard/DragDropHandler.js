@@ -134,7 +134,7 @@ export class DragDropHandler
 				}
 
 				this.#itemList.createPlaylistItem(result.data.item, droppedIndex);
-				this.#itemList.displayPlaylistMetrics(result.data.playlist_metrics, droppedIndex);
+				this.#itemList.displayPlaylistMetrics(result.data.playlist_metrics);
 				PlaylistsProperties.notifySave();
 
 				// for debug only console.log('Element:','Position: ', droppedIndex);

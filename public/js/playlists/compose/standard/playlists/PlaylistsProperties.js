@@ -25,8 +25,8 @@ export class PlaylistsProperties
 	#totalFilesize    = document.getElementById('totalFilesize');
 	#toggleShuffle    = document.getElementById("toggleShuffle");
 	#shufflePicking   = document.getElementById("shufflePicking");
-	#playerExport      = document.getElementById("playerExport");
-
+	#playerExport     = document.getElementById("playerExport");
+	#pickingValue     = 0;
 	#playlistsService = null;
 	#lang             = null;
 
@@ -38,14 +38,20 @@ export class PlaylistsProperties
 
 	init(playlistId)
 	{
-		this.#toggleShuffle.addEventListener('click', async () =>
-		{
-			await this.#playlistsService.toggleShuffle(playlistId);
+		this.#toggleShuffle.addEventListener('click', async () => {
+			const result = await this.#playlistsService.toggleShuffle(playlistId);
+		//	if (!result.success)
+
+			this.display(result.playlist_metrics);
 			PlaylistsProperties.notifySave();
 		});
-		this.#shufflePicking.addEventListener('change', async () =>
-		{
-			await this.#playlistsService.shufflePicking(playlistId, this.#shufflePicking.value);
+		this.#shufflePicking.addEventListener('change', async () => {
+
+			this.#pickingValue = this.#shufflePicking.value;
+
+			const result = await this.#playlistsService.shufflePicking(playlistId, this.#pickingValue);
+			this.display(result.playlist_metrics);
+
 			PlaylistsProperties.notifySave();
 		});
 		this.#playerExport.addEventListener('click', async () =>
@@ -65,6 +71,13 @@ export class PlaylistsProperties
 		document.getElementById("playerExport").classList.remove("notify-save");
 	}
 
+	setOptions(playlist)
+	{
+		this.#toggleShuffle.checked = playlist.shuffle === 1;
+		this.#pickingValue   = playlist.shuffle_picking;
+	}
+
+
 	display(playlistMetrics)
 	{
 		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistMetrics.duration);
@@ -76,10 +89,36 @@ export class PlaylistsProperties
 		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistMetrics.filesize);
 		// properties.owner_duration;
 
+		this.#updateShufflePickingOptions(playlistMetrics.count_items)
 
-		this.#toggleShuffle.checked = playlistMetrics.shuffle === 1;
-		this.#shufflePicking.value = playlistMetrics.shuffle_picking;
 	}
 
+	#updateShufflePickingOptions(countItems)
+	{
+		while (this.#shufflePicking.options.length > 1)
+		{
+			this.#shufflePicking.remove(1);
+		}
+
+		const maxOptions = countItems - 1;
+		for (let i = 1; i <= maxOptions; i++)
+		{
+			const option = document.createElement("option");
+			option.value = i.toString();
+			option.textContent = i.toString();
+			this.#shufflePicking.appendChild(option);
+		}
+
+		this.#calculatePickingValue(countItems);
+		this.#shufflePicking.value = this.#pickingValue;
+	}
+
+	#calculatePickingValue(countItems)
+	{
+		if (this.#pickingValue > countItems)
+		{
+			 this.#pickingValue = countItems;
+		}
+	}
 
 }

@@ -88,12 +88,12 @@ class PlaylistsController
 		$this->session = $request->getAttribute('session');
 		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
-		if ($this->playlistsService->toggleShuffle($post['playlist_id']) === 0)
+		$data = $this->playlistsService->toggleShuffle($post['playlist_id']);
+		if ($data['affected'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
-		return $this->jsonResponse($response, ['success' => true]);
+		return $this->jsonResponse($response, ['success' => true, 'playlist_metrics' => $data['playlist_metrics']]);
 	}
-
 
 	/**
 	 * @throws ModuleException
@@ -108,16 +108,18 @@ class PlaylistsController
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
+		if (empty($post['shuffle_picking']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No picking value found.']);
+
 		$this->session    = $request->getAttribute('session');
 		$this->playlistsService->setUID($this->session->get('user')['UID']);
 
-		$shufflePicking = (int) $post['shuffle_picking'] ?? 0; // is all
+		$data = $this->playlistsService->shufflePicking($post['playlist_id'], $post['shuffle_picking']);
 
-		if ($this->playlistsService->shufflePicking($post['playlist_id'], $shufflePicking) === 0)
+		if ($data['affected'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
-
-		return $this->jsonResponse($response, ['success' => true]);
+		return $this->jsonResponse($response, ['success' => true, 'playlist_metrics' => $data['playlist_metrics']]);
 	}
 
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface

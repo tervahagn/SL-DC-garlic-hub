@@ -138,7 +138,7 @@ readonly class UiTemplatesPreparer
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function buildMasterEditor(array $playlist): array
+	public function buildCircularyEditor(array $playlist): array
 	{
 		$title = $this->translator->translate('composer', self::MODULE_NAME). ' ('.$playlist['playlist_name'].')';
 		return [

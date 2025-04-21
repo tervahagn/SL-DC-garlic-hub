@@ -23,21 +23,21 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
-use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
-use League\Flysystem\FilesystemException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 
 class PlaylistsService extends AbstractBaseService
 {
 	private readonly PlaylistsRepository $playlistsRepository;
+	private readonly PlaylistMetricsCalculator $playlistMetricsCalculator;
 	private readonly AclValidator $aclValidator;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, PlaylistMetricsCalculator $playlistMetricsCalculator, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->playlistsRepository = $playlistsRepository;
+		$this->playlistMetricsCalculator = $playlistMetricsCalculator;
 		$this->aclValidator        = $aclValidator;
 		parent::__construct($logger);
 	}
@@ -52,11 +52,14 @@ class PlaylistsService extends AbstractBaseService
 		return $this->playlistsRepository->insert($saveData);
 	}
 
+
 	/**
+	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function toggleShuffle(int $playlistId): int
+	public function toggleShuffle(int $playlistId): array
 	{
 		$playlist = $this->loadPureById($playlistId);
 
@@ -65,19 +68,27 @@ class PlaylistsService extends AbstractBaseService
 		else
 			$saveData['shuffle'] = 0;
 
-		return $this->update($playlistId, $saveData);
+		$affected        = $this->update($playlistId, $saveData);
+		$playlistMetrics =  $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getMetricsForFrontend();
+
+		return ['affected' => $affected, 'playlist_metrics' => $playlistMetrics];
+
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function shufflePicking(int $playlistId, int $shufflePicking = 0): int
+	public function shufflePicking(int $playlistId, int $shufflePicking): array
 	{
-		$playlist = $this->loadPureById($playlistId);
-		$saveData['shuffle_picking'] = $shufflePicking;
+		$playlist                    = $this->loadPureById($playlistId);
+		$affected                    = $this->update($playlist['playlist_id'], ['shuffle_picking' => $shufflePicking]);
+		$playlist['shuffle_picking'] = $shufflePicking;
+		$playlistMetrics             =  $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getMetricsForFrontend();
 
-		return $this->update($playlist['playlist_id'], $saveData);
+		return ['affected' => $affected, 'playlist_metrics' => $playlistMetrics];
 	}
 
 	/**
@@ -226,7 +237,7 @@ class PlaylistsService extends AbstractBaseService
 		{
 			return $this->loadWithUserById($playlistId);
 		}
-		catch(\Exception $e)
+		catch(\Exception | Exception $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->addErrorMessage($e->getMessage());

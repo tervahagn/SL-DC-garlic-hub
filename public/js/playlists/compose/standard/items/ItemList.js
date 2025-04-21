@@ -47,7 +47,9 @@ export default class ItemList
 			this.createPlaylistItem(item);
 		}
 
+		this.#playlistProperties.setOptions(results.data.playlist); // must be first because of ShufflePicking
 		this.displayPlaylistMetrics(results.data.playlist_metrics);
+
 	}
 
 	displayPlaylistMetrics(playlistMetrics)

@@ -77,6 +77,7 @@ $dependencies[PlaylistsService::class] = DI\factory(function (ContainerInterface
 {
 	return new PlaylistsService(
 		$container->get(PlaylistsRepository::class),
+		$container->get(PlaylistMetricsCalculator::class),
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);

@@ -94,6 +94,8 @@ class ItemsService extends AbstractBaseService
 	{
 		$this->playlistsService->setUID($this->UID);
 
+		$playlist = $this->playlistsService->loadPureById($playlistId); // checks rights
+
 		$items = [];
 		$thumbnailPath  = $this->mediaService->getPathTumbnails();
 		$result = $this->itemsRepository->findAllByPlaylistId($playlistId);
@@ -122,7 +124,7 @@ class ItemsService extends AbstractBaseService
 		$playlistData    = $this->playlistsService->loadPureById($playlistId);
 		$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
-		return ['playlist_metrics' =>  $playlistMetrics, 'items' => $items];
+		return ['playlist_metrics' =>  $playlistMetrics, 'playlist' => $playlist, 'items' => $items];
 	}
 
 
