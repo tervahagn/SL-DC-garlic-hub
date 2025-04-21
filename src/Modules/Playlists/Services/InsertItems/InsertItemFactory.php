@@ -54,21 +54,10 @@ class InsertItemFactory
 		switch ($source)
 		{
 			case 'mediapool':
-				$item = new Media(
-					$this->itemsRepository,
-					$this->mediaService,
-					$this->playlistsService,
-					$this->playlistMetricsCalculator,
-					$this->logger
-				);
+				$item = new Media($this->itemsRepository,	$this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger);
 				break;
 			case 'playlist':
-				$item = new Playlist(
-					$this->itemsRepository,
-					$this->playlistsService,
-					$this->playlistMetricsCalculator,
-					$this->logger
-				);
+				$item = new Playlist($this->itemsRepository, $this->playlistsService, $this->playlistMetricsCalculator,	$this->logger);
 				break;
 			default:
 				$item = null;

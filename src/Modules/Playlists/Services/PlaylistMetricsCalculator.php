@@ -217,10 +217,13 @@ class PlaylistMetricsCalculator
 		return false;
 	}
 
-
 	private function adjustForShuffle(int $shufflePicking): void
 	{
-		$this->duration = (int) round($this->duration / $this->countEntries * max($shufflePicking, 1));
+		if ($shufflePicking === 0)
+			$shufflePicking = $this->countEntries;
+
+		$this->duration = (int) round($this->duration / $this->countEntries * $shufflePicking);
+
 		if ($this->countOwnerEntries > 0)
 		{
 			$avgOwnerItemDuration = $this->ownerDuration / $this->countOwnerEntries;

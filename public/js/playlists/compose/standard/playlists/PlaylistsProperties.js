@@ -41,6 +41,7 @@ export class PlaylistsProperties
 		this.#toggleShuffle.addEventListener('click', async () => {
 			const result = await this.#playlistsService.toggleShuffle(playlistId);
 		//	if (!result.success)
+			if (this.#shufflePicking.disabled)
 
 			this.display(result.playlist_metrics);
 			PlaylistsProperties.notifySave();
@@ -83,11 +84,10 @@ export class PlaylistsProperties
 		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistMetrics.duration);
 		this.#totalItems.innerHTML = playlistMetrics.count_items;
 
-		this.#shufflePicking.innerHTML = Array.from({length: playlistMetrics.count_items})
-			.map((_, i) => `<option value="${i}">${i === 0 ? lang['picking_all'] : i}</option>`)
-			.join('');
 		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistMetrics.filesize);
 		// properties.owner_duration;
+
+		this.#shufflePicking.disabled = !this.#toggleShuffle.checked;
 
 		this.#updateShufflePickingOptions(playlistMetrics.count_items)
 
@@ -95,17 +95,17 @@ export class PlaylistsProperties
 
 	#updateShufflePickingOptions(countItems)
 	{
-		while (this.#shufflePicking.options.length > 1)
-		{
-			this.#shufflePicking.remove(1);
-		}
+		this.#shufflePicking.innerHTML = "";
 
-		const maxOptions = countItems - 1;
-		for (let i = 1; i <= maxOptions; i++)
+		for (let i = 1; i <= countItems; i++)
 		{
 			const option = document.createElement("option");
 			option.value = i.toString();
-			option.textContent = i.toString();
+			if(i < countItems)
+				option.textContent = i.toString();
+			else
+				option.textContent = this.#lang.picking_all;
+
 			this.#shufflePicking.appendChild(option);
 		}
 
