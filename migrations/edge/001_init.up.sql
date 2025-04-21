@@ -139,6 +139,7 @@ CREATE TABLE playlists (
     filesize INTEGER NOT NULL DEFAULT 0,
     shuffle INTEGER NOT NULL DEFAULT 0,
     shuffle_picking INTEGER NOT NULL DEFAULT 0,
+    export_time TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     playlist_mode TEXT COLLATE NOCASE DEFAULT 'master' CHECK (playlist_mode IN ('master', 'internal', 'external', 'multizone', 'channel')),
     playlist_name varchar(100) COLLATE NOCASE DEFAULT NULL,
@@ -176,6 +177,42 @@ CREATE TABLE playlists_items (
     end_trigger TEXT NOT NULL DEFAULT '',
     FOREIGN KEY (playlist_id) REFERENCES playlists(playlist_id) ON DELETE CASCADE
 );
+
+CREATE TRIGGER update_playlists_on_insert
+    AFTER INSERT ON playlists_items
+BEGIN
+    UPDATE playlists_items
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE
+        item_id = NEW.item_id;
+
+    UPDATE playlists
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE
+        playlist_id = NEW.playlist_id;
+END;
+CREATE TRIGGER update_playlists_on_update
+    AFTER UPDATE ON playlists_items
+BEGIN
+    UPDATE playlists_items
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE
+        item_id = NEW.item_id;
+
+    UPDATE playlists
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE
+        playlist_id = NEW.playlist_id;
+END;
+CREATE TRIGGER update_playlists_on_delete
+    AFTER DELETE ON playlists_items
+BEGIN
+    -- no item_id on delete
+    UPDATE playlists
+    SET last_update = CURRENT_TIMESTAMP
+    WHERE
+        playlist_id = OLD.playlist_id;
+END;
 
 CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
 CREATE INDEX idx_item_type_resource ON playlists_items (item_type, file_resource);
