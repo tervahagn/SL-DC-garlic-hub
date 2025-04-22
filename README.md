@@ -7,7 +7,7 @@ Garlic-Hub will become a robust Digital Signage Management Platform designed to 
 
 ## Installation for developer
 
-Install for user will be released togehtehr with MVP.
+Install for user will be released when MVP is ready.
 
 ### Prerequisites
 Ensure your environment meets the following requirements:
@@ -59,7 +59,6 @@ Packages needed:
 ```bash
 apt install curl php-http php-zip php-simplexml php-curl php-intl php-imagick php-cli php-mbstring git unzip
 ```
- 
 
 
 ## Development Roadmap
@@ -81,7 +80,7 @@ The following features are under active development and subject to change as Gar
 
 ### Current Development in phase 1 
 
-Probably ready at May 2025. But this depends on my real life, time schedule.
+Probably ready at end of May 2025. But this depends on my real life, time schedule.
 
 - **Basics**: Database, db migration, logging, routing, middleware and error handling using SLIM 4 framework
   OAuth2 (completed)
@@ -91,9 +90,9 @@ Probably ready at May 2025. But this depends on my real life, time schedule.
   including local files, external links, screencasts, camera, stock platforms (Pixabay, Unsplash, Pexels)
   (completed)
 - **SMIL-Based Playlists**: Organize playlists with a playlist manager. and export them in the 
-  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players (in work).
-- **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences.
-- **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts.
+  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players (almost completed).
+- **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences. (englisch, german in progress)
+- **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts. (completed)
 - **Player** supports one local media player
 
 ### Planned Features
