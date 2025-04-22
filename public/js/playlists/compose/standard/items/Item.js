@@ -34,8 +34,10 @@ export class Item
 	#editSettingsAction    = null;
 	#copyItemAction        = null;
 	#deleteItemAction      = null;
-	#itemName    = null;
+	#itemName     = null;
 	#editItemName = false;
+	#itemDuration = null;
+	#editItemDuration = false;
 
 	constructor(itemData, itemsService)
 	{
@@ -99,6 +101,19 @@ export class Item
 		thumbnail.alt = this.#itemData.item_name;
 
 		this.#itemName = playlistItem.querySelector('.item-name');
+		this.#buildItemName()
+
+		this.#itemDuration = playlistItem.querySelector('.item-duration');
+		this.#buildItemDuration();
+
+		playlistItem.querySelector('.actions').setAttribute('data-item-id', this.#itemData.item_id)
+		this.#initActions();
+
+		return playlistItem;
+	}
+
+	#buildItemName()
+	{
 		this.#itemName.textContent = this.#itemData.item_name;
 		if (this.#itemData.item_type === "mediapool")
 		{
@@ -123,16 +138,65 @@ export class Item
 				}
 			});
 		}
-
-		const itemDuration = playlistItem.querySelector('.item-duration');
-
-		itemDuration.textContent = Utils.formatSecondsToTime(this.#itemData.item_duration);
-
-		playlistItem.querySelector('.actions').setAttribute('data-item-id', this.#itemData.item_id)
-		this.#initActions();
-
-		return playlistItem;
 	}
+
+	#buildItemDuration()
+	{
+		this.#itemDuration.textContent = Utils.formatSecondsToTime(this.#itemData.item_duration);
+		this.#itemDuration.dataset.seconds = this.#itemData.item_duration;
+		this.#itemDuration.addEventListener('click', (event) => {
+			const target = event.target;
+			if (target.tagName === "SPAN")
+			{
+				const inputGroup = document.createElement("span");
+				inputGroup.classList.add("item-duration-input");
+				const inputField = document.createElement("input");
+				inputField.type = 'number';
+				inputField.min = 0;
+				inputField.step = 1;
+				inputField.value = target.dataset.seconds;
+				inputGroup.appendChild(inputField);
+
+				const resetButton = document.createElement("i");
+				resetButton.classList.add("duration-reset");
+				resetButton.classList.add("bi");
+				resetButton.classList.add("bi-arrow-clockwise");
+				inputGroup.appendChild(resetButton);
+
+				resetButton.addEventListener('click', () => {
+				});
+
+				// Event Listener für das Input-Feld
+				inputField.addEventListener('blur', () => {
+					this.#saveDuration(inputField, target);
+					resetButton.remove();
+				});
+
+				inputField.addEventListener('keydown', (event) => {
+					if (event.key === 'Enter')
+					{
+						this.#saveDuration(inputField, target);
+						resetButton.remove();
+					}
+				});
+
+				target.parentNode.replaceChild(inputGroup, target);
+				inputField.focus();
+			}
+		});
+	}
+
+	async #saveDuration(inputElement)
+	{
+		const result = await this.#itemsService.editItem(this.#itemData.item_id, 'item_duration', inputElement.value);
+
+		this.#itemDuration.dataset.seconds = inputElement.value;
+		this.#itemDuration.textContent = Utils.formatSecondsToTime(inputElement.value);
+
+		inputElement.parentNode.replaceChild(this.#itemDuration, inputElement);
+		inputElement.remove();
+	}
+
 
 	#initActions()
 	{

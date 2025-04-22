@@ -59,6 +59,9 @@ main header
         justify-content: flex-end;
     }
     .playlist-item .item-duration{margin-right: auto;}
+    .playlist-item .item-duration-input{margin-right: auto;width:8rem;}
+    .playlist-item .item-duration-input input{width:6rem;}
+    .playlist-item .item-duration-input .duration-reset{margin-left:0.24rem;cursor: pointer;}
 
 .playlists-grid-view
 {
@@ -109,6 +112,13 @@ main header
 
 .item-name[contenteditable="true"]{cursor: text;}
 .item-name[contenteditable="true"]::before
+{
+    content: "🖊";
+    font-size: 0.8rem;
+    margin-right:0.25rem;
+}
+.item-duration{cursor: text;}
+.item-duration::before
 {
     content: "🖊";
     font-size: 0.8rem;

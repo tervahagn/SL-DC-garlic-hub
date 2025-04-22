@@ -107,6 +107,9 @@ class ItemsController
 			case 'item_name':
 				$affected = $this->itemsService->updateField($requestData['item_id'], $requestData['name'], $requestData['value']);
 				break;
+			case 'item_duration':
+				$affected = $this->itemsService->updateField($requestData['item_id'], $requestData['name'], (int) $requestData['value']);
+				break;
 			default:
 				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No valid parametername.']);
 		}

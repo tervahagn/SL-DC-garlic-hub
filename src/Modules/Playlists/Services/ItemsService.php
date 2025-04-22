@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 
 /**+
  * Todo Concept:
- * Adding, deleting or duration change pflaylist needs to check for time limit directly
+ * Adding, deleting or duration change playlist needs to check for time limit directly
  * Exporting will set recursively item times and should stop, if a higher leveled playlist time limit will exceed
  */
 class ItemsService extends AbstractBaseService
@@ -61,6 +61,11 @@ class ItemsService extends AbstractBaseService
 		return $this->itemsRepository;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function loadByPlaylistForExport(array $playlist, string $edition): array
 	{
 		$items   = [];
@@ -133,7 +138,7 @@ class ItemsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function updateField(mixed $itemId, string $fieldName, string $fieldValue): int
+	public function updateField(mixed $itemId, string $fieldName, string|int $fieldValue): int
 	{
 		$this->playlistsService->setUID($this->UID);
 		$item = $this->itemsRepository->findFirstById($itemId);
@@ -146,7 +151,10 @@ class ItemsService extends AbstractBaseService
 
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function updateItemOrder(mixed $playlistId, array $itemsOrder): void
 	{
