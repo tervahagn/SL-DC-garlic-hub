@@ -28,6 +28,7 @@ use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
 use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
 use App\Modules\Playlists\Helper\PlaylistMode;
+use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -83,8 +84,10 @@ class ExportService extends AbstractBaseService
 				$metrics = $this->export($playlist);
 				$count++;
 			}
+		//	$now = new DateTimeImmutable();
+//			$metrics['export_time'] = $now->format('Y-m-d H:i:s');
 
-			if ($this->playlistsService->update($playlistId, $metrics) === 0)
+			if ($this->playlistsService->updateExport($playlistId, $metrics) === 0)
 				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist metrics.');
 
 			$this->itemsService->getItemsRepository()->commitTransaction();

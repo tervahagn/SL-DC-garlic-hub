@@ -78,7 +78,7 @@ class ShowComposeController
 			case PlaylistMode::CHANNEL->value:
 			case PlaylistMode::INTERNAL->value:
 			case PlaylistMode::MASTER->value:
-				$data = $this->uiTemplatesPreparer->buildCircularyEditor($playlist);
+				$data = $this->uiTemplatesPreparer->buildCircularEditor($playlist);
 				break;
 			default:
 				return $this->redirectWithErrors($response, 'Unsupported playlist mode: .'.$playlist['playlist_mode']);

@@ -55,6 +55,19 @@ class PlaylistsRepository extends FilterBase
 		return $result;
 	}
 
+	public function updateExport(int $playlistId, array $saveData): int
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->table);
+		foreach ($saveData as $key => $value)
+		{
+			$queryBuilder->set($key,$value);
+		}
+		$queryBuilder->set('export_time', 'CURRENT_TIMESTAMP');
+
+		return $queryBuilder->executeStatement();
+	}
+
 	protected function prepareJoin(): array
 	{
 		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];

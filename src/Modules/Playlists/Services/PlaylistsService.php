@@ -117,6 +117,11 @@ class PlaylistsService extends AbstractBaseService
 		return $this->playlistsRepository->update($playlistId, $saveData);
 	}
 
+	public function updateExport(int $playlistId, array $saveData): int
+	{
+		return $this->playlistsRepository->updateExport($playlistId, $saveData);
+	}
+
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException

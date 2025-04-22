@@ -138,7 +138,7 @@ readonly class UiTemplatesPreparer
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function buildCircularyEditor(array $playlist): array
+	public function buildCircularEditor(array $playlist): array
 	{
 		$title = $this->translator->translate('composer', self::MODULE_NAME). ' ('.$playlist['playlist_name'].')';
 		return [
@@ -173,18 +173,10 @@ readonly class UiTemplatesPreparer
 					'LANG_PICKING_OPTION_ALL' => $this->translator->translate('all', self::MODULE_NAME),
 					'LANG_PICKING_MEDIA_PER_CYCLE' => $this->translator->translate('picking_media_per_cycle', self::MODULE_NAME),
 					'LANG_PLAYER_EXPORT' => $this->translator->translate('player_export', self::MODULE_NAME),
-					'LANG_PLAYLIST_PREVIEW' => $this->translator->translate('preview', self::MODULE_NAME),
-
+					'LANG_PLAYLIST_PREVIEW' => $this->translator->translate('preview', self::MODULE_NAME)
 				]
 			]
 		];
-/*
-
-			<button id="saveChanges">{{{LANG_SAVE_CHANGES}}}</button>
-			<button id="preview">{{{LANG_PLAYLIST_PREVIEW}}}</button>
-		</section>
-
-  */
 	}
 
 }

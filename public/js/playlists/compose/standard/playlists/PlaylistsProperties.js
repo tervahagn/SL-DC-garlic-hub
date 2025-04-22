@@ -44,7 +44,6 @@ export class PlaylistsProperties
 			if (this.#shufflePicking.disabled)
 
 			this.display(result.playlist_metrics);
-			PlaylistsProperties.notifySave();
 		});
 		this.#shufflePicking.addEventListener('change', async () => {
 
@@ -52,8 +51,6 @@ export class PlaylistsProperties
 
 			const result = await this.#playlistsService.shufflePicking(playlistId, this.#pickingValue);
 			this.display(result.playlist_metrics);
-
-			PlaylistsProperties.notifySave();
 		});
 		this.#playerExport.addEventListener('click', async () =>
 		{
@@ -75,9 +72,11 @@ export class PlaylistsProperties
 	setOptions(playlist)
 	{
 		this.#toggleShuffle.checked = playlist.shuffle === 1;
-		this.#pickingValue   = playlist.shuffle_picking;
-	}
+		this.#pickingValue = playlist.shuffle_picking;
 
+		if (playlist.export_time < playlist.last_update)
+			PlaylistsProperties.notifySave();
+	}
 
 	display(playlistMetrics)
 	{

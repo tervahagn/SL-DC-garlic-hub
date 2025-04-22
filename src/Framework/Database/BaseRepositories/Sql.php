@@ -70,7 +70,6 @@ abstract class Sql
 
 	/**
 	 * Updates a record in the database by ID and returns the affected rows.
-	 *
 	 * creates internally a prepared statement
 	 *
 	 * @throws Exception
