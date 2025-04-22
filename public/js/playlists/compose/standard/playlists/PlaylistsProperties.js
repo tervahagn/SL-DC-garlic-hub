@@ -41,9 +41,11 @@ export class PlaylistsProperties
 		this.#toggleShuffle.addEventListener('click', async () => {
 			const result = await this.#playlistsService.toggleShuffle(playlistId);
 		//	if (!result.success)
-			if (this.#shufflePicking.disabled)
+
+			this.#shufflePicking.disabled = !this.#toggleShuffle.checked;
 
 			this.display(result.playlist_metrics);
+			PlaylistsProperties.notifySave();
 		});
 		this.#shufflePicking.addEventListener('change', async () => {
 
@@ -51,6 +53,7 @@ export class PlaylistsProperties
 
 			const result = await this.#playlistsService.shufflePicking(playlistId, this.#pickingValue);
 			this.display(result.playlist_metrics);
+			PlaylistsProperties.notifySave();
 		});
 		this.#playerExport.addEventListener('click', async () =>
 		{
@@ -81,20 +84,16 @@ export class PlaylistsProperties
 	display(playlistMetrics)
 	{
 		this.#playlistDuration.innerHTML = Utils.formatSecondsToTime(playlistMetrics.duration);
-		this.#totalItems.innerHTML = playlistMetrics.count_items;
-
+		this.#totalItems.innerHTML       = playlistMetrics.count_items;
 		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistMetrics.filesize);
-		// properties.owner_duration;
 
-		this.#shufflePicking.disabled = !this.#toggleShuffle.checked;
-
-		this.#updateShufflePickingOptions(playlistMetrics.count_items)
-
-	}
-
-	#updateShufflePickingOptions(countItems)
-	{
+		this.#shufflePicking.disabled    = !this.#toggleShuffle.checked;
 		this.#shufflePicking.innerHTML = "";
+
+		if (this.#shufflePicking.disabled || playlistMetrics.count_items === this.#shufflePicking.length)
+			return
+
+		const countItems = playlistMetrics.count_items
 
 		for (let i = 1; i <= countItems; i++)
 		{
@@ -104,12 +103,13 @@ export class PlaylistsProperties
 				option.textContent = i.toString();
 			else
 				option.textContent = this.#lang.picking_all;
+			if (i === this.#pickingValue)
+				option.selected = true;
 
 			this.#shufflePicking.appendChild(option);
 		}
 
 		this.#calculatePickingValue(countItems);
-		this.#shufflePicking.value = this.#pickingValue;
 	}
 
 	#calculatePickingValue(countItems)
