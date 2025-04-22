@@ -33,6 +33,16 @@ export class ItemsService extends BaseService
 		return this._sendRequest(ItemsApiConfig.INSERT_URI, "POST",  data);
 	}
 
+	editItem(id, name, value)
+	{
+		const data = {
+			"item_id": id,
+			"name": name,
+			"value": value
+		};
+		return this._sendRequest(ItemsApiConfig.EDIT_URI, "PATCH",  data);
+	}
+
 	insertPlaylist(id, playlistId, position)
 	{
 		const data = {

@@ -21,9 +21,12 @@
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\ItemsService;
 use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -77,8 +80,43 @@ class ItemsController
 		$item = $insertItem->insert($requestData['playlist_id'], $requestData['id'], $requestData['position']);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
-
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$requestData = $request->getParsedBody();
+		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
+
+		if (empty($requestData['name']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No parameter name.']);
+
+		if (empty($requestData['value']))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No parameter value.']);
+
+		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+
+		switch ($requestData['name'])
+		{
+			case 'item_name':
+				$affected = $this->itemsService->updateField($requestData['item_id'], $requestData['name'], $requestData['value']);
+				break;
+			default:
+				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No valid parametername.']);
+		}
+
+		if ($affected === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error updating item field: '.$requestData['name']. '.']);
+
+		return $this->jsonResponse($response, ['success' => true]);
+	}
+
 
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

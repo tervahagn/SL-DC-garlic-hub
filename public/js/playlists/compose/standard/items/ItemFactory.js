@@ -21,8 +21,8 @@ import {Item} from "./Item.js";
 
 export class ItemFactory
 {
-	create(itemData)
+	create(itemData, itemsService)
 	{
-		return new Item(itemData);
+		return new Item(itemData, itemsService);
 	}
 }

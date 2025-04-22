@@ -22,6 +22,7 @@ import {Utils} from "../../../../core/Utils.js";
 export class Item
 {
 	#itemData = null
+	#itemsService = null;
 	#playlistItem = null;
 	#cmsEdition = document.getElementById("cms_edition").value;
 
@@ -33,10 +34,13 @@ export class Item
 	#editSettingsAction    = null;
 	#copyItemAction        = null;
 	#deleteItemAction      = null;
+	#itemName    = null;
+	#editItemName = false;
 
-	constructor(itemData)
+	constructor(itemData, itemsService)
 	{
 		this.#itemData = itemData;
+		this.#itemsService = itemsService;
 	}
 
 
@@ -94,8 +98,31 @@ export class Item
 		thumbnail.src = "/" + this.#itemData.paths.thumbnail.replace('public/', '');
 		thumbnail.alt = this.#itemData.item_name;
 
-		const itemName = playlistItem.querySelector('.item-name');
-		itemName.textContent = this.#itemData.item_name;
+		this.#itemName = playlistItem.querySelector('.item-name');
+		this.#itemName.textContent = this.#itemData.item_name;
+		if (this.#itemData.item_type === "mediapool")
+		{
+			this.#itemName.contentEditable = true;
+			this.#itemName.addEventListener('keydown', (event) => {
+				if (event.key === 'Enter')
+				{
+					event.preventDefault(); // prevent a carriage return.
+					this.#itemsService.editItem(this.#itemData.item_id, 'item_name', this.#itemName.textContent)
+					this.#editItemName = false;
+					this.#itemName.blur();
+				}
+			});
+			this.#itemName.addEventListener('focus', () => {
+				this.#editItemName = true;
+			});
+			this.#itemName.addEventListener('blur', () => {
+				if (this.#editItemName)
+				{
+					this.#itemsService.editItem(this.#itemData.item_id, 'item_name', this.#itemName.textContent)
+					this.#editItemName = false;
+				}
+			});
+		}
 
 		const itemDuration = playlistItem.querySelector('.item-duration');
 

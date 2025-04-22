@@ -59,7 +59,7 @@ export default class ItemList
 
 	createPlaylistItem(itemData, position = null)
 	{
-		const item = this.#itemFactory.create(itemData);
+		const item = this.#itemFactory.create(itemData, this.#itemsService);
 		this.#itemsList[itemData.item_id] = item;
 
 		// console.log('Listenlänge', this.#dropTarget.children.length, 'Position', position);

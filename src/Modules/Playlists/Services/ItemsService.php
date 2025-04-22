@@ -127,14 +127,31 @@ class ItemsService extends AbstractBaseService
 		return ['playlist_metrics' =>  $playlistMetrics, 'playlist' => $playlist, 'items' => $items];
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function updateField(mixed $itemId, string $fieldName, string $fieldValue): int
+	{
+		$this->playlistsService->setUID($this->UID);
+		$item = $this->itemsRepository->findFirstById($itemId);
+		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
+
+		$saveData = [strip_tags($fieldName) => strip_tags($fieldValue)];
+
+		return $this->itemsRepository->update($itemId, $saveData);
+	}
+
 
 	/**
 	 * @throws Exception
 	 */
-	public function updateItemOrder(mixed $playlist_id, array $itemsOrder): void
+	public function updateItemOrder(mixed $playlistId, array $itemsOrder): void
 	{
 		$this->playlistsService->setUID($this->UID);
-		$this->playlistsService->loadPlaylistForEdit($playlist_id); // will check for rights
+		$this->playlistsService->loadPureById($playlistId); // will check for rights
 
 		foreach ($itemsOrder as $key => $itemId)
 		{

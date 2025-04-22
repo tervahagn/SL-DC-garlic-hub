@@ -106,3 +106,11 @@ main header
     background-color: red;
     color: white;
 }
+
+.item-name[contenteditable="true"]{cursor: text;}
+.item-name[contenteditable="true"]::before
+{
+    content: "🖊";
+    font-size: 0.8rem;
+    margin-right:0.25rem;
+}
