@@ -1,4 +1,11 @@
-<section>
-	<h1>Player Controls</h1>
-	<p>Hier sind die Steuerungselemente für den Player.</p>
-</section>
+{{> datatable}}
+
+<template id="playerSettingsContextMenuTemplate">
+	<ul class="context-menu">
+		{{#create_playersettings_contextmenu}}
+			<li>
+			<a href="/player/settings/{{{PLAYER_SETTING}}}">{{{LANG_PLAYER_SETTING}}}</a>
+		</li>
+		{{/create_playersettings_contextmenu}}
+	</ul>
+</template>
