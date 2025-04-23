@@ -173,12 +173,19 @@ class PlaylistsService extends AbstractBaseService
 	 */
 	public function loadPureById(int $playlistId): array
 	{
-		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
-		if (empty($playlist))
-			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+		$playlist = $this->fetchById($playlistId);
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
+
+		return $playlist;
+	}
+
+	public function fetchById(int $playlistId): array
+	{
+		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
+		if (empty($playlist))
+			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 		return $playlist;
 	}

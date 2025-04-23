@@ -40,7 +40,7 @@ export class ItemsService extends BaseService
 			"name": name,
 			"value": value
 		};
-		return this._sendRequest(ItemsApiConfig.EDIT_URI, "PATCH",  data);
+		return this._sendRequest(ItemsApiConfig.ITEM_URI, "PATCH",  data);
 	}
 
 	insertPlaylist(id, playlistId, position)
@@ -62,6 +62,12 @@ export class ItemsService extends BaseService
 			items_positions: itemsPositions
 		};
 		return await this._sendRequest(url, "PATCH", data);
+	}
+
+	async fetchDefaultSeconds(itemId)
+	{
+		const url = ItemsApiConfig.ITEM_URI + "/" + itemId;
+		return await this._sendRequest(url, "GET", {});
 	}
 
 	async delete(playlistId, itemId)

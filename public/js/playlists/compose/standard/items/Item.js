@@ -163,7 +163,14 @@ export class Item
 				resetButton.classList.add("bi-arrow-clockwise");
 				inputGroup.appendChild(resetButton);
 
-				resetButton.addEventListener('click', () => {
+				resetButton.addEventListener('click', async () => {
+					const result = await this.#itemsService.fetchDefaultSeconds(this.#itemData.item_id);
+					if (!result.success)
+						return;
+
+					inputField.value = result.item.default_duration;
+					await this.#saveDuration(inputField, target);
+					resetButton.remove();
 				});
 
 				// Event Listener für das Input-Feld

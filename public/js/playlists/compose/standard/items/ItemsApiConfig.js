@@ -19,7 +19,7 @@
 
 export const ItemsApiConfig = {
 	BASE_URI: "/async/playlists/items",
-	EDIT_URI: "/async/playlists/item",
+	ITEM_URI: "/async/playlists/item",
 	LOAD_PLAYLIST_ITEMS_URI: "/async/playlists/items/load",
 	INSERT_URI: "/async/playlists/items/insert",
 

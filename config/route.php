@@ -111,6 +111,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);
 	$group->delete('/playlists/items', [ItemsController::class, 'delete']);
 	$group->patch('/playlists/items', [ItemsController::class, 'updateItemOrders']);
+	$group->get('/playlists/item/{item_id:\d+}', [ItemsController::class, 'fetch']);
 	$group->patch('/playlists/item', [ItemsController::class, 'edit']);
 
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});

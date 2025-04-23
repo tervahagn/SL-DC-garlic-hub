@@ -120,6 +120,20 @@ class ItemsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
+	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$itemId = (int) $args['item_id'] ?? 0;
+		if ($itemId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
+
+		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$item = $this->itemsService->fetchItemById($itemId);
+		if (empty($item))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item not found.']);
+
+		return $this->jsonResponse($response, ['success' => true, 'item' => $item]);
+	}
+
 
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

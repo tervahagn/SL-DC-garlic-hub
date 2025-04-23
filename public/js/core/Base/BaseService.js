@@ -26,7 +26,7 @@ export class BaseService
 	}
 
 	/**
-	 * as JavaScrpt do not have protected methods, we use the old "private" workaround
+	 * as JavaScript do not have protected methods, we use the old "private" workaround
 	 */
 	async _sendRequest(url, method, data)
 	{

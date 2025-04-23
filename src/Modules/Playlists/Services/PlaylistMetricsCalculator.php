@@ -49,6 +49,11 @@ class PlaylistMetricsCalculator
 		$this->config           = $config;
 	}
 
+	public function getDefaultDuration(): int
+	{
+		return $this->config->getConfigValue('duration', 'playlists', 'Defaults');
+	}
+
 	public function getCountEntries(): int
 	{
 		return $this->countEntries;
@@ -181,11 +186,9 @@ class PlaylistMetricsCalculator
 	 */
 	public function calculateRemainingMediaDuration(array $playlist, array $media = [])
 	{
-		$default_duration = $this->config->getConfigValue('duration', 'playlists', 'Defaults');
-
-		// only videos have a duration > 0. Using the constant for other media.
+		// only videos / audio have a duration > 0. Using the constant for other media.
 		// this is only used, when inserting new items
-		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $default_duration;
+		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $this->getDefaultDuration();
 
 		if ($playlist['time_limit'] > 0 && !$this->aclValidator->isSimpleAdmin($this->UID))
 		{

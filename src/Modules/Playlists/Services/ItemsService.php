@@ -95,6 +95,41 @@ class ItemsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
+	public function fetchItemById(int $itemId): array
+	{
+		$item = $this->itemsRepository->findFirstById($itemId);
+		$this->playlistsService->setUID($this->UID);
+		$this->playlistsService->loadPureById($item['playlist_id']); // checks rights
+
+		switch ($item['item_type'])
+		{
+			case ItemType::MEDIAPOOL->value:
+				if (str_starts_with($item['mimetype'], 'video/'))
+				{
+					$this->mediaService->setUID($this->UID);
+					$media = $this->mediaService->fetchMedia($item['file_resource']);
+					$item['default_duration'] = $media['metadata']['duration'];
+				}
+				else
+					$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
+				break;
+			case ItemType::PLAYLIST->value:
+				$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // checks rights
+				$item['default_duration'] = $playlist['duration'];
+				break;
+			default:
+				$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
+		}
+
+		return $item;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function loadItemsByPlaylistIdForComposer(int $playlistId): array
 	{
 		$this->playlistsService->setUID($this->UID);
