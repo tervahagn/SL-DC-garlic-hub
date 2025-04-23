@@ -216,3 +216,33 @@ END;
 
 CREATE INDEX idx_playlist_id ON playlists_items (playlist_id, item_order);
 CREATE INDEX idx_item_type_resource ON playlists_items (item_type, file_resource);
+
+CREATE TABLE player (
+    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    playlist_id INTEGER NOT NULL DEFAULT 0,
+    UID INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    last_access TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status INTEGER NOT NULL DEFAULT 1,
+    licence_id INTEGER NOT NULL DEFAULT 1,
+    model INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    uuid BLOB(16) NOT NULL,
+    commands TEXT DEFAULT NULL, -- set in mysql
+    firmware_version TEXT NOT NULL DEFAULT '',
+    player_name TEXT NOT NULL DEFAULT '',
+    location_data TEXT DEFAULT NULL,
+    location_longitude TEXT DEFAULT NULL,
+    location_latitude TEXT DEFAULT NULL,
+    categories TEXT DEFAULT NULL,
+    properties TEXT DEFAULT NULL, -- content-url, refresh, width, height, etc
+    remote_administration TEXT DEFAULT NULL,
+    screen_times TEXT DEFAULT NULL
+);
+
+CREATE INDEX uuid ON player (uuid);
+CREATE INDEX UID ON player (UID);
+
+INSERT INTO player (playlist_id, UID, status, licence_id, model, uuid, commands, firmware_version, player_name, location_data, location_longitude, location_latitude, categories, properties, remote_administration, screen_times)
+VALUES (1,1,1,1,1, 'localhost','update_configuration,reboot','v1.0.0',
+        'Local player', '','','','','',
+        '','');

@@ -7,4 +7,5 @@ DROP TABLE `oauth2_client_consent`;
 DROP TABLE `mediapool_nodes`;
 DROP TABLE `mediapool_files`;
 DROP TABLE `playlists`;
+DROP TABLE `player`;
 DROP TABLE `playlists_items`;
