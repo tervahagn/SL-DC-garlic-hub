@@ -17,7 +17,7 @@ It is recommended to follow the scripted way and use name the classes identicall
 
 ### Controller
 Create ShowDatatableController.php in the Controller directory of the module.
-To keep the number of dependencies low, only the [DatatableFacadeInterface](../../src/Framework/Utils/Datatable/DatatableFacadeInterface.php)facade and [DatatableTemplatePreparer](../../src/Framework/Utils/Datatable/DatatableTemplatePreparer.php) should be set as constructor dependency.
+To keep the number of dependencies low, only the [DatatableFacadeInterface](../../src/Framework/Utils/Datatable/DatatableFacadeInterface.php) and [DatatableTemplatePreparer](../../src/Framework/Utils/Datatable/DatatableTemplatePreparer.php) should be set as constructor dependency.
 ### Directories
 
 Create a Datatable dir in the Helper dir of the module. 

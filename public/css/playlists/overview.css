@@ -1,6 +1,6 @@
 .results-listing li
 {
-    white-space: nowrap; /* Verhindert, dass der Text umbricht */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
