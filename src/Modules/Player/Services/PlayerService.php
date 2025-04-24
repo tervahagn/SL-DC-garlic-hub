@@ -19,18 +19,20 @@
 */
 
 
-namespace App\Modules\Player\Helper;
+namespace App\Modules\Player\Services;
 
-enum PlayerModel: int
+use App\Framework\Services\AbstractBaseService;
+use App\Modules\Player\Repositories\PlayerRepository;
+use Psr\Log\LoggerInterface;
+
+class PlayerService extends AbstractBaseService
 {
-	case UNKNOWN        = 0; // IAdea 1x0 Series SD Video 1920px images
-	case IADEA_XMP1X0   = 1; // IAdea 1x0 Series SD Video 1920px images
-	case IADEA_XMP3X0   = 2; // IAdea 3x0 Series +HD Video
-	case IADEA_XMP3X50  = 3; // IAdea 3x50 Series +HTML5
-	case COMPATIBLE     = 4; // fs5 Kathrein crap with only h264 in ts Container
-	case IADEA_XMP2X00  = 5; // IAdea new 2000, 6000 and 7000 (4K) Android Series with new xml config and SMIL Structure
-	case GARLIC         = 6; // Sagiadinos open source software player garlic
-	case IDS            = 7; // Isaria Digital Signage Player
-	case QBIC           = 8; // QBiC Signage Player
+	private readonly PlayerRepository $playerRepository;
+
+	public function __construct(PlayerRepository $playerRepository, LoggerInterface $logger)
+	{
+		$this->playerRepository = $playerRepository;
+		parent::__construct($logger);
+	}
 
 }

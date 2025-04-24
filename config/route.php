@@ -26,6 +26,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -71,6 +72,7 @@ $app->group('', function (RouteCollectorProxy $group)
 	*/
 
 	$group->get('/player', [\App\Modules\Player\Controller\ShowDatatableController::class, 'show']);
+	$group->get('/index', [PlayerController::class, 'index']);
 
 
 })->add($container->get(FinalRenderMiddleware::class));

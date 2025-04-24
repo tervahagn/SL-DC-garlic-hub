@@ -22,8 +22,10 @@
 namespace App\Modules\Player\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\PlayerActivity;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class PlayerRepository extends FilterBase
 {
@@ -31,6 +33,28 @@ class PlayerRepository extends FilterBase
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'player', 'player_id');
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	public function findPlayerByUuid(string $uuid): array
+	{
+		// skip overhead
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.name,  commands,
+					location_data, location_longitude, '.$this->table.'.playlist_id, UNIX_TIMESTAMP('.$this->table.'.last_update) as updated_player, properties, playlist_mode, playlist_name, multizone, UNIX_TIMESTAMP(playlists.last_update) as updated_playlist, remote_administration, screen_times');
+		$queryBuilder->from($this->table);
+		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id =' . $this->table . '.playlist_id');
+		$queryBuilder->where('uuid = :uuid');
+		$queryBuilder->setParameter('uuid', $uuid);
+
+		$result = $queryBuilder->executeQuery()->fetchOne();
+		if ($result === false or empty($result))
+			throw new ModuleException('playlist_index', 'Playlist not found');
+
+		return $result;
 	}
 	protected function prepareJoin(): array
 	{

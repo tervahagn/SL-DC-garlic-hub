@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Player\Helper\Datatable\ControllerFacade;
 use App\Modules\Player\Helper\Datatable\DatatableBuilder;
@@ -32,6 +33,8 @@ use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Player\Services\AclValidator;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
 use App\Modules\Player\Services\PlayerDatatableService;
+use App\Modules\Player\Services\PlayerIndexService;
+use App\Modules\Player\Services\PlayerService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -44,6 +47,22 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator($container->get(AclHelper::class));
 });
+
+$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerController($container->get(PlayerIndexService::class), $container->get(PlayerService::class));
+});
+$dependencies[PlayerIndexService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerIndexService($container->get(PlayerRepository::class), $container->get('ModuleLogger'));
+});
+$dependencies[PlayerService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerService($container->get(PlayerRepository::class), $container->get('ModuleLogger'));
+});
+
+
+
 // Datatable
 $dependencies[PlayerDatatableService::class] = DI\factory(function (ContainerInterface $container)
 {

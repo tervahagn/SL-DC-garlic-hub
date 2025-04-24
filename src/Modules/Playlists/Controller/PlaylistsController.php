@@ -101,7 +101,7 @@ class PlaylistsController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post        = $request->getParsedBody();
 
