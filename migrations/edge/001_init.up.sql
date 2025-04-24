@@ -224,6 +224,7 @@ CREATE TABLE player (
     last_access TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status INTEGER NOT NULL DEFAULT 1,
+    refresh INTEGER NOT NULL DEFAULT 900,
     licence_id INTEGER NOT NULL DEFAULT 1,
     model INTEGER UNSIGNED NOT NULL DEFAULT 0,
     uuid BLOB(16) NOT NULL,
@@ -234,7 +235,7 @@ CREATE TABLE player (
     location_longitude TEXT DEFAULT NULL,
     location_latitude TEXT DEFAULT NULL,
     categories TEXT DEFAULT NULL,
-    properties TEXT DEFAULT NULL, -- content-url, refresh, width, height, etc
+    properties TEXT DEFAULT NULL, -- content-url, width, height, volume, brightness, timezone, etc
     remote_administration TEXT DEFAULT NULL,
     screen_times TEXT DEFAULT NULL
 );
