@@ -22,6 +22,7 @@ namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -63,6 +64,30 @@ abstract class AbstractAclValidator
 	public function isSubAdmin(int $UID): bool
 	{
 		return $this->helper->isSubAdmin($UID, $this->moduleName);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isAdmin(int $UID, array $unitData): bool
+	{
+		// module admin is always allowed
+		if ($this->isModuleAdmin($UID))
+			return true;
+
+		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
+			return false;
+
+		if (!array_key_exists('company_id', $unitData) || !array_key_exists('UID', $unitData))
+			throw new ModuleException('player', 'Missing company id or UID in unit data');
+
+		if ($this->isSubadminWithAccessOnCompany($UID, $unitData['company_id']))
+			return true;
+
+
+		return false;
 	}
 
 	/**

@@ -21,7 +21,6 @@
 namespace App\Modules\Playlists\Helper\Datatable;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;

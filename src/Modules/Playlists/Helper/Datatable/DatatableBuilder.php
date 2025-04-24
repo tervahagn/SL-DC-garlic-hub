@@ -37,10 +37,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 class DatatableBuilder extends AbstractDatatableBuilder
 {
 	private AclValidator $aclValidator;
-	/**
-	 * @var array|mixed
-	 */
-	private array $allowedPlaylistModes;
 
 	public function __construct(BuildService $buildService, Parameters $parameters, AclValidator $aclValidator)
 	{

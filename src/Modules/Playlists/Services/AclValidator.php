@@ -63,36 +63,6 @@ class AclValidator extends AbstractAclValidator
 		if ($UID == $playlist['UID'])
 			return true;
 
-		// module admin is always allowed
-		if ($this->isModuleAdmin($UID))
-			return true;
-
-		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
-			return false;
-
-		if (!array_key_exists('company_id', $playlist) || !array_key_exists('UID', $playlist))
-			throw new ModuleException('playlists', 'Missing company id or UID in playlist data');
-
-		if ($this->isSubadminWithAccessOnCompany($UID, $playlist['company_id']))
-			return true;
-
-		return false;
-	}
-
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
-	public function isAdmin($UID, $companyId): bool
-	{
-		if ($this->isModuleAdmin($UID))
-			return true;
-
-		if ($this->isSubAdminWithAccessOnCompany($UID, $companyId))
-			return true;
-
-		return false;
+		return $this->isAdmin($UID, $playlist);
 	}
 }

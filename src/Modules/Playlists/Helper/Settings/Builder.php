@@ -91,7 +91,7 @@ readonly class Builder
 	public function configEditParameter(array $playlist): void
 	{
 		$this->parameters->addPlaylistId();
-		if (!$this->aclValidator->isAdmin($this->UID, $playlist['company_id']))
+		if (!$this->aclValidator->isAdmin($this->UID, $playlist))
 			return;
 
 		$this->parameters->addOwner();
