@@ -77,10 +77,13 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						);
 						break;
 					case 'model':
-					/*	$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText(
-							$this->translator->translateArrayForOptions('model_select', 'player')[$player['model']]
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText(
+							$this->translator->translateArrayForOptions('model_selects', 'player')[$player['model']]
 						);
-					*/	break;
+						break;
+					case 'playlist_id':
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name']);
+						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player[$innerKey]);
 						break;

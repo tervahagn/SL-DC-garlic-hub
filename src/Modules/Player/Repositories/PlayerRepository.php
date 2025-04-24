@@ -34,12 +34,15 @@ class PlayerRepository extends FilterBase
 	}
 	protected function prepareJoin(): array
 	{
-		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
+		return [
+			'user_main' => 'user_main.UID=' . $this->table . '.UID',
+			'playlists' => 'playlists.playlist_id =' . $this->table . '.playlist_id'
+		];
 	}
 
 	protected function prepareSelectFiltered(): array
 	{
-		return [$this->table.'.*'];
+		return [$this->table.'.*, playlists.playlist_name'];
 	}
 
 	protected function prepareSelectFilteredForUser(): array

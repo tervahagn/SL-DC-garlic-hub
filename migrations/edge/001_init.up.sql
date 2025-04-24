@@ -242,8 +242,8 @@ CREATE TABLE player (
 
 CREATE INDEX uuid ON player (uuid);
 CREATE INDEX UID ON player (UID);
-
+-- insert a local garlic-player
 INSERT INTO player (playlist_id, UID, status, licence_id, model, uuid, commands, firmware_version, player_name, location_data, location_longitude, location_latitude, categories, properties, remote_administration, screen_times)
-VALUES (0,1,2,1,1, 'localhost','update_configuration,reboot','v1.0.0',
+VALUES (0,1,2,1,6, 'localhost','update_configuration,reboot','',
         'Local player', '','','','','',
         '','');

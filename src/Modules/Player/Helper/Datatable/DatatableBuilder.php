@@ -87,7 +87,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	public function collectFormElements(): void
 	{
 		$form       = [];
-		$list = $this->translator->translateArrayForOptions(Parameters::PARAMETER_ACTIVITY.'_select', 'player');
+
 		$form[Parameters::PARAMETER_ACTIVITY] = $this->buildService->buildFormField([
 			'type' => FieldType::DROPDOWN,
 			'id' => Parameters::PARAMETER_ACTIVITY,
@@ -107,13 +107,14 @@ class DatatableBuilder extends AbstractDatatableBuilder
 			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYER_NAME)
 		]);
 
-		$form[Parameters::PARAMETER_PLAYER_NAME] = $this->buildService->buildFormField([
-			'type' => FieldType::TEXT,
-			'id' => Parameters::PARAMETER_PLAYER_NAME,
-			'name' => Parameters::PARAMETER_PLAYER_NAME,
-			'title' => $this->translator->translate(Parameters::PARAMETER_PLAYER_NAME, 'player'),
-			'label' => $this->translator->translate(Parameters::PARAMETER_PLAYER_NAME, 'player'),
-			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_PLAYER_NAME)
+		$form[Parameters::PARAMETER_MODEL] = $this->buildService->buildFormField([
+			'type' => FieldType::DROPDOWN,
+			'id' => Parameters::PARAMETER_MODEL,
+			'name' => Parameters::PARAMETER_MODEL,
+			'title' => $this->translator->translate(Parameters::PARAMETER_MODEL, 'player'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_MODEL, 'player'),
+			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_MODEL),
+			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_MODEL.'_selects', 'player')
 		]);
 
 		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
