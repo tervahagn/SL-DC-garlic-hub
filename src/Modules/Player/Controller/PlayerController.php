@@ -21,7 +21,9 @@
 
 namespace App\Modules\Player\Controller;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Services\PlayerIndexService;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,6 +38,10 @@ class PlayerController
 		$this->playerService = $playerService;
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
 	public function index(ServerRequestInterface $request, ResponseInterface $response, array $args)
 	{
 		$ownerId = $_GET['owner_id'] ?? 0;
