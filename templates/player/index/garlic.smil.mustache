@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<smil>
+	<head>
+		<meta name="title" content="{{{TITLE}}}" />
+		<meta http-equiv="Refresh" content="{{{REFRESH_TIME}}}" />
+		<meta name="internal_name" content="Garlic-Player Index" />
+		<metadata>
+			<x-server xmlns="http://schemas.adfotain.org/adapi-1.0">
+				<subscriptionList>
+					{{#subscriptions}}
+					<subscription random="{{{SUBSCRIPTION_RANDOM}}}">
+						<type>{{{SUBSCRIPTION_TYPE}}}</type>
+						<action>{{{SUBSCRIPTION_ACTION}}}</action>
+						<method>{{{SUBSCRIPTION_METHOD}}}</method>
+					</subscription>
+			    	{{/subscriptions}}
+					</subscriptionList>
+	    	</x-server>
+		</metadata>
+		<layout>
+            <root-layout id="display:0" width="{{{ROOT_LAYOUT_WIDTH}}}" height="{{{ROOT_LAYOUT_HEIGHT}}}" />
+			{{#regions}}
+			<region regionName="screen{{{SCREEN_ID}}}" top="{{{REGION_TOP}}}" left="{{{REGION_LEFT}}}" width="{{{REGION_WIDTH}}}" height="{{{REGION_HEIGHT}}}" z-index="{{{REGION_Z_INDEX}}}" background-color="{{{REGION_BGCOLOR}}}" mediaAlign="center"/>
+			{{#regions}}
+		</layout>
+	</head>
+	<body>
+		<excl repeatCount="indefinite">
+			{{#set_standby_times}}
+			<priorityClass>
+				<ref begin="{{{BEGIN_WALLCLOCKS}}}" end="{{{END_WALLCLOCKS}}}" dur="indefinite" src="adapi:blankScreen"/>
+			</priorityClass>
+			{{/set_standby_times}}
+{{{INSERT_PRIORITY_CLASSES}}}
+			<priorityClass higher="pause">
+				<par begin="0">
+{{{INSERT_ELEMENTS}}}
+					<par repeatCount="indefinite">
+						<seq dur="{{{PREFETCH_REFRESH_TIME}}}">
+{{{INSERT_PREFETCH_ELEMENTS}}}
+						</seq>
+					</par>
+				</par>
+			</priorityClass>
+		</excl>
+	</body>
+</smil>
