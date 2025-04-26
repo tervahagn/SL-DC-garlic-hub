@@ -22,9 +22,7 @@
 namespace App\Modules\Player\Services;
 
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Services\AbstractBaseService;
 use App\Modules\Player\Repositories\PlayerRepository;
-use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
@@ -44,9 +42,23 @@ class PlayerIndexService
 	 */
 	public function determineForIndexCreation(string $userAgent, int $ownerId): string
 	{
+		// 1. check userAgent
+
+		// 2. load Player Data
+
+		// 3. select SMIL according to player status.
+
+		// if there is player status 3 (with License)
+			// 1. check for commands => generate Task scheduler
+			// 2. send correct SMIL
+				// 1. get the right SMIL depending on player model
+				// 2. Build SMIL
+				// 3. Write SMIL if it is different from previous stored
+				// 4 send to player
 
 		return '';
 	}
+
 	private function fetchDatabase(string $uuid): array
 	{
 		try
