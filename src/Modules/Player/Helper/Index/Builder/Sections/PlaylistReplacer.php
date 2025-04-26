@@ -22,29 +22,18 @@
 namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
 
-class ItemsReplacer extends AbstractReplacer implements ReplacerInterface
+use App\Modules\Player\Helper\Index\Builder\PlaylistBuilder;
+
+class PlaylistReplacer extends AbstractReplacer implements ReplacerInterface
 {
+	private PlaylistBuilder $playlistReader;
 
-	private ContentReader $contentreader;
-
-	public function replace(): string
+	public function replace(): array
 	{
-		return $this->replaceItems();
+		return [
+			'INSERT_PRIORITY_CLASSES'  => $this->playlistReader->loadExclusive(),
+			'INSERT_ELEMENTS'          => $this->playlistReader->loadItems(),
+			'INSERT_PREFETCH_ELEMENTS' => $this->playlistReader->loadPrefetch()
+		];
 	}
-
-	public function replaceItems(): string
-	{
-		return $this->contentreader->getItems();
-	}
-
-	public function replacePrefetch(): string
-	{
-		return $this->contentreader->getPrefetch();
-	}
-
-	public function replaceExclusive(): string
-	{
-		return $this->contentreader->getExclusive();
-	}
-
 }

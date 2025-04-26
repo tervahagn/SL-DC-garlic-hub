@@ -50,7 +50,7 @@ class PlayerEntity
 	private string $locationLongitude;
 	private string $locationLatitude;
 	private string $playlistMode;
-	private array $multizone;
+	private array $zones;
 	private array $categories;
 	private array $properties;
 	private array $remoteAdministration;
@@ -77,7 +77,7 @@ class PlayerEntity
 		$this->playerName           = $userAgentHandler->getName();
 		$this->playlistName         = $data['playlist_name'] ?? '';
 		$this->playlistMode         = $data['playlist_mode'] ?? '';
-		$this->multizone            = $data['multizone'] ?? [];
+		$this->zones            = $data['multizone'] ?? [];
 		$this->locationData         = $data['location_data'] ?? null;
 		$this->locationLongitude    = $data['location_longitude'] ?? null;
 		$this->locationLatitude     = $data['location_latitude'] ?? null;
@@ -157,9 +157,9 @@ class PlayerEntity
 		return $this->playlistMode;
 	}
 
-	public function getMultizone(): array
+	public function getZones(): array
 	{
-		return $this->multizone;
+		return $this->zones;
 	}
 
 	public function getCommands(): array

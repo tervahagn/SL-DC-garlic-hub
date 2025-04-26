@@ -38,7 +38,7 @@ class ScreenTimesReplacer extends AbstractReplacer implements ReplacerInterface
 	/**
 	 * @throws Exception
 	 */
-	public function replace(): array|string
+	public function replace(): array
 	{
 		if ($this->playerEntity->getModel() != PlayerModel::GARLIC->value)
 			return [];

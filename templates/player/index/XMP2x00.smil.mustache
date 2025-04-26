@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <smil>
 	<head>
+		{{#meta}}
 		<meta name="title" content="{{{TITLE}}}" />
 		<meta http-equiv="Refresh" content="{{{REFRESH_TIME}}}" />
-		<meta name="internal_name" content="Garlic-Player Index" />
+		{{/meta}}
+		<meta name="internal_name" content="IAdeaAndroid Player Index" />
 		<metadata>
 			<x-server xmlns="http://schemas.adfotain.org/adapi-1.0">
 				<subscriptionList>
@@ -25,6 +27,7 @@
 			{{#regions}}
 		</layout>
 		{{/layout}}
+	</head>
 	<body>
 		<excl repeatCount="indefinite">
 			{{#set_standby_times}}
@@ -32,6 +35,7 @@
 				<ref begin="{{{BEGIN_WALLCLOCKS}}}" end="{{{END_WALLCLOCKS}}}" dur="indefinite" src="adapi:blankScreen"/>
 			</priorityClass>
             {{/set_standby_times}}
+{{#playlist}}
 {{{INSERT_PRIORITY_CLASSES}}}
             <priorityClass higher="pause">
 				<par begin="0">
@@ -43,6 +47,7 @@
 					</par>
 				</par>
 			</priorityClass>
+{{/playlist}}
 		</excl>
 	</body>
 </smil>

@@ -50,7 +50,7 @@ class LayoutReplacerInterface extends AbstractReplacer implements ReplacerInterf
 
 	private function replaceMultizoneRegions(): array
 	{
-		$zones = $this->playerEntity->getMultizone();
+		$zones = $this->playerEntity->getZones();
 
 		$regions = [];
 

@@ -23,5 +23,6 @@ namespace App\Modules\Player\Helper\Index\Builder;
 
 class BuilderFactory
 {
+	private PlaylistBuilder $playlistReader;
 
 }
