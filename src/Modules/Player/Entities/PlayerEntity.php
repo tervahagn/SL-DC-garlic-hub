@@ -22,6 +22,8 @@
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
+use App\Modules\Player\Helper\Index\UserAgentHandler;
+use App\Modules\Player\Helper\PlayerModel;
 use DateTime;
 
 class PlayerEntity
@@ -36,7 +38,7 @@ class PlayerEntity
 	private int $status;
 	private int $refresh;
 	private int $licenceId;
-	private int $model;
+	private PlayerModel $model;
 	private string $uuid;
 	private array $commands;
 	private array $reports;
@@ -54,25 +56,25 @@ class PlayerEntity
 	private array $remoteAdministration;
 	private array $screenTimes;
 
-	public function __construct(Config $config, array $data)
+	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
 	{
 		$this->config = $config;
-		$this->playerId             = $data['player_id'];
+		$this->playerId             = $data['player_id'] ?? 0;
 		$this->playlistId           = $data['playlist_id'] ?? 0;
 		$this->UID                  = $data['UID'] ?? 0;
-		$this->lastAccess           = $data['last_access'];
-		$this->lastUpdate           = $data['last_update'];
-		$this->lastUpdatePlaylist   = $data['last_update_playlist'];
-		$this->duration             = $data['duration'];
+		$this->lastAccess           = $data['last_access'] ?? null;
+		$this->lastUpdate           = $data['last_update'] ?? null;
+		$this->lastUpdatePlaylist   = $data['last_update_playlist'] ?? null;
+		$this->duration             = $data['duration'] ?? 0;
 		$this->status               = $data['status'] ?? 1;
 		$this->refresh              = $data['refresh'] ?? 900;
-		$this->licenceId            = $data['licence_id'] ?? 1;
-		$this->model                = $data['model'] ?? 0;
-		$this->uuid                 = $data['uuid'];
+		$this->licenceId            = $data['licence_id'] ?? 0;
+		$this->model                = $userAgentHandler->getModel();
+		$this->uuid                 = $userAgentHandler->getUuid();
 		$this->commands             = $data['commands'] ?? [];
 		$this->reports              = $data['commands'] ?? [];
-		$this->firmwareVersion      = $data['firmware_version'] ?? '';
-		$this->playerName           = $data['player_name'] ?? '';
+		$this->firmwareVersion      = $userAgentHandler->getFirmware();
+		$this->playerName           = $userAgentHandler->getName();
 		$this->playlistName         = $data['playlist_name'] ?? '';
 		$this->playlistMode         = $data['playlist_mode'] ?? '';
 		$this->multizone            = $data['multizone'] ?? [];
