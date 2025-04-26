@@ -43,16 +43,13 @@ class PlayerDataPreparer
 		$this->playerEntityFactory = $playerEntityFactory;
 	}
 
-	/**
-	 * @throws ModuleException
-	 */
-	public function parseUserAgent(string $userAgent): static
+	public function parseUserAgent(string $userAgent): bool
 	{
 		$this->userAgentHandler->parseUserAgent($userAgent);
 		if ($this->userAgentHandler->getModel() === PlayerModel::UNKNOWN)
-			throw new ModuleException('playlist_index', 'Unknown Player');
+			return false;
 
-		return $this;
+		return true;
 	}
 
 	/**

@@ -21,6 +21,7 @@
 
 namespace App\Modules\Player\Services;
 
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Helper\Index\IndexFileHandler;
@@ -57,41 +58,15 @@ class PlayerIndexService
 		// 4 send to player
 		try
 		{
-			$this->playerDataPreparer->parseUserAgent($userAgent);
-			$this->playerEntity = $this->playerDataPreparer->fetchDatabase();
-			switch ($this->playerEntity->getStatus())
+
+			if ($this->playerDataPreparer->parseUserAgent($userAgent))
 			{
-				case PlayerStatus::UNREGISTERED->value:
-					$this->indexFileHandler->handleNew();
-					break;
-				case PlayerStatus::UNRELEASED->value:
-					$this->indexFileHandler->handleUnreleased();
-					break;
-				case PlayerStatus::RELEASED->value:
-					$this->indexFileHandler->handleReleased();
-					break;
-				case PlayerStatus::DEBUG_FTP->value:
-					$this->indexFileHandler->handleTestSMil();
-					break;
-				case PlayerStatus::TEST_SMIL_OK->value:
-					$this->indexFileHandler->handleCorrectSMil();
-					break;
-				case PlayerStatus::TEST_SMIL_ERROR->value:
-					$this->indexFileHandler->handleCorruptSMIL();
-					break;
-				case PlayerStatus::TEST_EXCEPTION->value:
-					throw new ModuleException('player_index', 'Simulated exception accessing SMIL index!<br />');
-				case PlayerStatus::TEST_NO_INDEX->value:
-					header('Location: https://www.google.com');
-					break;
-				case PlayerStatus::TEST_NO_CONTENT->value:
-					$this->indexFileHandler->handleCorruptContent();
-					break;
-				case PlayerStatus::TEST_NO_PREFETCH->value:
-					$this->indexFileHandler->handleCorruptPrefetchContent();
-					break;
-				default:
-					throw new ModuleException('player_index', 'Unknown player status: ' . $this->playerEntity->getStatus());
+				$this->playerEntity = $this->playerDataPreparer->fetchDatabase();
+				$this->handlePlayerStats($ownerId);
+			}
+			else
+			{
+				$this->indexFileHandler->handleForbidden();
 			}
 
 			$filePath = $this->indexFileHandler->getFilePath();
@@ -124,5 +99,46 @@ class PlayerIndexService
 		return '';
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 */
+	private function handlePlayerStats(int $ownerId): void
+	{
+		switch ($this->playerEntity->getStatus())
+		{
+			case PlayerStatus::UNREGISTERED->value:
+				$this->indexFileHandler->handleNew($ownerId);
+				break;
+			case PlayerStatus::UNRELEASED->value:
+				$this->indexFileHandler->handleUnreleased();
+				break;
+			case PlayerStatus::RELEASED->value:
+				$this->indexFileHandler->handleReleased();
+				break;
+			case PlayerStatus::DEBUG_FTP->value:
+				$this->indexFileHandler->handleTestSMil();
+				break;
+			case PlayerStatus::TEST_SMIL_OK->value:
+				$this->indexFileHandler->handleCorrectSMil();
+				break;
+			case PlayerStatus::TEST_SMIL_ERROR->value:
+				$this->indexFileHandler->handleCorruptSMIL();
+				break;
+			case PlayerStatus::TEST_EXCEPTION->value:
+				throw new ModuleException('player_index', 'Simulated exception accessing SMIL index!<br />');
+			case PlayerStatus::TEST_NO_INDEX->value:
+				header('Location: https://www.google.com');
+				break;
+			case PlayerStatus::TEST_NO_CONTENT->value:
+				$this->indexFileHandler->handleCorruptContent();
+				break;
+			case PlayerStatus::TEST_NO_PREFETCH->value:
+				$this->indexFileHandler->handleCorruptPrefetchContent();
+				break;
+			default:
+				throw new ModuleException('player_index', 'Unknown player status: ' . $this->playerEntity->getStatus());
+		}
+	}
 
 }

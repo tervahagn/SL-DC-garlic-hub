@@ -36,7 +36,15 @@ class IndexFileHandler
 		$this->systemPath = $systemPath;
 	}
 
-	public function handleNew(): void
+	public function handleForbidden(): void
+	{
+		$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/forbidden.smil';
+		// Transferhandler
+		// insert new player
+	}
+
+
+	public function handleNew($ownerId): void
 	{
 		// Transferhandler
 		// insert new player
