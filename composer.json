@@ -22,7 +22,8 @@
         "guzzlehttp/guzzle": "^7.9",
         "slim/http": "^1.4",
         "ext-simplexml": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-curl": "*"
   },
     "autoload": {
         "psr-4": {

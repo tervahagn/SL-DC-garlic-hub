@@ -21,40 +21,55 @@
 
 namespace App\Modules\Player\Helper\Index;
 
-use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Player\Services\PlayerIndexService;
+use App\Framework\Core\Config\Config;
+use Hoa\Iterator\FileSystem;
 
-class IndexFacade
+class IndexFileHandler
 {
-	private UserAgentHandler $userAgentHandler;
-	private PlayerIndexService $playerService;
+	private readonly Config $config;
+	private readonly string $filePath;
 
 
-	public function parseUserAgent(string $userAgent): static
+	public function handleNew()
 	{
-		$this->userAgentHandler->parseUserAgent($userAgent);
-		return $this;
+		// Transferhandler
+		// insert new player
 	}
 
-	public function fetchPlayerData(): static
+	public function handleUnreleased()
 	{
-		$this->playerService->fetchDatabase($this->userAgentHandler->getUuid());
+		// Transferhandler
+		// send transfer code smil or unreleased
 	}
 
+	public function handleReleased()
+	{
+		// generate Index from Playlist
+	}
 
+	public function handleTestSMil()
+	{
 
+	}
 
-	// 2. load Player Data
+	public function handleCorrectSMil()
+	{
+	}
 
-	// 3. select SMIL according to player status.
+	public function handleCorruptSMIL()
+	{
+	}
 
-	// if there is player status 3 (with License)
-	// 1. check for commands => generate Task scheduler
-	// 2. send correct SMIL
-	// 1. get the right SMIL depending on player model
-	// 2. Build SMIL
-	// 3. Write SMIL if it is different from previous stored
-	// 4 send to player
+	public function handleCorruptContent()
+	{
+	}
 
+	public function handleCorruptPrefetchContent()
+	{
+	}
 
+	public function getFilePath()
+	{
+
+	}
 }
