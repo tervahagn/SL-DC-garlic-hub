@@ -54,8 +54,14 @@ class PlayerRepository extends FilterBase
 		if ($result === false or empty($result))
 			throw new ModuleException('playlist_index', 'Playlist not found');
 
+		$result['location_data']         = $this->secureUnserialize( $result['location_data']);
+		$result['properties']            = $this->secureUnserialize( $result['properties']);
+		$result['remote_administration'] = $this->secureUnserialize( $result['remote_administration']);
+		$result['screen_times']          = $this->secureUnserialize( $result['screen_times']);
+
 		return $result;
 	}
+
 	protected function prepareJoin(): array
 	{
 		return [

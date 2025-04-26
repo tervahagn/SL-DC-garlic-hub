@@ -22,6 +22,8 @@
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
+use App\Modules\Player\Helper\Index\UserAgentHandler;
+use App\Modules\Player\Helper\PlayerModel;
 
 class PlayerEntityFactory
 {
@@ -36,8 +38,8 @@ class PlayerEntityFactory
 	}
 
 
-	function create(array $data): PlayerEntity
+	function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
 	{
-		return new PlayerEntity($this->config, $data);
+		return new PlayerEntity($this->config, $userAgentHandler, $data);
 	}
 }

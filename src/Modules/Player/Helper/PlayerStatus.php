@@ -23,7 +23,7 @@ namespace App\Modules\Player\Helper;
 
 enum PlayerStatus: int
 {
-	case UNKNOWN         =  0;
+	case UNREGISTERED    = 0;
 	case UNRELEASED      = 1;
 	case RELEASED        = 2;
 	case DEBUG_FTP       = 3;

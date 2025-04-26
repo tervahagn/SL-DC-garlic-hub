@@ -56,10 +56,10 @@ class UserAgentHandler
 		return $this->model;
 	}
 
-	public function parseUserAgent($userAggent): static
+	public function parseUserAgent(string $userAgent): static
 	{
 		// ADAPI/1.0 (UUID:a8294bat-c28f-50af-f94o-800869af5854; NAME:Player with spaces in name) SK8855-ADAPI/2.0.5 (MODEL:XMP-330)
-		if (preg_match('/([^ ]+) \(UUID:(.*?); NAME:(.*?)\) (.*?) \(MODEL:(.*?)\)/', $userAggent, $matches))
+		if (preg_match('/([^ ]+) \(UUID:(.*?); NAME:(.*?)\) (.*?) \(MODEL:(.*?)\)/', $userAgent, $matches))
 		{
 			$this->uuid     =  $matches[2];
 			$this->firmware = $matches[4];
@@ -67,14 +67,14 @@ class UserAgentHandler
 			$this->model    = $this->playerDetector->detectModelId($matches[5])->getModelId();
 		}
 		// SmartAPI/1.0 (UUID:cc009f47-5a8d-42b4-af5a-1865710c05ba; NAME:05B200T100223; VERSION:v1.0.16; MODEL:TD-1050)
-		elseif (preg_match('/([^ ]+) \(UUID:(.*?); NAME:(.*?); VERSION:(.*?); MODEL:(.*?)\)/', $userAggent, $matches))
+		elseif (preg_match('/([^ ]+) \(UUID:(.*?); NAME:(.*?); VERSION:(.*?); MODEL:(.*?)\)/', $userAgent, $matches))
 		{
 			$this->uuid     =  $matches[2];
 			$this->firmware = $matches[4];
 			$this->name     = urldecode($matches[3]);
 			$this->model    = $this->playerDetector->detectModelId($matches[5])->getModelId();
 		}
-		elseif (preg_match('/([^ ]+) \(UUID:(.*?)\) (.*?)-(.*?) \(MODEL:(.*?)\)/', $userAggent, $matches))
+		elseif (preg_match('/([^ ]+) \(UUID:(.*?)\) (.*?)-(.*?) \(MODEL:(.*?)\)/', $userAgent, $matches))
 		{
 			$this->uuid     =  $matches[2];
 			$this->firmware = $matches[4];
@@ -83,12 +83,12 @@ class UserAgentHandler
 		}
 		else
 		{
-			$this->parseUserAgentFallback($userAggent);
+			$this->parseUserAgentFallback($userAgent);
 		}
 		return $this;
 	}
 
-	public function parseUserAgentFallback($userAgent): static
+	public function parseUserAgentFallback(string $userAgent): static
 	{
 		$tmp  = mb_strstr($userAgent, 'UUID:');
 		$uuid = mb_substr($tmp, 5, mb_strpos($tmp, ';') - 5);
