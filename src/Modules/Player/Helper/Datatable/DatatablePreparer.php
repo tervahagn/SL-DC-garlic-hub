@@ -82,7 +82,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						);
 						break;
 					case 'playlist_id':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name']);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name'] ?? '');
 						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player[$innerKey]);

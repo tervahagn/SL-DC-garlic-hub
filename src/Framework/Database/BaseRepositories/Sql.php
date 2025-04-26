@@ -209,4 +209,16 @@ abstract class Sql
 		return $result;
 	}
 
+	protected function secureUnserialize(string $data): array
+	{
+		if (empty($data))
+			return [];
+
+		$ar = @unserialize($data);
+		if (!is_array($ar))
+			return [];
+
+		return $ar;
+	}
+
 }

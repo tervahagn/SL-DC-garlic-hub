@@ -41,7 +41,7 @@ class Sanitizer
 
 	public function int(?string $value): int
 	{
-		return (int)$value;
+		return (int) $value ?? 0;
 	}
 
 	public function float(?string $value): float

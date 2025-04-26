@@ -50,7 +50,11 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 
 $dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerController($container->get(PlayerIndexService::class), $container->get(PlayerService::class));
+	return new PlayerController(
+		$container->get(PlayerIndexService::class),
+		$container->get(Sanitizer::class),
+		$container->get(PlayerService::class)
+	);
 });
 $dependencies[PlayerIndexService::class] = DI\factory(function (ContainerInterface $container)
 {

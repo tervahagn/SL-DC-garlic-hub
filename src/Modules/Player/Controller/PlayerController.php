@@ -21,8 +21,10 @@
 
 namespace App\Modules\Player\Controller;
 
+use App\Framework\Core\Sanitizer;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Services\PlayerIndexService;
+use App\Modules\Player\Services\PlayerService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,10 +33,12 @@ class PlayerController
 {
 	private readonly PlayerIndexService $indexService;
 	private readonly PlayerService $playerService;
+	private readonly Sanitizer $sanitizer;
 
-	public function __construct(PlayerIndexService $indexService, PlayerService $playerService)
+	public function __construct(PlayerIndexService $indexService, Sanitizer $sanitizer, PlayerService $playerService)
 	{
-		$this->indexService = $indexService;
+		$this->indexService  = $indexService;
+		$this->sanitizer     = $sanitizer;
 		$this->playerService = $playerService;
 	}
 
@@ -44,10 +48,10 @@ class PlayerController
 	 */
 	public function index(ServerRequestInterface $request, ResponseInterface $response, array $args)
 	{
-		$ownerId = $_GET['owner_id'] ?? 0;
-		$userAgent = $request->getAttribute('User-Agent');
+		$ownerId   = $this->sanitizer->int($_GET['owner_id']);
+		$userAgent = $this->sanitizer->string($request->getAttribute('User-Agent'));
 
-		$data = $this->indexService->determineForIndexCreation($userAgent, $ownerId);
+		$data = $this->indexService->handleIndexRequest($userAgent, $ownerId);
 
 		if ($data === '')
 			return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
