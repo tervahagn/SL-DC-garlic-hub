@@ -21,9 +21,10 @@
 
 namespace App\Modules\Player\Helper\Index\Builder;
 
-use App\Modules\Player\Helper\Index\Builder\SmilBuilder\ReplacerInterface;
+use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
 
-class SmilIndexBuilder {
+class IndexBuilder
+{
 	private array $replacers = [];
 
 	public function addReplacer(ReplacerInterface $replacer): self

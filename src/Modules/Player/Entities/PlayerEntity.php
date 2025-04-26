@@ -72,7 +72,7 @@ class PlayerEntity
 		$this->model                = $userAgentHandler->getModel();
 		$this->uuid                 = $userAgentHandler->getUuid();
 		$this->commands             = $data['commands'] ?? [];
-		$this->reports              = $data['commands'] ?? [];
+		$this->reports              = $data['reports'] ?? [];
 		$this->firmwareVersion      = $userAgentHandler->getFirmware();
 		$this->playerName           = $userAgentHandler->getName();
 		$this->playlistName         = $data['playlist_name'] ?? '';

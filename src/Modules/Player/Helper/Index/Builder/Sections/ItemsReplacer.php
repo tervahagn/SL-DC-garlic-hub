@@ -19,16 +19,32 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
-use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Player\Helper\Index\Builder\SmilBuilder\ReplacerInterface;
 
-class TitleReplacerInterface extends AbstractReplacer implements ReplacerInterface
+class ItemsReplacer extends AbstractReplacer implements ReplacerInterface
 {
+
+	private ContentReader $contentreader;
+
 	public function replace(): string
 	{
-		return $this->playerEntity->getPlayerName() . ' - '.
-			$this->playerEntity->getPlaylistName();
+		return $this->replaceItems();
 	}
+
+	public function replaceItems(): string
+	{
+		return $this->contentreader->getItems();
+	}
+
+	public function replacePrefetch(): string
+	{
+		return $this->contentreader->getPrefetch();
+	}
+
+	public function replaceExclusive(): string
+	{
+		return $this->contentreader->getExclusive();
+	}
+
 }

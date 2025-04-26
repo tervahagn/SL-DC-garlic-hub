@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
 /**
  * The refresh of the content look at http://www.a-smil.org/index.php/Fixed_Playlist,_Dynamic_Content

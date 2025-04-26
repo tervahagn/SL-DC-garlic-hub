@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
 use App\Modules\Player\Helper\PlayerModel;
 use DateMalformedStringException;
@@ -30,10 +30,10 @@ class ScreenTimesReplacer extends AbstractReplacer implements ReplacerInterface
 {
 
 	private string $current_date = 'now';
-	private array $begin        = [];
-	private array $end          = [];
+	private array $begin         = [];
+	private array $end           = [];
 
-	private array $screenTimes = [];
+	private array $screenTimes   = [];
 
 	/**
 	 * @throws Exception

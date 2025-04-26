@@ -19,32 +19,16 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
+use App\Modules\Player\Entities\PlayerEntity;
 
-class ItemsReplacer extends AbstractReplacer implements ReplacerInterface
+abstract class AbstractReplacer
 {
+	protected readonly PlayerEntity $playerEntity;
 
-	private ContentReader $contentreader;
-
-	public function replace(): string
+	public function __construct(PlayerEntity $playerEntity)
 	{
-		return $this->replaceItems();
+		$this->playerEntity = $playerEntity;
 	}
-
-	public function replaceItems(): string
-	{
-		return $this->contentreader->getItems();
-	}
-
-	public function replacePrefetch(): string
-	{
-		return $this->contentreader->getPrefetch();
-	}
-
-	public function replaceExclusive(): string
-	{
-		return $this->contentreader->getExclusive();
-	}
-
 }

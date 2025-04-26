@@ -6,23 +6,12 @@ namespace App\Modules\Player\Helper\configuration;
 
 class GenerateBaseConfig
 {
-	protected $NetSection;
-	protected $configData = [];
-	protected $template = [];
+	protected array $configData = [];
+	protected array $template = [];
 
 	public function __construct(array $configData)
 	{
 		$this->configData = $configData;
-	}
-
-	public function getNetSection()
-	{
-		return $this->NetSection;
-	}
-
-	public function setNetSection($NetSection)
-	{
-		$this->NetSection = $NetSection;
 	}
 
 	public function replace(): static
@@ -143,10 +132,7 @@ class GenerateBaseConfig
 		return $this;
 	}
 
-	/**
-	 * @return $this
-	 */
-	protected function replaceProxySection()
+	protected function replaceProxySection(): static
 	{
 		$this->template['net_proxy_section'][] = [
 			'NET_PROXY_TYPE' => $this->configData['proxy_type'],
@@ -155,6 +141,7 @@ class GenerateBaseConfig
 			'NET_PROXY_USER' => $this->configData['proxy_user'],
 			'NET_PROXY_PASSWORD' => $this->configData['proxy_password']
 		];
+
 		return $this;
 	}
 

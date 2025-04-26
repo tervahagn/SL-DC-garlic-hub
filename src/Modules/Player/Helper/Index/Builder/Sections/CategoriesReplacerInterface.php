@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
 class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerInterface
 {
@@ -30,7 +30,6 @@ class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerIn
 		$this->smil = $smil;
 		return $this;
 	}
-
 
 	public function replace(): string
 	{

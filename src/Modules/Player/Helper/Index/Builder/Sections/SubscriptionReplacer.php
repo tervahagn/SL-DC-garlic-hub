@@ -19,10 +19,10 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
-use App\Modules\Player\Helper\Index\Builder\SmilBuilder\AbstractReplacer;
-use App\Modules\Player\Helper\Index\Builder\SmilBuilder\ReplacerInterface;
+use App\Modules\Player\Helper\Index\Builder\Sections\AbstractReplacer;
+use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
 
 class SubscriptionReplacer extends AbstractReplacer implements ReplacerInterface
 {

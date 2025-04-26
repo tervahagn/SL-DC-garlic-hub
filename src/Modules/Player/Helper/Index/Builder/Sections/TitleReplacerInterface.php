@@ -19,16 +19,16 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\SmilBuilder;
+namespace App\Modules\Player\Helper\Index\Builder\Sections;
 
 use App\Modules\Player\Entities\PlayerEntity;
+use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
 
-abstract class AbstractReplacer
+class TitleReplacerInterface extends AbstractReplacer implements ReplacerInterface
 {
-	protected readonly PlayerEntity $playerEntity;
-
-	public function __construct(PlayerEntity $playerEntity)
+	public function replace(): string
 	{
-		$this->playerEntity = $playerEntity;
+		return $this->playerEntity->getPlayerName() . ' - '.
+			$this->playerEntity->getPlaylistName();
 	}
 }

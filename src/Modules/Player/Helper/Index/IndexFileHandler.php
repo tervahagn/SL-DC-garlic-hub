@@ -36,23 +36,24 @@ class IndexFileHandler
 		$this->systemPath = $systemPath;
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function handleForbidden(): void
 	{
 		$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/forbidden.smil';
-		// Transferhandler
-		// insert new player
 	}
 
 
 	public function handleNew($ownerId): void
 	{
-		// Transferhandler
+		// ToDo Transferhandler
 		// insert new player
 	}
 
 	public function handleUnreleased(): void
 	{
-		// Transferhandler
+		// Todo Transferhandler
 		// send transfer code smil or unreleased
 	}
 

@@ -209,6 +209,18 @@ abstract class Sql
 		return $result;
 	}
 
+	protected function secureExplode(string $data): array
+	{
+		if (empty($data))
+			return [];
+
+		$ar = explode(',', $data);
+		if (!is_array($ar))
+			return [];
+
+		return $ar;
+	}
+
 	protected function secureUnserialize(string $data): array
 	{
 		if (empty($data))
