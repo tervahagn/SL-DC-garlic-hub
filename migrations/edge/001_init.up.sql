@@ -228,7 +228,8 @@ CREATE TABLE player (
     licence_id INTEGER NOT NULL DEFAULT 1,
     model INTEGER UNSIGNED NOT NULL DEFAULT 0,
     uuid BLOB(16) NOT NULL,
-    commands TEXT DEFAULT NULL, -- set in mysql
+    commands TEXT DEFAULT NULL DEFAULT '', -- set in mysql
+    reports TEXT DEFAULT NULL DEFAULT '', -- set in mysql
     firmware_version TEXT NOT NULL DEFAULT '',
     player_name TEXT NOT NULL DEFAULT '',
     location_data TEXT DEFAULT NULL,
