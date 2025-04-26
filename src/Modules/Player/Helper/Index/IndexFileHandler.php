@@ -22,54 +22,79 @@
 namespace App\Modules\Player\Helper\Index;
 
 use App\Framework\Core\Config\Config;
-use Hoa\Iterator\FileSystem;
+use App\Framework\Exceptions\CoreException;
 
 class IndexFileHandler
 {
 	private readonly Config $config;
-	private readonly string $filePath;
+	private readonly string $systemPath;
+	private string $filePath;
 
+	public function __construct(Config $config, string $systemPath)
+	{
+		$this->config = $config;
+		$this->systemPath = $systemPath;
+	}
 
-	public function handleNew()
+	public function handleNew(): void
 	{
 		// Transferhandler
 		// insert new player
 	}
 
-	public function handleUnreleased()
+	public function handleUnreleased(): void
 	{
 		// Transferhandler
 		// send transfer code smil or unreleased
 	}
 
-	public function handleReleased()
+	public function handleReleased(): void
 	{
 		// generate Index from Playlist
 	}
 
-	public function handleTestSMil()
+	/**
+	 * @throws CoreException
+	 */
+	public function handleTestSMil(): void
 	{
-
+		$this->filePath = $this->config->getConfigValue('tests', 'player', 'SmilDirectories').'/index.smil';
 	}
 
-	public function handleCorrectSMil()
+	/**
+	 * @throws CoreException
+	 */
+	public function handleCorrectSMil(): void
 	{
+		$this->filePath = $this->config->getConfigValue('simulations', 'player', 'SmilDirectories').'/without_errors.smil';
 	}
 
-	public function handleCorruptSMIL()
+	/**
+	 * @throws CoreException
+	 */
+	public function handleCorruptSMIL(): void
 	{
+		$this->filePath = $this->config->getConfigValue('simulations', 'player', 'SmilDirectories').'/broken_index.smil';
 	}
 
-	public function handleCorruptContent()
+	/**
+	 * @throws CoreException
+	 */
+	public function handleCorruptContent(): void
 	{
+		$this->filePath = $this->config->getConfigValue('simulations', 'player', 'SmilDirectories').'/unreachable_content.smil';
 	}
 
-	public function handleCorruptPrefetchContent()
+	/**
+	 * @throws CoreException
+	 */
+	public function handleCorruptPrefetchContent(): void
 	{
+		$this->filePath = $this->config->getConfigValue('simulations', 'player', 'SmilDirectories').'/unreachable_prefetch_content.smil';
 	}
 
-	public function getFilePath()
+	public function getFilePath(): string
 	{
-
+		return $this->systemPath.'/'.$this->filePath;
 	}
 }

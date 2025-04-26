@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<smil>
+	<head>
+		<meta name="title" content="Index without errors" />
+		<meta http-equiv="Refresh" content="60" />
+		<layout>
+			<root-layout id="display:0" width="1920" height="1080" />
+			<region regionName="screen" top="0" left="0" width="1920" height="1080" z-index="0" fit="fill" mediaAlign="center" />
+		</layout>
+	</head>
+	<body>
+		<seq repeatCount="indefinite">
+			<img region="screen" src="resources/smil/simulate/images/0001.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0002.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0003.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0004.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0005.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0006.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0007.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0008.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0009.jpg" dur="1s" fit="fill" />
+			<img region="screen" src="resources/smil/simulate/images/0010.jpg" dur="1s" fit="fill" />
+		</seq>
+	</body>
+</smil>

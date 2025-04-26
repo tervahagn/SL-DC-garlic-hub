@@ -1,0 +1,99 @@
+This is a error to simulate a broken defect Index
+This is a error to simulate a broken defect Index
+This is a error to simulate a broken defect Index
+This is a error to simulate a broken defect Index
+This is a error to simulate a broken defect Index
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<smil>
+	<head>
+		<meta name="title" content="Broken index" />
+		<meta http-equiv="Refresh" content="30" />
+		<metadata>
+			<x-server xmlns="http://schemas.adfotain.org/adapi-1.0">
+				<subscriptionList>
+					<subscription>
+						<type>TaskSchedule</type>
+						<action></action>
+						<method>get</method> 
+					</subscription>
+					<subscription>
+						<type>InventoryReport</type>
+						<action>http://logs.smil-admin.com/inventory_f9d65c88-e4cd-43b4-89eb-5c338e855169.xml</action>
+						<method>put</method> 
+					</subscription>
+					<subscription>
+						<type>EventlogCollection</type>
+						<action>http://logs.smil-admin.com</action>
+						<method>put</method> 
+					</subscription>
+				</subscriptionList>
+	    	</x-server>
+		</metadata>
+		<layout>
+			<root-layout id="display:0" width="1920" height="1080" />
+			<region regionName="screen" top="0" left="0" width="1920" height="1080" z-index="0" fit="fill" mediaAlign="center" />
+		</layout>
+		<transition id="crossfade" type="fade" subtype="crossfade" dur="5s" />
+		<transition id="ltr" type="barWipe" subtype="leftToRight" dur="2s" />
+	    <transition id="ttb" type="barWipe" subtype="topToBottom" dur="1s" />
+		</head>
+	<body >
+		<excl repeatCount="indefinite">
+
+				<seq id="monitor" begin="wallclock(R/2001-01-01T00:00:01/P1D)" end="wallclock(R/2001-01-01T23:59:59/P1D)">
+					<par>
+						<seq repeatCount="indefinite">
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0001.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0002.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0003.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0004.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0005.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0006.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0007.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0008.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0009.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+							<img region="screen" src="http://smil-admin.com/resources/smil/simulate/images/0010.jpg" dur="10s" fit="fill">
+								<param name="cacheControl" value="onlyIfCached" />
+							</img>
+						</seq>
+
+						<par repeatCount="indefinite">
+							<seq dur="150s"/>
+							<seq>
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0001.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0002.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0003.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0004.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0005.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0006.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0007.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0008.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0009.jpg" />
+								<prefetch src="http://smil-admin.com/resources/smil/simulate/images/0010.jpg" />
+							</seq>
+						</par>
+					</par>
+				</seq>
+				<ref begin="0;monitor.endEvent" src="adapi:blankScreen" dur="indefinite"/> 
+			
+		</excl>
+	</body>
+</smil>

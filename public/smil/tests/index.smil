@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<smil>
+	<head>
+		<meta name="title" content="XDS-245 - nur Bilder" />
+		<meta http-equiv="Refresh" content="20" />
+		<layout>
+			<root-layout id="display:0" width="1920" height="1080" />
+			<region regionName="screen" top="0" left="0" width="1920" height="1080" z-index="0" fit="fill" mediaAlign="center" />
+
+		</layout>
+		</head>
+	<body >
+		<excl repeatCount="indefinite">
+			<priorityClass>
+				<seq begin="wallclock(R/2012-07-25T01:23:00/PT2M)">
+					<img src="http://smil-admin.com/var/smil/test/change/003.jpg" dur="5s" fit="fill" />
+					<img src="http://smil-admin.com/var/smil/test/images/002.jpg" dur="5s" fit="fill" />
+				</seq>
+			</priorityClass>
+
+			<priorityClass>
+				<seq begin="wallclock(R/2012-07-25T01:24:00/PT2M)">
+					<img src="http://smil-admin.com/var/smil/test/images/003.jpg" dur="5s" fit="fill" />
+					<img src="http://smil-admin.com/var/smil/test/images/004.jpg" dur="5s" fit="fill" />
+				</seq>
+			</priorityClass>
+			<priorityClass higher="pause">
+				<seq id="monitor" begin="wallclock(R/2011-01-01T00:00:01/P1D)" end="wallclock(R/2011-01-01T023:59:59/P1D)">
+			    	<par>
+						<seq repeatCount="indefinite">
+					        <img expr="adapi-compare(substring-before(adapi-date(), 'T'), '2012-08-20')&gt;=0 and adapi-compare(substring-before(adapi-date(), 'T'), '2012-10-16')&lt;=0" src="http://smil-admin.com/var/smil/test/change/001.jpg" dur="10" fit="fill">
+					        	<param name="cacheControl" value="onlyIfCached" />
+								<param name="logContentId" value="001.jpg" />
+					        </img>
+					        <img src="http://smil-admin.com/var/smil/test/change/002.jpg" dur="10" fit="fill">
+					        	<param name="cacheControl" value="onlyIfCached" />
+								<param name="logContentId" value="002.jpg" />
+					        </img>
+					        <img src="http://smil-admin.com/var/smil/test/change/004.jpg" dur="10" fit="fill">
+					        	<param name="cacheControl" value="onlyIfCached" />
+								<param name="logContentId" value="004.jpg" />
+					        </img>
+					        <img src="http://smil-admin.com/var/smil/test/change/005.jpg" dur="10" fit="fill">
+					        	<param name="cacheControl" value="onlyIfCached" />
+								<param name="logContentId" value="005.jpg" />
+					        </img>
+						</seq>    
+						<par repeatCount="indefinite">
+							<seq dur="900s"/>
+							<seq>
+						        <prefetch src="http://smil-admin.com/var/smil/test/change/001.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/images/002.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/images/003.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/images/004.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/change/002.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/change/003.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/change/004.jpg" />
+						        <prefetch src="http://smil-admin.com/var/smil/test/change/005.jpg" />
+							</seq>
+						</par>
+					</par>
+				</seq>
+				<ref begin="0;monitor.endEvent" src="adapi:blankScreen" dur="indefinite"/> 
+			</priorityClass>
+		</excl>
+	</body>
+</smil>
