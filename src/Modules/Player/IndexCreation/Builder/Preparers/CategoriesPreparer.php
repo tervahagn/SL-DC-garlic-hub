@@ -19,19 +19,19 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerInterface
+class CategoriesPreparer extends AbstractPreparer implements PreparerInterface
 {
 	private string $smil;
 
-	public function setSmil(string $smil): CategoriesReplacerInterface
+	public function setSmil(string $smil): static
 	{
 		$this->smil = $smil;
 		return $this;
 	}
 
-	public function replace(): string
+	public function prepare(): string
 	{
 		preg_match_all('@(?=begin_categories ).* @', $this->smil, $ar_match);
 
@@ -39,12 +39,12 @@ class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerIn
 		// as we set to un greedy this will remove only one occurrence per round
 		foreach ($ar_match[0] as $preg_matched)
 		{
-			$found_categories = substr($preg_matched, 17, strlen($preg_matched) - 18);
+			$foundCategories = substr($preg_matched, 17, strlen($preg_matched) - 18);
 
-			$ar_found   = explode(';', $found_categories);
+			$ar_found   = explode(';', $foundCategories);
 			$match      = false;
-			$categories = $this->playerEntity->getCategories();
-			foreach($categories as $key => $and)
+
+			foreach($this->playerEntity->getCategories() as $key => $and)
 			{
 				if (count(array_intersect($and, $ar_found)) == count($and))
 				{
@@ -54,16 +54,16 @@ class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerIn
 			}
 
 			if ($match)
-				$this->smil = $this->removeCategoriesCommentsOnly($found_categories);
+				$this->smil = $this->removeCategoriesCommentsOnly($foundCategories);
 			else
-				$this->smil = $this->removeCategoryBlock($found_categories);
+				$this->smil = $this->removeCategoryBlock($foundCategories);
 		}
 		return $this->smil;
 	}
 
-	protected function removeCategoryBlock(string $categories): string
+	protected function removeCategoryBlock(string $foundCategories): string
 	{
-		return preg_replace('@<!-- begin_categories ' . $categories . ' -->.*<!-- end_categories ' . $categories . ' -->\n@isU', '', $this->smil);
+		return preg_replace('@<!-- begin_categories ' . $foundCategories . ' -->.*<!-- end_categories ' . $foundCategories . ' -->\n@isU', '', $this->smil);
 	}
 
 	private function removeCategoriesCommentsOnly(string $categories): string

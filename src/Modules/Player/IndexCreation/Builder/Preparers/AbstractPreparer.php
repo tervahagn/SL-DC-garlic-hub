@@ -19,14 +19,16 @@
 */
 
 
-namespace App\Modules\Player\Helper;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-enum PlayerCommands : string
+use App\Modules\Player\Entities\PlayerEntity;
+
+abstract class AbstractPreparer
 {
-	case UPDATE_CONFIGURATION  = 'update_configuration';
-	case REBOOT                = 'reboot';
-	case UPDATE_FIRMWARE       = 'update_firmware';
-	case CLEAR_CACHE           = 'clear_cache';
-	case CLEAR_WEBCACHE        = 'clear_webcache';
-	case UPDATE_URLS_LIST      = 'update_urls_list';
+	protected readonly PlayerEntity $playerEntity;
+
+	public function __construct(PlayerEntity $playerEntity)
+	{
+		$this->playerEntity = $playerEntity;
+	}
 }

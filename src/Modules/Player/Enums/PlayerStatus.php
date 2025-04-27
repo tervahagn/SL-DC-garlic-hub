@@ -19,9 +19,19 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\Enums;
 
-interface ReplacerInterface
+enum PlayerStatus: int
 {
-	public function replace(): array|string;
+	case UNREGISTERED    = 0;
+	case UNRELEASED      = 1;
+	case RELEASED        = 2;
+	case DEBUG_FTP       = 3;
+	case TEST_SMIL_OK    = 4;
+	case TEST_SMIL_ERROR = 5;
+	case TEST_EXCEPTION  = 6;
+	case TEST_NO_INDEX   = 7;
+	case TEST_NO_CONTENT = 8;
+	case TEST_NO_PREFETCH = 9;
+
 }

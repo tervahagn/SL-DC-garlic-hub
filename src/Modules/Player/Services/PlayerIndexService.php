@@ -24,24 +24,24 @@ namespace App\Modules\Player\Services;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Player\Helper\PlayerStatus;
-use App\Modules\Player\IndexCreation\IndexFileHandler;
-use App\Modules\Player\IndexCreation\PlayerDataPreparer;
+use App\Modules\Player\Enums\PlayerStatus;
+use App\Modules\Player\IndexCreation\IndexProvider;
+use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 class PlayerIndexService
 {
-	private readonly PlayerDataPreparer $playerDataPreparer;
-	private readonly IndexFileHandler $indexFileHandler;
+	private readonly PlayerDataAssembler $playerDataAssembler;
+	private readonly IndexProvider $indexProvider;
 	private PlayerEntity $playerEntity;
 	private readonly LoggerInterface $logger;
 
-	public function __construct(PlayerDataPreparer $playerDataPreparer, IndexFileHandler $indexHandler, LoggerInterface $logger)
+	public function __construct(PlayerDataAssembler $playerDataAssembler, IndexProvider $indexProvider, LoggerInterface $logger)
 	{
-		$this->playerDataPreparer = $playerDataPreparer;
-		$this->indexFileHandler       = $indexHandler;
-		$this->logger             = $logger;
+		$this->playerDataAssembler = $playerDataAssembler;
+		$this->indexProvider       = $indexProvider;
+		$this->logger              = $logger;
 	}
 
 	public function handleIndexRequest(string $userAgent, int $ownerId): string
@@ -58,18 +58,18 @@ class PlayerIndexService
 		// 4 send to player
 		try
 		{
-
-			if ($this->playerDataPreparer->parseUserAgent($userAgent))
+			$userAgent = 'SCAPI/1.0 (UUID:localhost; NAME:Arch) garlic-linux/v0.6.0.763) (MODEL:Garlic)';
+			if ($this->playerDataAssembler->parseUserAgent($userAgent))
 			{
-				$this->playerEntity = $this->playerDataPreparer->fetchDatabase();
+				$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
 				$this->handlePlayerStats($ownerId);
 			}
 			else
 			{
-				$this->indexFileHandler->handleForbidden();
+				$this->indexProvider->handleForbidden();
 			}
 
-			$filePath = $this->indexFileHandler->getFilePath();
+			$filePath = $this->indexProvider->getFilePath();
 			header('Cache-Control: public, must-revalidate, max-age=864000, pre-check=864000 ' /*proxy-revalidate*/); // 10 days
 			if (isset($_SERVER['If-Modified-Since']) && (strtotime($_SERVER['If-Modified-Since']) == filemtime($filePath)))
 			{
@@ -108,22 +108,22 @@ class PlayerIndexService
 		switch ($this->playerEntity->getStatus())
 		{
 			case PlayerStatus::UNREGISTERED->value:
-				$this->indexFileHandler->handleNew($ownerId);
+				$this->indexProvider->handleNew($ownerId);
 				break;
 			case PlayerStatus::UNRELEASED->value:
-				$this->indexFileHandler->handleUnreleased();
+				$this->indexProvider->handleUnreleased();
 				break;
 			case PlayerStatus::RELEASED->value:
-				$this->indexFileHandler->handleReleased();
+				$this->indexProvider->handleReleased($this->playerEntity);
 				break;
 			case PlayerStatus::DEBUG_FTP->value:
-				$this->indexFileHandler->handleTestSMil();
+				$this->indexProvider->handleTestSMil();
 				break;
 			case PlayerStatus::TEST_SMIL_OK->value:
-				$this->indexFileHandler->handleCorrectSMil();
+				$this->indexProvider->handleCorrectSMil();
 				break;
 			case PlayerStatus::TEST_SMIL_ERROR->value:
-				$this->indexFileHandler->handleCorruptSMIL();
+				$this->indexProvider->handleCorruptSMIL();
 				break;
 			case PlayerStatus::TEST_EXCEPTION->value:
 				throw new ModuleException('player_index', 'Simulated exception accessing SMIL index!<br />');
@@ -131,10 +131,10 @@ class PlayerIndexService
 				header('Location: https://www.google.com');
 				break;
 			case PlayerStatus::TEST_NO_CONTENT->value:
-				$this->indexFileHandler->handleCorruptContent();
+				$this->indexProvider->handleCorruptContent();
 				break;
 			case PlayerStatus::TEST_NO_PREFETCH->value:
-				$this->indexFileHandler->handleCorruptPrefetchContent();
+				$this->indexProvider->handleCorruptPrefetchContent();
 				break;
 			default:
 				throw new ModuleException('player_index', 'Unknown player status: ' . $this->playerEntity->getStatus());

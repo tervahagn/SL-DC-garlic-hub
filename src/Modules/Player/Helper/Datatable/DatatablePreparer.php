@@ -26,7 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
-use App\Modules\Player\Helper\PlayerStatus;
+use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Services\AclValidator;
 use DateTime;
 use Doctrine\DBAL\Exception;

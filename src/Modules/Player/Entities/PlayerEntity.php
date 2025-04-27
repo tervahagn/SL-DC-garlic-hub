@@ -22,7 +22,7 @@
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use DateTime;
 
@@ -46,7 +46,7 @@ class PlayerEntity
 	private string $playerName;
 	private string $playlistName;
 	private int $duration;
-	private string $locationData;
+	private array $locationData;
 	private string $locationLongitude;
 	private string $locationLatitude;
 	private string $playlistMode;
@@ -58,13 +58,16 @@ class PlayerEntity
 
 	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
 	{
+		$format = 'Y-m-d H:i:s';
+		$default = '2001-01-01 00:00:00';
+
 		$this->config = $config;
 		$this->playerId             = $data['player_id'] ?? 0;
 		$this->playlistId           = $data['playlist_id'] ?? 0;
 		$this->UID                  = $data['UID'] ?? 0;
-		$this->lastAccess           = $data['last_access'] ?? null;
-		$this->lastUpdate           = $data['last_update'] ?? null;
-		$this->lastUpdatePlaylist   = $data['last_update_playlist'] ?? null;
+		$this->lastAccess           = DateTime::createFromFormat($format,$data['last_access'] ?? $default);
+		$this->lastUpdate           = DateTime::createFromFormat($format,$data['last_update'] ?? $default);
+		$this->lastUpdatePlaylist   = DateTime::createFromFormat($format,$data['last_update_playlist'] ?? $default);
 		$this->duration             = $data['duration'] ?? 0;
 		$this->status               = $data['status'] ?? 1;
 		$this->refresh              = $data['refresh'] ?? 900;
@@ -77,7 +80,7 @@ class PlayerEntity
 		$this->playerName           = $userAgentHandler->getName();
 		$this->playlistName         = $data['playlist_name'] ?? '';
 		$this->playlistMode         = $data['playlist_mode'] ?? '';
-		$this->zones            = $data['multizone'] ?? [];
+		$this->zones                = $data['multizone'] ?? [];
 		$this->locationData         = $data['location_data'] ?? null;
 		$this->locationLongitude    = $data['location_longitude'] ?? null;
 		$this->locationLatitude     = $data['location_latitude'] ?? null;
@@ -85,6 +88,10 @@ class PlayerEntity
 		$this->properties           = $data['properties'] ?? [];
 		$this->remoteAdministration = $data['remote_administration'] ?? [];
 		$this->screenTimes          = $data['screen_times'] ?? [];
+
+		if (empty($this->properties))
+			$this->properties = ['width' => 1280, 'height' => 720];
+
 	}
 
 	public function getPlayerId(): int
@@ -132,7 +139,7 @@ class PlayerEntity
 		return $this->licenceId;
 	}
 
-	public function getModel(): int
+	public function getModel(): PlayerModel
 	{
 		return $this->model;
 	}

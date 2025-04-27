@@ -21,7 +21,7 @@
 
 namespace App\Modules\Player\IndexCreation;
 
-use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\Enums\PlayerModel;
 
 class UserAgentHandler
 {

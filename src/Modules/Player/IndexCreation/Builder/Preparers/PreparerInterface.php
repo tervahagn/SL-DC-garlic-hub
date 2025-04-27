@@ -19,16 +19,9 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-use App\Modules\Player\Entities\PlayerEntity;
-
-abstract class AbstractReplacer
+interface PreparerInterface
 {
-	protected readonly PlayerEntity $playerEntity;
-
-	public function __construct(PlayerEntity $playerEntity)
-	{
-		$this->playerEntity = $playerEntity;
-	}
+	public function prepare(): array|string;
 }

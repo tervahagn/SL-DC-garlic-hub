@@ -3,7 +3,7 @@
 namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\Enums\PlayerModel;
 
 class PlayerDetector
 {
@@ -42,41 +42,4 @@ class PlayerDetector
 		};
 		return $this;
 	}
-
-	public function selectIndexTemplate($firmwareVersion): string
-	{
-		switch ($this->modelId)
-		{
-			case PlayerModel::IADEA_XMP2X00:
-			case PlayerModel::QBIC:
-				$index = 'index_XMP2x00.smil.tpl';
-				break;
-			case PlayerModel::GARLIC->value:
-				$garlic_build = $this->determineGarlicBuild($firmwareVersion);
-				if ($garlic_build >= 566)
-					$index = 'index_garlic.smil.tpl';
-				else
-					$index = 'index.smil.tpl';
-				break;
-			case PlayerModel::IADEA_XMP1X0->value:
-			case PlayerModel::IADEA_XMP3X0->value:
-			case PlayerModel::IADEA_XMP3X50->value:
-			case PlayerModel::IDS->value:
-			case PlayerModel::COMPATIBLE->value:
-				$index = 'index_old.smil.tpl';
-			break;
-			default:
-				$index = 'index.smil.tpl';
-				break;
-		}
-		return $index;
-	}
-
-	private function determineGarlicBuild(string $firmwareVersion): int
-	{
-		$ar = explode('L', $firmwareVersion);
-		$ar = explode('.', $ar[0]);
-		return (int) end($ar);
-	}
-
 }

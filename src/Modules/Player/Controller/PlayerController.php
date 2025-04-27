@@ -42,14 +42,10 @@ class PlayerController
 		$this->playerService = $playerService;
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws Exception
-	 */
 	public function index(ServerRequestInterface $request, ResponseInterface $response, array $args)
 	{
-		$ownerId   = $this->sanitizer->int($_GET['owner_id']);
-		$userAgent = $this->sanitizer->string($request->getAttribute('User-Agent'));
+		$ownerId   = $this->sanitizer->int($_GET['owner_id'] ?? 0);
+		$userAgent = $this->sanitizer->string($request->getServerParams()['HTTP_USER_AGENT']);
 
 		$data = $this->indexService->handleIndexRequest($userAgent, $ownerId);
 

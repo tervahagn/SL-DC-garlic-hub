@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper;
+namespace App\Modules\Player\Enums;
 
 enum PlayerReports : string
 {

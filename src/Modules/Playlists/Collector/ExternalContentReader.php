@@ -31,7 +31,7 @@ class ExternalContentReader implements ExternalContentReaderInterface
 	/**
 	 * @throws GuzzleException
 	 */
-	public function init(path_playlistsstring $url): static
+	public function init(string $url): static
 	{
 		$this->playlistLink = $url;
 		$this->cachedFile   = $this->cachePath . '/' . md5($this->playlistLink) . '.smil';

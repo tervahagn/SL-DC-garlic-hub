@@ -19,13 +19,14 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\Enums;
 
-class RefreshReplacerInterface extends AbstractReplacer implements ReplacerInterface
+enum PlayerCommands : string
 {
-	public function replace(): string
-	{
-		return $this->playerEntity->getRefresh();
-	}
-
+	case UPDATE_CONFIGURATION  = 'update_configuration';
+	case REBOOT                = 'reboot';
+	case UPDATE_FIRMWARE       = 'update_firmware';
+	case CLEAR_CACHE           = 'clear_cache';
+	case CLEAR_WEBCACHE        = 'clear_webcache';
+	case UPDATE_URLS_LIST      = 'update_urls_list';
 }

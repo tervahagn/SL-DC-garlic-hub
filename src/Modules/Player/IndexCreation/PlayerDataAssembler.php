@@ -24,11 +24,11 @@ namespace App\Modules\Player\IndexCreation;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Entities\PlayerEntityFactory;
-use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\Repositories\PlayerRepository;
 use Doctrine\DBAL\Exception;
 
-class PlayerDataPreparer
+class PlayerDataAssembler
 {
 	private UserAgentHandler $userAgentHandler;
 	private readonly PlayerRepository $playerRepository;

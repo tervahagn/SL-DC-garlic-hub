@@ -19,13 +19,11 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-class SubscriptionReplacer extends AbstractReplacer implements ReplacerInterface
+class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 {
-
-
-	public function replace(): array
+	public function prepare(): array
 	{
 		$subscriptions = [];
 

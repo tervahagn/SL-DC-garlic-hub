@@ -25,9 +25,9 @@ class ContentReader implements ContentReaderInterface
 		$this->fileSystem = $fileSystem;
 	}
 
-	public function init(int|string $playlistId): static
+	public function init(int $playlistId): static
 	{
-		$this->playlistId = (int) $playlistId;
+		$this->playlistId = $playlistId;
 
 		return $this;
 	}
@@ -37,7 +37,7 @@ class ContentReader implements ContentReaderInterface
 	 */
 	public function loadPlaylistItems(): string
 	{
-		return $this->load($this->playlistId, 'items.smil');
+		return $this->load('items.smil');
 	}
 
 	/**
@@ -45,7 +45,7 @@ class ContentReader implements ContentReaderInterface
 	 */
 	public function loadPlaylistPrefetch(): string
 	{
-		return $this->load($this->playlistId, 'prefetch.smil');
+		return $this->load('prefetch.smil');
 	}
 
 	/**
@@ -53,7 +53,7 @@ class ContentReader implements ContentReaderInterface
 	 */
 	public function loadPlaylistExclusive(): string
 	{
-		return $this->load($this->playlistId, 'exclusive.smil');
+		return $this->load('exclusive.smil');
 	}
 
 	/**

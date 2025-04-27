@@ -1,7 +1,7 @@
-# How to use Collcetor 
+# How to use Collector 
 
 ```php
-$playlistBuilder = $playlistBuilderFactory->createBuilder($playlistEntity);
+$playlistBuilder = $playlistBuilderFactory->createBuilder($playerEntity);
 $playlist = $playlistBuilder->buildPlaylist();
 
 $items     = $playlist->getItems();

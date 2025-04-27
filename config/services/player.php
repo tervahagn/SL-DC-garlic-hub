@@ -19,22 +19,37 @@
 */
 
 use App\Framework\Core\Acl\AclHelper;
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Controller\ShowDatatableController;
+use App\Modules\Player\Entities\PlayerEntityFactory;
 use App\Modules\Player\Helper\Datatable\ControllerFacade;
 use App\Modules\Player\Helper\Datatable\DatatableBuilder;
 use App\Modules\Player\Helper\Datatable\Parameters;
+use App\Modules\Player\IndexCreation\Builder\Preparers\PreparerFactory;
+use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
+use App\Modules\Player\IndexCreation\IndexCreator;
+use App\Modules\Player\IndexCreation\IndexFile;
+use App\Modules\Player\IndexCreation\IndexProvider;
+use App\Modules\Player\IndexCreation\IndexTemplateSelector;
+use App\Modules\Player\IndexCreation\PlayerDataAssembler;
+use App\Modules\Player\IndexCreation\PlayerDetector;
+use App\Modules\Player\IndexCreation\UserAgentHandler;
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Player\Services\AclValidator;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
 use App\Modules\Player\Services\PlayerDatatableService;
 use App\Modules\Player\Services\PlayerIndexService;
 use App\Modules\Player\Services\PlayerService;
+use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
+use App\Modules\Playlists\Collector\ExternalContentReader;
+use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -47,7 +62,6 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator($container->get(AclHelper::class));
 });
-
 $dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlayerController(
@@ -56,15 +70,48 @@ $dependencies[PlayerController::class] = DI\factory(function (ContainerInterface
 		$container->get(PlayerService::class)
 	);
 });
+$dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlaylistBuilderFactory(
+		new \App\Modules\Playlists\Collector\ContentReader($container->get(Config::class), $container->get('LocalFileSystem')),
+		new ExternalContentReader($container->get('LocalFileSystem'), new Client(), 'todo'),
+		$container->get('ModuleLogger'),
+	);
+});
+$dependencies[IndexCreator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new IndexCreator(
+		$container->get(PlaylistBuilderFactory::class),
+		new IndexTemplateSelector(),
+		new IndexFile($container->get('LocalFileSystem'), $container->get('ModuleLogger')),
+		new TemplatePreparer(new PreparerFactory()),
+		$container->get(AdapterInterface::class)
+	);
+});
+
+$dependencies[IndexProvider::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new IndexProvider($container->get(Config::class), $container->get(IndexCreator::class));
+});
+$dependencies[PlayerDataAssembler::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerDataAssembler(
+		new UserAgentHandler(new PlayerDetector($container->get(Config::class))),
+		$container->get(PlayerRepository::class),
+		new PlayerEntityFactory($container->get(Config::class))
+	);
+});
 $dependencies[PlayerIndexService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerIndexService($container->get(PlayerRepository::class), $container->get('ModuleLogger'));
+	return new PlayerIndexService(
+		$container->get(PlayerDataAssembler::class),
+		$container->get(IndexProvider::class),
+		$container->get('ModuleLogger'));
 });
 $dependencies[PlayerService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlayerService($container->get(PlayerRepository::class), $container->get('ModuleLogger'));
 });
-
 
 
 // Datatable

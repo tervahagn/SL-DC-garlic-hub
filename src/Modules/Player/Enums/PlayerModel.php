@@ -19,19 +19,18 @@
 */
 
 
-namespace App\Modules\Player\Helper;
+namespace App\Modules\Player\Enums;
 
-enum PlayerStatus: int
+enum PlayerModel: int
 {
-	case UNREGISTERED    = 0;
-	case UNRELEASED      = 1;
-	case RELEASED        = 2;
-	case DEBUG_FTP       = 3;
-	case TEST_SMIL_OK    = 4;
-	case TEST_SMIL_ERROR = 5;
-	case TEST_EXCEPTION  = 6;
-	case TEST_NO_INDEX   = 7;
-	case TEST_NO_CONTENT = 8;
-	case TEST_NO_PREFETCH = 9;
+	case UNKNOWN        = 0; // IAdea 1x0 Series SD Video 1920px images
+	case IADEA_XMP1X0   = 1; // IAdea 1x0 Series SD Video 1920px images
+	case IADEA_XMP3X0   = 2; // IAdea 3x0 Series +HD Video
+	case IADEA_XMP3X50  = 3; // IAdea 3x50 Series +HTML5
+	case COMPATIBLE     = 4; // fs5 Kathrein crap with only h264 in ts Container
+	case IADEA_XMP2X00  = 5; // IAdea new 2000, 6000 and 7000 (4K) Android Series with new xml config and SMIL Structure
+	case GARLIC         = 6; // Sagiadinos open source software player garlic
+	case IDS            = 7; // Isaria Digital Signage Player
+	case QBIC           = 8; // QBiC Signage Player
 
 }

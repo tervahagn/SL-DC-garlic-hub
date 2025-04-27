@@ -19,26 +19,25 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\Enums\PlayerModel;
 use DateMalformedStringException;
 use DateTime;
 use Exception;
 
-class ScreenTimesReplacer extends AbstractReplacer implements ReplacerInterface
+class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 {
 
 	private string $current_date = 'now';
 	private array $begin         = [];
 	private array $end           = [];
-
 	private array $screenTimes   = [];
 
 	/**
 	 * @throws Exception
 	 */
-	public function replace(): array
+	public function prepare(): array
 	{
 		if ($this->playerEntity->getModel() != PlayerModel::GARLIC->value)
 			return [];
@@ -47,10 +46,10 @@ class ScreenTimesReplacer extends AbstractReplacer implements ReplacerInterface
 		if (!$this->hasValues())
 			return [];
 
-		return [
+		return [[
 				'BEGIN_WALLCLOCKS' => $this->getBeginWallClockString(),
 				'END_WALLCLOCKS' => $this->getEndWallClockString()
-			];
+			]];
 	}
 
 	public function hasValues(): bool

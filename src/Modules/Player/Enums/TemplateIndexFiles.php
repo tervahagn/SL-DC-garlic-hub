@@ -19,26 +19,11 @@
 */
 
 
-namespace App\Modules\Player\Entities;
+namespace App\Modules\Player\Enums;
 
-use App\Framework\Core\Config\Config;
-use App\Modules\Player\IndexCreation\UserAgentHandler;
-
-readonly class PlayerEntityFactory
+enum TemplateIndexFiles : string
 {
-	private Config $config;
-
-	/**
-	 * @param Config $config
-	 */
-	public function __construct(Config $config)
-	{
-		$this->config = $config;
-	}
-
-
-	function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
-	{
-		return new PlayerEntity($this->config, $userAgentHandler, $data);
-	}
+	case GARLIC  = 'garlic.smil';
+	case XMP2XXX = 'xmp2xxx.smil';
+	case SIMPLE  = 'simple.smil';
 }

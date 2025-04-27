@@ -23,17 +23,20 @@ namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Modules\Player\Entities\PlayerEntity;
+use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 
-class IndexFileHandler
+class IndexProvider
 {
 	private readonly Config $config;
+	private readonly IndexCreator $indexCreator;
 	private readonly string $systemPath;
 	private string $filePath;
 
-	public function __construct(Config $config, string $systemPath)
+	public function __construct(Config $config, IndexCreator $indexCreator)
 	{
 		$this->config = $config;
-		$this->systemPath = $systemPath;
+		$this->indexCreator = $indexCreator;
 	}
 
 	/**
@@ -57,9 +60,13 @@ class IndexFileHandler
 		// send transfer code smil or unreleased
 	}
 
-	public function handleReleased(): void
+	public function handleReleased(PlayerEntity $playerEntity): void
 	{
-		// generate Index from Playlist
+		$this->indexCreator->createForReleasedPlayer(
+			$playerEntity,
+			$this->config
+		);
+		$this->filePath = $this->indexCreator->getIndexFilePath();
 	}
 
 	/**
@@ -104,6 +111,6 @@ class IndexFileHandler
 
 	public function getFilePath(): string
 	{
-		return $this->systemPath.'/'.$this->filePath;
+		return $this->config->getPaths('systemDir').'/'.$this->filePath;
 	}
 }

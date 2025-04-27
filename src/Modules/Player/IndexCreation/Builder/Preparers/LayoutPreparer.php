@@ -19,25 +19,26 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
 use App\Modules\Playlists\Helper\PlaylistMode;
 
-class LayoutReplacerInterface extends AbstractReplacer implements ReplacerInterface
+class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 {
-	public function replace(): array
+	public function prepare(): array
 	{
 		$properties = $this->playerEntity->getProperties();
+
 		$layout = $this->replaceRootLayout($properties['width'], $properties['height']);
 		if ($this->playerEntity->getPlaylistMode() == PlaylistMode::MULTIZONE->value)
 		{
-			$layout['regions'] = $this->replaceMultizoneRegions();
+			$layout['regions'][] = $this->replaceMultizoneRegions();
 		}
 		else
 		{
 			$layout['regions'][] = $this->replaceRegion('', 0, 0, $properties['width'], $properties['height'], 0);
 		}
-		return $layout;
+		return [$layout];
 	}
 
 	private function replaceRootLayout(string $width, string $height): array
