@@ -19,16 +19,10 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder;
 
-use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
-
-class TitleReplacerInterface extends AbstractReplacer implements ReplacerInterface
+class BuilderFactory
 {
-	public function replace(): string
-	{
-		return $this->playerEntity->getPlayerName() . ' - '.
-			$this->playerEntity->getPlaylistName();
-	}
+	private PlaylistBuilder $playlistReader;
+
 }

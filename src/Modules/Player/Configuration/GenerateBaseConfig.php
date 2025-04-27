@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Modules\Player\Helper\configuration;
+namespace App\Modules\Player\Configuration;
 
 
 class GenerateBaseConfig

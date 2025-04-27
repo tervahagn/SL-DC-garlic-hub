@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Player\Helper\Index\Builder;
+namespace App\Modules\Player\IndexCreation\Builder;
 
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Playlists\ContentReader;

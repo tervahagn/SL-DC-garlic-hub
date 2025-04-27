@@ -19,10 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\Sections;
-
-use App\Modules\Player\Helper\Index\Builder\Sections\AbstractReplacer;
-use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
+namespace App\Modules\Player\IndexCreation\Builder\Sections;
 
 class SubscriptionReplacer extends AbstractReplacer implements ReplacerInterface
 {

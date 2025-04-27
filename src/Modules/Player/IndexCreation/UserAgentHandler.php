@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index;
+namespace App\Modules\Player\IndexCreation;
 
 use App\Modules\Player\Helper\PlayerModel;
 

@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder;
+namespace App\Modules\Player\IndexCreation\Builder;
 
 class TaskScheduleBuilder
 {

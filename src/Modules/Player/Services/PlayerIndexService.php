@@ -24,9 +24,9 @@ namespace App\Modules\Player\Services;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Player\Helper\Index\IndexFileHandler;
-use App\Modules\Player\Helper\Index\PlayerDataPreparer;
 use App\Modules\Player\Helper\PlayerStatus;
+use App\Modules\Player\IndexCreation\IndexFileHandler;
+use App\Modules\Player\IndexCreation\PlayerDataPreparer;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

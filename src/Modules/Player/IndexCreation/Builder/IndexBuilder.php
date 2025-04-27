@@ -19,9 +19,9 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder;
+namespace App\Modules\Player\IndexCreation\Builder;
 
-use App\Modules\Player\Helper\Index\Builder\Sections\ReplacerInterface;
+use App\Modules\Player\IndexCreation\Builder\Sections\ReplacerInterface;
 
 class IndexBuilder
 {

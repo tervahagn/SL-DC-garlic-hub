@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Player\Helper\Index;
+namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
 use App\Modules\Player\Helper\PlayerModel;

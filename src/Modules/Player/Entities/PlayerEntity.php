@@ -22,8 +22,8 @@
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Player\Helper\Index\UserAgentHandler;
 use App\Modules\Player\Helper\PlayerModel;
+use App\Modules\Player\IndexCreation\UserAgentHandler;
 use DateTime;
 
 class PlayerEntity

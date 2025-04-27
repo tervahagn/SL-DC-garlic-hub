@@ -19,10 +19,21 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder;
+namespace App\Modules\Player\IndexCreation\Builder\Sections;
 
-class BuilderFactory
+
+use App\Modules\Player\IndexCreation\Builder\PlaylistBuilder;
+
+class PlaylistReplacer extends AbstractReplacer implements ReplacerInterface
 {
 	private PlaylistBuilder $playlistReader;
 
+	public function replace(): array
+	{
+		return [
+			'INSERT_PRIORITY_CLASSES'  => $this->playlistReader->loadExclusive(),
+			'INSERT_ELEMENTS'          => $this->playlistReader->loadItems(),
+			'INSERT_PREFETCH_ELEMENTS' => $this->playlistReader->loadPrefetch()
+		];
+	}
 }

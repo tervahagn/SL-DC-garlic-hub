@@ -19,13 +19,16 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Sections;
 
-class RefreshReplacerInterface extends AbstractReplacer implements ReplacerInterface
+use App\Modules\Player\Entities\PlayerEntity;
+
+abstract class AbstractReplacer
 {
-	public function replace(): string
-	{
-		return $this->playerEntity->getRefresh();
-	}
+	protected readonly PlayerEntity $playerEntity;
 
+	public function __construct(PlayerEntity $playerEntity)
+	{
+		$this->playerEntity = $playerEntity;
+	}
 }

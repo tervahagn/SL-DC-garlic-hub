@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index;
+namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;

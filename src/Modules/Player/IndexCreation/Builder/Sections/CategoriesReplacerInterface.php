@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player\Helper\Index\Builder\Sections;
+namespace App\Modules\Player\IndexCreation\Builder\Sections;
 
 class CategoriesReplacerInterface extends AbstractReplacer implements ReplacerInterface
 {
