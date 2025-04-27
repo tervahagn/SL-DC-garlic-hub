@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Modules\Playlists;
+namespace App\Modules\Playlists\Collector;
 
 
 
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Collector\Contracts\ExternalContentReaderInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use Psr\Http\Message\ResponseInterface;
 
-class ContentReaderExternal
+class ExternalContentReader implements ExternalContentReaderInterface
 {
 	private string $cachePath;
 	private FileSystem $fileSystem;
@@ -30,15 +31,14 @@ class ContentReaderExternal
 	/**
 	 * @throws GuzzleException
 	 */
-	public function init(string $playlistLink): static
+	public function init(path_playlistsstring $url): static
 	{
-		$this->playlistLink = $playlistLink;
+		$this->playlistLink = $url;
 		$this->cachedFile   = $this->cachePath . '/' . md5($this->playlistLink) . '.smil';
 		$this->response     = $this->client->head($this->playlistLink);
 
 		return $this;
 	}
-
 
 	/**
 	 * @throws ModuleException

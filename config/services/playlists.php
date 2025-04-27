@@ -29,6 +29,9 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
+use App\Modules\Playlists\Collector\ContentReader;
+use App\Modules\Playlists\Collector\ExternalContentReader;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -57,6 +60,7 @@ use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
+use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -238,5 +242,22 @@ $dependencies[ExportController::class] = DI\factory(function (ContainerInterface
 {
 	return new ExportController($container->get(ExportService::class));
 });
+$dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	$config = $container->get(Config::class);
+	return new PlaylistBuilderFactory(
+		new ContentReader(
+			$config,
+			$container->get('LocalFileSystem')
+		),
+		new ExternalContentReader(
+			$container->get('LocalFileSystem'),
+			new Client(),
+			$config->getConfigValue('path_playlists', 'playlists')
+		),
+		$container->get('ModuleLogger')
+	);
+});
+
 
 return $dependencies;

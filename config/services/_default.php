@@ -126,7 +126,6 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 		$container->get(Psr16Adapter::class)
 	);
 });
-
 $dependencies[AdapterInterface::class] = DI\factory(function ()
 {
 	$mustacheEngine = new Mustache_Engine([
