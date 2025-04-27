@@ -72,10 +72,9 @@ $app->group('', function (RouteCollectorProxy $group)
 	*/
 
 	$group->get('/player', [\App\Modules\Player\Controller\ShowDatatableController::class, 'show']);
-	$group->get('/index', [PlayerController::class, 'index']);
-
-
 })->add($container->get(FinalRenderMiddleware::class));
+
+$app->get('/smil-index', [PlayerController::class, 'index']);
 
 $app->group('/api', function (RouteCollectorProxy $group)
 {
