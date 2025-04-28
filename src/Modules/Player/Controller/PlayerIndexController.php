@@ -64,8 +64,7 @@ class PlayerIndexController
 		$filePath = $this->indexService->handleIndexRequest($userAgent);
 
 		if ($filePath === '')
-			return $this->sendErrorHeader($response);
-	//		return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
+			return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
 
 
 		return $this->sendSmilHeader($response, $filePath);
@@ -100,14 +99,4 @@ class PlayerIndexController
 				->withStatus(200);
 		}
 	}
-
-	private function sendErrorHeader(ResponseInterface $response): ResponseInterface
-	{
-		return $response
-			->withHeader('Cache-Control', 'public, must-revalidate, max-age=864000, pre-check=864000')
-			->withHeader('Last-Modified', gmdate('D, d M Y H:i:s', 0) . ' GMT')
-			->withStatus(304);
-	}
-
-
 }
