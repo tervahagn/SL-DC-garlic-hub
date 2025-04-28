@@ -41,6 +41,7 @@ use App\Modules\Player\IndexCreation\IndexTemplateSelector;
 use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use App\Modules\Player\IndexCreation\PlayerDetector;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
+use App\Modules\Player\Repositories\PlayerIndexRepository;
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Player\Services\AclValidator;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
@@ -57,6 +58,10 @@ $dependencies = [];
 $dependencies[PlayerRepository::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new PlayerRepository($container->get('SqlConnection'));
+});
+$dependencies[PlayerIndexRepository::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerIndexRepository($container->get('SqlConnection'));
 });
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -97,7 +102,7 @@ $dependencies[PlayerDataAssembler::class] = DI\factory(function (ContainerInterf
 {
 	return new PlayerDataAssembler(
 		new UserAgentHandler(new PlayerDetector($container->get(Config::class))),
-		$container->get(PlayerRepository::class),
+		$container->get(PlayerIndexRepository::class),
 		new PlayerEntityFactory($container->get(Config::class))
 	);
 });

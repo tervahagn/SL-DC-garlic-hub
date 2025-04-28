@@ -26,41 +26,13 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\PlayerActivity;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class PlayerRepository extends FilterBase
 {
-
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'player', 'player_id');
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws Exception
-	 */
-	public function findPlayerByUuid(string $uuid): array
-	{
-		// skip overhead
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, remote_administration, screen_times');
-		$queryBuilder->from($this->table);
-		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id =' . $this->table . '.playlist_id');
-		$queryBuilder->where('uuid = :uuid');
-		$queryBuilder->setParameter('uuid', $uuid);
-
-		$result = $queryBuilder->executeQuery()->fetchAssociative();
-		if ($result === false or empty($result))
-			throw new ModuleException('playlist_index', 'Playlist not found');
-
-		$result['commands']              = $this->secureExplode($result['commands']);
-		$result['reports']               = $this->secureExplode($result['reports']);
-		$result['location_data']         = $this->secureUnserialize($result['location_data']);
-		$result['properties']            = $this->secureUnserialize($result['properties']);
-		$result['remote_administration'] = $this->secureUnserialize($result['remote_administration']);
-		$result['screen_times']          = $this->secureUnserialize($result['screen_times']);
-
-		return $result;
 	}
 
 	protected function prepareJoin(): array
@@ -115,4 +87,5 @@ class PlayerRepository extends FilterBase
 		}
 		return $where;
 	}
+
 }

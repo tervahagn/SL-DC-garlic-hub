@@ -25,17 +25,17 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Entities\PlayerEntityFactory;
 use App\Modules\Player\Enums\PlayerModel;
-use App\Modules\Player\Repositories\PlayerRepository;
+use App\Modules\Player\Repositories\PlayerIndexRepository;
 use Doctrine\DBAL\Exception;
 
 class PlayerDataAssembler
 {
 	private UserAgentHandler $userAgentHandler;
-	private readonly PlayerRepository $playerRepository;
+	private readonly PlayerIndexRepository $playerRepository;
 	private readonly PlayerEntityFactory $playerEntityFactory;
 
 	public function __construct(UserAgentHandler $userAgentHandler,
-		PlayerRepository $playerRepository,
+		PlayerIndexRepository $playerRepository,
 		PlayerEntityFactory $playerEntityFactory)
 	{
 		$this->userAgentHandler = $userAgentHandler;
@@ -50,6 +50,11 @@ class PlayerDataAssembler
 			return false;
 
 		return true;
+	}
+
+	public function findLocalPlayer()
+	{
+		$result = $this->playerRepository->findPlayerById(1);
 	}
 
 	/**

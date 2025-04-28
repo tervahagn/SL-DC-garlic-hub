@@ -44,6 +44,8 @@ use Slim\Routing\RouteCollectorProxy;
 assert($app instanceof App);
 $container = $app->getContainer();
 
+$app->get('/smil-index', [PlayerController::class, 'index']);
+
 $app->group('', function (RouteCollectorProxy $group)
 {
 	$group->get('/', [HomeController::class, 'index']);
@@ -64,17 +66,9 @@ $app->group('', function (RouteCollectorProxy $group)
 	$group->delete('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'delete']);
 	$group->post('/playlists/settings', [ShowSettingsController::class, 'store']);
 	$group->get('/playlists/compose/{playlist_id}', [ShowComposeController::class, 'show']);
-	/*
-		$group->get('/playlists/items/{id}/properties', []);
-		$group->get('/playlists/items/{id}/conditional', []);
-		$group->get('/playlists/items/{id}/trigger', []);
-		$group->get('/playlists/items/{id}/edit', []);
-	*/
 
 	$group->get('/player', [\App\Modules\Player\Controller\ShowDatatableController::class, 'show']);
 })->add($container->get(FinalRenderMiddleware::class));
-
-$app->get('/smil-index', [PlayerController::class, 'index']);
 
 $app->group('/api', function (RouteCollectorProxy $group)
 {

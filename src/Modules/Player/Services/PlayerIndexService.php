@@ -44,6 +44,21 @@ class PlayerIndexService
 		$this->logger              = $logger;
 	}
 
+	public function handleIndexRequestForLocal(string $userAgent): string
+	{
+		if ($this->playerDataAssembler->parseUserAgent($userAgent))
+		{
+			$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
+			$this->handlePlayerStats($ownerId);
+		}
+		else
+		{
+			$this->indexProvider->handleForbidden();
+		}
+
+	}
+
+
 	public function handleIndexRequest(string $userAgent, int $ownerId): string
 	{
 		// 1, parse User Agent
