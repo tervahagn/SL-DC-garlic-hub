@@ -64,15 +64,17 @@ class PlayerDataAssembler
 		if (empty($result))
 		{
 			$saveData = $this->buildInsertArray();
-			$saveData['player_id']  = 1;
-			$saveData['status']     = PlayerStatus::RELEASED->value;
-			$saveData['licence_id'] = 1;
-			$id = $this->playerRepository->insertPlayer($saveData);
+			// we need this to init playerEntity not with normal default values.
+			$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'licence_id' => 1];
+
+			$id = $this->playerRepository->insertPlayer(array_merge($saveData, $result));
 			if ($id === 0)
 				throw new ModuleException('player_index', 'Failed to insert local player');
+
+
 		}
 		else if ($result['uuid'] !== $this->userAgentHandler->getUuid())
-			throw new ModuleException('player_index', 'Wrong Uuid for local player');
+			throw new ModuleException('player_index', 'Wrong Uuid for local player: '. $result['uuid'] .' != Agent'. $this->userAgentHandler->getUuid());
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
@@ -92,7 +94,6 @@ class PlayerDataAssembler
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws Exception
 	 */
 	public function fetchDatabase(): PlayerEntity

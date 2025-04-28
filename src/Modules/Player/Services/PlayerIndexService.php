@@ -59,40 +59,15 @@ class PlayerIndexService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	/**
-	 *
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws Exception
-	 */
-	public function handleIndexRequestForLocal(string $userAgent): string
+
+	public function handleIndexRequest(string $userAgent, bool $localPlayer): string
 	{
 		try
 		{
+			$this->logger->info('Connection from: ' . $userAgent);
 			if ($this->playerDataAssembler->parseUserAgent($userAgent))
 			{
-				$this->playerEntity = $this->playerDataAssembler->handleLocalPlayer();
-				$this->handlePlayerStats();
-			}
-			else
-				$this->indexProvider->handleForbidden();
-
-			return $this->indexProvider->getFilePath();
-		}
-		catch (Throwable $e)
-		{
-			$this->logger->error('Error fetch Index for Local player: ' . $e->getMessage());
-		}
-		return '';
-	}
-
-	public function handleIndexRequest(string $userAgent): string
-	{
-		try
-		{
-			if ($this->playerDataAssembler->parseUserAgent($userAgent))
-			{
-				$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
+				$this->determinePlayerEntities($localPlayer);
 				$this->handlePlayerStats();
 			}
 			else
@@ -109,6 +84,8 @@ class PlayerIndexService extends AbstractBaseService
 		}
 		return '';
 	}
+
+
 
 	/**
 	 * @throws ModuleException
@@ -154,4 +131,16 @@ class PlayerIndexService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	private function determinePlayerEntities(bool $localPlayer): void
+	{
+		if (!$localPlayer)
+			$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
+		else
+			$this->playerEntity = $this->playerDataAssembler->handleLocalPlayer();
+
+	}
 }

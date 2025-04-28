@@ -41,11 +41,7 @@ class PlayerIndexController
 		$this->sanitizer     = $sanitizer;
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws Exception
-	 */
+
 	public function index(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$ownerId    = $this->sanitizer->int($_GET['owner_id'] ?? 0);
@@ -53,50 +49,57 @@ class PlayerIndexController
 		$userAgent  = $server['HTTP_USER_AGENT'];
 		$serverName = $server['SERVER_NAME'];
 
-		$userAgent = 'SCAPI/1.0 (UUID:test-uuid; NAME:Arch) garlic-linux/v0.6.0.763) (MODEL:Garlic)';
-
+		$userAgent = 'GAPI/1.0 (UUID:dbfbe32a-7bec-4e1d-a5cd-297228ae3ef4; NAME:Arch Greece) garlic-linux/v0.6.0.679 (MODEL:Garlic)';
 		$this->indexService->setUID($ownerId);
-		if (str_contains($serverName, 'localhost') || str_contains($serverName, 'garlic-hub.ddev.site'))
-		{
-			$this->indexService->handleIndexRequestForLocal($userAgent);
-		}
+		if (str_contains($serverName, 'localhost') || str_contains($serverName, 'ddev'))
+			$localPlayer = true;
+		else
+			$localPlayer = false;
 
-		$filePath = $this->indexService->handleIndexRequest($userAgent);
-
-		if ($filePath === '')
+		$filePath = $this->indexService->handleIndexRequest($userAgent, $localPlayer);
+		if (empty($filePath))
 			return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
 
 
-		return $this->sendSmilHeader($response, $filePath);
+		return $this->sendSmilHeader($response, $server, $filePath);
 
 	}
 
-
-	private function sendSmilHeader(ResponseInterface $response, string $filePath): ResponseInterface
+	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
 	{
 		$lastModified = gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT';
 		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
 
-		$response = $response->withHeader('Cache-Control', $cacheControl);
-
-		if (isset($_SERVER['If-Modified-Since']) && strtotime($_SERVER['If-Modified-Since']) === filemtime($filePath)) {
+		$modifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
+		if ($modifiedSince !== null && strtotime($modifiedSince) <= filemtime($filePath)) {
 			return $response
+				->withHeader('Cache-Control', $cacheControl)
 				->withHeader('Last-Modified', $lastModified)
 				->withStatus(304);
+		}
+
+		if ($server['REQUEST_METHOD'] === 'HEAD')
+		{
+			return $response
+				->withHeader('Cache-Control', $cacheControl)
+				->withHeader('Content-Type', 'application/smil+xml')
+				->withHeader('Last-Modified', $lastModified)
+				->withStatus(200);
 		}
 		else
 		{
 			// not cached or cache outdated, 200 OK send index.smil
 			$fileStream = new Stream(fopen($filePath, 'rb'));
-
 			return $response
 				->withBody($fileStream)
-				->withHeader('Last-Modified', gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT')
-				->withHeader('Content-Length', (string)filesize($filePath))
-				->withHeader('Content-Type', 'application/smil')
+				->withHeader('Cache-Control', $cacheControl)
+				->withHeader('Last-Modified', $lastModified)
+				->withHeader('Content-Length', (string)filesize($filePath)) // will not work with php-fpm or nginx
+				->withHeader('Content-Type', 'application/smil+xml')
 				->withHeader('Content-Description', 'File Transfer')
 				->withHeader('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"')
 				->withStatus(200);
+
 		}
 	}
 }
