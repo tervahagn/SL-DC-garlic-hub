@@ -26,7 +26,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
-use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -44,7 +44,7 @@ use Slim\Routing\RouteCollectorProxy;
 assert($app instanceof App);
 $container = $app->getContainer();
 
-$app->get('/smil-index', [PlayerController::class, 'index']);
+$app->get('/smil-index', [PlayerIndexController::class, 'index']);
 
 $app->group('', function (RouteCollectorProxy $group)
 {

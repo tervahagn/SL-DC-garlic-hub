@@ -53,9 +53,17 @@ class PlayerIndexRepository extends Sql
 		return $this->expandResult($result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function insertPlayer(array $saveData): int
+	{
+		$saveData = $this->implodeSaveData($saveData);
+
+		return $this->insert($saveData);
+	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws Exception
 	 */
 	public function findPlayerByUuid(string $uuid): array
@@ -68,7 +76,7 @@ class PlayerIndexRepository extends Sql
 
 		$result = $queryBuilder->executeQuery()->fetchAssociative();
 		if (empty($result))
-			throw new ModuleException('playlist_index', 'Playlist not found');
+			return [];
 
 		return $this->expandResult($result);
 	}
@@ -87,9 +95,22 @@ class PlayerIndexRepository extends Sql
 		$result['location_data']         = $this->secureUnserialize($result['location_data']);
 		$result['properties']            = $this->secureUnserialize($result['properties']);
 		$result['remote_administration'] = $this->secureUnserialize($result['remote_administration']);
+		$result['categories']            = $this->secureExplode($result['categories']);
 		$result['screen_times']          = $this->secureUnserialize($result['screen_times']);
 
 		return $result;
 	}
 
+	private function implodeSaveData(array $result): array
+	{
+		$result['commands']              = $this->secureImplode($result['commands']);
+		$result['reports']               = $this->secureImplode($result['reports']);
+		$result['location_data']         = $this->secureSerialize($result['location_data']);
+		$result['properties']            = $this->secureSerialize($result['properties']);
+		$result['remote_administration'] = $this->secureSerialize($result['remote_administration']);
+		$result['categories']            = $this->secureSerialize($result['categories']);
+		$result['screen_times']          = $this->secureSerialize($result['screen_times']);
+
+		return $result;
+	}
 }

@@ -62,14 +62,14 @@ class PlayerEntity
 		$default = '2001-01-01 00:00:00';
 
 		$this->config = $config;
-		$this->playerId             = $data['player_id'] ?? 0;
+		$this->playerId             = $data['player_id'] ?? 1;
 		$this->playlistId           = $data['playlist_id'] ?? 0;
-		$this->UID                  = $data['UID'] ?? 0;
+		$this->UID                  = $data['UID'] ?? 1;
 		$this->lastAccess           = DateTime::createFromFormat($format,$data['last_access'] ?? $default);
 		$this->lastUpdate           = DateTime::createFromFormat($format,$data['last_update'] ?? $default);
 		$this->lastUpdatePlaylist   = DateTime::createFromFormat($format,$data['last_update_playlist'] ?? $default);
 		$this->duration             = $data['duration'] ?? 0;
-		$this->status               = $data['status'] ?? 1;
+		$this->status               = $data['status'] ?? 0;
 		$this->refresh              = $data['refresh'] ?? 900;
 		$this->licenceId            = $data['licence_id'] ?? 0;
 		$this->model                = $userAgentHandler->getModel();
@@ -81,9 +81,9 @@ class PlayerEntity
 		$this->playlistName         = $data['playlist_name'] ?? '';
 		$this->playlistMode         = $data['playlist_mode'] ?? '';
 		$this->zones                = $data['multizone'] ?? [];
-		$this->locationData         = $data['location_data'] ?? null;
-		$this->locationLongitude    = $data['location_longitude'] ?? null;
-		$this->locationLatitude     = $data['location_latitude'] ?? null;
+		$this->locationData         = $data['location_data'] ?? [];
+		$this->locationLongitude    = $data['location_longitude'] ?? '';
+		$this->locationLatitude     = $data['location_latitude'] ?? '';
 		$this->categories           = $data['categories'] ?? [];
 		$this->properties           = $data['properties'] ?? [];
 		$this->remoteAdministration = $data['remote_administration'] ?? [];

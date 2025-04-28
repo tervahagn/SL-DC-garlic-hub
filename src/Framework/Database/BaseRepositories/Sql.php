@@ -233,4 +233,14 @@ abstract class Sql
 		return $ar;
 	}
 
+	protected function secureImplode(array $data): string
+	{
+		return implode(',', $data);
+	}
+
+	protected function secureSerialize(array $data): string
+	{
+		return  @serialize($data);
+	}
+
 }

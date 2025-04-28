@@ -230,7 +230,7 @@ CREATE TABLE player (
     uuid BLOB(16) NOT NULL,
     commands TEXT DEFAULT NULL DEFAULT '', -- set in mysql
     reports TEXT DEFAULT NULL DEFAULT '', -- set in mysql
-    firmware_version TEXT NOT NULL DEFAULT '',
+    firmware TEXT NOT NULL DEFAULT '',
     player_name TEXT NOT NULL DEFAULT '',
     location_data TEXT DEFAULT NULL,
     location_longitude TEXT DEFAULT NULL,

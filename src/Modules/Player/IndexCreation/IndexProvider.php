@@ -48,25 +48,40 @@ class IndexProvider
 	}
 
 
-	public function handleNew($ownerId): void
+	/**
+	 * @throws CoreException
+	 */
+	public function handleNew(PlayerEntity $playerEntity): void
 	{
-		// ToDo Transferhandler
-		// insert new player
+		// ToDo Transferhandler create transfer code and send SMIL with code or unreleased
+		$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/unreleased.smil';
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function handleUnreleased(): void
 	{
-		// Todo Transferhandler
-		// send transfer code smil or unreleased
+		// Todo check  for Transfer code and send smil with it or unreleased
+		$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/unreleased.smil';
+
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function handleReleased(PlayerEntity $playerEntity): void
 	{
-		$this->indexCreator->createForReleasedPlayer(
-			$playerEntity,
-			$this->config
-		);
-		$this->filePath = $this->indexCreator->getIndexFilePath();
+		if ($playerEntity->getPlaylistId() > 0)
+		{
+			$this->indexCreator->createForReleasedPlayer($playerEntity,	$this->config);
+			$this->filePath = $this->indexCreator->getIndexFilePath();
+		}
+		else
+		{
+			$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/released.smil';
+		}
+
 	}
 
 	/**

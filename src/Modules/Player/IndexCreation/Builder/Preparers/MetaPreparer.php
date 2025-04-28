@@ -19,27 +19,16 @@
 */
 
 
-namespace App\Modules\Player\IndexCreation\Builder;
+namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
-use App\Modules\Player\IndexCreation\Builder\Sections\ReplacerInterface;
-
-class IndexBuilder
+class MetaPreparer extends AbstractPreparer implements PreparerInterface
 {
-	private array $replacers = [];
-
-	public function addReplacer(ReplacerInterface $replacer): self
+	public function prepare(): array
 	{
-		$this->replacers[] = $replacer;
-		return $this;
-	}
+		return [[
+			'TITLE' => $this->playerEntity->getPlayerName().' - '.$this->playerEntity->getPlaylistName(),
+			'REFRESH_TIME' => $this->playerEntity->getRefresh()
+		]];
 
-	public function buildIndex(): string
-	{
-		$result = '';
-		foreach ($this->replacers as $replacer)
-		{
-			$result = $replacer->replace($result);
-		}
-		return $result;
 	}
 }

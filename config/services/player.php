@@ -26,7 +26,7 @@ use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
-use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Player\Entities\PlayerEntityFactory;
 use App\Modules\Player\Helper\Datatable\ControllerFacade;
@@ -67,9 +67,9 @@ $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $co
 {
 	return new AclValidator($container->get(AclHelper::class));
 });
-$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlayerIndexController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerController(
+	return new PlayerIndexController(
 		$container->get(PlayerIndexService::class),
 		$container->get(Sanitizer::class),
 		$container->get(PlayerService::class)

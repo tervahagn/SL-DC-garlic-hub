@@ -23,93 +23,89 @@ namespace App\Modules\Player\Services;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Services\AbstractBaseService;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\IndexCreation\IndexProvider;
 use App\Modules\Player\IndexCreation\PlayerDataAssembler;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Throwable;
+/*
+1. parse User Agent
+2. Fetch Player data from DB
+3. select SMIL according to player status.
+	if there is player status 3 (with License)
+		1. check for commands => generate Task scheduler
+		2. send correct SMIL
 
-class PlayerIndexService
+ 	1. get the right SMIL depending on player model
+ 	2. Build SMIL
+ 	3. Write SMIL if it is different from previous stored
+	4. send to player
+*/
+
+class PlayerIndexService extends AbstractBaseService
 {
 	private readonly PlayerDataAssembler $playerDataAssembler;
 	private readonly IndexProvider $indexProvider;
 	private PlayerEntity $playerEntity;
-	private readonly LoggerInterface $logger;
+	protected readonly LoggerInterface $logger;
 
 	public function __construct(PlayerDataAssembler $playerDataAssembler, IndexProvider $indexProvider, LoggerInterface $logger)
 	{
 		$this->playerDataAssembler = $playerDataAssembler;
 		$this->indexProvider       = $indexProvider;
-		$this->logger              = $logger;
+		parent::__construct($logger);
 	}
 
+	/**
+	 *
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function handleIndexRequestForLocal(string $userAgent): string
 	{
-		if ($this->playerDataAssembler->parseUserAgent($userAgent))
-		{
-			$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
-			$this->handlePlayerStats($ownerId);
-		}
-		else
-		{
-			$this->indexProvider->handleForbidden();
-		}
-
-	}
-
-
-	public function handleIndexRequest(string $userAgent, int $ownerId): string
-	{
-		// 1, parse User Agent
-		// 2. Fetch Player data from DB
-		// 3. select SMIL according to player status.
-		// if there is player status 3 (with License)
-		// 1. check for commands => generate Task scheduler
-		// 2. send correct SMIL
-		// 1. get the right SMIL depending on player model
-		// 2. Build SMIL
-		// 3. Write SMIL if it is different from previous stored
-		// 4 send to player
 		try
 		{
-			$userAgent = 'SCAPI/1.0 (UUID:localhost; NAME:Arch) garlic-linux/v0.6.0.763) (MODEL:Garlic)';
+			if ($this->playerDataAssembler->parseUserAgent($userAgent))
+			{
+				$this->playerEntity = $this->playerDataAssembler->handleLocalPlayer();
+				$this->handlePlayerStats();
+			}
+			else
+				$this->indexProvider->handleForbidden();
+
+			return $this->indexProvider->getFilePath();
+		}
+		catch (Throwable $e)
+		{
+			$this->logger->error('Error fetch Index for Local player: ' . $e->getMessage());
+		}
+		return '';
+	}
+
+	public function handleIndexRequest(string $userAgent): string
+	{
+		try
+		{
 			if ($this->playerDataAssembler->parseUserAgent($userAgent))
 			{
 				$this->playerEntity = $this->playerDataAssembler->fetchDatabase();
-				$this->handlePlayerStats($ownerId);
+				$this->handlePlayerStats();
 			}
 			else
 			{
 				$this->indexProvider->handleForbidden();
 			}
 
-			$filePath = $this->indexProvider->getFilePath();
-			header('Cache-Control: public, must-revalidate, max-age=864000, pre-check=864000 ' /*proxy-revalidate*/); // 10 days
-			if (isset($_SERVER['If-Modified-Since']) && (strtotime($_SERVER['If-Modified-Since']) == filemtime($filePath)))
-			{
-				// ok, 304 Not Modified
-				header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT', true, 304);
-			}
-			else
-			{
-				// not cached or cache outdated, 200 OK send index.smil
-				header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT', true, 200);
-				header('Content-Length: ' . filesize($filePath));
-				header("Content-Type: application/smil");
-				header("Content-Description: File Transfer");
-				header("Content-Disposition: attachment; filename=" . basename($filePath));
-				readfile($filePath);
-			}
+			return $this->indexProvider->getFilePath();
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error('Error fetch Index: ' . $e->getMessage());
-			header('Cache-Control: public, must-revalidate, max-age=864000, pre-check=864000 ' /*proxy-revalidate*/);
-			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT', true, 304);
-
 			// Todo send Email with exception reason to admin maybe send an prepared error smil to call operator
-
 		}
 		return '';
 	}
@@ -117,13 +113,15 @@ class PlayerIndexService
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws Exception
 	 */
-	private function handlePlayerStats(int $ownerId): void
+	private function handlePlayerStats(): void
 	{
 		switch ($this->playerEntity->getStatus())
 		{
 			case PlayerStatus::UNREGISTERED->value:
-				$this->indexProvider->handleNew($ownerId);
+				$this->playerEntity = $this->playerDataAssembler->insertNewPlayer($this->UID);
+				$this->indexProvider->handleNew($this->playerEntity);
 				break;
 			case PlayerStatus::UNRELEASED->value:
 				$this->indexProvider->handleUnreleased();
