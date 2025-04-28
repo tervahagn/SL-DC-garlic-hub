@@ -3,4 +3,4 @@ var/
 public/var/
 apache-config/
 tests/
-install/
+misc/
