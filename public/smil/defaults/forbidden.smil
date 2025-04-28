@@ -9,9 +9,9 @@
     </head>
     <body>
 		<seq repeatCount="indefinite">
-			<img src="resources/smil/default/media/forbidden.jpg" dur="120s" fit="fill" />
-			<img src="resources/smil/default/media/forbidden.jpg" dur="120s" fit="fill" />
-			<img src="resources/smil/default/media/forbidden.jpg" dur="120s" fit="fill" />
+			<img src="smil/defaults/media/forbidden.jpg" dur="120s" fit="fill" />
+			<img src="smil/defaults/media/forbidden.jpg" dur="120s" fit="fill" />
+			<img src="smil/defaults/media/forbidden.jpg" dur="120s" fit="fill" />
 		</seq>
     </body>
 </smil>
