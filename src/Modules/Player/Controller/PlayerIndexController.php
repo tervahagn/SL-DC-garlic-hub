@@ -22,10 +22,7 @@
 namespace App\Modules\Player\Controller;
 
 use App\Framework\Core\Sanitizer;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Services\PlayerIndexService;
-use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;

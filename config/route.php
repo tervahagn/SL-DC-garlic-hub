@@ -26,6 +26,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
+use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
@@ -111,5 +112,8 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->patch('/playlists/items', [ItemsController::class, 'updateItemOrders']);
 	$group->get('/playlists/item/{item_id:\d+}', [ItemsController::class, 'fetch']);
 	$group->patch('/playlists/item', [ItemsController::class, 'edit']);
+
+	$group->patch('/player/playlist', [PlayerController::class, 'replacePlaylist']);
+
 
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});

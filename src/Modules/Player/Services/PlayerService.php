@@ -21,18 +21,71 @@
 
 namespace App\Modules\Player\Services;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Player\Repositories\PlayerRepository;
+use App\Modules\Playlists\Helper\PlaylistMode;
+use App\Modules\Playlists\Services\PlaylistsService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class PlayerService extends AbstractBaseService
 {
 	private readonly PlayerRepository $playerRepository;
+	private readonly PlaylistsService $playlistService;
+	private readonly AclValidator $playerValidator;
 
-	public function __construct(PlayerRepository $playerRepository, LoggerInterface $logger)
+	public function __construct(PlayerRepository $playerRepository, PlaylistsService $playlistService, AclValidator $playerValidator, LoggerInterface $logger)
 	{
 		$this->playerRepository = $playerRepository;
+		$this->playlistService  = $playlistService;
+		$this->playerValidator  = $playerValidator;
+
 		parent::__construct($logger);
+	}
+
+	public function replaceMasterPlaylist(int $playerId, int $playlistId): array
+	{
+		try
+		{
+			$this->fetchPlayer($playerId);
+			$playlistName = '';
+			if ($playlistId > 0)
+			{
+				$playlist = $this->playlistService->loadPureById($playlistId);
+				if ($playlist['playlist_mode'] !==  PlaylistMode::MASTER->value)
+					throw new ModuleException('player', $playlist['playlist_name'] . ' is not a master playlist');
+
+				$playlistName = $playlist['playlist_name'];
+			}
+			$affected = $this->playerRepository->update($playerId, ['playlist_id' => $playlistId]);
+
+			return ['affected' => $affected, 'playlist_name' => $playlistName];
+		}
+		catch (Throwable $e)
+		{
+			$this->logger->error($e->getMessage());
+			$this->addErrorMessage($e->getMessage());
+			return [];
+		}
+
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException|ModuleException
+	 */
+	public function fetchPlayer(int $playerId): array
+	{
+		$player = $this->playerRepository->findFirstById($playerId);
+		if (!$this->playerValidator->isPlayerEditable($this->UID, $player))
+			throw new ModuleException('player', 'Error loading player: Is not editable');
+
+		return $player;
 	}
 
 }
