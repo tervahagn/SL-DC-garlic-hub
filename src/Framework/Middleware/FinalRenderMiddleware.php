@@ -21,6 +21,7 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
@@ -45,6 +46,8 @@ use Slim\Psr7\Stream;
 class FinalRenderMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
+	private Config $config;
+	private Locales $locales;
 	private Session $session;
 	private AclValidator $userAclValidator;
 	private AdapterInterface $templateService;
@@ -76,6 +79,8 @@ class FinalRenderMiddleware implements MiddlewareInterface
 
 		$this->session    = $request->getAttribute('session');
 		$this->translator = $request->getAttribute('translator');
+		$this->config     = $request->getAttribute('config');
+		$this->locales    = $request->getAttribute('locales');
 		$locales          = $request->getAttribute('locales');
 
 		/** @var Config $config */
@@ -215,11 +220,16 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	 */
 	private function createLanguageSelect(): array
 	{
-		$languages = $this->translator->translateArrayForOptions('languages', 'menu');
+		$languages        = $this->translator->translateArrayForOptions('languages', 'menu');
+		$availableLocales = $this->locales->getAvailableLocales();
 		$ret = [];
-		foreach ($languages as $key  => $value)
+		foreach ($availableLocales as $localeCode)
 		{
-			$ret[] = ['LOCALE_LONG' => $key, 'LOCALE_SMALL' => substr($key, 0, 2), 'LANGUAGE_NAME' => $value];
+			if (isset($languages[$localeCode]))
+				$ret[] = [
+					'LOCALE_LONG' => $localeCode,
+					'LOCALE_SMALL' => substr($localeCode, 0, 2), 'LANGUAGE_NAME' => $languages[$localeCode]
+				];
 		}
 
 		return $ret;
