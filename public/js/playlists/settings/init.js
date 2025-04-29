@@ -22,7 +22,6 @@ import { AutocompleteFactory } from '../../core/AutocompleteFactory.js';
 document.addEventListener("DOMContentLoaded", function()
 {
 	const autocompleteFactory = new AutocompleteFactory();
-	const userSearch      = autocompleteFactory.create(
-		"UID", "/async/users/find/"
-	);
+	const searchAutocomplete  = autocompleteFactory.create("UID", "/async/users/find/");
+	searchAutocomplete.initWithExistingFields();
 });
