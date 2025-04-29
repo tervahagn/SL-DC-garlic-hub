@@ -72,29 +72,36 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($player['UID'], $player['username']);
 						break;
 					case 'status':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText(
-							$this->translator->translateArrayForOptions('status_selects', 'player')[$player['status']]
-						);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->translator->translateArrayForOptions('status_selects', 'player')[$player['status']]);
 						break;
 					case 'model':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText(
-							$this->translator->translateArrayForOptions('model_selects', 'player')[$player['model']]
-						);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->translator->translateArrayForOptions('model_selects', 'player')[$player['model']]);
 						break;
 					case 'playlist_id':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name'] ?? '');
+						if ($player['status'] == PlayerStatus::RELEASED->value)
+						{
+							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name'] ?? '');
+						} else
+						{
+							$resultElements['is_text'] = '';
+						}
 						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player[$innerKey]);
 						break;
 				}
 				$list['elements_result_element'][] = $resultElements;
+			}
+			if ($player['status'] == PlayerStatus::RELEASED->value)
+			{
+				$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
+					$this->translator->translate('select_playlist', 'player'),'#','edit', 'pencil'
+				);
 
-				if ($player['status'] == PlayerStatus::RELEASED)
+				if ($player['playlist_id'] > 0)
 				{
-
-					// Todo Select Playlist
-
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('remove_playlist', 'player'), '#' . $player['playlist_id'], 'playlist', 'x-circle');
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('goto_playlist', 'player'), '/playlists/compose/' . $player['playlist_id'], 'playlist', 'music-note-list');
 				}
 			}
 			$body[] = $list;

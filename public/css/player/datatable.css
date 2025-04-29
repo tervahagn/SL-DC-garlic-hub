@@ -4,8 +4,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.results-listing .player_name {width:59%;}
-.results-listing .UID {width:20%;}
-.results-listing .status {width:7%;}
-.results-listing .model {width:7%;}
-.results-listing .playlist_id {width:7%;}
+.results-listing .player_name {flex-grow: 1}
+.results-listing .UID {width:15%;}
+.results-listing .status {width:10%;}
+.results-listing .model {width:10%;}
+.results-listing .playlist_id {width:30%;}
+.results-listing .actions {width:5rem;}

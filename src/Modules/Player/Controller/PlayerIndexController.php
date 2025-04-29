@@ -49,7 +49,7 @@ class PlayerIndexController
 		$userAgent  = $server['HTTP_USER_AGENT'];
 		$serverName = $server['SERVER_NAME'];
 
-		$userAgent = 'GAPI/1.0 (UUID:dbfbe32a-7bec-4e1d-a5cd-297228ae3ef4; NAME:Arch Greece) garlic-linux/v0.6.0.679 (MODEL:Garlic)';
+	//	$userAgent = 'GAPI/1.0 (UUID:dbfbe32a-7bec-4e1d-a5cd-297228ae3ef4; NAME:Arch Greece) garlic-linux/v0.6.0.679 (MODEL:Garlic)';
 		$this->indexService->setUID($ownerId);
 		if (str_contains($serverName, 'localhost') || str_contains($serverName, 'ddev'))
 			$localPlayer = true;
@@ -60,9 +60,7 @@ class PlayerIndexController
 		if (empty($filePath))
 			return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
 
-
 		return $this->sendSmilHeader($response, $server, $filePath);
-
 	}
 
 	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
