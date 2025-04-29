@@ -17,6 +17,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {PlayerActions} from "./PlayerActions.js";
+import {PlayerService} from "../PlayerService.js";
+import {FetchClient} from "../../core/FetchClient.js";
+
 document.addEventListener("DOMContentLoaded", function()
 {
+    const playerService = new PlayerService(new FetchClient())
+
+    const playerActions =  new PlayerActions(playerService);
+    playerActions.init();
 });

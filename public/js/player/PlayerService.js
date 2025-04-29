@@ -16,21 +16,19 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
-import {CreateContextMenu} from "./CreateContextMenu.js";
-import {PlaylistsActions}  from "./PlaylistsActions.js";
-import {PlaylistsService}  from "../compose/standard/playlists/PlaylistsService.js";
-import {FetchClient}       from "../../core/FetchClient.js";
 
-document.addEventListener("DOMContentLoaded", function()
+import { BaseService } from "../core/Base/BaseService.js";
+import { PlayerApiConfig } from "./PlayerApiConfig.js";
+
+export class PlayerService extends BaseService
 {
-
- 	const createContextMenu = new CreateContextMenu(
-		document.getElementById("createUnitAction"),
-		document.getElementById("playlistContextMenuTemplate")
-	);
-	createContextMenu.init();
-
-	const playlistsActions = new PlaylistsActions(new PlaylistsService(new FetchClient()));
-	playlistsActions.init()
-});
+    async replacePlaylist(playerId, playlistId)
+    {
+        const url = PlayerApiConfig.PLAYLIST_URI;
+        const data = {
+            player_id: playerId,
+            playlist_id: playlistId
+        };
+        return await this._sendRequest(url, "PATCH", data);
+    }
+}

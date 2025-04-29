@@ -26,6 +26,7 @@ use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Player\Entities\PlayerEntityFactory;
@@ -50,6 +51,7 @@ use App\Modules\Player\Services\PlayerIndexService;
 use App\Modules\Player\Services\PlayerService;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use App\Modules\Playlists\Collector\ExternalContentReader;
+use App\Modules\Playlists\Services\PlaylistsService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
@@ -71,9 +73,12 @@ $dependencies[PlayerIndexController::class] = DI\factory(function (ContainerInte
 {
 	return new PlayerIndexController(
 		$container->get(PlayerIndexService::class),
-		$container->get(Sanitizer::class),
-		$container->get(PlayerService::class)
+		$container->get(Sanitizer::class)
 	);
+});
+$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerController($container->get(PlayerService::class));
 });
 $dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -115,7 +120,11 @@ $dependencies[PlayerIndexService::class] = DI\factory(function (ContainerInterfa
 });
 $dependencies[PlayerService::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerService($container->get(PlayerRepository::class), $container->get('ModuleLogger'));
+	return new PlayerService(
+		$container->get(PlayerRepository::class),
+		$container->get(PlaylistsService::class),
+		$container->get(AclValidator::class),
+		$container->get('ModuleLogger'));
 });
 
 
