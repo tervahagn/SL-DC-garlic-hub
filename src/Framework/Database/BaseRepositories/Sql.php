@@ -20,9 +20,12 @@
 
 namespace App\Framework\Database\BaseRepositories;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Abstract class Base
@@ -166,13 +169,17 @@ abstract class Sql
 					$queryBuilder->andWhere("$field $compare $placeholder");
 			}
 
-			$queryBuilder->setParameter($govno, $value);
+			if ($compare === 'IN')
+				$queryBuilder->setParameter($govno, explode(',', $value), $parameter['type']);
+			else
+				$queryBuilder->setParameter($govno, $value);
+
 		}
 	}
 
-	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND'): array
+	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND', ArrayParameterType $type = ArrayParameterType::INTEGER): array
 	{
-		return ['value' => $value, 'compare' => $compare, 'logic' => $logic];
+		return ['value' => $value, 'compare' => $compare, 'logic' => $logic, 'type' => $type];
 	}
 
 	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void

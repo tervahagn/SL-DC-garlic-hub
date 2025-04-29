@@ -22,6 +22,7 @@ namespace App\Modules\Playlists\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Modules\Playlists\Helper\ItemType;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -91,10 +92,11 @@ class PlaylistsRepository extends FilterBase
 			switch ($key)
 			{
 				case 'playlist_mode':
-					if (!empty($parameter['value']))
-					{
-						$where[$key] = ['value' => $parameter['value'], 'operator' => '='];
-					}
+					$position = strpos($parameter['value'], ',');
+					if ($position === false)
+						$where[$key] = $this->generateWhereClause($parameter['value']);
+					else
+						$where[$key] = $this->generateWhereClause($parameter['value'], 'IN', 'AND', ArrayParameterType::STRING);
 					break;
 
 				default:

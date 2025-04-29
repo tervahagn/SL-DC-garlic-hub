@@ -178,6 +178,27 @@ class PlaylistsController
 
 	}
 
+	public function findForPlayerAssignment(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		// can be a master or a multizone
+		$args['playlist_mode'] = 'master,multizone';
+		$this->parameters->setUserInputs($args);
+		$this->parameters->parseInputAllParameters();
+
+		$this->session = $request->getAttribute('session');
+		$this->playlistsDatatableService->setUID($this->session->get('user')['UID']);
+		$this->playlistsDatatableService->loadDatatable();
+		$results = [];
+		foreach ($this->playlistsDatatableService->getCurrentFilterResults() as $value)
+		{
+			$results[] = ['id' => $value['playlist_id'], 'name' => $value['playlist_name']];
+		}
+
+		return $this->jsonResponse($response, $results);
+
+	}
+
+
 	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
