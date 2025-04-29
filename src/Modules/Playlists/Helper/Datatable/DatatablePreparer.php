@@ -111,7 +111,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('edit_settings', 'playlists'),
 							'playlists/settings/'.$playlist['playlist_id'],
-							'edit', 'pencil')
+							'edit', $playlist['playlist_id'], 'pencil')
 					];
 					if (!array_key_exists($playlist['playlist_id'], $this->usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($currentUID, $playlist))

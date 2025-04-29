@@ -95,13 +95,13 @@ class DatatablePreparer extends AbstractDatatablePreparer
 			if ($player['status'] == PlayerStatus::RELEASED->value)
 			{
 				$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
-					$this->translator->translate('select_playlist', 'player'),'#','edit', 'pencil'
+					$this->translator->translate('select_playlist', 'player'),'#','edit', $player['player_id'], 'pencil select-playlist'
 				);
 
 				if ($player['playlist_id'] > 0)
 				{
-					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('remove_playlist', 'player'), '#' . $player['playlist_id'], 'playlist', 'x-circle');
-					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('goto_playlist', 'player'), '/playlists/compose/' . $player['playlist_id'], 'playlist', 'music-note-list');
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('remove_playlist', 'player'), '#', 'playlist', $player['player_id'], 'x-circle remove-playlist');
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('goto_playlist', 'player'), '/playlists/compose/' . $player['player_id'], 'playlist', $player['player_id'], 'music-note-list');
 				}
 			}
 			$body[] = $list;
