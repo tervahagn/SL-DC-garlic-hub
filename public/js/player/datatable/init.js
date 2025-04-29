@@ -20,11 +20,12 @@
 import {PlayerActions} from "./PlayerActions.js";
 import {PlayerService} from "../PlayerService.js";
 import {FetchClient} from "../../core/FetchClient.js";
+import {AutocompleteFactory} from "../../core/AutocompleteFactory.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
     const playerService = new PlayerService(new FetchClient())
-
-    const playerActions =  new PlayerActions(playerService);
+    const autocompleteFactory = new AutocompleteFactory();
+    const playerActions =  new PlayerActions(autocompleteFactory, playerService);
     playerActions.init();
 });

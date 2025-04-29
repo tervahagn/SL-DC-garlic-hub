@@ -98,6 +98,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
 
 	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}[/{playlist_name}]', [PlaylistsController::class, 'findByName']);
+	$group->get('/playlists/find/for-player[/{playlist_name}]', [PlaylistsController::class, 'findForPlayerAssignment']);
 	$group->delete('/playlists', [PlaylistsController::class, 'delete']);
 	$group->put('/playlists', [ExportController::class, 'export']);
 	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);

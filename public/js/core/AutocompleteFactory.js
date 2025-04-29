@@ -18,24 +18,15 @@
 */
 
 import { Autocomplete } from './Autocomplete.js';
+import { AutocompleteView } from './AutocompleteView.js';
 export class AutocompleteFactory
 {
 	constructor()
 	{
-	}x
+	}
 
-	create(field_name, api_endpoint)
+	create(fieldName, apiEndpoint)
 	{
-		const input_element     = document.getElementById(field_name+"_search");
-		const data_list_element = document.getElementById(field_name+"_suggestions");
-		const selected_hiddden  = document.getElementById(field_name); // hidden is the field we get data from
-
-		if (!input_element || !data_list_element || !api_endpoint)
-		{
-			console.error('Invalid input or datalist element IDs.');
-			return null;
-		}
-
-		return new Autocomplete(input_element, data_list_element, selected_hiddden, api_endpoint);
+		return new Autocomplete(new AutocompleteView, fieldName, apiEndpoint);
 	}
 }

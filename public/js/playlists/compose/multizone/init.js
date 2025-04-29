@@ -36,6 +36,7 @@ window.onload = async function ()
     const MyPlaylistSearch      = MyAutocompleteFactory.create(
         "zone_playlist", "/async/playlists/find/master/"
     );
+    MyPlaylistSearch.initWithExistingFields();
 
 
     let MyContextMenu           = new ContextMenu(MyCanvasView);

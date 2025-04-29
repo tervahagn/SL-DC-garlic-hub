@@ -21,16 +21,18 @@ export class PlayerActions
 {
     #selectPlaylist = document.getElementsByClassName("select-playlist");
     #removePlaylist = document.getElementsByClassName("remove-playlist");
+    #autocompleteFactory = null;
+    #playerNameAutocomplete = null;
 
     #playerService = null;
-    constructor(PlayerService)
+    constructor(autoCompleteFactory, PlayerService)
     {
+        this.#autocompleteFactory = autoCompleteFactory;
         this.#playerService = PlayerService;
     }
 
    init()
     {
-
         for (let i = 0; i < this.#selectPlaylist.length; i++) {
             const element = this.#selectPlaylist[i];
             element.addEventListener("click", async (event) => {
@@ -41,7 +43,12 @@ export class PlayerActions
                 else
                     return;
 
-              const result = await this.#playerService.replacePlaylist(playerId, event.target.dataset.actionId);
+             let editPlaylist = parentWithDataId.querySelector(".playlist_id");
+
+            this.#playerNameAutocomplete = this.#autocompleteFactory.create("playlist_name", "/async/playlists/find/for-player/");
+            this.#playerNameAutocomplete.initWithCreateFields(editPlaylist);
+
+            const result = await this.#playerService.replacePlaylist(playerId, event.target.dataset.actionId);
 
 
             });

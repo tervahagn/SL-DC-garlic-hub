@@ -18,9 +18,13 @@
 */
 
 /**
- * The Autocomplete class provides auto-suggestion functionality by sending
- * the user’s input to an API endpoint and displaying the suggestions in a datalist.
- * It supports debouncing to avoid frequent API requests while the user is typing.
+ * The Autocomplete class fetches search suggestions from an API.
+ * The suggestions show up in a list.
+ *
+ * After a keydown it waits 300 ms
+ * before getting the suggestions.
+ * This stops too many requests
+ * while the user is typing.
  */
 export class Autocomplete
 {
@@ -32,45 +36,77 @@ export class Autocomplete
 	 */
 	static DEBOUNCE_DELAY = 300;
 
-	input_element      = null;
-	selected_hidden    = null;
-	data_list_element  = null;
-	api_endpoint       = null;
+	#autocompleteView  = null;
+	#apiEndpoint       = null;
 	#debounce_timeout  = null;
+	#fieldName         = ""
+
 
 	/**
-	 * Creates an instance of the Autocomplete class.
-	 * @param {HTMLInputElement} input_element - The input element where the user types their query.
-	 * @param {HTMLDataListElement} data_list_element - The datalist element where suggestions are displayed.
-	 * @param {HTMLInputElement} selected_hidden - The hidden input element to store the selected value's data.
-	 * @param {string} api_endpoint - The API endpoint URL to fetch suggestions from.
+	 * @param autocompleteView
+	 * @param {string} fieldName - The name of the field used or referenced.
+	 * @param {string} apiEndpoint - The API endpoint associated with the instance.
+	 * @return {Object} A new instance of the class with the provided field name and API endpoint set.
 	 */
-	constructor(input_element, data_list_element, selected_hidden, api_endpoint)
+	constructor(autocompleteView, fieldName, apiEndpoint)
 	{
-		this.input_element      = input_element;
-		this.selected_hidden    = selected_hidden;
-		this.data_list_element  = data_list_element;
-		this.api_endpoint       = api_endpoint;
+		this.#autocompleteView = autocompleteView;
+		this.#apiEndpoint      = apiEndpoint;
+		this.#fieldName        = fieldName;
+	}
 
-		// Attach input event listener with debouncing
-		this.input_element.addEventListener('input', () =>
-			this.#debounce(() => this.fetchSuggestions(), Autocomplete.DEBOUNCE_DELAY)
-		);
+	initWithExistingFields()
+	{
+		this.#autocompleteView.initExisting(this.#fieldName);
+		this.#addListener();
+	}
 
-		// Add a 'change' listener to detect when a user selects from the datalist
-		this.input_element.addEventListener('input', () => this.#handleSelection());
+	initWithCreateFields(parent)
+	{
+		this.#autocompleteView.initCreate(parent, this.#fieldName);
+		this.#addListener();
+	}
+
+	getHiddenIdElement()
+	{
+		return this.#autocompleteView.hiddenElement;
+	}
+
+	getEditFieldElement()
+	{
+		return this.#autocompleteView.inputElement;
 	}
 
 	/**
-	 * Fetches suggestions from the API based on the user's input value.
-	 * This method is triggered after a debounce delay to reduce the number of API requests.
+	 * Set the hidden ID, and the text field with values.
+	 */
+	setInputFields(id, text)
+	{
+		this.#autocompleteView.hiddenElement.value = id;
+		this.#autocompleteView.inputElement.dataset.id = id;
+		this.#autocompleteView.inputElement.value = text;
+	}
+
+	/**
+	 * Clears the values of all input fields.
+	 */
+	clearAll()
+	{
+		this.#autocompleteView.datalistElement.innerHTML = '';
+		this.#autocompleteView.inputElement.value = 0;
+		this.#clearSelection();
+	}
+
+	/**
+	 * Gets results from the database through the API.
+	 * This method is triggered after a debounced delay to reduce the amount of API requests.
 	 *
 	 * @async
 	 * @returns {Promise<void>}
 	 */
-	async fetchSuggestions()
+	async #fetchSuggestions()
 	{
-		if (this.input_element.value.length < 1) // Only fetch if input is not empty
+		if (this.#autocompleteView.inputElement.value.length < 1) // Only fetch if input is not empty
 		{
 			this.#clearSelection();  // Clear the hidden field when input is cleared
 			return;
@@ -78,7 +114,7 @@ export class Autocomplete
 
 		try
 		{
-			const url = this.api_endpoint + this.input_element.value;
+			const url = this.#apiEndpoint + this.#autocompleteView.inputElement.value;
 			const response    = await fetch(url);
 			const suggestions = await response.json();
 			this.#updateDataList(suggestions);
@@ -89,52 +125,32 @@ export class Autocomplete
 		}
 	}
 
-	getHiddenIdElement()
-	{
-		return this.selected_hidden;
-	}
-
-	getEditFieldElement()
-	{
-		return this.input_element;
-	}
-
 	/**
-	 * set the hidden id and the text field with values.
-	 */
-	setInputFields(id, text)
-	{
-		this.selected_hidden.value = id;
-		this.input_element.value = text;
-	}
-
-	/**
-	 * Clears the values of all input fields.
-	 */
-	clearAll()
-	{
-		this.data_list_element.innerHTML = '';
-		this.input_element.value = 0;
-		this.#clearSelection();
-	}
-
-	/**
-	 * Updates the datalist element with the provided suggestions.
+	 * Update the datalist element with the provided suggestions.
 	 * Each suggestion is added as an option element to the datalist.
 	 *
 	 * @param {Array<Object>} suggestions - An array of suggestion objects containing both display text and a value.
 	 */
 	#updateDataList(suggestions)
 	{
-		this.data_list_element.innerHTML = ''; // Clear existing options
+		this.#autocompleteView.datalistElement.innerHTML = ''; // Clear existing options
 
 		suggestions.forEach(suggestion => {
 			const option = document.createElement('option');
 			option.value = suggestion.name;
 
 			option.setAttribute('data-value', suggestion.id);
-			this.data_list_element.appendChild(option);
+			this.#autocompleteView.datalistElement.appendChild(option);
 		});
+	}
+
+	#addListener()
+	{
+		this.#autocompleteView.inputElement.addEventListener('input', () =>
+			this.#debounce(() => this.#fetchSuggestions(), Autocomplete.DEBOUNCE_DELAY)
+		);
+		// Add a 'change' listener to detect when a user selects from the datalist.
+		this.#autocompleteView.inputElement.addEventListener('input', () => this.#handleSelection());
 	}
 
 	/**
@@ -144,8 +160,8 @@ export class Autocomplete
 	 */
 	#handleSelection()
 	{
-		const value = this.input_element.value;
-		const options = this.data_list_element.querySelectorAll('option');
+		const value = this.#autocompleteView.inputElement.value;
+		const options = this.#autocompleteView.datalistElement.querySelectorAll('option');
 
 		// Loop through the options to find a match
 		for (let i = 0; i < options.length; i++)
@@ -153,9 +169,10 @@ export class Autocomplete
 			const option = options[i];
 			if (option.value === value)
 			{
-				this.selected_hidden.value = option.getAttribute('data-value');
-				this.selected_hidden.dispatchEvent(new Event('change'));
-				this.input_element.blur();
+				this.#autocompleteView.hiddenElement.value = option.getAttribute('data-value');
+				this.#autocompleteView.hiddenElement.dispatchEvent(new Event('change'));
+				this.#autocompleteView.inputElement.dataset.id = option.getAttribute('data-value');
+				this.#autocompleteView.inputElement.blur();
 				break; // important
 			}
 		}
@@ -166,11 +183,11 @@ export class Autocomplete
 	 */
 	#clearSelection()
 	{
-		this.selected_hidden.value = '';
+		this.#autocompleteView.hiddenElement.value = '';
 	}
 
 	/**
-	 * Debounces the provided function, delaying its execution by the specified delay time.
+	 * Debounce the provided function, delaying its execution by the specified delay time.
 	 * Ensures that the function is only called after the user stops typing for the delay period.
 	 *
 	 * @private

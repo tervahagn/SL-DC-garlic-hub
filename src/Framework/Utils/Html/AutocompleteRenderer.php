@@ -29,7 +29,7 @@ class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRe
 		$inputId    = $this->field->getId().'_search';
 		$datalistId = $this->field->getId().'_suggestions';
 
-		return '<input id="'.$inputId.'" list="'.$datalistId.'" value="'.$this->field->getDataLabel().'" aria-describedby="error_'.$this->field->getId().'">
+		return '<input id="'.$inputId.'" list="'.$datalistId.'" value="'.$this->field->getDataLabel().'" data-id="'.$this->field->getValue().'" aria-describedby="error_'.$this->field->getId().'">
 		<input type="hidden" id="'.$this->field->getId().'" name="'.$this->field->getId().'" value="'.$this->field->getValue().'">
 		<datalist id = "'.$datalistId.'" ></datalist>';
 	}
