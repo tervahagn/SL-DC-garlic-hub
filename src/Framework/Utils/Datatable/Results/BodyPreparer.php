@@ -48,11 +48,12 @@ class BodyPreparer
 			'CONTROL_ELEMENT_VALUE_TEXT' => $text
 		];
 	}
-	public function formatAction(string $lang, string $link, string $name, string $cssClass): array
+	public function formatAction(string $lang, string $link, string $name, string $id, string $cssClass): array
 	{
 		return 	[
 				'LANG_ACTION'       => $lang,
 				'LINK_ACTION'       => $link,
+				'ACTION_ID'         => $id,
 				'ACTION_NAME'       => $name,
 				'ACTION_ICON_CLASS' => $cssClass
 			];
