@@ -26,7 +26,7 @@ class Audio extends Video
 
 	public function getSmilElementTag(): string
 	{
-		$ret  = self::TABSTOPS_TAG.'<audio '.$this->collectMediaAttributes().'">'."\n";
+		$ret  = self::TABSTOPS_TAG.'<audio '.$this->collectMediaAttributes().'>'."\n";
 		$ret .= $this->collectParameters();
 		$ret .= self::TABSTOPS_TAG.'</audio>'."\n";
 

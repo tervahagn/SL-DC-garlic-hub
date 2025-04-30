@@ -125,12 +125,12 @@ class PlaylistMetricsCalculator
 		foreach ($items as $item)
 		{
 			$this->fileSize += $item['item_filesize'];
-			$this->duration += $item['item_duration'];
+			$this->duration += (int) round($item['item_duration']);
 
 			if ($playlist['UID'] === $item['UID'])
 			{
 				$this->countOwnerEntries++;
-				$this->ownerDuration += $item['item_duration'];
+				$this->ownerDuration += (int) round($item['item_duration']);
 			}
 		}
 		// calculate average durations if shuffle only when results to avoid division through 0.

@@ -64,7 +64,6 @@ class ExportService extends AbstractBaseService
 			$playlist = $this->playlistsService->loadPureById($playlistId); // checks rightzs
 
 			$count = 0;
-
 			if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
 			{
 				$zones = unserialize($playlist['multizone']);

@@ -26,7 +26,7 @@ class Text extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  = self::TABSTOPS_TAG.'<ref ' . $this->collectMediaAttributes(). '">' . "\n";
+		$ret  = self::TABSTOPS_TAG.'<ref ' . $this->collectMediaAttributes(). '>' . "\n";
 		$ret .= $this->checkLoggable();
 		$ret .= self::TABSTOPS_TAG.'</ref>'."\n";
 		return $ret;

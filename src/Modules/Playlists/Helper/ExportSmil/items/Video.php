@@ -28,7 +28,7 @@ class Video extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  = self::TABSTOPS_TAG.'<video '.$this->collectMediaAttributes().'">'."\n";
+		$ret  = self::TABSTOPS_TAG.'<video '.$this->collectMediaAttributes().'>'."\n";
 		$ret .= $this->collectParameters();
 		$ret .= self::TABSTOPS_TAG.'</video>'."\n";
 
