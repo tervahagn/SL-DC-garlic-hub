@@ -107,7 +107,10 @@ class ItemsService extends AbstractBaseService
 				if (str_starts_with($item['mimetype'], 'video/'))
 				{
 					$this->mediaService->setUID($this->UID);
-					$media = $this->mediaService->fetchMedia($item['file_resource']);
+					$media = $this->mediaService->fetchMediaByChecksum($item['file_resource']);
+					if (empty($media))
+						throw new ModuleException('items', 'Item not found');
+
 					$item['default_duration'] = $media['metadata']['duration'];
 				}
 				else

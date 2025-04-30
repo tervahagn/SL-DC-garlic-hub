@@ -47,6 +47,17 @@ class FilesRepository extends Sql
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
+	public function findAllWithOwnerByCheckSum(string $checksum): array
+	{
+		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
+		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
+		$where      = [
+			'checksum' => $this->generateWhereClause($checksum)
+		];
+
+		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+	}
+
 	/**
 	 * @throws Exception
 	 */

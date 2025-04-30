@@ -30,10 +30,10 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ItemsController
+readonly class ItemsController
 {
-	private readonly ItemsService $itemsService;
-	private readonly InsertItemFactory $insertItemFactory;
+	private ItemsService $itemsService;
+	private InsertItemFactory $insertItemFactory;
 
 	public function __construct(ItemsService $itemsService, InsertItemFactory $insertItemFactory)
 	{
@@ -42,6 +42,9 @@ class ItemsController
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
 	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
@@ -120,6 +123,12 @@ class ItemsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$itemId = (int) $args['item_id'] ?? 0;
@@ -135,6 +144,12 @@ class ItemsController
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$requestData = $request->getParsedBody();
@@ -150,6 +165,9 @@ class ItemsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$requestData = $request->getParsedBody();
@@ -170,7 +188,7 @@ class ItemsController
 	}
 
 
-	private function determineUID(Session $session)
+	private function determineUID(Session $session): void
 	{
 		$this->itemsService->setUID($session->get('user')['UID']);
 

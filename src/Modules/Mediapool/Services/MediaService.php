@@ -128,6 +128,14 @@ class MediaService
 		}
 	}
 
+	public function fetchMediaByChecksum($checksum)
+	{
+		$media = $this->mediaRepository->findAllWithOwnerByCheckSum($checksum);
+		$media['metadata'] = json_decode($media['metadata'], true);
+
+		return $media;
+	}
+
 	public function updateMedia(string $mediaId, string $filename, string $description): int
 	{
 		try

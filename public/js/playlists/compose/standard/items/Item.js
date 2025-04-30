@@ -37,7 +37,7 @@ export class Item
 	#itemName     = null;
 	#editItemName = false;
 	#itemDuration = null;
-	#editItemDuration = false;
+	#isItemDurationInProcess = false;
 
 	constructor(itemData, itemsService)
 	{
@@ -164,25 +164,32 @@ export class Item
 				inputGroup.appendChild(resetButton);
 
 				resetButton.addEventListener('click', async () => {
+					this.#isItemDurationInProcess = true;
 					const result = await this.#itemsService.fetchDefaultSeconds(this.#itemData.item_id);
 					if (!result.success)
 						return;
 
 					inputField.value = result.item.default_duration;
-					await this.#saveDuration(inputField, target);
+					await this.#saveDuration(inputField);
 					resetButton.remove();
 				});
 
-				// Event Listener für das Input-Feld
 				inputField.addEventListener('blur', () => {
-					this.#saveDuration(inputField, target);
+					if (this.#isItemDurationInProcess)
+					{
+						this.#isItemDurationInProcess = false;
+						return;
+					}
+
+					this.#saveDuration(inputField);
 					resetButton.remove();
 				});
 
 				inputField.addEventListener('keydown', (event) => {
 					if (event.key === 'Enter')
 					{
-						this.#saveDuration(inputField, target);
+						this.#isItemDurationInProcess = true;
+						this.#saveDuration(inputField);
 						resetButton.remove();
 					}
 				});
@@ -196,6 +203,8 @@ export class Item
 	async #saveDuration(inputElement)
 	{
 		const result = await this.#itemsService.editItem(this.#itemData.item_id, 'item_duration', inputElement.value);
+		if (!result.success)
+			return;
 
 		this.#itemDuration.dataset.seconds = inputElement.value;
 		this.#itemDuration.textContent = Utils.formatSecondsToTime(inputElement.value);
