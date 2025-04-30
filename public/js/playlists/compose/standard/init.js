@@ -22,7 +22,7 @@ import {InsertContextMenu} from "./InsertContextMenu.js";
 import {SelectorFactory}   from "./SelectorFactory.js";
 import {ItemsService}      from "./items/ItemsService.js";
 import {FetchClient}       from "../../../core/FetchClient.js";
-import ItemList            from "./items/ItemList.js";
+import {ItemList}          from "./items/ItemList.js";
 import {ItemFactory}       from "./items/ItemFactory.js";
 import {DragDropHandler}   from "./DragDropHandler.js";
 import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";

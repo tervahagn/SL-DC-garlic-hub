@@ -18,7 +18,7 @@
 */
 import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
-export default class ItemList
+export class ItemList
 {
 	#itemFactory = null;
 	#dropTarget = null;

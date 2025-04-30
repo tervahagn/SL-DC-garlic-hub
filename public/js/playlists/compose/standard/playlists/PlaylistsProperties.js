@@ -53,7 +53,9 @@ export class PlaylistsProperties
 
 			const result = await this.#playlistsService.shufflePicking(playlistId, this.#pickingValue);
 			this.display(result.playlist_metrics);
+
 			PlaylistsProperties.notifySave();
+
 		});
 		this.#playerExport.addEventListener('click', async () =>
 		{
@@ -88,11 +90,14 @@ export class PlaylistsProperties
 		this.#totalFilesize.innerHTML    = Utils.formatBytes(playlistMetrics.filesize);
 
 		this.#shufflePicking.disabled    = !this.#toggleShuffle.checked;
-		this.#shufflePicking.innerHTML = "";
 
 		if (this.#shufflePicking.disabled || playlistMetrics.count_items === this.#shufflePicking.length)
 			return
 
+		if (this.#pickingValue > playlistMetrics.count_items) // if something is deleted
+			this.#pickingValue = playlistMetrics.count_items;
+
+		this.#shufflePicking.innerHTML = "";
 		const countItems = playlistMetrics.count_items
 
 		for (let i = 1; i <= countItems; i++)

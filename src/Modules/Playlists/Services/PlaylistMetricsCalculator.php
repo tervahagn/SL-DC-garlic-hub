@@ -222,7 +222,7 @@ class PlaylistMetricsCalculator
 
 	private function adjustForShuffle(int $shufflePicking): void
 	{
-		if ($shufflePicking === 0)
+		if ($shufflePicking === 0 || $shufflePicking > $this->countEntries)
 			$shufflePicking = $this->countEntries;
 
 		$this->duration = (int) round($this->duration / $this->countEntries * $shufflePicking);
