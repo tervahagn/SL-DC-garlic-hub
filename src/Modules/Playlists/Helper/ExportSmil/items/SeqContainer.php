@@ -31,7 +31,7 @@ class SeqContainer extends Base implements ItemInterface
 		if ($this->begin->hasTriggers())
 			return '';
 
-		return self::TABSTOPS_TAG.'<seq '.$this->collectAttributes().'">'."\n".
+		return self::TABSTOPS_TAG.'<seq '.$this->collectAttributes().'>'."\n".
 			self::TABSTOPS_PARAMETER.'{ITEMS_'. $this->item['file_resource'].'}'."\n".
 			self::TABSTOPS_TAG.'</seq>'."\n";
 

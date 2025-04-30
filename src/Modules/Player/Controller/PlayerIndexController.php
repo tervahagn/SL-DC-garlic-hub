@@ -65,8 +65,10 @@ class PlayerIndexController
 		$lastModified = gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT';
 		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
 
-		$modifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
-		if ($modifiedSince !== null && strtotime($modifiedSince) <= filemtime($filePath)) {
+		$clientHasModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
+
+		if ($clientHasModifiedSince !== null && (strtotime($clientHasModifiedSince) > filemtime($filePath)))
+		{
 			return $response
 				->withHeader('Cache-Control', $cacheControl)
 				->withHeader('Last-Modified', $lastModified)

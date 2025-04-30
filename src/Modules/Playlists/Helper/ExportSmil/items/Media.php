@@ -29,8 +29,8 @@ abstract class Media extends Base
 
 	public function setLink($link):static
 	{
-
-		$this->link = $link;
+		// ltrim requiered because the mediapath has a training slash
+		$this->link = ltrim($link, '/');
 
 		return $this;
 	}

@@ -106,7 +106,8 @@ abstract class Base implements ItemInterface
 	 */
 	protected function encodeItemNameForTitleTag(): string
 	{
-		return 'title="'.htmlspecialchars($this->item['item_name'], ENT_XML1).'" ';
+		$title = htmlspecialchars($this->item['item_name'], ENT_XML1);
+		return 'title="'.$title.'" ';
 	}
 
 	protected function determineDuration(): string
