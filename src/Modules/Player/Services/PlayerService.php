@@ -55,8 +55,9 @@ class PlayerService extends AbstractBaseService
 			$playlistName = '';
 			if ($playlistId > 0)
 			{
+				$this->playlistService->setUID($this->UID);
 				$playlist = $this->playlistService->loadPureById($playlistId);
-				if ($playlist['playlist_mode'] !==  PlaylistMode::MASTER->value)
+				if ($playlist['playlist_mode'] !==  PlaylistMode::MASTER->value && $playlist['playlist_mode'] !==  PlaylistMode::MULTIZONE->value)
 					throw new ModuleException('player', $playlist['playlist_name'] . ' is not a master playlist');
 
 				$playlistName = $playlist['playlist_name'];

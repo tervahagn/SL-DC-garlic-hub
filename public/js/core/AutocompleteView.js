@@ -19,9 +19,11 @@
 
 export class AutocompleteView
 {
-    #inputElement      = null;
-    #hiddenElement    = null;
-    #datalistElement  = null;
+    #inputElement    = null;
+    #hiddenElement   = null;
+    #datalistElement = null;
+    #li              = null;
+    #oldParent       = null;
 
     get inputElement()
     {
@@ -47,23 +49,32 @@ export class AutocompleteView
 
     initCreate(parent, fieldName)
     {
-        const li = document.createElement("li");
-        li.className = "playlist_id";
-        this.#inputElement    = document.createElement("input");
-        this.#inputElement.id = fieldName  + "_search";
+        this.#oldParent = parent;
+        this.#li = document.createElement("li");
+        this.#li.className            = "playlist_id";
+        this.#inputElement      = document.createElement("input");
+        this.#inputElement.id   = fieldName  + "_search";
         this.#inputElement.type = "text";
-        li.appendChild(this.#inputElement);
+        this.#inputElement.setAttribute('list', fieldName + "_suggestions");
+        this.#li.appendChild(this.#inputElement);
 
-        this.#datalistElement = document.createElement("datalist");
+        this.#datalistElement    = document.createElement("datalist");
         this.#datalistElement.id = fieldName + "_suggestions";
-        li.appendChild(this.#datalistElement);
-/*
-        this.#hiddenElement = document.createElement("input");
-        this.#hiddenElement.id = fieldName;
-        this.#inputElement.type = "hidden";
-*/
-        parent.replaceWith(li);
+        this.#li.appendChild(this.#datalistElement);
+
+        this.#hiddenElement      = document.createElement("input");
+        this.#hiddenElement.id   = fieldName;
+        this.#hiddenElement.type = "hidden";
+        this.#li.appendChild(this.#inputElement);
+
+        parent.replaceWith(this.#li);
         this.#inputElement.focus();
+    }
+
+    restore(newName)
+    {
+        this.#li.replaceWith(this.#oldParent);
+        this.#oldParent.innerHTML = newName;
     }
 
 }

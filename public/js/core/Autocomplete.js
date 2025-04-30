@@ -77,6 +77,11 @@ export class Autocomplete
 		return this.#autocompleteView.inputElement;
 	}
 
+	restore(newName)
+	{
+		return this.#autocompleteView.restore(newName);
+	}
+
 	/**
 	 * Set the hidden ID, and the text field with values.
 	 */

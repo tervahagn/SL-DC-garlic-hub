@@ -92,7 +92,9 @@ class PlaylistsRepository extends FilterBase
 			switch ($key)
 			{
 				case 'playlist_mode':
-					$position = strpos($parameter['value'], ',');
+					if (empty($parameter['value']))
+						break;
+						$position = strpos($parameter['value'], ',');
 					if ($position === false)
 						$where[$key] = $this->generateWhereClause($parameter['value']);
 					else
