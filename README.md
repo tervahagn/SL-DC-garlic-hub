@@ -5,60 +5,9 @@ Garlic-Hub will become a robust Digital Signage Management Platform designed to 
 > **Note**: Garlic-Hub is currently in heavily development.Core functionalities are still under construction, with some 
 > modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
 
-## Installation for developer
+## Installation Instructions for Developer and User
 
-Install for user will be released when MVP is ready.
-
-### Prerequisites
-Ensure your environment meets the following requirements:
-- **PHP** 8.3 or higher
-- **Composer** for dependency management
-- **Web Server**: Apache, Nginx, or other PHP-compatible server
-- **Database**: MariaDB or SQLite for smaller deployments (compatible with other SQL databases)
-- **Docker** (optional) for local development with ddev
- 
-### Step-by-Step Guide
-
-1. **Clone the Repository**
-```bash
-   git clone https://github.com/sagiadinos/garlic-hub.git
-   cd garlic-hub
-```
-### For Developer: Install ddev
-
-Find a docker provider for your Operating System, open a terminal in your IDE. If you like customize the ./ddev/config.yaml file to your needs, but it is not required.
-
-```bash
-ddev start
-```
-### Install PHP Dependencies
-Run Composer to install required PHP packages:
-
-```php
-composer install
-```
-
-### Set Up Environment Variables
-Copy the example environment file and update it as needed:
-
-```bash
-cp .env.dist .env
-```
-### Installer
-Create directories, configure the database and more:
-```bash
-bash install.sh
-```
-The login will be created with the following credentials:
-- **login**: admin
-- **password**: thymian
-
-## Debian
-
-Packages needed:
-```bash
-apt install curl php-http php-zip php-simplexml php-curl php-intl php-imagick php-cli php-mbstring git unzip
-```
+[install.md](docs/install.md)
 
 
 ## Development Roadmap
