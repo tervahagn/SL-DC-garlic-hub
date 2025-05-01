@@ -14,6 +14,18 @@ DB_MASTER_DRIVER=${DB_MASTER_DRIVER}
 EOF
 fi
 
+chown -R www-data:www-data /var/www/public/var /var/www/var
+chmod -R 775 /var/www/public/var /var/www/var
+
+mkdir -p \
+  /var/www/var \
+  /var/www/var/cache \
+  /var/www/var/logs \
+  /var/www/var/weblogs \
+  /var/www/var/keys \
+  /var/www/public/var/mediapool \
+  /var/www/public/var/mediapool/thumbs \
+  /var/www/public/var/mediapool/originals
 
 # Installation when db missing
 if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
@@ -25,7 +37,7 @@ else
 fi
 
 chown -R www-data:www-data /var/www/public/var /var/www/var
-chmod -R 755 /var/www/public/var /var/www/var
+chmod -R 775 /var/www/public/var /var/www/var
 umask 002
 
 
