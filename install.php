@@ -1,7 +1,7 @@
 <?php
 
-use Defuse\Crypto\Key;
-require_once __DIR__ . '/vendor/autoload.php';
+// use Defuse\Crypto\Key;
+// require_once __DIR__ . '/vendor/autoload.php';
 
 try {
 	echo "Starting installation process...\n";
@@ -10,6 +10,7 @@ try {
 		__DIR__ . '/var',
 		__DIR__ . '/var/cache',
 		__DIR__ . '/var/logs',
+		__DIR__ . '/var/weblogs',
 		__DIR__ . '/var/keys',
 		__DIR__ . '/public/var/mediapool',
 		__DIR__ . '/public/var/mediapool/thumbs',
@@ -39,13 +40,11 @@ try {
 	}
 	echo "Directory structure and permissions verified.\n";
 
-	echo "create metadata for cli ...\n";
-	$output = shell_exec('php bin/cli.php --update 2>&1');
-
-	echo "Migrating database...\n";
+/*	echo "Migrating database...\n";
 	$output = shell_exec('php bin/console.php db:migrate 2>&1');
 	echo "Database created.\n";
-
+*/
+	/*
 	echo "Create crypto keys...\n";
 	$config = ["private_key_bits" => 2048, "private_key_type" => OPENSSL_KEYTYPE_RSA];
 	$res = openssl_pkey_new($config);
@@ -59,6 +58,7 @@ try {
 	$encryptionKey = Key::createNewRandomKey();
 	file_put_contents('var/keys/encryption.key', $encryptionKey->saveToAsciiSafeString());
 	echo "Keys sucessfully created!\n";
+*/
 }
 catch (\Exception $e)
 {

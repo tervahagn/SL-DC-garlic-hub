@@ -1,15 +1,21 @@
-version: '3.8'
-
 services:
-  web:
+  webserver:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-    - "8091:80"
+      - "8090:80"
     volumes:
-      - ./public:/var/www/html
-      - ./public/var:/var/www/html/var
+      - ./public/var:/var/www/public/var
       - ./var:/var/www/var
-      - ./apache-config:/etc/apache2
-      - ./var/garlic-hub.sqlite:/var/www/var/garlic-hub.sqlite
+      - ./apache/http.conf:/etc/apache2/sites-available/000-default.conf
+    environment:
+      APP_NAME: Garlic-Hub
+      APP_ENV: prod
+      APP_PLATFORM_EDITION: edge
+      DB_MASTER_PATH: /var/www/var/garlic-hub.sqlite
+      DB_MASTER_DRIVER: SQLITE3
+
+volumes:
+  garlic-hub_public_var:
+  garlic-hub_var:
