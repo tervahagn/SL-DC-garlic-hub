@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     libmagickwand-dev \
     libicu-dev \
-    libonig-dev
+    libonig-dev \
+    ghostscript \
+    ffmpeg
 
 
 # Install required PHP extensions
@@ -19,7 +21,6 @@ RUN docker-php-ext-install zip intl
 # Install Imagick
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
-
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -32,7 +33,8 @@ COPY composer.json composer.lock ./
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
-
+COPY dockerapp-configs/php.ini-custom /usr/local/etc/php/conf.d/docker-php-ext-custom.ini
+COPY dockerapp-configs/policy.xml /etc/ImageMagick-6/policy.xml
 # see dockerignore
 COPY . /var/www/
 

@@ -1,6 +1,6 @@
 .ddev/
 var/
 public/var/
-apache-config/
+dockerapp-configs/
 tests/
 misc/

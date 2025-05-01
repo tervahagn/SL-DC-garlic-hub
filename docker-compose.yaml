@@ -8,7 +8,7 @@ services:
     volumes:
       - ./public/var:/var/www/public/var
       - ./var:/var/www/var
-      - ./apache-config/http.conf:/etc/apache2/sites-available/000-default.conf
+      - ./dockerapp-configs/http.conf:/etc/apache2/sites-available/000-default.conf
     environment:
       APP_NAME: Garlic-Hub
       APP_ENV: prod
@@ -16,6 +16,7 @@ services:
       DB_MASTER_PATH: /var/www/var/garlic-hub.sqlite
       DB_MASTER_DRIVER: SQLITE3
 
+# for later use
 volumes:
   garlic-hub_public_var:
   garlic-hub_var:
