@@ -24,7 +24,7 @@ Ensure your environment meets the following requirements:
    git clone https://github.com/sagiadinos/garlic-hub.git
    cd garlic-hub
 ```
-### For Developer: Install ddev (docker)
+### For Developer: Install ddev
 
 Find a docker provider for your Operating System, open a terminal in your IDE. If you like customize the ./ddev/config.yaml file to your needs, but it is not required.
 
@@ -45,9 +45,9 @@ Copy the example environment file and update it as needed:
 cp .env.dist .env
 ```
 ### Installer
-Create directories configure the database and more:
+Create directories, configure the database and more:
 ```bash
-php install.php
+bash install.sh
 ```
 The login will be created with the following credentials:
 - **login**: admin
