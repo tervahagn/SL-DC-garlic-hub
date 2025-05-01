@@ -66,10 +66,10 @@ Then you need to open a web browser and go to http://localhost:8090
 
 ### Remarks
 
-This is only a testing release. Things may change 
+This is currently a testing release and is subject to change. 
 
-There are two var directories. One in the system root and the other in the htdoc root (public).   
+There are two `var` directories: one located in the system root and another in the `htdocs` root (public).
 
-Currently, garlic-hub use host-mounted volumes (bind mounts). That means the dir where created in the directory you start the container.
+At present, garlic-hub uses host-mounted volumes (bind mounts), meaning directories are created in the location where you start the container.
 
-In future we will use Docker-managed  so-called named volumes.
+Future releases will transition to Docker-managed named volumes.
