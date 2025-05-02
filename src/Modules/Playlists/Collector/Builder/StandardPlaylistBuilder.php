@@ -21,7 +21,6 @@
 namespace App\Modules\Playlists\Collector\Builder;
 
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
-use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 
 class StandardPlaylistBuilder extends AbstractPlaylistBuilder
 {
@@ -29,12 +28,12 @@ class StandardPlaylistBuilder extends AbstractPlaylistBuilder
 	{
 		$playlistId = $this->playerEntity->getPlaylistId();
 
-		$items = $this->collectItems($playlistId);
-		$prefetch = $this->collectPrefetches($playlistId);
-		$exclusive = $this->collectExclusives($playlistId);
+		$items     = $this->buildHelper->collectItems($playlistId);
+		$prefetch  = $this->buildHelper->collectPrefetches($playlistId);
+		$exclusive = $this->buildHelper->collectExclusives($playlistId);
 
 		$formattedItems = FormatHelper::wrapWithSequence($items);
 
-		return SimplePlaylistStructureFactory::create($formattedItems, $prefetch, $exclusive);
+		return $this->simplePlaylistStructureFactory->create($formattedItems, $prefetch, $exclusive);
 	}
 }

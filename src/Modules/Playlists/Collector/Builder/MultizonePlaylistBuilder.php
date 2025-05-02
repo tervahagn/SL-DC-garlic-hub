@@ -22,7 +22,6 @@
 namespace App\Modules\Playlists\Collector\Builder;
 
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
-use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 
 class MultizonePlaylistBuilder extends AbstractPlaylistBuilder
 {
@@ -36,15 +35,15 @@ class MultizonePlaylistBuilder extends AbstractPlaylistBuilder
 		{
 			$zonePlaylistId = $value['zone_smil_playlist_id'];
 
-			$zoneItems = $this->collectItems($zonePlaylistId);
-			$zonePrefetch = $this->collectPrefetches($zonePlaylistId);
-			$zoneExclusive = $this->collectExclusives($zonePlaylistId);
+			$zoneItems = $this->buildHelper->collectItems($zonePlaylistId);
+			$zonePrefetch = $this->buildHelper->collectPrefetches($zonePlaylistId);
+			$zoneExclusive = $this->buildHelper->collectExclusives($zonePlaylistId);
 
 			$items     .= FormatHelper::formatMultiZoneItems($screenId, $zoneItems);
 			$prefetch  .= $zonePrefetch . "\n";
 			$exclusive .= FormatHelper::formatMultiZoneExclusive($screenId, $zoneExclusive);
 		}
 
-		return SimplePlaylistStructureFactory::create($items, $prefetch, $exclusive);
+		return $this->simplePlaylistStructureFactory->create($items, $prefetch, $exclusive);
 	}
 }

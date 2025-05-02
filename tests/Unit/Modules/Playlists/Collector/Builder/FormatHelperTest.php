@@ -1,0 +1,91 @@
+<?php
+
+namespace Tests\Unit\Modules\Playlists\Collector\Builder;
+
+use App\Modules\Playlists\Collector\Builder\FormatHelper;
+use App\Modules\Playlists\Helper\ExportSmil\items\Base;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+
+class FormatHelperTest extends TestCase
+{
+
+	#[Group('units')]
+	public function testWrapWithSequence(): void
+	{
+		$content = "<item>Sample Content</item>";
+		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
+			$content .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		$result = FormatHelper::wrapWithSequence($content);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+	#[Group('units')]
+	public function testWrapWithSequenceHandlesEmptyContent(): void
+	{
+		$content = "";
+		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
+			$content .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		$result = FormatHelper::wrapWithSequence($content);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+	#[Group('units')]
+	public function testWrapWithSequenceHandlesLargeContent(): void
+	{
+		$content = str_repeat("LargeContent", 1000);
+		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
+			$content .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		$result = FormatHelper::wrapWithSequence($content);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+	#
+	#[Group('units')]
+	public function testFormatMultiZoneItems(): void
+	{
+		$screenId = 1;
+		$items = '<item region="screen">Content</item>';
+		$expectedOutput = Base::TABSTOPS_TAG . '<seq id="media1" repeatCount="indefinite">' . "\n" .
+			'<item region="screen1">Content</item>' .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		$result = FormatHelper::formatMultiZoneItems($screenId, $items);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+	#[Group('units')]
+	public function testFormatMultiZoneExclusive(): void
+	{
+		$screenId = 2;
+		$exclusive = '<item region="screen">Exclusive Content</item>';
+		$expectedOutput = '<item region="screen2">Exclusive Content</item>';
+
+		$result = FormatHelper::formatMultiZoneExclusive($screenId, $exclusive);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+	#[Group('units')]
+	public function testFormatMultiZoneExclusiveWithEmptyExclusive(): void
+	{
+		$screenId = 3;
+		$exclusive = '';
+		$expectedOutput = '';
+
+		$result = FormatHelper::formatMultiZoneExclusive($screenId, $exclusive);
+
+		$this->assertSame($expectedOutput, $result);
+	}
+
+}

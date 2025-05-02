@@ -22,44 +22,26 @@
 namespace App\Modules\Playlists\Collector\Builder;
 
 use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Playlists\Collector\Contracts\ExternalContentReaderInterface;
+use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 use App\Modules\Playlists\Helper\PlaylistMode;
-use App\Modules\Playlists\Collector\Contracts\ContentReaderInterface;
 use App\Modules\Playlists\Collector\Contracts\PlaylistBuilderInterface;
-use Psr\Log\LoggerInterface;
 
 class PlaylistBuilderFactory
 {
-	private ContentReaderInterface $contentReader;
-	private ExternalContentReaderInterface $externalContentReader;
-	private LoggerInterface $logger;
+	private BuildHelper $buildHelper;
+	private SimplePlaylistStructureFactory $simplePlaylistStructureFactory;
 
-	public function __construct(
-		ContentReaderInterface $contentReader,
-		ExternalContentReaderInterface $externalContentReader,
-		LoggerInterface $logger
-	) {
-		$this->contentReader = $contentReader;
-		$this->externalContentReader = $externalContentReader;
-		$this->logger = $logger;
+	public function __construct(BuildHelper $buildHelper, SimplePlaylistStructureFactory $simplePlaylistStructureFactory)
+	{
+		$this->buildHelper = $buildHelper;
+		$this->simplePlaylistStructureFactory = $simplePlaylistStructureFactory;
 	}
 
 	public function createBuilder(PlayerEntity $playerEntity): PlaylistBuilderInterface
 	{
-		if ($playerEntity->getPlaylistMode() === PlaylistMode::MULTIZONE->value) {
-			return new MultiZonePlaylistBuilder(
-				$playerEntity,
-				$this->contentReader,
-				$this->externalContentReader,
-				$this->logger
-			);
-		}
+		if ($playerEntity->getPlaylistMode() === PlaylistMode::MULTIZONE->value)
+			return new MultizonePlaylistBuilder($playerEntity, $this->buildHelper, $this->simplePlaylistStructureFactory);
 
-		return new StandardPlaylistBuilder(
-			$playerEntity,
-			$this->contentReader,
-			$this->externalContentReader,
-			$this->logger
-		);
+		return new StandardPlaylistBuilder($playerEntity, $this->buildHelper, $this->simplePlaylistStructureFactory);
 	}
 }

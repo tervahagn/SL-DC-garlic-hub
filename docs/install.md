@@ -55,7 +55,7 @@ The login will be created with the following credentials:
 
 ## Work with a Docker Image
 
-Assuming you have already installed Docker Compose.
+Assuming you have already installed Docker Compose and that, you are somehow familiar with Docker.
 
 #### Create a Docker Image and Run
 
@@ -71,8 +71,13 @@ Then you need to open a web browser and go to http://localhost:8090
 ```bash
 docker run -p 8090:80 --name garlic-hub-container -v garlic-hub-public-var:/var/www/public/var -v garlic-hub-var:/var/www/var sagiadinos/garlic-hub:latest
 ```
-
 Then you need also to open a web browser and go to http://localhost:8090
+
+You can start, stop or restart the container later with:
+
+```bash
+docker start|stop|restart garlic-hub-container
+```
 
 ### Remarks
 

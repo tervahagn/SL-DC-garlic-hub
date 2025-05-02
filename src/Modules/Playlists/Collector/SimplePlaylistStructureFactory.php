@@ -25,7 +25,8 @@ use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 
 class SimplePlaylistStructureFactory
 {
-	static function create (string $items = '', string $prefetch = '', string $exclusive = ''): PlaylistStructureInterface
+
+	function create (string $items = '', string $prefetch = '', string $exclusive = ''): PlaylistStructureInterface
 	{
 		return new SimplePlaylistStructure($items, $prefetch, $exclusive);
 	}

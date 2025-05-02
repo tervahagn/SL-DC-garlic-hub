@@ -29,9 +29,11 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Playlists\Collector\Builder\BuildHelper;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use App\Modules\Playlists\Collector\ContentReader;
 use App\Modules\Playlists\Collector\ExternalContentReader;
+use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -242,10 +244,11 @@ $dependencies[ExportController::class] = DI\factory(function (ContainerInterface
 {
 	return new ExportController($container->get(ExportService::class));
 });
-$dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
+
+$dependencies[BuildHelper::class] = DI\factory(function (ContainerInterface $container)
 {
 	$config = $container->get(Config::class);
-	return new PlaylistBuilderFactory(
+	return new BuildHelper(
 		new ContentReader(
 			$config,
 			$container->get('LocalFileSystem')
@@ -256,6 +259,13 @@ $dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInt
 			$config->getConfigValue('path_playlists', 'playlists')
 		),
 		$container->get('ModuleLogger')
+	);
+});
+$dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlaylistBuilderFactory(
+		$container->get(BuildHelper::class),
+		new SimplePlaylistStructureFactory()
 	);
 });
 
