@@ -60,7 +60,7 @@ class PlaylistsController
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post = $request->getParsedBody();
-		$playlistId = (int) $post['playlist_id'] ?? 0;
+		$playlistId = isset($post['playlist_id']) ? $post['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 

@@ -156,7 +156,7 @@ class FindOperationsTraitTest extends TestCase
 					if (
 						$mainTable === 'test_table' &&
 						$joinTable === $expectedTable &&
-						$alias === '' &&
+						$alias === $joinTable &&
 						$onCondition === $expectedCondition)
 					{
 						return $this->queryBuilderMock;
@@ -243,7 +243,7 @@ class FindOperationsTraitTest extends TestCase
 				{
 					if (
 						$mainTable === 'test_table' && $joinTable === $expectedTable &&
-						$alias === '' && $onCondition === $expectedCondition)
+						$alias === $joinTable && $onCondition === $expectedCondition)
 					{
 						return $this->queryBuilderMock;
 					} // For method chaining

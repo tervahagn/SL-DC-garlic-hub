@@ -32,14 +32,16 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = 'en';
 		$link = 'https://example.com/action';
+		$id   = 'action_id';
 		$name = 'Example Action';
 		$cssClass = 'icon-class';
 
-		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $cssClass);
+		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_ACTION' => 'en',
 			'LINK_ACTION' => 'https://example.com/action',
+			'ACTION_ID'   => 'action_id',
 			'ACTION_NAME' => 'Example Action',
 			'ACTION_ICON_CLASS' => 'icon-class',
 		], $result);
@@ -50,14 +52,16 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = '';
 		$link = '';
+		$id   = '';
 		$name = '';
 		$cssClass = '';
 
-		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $cssClass);
+		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_ACTION' => '',
 			'LINK_ACTION' => '',
+			'ACTION_ID'   => '',
 			'ACTION_NAME' => '',
 			'ACTION_ICON_CLASS' => '',
 		], $result);
@@ -68,14 +72,16 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = '!lang123';
 		$link = 'https://example.com?action=1&data=special';
+		$id   = 'action_id';
 		$name = 'Name@Action!';
 		$cssClass = '.icon#special';
 
-		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $cssClass);
+		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_ACTION' => '!lang123',
 			'LINK_ACTION' => 'https://example.com?action=1&data=special',
+			'ACTION_ID'   => 'action_id',
 			'ACTION_NAME' => 'Name@Action!',
 			'ACTION_ICON_CLASS' => '.icon#special',
 		], $result);
@@ -238,15 +244,13 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = 'delete';
 		$langConfirm = 'Are you sure?';
-		$link = 'https://example.com/delete';
 		$id = '456';
 		$cssClass = 'delete-icon';
 
-		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $link, $id, $cssClass);
+		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_DELETE_ACTION' => 'delete',
-			'LINK_DELETE_ACTION' => 'https://example.com/delete',
 			'DELETE_ID' => '456',
 			'LANG_CONFIRM_DELETE' => 'Are you sure?',
 			'ELEMENT_DELETE_CLASS' => 'delete-icon',
@@ -258,15 +262,13 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = '';
 		$langConfirm = '';
-		$link = '';
 		$id = '';
 		$cssClass = '';
 
-		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $link, $id, $cssClass);
+		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_DELETE_ACTION' => '',
-			'LINK_DELETE_ACTION' => '',
 			'DELETE_ID' => '',
 			'LANG_CONFIRM_DELETE' => '',
 			'ELEMENT_DELETE_CLASS' => '',
@@ -278,15 +280,13 @@ class BodyPreparerTest extends TestCase
 	{
 		$lang = 'del@ete';
 		$langConfirm = 'Conf!rm@tion??';
-		$link = 'https://example.com?act=del&id=123';
 		$id = 'del-123#456';
 		$cssClass = '.del-class#special';
 
-		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $link, $id, $cssClass);
+		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
 		$this->assertEquals([
 			'LANG_DELETE_ACTION' => 'del@ete',
-			'LINK_DELETE_ACTION' => 'https://example.com?act=del&id=123',
 			'DELETE_ID' => 'del-123#456',
 			'LANG_CONFIRM_DELETE' => 'Conf!rm@tion??',
 			'ELEMENT_DELETE_CLASS' => '.del-class#special',

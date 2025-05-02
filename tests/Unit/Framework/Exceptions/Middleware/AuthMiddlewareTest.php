@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Middleware;
+namespace Tests\Unit\Framework\Exceptions\Middleware;
 
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;

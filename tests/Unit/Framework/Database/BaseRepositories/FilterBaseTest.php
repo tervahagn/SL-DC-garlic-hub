@@ -23,7 +23,9 @@ namespace Tests\Unit\Framework\Database\BaseRepositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
@@ -214,7 +216,7 @@ class FilterBaseTest extends TestCase
 			->willReturnMap([
 					['tableunit_name', '%internal%', $this->queryBuilderMock],
 					['tableUID', $UID, $this->queryBuilderMock],
-					['user_maincompany_id', '3,5,6', $this->queryBuilderMock]
+					['user_maincompany_id', '3,5,6', ArrayParameterType::INTEGER, $this->queryBuilderMock]
 				]
 			);
 
@@ -252,8 +254,8 @@ class FilterBaseTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('setParameter')
 			->willReturnMap([
-					['tableUID', $UID, $this->queryBuilderMock],
-					['user_maincompany_id', '3,5,6', $this->queryBuilderMock]
+					['user_maincompany_id', '3,5,6', ArrayParameterType::INTEGER, $this->queryBuilderMock],
+					['tableUID', $UID, ParameterType::STRING, $this->queryBuilderMock]
 				]
 			);
 
@@ -355,7 +357,7 @@ class FilterBaseTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('from')
 			->with('table')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
-			->with('table', 'user_main', '', 'test.UID = user_main.UID')->willReturnSelf();
+			->with('table', 'user_main', 'user_main', 'test.UID = user_main.UID')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 	}
 

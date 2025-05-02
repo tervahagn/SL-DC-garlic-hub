@@ -75,6 +75,10 @@ class PlaylistControllerTest extends TestCase
 	#[Group('units')]
 	public function testDeleteInvalidPlaylistId(): void
 	{
+		$post =  [];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 		$this->playlistsServiceMock->expects($this->never())->method('delete');
 
