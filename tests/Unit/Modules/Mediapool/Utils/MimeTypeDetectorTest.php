@@ -45,10 +45,8 @@ class MimeTypeDetectorTest extends TestCase
 	public function testDetectFromFileReturnsCorrectMimeType()
 	{
 		$filePath = $this->baseDirectory  . '/testfile.txt';
-		file_put_contents($filePath, 'test content');
 		$mimeType = $this->mimeTypeDetector->detectFromFile($filePath);
 		$this->assertEquals('text/plain', $mimeType);
-		unlink($filePath);
 	}
 
 	/**

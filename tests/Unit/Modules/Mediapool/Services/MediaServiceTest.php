@@ -21,6 +21,8 @@
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use App\Modules\Mediapool\Services\AclValidator;
@@ -36,17 +38,27 @@ class MediaServiceTest extends TestCase
 	private readonly FilesRepository $mediaRepositoryMock;
 	private readonly NodesRepository $nodesRepositoryMock;
 	private readonly AclValidator $aclValidatorMock;
+	private readonly Config $configMock;
 	private readonly LoggerInterface $loggerMock;
 
 	/**
 	 * @throws Exception
+	 * @throws CoreException
 	 */
 	protected function setUp(): void
 	{
 		$this->mediaRepositoryMock = $this->createMock(FilesRepository::class);
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
-		$this->aclValidatorMock = $this->createMock(AclValidator::class);
-		$this->loggerMock = $this->createMock(LoggerInterface::class);
+		$this->aclValidatorMock    = $this->createMock(AclValidator::class);
+		$this->loggerMock          = $this->createMock(LoggerInterface::class);
+		$this->configMock          = $this->createMock(Config::class);
+		$this->aclValidatorMock->method('getConfig')->willReturn($this->configMock);
+		$this->configMock->method('getConfigValue')->willReturnMap([
+				['originals', 'mediapool', 'directories', 'original_directory'],
+				['previews', 'mediapool', 'directories', 'preview_directory'],
+				['thumbnails', 'mediapool', 'directories', 'thumbnail_directory'],
+			]
+		);
 
 		$this->mediaService = new MediaService(
 			$this->mediaRepositoryMock,
@@ -63,8 +75,8 @@ class MediaServiceTest extends TestCase
 		$nodeId = 1;
 		$node = ['id' => $nodeId, 'name' => 'Test Node'];
 		$mediaList = [
-			['id' => 1, 'metadata' => json_encode(['key' => 'value'])],
-			['id' => 2, 'metadata' => json_encode(['key' => 'value'])]
+			['id' => 1, 'metadata' => json_encode(['key' => 'value']), 'checksum' => 'checksum', 'extension' => 'extension', 'thumb_extension' => 'thumb_extension'],
+			['id' => 2, 'metadata' => json_encode(['key' => 'value']),'checksum' => 'checksum', 'extension' => 'extension', 'thumb_extension' => 'thumb_extension']
 		];
 
 		$this->nodesRepositoryMock->method('findNodeOwner')->willReturn($node);
@@ -96,7 +108,14 @@ class MediaServiceTest extends TestCase
 	public function testFetchMediaReturnsMedia(): void
 	{
 		$mediaId = 'media-1';
-		$media = ['id' => $mediaId, 'metadata' => json_encode(['key' => 'value']), 'node_id' => 1];
+		$media = [
+			'id' => $mediaId,
+			'metadata' => json_encode(['key' => 'value']),
+			'node_id' => 1,
+			'checksum' => 'checksum',
+			'extension' => 'extension',
+			'thumb_extension' => 'thumb_extension'
+		];
 
 		$this->mediaRepositoryMock->method('findAllWithOwnerById')->willReturn($media);
 		$this->aclValidatorMock->method('checkDirectoryPermissions')->willReturn(['read' => true]);

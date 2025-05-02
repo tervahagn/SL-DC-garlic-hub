@@ -81,7 +81,7 @@ abstract class AbstractAclValidator
 			return false;
 
 		if (!array_key_exists('company_id', $unitData) || !array_key_exists('UID', $unitData))
-			throw new ModuleException('player', 'Missing company id or UID in unit data');
+			throw new ModuleException('player', 'Missing company id or UID in unit data.');
 
 		if ($this->isSubadminWithAccessOnCompany($UID, $unitData['company_id']))
 			return true;

@@ -105,7 +105,6 @@ class VideoTest extends TestCase
 		$properties = ['width' => 3840, 'height' => 3840];
 		$this->ffmpegMock->method('getMediaProperties')->willReturn($properties);
 
-		$this->expectNotToPerformAssertions();
 		$this->video->checkFileAfterUpload('/path/to/file');
 	}
 

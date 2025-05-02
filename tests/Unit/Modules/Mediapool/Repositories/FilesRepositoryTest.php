@@ -85,7 +85,7 @@ class FilesRepositoryTest extends TestCase
 
 		$this->queryBuilderMock ->expects($this->once())
 			->method('leftJoin')
-			->with('mediapool_files', 'user_main', '', 'user_main.UID=mediapool_files.UID')
+			->with('mediapool_files', 'user_main', 'user_main', 'user_main.UID=mediapool_files.UID')
 			->willReturnSelf();
 
 		$this->queryBuilderMock ->expects($this->once())->method('executeQuery')->willReturn($result);
@@ -142,7 +142,7 @@ class FilesRepositoryTest extends TestCase
 
 		$this->queryBuilderMock ->expects($this->once())
 			->method('leftJoin')
-			->with('mediapool_files', 'user_main', '', 'user_main.UID=mediapool_files.UID')
+			->with('mediapool_files', 'user_main', 'user_main', 'user_main.UID=mediapool_files.UID')
 			->willReturnSelf();
 
 		$this->queryBuilderMock ->expects($this->once())
