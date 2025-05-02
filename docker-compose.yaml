@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: garlic-hub
     ports:
       - "8090:80"
     volumes:

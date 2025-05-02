@@ -20,17 +20,11 @@ jobs:
         username: sagiadinos
         password: ${{ secrets.SAGIADINOS }}
 
-    - name: Debug file presence
-      run: |
-        pwd
-        ls -l
-        ls -l dockerapp-configs/
-
     - name: Build the Docker image
       run: docker compose build
       
     - name: Push image manually
       run: |
-        docker tag docker-webserver sagiadinos/garlic-hub:latest
-        docker push sagiadinos /garlic-hub:latest
+        docker tag garlic-hub sagiadinos/garlic-hub:latest
+        docker push sagiadinos/garlic-hub:latest
 
