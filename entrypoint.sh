@@ -1,18 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-# create .env only when not exists
-if [ ! -f /var/www/html/.env ]; then
-    echo "Creating .env..."
-    cat <<EOF > /var/www/.env
-APP_NAME=${APP_NAME}
-APP_ENV=${APP_ENV}
-APP_DEBUG=false
-APP_SECRET=$(openssl rand -hex 16)
-APP_PLATFORM_EDITION=${APP_PLATFORM_EDITION}
-DB_MASTER_PATH=${DB_MASTER_PATH}
-DB_MASTER_DRIVER=${DB_MASTER_DRIVER}
-EOF
-fi
+# create .env secret only when not exists
+
 
 chown -R www-data:www-data /var/www/public/var /var/www/var
 chmod -R 775 /var/www/public/var /var/www/var
@@ -26,6 +15,11 @@ mkdir -p \
   /var/www/public/var/mediapool \
   /var/www/public/var/mediapool/thumbs \
   /var/www/public/var/mediapool/originals
+
+if ! grep -q '^APP_SECRET=' /var/www/.env; then
+    echo "Appending random APP_SECRET..."
+    echo "APP_SECRET=$(openssl rand -hex 16)" >> /var/www/.env
+fi
 
 if [[ -f var/keys/private.key && -f var/keys/public.key && -f var/keys/encryption.key ]]; then
     echo "Keys already exist. Skipping generation."

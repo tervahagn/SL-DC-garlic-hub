@@ -35,8 +35,10 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
 # see dockerignore
 COPY . /var/www/
+COPY dockerapp-configs/http.conf /etc/apache2/sites-available/000-default.conf
 COPY ./dockerapp-configs/php.ini-custom /usr/local/etc/php/conf.d/docker-php-ext-custom.ini
 COPY ./dockerapp-configs/policy.xml /etc/ImageMagick-6/policy.xml
+COPY ./dockerapp-configs/env.edge /var/www/.env
 
 RUN chown -R www-data:www-data /var/www/
 

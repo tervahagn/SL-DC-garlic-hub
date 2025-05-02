@@ -7,17 +7,10 @@ services:
     ports:
       - "8090:80"
     volumes:
-      - ./public/var:/var/www/public/var
-      - ./var:/var/www/var
-      - ./dockerapp-configs/http.conf:/etc/apache2/sites-available/000-default.conf
-    environment:
-      APP_NAME: Garlic-Hub
-      APP_ENV: prod
-      APP_PLATFORM_EDITION: edge
-      DB_MASTER_PATH: /var/www/var/garlic-hub.sqlite
-      DB_MASTER_DRIVER: SQLITE3
+      - garlic-hub-public-var:/var/www/public/var
+      - garlic-hub-var:/var/www/var
 
 # for later use
 volumes:
-  garlic-hub_public_var:
-  garlic-hub_var:
+  garlic-hub-public-var:
+  garlic-hub-var:

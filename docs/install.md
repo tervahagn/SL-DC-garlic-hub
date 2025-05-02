@@ -53,9 +53,11 @@ The login will be created with the following credentials:
 - **login**: admin
 - **password**: thymian
 
-## Create and Use Docker Image
+## Work with a Docker Image
 
 Assuming you have already installed Docker Compose.
+
+#### Create a Docker Image and Run
 
 ```bash
    git clone https://github.com/sagiadinos/garlic-hub.git
@@ -64,12 +66,19 @@ Assuming you have already installed Docker Compose.
 ```
 Then you need to open a web browser and go to http://localhost:8090
 
+#### Downloaded Image from Docker hub
+
+```bash
+docker run -p 8090:80 --name garlic-hub-container -v garlic-hub-public-var:/var/www/public/var -v garlic-hub-var:/var/www/var sagiadinos/garlic-hub:latest
+```
+
+Then you need also to open a web browser and go to http://localhost:8090
+
 ### Remarks
 
-This is currently a testing release and is subject to change. 
-
 There are two `var` directories: one located in the system root and another in the `htdocs` root (public).
+These are Docker managed named volumes.
 
-At present, garlic-hub uses host-mounted volumes (bind mounts), meaning directories are created in the location where you start the container.
+This is a testing release and is subject to change. This means: there is no update migration. You need to delete volumes, container, and images when you want to install a newer version. 
+Do not use it in productive enviroment.
 
-Future releases will transition to Docker-managed named volumes.
