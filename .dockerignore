@@ -1,6 +1,5 @@
 .ddev/
 var/
 public/var/
-dockerapp-configs/
 tests/
 misc/

@@ -33,10 +33,10 @@ COPY composer.json composer.lock ./
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
-COPY dockerapp-configs/php.ini-custom /usr/local/etc/php/conf.d/docker-php-ext-custom.ini
-COPY dockerapp-configs/policy.xml /etc/ImageMagick-6/policy.xml
 # see dockerignore
 COPY . /var/www/
+COPY ./dockerapp-configs/php.ini-custom /usr/local/etc/php/conf.d/docker-php-ext-custom.ini
+COPY ./dockerapp-configs/policy.xml /etc/ImageMagick-6/policy.xml
 
 RUN chown -R www-data:www-data /var/www/
 
