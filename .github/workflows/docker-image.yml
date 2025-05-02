@@ -20,6 +20,12 @@ jobs:
         username: sagiadinos
         password: ${{ secrets.SAGIADINOS }}
 
+    - name: Debug file presence
+      run: |
+        pwd
+        ls -l
+        ls -l dockerapp-configs/
+
     - name: Build the Docker image
       run: docker compose build
       
