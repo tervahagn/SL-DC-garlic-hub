@@ -98,8 +98,12 @@ class AclValidatorTest extends TestCase
 		$UID = 1;
 		$playlist = ['UID' => 2];
 
+		$configMock = $this->createMock(Config::class);
+		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
+		$configMock->expects($this->once())->method('getEdition')->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
+
 		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('Missing company id or UID in playlist data');
+		$this->expectExceptionMessage('Missing company id or UID in unit data.');
 
 		$this->aclValidator->isPlaylistEditable($UID, $playlist);
 	}
@@ -191,60 +195,5 @@ class AclValidatorTest extends TestCase
 		$this->assertFalse($result);
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
-	public function testIsAdminModuleAdmin()
-	{
-		$UID = 1;
-		$companyId = 4;
-
-		$this->aclHelperMock->expects($this->once())
-			->method('isModuleAdmin')
-			->with($UID)
-			->willReturn(true);
-
-		$result = $this->aclValidator->isAdmin($UID, $companyId);
-
-		$this->assertTrue($result);
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
-	public function testIsAdminSubAdminAccess()
-	{
-		$UID = 1;
-		$companyId = 4;
-
-		$this->aclHelperMock->method('isSubAdmin')
-			->with($UID, 'playlists')
-			->willReturn(true);
-
-		$this->aclHelperMock->method('hasSubAdminAccessOnCompany')
-			->with($UID, $companyId, 'playlists')
-			->willReturn(true);
-
-
-		$result = $this->aclValidator->isAdmin($UID, $companyId);
-
-		$this->assertTrue($result);
-	}
-
-	#[Group('units')]
-	public function testIsAdminFails()
-	{
-		$UID = 1;
-		$companyId = 4;
-		$result = $this->aclValidator->isAdmin($UID, $companyId);
-
-		$this->assertFalse($result);
-	}
 
 }

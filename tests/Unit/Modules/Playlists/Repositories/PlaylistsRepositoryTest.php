@@ -79,7 +79,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('playlists');
 
 		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
-			->with('playlists', 'user_main', '', 'user_main.UID=playlists.UID')->willReturnSelf();
+			->with('playlists', 'user_main', 'user_main', 'user_main.UID=playlists.UID')->willReturnSelf();
 
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('andWhere')

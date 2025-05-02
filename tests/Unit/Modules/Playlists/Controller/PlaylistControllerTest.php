@@ -52,10 +52,17 @@ class PlaylistControllerTest extends TestCase
 	#[Group('units')]
 	public function testDelete(): void
 	{
+		$post =  ['playlist_id' => 789];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
 		$this->playlistsServiceMock->method('delete')->with(789)->willReturn(1);
 		$this->mockJsonResponse(['success' => true]);
 
-		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 789]);
+
+		$result = $this->controller->delete($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
@@ -69,9 +76,9 @@ class PlaylistControllerTest extends TestCase
 	public function testDeleteInvalidPlaylistId(): void
 	{
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
-
 		$this->playlistsServiceMock->expects($this->never())->method('delete');
-		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 0]);
+
+		$result = $this->controller->delete($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
@@ -84,10 +91,16 @@ class PlaylistControllerTest extends TestCase
 	#[Group('units')]
 	public function testDeleteNotFoundPlaylist(): void
 	{
+		$post =  ['playlist_id' => 12];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
 		$this->playlistsServiceMock->method('delete')->with(12)->willReturn(0);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
 
-		$result = $this->controller->delete($this->responseMock, ['playlist_id' => 12]);
+		$result = $this->controller->delete($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 

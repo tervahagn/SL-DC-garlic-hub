@@ -68,9 +68,9 @@ class PlaylistsService extends AbstractBaseService
 		else
 			$saveData['shuffle'] = 0;
 
-		$affected           = $this->update($playlistId, $saveData);
+		$affected            = $this->update($playlistId, $saveData);
 		$playlist['shuffle'] = $saveData['shuffle']; // prevent reloading playlist with new values
-		$playlistMetrics =  $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getMetricsForFrontend();
+		$playlistMetrics     =  $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getMetricsForFrontend();
 
 		return ['affected' => $affected, 'playlist_metrics' => $playlistMetrics];
 
@@ -181,6 +181,10 @@ class PlaylistsService extends AbstractBaseService
 		return $playlist;
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
 	public function fetchById(int $playlistId): array
 	{
 		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
@@ -203,7 +207,7 @@ class PlaylistsService extends AbstractBaseService
 			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
+			throw new ModuleException('playlists', 'Error loading playlist: Not editable.');
 
 		return $playlist;
 	}
@@ -214,7 +218,7 @@ class PlaylistsService extends AbstractBaseService
 		{
 			$playlist = $this->loadPureById($playlistId);
 
-			return array('playlist_id' => $playlistId, 'name' => $playlist['playlist_name']);
+			return ['playlist_id' => $playlistId, 'name' => $playlist['playlist_name']];
 		}
 		catch(\Exception | Exception $e)
 		{
@@ -273,7 +277,7 @@ class PlaylistsService extends AbstractBaseService
 	private function collectDataForUpdate(array $postData): array
 	{
 		$saveData = [];
-		// only module admin are allowed to change UID
+		// only module admin is allowed to change UID
 		if (array_key_exists('UID', $postData))
 			$saveData['UID'] = $postData['UID'];
 

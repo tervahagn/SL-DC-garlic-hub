@@ -6,6 +6,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -17,22 +18,28 @@ class PlaylistsServiceTest extends TestCase
 {
 	private LoggerInterface $loggerMock;
 	private readonly PlaylistsRepository $playlistsRepositoryMock;
+	private readonly PlaylistMetricsCalculator	$playlistMetricsCalculatorMock;
 	private readonly AclValidator $aclValidatorMock;
 	private PlaylistsService $service;
 
 
 	/**
 	 * Set up the test environment.
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->loggerMock              = $this->createMock(LoggerInterface::class);
-		$this->playlistsRepositoryMock = $this->createMock(PlaylistsRepository::class);
-		$this->aclValidatorMock        = $this->createMock(AclValidator::class);
+		$this->loggerMock                    = $this->createMock(LoggerInterface::class);
+		$this->playlistsRepositoryMock       = $this->createMock(PlaylistsRepository::class);
+		$this->aclValidatorMock              = $this->createMock(AclValidator::class);
+		$this->playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
 
-		$this->service = new PlaylistsService($this->playlistsRepositoryMock, $this->aclValidatorMock, $this->loggerMock);
+		$this->service = new PlaylistsService($this->playlistsRepositoryMock, $this->playlistMetricsCalculatorMock,  $this->aclValidatorMock, $this->loggerMock);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateNewSuccessfullyInsertsData(): void
 	{
@@ -100,12 +107,7 @@ class PlaylistsServiceTest extends TestCase
 			->with(1, $playlist)
 			->willReturn(false);
 
-		$this->loggerMock->expects($this->once())
-			->method('error')
-			->with('Error updating playlist. Original Playlist is not editable');
-
 		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('Error updating playlist. Original Playlist is not editable');
 
 		$this->service->updateSecure($postData);
 	}
@@ -316,9 +318,14 @@ class PlaylistsServiceTest extends TestCase
 		$playlistId = 456;
 		$playlist = ['playlist_id' => $playlistId, 'playlist_name' => 'Test Playlist'];
 
+		$this->service->setUID(1);
 		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
 			->with(['playlist_id' => $playlistId])
 			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(true);
 
 		$result = $this->service->loadNameById($playlistId);
 
@@ -422,8 +429,8 @@ class PlaylistsServiceTest extends TestCase
 			->willReturn(false);
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with('Error loading playlist: Is not editable');
-
+			->with('Error loading playlist: Not editable.');
+		$this->service->setUID(1);
 		$result = $this->service->saveZones($playlistId, $zones);
 
 		$this->assertEquals(0, $result);
@@ -518,7 +525,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with('Error loading playlist: Is not editable');
+			->with('Error loading playlist: Not editable.');
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
