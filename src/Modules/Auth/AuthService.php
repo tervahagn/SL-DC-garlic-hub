@@ -61,7 +61,7 @@ class AuthService
 	public function login(string $identifier, string $password): ?UserEntity
 	{
 		$userData = $this->userService->findUser($identifier);
-
+		$this->logger->info('Login attempt from: '. $identifier);
 		if (empty($userData) || !password_verify($password, $userData['password']))
 		{
 			$this->errorMessage = 'Invalid credentials.';
@@ -78,8 +78,13 @@ class AuthService
 			return null;
 
 		$this->userService->invalidateCache($userData['UID']);
+		$this->logger->info('Invalidate user cache for: '. $identifier. ' with id:'. $userData['UID']);
 
-		return $this->getCurrentUser($userData['UID']);
+		$entity =  $this->getCurrentUser($userData['UID']);
+
+		$this->logger->info('Entity created for: '. $entity->getMain()['username']);
+
+		return $entity;
 	}
 
 	/**
@@ -153,6 +158,8 @@ class AuthService
 
 	private function validateUserStatus(int $status): void
 	{
+		$this->logger->info('User status is: '. $status);
+
 		switch ($status)
 		{
 			case UsersService::USER_STATUS_DELETED:
