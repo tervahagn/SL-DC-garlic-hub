@@ -21,10 +21,14 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Core\Session;
+use App\Framework\Utils\Html\AutocompleteField;
 use App\Framework\Utils\Html\CsrfTokenField;
+use App\Framework\Utils\Html\DropdownField;
 use App\Framework\Utils\Html\EmailField;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldType;
+use App\Framework\Utils\Html\HiddenField;
+use App\Framework\Utils\Html\NumberField;
 use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\TextField;
 use Exception;
@@ -51,6 +55,43 @@ class FieldsFactoryTest extends TestCase
 		$this->assertSame('username', $field->getId());
 		$this->assertSame('user_name', $field->getName());
 	}
+
+	#[Group('units')]
+	public function testCreateNumberField(): void
+	{
+		$attributes = ['id' => 'status', 'type' => FieldType::NUMBER, 'name' => 'user_status'];
+
+		$field = $this->fieldsFactory->createNumberField($attributes);
+
+		$this->assertInstanceOf(NumberField::class, $field);
+		$this->assertSame('status', $field->getId());
+		$this->assertSame('user_status', $field->getName());
+	}
+
+	#[Group('units')]
+	public function testCreateAutocompleteField(): void
+	{
+		$attributes = ['id' => 'UID', 'type' => FieldType::AUTOCOMPLETE, 'name' => 'username', 'data-label' => 'test-label'];
+
+		$field = $this->fieldsFactory->createAutocompleteField($attributes);
+
+		$this->assertInstanceOf(AutocompleteField::class, $field);
+		$this->assertSame('UID', $field->getId());
+		$this->assertSame('username', $field->getName());
+	}
+
+	#[Group('units')]
+	public function testCreateDropdownField(): void
+	{
+		$attributes = ['id' => 'countries', 'type' => FieldType::DROPDOWN, 'name' => 'countries_names', 'options' => []];
+
+		$field = $this->fieldsFactory->createDropdownField($attributes);
+
+		$this->assertInstanceOf(DropdownField::class, $field);
+		$this->assertSame('countries', $field->getId());
+		$this->assertSame('countries_names', $field->getName());
+	}
+
 
 	#[Group('units')]
 	public function testCreateEmailField(): void
@@ -91,5 +132,17 @@ class FieldsFactoryTest extends TestCase
 		$this->assertSame('csrf_token', $field->getId());
 		$this->assertSame('csrf_token_name', $field->getName());
 		$this->assertNotEmpty($field->getValue());
+	}
+
+	#[Group('units')]
+	public function testCreateHiddenField(): void
+	{
+		$attributes = ['id' => 'username', 'type' => FieldType::HIDDEN, 'name' => 'user_name'];
+
+		$field = $this->fieldsFactory->createHiddenField($attributes);
+
+		$this->assertInstanceOf(HiddenField::class, $field);
+		$this->assertSame('username', $field->getId());
+		$this->assertSame('user_name', $field->getName());
 	}
 }

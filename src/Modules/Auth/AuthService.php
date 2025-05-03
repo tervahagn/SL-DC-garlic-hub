@@ -82,7 +82,7 @@ class AuthService
 
 		$entity =  $this->getCurrentUser($userData['UID']);
 
-		$this->logger->info('Entity created for: '. $entity->getMain()['username']);
+		$this->logger->info('Entity created for: '. implode('|', $entity->getMain()));
 
 		return $entity;
 	}

@@ -23,7 +23,7 @@ namespace App\Framework\Utils\Html;
 class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 
-	public function render(FieldInterface $field): string
+	public function render(AutocompleteField|FieldInterface $field): string
 	{
 		$this->field = $field;
 		$inputId    = $this->field->getId().'_search';

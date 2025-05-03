@@ -29,6 +29,6 @@ class NumberField extends AbstractInputField
 		if (isset($attributes['min']))
 			$this->setAttribute('min',  $attributes['min']);
 		if (isset($attributes['max']))
-			$this->setAttribute('max',  $attributes['min']);
+			$this->setAttribute('max',  $attributes['max']);
 	}
 }

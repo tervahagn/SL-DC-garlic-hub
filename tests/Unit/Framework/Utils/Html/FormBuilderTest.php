@@ -29,6 +29,7 @@ use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Framework\Utils\Html\HiddenField;
 use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\TextField;
 use PHPUnit\Framework\Attributes\Group;
@@ -55,6 +56,108 @@ class FormBuilderTest extends TestCase
 			$sessionMock
 		);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testPrepareFormWithMixedFields(): void
+	{
+		$textFieldMock = $this->createMock(TextField::class);
+		$textFieldMock->method('getType')->willReturn(FieldType::TEXT);
+		$textFieldMock->method('getId')->willReturn('text_field_1');
+		$textFieldMock->method('getLabel')->willReturn('Text Field');
+
+		$csrfFieldMock = $this->createMock(CsrfTokenField::class);
+		$csrfFieldMock->method('getType')->willReturn(FieldType::CSRF);
+
+		$this->fieldsRenderFactoryMock
+			->method('getRenderer')
+			->willReturnMap([
+				[$textFieldMock, '<input type="text" id="text_field_1" />'],
+				[$csrfFieldMock, '<input type="hidden" name="csrf_token" />']
+			]);
+
+		$result = $this->formBuilder->prepareForm([$textFieldMock, $csrfFieldMock]);
+
+		$this->assertCount(1, $result['visible']);
+		$this->assertSame(
+			[
+				'HTML_ELEMENT_ID' => 'text_field_1',
+				'LANG_ELEMENT_NAME' => 'Text Field',
+				'ELEMENT_MUST_FIELD' => '',
+				'HTML_ELEMENT' => '<input type="text" id="text_field_1" />',
+			],
+			$result['visible'][0]
+		);
+
+		$this->assertCount(1, $result['hidden']);
+		$this->assertSame(
+			[
+				'HIDDEN_HTML_ELEMENT' => '<input type="hidden" name="csrf_token" />',
+			],
+			$result['hidden'][0]
+		);
+	}
+
+	#[Group('units')]
+	public function testPrepareFormWithEmptyFields(): void
+	{
+		$result = $this->formBuilder->prepareForm([]);
+
+		$this->assertEmpty($result['visible']);
+		$this->assertEmpty($result['hidden']);
+	}
+
+	#[Group('units')]
+	public function testPrepareFormWithOnlyHiddenFields(): void
+	{
+		$hiddenFieldMock = $this->createMock(HiddenField::class);
+		$hiddenFieldMock->method('getType')->willReturn(FieldType::HIDDEN);
+		$this->fieldsRenderFactoryMock
+			->method('getRenderer')
+			->with($hiddenFieldMock)
+			->willReturn('<input type="hidden" id="hidden_field_1" />');
+
+		$result = $this->formBuilder->prepareForm([$hiddenFieldMock]);
+
+		$this->assertEmpty($result['visible']);
+		$this->assertCount(1, $result['hidden']);
+		$this->assertSame(
+			[
+				'HIDDEN_HTML_ELEMENT' => '<input type="hidden" id="hidden_field_1" />',
+			],
+			$result['hidden'][0]
+		);
+	}
+
+	#[Group('units')]
+	public function testPrepareFormWithOnlyVisibleFields(): void
+	{
+		$visibleFieldMock = $this->createMock(TextField::class);
+		$visibleFieldMock->method('getType')->willReturn(FieldType::TEXT);
+		$visibleFieldMock->method('getId')->willReturn('visible_field_1');
+		$visibleFieldMock->method('getLabel')->willReturn('Visible Field');
+		$this->fieldsRenderFactoryMock
+			->method('getRenderer')
+			->with($visibleFieldMock)
+			->willReturn('<input type="text" id="visible_field_1" />');
+
+		$result = $this->formBuilder->prepareForm([$visibleFieldMock]);
+
+		$this->assertEmpty($result['hidden']);
+		$this->assertCount(1, $result['visible']);
+		$this->assertSame(
+			[
+				'HTML_ELEMENT_ID' => 'visible_field_1',
+				'LANG_ELEMENT_NAME' => 'Visible Field',
+				'ELEMENT_MUST_FIELD' => '',
+				'HTML_ELEMENT' => '<input type="text" id="visible_field_1" />',
+			],
+			$result['visible'][0]
+		);
+	}
+
 
 	/**
 	 * @throws Exception
