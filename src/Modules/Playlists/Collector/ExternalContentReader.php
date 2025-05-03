@@ -61,7 +61,7 @@ class ExternalContentReader implements ExternalContentReaderInterface
 	 */
 	private function checkForRemoteUpdated(): void
 	{
-		if ($this->response->getStatusCode() == 200 && $this->mustUpdate())
+		if ($this->response->getStatusCode() === 200 && $this->mustUpdate())
 			$this->downloadRemoteFile();
 	}
 
@@ -71,7 +71,7 @@ class ExternalContentReader implements ExternalContentReaderInterface
 	private function mustUpdate(): bool
 	{
 		return ($this->response->getHeaderLine('Last-Modified') > $this->fileSystem->lastModified($this->cachedFile) ||
-			$this->response->getHeaderLine('Content-Length') != $this->fileSystem->fileSize($this->cachedFile))
+			(int) $this->response->getHeaderLine('Content-Length') != $this->fileSystem->fileSize($this->cachedFile))
 		;
 	}
 
