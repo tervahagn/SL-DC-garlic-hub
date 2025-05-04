@@ -62,7 +62,6 @@ class ShowSettingsController
 		return $this->outputRenderedForm($response, $playlist);
 	}
 
-
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
@@ -139,7 +138,7 @@ class ShowSettingsController
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));
-		return $response->withHeader('Content-Type', 'text/html');
+		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
 
 	private function initFacade(ServerRequestInterface $request): void

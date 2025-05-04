@@ -41,14 +41,14 @@ class ExportController
 	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post = $request->getParsedBody();
-		$playlistId = (int) $post['playlist_id'] ?? 0;
-		if ($playlistId === 0)
+
+		if (!isset($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$session = $request->getAttribute('session');
 		$this->exportService->setUID($session->get('user')['UID']);
 
-		if ($this->exportService->exportToSmil($playlistId) === 0)
+		if ($this->exportService->exportToSmil($post['playlist_id']) === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
 		return $this->jsonResponse($response, ['success' => true]);

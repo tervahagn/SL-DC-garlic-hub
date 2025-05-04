@@ -116,7 +116,7 @@ class PlaylistsController
 
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -130,7 +130,7 @@ class PlaylistsController
 
 	public function saveZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -194,7 +194,7 @@ class PlaylistsController
 
 	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 

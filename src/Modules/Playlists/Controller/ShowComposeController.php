@@ -25,7 +25,6 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
-use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -46,12 +45,7 @@ class ShowComposeController
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -59,13 +53,13 @@ class ShowComposeController
 	public function show(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->setImportantAttributes($request);
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->redirectWithErrors($response, 'Playlist ID not valid.');
 
 		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
-			return $this->redirectWithErrors($response);
+			return $this->redirectWithErrors($response, 'Playlist not found.');
 
 		switch ($playlist['playlist_mode'])
 		{
@@ -86,7 +80,7 @@ class ShowComposeController
 		}
 
 		$response->getBody()->write(serialize($data));
-		return $response->withHeader('Content-Type', 'text/html');
+		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
 
 	private function setImportantAttributes(ServerRequestInterface $request): void
@@ -96,7 +90,7 @@ class ShowComposeController
 		$this->flash      = $request->getAttribute('flash');
 	}
 
-	private function redirectWithErrors(ResponseInterface $response, string $defaultMessage = 'Unknown Error'): ResponseInterface
+	private function redirectWithErrors(ResponseInterface $response, string $defaultMessage = 'Unknown error.'): ResponseInterface
 	{
 		if ($this->playlistsService->hasErrorMessages())
 		{

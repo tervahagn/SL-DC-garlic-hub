@@ -404,12 +404,6 @@ class PlaylistControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
-	 */
 	#[Group('units')]
 	public function testFindForPlayerAssignment(): void
 	{
@@ -463,12 +457,11 @@ class PlaylistControllerTest extends TestCase
 	#[Group('units')]
 	public function testFindByIdFail(): void
 	{
-
 		$this->playlistsServiceMock->expects($this->never())->method('loadNameById');
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$response = $this->controller->findById($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
+		$response = $this->controller->findById($this->requestMock, $this->responseMock, []);
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 

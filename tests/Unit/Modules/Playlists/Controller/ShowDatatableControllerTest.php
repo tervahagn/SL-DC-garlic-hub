@@ -74,10 +74,13 @@ class ShowDatatableControllerTest extends TestCase
 			->method('withHeader')
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
+		$this->responseMock
+			->expects($this->once())
+			->method('withStatus')
+		    ->with(200);
 
-		$result = $this->controller->show($this->requestMock, $this->responseMock);
-
-		$this->assertSame($this->responseMock, $result);
+		$response = $this->controller->show($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 }

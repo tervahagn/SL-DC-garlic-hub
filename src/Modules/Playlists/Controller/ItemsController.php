@@ -20,7 +20,6 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
@@ -49,11 +48,11 @@ readonly class ItemsController
 	 */
 	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->determineUID($request->getAttribute('session'));
+		$this->setServiceUID($request);
 		$list = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $list]);
@@ -79,7 +78,7 @@ readonly class ItemsController
 		if($insertItem === null)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 
-		$insertItem->setUID($request->getAttribute('session')->get('user')['UID']);
+		$this->setServiceUID($request);
 		$item = $insertItem->insert($requestData['playlist_id'], $requestData['id'], $requestData['position']);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
@@ -103,7 +102,7 @@ readonly class ItemsController
 		if (empty($requestData['value']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No parameter value.']);
 
-		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$this->setServiceUID($request);
 
 		switch ($requestData['name'])
 		{
@@ -131,11 +130,11 @@ readonly class ItemsController
 	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$itemId = (int) $args['item_id'] ?? 0;
+		$itemId = isset($args['item_id']) ? (int) $args['item_id'] : 0;
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$this->setServiceUID($request);
 		$item = $this->itemsService->fetchItemById($itemId);
 		if (empty($item))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item not found.']);
@@ -159,7 +158,7 @@ readonly class ItemsController
 		if (empty($requestData['items_positions']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Items Position array is not valid.']);
 
-		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$this->setServiceUID($request);
 		$this->itemsService->updateItemOrder($requestData['playlist_id'], $requestData['items_positions']);
 
 		return $this->jsonResponse($response, ['success' => true]);
@@ -177,7 +176,7 @@ readonly class ItemsController
 		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$this->determineUID($request->getAttribute('session'));
+		$this->setServiceUID($request);
 
 		$item = $this->itemsService->delete((int)$requestData['playlist_id'], (int) $requestData['item_id']);
 
@@ -188,10 +187,10 @@ readonly class ItemsController
 	}
 
 
-	private function determineUID(Session $session): void
+	private function setServiceUID(ServerRequestInterface $request): void
 	{
+		$session = $request->getAttribute('session');
 		$this->itemsService->setUID($session->get('user')['UID']);
-
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
