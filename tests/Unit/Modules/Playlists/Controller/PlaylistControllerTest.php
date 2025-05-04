@@ -61,9 +61,8 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->method('delete')->with(789)->willReturn(1);
 		$this->mockJsonResponse(['success' => true]);
 
-
-		$result = $this->controller->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->delete($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	/**
@@ -82,8 +81,8 @@ class PlaylistControllerTest extends TestCase
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 		$this->playlistsServiceMock->expects($this->never())->method('delete');
 
-		$result = $this->controller->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->delete($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	/**
@@ -104,8 +103,165 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->method('delete')->with(12)->willReturn(0);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
 
-		$result = $this->controller->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->delete($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testToggleShuffle(): void
+	{
+		$post =  ['playlist_id' => 12];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
+		$data = ['affected' => 1, 'playlist_metrics' => ['some_metrics_array']];
+		$this->playlistsServiceMock->method('toggleShuffle')->with(12)->willReturn($data);
+
+		$this->mockJsonResponse(['success' => true, 'playlist_metrics' => $data['playlist_metrics']]);
+
+		$response = $this->controller->toggleShuffle($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testToggleShuffleInvalidPlaylistId(): void
+	{
+		$post =  [];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
+		$this->playlistsServiceMock->expects($this->never())->method('toggleShuffle');
+
+		$response = $this->controller->toggleShuffle($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testToggleShuffleWhenNotEffecting(): void
+	{
+		$post =  ['playlist_id' => 12];
+
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
+		$data = ['affected' => 0, 'playlist_metrics' => ['some_metrics_array']];
+		$this->playlistsServiceMock->method('toggleShuffle')->with(12)->willReturn($data);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
+
+		$response = $this->controller->toggleShuffle($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testShufflePicking(): void
+	{
+		$post =  ['playlist_id' => 11, 'shuffle_picking' => 4];
+
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
+		$data = ['affected' => 1, 'playlist_metrics' => ['some_metrics_array']];
+		$this->playlistsServiceMock->method('shufflePicking')->with(11, 4)->willReturn($data);
+
+		$this->mockJsonResponse(['success' => true, 'playlist_metrics' => $data['playlist_metrics']]);
+
+		$response = $this->controller->shufflePicking($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testShufflePickingInvalidPlaylistId(): void
+	{
+		$post =  ['playlist_id' => 11];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+
+		$this->playlistsServiceMock->expects($this->never())->method('shufflePicking');
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'No picking value found.']);
+
+		$response = $this->controller->shufflePicking($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testShufflePickingInvalidPicking(): void
+	{
+		$post =  ['shuffle_picking' => 4];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+
+		$this->playlistsServiceMock->expects($this->never())->method('shufflePicking');
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
+
+		$response = $this->controller->shufflePicking($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testShufflePickingPlaylistNotFound(): void
+	{
+		$post =  ['playlist_id' => 11, 'shuffle_picking' => 4];
+
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsServiceMock->method('setUID')->with(456);
+
+		$data = ['affected' => 0, 'playlist_metrics' => ['some_metrics_array']];
+		$this->playlistsServiceMock->method('shufflePicking')->with(11, 4)->willReturn($data);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
+
+		$response = $this->controller->shufflePicking($this->requestMock, $this->responseMock);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -123,8 +279,8 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('hasErrorMessages')->willReturn(false);
 		$this->playlistsServiceMock->expects($this->never())->method('getErrorMessages');
 
-		$result = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -135,8 +291,8 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->never())->method('setUID');
 		$this->playlistsServiceMock->expects($this->never())->method('loadPlaylistForMultizone');
 
-		$result = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -154,8 +310,8 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('getErrorMessages')->willReturn( ['errors']);
 		$this->mockJsonResponse(['success' => false, 'error_message' => ['errors']]);
 
-		$result = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->loadZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -172,8 +328,8 @@ class PlaylistControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true]);
 
-		$result = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -187,8 +343,8 @@ class PlaylistControllerTest extends TestCase
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 
-		$result = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -205,12 +361,15 @@ class PlaylistControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Multizone could not be saved']);
 
-		$result = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testFindByName(): void
@@ -241,9 +400,49 @@ class PlaylistControllerTest extends TestCase
 
 		$this->mockJsonResponse($output);
 
-		$result = $this->controller->findByName($this->requestMock, $this->responseMock, ['name' => 'play']);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->findByName($this->requestMock, $this->responseMock, ['name' => 'play']);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindForPlayerAssignment(): void
+	{
+		$arg =  ['playlist_id' => 11];
+		$args = ['playlist_id' => 11, 'playlist_mode' => 'master,multizone'];
+
+		$this->parametersMock->expects($this->once())->method('setUserInputs')->with($args);
+		$this->parametersMock->expects($this->once())->method('parseInputAllParameters');
+
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('setUID')->with(456);
+
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('loadDatatable');
+		$playlists = [
+			['playlist_id' => 1, 'playlist_name' => 'playlist1', 'description' => 'description1'],
+			['playlist_id' => 2, 'playlist_name' => 'playlist2', 'description' => 'description2']
+		];
+
+		$this->playlistsDatatableServiceMock->expects($this->once())->method('getCurrentFilterResults')->willReturn($playlists);
+
+		$output = [
+			['id' => 1, 'name' => 'playlist1'],
+			['id' => 2, 'name' => 'playlist2']
+		];
+
+		$this->mockJsonResponse($output);
+
+		$response = $this->controller->findForPlayerAssignment($this->requestMock, $this->responseMock, $arg);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+
+	}
+
 
 	#[Group('units')]
 	public function testFindById(): void
@@ -253,12 +452,12 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
 
 		$this->playlistsServiceMock->expects($this->once())->method('loadNameById')
-			->with(14,)->willReturn(['playlist_name']);
+			->with(14)->willReturn(['playlist_name']);
 
 		$this->mockJsonResponse(['playlist_name']);
 
-		$result = $this->controller->findById($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->findById($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -269,8 +468,8 @@ class PlaylistControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$result = $this->controller->findById($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$response = $this->controller->findById($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
+		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 

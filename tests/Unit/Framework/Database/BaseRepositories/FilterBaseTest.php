@@ -216,7 +216,7 @@ class FilterBaseTest extends TestCase
 			->willReturnMap([
 					['tableunit_name', '%internal%', $this->queryBuilderMock],
 					['tableUID', $UID, $this->queryBuilderMock],
-					['user_maincompany_id', '3,5,6', ArrayParameterType::INTEGER, $this->queryBuilderMock]
+					['user_maincompany_id', ['3','5','6'], ArrayParameterType::INTEGER, $this->queryBuilderMock]
 				]
 			);
 
@@ -254,7 +254,7 @@ class FilterBaseTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('setParameter')
 			->willReturnMap([
-					['user_maincompany_id', '3,5,6', ArrayParameterType::INTEGER, $this->queryBuilderMock],
+					['user_maincompany_id', ['3','5','6'], ArrayParameterType::INTEGER, $this->queryBuilderMock],
 					['tableUID', $UID, ParameterType::STRING, $this->queryBuilderMock]
 				]
 			);

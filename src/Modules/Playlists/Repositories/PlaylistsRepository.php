@@ -22,9 +22,11 @@ namespace App\Modules\Playlists\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Modules\Playlists\Helper\ItemType;
+use App\Modules\Playlists\Helper\Settings\Parameters;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
 
 class PlaylistsRepository extends FilterBase
 {
@@ -98,7 +100,7 @@ class PlaylistsRepository extends FilterBase
 					if ($position === false)
 						$where[$key] = $this->generateWhereClause($parameter['value']);
 					else
-						$where[$key] = $this->generateWhereClause($parameter['value'], 'IN', 'AND', ArrayParameterType::STRING);
+						$where[$key] = $this->generateWhereClause($parameter['value'], 'IN', 'AND,', ArrayParameterType::STRING);
 					break;
 
 				default:

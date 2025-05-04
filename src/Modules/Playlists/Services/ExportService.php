@@ -28,7 +28,6 @@ use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
 use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
 use App\Modules\Playlists\Helper\PlaylistMode;
-use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

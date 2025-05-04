@@ -78,7 +78,7 @@ trait FindOperationsTrait
 	public function countAllBy(array $conditions = [], array $joins = [], string $groupBy = ''): int
 	{
 		$queryBuilder = $this->buildQuery('COUNT(1)', $conditions, $joins, $groupBy);
-
+		$sql = $queryBuilder->getSQL();
 		return (int) $queryBuilder->executeQuery()->fetchOne();
 	}
 

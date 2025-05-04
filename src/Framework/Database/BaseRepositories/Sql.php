@@ -170,7 +170,7 @@ abstract class Sql
 			}
 
 			if ($compare === 'IN')
-				$queryBuilder->setParameter($govno, $value, $parameter['type']);
+				$queryBuilder->setParameter($govno, explode(',', $value), $parameter['type']);
 			else
 				$queryBuilder->setParameter($govno, $value);
 

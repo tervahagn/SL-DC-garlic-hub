@@ -24,7 +24,6 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
-use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
@@ -60,13 +59,11 @@ class PlaylistsController
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post = $request->getParsedBody();
-		$playlistId = isset($post['playlist_id']) ? $post['playlist_id'] : 0;
+		$playlistId = $post['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
+		$this->setServiceUID($request);
 		if ($this->playlistsService->delete($playlistId) === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
@@ -85,9 +82,7 @@ class PlaylistsController
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
+		$this->setServiceUID($request);
 		$data = $this->playlistsService->toggleShuffle($post['playlist_id']);
 		if ($data['affected'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
@@ -104,16 +99,13 @@ class PlaylistsController
 	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post        = $request->getParsedBody();
-
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		if (empty($post['shuffle_picking']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No picking value found.']);
 
-		$this->session    = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
+		$this->setServiceUID($request);
 		$data = $this->playlistsService->shufflePicking($post['playlist_id'], $post['shuffle_picking']);
 
 		if ($data['affected'] === 0)
@@ -128,9 +120,7 @@ class PlaylistsController
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->session    = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
+		$this->setServiceUID($request);
 		$multizone = $this->playlistsService->loadPlaylistForMultizone($playlistId);
 		if ($this->playlistsService->hasErrorMessages())
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $this->playlistsService->getErrorMessages()]);
@@ -144,8 +134,7 @@ class PlaylistsController
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		$this->setServiceUID($request);
 		$count = $this->playlistsService->saveZones($playlistId, $request->getParsedBody());
 		if ($count === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Multizone could not be saved']);
@@ -178,10 +167,15 @@ class PlaylistsController
 
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function findForPlayerAssignment(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		// can be a master or a multizone
-		$args['playlist_mode'] = 'master,multizone';
+		$args['playlist_mode'] = 'master,multizone'; // important! no space after comma
 		$this->parameters->setUserInputs($args);
 		$this->parameters->parseInputAllParameters();
 
@@ -198,19 +192,21 @@ class PlaylistsController
 
 	}
 
-
 	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = (int) $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
-
+		$this->setServiceUID($request);
 		$result = $this->playlistsService->loadNameById($playlistId);
 		return $this->jsonResponse($response, $result);
+	}
 
+	private function setServiceUID(ServerRequestInterface $request): void
+	{
+		$this->session = $request->getAttribute('session');
+		$this->playlistsService->setUID($this->session->get('user')['UID']);
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
