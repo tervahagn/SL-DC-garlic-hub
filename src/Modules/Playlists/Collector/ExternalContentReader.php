@@ -70,9 +70,10 @@ class ExternalContentReader implements ExternalContentReaderInterface
 	 */
 	private function mustUpdate(): bool
 	{
-		return ($this->response->getHeaderLine('Last-Modified') > $this->fileSystem->lastModified($this->cachedFile) ||
-			(int) $this->response->getHeaderLine('Content-Length') != $this->fileSystem->fileSize($this->cachedFile))
-		;
+		$lastModified  = strtotime($this->response->getHeaderLine('Last-Modified'));
+		$contentLength = (int) $this->response->getHeaderLine('Content-Length');
+
+		return $lastModified < $this->fileSystem->lastModified($this->cachedFile) || $contentLength != $this->fileSystem->fileSize($this->cachedFile);
 	}
 
 	/**
