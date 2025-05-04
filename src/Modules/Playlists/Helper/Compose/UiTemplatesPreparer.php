@@ -157,7 +157,7 @@ readonly class UiTemplatesPreparer
 				'data' => [
 					'LANG_PAGE_HEADER' => $title,
 					'PLAYLIST_ID' => $playlist['playlist_id'],
-					'CMS_EDITION' => $this->rightsChecker->checkEdition(),
+					'CMS_EDITION' => $this->rightsChecker->getEdition(),
 					'LANG_INSERT' => $this->translator->translate('insert', self::MODULE_NAME),
 					'LANG_INSERT_MEDIA' => $this->translator->translate('insert_media', self::MODULE_NAME),
 					'can_external_media' => $this->rightsChecker->checkInsertExternalMedia(),

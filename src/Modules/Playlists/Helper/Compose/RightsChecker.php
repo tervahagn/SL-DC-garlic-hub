@@ -48,14 +48,20 @@ class RightsChecker
 		$this->edition      = $this->aclValidator->getConfig()->getEdition();
 	}
 
-	public function checkEdition(): string
+	public function getEdition(): string
 	{
 		return $this->edition;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function checkInsertExternalMedia(): array
 	{
-		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
+		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return [];
 
 		return [
@@ -81,7 +87,7 @@ class RightsChecker
 
 	public function checkInsertExternalPlaylist(int $timeLimit): array
 	{
-		if ($this->edition === Config::PLATFORM_EDITION_EDGE || $timeLimit > 0)
+		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE || $timeLimit > 0)
 			return [];
 
 		return [
@@ -97,7 +103,7 @@ class RightsChecker
 	 */
 	public function checkInsertTemplates(): array
 	{
-		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
+		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return [];
 
 		return [
@@ -108,7 +114,7 @@ class RightsChecker
 
 	public function checkInsertChannels():array
 	{
-		if ($this->edition === Config::PLATFORM_EDITION_EDGE)
+		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return [];
 
 		return [
