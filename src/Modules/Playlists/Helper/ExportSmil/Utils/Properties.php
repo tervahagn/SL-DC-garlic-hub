@@ -55,7 +55,7 @@ class Properties
 	public function getMediaAlign(): string
 	{
 		if (in_array($this->mediaAlign, $this->mediaAligns))
-			return ' mediaAlign="'.$this->mediaAlign.'"';
+			return 'mediaAlign="'.$this->mediaAlign.'"';
 
 		return '';
 	}

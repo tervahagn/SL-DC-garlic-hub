@@ -49,22 +49,25 @@ class Conditional
 		{
 			if ($expr != '')
 				$expr .= ' and ';
+
 			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->conditional['date_until']."')&lt;=0";
 		}
 		if ($this->conditional['time_from'] != '00:00:00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
+
 			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$this->conditional['time_from']."')&gt;=0";
 		}
+
+		$time_until = $this->conditional['time_until'] == '00:00:00' ? '23:59:59' : $this->conditional['time_until'];
+
 		if ($this->conditional['time_until'] != '00:00:00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
-			if ($this->conditional['time_until'] == '00:00:00')
-				$time_until = '23:59:59';
-			else
-				$time_until = $this->conditional['time_until'];
+
+			$time_until = $this->conditional['time_until'];
 			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$time_until."')&lt;=0";
 		}
 		$weektimes = '';
@@ -74,9 +77,8 @@ class Conditional
 		if (count($this->conditional['weektimes']) > 0)
 		{
 			if ($expr != '')
-			{
 				$expr .= ' and ';
-			}
+
 			$j = 0;
 			for ($i = 0; $j < 128; $j=pow(2, $i++))
 			{
@@ -106,6 +108,6 @@ class Conditional
 	private function initialiseWeekTimes(): void
 	{
 		if (!is_array($this->conditional['weektimes']) || empty($this->conditional['weektimes']))
-			$this->conditional['weektimes'] = array();
+			$this->conditional['weektimes'] = [];
 	}
 }

@@ -39,7 +39,7 @@ class Trigger
 
 	public function hasTriggers(): bool
 	{
-		return !empty($this->trigger);
+		return !empty($this->triggers);
 	}
 
 	public function determineTrigger(): string
@@ -127,16 +127,22 @@ class Trigger
 					$intervals .= $wallclock['repeat_minutes'].'M';
 			}
 
-			if (strlen($intervals) == 2)
+			if (strlen($intervals) == 2) // if repeat_counts are set, but interval selected
 			{
 				$intervals = '';
 				$repeats = '';
 			}
 		}
 		if ($wallclock['weekday'] != 0 && $wallclock['weekday'] >= -7 && $wallclock['weekday'] <= 7)
-			$weekday = $wallclock['weekday'][0].'w'.$wallclock['weekday'][1];
+		{
+			$sign = $wallclock['weekday'] < 0 ? '-' : '+';
+			$weekday = $sign . 'w' . abs($wallclock['weekday']);
+			$iso = str_replace('T', $weekday. 'T', $wallclock['iso_date']);
+		}
+		else
+			$iso = $wallclock['iso_date'];
 
-		return 'wallclock('.$repeats.$wallclock['iso_date'].$weekday.$intervals.')';
+		return 'wallclock('.$repeats.$iso.$intervals.')';
 	}
 
 }
