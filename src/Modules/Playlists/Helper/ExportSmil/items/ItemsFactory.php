@@ -46,97 +46,75 @@ class ItemsFactory
 	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
-	public function createItem($item): ItemInterface | null
+	public function createItem($item): ItemInterface
 	{
-		switch ($item['item_type'])
+		return match ($item['item_type'])
 		{
-			case ItemType::MEDIAPOOL->value:
-				return $this->createMedia($item);
-			case ItemType::PLAYLIST->value:
-				return new SeqContainer(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-
-			/*			case ItemType::TEMPLATE->value:
-							return new Template($this->config, $item, $item['properties']);
-						case ItemType::CHANNEL->value:
-							return new Channel($this->config, $item, $item['properties']);
-			*/			default:
-				new ModuleException('playlists_items', 'Unsupported item type '. $item['item_type'].'.');
-		}
-		return null;
+			ItemType::MEDIAPOOL->value => $this->createMedia($item),
+			ItemType::PLAYLIST->value => new SeqContainer(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			default => throw new ModuleException('playlists_items', 'Unsupported item type: ' . $item['item_type'] . '.'),
+		};
 	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
-	private function createMedia($item): Media | null
+	private function createMedia($item): Media
 	{
 		$mediaType = explode('/', $item['mimetype'], 2)[0];
 
-		switch($mediaType)
+		return match ($mediaType)
 		{
-			case self::MEDIA_TYPE_IMAGE:
-				return new Image(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-
-			case self::MEDIA_TYPE_VIDEO:
-				return new Video(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-
-			case self::MEDIA_TYPE_AUDIO:
-				return new Audio(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-
-			case self::MEDIA_TYPE_WIDGET:
-			case self::MEDIA_TYPE_DOWNLOAD:
-			case self::MEDIA_TYPE_APPLICATION:
-				return new Widget(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-
-			case self::MEDIA_TYPE_TEXT:
-				return new Text(
-					$this->config,
-					$item,
-					new Properties($this->config, $item['properties']),
-					new Trigger($item['begin_trigger']),
-					new Trigger($item['end_trigger']),
-					new Conditional($item['conditional'])
-				);
-			default:
-				new ModuleException('playlists_items', 'Unsupported media type '. $mediaType);
-		}
-		return null;
+			self::MEDIA_TYPE_IMAGE => new Image(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			self::MEDIA_TYPE_VIDEO => new Video(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			self::MEDIA_TYPE_AUDIO => new Audio(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			self::MEDIA_TYPE_WIDGET, self::MEDIA_TYPE_DOWNLOAD, self::MEDIA_TYPE_APPLICATION => new Widget(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			self::MEDIA_TYPE_TEXT => new Text(
+				$this->config,
+				$item,
+				new Properties($this->config, $item['properties']),
+				new Trigger($item['begin_trigger']),
+				new Trigger($item['end_trigger']),
+				new Conditional($item['conditional'])
+			),
+			default => throw new ModuleException('playlists_items', 'Unsupported media type: ' . $mediaType.'.'),
+		};
 	}
 }

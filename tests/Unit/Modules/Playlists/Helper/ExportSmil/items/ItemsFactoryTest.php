@@ -1,0 +1,180 @@
+<?php
+
+namespace Tests\Unit\Modules\Playlists\Helper\ExportSmil\items;
+
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Helper\ExportSmil\items\Audio;
+use App\Modules\Playlists\Helper\ExportSmil\items\Image;
+use App\Modules\Playlists\Helper\ExportSmil\items\ItemInterface;
+use App\Modules\Playlists\Helper\ExportSmil\items\ItemsFactory;
+use App\Modules\Playlists\Helper\ExportSmil\items\Text;
+use App\Modules\Playlists\Helper\ExportSmil\items\Video;
+use App\Modules\Playlists\Helper\ExportSmil\items\Widget;
+use App\Modules\Playlists\Helper\ItemType;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
+
+class ItemsFactoryTest extends TestCase
+{
+	private readonly Config $configMock;
+	private ItemsFactory $itemsFactory;
+
+	/**
+	 * @throws Exception
+	 */
+	protected function setUp(): void
+	{
+		$this->configMock = $this->createMock(Config::class);
+		$this->configMock->expects($this->any())->method('getConfigValue')
+			->willReturnMap([
+				['fit', 'playlists', 'Defaults', 'meetBest'],
+				['media_align', 'playlists', 'Defaults', 'center'],
+				['volume', 'playlists', 'Defaults', '100']
+			]);
+		$this->itemsFactory = new ItemsFactory($this->configMock);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemReturnsImage(): void
+	{
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'image/xxx',
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(Image::class, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemReturnsVideo(): void
+	{
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'video/xxxx',
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(Video::class, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemReturnsAudio(): void
+	{
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'audio/xxxx',
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(Audio::class, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemReturnsWidget(): void
+	{
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'application/xxxx',
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(Widget::class, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemReturnsText(): void
+	{
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'text/xxx',
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(Text::class, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testCreateItemUnsupportedMedia(): void
+	{
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Unsupported media type: acme.');
+
+		$item = [
+			'item_type' => ItemType::MEDIAPOOL->value,
+			'mimetype' => 'acme/xxx'
+		];
+
+		$this->itemsFactory->createItem($item);
+	}
+
+
+	#[Group('units')]
+	public function testCreateItemReturnsPlaylistType(): void
+	{
+		$item = [
+			'item_type' => ItemType::PLAYLIST->value,
+			'properties' => [],
+			'begin_trigger' => [],
+			'end_trigger' => [],
+			'conditional' => []
+		];
+
+		$result = $this->itemsFactory->createItem($item);
+		$this->assertInstanceOf(ItemInterface::class, $result);
+	}
+
+	#[Group('units')]
+	public function testCreateItemThrowsExceptionForUnsupportedType(): void
+	{
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Unsupported item type: unsupported_type.');
+
+		$item = [
+			'item_type' => 'unsupported_type',
+		];
+
+		$this->itemsFactory->createItem($item);
+	}
+}
