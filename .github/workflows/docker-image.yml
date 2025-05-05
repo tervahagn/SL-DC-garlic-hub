@@ -1,4 +1,4 @@
-name: garlic-hub Image CI
+name: garlic-hub docker-hub image
 
 on:
   workflow_dispatch:
