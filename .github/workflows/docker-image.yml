@@ -28,7 +28,7 @@ jobs:
         push: true
         tags: sagiadinos/garlic-hub:latest
 
-# old working steps
+# old working steps without buildx
 #    - name: Build the Docker image
 #      run: docker compose build
       

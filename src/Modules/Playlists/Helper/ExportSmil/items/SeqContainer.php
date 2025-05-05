@@ -39,11 +39,7 @@ class SeqContainer extends Base implements ItemInterface
 
 	public function getElementLink(): string
 	{
-		$ret = '';
-		if ($this->properties['scheduled_start_date'] == '0000-00-00')
-			$ret =  self::TABSTOPS_TAG.'{ITEMS_0#'.$this->item['external_link'].'}'."\n";
-
-		return $ret;
+		return self::TABSTOPS_TAG.'{ITEMS_0#'.$this->item['external_link'].'}'."\n";
 	}
 
 	public function getPrefetchTag(): string

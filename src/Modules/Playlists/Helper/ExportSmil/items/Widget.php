@@ -26,28 +26,29 @@ class Widget extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  = self::TABSTOPS_TAG.'<ref '.$this->collectMediaAttributes().'>'."\n";
-		$ret .= $this->collectParameters();
+		$ret  = self::TABSTOPS_TAG.'<ref '.$this->collectWidgetAttributes().'>'."\n";
+		$ret .= $this->collectWidgetParameters();
 		$ret .= self::TABSTOPS_TAG.'</ref>'."\n";
 		return $ret;
 	}
 
-	protected function collectMediaAttributes(): string
+	protected function collectWidgetAttributes(): string
 	{
 		return parent::collectMediaAttributes().' type="application/widget"';
 	}
 
-	protected function collectParameters(): string
-	{
-		return parent::collectParameters().$this->collectWidgetParameters();
-	}
-
 	protected function collectWidgetParameters(): string
 	{
+		return parent::collectParameters().$this->determineWidgetParameters();
+	}
+
+	private function determineWidgetParameters(): string
+	{
 		$ret = '';
-		if (is_null($this->item['content_data'] || empty($this->item['content_data'])))
+		if (empty($this->item['content_data']))
 			return $ret;
-		$parameters = unserialize($this->item['content_data']);
+
+		$parameters = @unserialize($this->item['content_data']);
 		if (!is_array($parameters))
 			return $ret;
 

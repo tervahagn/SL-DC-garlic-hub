@@ -203,4 +203,5 @@ class WidgetTest extends TestCase
 		$this->widget->createThumbnail('/path/to/file.wgt');
 	}
 
+
 }
