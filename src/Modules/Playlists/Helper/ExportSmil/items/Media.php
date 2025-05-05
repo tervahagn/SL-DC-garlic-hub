@@ -29,7 +29,7 @@ abstract class Media extends Base
 
 	public function setLink($link):static
 	{
-		// ltrim requiered because the mediapath has a training slash
+		// ltrim required because the media path has a training slash
 		$this->link = ltrim($link, '/');
 
 		return $this;
@@ -55,7 +55,7 @@ abstract class Media extends Base
 	protected function collectParameters(): string
 	{
 		$param = '';
-		if ($this->item['datasource'] == ItemDatasource::FILE->value)
+		if ($this->item['datasource'] === ItemDatasource::FILE->value)
 			$param = self::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 
 		return $this->checkLoggable().$param;
@@ -64,7 +64,7 @@ abstract class Media extends Base
 	protected function checkLoggable(): string
 	{
 		if (($this->item['flags'] & ItemFlags::loggable->value) > 0)
-			return self::TABSTOPS_PARAMETER.'<param name="logContentId" value="'. $this->item['smil_playlist_item_id'].'" />'."\n";
+			return self::TABSTOPS_PARAMETER.'<param name="logContentId" value="'. $this->item['item_id'].'" />'."\n";
 
 		return '';
 	}

@@ -34,6 +34,6 @@ class Text extends Media
 
 	protected function collectMediaAttributes(): string
 	{
-		return parent::collectMediaAttributes().' type="text/html"';
+		return parent::collectMediaAttributes().'type="text/html"';
 	}
 }

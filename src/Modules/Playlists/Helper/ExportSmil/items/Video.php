@@ -28,7 +28,7 @@ class Video extends Media
 
 	public function getSmilElementTag(): string
 	{
-		$ret  = self::TABSTOPS_TAG.'<video '.$this->collectMediaAttributes().'>'."\n";
+		$ret  = self::TABSTOPS_TAG.'<video '.$this->collectVideoAttributes().'>'."\n";
 		$ret .= $this->collectParameters();
 		$ret .= self::TABSTOPS_TAG.'</video>'."\n";
 
@@ -39,15 +39,15 @@ class Video extends Media
 	{
 		$param = parent::collectParameters();
 
-		if ($this->item['datasource'] == ItemDatasource::STREAM->value)
+		if ($this->item['datasource'] === ItemDatasource::STREAM->value)
 			$param .= self::TABSTOPS_PARAMETER.'<param name="stream" value="true" />'."\n";
 
 		return $param;
 	}
 
-	protected function collectMediaAttributes(): string
+	protected function collectVideoAttributes(): string
 	{
-		return parent::collectMediaAttributes().' '.$this->properties->getVolume();
+		return parent::collectMediaAttributes().$this->properties->getVolume();
 	}
 
 }
