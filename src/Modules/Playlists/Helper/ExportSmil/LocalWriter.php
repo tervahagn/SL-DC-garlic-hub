@@ -27,8 +27,8 @@ use League\Flysystem\FilesystemException;
 
 class LocalWriter
 {
-	private Config $config;
-	private Filesystem $fileSystem;
+	private readonly Config $config;
+	private readonly Filesystem $fileSystem;
 	private int $playlistId;
 	private string $playlistBasePath;
 //	private int $aclFile = 0664;
