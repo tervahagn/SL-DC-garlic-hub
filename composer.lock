@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e11f8bac89840d0010fe6bb3ea9d905",
+    "content-hash": "29fd0ed8d3d1bf8e102d98342bffd8b1",
     "packages": [
         {
             "name": "brick/math",
@@ -4011,6 +4011,60 @@
     ],
     "packages-dev": [
         {
+            "name": "codebtech/coveragebadge",
+            "version": "v0.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codebtech/coveragebadge.git",
+                "reference": "3c14f5d35763b4884215bb39e44b71a2fdb54102"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codebtech/coveragebadge/zipball/3c14f5d35763b4884215bb39e44b71a2fdb54102",
+                "reference": "3c14f5d35763b4884215bb39e44b71a2fdb54102",
+                "shasum": ""
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.42",
+                "phpmd/phpmd": "^2.15",
+                "phpstan/phpstan": "^1.11",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
+                "phpstan/phpstan-strict-rules": "^1.6",
+                "phpunit/phpunit": "^11.1",
+                "slevomat/coding-standard": "^8.15",
+                "squizlabs/php_codesniffer": "^3.10"
+            },
+            "bin": [
+                "bin/coverage-badge"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CodeB\\CoverageBadge\\": [
+                        "",
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohan Raj",
+                    "homepage": "https://github.com/m0hanraj"
+                }
+            ],
+            "description": "Creates code coverage badge from Clover XML files.",
+            "homepage": "https://github.com/codebtech/coveragebadge",
+            "support": {
+                "issues": "https://github.com/codebtech/coveragebadge/issues",
+                "source": "https://github.com/codebtech/coveragebadge/tree/v0.3.7"
+            },
+            "time": "2024-11-01T14:59:55+00:00"
+        },
+        {
             "name": "composer/pcre",
             "version": "3.3.2",
             "source": {
@@ -6409,7 +6463,8 @@
         "ext-fileinfo": "*",
         "ext-imagick": "*",
         "ext-simplexml": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-curl": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

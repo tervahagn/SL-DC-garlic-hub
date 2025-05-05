@@ -1,4 +1,5 @@
-[![garlic-hub Image CI](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml)
+[![garlic-hub docker-hub image](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml)
+[![garlic-hub coverage](https://github.com/sagiadinos/garlic-hub/misc/coverage.svg)]
 
 # garlic-hub - Digital Signage Management Platform
 
