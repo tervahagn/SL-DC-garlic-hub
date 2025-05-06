@@ -7,6 +7,8 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\ExportSmil\items\Base;
 use App\Modules\Playlists\Helper\ExportSmil\items\ItemsFactory;
+use App\Modules\Playlists\Helper\ExportSmil\items\Media;
+use App\Modules\Playlists\Helper\ExportSmil\items\SeqContainer;
 use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 use App\Modules\Playlists\Helper\ItemType;
@@ -102,9 +104,11 @@ class PlaylistContent
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	private function buildMedia(array $itemData): void
 	{
+		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
 		$item->setIsMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
@@ -118,10 +122,11 @@ class PlaylistContent
 	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
 	private function buildMediaExternal(array $itemData): void
 	{
+		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
 		$contentData = @unserialize($itemData['content_data']);
 		$item->setLink(str_replace('&', '&amp;', $contentData['url']));
@@ -130,7 +135,7 @@ class PlaylistContent
 	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
 	private function buildPlaylist(array $itemData): void
 	{
@@ -141,9 +146,11 @@ class PlaylistContent
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	private function buildPlaylistExternal(array $itemData): void
 	{
+		/** @var SeqContainer $item */
 		$item = $this->itemsFactory->createItem($itemData);
 
 		$this->addContentParts($itemData, $item->getElementLink(), '', '');
@@ -152,13 +159,13 @@ class PlaylistContent
 	private function buildTemplate(array $itemData): void
 	{
 /*		$item = $this->itemsFactory->createItem($itemData);
-		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do do the link to media inside class
+		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do the link to media inside class
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 */	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
 	private function buildChannel(array $itemData): void
 	{
@@ -213,7 +220,7 @@ class PlaylistContent
 
 				break;
 			case ItemType::TEMPLATE->value:
-				// dont export prefetch on templates, if template is HTML and save_format is HTML (not WGT)
+				// don't export prefetch on templates, if template is HTML and save_format is HTML (not WGT)
 				if ($item['template_mimetype'] != 'text/html' && $item['website_save_format'] !== 'html')
 					$this->contentPrefetch .= $prefetch;
 				break;

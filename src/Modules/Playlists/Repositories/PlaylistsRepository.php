@@ -38,7 +38,7 @@ class PlaylistsRepository extends FilterBase
 
 	public function delete(int|string $id): int
 	{
-		$platform = $this->connection->getDatabasePlatform();
+		$platform   = $this->connection->getDatabasePlatform();
 		$driverName = strtolower(str_replace('Doctrine\DBAL\Platforms\\', '', get_class($platform)));
 		if ($driverName === 'sqliteplatform')
 			$this->connection->executeQuery('PRAGMA foreign_keys = ON');
@@ -58,6 +58,9 @@ class PlaylistsRepository extends FilterBase
 		return $result;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function updateExport(int $playlistId, array $saveData): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -67,6 +70,9 @@ class PlaylistsRepository extends FilterBase
 			$queryBuilder->set($key,$value);
 		}
 		$queryBuilder->set('export_time', 'CURRENT_TIMESTAMP');
+
+		$queryBuilder->where('playlist_id = :playlist_id');
+		$queryBuilder->setParameter('playlist_id', $playlistId, ParameterType::INTEGER);
 
 		return $queryBuilder->executeStatement();
 	}
