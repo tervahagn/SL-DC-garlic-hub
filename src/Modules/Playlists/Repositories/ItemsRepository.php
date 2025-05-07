@@ -95,16 +95,16 @@ class ItemsRepository extends Sql
 		}
 
 		$queryBuilder->select($select);
-		// important! otherwise left join will grap a additional mediapool_files.checksum if exists
-		// remeber: mediapool recognise double files.
+		// important! otherwise left join will grab an additional mediapool_files.checksum if exists
+		// remember: mediapool recognise double files.
 		$queryBuilder->groupBy('playlists_items.item_id');
 
-		$sql = $queryBuilder->getSql();
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
 	 * This method finds all nested playlists, in a playlist
+	 * @throws Exception
 	 */
 	public function findAllPlaylistItemsByPlaylistId($playlist_id): array
 	{
@@ -156,6 +156,9 @@ class ItemsRepository extends Sql
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	public function updatePositionsWhenInserted(int $playlistId, int $position): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -171,6 +174,9 @@ class ItemsRepository extends Sql
 		return (int) $queryBuilder->executeStatement();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function updatePositionsWhenDeleted(int $playlistId, int $position): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -191,7 +197,7 @@ class ItemsRepository extends Sql
 	 */
 	public function updateItemOrder($itemId, $newOrder): int
 	{
-		return  $this->update($itemId,['item_order' => $newOrder]);
+		return $this->update($itemId,['item_order' => $newOrder]);
 	}
 
 

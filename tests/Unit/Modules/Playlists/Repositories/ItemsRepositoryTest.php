@@ -71,6 +71,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertEquals(['result'], $this->repository->findAllByPlaylistId($playlistId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllByPlaylistIdWithJoinsWithCoreEdition(): void
 	{
@@ -106,6 +109,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_CORE));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllByPlaylistIdWithJoinsWithEnterpriseEdition(): void
 	{
@@ -149,6 +155,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_ENTERPRISE));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllByPlaylistIdWithJoinsWithUnknownEdition(): void
 	{
@@ -212,6 +221,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertEquals(['result'], $this->repository->findAllPlaylistItemsByPlaylistId($playlistId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testSumAndCountMetricsByPlaylistIdAndOwner(): void
 	{
@@ -260,6 +272,9 @@ class ItemsRepositoryTest extends TestCase
 		], $this->repository->sumAndCountMetricsByPlaylistIdAndOwner($playlistId, $ownerId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testSumAndCountMetricsByPlaylistIdAndOwnerEmptyResult(): void
 	{
@@ -297,6 +312,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertEquals([], $this->repository->sumAndCountMetricsByPlaylistIdAndOwner($playlistId, $ownerId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllPlaylistContainingPlaylist()
 	{
@@ -333,6 +351,9 @@ class ItemsRepositoryTest extends TestCase
 		$this->assertEquals(['result'], $this->repository->findAllPlaylistsContainingPlaylist($playlistId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdatePositionsWhenInsertedWithAffectedRows(): void
 	{
@@ -366,6 +387,99 @@ class ItemsRepositoryTest extends TestCase
 			->willReturn(5);
 
 		$this->assertSame(5, $this->repository->updatePositionsWhenInserted($playlistId, $position));
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdatePositionsWhenDeletedWithAffectedRows(): void
+	{
+		$playlistId = 1;
+		$position = 3;
+
+		$this->queryBuilderMock->expects($this->once())->method('update')
+			->with('playlists_items')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('set')
+			->with('item_order', 'item_order - 1')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('where')
+			->with('playlist_id = :playlist_id');
+		$this->queryBuilderMock->expects($this->once())
+			->method('andWhere')
+			->with('item_order >= :item_order');
+
+		$this->queryBuilderMock
+			->expects($this->exactly(2))
+			->method('setParameter')
+			->willReturnMap([
+				['playlist_id', $playlistId, $this->queryBuilderMock],
+				['item_order', $position, $this->queryBuilderMock],
+			]);
+
+		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
+			->willReturn(5);
+
+		$this->assertSame(5, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdatePositionsWhenDeletedWithNoAffectedRows(): void
+	{
+		$playlistId = 1;
+		$position = 3;
+
+		$this->queryBuilderMock->expects($this->once())->method('update')
+			->with('playlists_items')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('set')
+			->with('item_order', 'item_order - 1')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('where')
+			->with('playlist_id = :playlist_id');
+		$this->queryBuilderMock->expects($this->once())
+			->method('andWhere')
+			->with('item_order >= :item_order');
+
+		$this->queryBuilderMock
+			->expects($this->exactly(2))
+			->method('setParameter')
+			->willReturnMap([
+				['playlist_id', $playlistId, $this->queryBuilderMock],
+				['item_order', $position, $this->queryBuilderMock],
+			]);
+
+		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
+			->willReturn(0);
+
+		$this->assertSame(0, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateItemOrderSuccessfully(): void
+	{
+		$itemId = 10;
+		$newOrder = 5;
+
+		$this->connectionMock->expects($this->once())->method('update')
+			->with('playlists_items', ['item_order' => $newOrder], ['item_id' => $itemId])
+			->willReturn(1);
+
+
+		$this->assertSame(1, $this->repository->updateItemOrder($itemId, $newOrder));
 	}
 
 
