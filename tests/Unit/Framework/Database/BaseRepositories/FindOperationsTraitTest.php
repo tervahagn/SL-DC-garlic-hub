@@ -302,7 +302,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->never())->method('andWhere');
 		$this->queryBuilderMock->expects($this->never())->method('setParameter');
 		$this->queryBuilderMock->expects($this->never())->method('groupBy');
-		$this->queryBuilderMock->expects($this->never())->method('orderBy');
+		$this->queryBuilderMock->expects($this->never())->method('addOrderBy');
 		$this->queryBuilderMock->expects($this->never())->method('setFirstResult');
 		$this->queryBuilderMock->expects($this->never())->method('setMaxResults');
 

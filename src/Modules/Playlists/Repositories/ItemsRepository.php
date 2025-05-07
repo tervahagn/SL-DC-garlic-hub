@@ -103,6 +103,9 @@ class ItemsRepository extends Sql
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
+	/**
+	 * This method finds all nested playlists, in a playlist
+	 */
 	public function findAllPlaylistItemsByPlaylistId($playlist_id): array
 	{
 		$where = [
@@ -111,7 +114,6 @@ class ItemsRepository extends Sql
 		];
 		return $this->findAllBy($where);
 	}
-
 
 	/**
 	 * @throws Exception
@@ -135,6 +137,8 @@ class ItemsRepository extends Sql
 	}
 
 	/**
+	 *  This method finds all playlists which has nested the playlistId
+	 *
 	 * @throws Exception
 	 */
 	public function findAllPlaylistsContainingPlaylist(int $playlistId): array
