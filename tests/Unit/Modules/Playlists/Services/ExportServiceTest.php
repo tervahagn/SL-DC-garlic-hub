@@ -1,0 +1,228 @@
+<?php
+
+namespace Tests\Unit\Modules\Playlists\Services;
+
+use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
+use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
+use App\Modules\Playlists\Repositories\ItemsRepository;
+use App\Modules\Playlists\Services\ExportService;
+use App\Modules\Playlists\Services\ItemsService;
+use App\Modules\Playlists\Services\PlaylistsService;
+use League\Flysystem\FilesystemException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+
+class ExportServiceTest extends TestCase
+{
+	private readonly Config $configMock;
+	private readonly PlaylistsService $playlistsServiceMock;
+	private readonly ItemsService $itemsServiceMock;
+	private readonly LocalWriter $localSmilWriterMock;
+	private readonly PlaylistContent $playlistContentMock;
+	private readonly LoggerInterface $loggerMock;
+	private readonly ItemsRepository $itemsRepositoryMock;
+
+	private ExportService $service;
+
+	/**
+	 * @throws Exception
+	 */
+	protected function setUp(): void
+	{
+		$this->configMock           = $this->createMock(Config::class);
+		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
+		$this->itemsServiceMock     = $this->createMock(ItemsService::class);
+		$this->localSmilWriterMock  = $this->createMock(LocalWriter::class);
+		$this->playlistContentMock  = $this->createMock(PlaylistContent::class);
+		$this->loggerMock           = $this->createMock(LoggerInterface::class);
+		$this->itemsRepositoryMock  = $this->createMock(ItemsRepository::class);
+
+		$this->itemsServiceMock->method('getItemsRepository')->willReturn($this->itemsRepositoryMock);
+		$this->service = new ExportService(
+			$this->configMock,
+			$this->playlistsServiceMock,
+			$this->itemsServiceMock,
+			$this->localSmilWriterMock,
+			$this->playlistContentMock,
+			$this->loggerMock);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FilesystemException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testExportToSmilSingleMode(): void
+	{
+		$playlistId = 123;
+		$this->service->setUID(1);
+		$playlist = ['playlist_id' => 123, 'playlist_mode' => 'master'];
+		$metrics = ['filesize' => 100, 'duration' => 60, 'owner_duration' => 60];
+		$result = ['items' => [], 'playlist_metrics' => $metrics];
+		$this->itemsRepositoryMock->method('beginTransaction');
+
+		$this->playlistsServiceMock->method('setUID')->with(1);
+		$this->itemsServiceMock->method('setUID')->with(1);
+
+		$this->playlistsServiceMock->method('loadPureById')
+			->with($playlistId)
+			->willReturn($playlist);
+
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+		$this->itemsServiceMock->expects($this->once())->method('loadByPlaylistForExport')
+			->with($playlist, Config::PLATFORM_EDITION_EDGE)
+			->willReturn($result);
+		$this->itemsServiceMock->expects($this->once())->method('updateItemsMetrics')
+			->with($playlist['playlist_id']);
+		$this->itemsServiceMock->expects($this->once())->method('updateMetricsRecursively')
+			->with($playlist['playlist_id']);
+
+		$this->playlistContentMock->method('init')->with($playlist, $result['items'])->willReturnSelf();
+		$this->playlistContentMock->expects($this->once())->method('build');
+
+		$this->localSmilWriterMock->method('initExport')
+			->with($playlist['playlist_id']);
+		$this->localSmilWriterMock->method('writeSMILFiles')->with($this->playlistContentMock);
+		$this->playlistsServiceMock->method('updateExport')
+			->with($playlist['playlist_id'], $metrics)
+			->willReturn(1);
+
+
+		$this->itemsRepositoryMock->expects($this->once())->method('commitTransaction');
+		$this->itemsRepositoryMock->expects($this->never())->method('rollbackTransaction');
+		$this->loggerMock->expects($this->never())->method('error');
+		$result = $this->service->exportToSmil($playlistId);
+
+		$this->assertSame(1, $result);
+	}
+
+	#[Group('units')]
+	public function testExportToSmilSingleModeFailed(): void
+	{
+		$playlistId = 123;
+		$this->service->setUID(1);
+		$playlist = ['playlist_id' => 123, 'playlist_mode' => 'master'];
+		$metrics = ['filesize' => 100, 'duration' => 60, 'owner_duration' => 60];
+		$result = ['items' => [], 'playlist_metrics' => $metrics];
+		$this->itemsRepositoryMock->method('beginTransaction');
+
+		$this->playlistsServiceMock->method('setUID')->with(1);
+		$this->itemsServiceMock->method('setUID')->with(1);
+
+		$this->playlistsServiceMock->method('loadPureById')
+			->with($playlistId)
+			->willReturn($playlist);
+
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+		$this->itemsServiceMock->expects($this->once())->method('loadByPlaylistForExport')
+			->with($playlist, Config::PLATFORM_EDITION_EDGE)
+			->willReturn($result);
+		$this->itemsServiceMock->expects($this->once())->method('updateItemsMetrics')
+			->with($playlist['playlist_id']);
+		$this->itemsServiceMock->expects($this->once())->method('updateMetricsRecursively')
+			->with($playlist['playlist_id']);
+
+		$this->playlistContentMock->method('init')->with($playlist, $result['items'])->willReturnSelf();
+		$this->playlistContentMock->expects($this->once())->method('build');
+
+		$this->localSmilWriterMock->method('initExport')
+			->with($playlist['playlist_id']);
+		$this->localSmilWriterMock->method('writeSMILFiles')->with($this->playlistContentMock);
+
+		$this->playlistsServiceMock->method('updateExport')
+			->with($playlist['playlist_id'], $metrics)
+			->willReturn(0);
+
+
+		$this->itemsRepositoryMock->expects($this->never())->method('commitTransaction');
+		$this->itemsRepositoryMock->expects($this->once())->method('rollbackTransaction');
+		$this->loggerMock->expects($this->once())->method('error')
+			->with('Error export SMIL playlist: Export '.$playlistId.' failed. Could not update playlist metrics.');
+
+		$this->service->exportToSmil($playlistId);
+	}
+
+	#[Group('units')]
+	public function testExportToSmilMultizoneMode(): void
+	{
+		$playlistId = 123;
+		$this->service->setUID(1);
+
+		$multizone = [
+			['zones' => ['zone_playlist_id' => 11]],
+			['zones' =>	['zone_playlist_id' => 12]]
+		];
+		$playlist  = ['playlist_id' => 123, 'playlist_mode' => 'multizone', 'multizone' => serialize($multizone)];
+		$playlistSub11  = ['playlist_id' => 11, 'playlist_mode' => 'master'];
+		$playlistSub12  = ['playlist_id' => 12, 'playlist_mode' => 'master'];
+
+		$metrics   = ['filesize' => 100, 'duration' => 60, 'owner_duration' => 60];
+		$results   = ['items' => [], 'playlist_metrics' => $metrics];
+
+		$this->itemsRepositoryMock->method('beginTransaction');
+		$this->playlistsServiceMock->method('setUID')->with(1);
+		$this->itemsServiceMock->method('setUID')->with(1);
+
+		$this->playlistsServiceMock->expects($this->exactly(3))->method('loadPureById')
+			->willReturnMap([
+				[123, $playlist],
+				[11, $playlistSub11],
+				[12, $playlistSub12]
+			]);
+
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+		$this->itemsServiceMock->expects($this->exactly(2))->method('loadByPlaylistForExport')
+			->willReturnMap([
+				[$playlistSub11, Config::PLATFORM_EDITION_EDGE, $results],
+				[$playlistSub12, Config::PLATFORM_EDITION_EDGE, $results]
+			]);
+		$this->itemsServiceMock->expects($this->exactly(2))->method('updateItemsMetrics')
+			->willReturnMap([
+				[11, $this->itemsServiceMock],
+				[12, $this->itemsServiceMock]
+			]);
+		$this->itemsServiceMock->expects($this->exactly(2))->method('updateMetricsRecursively')
+			->willReturnMap([
+				[11, $this->itemsServiceMock],
+				[12, $this->itemsServiceMock]
+			]);
+
+		$this->playlistContentMock->expects($this->exactly(2))->method('init')
+			->willReturnMap([
+				[$playlistSub11, $results['items'], $this->playlistContentMock],
+				[$playlistSub12, $results['items'], $this->playlistContentMock],
+			]);
+		$this->playlistContentMock->expects($this->exactly(2))->method('build');
+
+		$this->localSmilWriterMock->expects($this->exactly(2))->method('initExport')
+			->willReturnMap([
+				[11, $this->itemsServiceMock],
+				[12, $this->itemsServiceMock]
+			]);
+		$this->localSmilWriterMock->expects($this->exactly(2))->method('writeSMILFiles')
+			->with($this->playlistContentMock);
+
+		$this->playlistsServiceMock->method('updateExport')
+			->with($playlist['playlist_id'], $metrics)
+			->willReturn(1);
+
+
+		$this->itemsRepositoryMock->expects($this->once())->method('commitTransaction');
+		$this->itemsRepositoryMock->expects($this->never())->method('rollbackTransaction');
+		$this->loggerMock->expects($this->never())->method('error');
+		$result = $this->service->exportToSmil($playlistId);
+
+		$this->assertSame(2, $result);
+	}
+
+
+}

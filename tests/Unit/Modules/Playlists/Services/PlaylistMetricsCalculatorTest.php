@@ -175,7 +175,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	#[Group('units')]
 	public function testCalculateFromPlaylistData(): void
 	{
-		$playlist = ['playlist_id' => 5, 'UID' => 1];
+		$playlist = ['playlist_id' => 5, 'UID' => 1, 'shuffle' => 0, 'time_limit' => 0];
 		$expectedMetrics = [
 			'count_items' => 3,
 			'count_owner_items' => 2,
@@ -244,7 +244,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationExceedsTimeLimitPartially(): void
 	{
-		$playlist = ['playlist_id' => 5, 'UID' => 1, 'time_limit' => 100];
+		$playlist = ['playlist_id' => 5, 'UID' => 1, 'shuffle' => 0, 'time_limit' => 100];
 		$media    = ['metadata' => ['duration' => 60]];
 		$expectedMetrics = [
 			'count_items' => 2,
@@ -268,7 +268,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationExceedsTimeLimitFull(): void
 	{
-		$playlist = ['playlist_id' => 5, 'UID' => 1, 'time_limit' => 100];
+		$playlist = ['playlist_id' => 5, 'UID' => 1, 'shuffle' => 0, 'time_limit' => 100];
 		$media    = ['metadata' => ['duration' => 60]];
 		$expectedMetrics = [
 			'count_items' => 2,

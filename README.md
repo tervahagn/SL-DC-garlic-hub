@@ -1,7 +1,7 @@
 [![docker-hub image](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml)
 [![garlic-hub coverage](https://github.com/sagiadinos/garlic-hub/blob/main/misc/coverage.svg)](https://github.com/sagiadinos/garlic-hub/blob/main/misc/coverage.svg)
 
-# garlic-hub - Digital Signage Management Platform
+# garlic-hub - Smart Digital Signage Management
 
 Garlic-Hub will become a robust Digital Signage Management Platform designed to handle the core tasks of a CMS and extend into advanced device management. From single-screen setups to distributed signage networks, Garlic-Hub offers centralized control and flexibility for various signage environments.
 

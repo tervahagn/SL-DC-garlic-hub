@@ -35,11 +35,11 @@ use Psr\Log\LoggerInterface;
 
 class ExportService extends AbstractBaseService
 {
-	private Config $config;
-	private PlaylistsService $playlistsService;
-	private ItemsService $itemsService;
-	private LocalWriter $localSmilWriter;
-	private PlaylistContent $playlistContent;
+	private readonly Config $config;
+	private readonly PlaylistsService $playlistsService;
+	private readonly ItemsService $itemsService;
+	private readonly LocalWriter $localSmilWriter;
+	private readonly PlaylistContent $playlistContent;
 
 	public function __construct(Config $config, PlaylistsService $playlistsService, ItemsService $itemsService, LocalWriter $localSmilWriter, PlaylistContent $playlistContent, LoggerInterface $logger )
 	{
@@ -52,6 +52,9 @@ class ExportService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function exportToSmil(int $playlistId): int
 	{
 		try
@@ -60,7 +63,7 @@ class ExportService extends AbstractBaseService
 			$this->playlistsService->setUID($this->UID);
 			$this->itemsService->setUID($this->UID);
 
-			$playlist = $this->playlistsService->loadPureById($playlistId); // checks rightzs
+			$playlist = $this->playlistsService->loadPureById($playlistId); // checks rights
 
 			$count = 0;
 			if ($playlist['playlist_mode'] === PlaylistMode::MULTIZONE->value && !empty($playlist['multizone']))
@@ -82,8 +85,6 @@ class ExportService extends AbstractBaseService
 				$metrics = $this->export($playlist);
 				$count++;
 			}
-		//	$now = new DateTimeImmutable();
-//			$metrics['export_time'] = $now->format('Y-m-d H:i:s');
 
 			if ($this->playlistsService->updateExport($playlistId, $metrics) === 0)
 				throw new ModuleException('export_playlist', 'Export '.$playlistId.' failed. Could not update playlist metrics.');
