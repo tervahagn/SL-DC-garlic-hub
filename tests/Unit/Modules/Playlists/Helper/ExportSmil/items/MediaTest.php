@@ -68,7 +68,7 @@ class MediaTest extends TestCase
 		$this->concreteMedia->setLink('/example/path');
 
 		$result = $this->concreteMedia->getPrefetchTag();
-		$this->assertSame(Base::TABSTOPS_TAG.'<prefetch src="example/path" />' . "\n", $result);
+		$this->assertSame(Base::TABSTOPS_TAG . '<prefetch src="example/path" />' . "\n", $result);
 	}
 
 	#[Group('units')]

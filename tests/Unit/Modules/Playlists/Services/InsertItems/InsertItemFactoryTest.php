@@ -10,32 +10,31 @@ use App\Modules\Playlists\Services\InsertItems\Playlist;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class InsertItemFactoryTest extends TestCase
 {
-	private readonly MediaService $mediaServiceMock;
-	private readonly ItemsRepository $itemsRepositoryMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
-	private readonly LoggerInterface $loggerMock;
 	private InsertItemFactory $factory;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
-		$this->mediaServiceMock = $this->createMock(MediaService::class);
-		$this->itemsRepositoryMock = $this->createMock(ItemsRepository::class);
-		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
-		$this->playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
-		$this->loggerMock = $this->createMock(LoggerInterface::class);
+		$mediaServiceMock = $this->createMock(MediaService::class);
+		$itemsRepositoryMock = $this->createMock(ItemsRepository::class);
+		$playlistsServiceMock = $this->createMock(PlaylistsService::class);
+		$playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
+		$loggerMock = $this->createMock(LoggerInterface::class);
 
 		$this->factory = new InsertItemFactory(
-			$this->mediaServiceMock,
-			$this->itemsRepositoryMock,
-			$this->playlistsServiceMock,
-			$this->playlistMetricsCalculatorMock,
-			$this->loggerMock
+			$mediaServiceMock,
+			$itemsRepositoryMock,
+			$playlistsServiceMock,
+			$playlistMetricsCalculatorMock,
+			$loggerMock
 		);
 	}
 

@@ -47,7 +47,7 @@ class Playlist extends AbstractInsertItem
 	/**
 	 * @throws Exception
 	 */
-	public function insert(int $playlistId, string $insertId, int $position): array
+	public function insert(int $playlistId, string|int $insertId, int $position): array
 	{
 		try
 		{
@@ -62,7 +62,9 @@ class Playlist extends AbstractInsertItem
 			/*			if (!$this->allowedByTimeLimit($targetId, $playlistTargetData['time_limit']))
 							throw new ModuleException('items', 'Playlist time limit exceeds');
 			*/
-			$this->itemsRepository->updatePositionsWhenInserted($playlistId, $position);
+			if ($this->itemsRepository->updatePositionsWhenInserted($playlistId, $position) === 0)
+				throw new ModuleException('items', 'Positions could not be updated.');
+
 			$saveItem = [
 				'playlist_id'   => $playlistId,
 				'datasource'    => 'file',

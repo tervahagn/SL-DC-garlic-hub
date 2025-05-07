@@ -35,7 +35,6 @@ class Media extends AbstractInsertItem
 {
 	private MediaService $mediaService;
 
-
 	public function __construct(
 		ItemsRepository $itemsRepository,
 		MediaService $mediaService,
@@ -54,7 +53,7 @@ class Media extends AbstractInsertItem
 	/**
 	 * @throws Exception
 	 */
-	public function insert(int $playlistId, string $insertId, int $position): array
+	public function insert(int $playlistId, int|string $insertId, int $position): array
 	{
 		try
 		{
