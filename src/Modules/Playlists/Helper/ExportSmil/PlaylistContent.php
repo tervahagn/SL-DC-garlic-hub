@@ -13,11 +13,12 @@ use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Helper\PlaylistMode;
+use App\Modules\Playlists\Services\InsertItems\Playlist;
 
 class PlaylistContent
 {
-	private ItemsFactory $itemsFactory;
-	private Config $config;
+	private readonly ItemsFactory $itemsFactory;
+	private readonly Config $config;
 	private string $contentElements;
 	private string $contentPrefetch;
 	private string $contentExclusive;
@@ -79,7 +80,7 @@ class PlaylistContent
 				case ItemType::PLAYLIST->value:
 					$this->buildPlaylist($item);
 					break;
-
+/*
 				case ItemType::PLAYLIST_EXTERN->value:
 					$this->buildPlaylistExternal($item);
 					break;
@@ -91,9 +92,9 @@ class PlaylistContent
 				case ItemType::CHANNEL->value:
 					$this->buildChannel($item);
 					break;
-
+*/
 				default:
-					throw new ModuleException('playlists_items', 'Unknown item type. Given: ' . $item['item_type'] . ' with item id: ' . $item['item_id']);
+					throw new ModuleException('playlists_items', 'Unknown item type. Given: ' . $item['item_type'] . ' with item id: ' . $item['item_id'].'.');
 			}
 		}
 
@@ -139,18 +140,15 @@ class PlaylistContent
 	 */
 	private function buildPlaylist(array $itemData): void
 	{
+		/** @var SeqContainer $item */
 		$item = $this->itemsFactory->createItem($itemData);
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws ModuleException
-	 */
+/*
 	private function buildPlaylistExternal(array $itemData): void
 	{
-		/** @var SeqContainer $item */
 		$item = $this->itemsFactory->createItem($itemData);
 
 		$this->addContentParts($itemData, $item->getElementLink(), '', '');
@@ -158,22 +156,19 @@ class PlaylistContent
 
 	private function buildTemplate(array $itemData): void
 	{
-/*		$item = $this->itemsFactory->createItem($itemData);
+		$item = $this->itemsFactory->createItem($itemData);
 		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do the link to media inside class
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
-*/	}
+	}
 
-	/**
-	 * @throws CoreException|ModuleException
-	 */
 	private function buildChannel(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
-
+*/
 	private function addShuffle(): void
 	{
 		if ($this->playlist['shuffle'] == 0 || $this->countEnabled == 0)
@@ -207,9 +202,9 @@ class PlaylistContent
 		switch ($item['item_type'])
 		{
 			case ItemType::MEDIAPOOL->value:
-			case ItemType::CHANNEL->value:
+//			case ItemType::CHANNEL->value:
 			case ItemType::PLAYLIST->value:
-			case ItemType::PLAYLIST_EXTERN->value:
+//			case ItemType::PLAYLIST_EXTERN->value:
 				$this->contentPrefetch .= $prefetch;
 				break;
 
@@ -219,12 +214,12 @@ class PlaylistContent
 					$this->contentPrefetch .= $prefetch;
 
 				break;
-			case ItemType::TEMPLATE->value:
+	/*		case ItemType::TEMPLATE->value:
 				// don't export prefetch on templates, if template is HTML and save_format is HTML (not WGT)
 				if ($item['template_mimetype'] != 'text/html' && $item['website_save_format'] !== 'html')
 					$this->contentPrefetch .= $prefetch;
 				break;
-
+*/
 			// default not required as we check in build method for valid ItemTypes and throw an exception
 		}
 
