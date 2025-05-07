@@ -396,7 +396,8 @@ class ItemsControllerTest extends TestCase
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
 			->method('updateItemOrder')
-			->with(1, $requestData['items_positions']);
+			->with(1, $requestData['items_positions'])
+		    ->willReturn(true);
 
 		$this->mockJsonResponse(['success' => true]);
 

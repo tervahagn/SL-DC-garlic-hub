@@ -3,16 +3,12 @@
 namespace Tests\Unit\Modules\Playlists\Services;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
 use App\Modules\Playlists\Helper\ExportSmil\PlaylistContent;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsService;
-use League\Flysystem\FilesystemException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +23,6 @@ class ExportServiceTest extends TestCase
 	private readonly PlaylistContent $playlistContentMock;
 	private readonly LoggerInterface $loggerMock;
 	private readonly ItemsRepository $itemsRepositoryMock;
-
 	private ExportService $service;
 
 	/**
@@ -54,10 +49,6 @@ class ExportServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws FilesystemException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -105,6 +96,9 @@ class ExportServiceTest extends TestCase
 		$this->assertSame(1, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testExportToSmilSingleModeFailed(): void
 	{
@@ -151,6 +145,9 @@ class ExportServiceTest extends TestCase
 		$this->service->exportToSmil($playlistId);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testExportToSmilMultizoneMode(): void
 	{

@@ -65,6 +65,7 @@ class ItemsService extends AbstractBaseService
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function loadByPlaylistForExport(array $playlist, string $edition): array
 	{
@@ -137,16 +138,16 @@ class ItemsService extends AbstractBaseService
 	{
 		$this->playlistsService->setUID($this->UID);
 
-		$playlist = $this->playlistsService->loadPureById($playlistId); // checks rights
+		$playlistData  = $this->playlistsService->loadPureById($playlistId); // checks rights, too
+		$items         = [];
+		$result        = $this->itemsRepository->findAllByPlaylistId($playlistId);
 
-		$items = [];
-		$thumbnailPath  = $this->mediaService->getPathTumbnails();
-		$result = $this->itemsRepository->findAllByPlaylistId($playlistId);
 		foreach($result as $value)
 		{
 			switch ($value['item_type'])
 			{
 				case ItemType::MEDIAPOOL->value:
+					$thumbnailPath = $this->mediaService->getPathThumbnails();
 					$tmp = $value;
 					if (str_starts_with($value['mimetype'], 'image/'))
 						$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
@@ -164,10 +165,10 @@ class ItemsService extends AbstractBaseService
 
 			}
 		}
-		$playlistData    = $this->playlistsService->loadPureById($playlistId);
+
 		$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
-		return ['playlist_metrics' =>  $playlistMetrics, 'playlist' => $playlist, 'items' => $items];
+		return ['playlist_metrics' =>  $playlistMetrics, 'playlist' => $playlistData, 'items' => $items];
 	}
 
 	/**
@@ -187,21 +188,27 @@ class ItemsService extends AbstractBaseService
 		return $this->itemsRepository->update($itemId, $saveData);
 	}
 
-
-	/**
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws ModuleException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function updateItemOrder(mixed $playlistId, array $itemsOrder): void
+	public function updateItemOrder(mixed $playlistId, array $itemsOrder): bool
 	{
-		$this->playlistsService->setUID($this->UID);
-		$this->playlistsService->loadPureById($playlistId); // will check for rights
-
-		foreach ($itemsOrder as $key => $itemId)
+		try
 		{
-			$this->itemsRepository->updateItemOrder($itemId, $key);
+			$this->playlistsService->setUID($this->UID);
+			$this->itemsRepository->beginTransaction();
+			$this->playlistsService->loadPureById($playlistId); // will check for rights
+
+			foreach ($itemsOrder as $key => $itemId)
+			{
+				if ($this->itemsRepository->updateItemOrder($itemId, $key) === 0)
+					throw new ModuleException('items', 'Item order for item_id '.$itemId.' could not be updated');
+			}
+			$this->itemsRepository->commitTransaction();
+			return true;
+		}
+		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
+		{
+			$this->itemsRepository->rollBackTransaction();
+			$this->logger->error('Error item reorder: ' . $e->getMessage());
+			return false;
 		}
 	}
 
@@ -217,7 +224,7 @@ class ItemsService extends AbstractBaseService
 			$playlistData = $this->checkPlaylistAcl($playlistId);
 			$item         = $this->itemsRepository->findFirstBy(['item_id' => $itemId]);
 			if (empty($item))
-				throw new ModuleException('items', 'Item not found');
+				throw new ModuleException('items', 'Item with idem_id: '.$itemId.' not found');
 
 			// todo for Core / Enterprise: Check if item belongs to an admin
 
@@ -227,6 +234,7 @@ class ItemsService extends AbstractBaseService
 
 			$this->itemsRepository->updatePositionsWhenDeleted($playlistId, $item['item_order']);
 
+			$this->playlistMetricsCalculator->setUID($this->UID);
 			$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
 			$this->itemsRepository->commitTransaction();
@@ -236,10 +244,9 @@ class ItemsService extends AbstractBaseService
 		catch (Exception | ModuleException | CoreException | PhpfastcacheSimpleCacheException $e)
 		{
 			$this->itemsRepository->rollBackTransaction();
-			$this->logger->error('Error insert media: ' . $e->getMessage());
+			$this->logger->error('Error delete item: ' . $e->getMessage());
 			return [];
 		}
-
 	}
 
 	/**
@@ -267,6 +274,7 @@ class ItemsService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function updateMetricsRecursively(int $playlistId): void
 	{
@@ -295,7 +303,6 @@ class ItemsService extends AbstractBaseService
 	private function checkPlaylistAcl(int $playlistId): array
 	{
 		$this->playlistsService->setUID($this->UID);
-		$this->playlistMetricsCalculator->setUID($this->UID);
 		$playlistData = $this->playlistsService->loadPlaylistForEdit($playlistId); // also checks rights
 		if (empty($playlistData))
 			throw new ModuleException('items', 'Playlist is not accessible');

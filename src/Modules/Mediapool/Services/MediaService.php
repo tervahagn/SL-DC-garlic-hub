@@ -41,7 +41,7 @@ class MediaService
 	private int $UID;
 	private string $pathOriginals;
 	private string $pathPreviews;
-	private string $pathTumbnails;
+	private string $pathThumbnails;
 
 	/**
 	 * @throws CoreException
@@ -55,7 +55,7 @@ class MediaService
 
 		$this->pathOriginals = $aclValidator->getConfig()->getConfigValue('originals', 'mediapool', 'directories');
 		$this->pathPreviews  = $aclValidator->getConfig()->getConfigValue('previews', 'mediapool', 'directories');
-		$this->pathTumbnails = $aclValidator->getConfig()->getConfigValue('thumbnails', 'mediapool', 'directories');
+		$this->pathThumbnails = $aclValidator->getConfig()->getConfigValue('thumbnails', 'mediapool', 'directories');
 	}
 
 	public function setUID(int $UID): void
@@ -63,9 +63,9 @@ class MediaService
 		$this->UID = $UID;
 	}
 
-	public function getPathTumbnails(): string
+	public function getPathThumbnails(): string
 	{
-		return $this->pathTumbnails;
+		return $this->pathThumbnails;
 	}
 
 	public function getPathOriginals(): string
@@ -91,7 +91,7 @@ class MediaService
 
 				$media['paths']['original']  = $this->pathOriginals.'/'.$media['checksum'].'.'.$media['extension'];
 				$media['paths']['preview']   = $this->pathPreviews.'/'.$media['checksum'].'.'.$media['extension'];
-				$media['paths']['thumbnail'] = $this->pathTumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
+				$media['paths']['thumbnail'] = $this->pathThumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
 			}
 
 			return $result;
@@ -118,7 +118,7 @@ class MediaService
 
 			$media['paths']['original']  = $this->pathOriginals.'/'.$media['checksum'].'.'.$media['extension'];
 			$media['paths']['preview']   = $this->pathPreviews.'/'.$media['checksum'].'.'.$media['extension'];
-			$media['paths']['thumbnail'] = $this->pathTumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
+			$media['paths']['thumbnail'] = $this->pathThumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
 			return $media;
 		}
 		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
@@ -128,7 +128,7 @@ class MediaService
 		}
 	}
 
-	public function fetchMediaByChecksum($checksum)
+	public function fetchMediaByChecksum($checksum): array
 	{
 		$media = $this->mediaRepository->findAllWithOwnerByCheckSum($checksum);
 		$media['metadata'] = json_decode($media['metadata'], true);

@@ -159,9 +159,9 @@ readonly class ItemsController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Items Position array is not valid.']);
 
 		$this->setServiceUID($request);
-		$this->itemsService->updateItemOrder($requestData['playlist_id'], $requestData['items_positions']);
+		$result = $this->itemsService->updateItemOrder($requestData['playlist_id'], $requestData['items_positions']);
 
-		return $this->jsonResponse($response, ['success' => true]);
+		return $this->jsonResponse($response, ['success' => $result]);
 	}
 
 	/**
