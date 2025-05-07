@@ -18,7 +18,7 @@ class PlaylistsServiceTest extends TestCase
 {
 	private LoggerInterface $loggerMock;
 	private readonly PlaylistsRepository $playlistsRepositoryMock;
-	private readonly PlaylistMetricsCalculator	$playlistMetricsCalculatorMock;
+	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
 	private readonly AclValidator $aclValidatorMock;
 	private PlaylistsService $service;
 
@@ -29,12 +29,12 @@ class PlaylistsServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->loggerMock                    = $this->createMock(LoggerInterface::class);
-		$this->playlistsRepositoryMock       = $this->createMock(PlaylistsRepository::class);
-		$this->aclValidatorMock              = $this->createMock(AclValidator::class);
+		$this->loggerMock = $this->createMock(LoggerInterface::class);
+		$this->playlistsRepositoryMock = $this->createMock(PlaylistsRepository::class);
+		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 		$this->playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
 
-		$this->service = new PlaylistsService($this->playlistsRepositoryMock, $this->playlistMetricsCalculatorMock,  $this->aclValidatorMock, $this->loggerMock);
+		$this->service = new PlaylistsService($this->playlistsRepositoryMock, $this->playlistMetricsCalculatorMock, $this->aclValidatorMock, $this->loggerMock);
 	}
 
 	/**
@@ -87,6 +87,159 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->createNew($postData);
 	}
 
+	#[Group('units')]
+	public function testToggleShuffleTurnsOnWhenInitiallyOff(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 123;
+		$playlist = ['playlist_id' => $playlistId, 'shuffle' => 0];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(true);
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('update')
+			->with($playlistId, ['shuffle' => 1])
+			->willReturn(1);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->with(['playlist_id' => $playlistId, 'shuffle' => 1])
+			->willReturn($this->playlistMetricsCalculatorMock);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getMetricsForFrontend')
+			->willReturn(['metric' => 'value']);
+
+		$result = $this->service->toggleShuffle($playlistId);
+
+		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+	}
+
+	#[Group('units')]
+	public function testToggleShuffleTurnsOffWhenInitiallyOn(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 456;
+		$playlist = ['playlist_id' => $playlistId, 'shuffle' => 1];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(true);
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('update')
+			->with($playlistId, ['shuffle' => 0])
+			->willReturn(1);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->with(['playlist_id' => $playlistId, 'shuffle' => 0])
+			->willReturn($this->playlistMetricsCalculatorMock);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getMetricsForFrontend')
+			->willReturn(['metric' => 'value']);
+
+		$result = $this->service->toggleShuffle($playlistId);
+
+		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+	}
+
+	#[Group('units')]
+	public function testToggleShuffleThrowsExceptionWhenPlaylistNotEditable(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 789;
+		$playlist = ['playlist_id' => $playlistId, 'shuffle' => 0];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(false);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Error loading playlist: Is not editable');
+
+		$this->service->toggleShuffle($playlistId);
+	}
+	#[Group('units')]
+	public function testShufflePickingSuccessfullyUpdatesData(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 123;
+		$shufflePicking = 2;
+		$playlist = ['playlist_id' => $playlistId, 'shuffle_picking' => 0];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(true);
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('update')
+			->with($playlistId, ['shuffle_picking' => $shufflePicking])
+			->willReturn(1);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->with(array_merge($playlist, ['shuffle_picking' => $shufflePicking]))
+			->willReturn($this->playlistMetricsCalculatorMock);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getMetricsForFrontend')
+			->willReturn(['metric' => 'value']);
+
+		$result = $this->service->shufflePicking($playlistId, $shufflePicking);
+
+		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+	}
+
+	#[Group('units')]
+	public function testShufflePickingThrowsExceptionWhenPlaylistNotEditable(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 123;
+		$shufflePicking = 2;
+		$playlist = ['playlist_id' => $playlistId, 'shuffle_picking' => 0];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(false);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Error loading playlist: Is not editable');
+
+		$this->service->shufflePicking($playlistId, $shufflePicking);
+	}
+
+	#[Group('units')]
+	public function testShufflePickingThrowsExceptionWhenPlaylistNotFound(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 999;
+		$shufflePicking = 2;
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstBy')
+			->with(['playlist_id' => $playlistId])
+			->willReturn([]);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Error loading playlist. Playlist with Id: 999 not found');
+
+		$this->service->shufflePicking($playlistId, $shufflePicking);
+	}
+
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
@@ -133,6 +286,17 @@ class PlaylistsServiceTest extends TestCase
 			->with(1, $saveData);
 
 		$this->service->updateSecure($postData);
+	}
+
+	#[Group('units')]
+	public function testUpdateExport(): void
+	{
+		$playlistId = 1;
+		$saveData = ['some' => 'save', 'stuff' => 'man'];
+		$this->playlistsRepositoryMock->expects($this->once())->method('updateExport')
+			->with($playlistId, $saveData);
+
+		$this->service->updateExport($playlistId, $saveData);
 	}
 
 	#[Group('units')]
@@ -310,7 +474,6 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEmpty($result);
 
 	}
-
 
 	#[Group('units')]
 	public function testLoadNameByIdSuccessfullyReturnsPlaylistData(): void

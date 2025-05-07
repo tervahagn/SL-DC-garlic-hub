@@ -32,9 +32,9 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
  */
 class PlaylistMetricsCalculator
 {
-	private ItemsRepository $itemsRepository;
-	private AclValidator $aclValidator;
-	private Config $config;
+	private readonly ItemsRepository $itemsRepository;
+	private readonly AclValidator $aclValidator;
+	private readonly Config $config;
 	private int $UID;
 	private int $countEntries;
 	private int $countOwnerEntries;
@@ -49,6 +49,9 @@ class PlaylistMetricsCalculator
 		$this->config           = $config;
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	public function getDefaultDuration(): int
 	{
 		return $this->config->getConfigValue('duration', 'playlists', 'Defaults');
@@ -83,20 +86,20 @@ class PlaylistMetricsCalculator
 	public function getMetricsForFrontend(): array
 	{
 		return [
-			'count_items'       => $this->countEntries,
-			'count_owner_items' => $this->countEntries,
-			'filesize'          => $this->fileSize,
-			'duration'          => $this->duration,
-			'owner_duration'    => $this->ownerDuration
+			'count_items'       => $this->getCountEntries(),
+			'count_owner_items' => $this->countOwnerEntries,
+			'filesize'          => $this->getFileSize(),
+			'duration'          => $this->getDuration(),
+			'owner_duration'    => $this->getOwnerDuration()
 		];
 	}
 
 	public function getMetricsForPlaylistTable(): array
 	{
 		return [
-			'filesize'          => $this->fileSize,
-			'duration'          => $this->duration,
-			'owner_duration'    => $this->ownerDuration
+			'filesize'          => $this->getFileSize(),
+			'duration'          => $this->getDuration(),
+			'owner_duration'    => $this->getOwnerDuration()
 		];
 	}
 
@@ -113,9 +116,13 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
+	 * @param array $playlist
+	 * @param array $items
+	 * @return PlaylistMetricsCalculator
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function calculateFromItems(array $playlist, array $items): static
 	{
@@ -133,21 +140,18 @@ class PlaylistMetricsCalculator
 				$this->ownerDuration += (int) round($item['item_duration']);
 			}
 		}
-		// calculate average durations if shuffle only when results to avoid division through 0.
-		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
-			$this->adjustForShuffle($playlist['shuffle_picking']);
 
-		if ($this->exceedTimeLimit($playlist))
-			new ModuleException('playlist_export',
-				'Exceeds time limit '.$playlist['time_limit'].'s of playlist: '.$playlist['name']);
+		$this->calculateAverageDuration($playlist);
 
 		return $this;
 	}
 
 	/**
+	 * @param array $playlist
 	 * @return $this
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function calculateFromPlaylistData(array $playlist): static
@@ -168,13 +172,7 @@ class PlaylistMetricsCalculator
 		$this->duration          = (int) $tmp['duration'] ?? 0;
 		$this->ownerDuration     = (int) $tmp['owner_duration'] ?? 0; // because some videos are floats!
 
-		// calculate average durations if shuffle only when results to avoid division through 0.
-		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
-			$this->adjustForShuffle($playlist['shuffle_picking']);
-
-		if ($this->exceedTimeLimit($playlist))
-			new ModuleException('playlist_export',
-				'Exceeds time limit '.$playlist['time_limit'].'s of playlist: '.$playlist['name']);
+		$this->calculateAverageDuration($playlist);
 
 		return $this;
 	}
@@ -182,7 +180,7 @@ class PlaylistMetricsCalculator
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
+	 * @throws Exception|ModuleException
 	 */
 	public function calculateRemainingMediaDuration(array $playlist, array $media = [])
 	{
@@ -209,7 +207,7 @@ class PlaylistMetricsCalculator
 	 * @throws CoreException
 	 * @throws Exception
 	 */
-	public function exceedTimeLimit(array $playlist): bool
+	private function exceedTimeLimit(array $playlist): bool
 	{
 		if ($playlist['time_limit'] > 0 &&
 			$this->ownerDuration > $playlist['time_limit'] &&
@@ -218,6 +216,23 @@ class PlaylistMetricsCalculator
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	private function calculateAverageDuration(array $playlist): void
+	{
+		// calculate average durations if shuffle only when results to avoid division through 0.
+		if ($playlist['shuffle'] > 0 && $this->countEntries > 0)
+			$this->adjustForShuffle($playlist['shuffle_picking']);
+
+		if ($this->exceedTimeLimit($playlist))
+			throw new ModuleException('playlist_export',
+				'Exceeds time limit '.$playlist['time_limit'].'s of playlist: '.$playlist['name']);
 	}
 
 	private function adjustForShuffle(int $shufflePicking): void
