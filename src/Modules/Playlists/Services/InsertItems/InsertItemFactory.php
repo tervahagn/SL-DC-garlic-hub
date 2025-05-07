@@ -51,17 +51,12 @@ class InsertItemFactory
 
 	public function create(string $source): ?AbstractInsertItem
 	{
-		switch ($source)
+		$item = match ($source)
 		{
-			case 'mediapool':
-				$item = new Media($this->itemsRepository,	$this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger);
-				break;
-			case 'playlist':
-				$item = new Playlist($this->itemsRepository, $this->playlistsService, $this->playlistMetricsCalculator,	$this->logger);
-				break;
-			default:
-				$item = null;
-		}
+			'mediapool' => new Media($this->itemsRepository, $this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger),
+			'playlist' => new Playlist($this->itemsRepository, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger),
+			default => null,
+		};
 		return $item;
 	}
 
