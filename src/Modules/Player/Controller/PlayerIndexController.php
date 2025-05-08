@@ -39,9 +39,10 @@ class PlayerIndexController
 	}
 
 
-	public function index(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$ownerId    = $this->sanitizer->int($_GET['owner_id'] ?? 0);
+		$get        = $request->getQueryParams();
+		$ownerId    = $this->sanitizer->int($get['owner_id'] ?? 0);
 		$server     = $request->getServerParams();
 		$userAgent  = $server['HTTP_USER_AGENT'];
 		$serverName = $server['SERVER_NAME'];
@@ -62,12 +63,13 @@ class PlayerIndexController
 
 	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
 	{
-		$lastModified = gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT';
+		$fileMTime = $this->indexService->getFileMTime($filePath);
+		$lastModified = gmdate('D, d M Y H:i:s', $fileMTime) . ' GMT';
 		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
 
 		$clientHasModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
 
-		if ($clientHasModifiedSince !== null && (strtotime($clientHasModifiedSince) > filemtime($filePath)))
+		if ($clientHasModifiedSince !== null && (strtotime($clientHasModifiedSince) > $fileMTime))
 		{
 			return $response
 				->withHeader('Cache-Control', $cacheControl)
@@ -91,7 +93,7 @@ class PlayerIndexController
 				->withBody($fileStream)
 				->withHeader('Cache-Control', $cacheControl)
 				->withHeader('Last-Modified', $lastModified)
-				->withHeader('Content-Length', (string)filesize($filePath)) // will not work with php-fpm or nginx
+				->withHeader('Content-Length', (string) $this->indexService->getFileSize($filePath)) // will not work with php-fpm or nginx
 				->withHeader('Content-Type', 'application/smil+xml')
 				->withHeader('Content-Description', 'File Transfer')
 				->withHeader('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"')

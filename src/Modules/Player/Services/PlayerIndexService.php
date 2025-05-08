@@ -59,6 +59,14 @@ class PlayerIndexService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	public function getFileMTime(string $filepath): int
+	{
+		return fileMTime($filepath);
+	}
+	public function getFileSize(string $filepath): int
+	{
+		return filesize($filepath);
+	}
 
 	public function handleIndexRequest(string $userAgent, bool $localPlayer): string
 	{

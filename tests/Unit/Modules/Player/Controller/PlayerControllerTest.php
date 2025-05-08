@@ -18,8 +18,8 @@ class PlayerControllerTest extends TestCase
 	private readonly ServerRequestInterface $requestMock;
 	private readonly Session $sessionMock;
 	private readonly StreamInterface $streamInterfaceMock;
-
 	private PlayerController $playerController;
+
 	protected function setUp(): void
 	{
 		$this->playerServiceMock = $this->createMock(PlayerService::class);
