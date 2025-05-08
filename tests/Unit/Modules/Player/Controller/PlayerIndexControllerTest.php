@@ -3,27 +3,21 @@
 namespace Tests\Unit\Modules\Player\Controller;
 
 use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Services\PlayerIndexService;
-use App\Modules\Player\Services\PlayerService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Stream;
 
 class PlayerIndexControllerTest extends TestCase
 {
 	private readonly PlayerIndexService $playerIndexServiceMock;
 	private readonly Sanitizer $sanitizerMock;
-	private readonly PlayerService $playerServiceMock;
 	private readonly ResponseInterface $responseMock;
 	private readonly ServerRequestInterface $requestMock;
-	private readonly Session $sessionMock;
-	private readonly StreamInterface $streamInterfaceMock;
 	private PlayerIndexController $playerIndexController;
 
 	/**
@@ -33,10 +27,8 @@ class PlayerIndexControllerTest extends TestCase
 	{
 		$this->playerIndexServiceMock = $this->createMock(PlayerIndexService::class);
 		$this->sanitizerMock          = $this->createMock(Sanitizer::class);
-		$this->playerServiceMock      = $this->createMock(PlayerService::class);
 		$this->requestMock            = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock           = $this->createMock(ResponseInterface::class);
-		$this->sessionMock            = $this->createMock(Session::class);
 
 		$this->playerIndexController = new PlayerIndexController($this->playerIndexServiceMock, $this->sanitizerMock);
 	}
@@ -62,10 +54,13 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock, []);
+		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIndexReturnsBody(): void
 	{

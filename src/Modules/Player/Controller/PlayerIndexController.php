@@ -26,10 +26,10 @@ use App\Modules\Player\Services\PlayerIndexService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlayerIndexController
+readonly class PlayerIndexController
 {
-	private readonly PlayerIndexService $indexService;
-	private readonly Sanitizer $sanitizer;
+	private PlayerIndexService $indexService;
+	private Sanitizer $sanitizer;
 
 	public function __construct(PlayerIndexService $indexService, Sanitizer $sanitizer)
 	{

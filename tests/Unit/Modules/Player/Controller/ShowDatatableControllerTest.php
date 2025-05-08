@@ -1,21 +1,26 @@
 <?php
 
-namespace Tests\Unit\Modules\Playlists\Controller;
+namespace Tests\Unit\Modules\Player\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
-use App\Modules\Playlists\Controller\ShowDatatableController;
+use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
-	private readonly ShowDatatableController $controller;
 	private readonly Facade $facadeMock;
 	private readonly DatatableTemplatePreparer $templatePreparerMock;
 	private readonly ServerRequestInterface $requestMock;
@@ -23,7 +28,11 @@ class ShowDatatableControllerTest extends TestCase
 	private readonly Translator $translatorMock;
 	private readonly Session $sessionMock;
 	private readonly StreamInterface $streamInterfaceMock;
+	private readonly ShowDatatableController $controller;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->facadeMock           = $this->createMock(Facade::class);
@@ -38,6 +47,13 @@ class ShowDatatableControllerTest extends TestCase
 		$this->controller = new ShowDatatableController($this->facadeMock, $this->templatePreparerMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowMethodReturnsResponseWithSerializedTemplateData(): void
 	{
@@ -46,7 +62,6 @@ class ShowDatatableControllerTest extends TestCase
 				['translator', null, $this->translatorMock],
 				['session', null, $this->sessionMock],
 			]);
-
 		$this->facadeMock->expects($this->once())->method('configure')
 			->with($this->translatorMock, $this->sessionMock);
 
@@ -60,12 +75,7 @@ class ShowDatatableControllerTest extends TestCase
 			->with(['dataGrid' => 'value'])
 			->willReturn($templateData);
 
-		$templateData['this_layout']['data']['create_playlist_contextmenu'] = ['a contextmenu stub'];
-
-		$this->facadeMock->expects($this->once())->method('prepareContextMenu')->willReturn( ['a contextmenu stub']);
-
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
-
 		$this->streamInterfaceMock->expects($this->once())->method('write')
 			->with(serialize($templateData));
 
@@ -73,7 +83,7 @@ class ShowDatatableControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')
-		    ->with(200);
+			->with(200);
 
 		$response = $this->controller->show($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $response);

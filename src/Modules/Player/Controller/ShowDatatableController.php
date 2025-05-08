@@ -25,7 +25,6 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Modules\Player\Helper\Datatable\ControllerFacade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -60,7 +59,7 @@ readonly class ShowDatatableController
 	//	$templateData['this_layout']['data']['create_player_settings_contextmenu'] = $this->facade->preparePlayerSettingsContextMenu();
 		$response->getBody()->write(serialize($templateData));
 
-		return $response->withHeader('Content-Type', 'text/html');
+		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
 
 }

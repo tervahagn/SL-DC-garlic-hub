@@ -6,6 +6,7 @@ use App\Framework\Core\Session;
 use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Services\PlayerService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,6 +21,9 @@ class PlayerControllerTest extends TestCase
 	private readonly StreamInterface $streamInterfaceMock;
 	private PlayerController $playerController;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->playerServiceMock = $this->createMock(PlayerService::class);
