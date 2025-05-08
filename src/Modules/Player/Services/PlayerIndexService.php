@@ -30,6 +30,7 @@ use App\Modules\Player\IndexCreation\IndexProvider;
 use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
+use Slim\Psr7\Stream;
 use Throwable;
 /*
 1. parse User Agent
@@ -63,9 +64,15 @@ class PlayerIndexService extends AbstractBaseService
 	{
 		return fileMTime($filepath);
 	}
+
 	public function getFileSize(string $filepath): int
 	{
 		return filesize($filepath);
+	}
+
+	public function createStream(string $filePath): Stream
+	{
+		return new Stream(fopen($filePath, 'rb'));
 	}
 
 	public function handleIndexRequest(string $userAgent, bool $localPlayer): string

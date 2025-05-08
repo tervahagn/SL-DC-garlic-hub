@@ -25,7 +25,6 @@ use App\Framework\Core\Sanitizer;
 use App\Modules\Player\Services\PlayerIndexService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Psr7\Stream;
 
 class PlayerIndexController
 {
@@ -88,7 +87,7 @@ class PlayerIndexController
 		else
 		{
 			// not cached or cache outdated, 200 OK send index.smil
-			$fileStream = new Stream(fopen($filePath, 'rb'));
+			$fileStream = $this->indexService->createStream($filePath);
 			return $response
 				->withBody($fileStream)
 				->withHeader('Cache-Control', $cacheControl)

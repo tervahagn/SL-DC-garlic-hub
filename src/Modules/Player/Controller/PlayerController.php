@@ -38,11 +38,11 @@ class PlayerController
 	public function replacePlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$post       = $request->getParsedBody();
-		$playerId = (int) $post['player_id'] ?? 0;
+		$playerId = isset($post['player_id']) ? (int) $post['player_id'] : 0;
 		if ($playerId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player ID not valid.']);
 
-		$playlistId = (int) $post['playlist_id'] ?? 0;
+		$playlistId = isset($post['playlist_id']) ? (int) $post['playlist_id'] : 0;
 
 		$session = $request->getAttribute('session');
 		$this->playerService->setUID($session->get('user')['UID']);
