@@ -36,7 +36,6 @@ readonly class PlayerEntityFactory
 		$this->config = $config;
 	}
 
-
 	function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
 	{
 		return new PlayerEntity($this->config, $userAgentHandler, $data);

@@ -189,7 +189,7 @@ class PlayerEntity
 		return $this->playerName;
 	}
 
-	public function getLocationData(): ?string
+	public function getLocationData(): array
 	{
 		return $this->locationData;
 	}
