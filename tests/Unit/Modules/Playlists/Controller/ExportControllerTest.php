@@ -70,6 +70,7 @@ class ExportControllerTest extends TestCase
 	{
 		$post = ['playlist_id' => 69];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->exportServiceMock->method('setUID')->with(456);
