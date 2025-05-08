@@ -80,8 +80,9 @@ class DatatablePreparer extends AbstractDatatablePreparer
 					case 'playlist_id':
 						if ($player['status'] == PlayerStatus::RELEASED->value)
 						{
-							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name'] ?? '');
-						} else
+							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name']);
+						}
+						else
 						{
 							$resultElements['is_text'] = '';
 						}
@@ -94,14 +95,25 @@ class DatatablePreparer extends AbstractDatatablePreparer
 			}
 			if ($player['status'] == PlayerStatus::RELEASED->value)
 			{
+				$translation = $this->translator->translate('select_playlist', 'player');
 				$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
-					$this->translator->translate('select_playlist', 'player'),'#','edit', $player['playlist_id'], 'pencil select-playlist'
+					$translation,'#','edit', $player['playlist_id'], 'pencil select-playlist'
 				);
 
 				if ($player['playlist_id'] > 0)
 				{
-					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('remove_playlist', 'player'), '#', 'playlist', $player['playlist_id'], 'x-circle remove-playlist');
-					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction($this->translator->translate('goto_playlist', 'player'), '/playlists/compose/' . $player['playlist_id'], 'playlist', $player['playlist_id'], 'music-note-list playlist-link');
+					$translation = $this->translator->translate('remove_playlist', 'player');
+
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
+						$translation, '#','playlist', $player['playlist_id'], 'x-circle remove-playlist'
+					);
+
+					$translation = $this->translator->translate('goto_playlist', 'player');
+					$link = '/playlists/compose/' . $player['playlist_id'];
+
+					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
+						$translation, $link, 'playlist', $player['playlist_id'], 'music-note-list playlist-link'
+					);
 				}
 			}
 			$body[] = $list;
@@ -130,12 +142,9 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	{
 		$list = $this->translator->translateArrayForOptions('settings_selects', 'player');
 		$data = [];
-		$edition = $this->aclValidator->getConfig()->getEdition();
+		//$edition = $this->aclValidator->getConfig()->getEdition();
 		foreach ($list as $key => $value)
 		{
-			if ($edition === Config::PLATFORM_EDITION_EDGE && (!$this->isSettingAllowedInEdge($key) || !$this->isSettingAllowedForUser($key)))
-				continue;
-
 			$data[] = [
 				'PLAYER_SETTINGS' => $key,
 				'LANG_PLAYER_SETTINGS' => $value
@@ -144,20 +153,12 @@ class DatatablePreparer extends AbstractDatatablePreparer
 		return $data;
 	}
 
-	private function isSettingAllowedInEdge(string $key): bool
-	{
-		return true;
-	}
 
-	private function isSettingAllowedForUser(string $key): bool
-	{
-		return true;
-	}
-
-
+/*
 	private function convertSeconds(string $seconds): string
 	{
 		$dtT = new DateTime("@$seconds");
 		return (new DateTime("@0"))->diff($dtT)->format('%H:%I:%S');
 	}
+*/
 }

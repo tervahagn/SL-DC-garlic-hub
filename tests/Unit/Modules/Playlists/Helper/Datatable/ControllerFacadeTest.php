@@ -101,7 +101,6 @@ class ControllerFacadeTest extends TestCase
 	#[Group('units')]
 	public function testPrepareDataGrid(): void
 	{
-		// Arrange
 		$this->datatableBuilderMock->expects($this->once())->method('buildTitle');
 		$this->datatableBuilderMock->expects($this->once())->method('collectFormElements');
 		$this->datatableBuilderMock->expects($this->once())
@@ -109,11 +108,7 @@ class ControllerFacadeTest extends TestCase
 			->with(42);
 		$this->datatableBuilderMock->expects($this->once())->method('createDropDown');
 		$this->datatableBuilderMock->expects($this->once())->method('createTableFields');
-
-		// Act
 		$result = $this->controllerFacade->prepareDataGrid();
-
-		// Assert
 		$this->assertSame($this->controllerFacade, $result);
 	}
 

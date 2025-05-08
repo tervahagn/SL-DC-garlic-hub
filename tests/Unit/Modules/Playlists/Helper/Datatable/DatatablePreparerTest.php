@@ -39,13 +39,11 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparerTest extends TestCase
 {
-
 	private readonly PrepareService $prepareServiceMock;
 	private readonly AclValidator $aclValidatorMock;
-	private readonly DatatablePreparer $datatablePreparer;
 	private readonly BodyPreparer $bodyPreparerMock;
-
 	private readonly Translator $translatorMock;
+	private readonly DatatablePreparer $datatablePreparer;
 
 	/**
 	 * @throws Exception
