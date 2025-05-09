@@ -23,14 +23,15 @@ namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
+use League\Flysystem\FilesystemException;
 
 class IndexProvider
 {
 	private readonly Config $config;
 	private readonly IndexCreator $indexCreator;
-	private readonly string $systemPath;
 	private string $filePath;
 
 	public function __construct(Config $config, IndexCreator $indexCreator)
@@ -69,6 +70,8 @@ class IndexProvider
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws FilesystemException
 	 */
 	public function handleReleased(PlayerEntity $playerEntity): void
 	{

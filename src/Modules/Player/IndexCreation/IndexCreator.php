@@ -23,19 +23,20 @@ namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
+use League\Flysystem\FilesystemException;
 
 class IndexCreator
 {
-	private PlaylistBuilderFactory $playlistBuilderFactory;
-	private IndexTemplateSelector $templateSelector;
-	private IndexFile $indexFile;
-	private TemplatePreparer $templatePreparer;
-	private AdapterInterface $templateService;
-
+	private readonly PlaylistBuilderFactory $playlistBuilderFactory;
+	private readonly IndexTemplateSelector $templateSelector;
+	private readonly IndexFile $indexFile;
+	private readonly TemplatePreparer $templatePreparer;
+	private readonly AdapterInterface $templateService;
 	private string $indexFilePath = '';
 
 	public function __construct(PlaylistBuilderFactory $playlistBuilderFactory,
@@ -51,6 +52,11 @@ class IndexCreator
 		$this->templateService = $templateService;
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FilesystemException
+	 * @throws CoreException
+	 */
 	public function createForReleasedPlayer(PlayerEntity $playerEntity, Config $config): void
 	{
 		$this->indexFilePath = $config->getConfigValue('path_smil_index', 'player').
@@ -66,11 +72,9 @@ class IndexCreator
 			->getTemplateData()
 		;
 
-
 		$smilIndex = $this->templateService->render('player/index/'.$indexTemplate->value, $templateData);
 
 		$this->indexFile->setIndexFilePath($this->indexFilePath)->handleIndexFile($smilIndex);
-
 	}
 
 	public function getIndexFilePath(): string
