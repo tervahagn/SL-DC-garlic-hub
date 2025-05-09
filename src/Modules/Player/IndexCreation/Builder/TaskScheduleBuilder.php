@@ -31,11 +31,9 @@ class TaskScheduleBuilder
 		return $this->isReplacedSomething;
 	}
 
-	public function setIsReplacedSomething(bool $isReplacedSomething): static
+	public function getTemplate(): array
 	{
-		$this->isReplacedSomething = $isReplacedSomething;
-
-		return $this;
+		return $this->template;
 	}
 
 	public function replaceRebootBlock(): static
@@ -115,7 +113,7 @@ class TaskScheduleBuilder
 
 	protected function generateTaskId(): string
 	{
-		$this->setIsReplacedSomething(true);
+		$this->isReplacedSomething = true;
 		return uniqid(rand());
 	}
 

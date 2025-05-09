@@ -84,7 +84,6 @@ class TemplatePreparer
 	{
 		$this->prepareStandards();
 		$this->subscriptions = $this->preparerFactory->create(IndexSections::SUBSCRIPTIONS, $this->playerEntity)->prepare();
-		$this->layout        = $this->preparerFactory->create(IndexSections::LAYOUT, $this->playerEntity)->prepare();
 		$this->standby_times = $this->preparerFactory->create(IndexSections::STANDBY_TIMES, $this->playerEntity)->prepare();
 		$playlist            = $this->preparerFactory->create(IndexSections::PLAYLIST, $this->playerEntity);
 
@@ -118,9 +117,7 @@ class TemplatePreparer
 	{
 		$this->templateData = [
 			'meta' => $this->meta,
-			'subscriptions' => $this->subscriptions,
 			'layout' => $this->layout,
-			'standby_times' => $this->standby_times,
 			'playlist' => $this->playlist,
 		];
 	}
@@ -129,7 +126,9 @@ class TemplatePreparer
 	{
 		$this->templateData = [
 			'meta' => $this->meta,
+			'subscriptions' => $this->subscriptions,
 			'layout' => $this->layout,
+			'standby_times' => $this->standby_times,
 			'playlist' => $this->playlist,
 		];
 	}
