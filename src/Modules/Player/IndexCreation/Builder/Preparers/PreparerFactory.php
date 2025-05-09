@@ -26,9 +26,6 @@ use App\Modules\Player\Enums\IndexSections;
 
 class PreparerFactory
 {
-
-
-
 	public function create(IndexSections $indexSections, PlayerEntity $playerEntity): PreparerInterface
 	{
 		switch ($indexSections)
@@ -43,8 +40,6 @@ class PreparerFactory
 				return new ScreenTimesPreparer($playerEntity);
 			case IndexSections::PLAYLIST:
 				return new PlaylistPreparer($playerEntity);
-			case IndexSections::CATEGORIES:
-				return new CategoriesPreparer($playerEntity);
 		}
 	}
 }

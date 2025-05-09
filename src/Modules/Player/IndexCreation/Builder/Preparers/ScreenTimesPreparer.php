@@ -28,7 +28,6 @@ use Exception;
 
 class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 {
-
 	private string $current_date = 'now';
 	private array $begin         = [];
 	private array $end           = [];
@@ -39,7 +38,7 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	 */
 	public function prepare(): array
 	{
-		if ($this->playerEntity->getModel() != PlayerModel::GARLIC->value)
+		if ($this->playerEntity->getModel() != PlayerModel::GARLIC)
 			return [];
 
 		$this->determineStandByTimes($this->playerEntity->getScreenTimes());
@@ -73,10 +72,12 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	/**
 	 * @throws DateMalformedStringException
 	 */
-	public function determineStandByTimes(array $screenTimes): static
+	private function determineStandByTimes(array $screenTimes): void
 	{
 		if (!$this->isScreenTimeValid($screenTimes))
-			return $this;
+		{
+			return;
+		}
 
 		$wallclock = $this->simplifyWallclockDatePart();
 
@@ -91,15 +92,7 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 					$this->begin[] = $wallclock.$day.$value['end'].':00/P1W)';
 			}
 		}
-
-		if (empty($this->begin))
-			$this->begin[] = $wallclock.'+w1T00:00:00/P1W)';
-		if (empty($this->end))
-			$this->end[] = $wallclock.'+w7T23:59:59/P1W)';
-
-		return $this;
 	}
-
 
 	/**
 	 * @throws DateMalformedStringException

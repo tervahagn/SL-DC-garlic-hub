@@ -28,23 +28,24 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		$subscriptions = [];
 
 		if (!empty($this->playerEntity->getCommands()))
-		{
 			$subscriptions[] = $this->replaceTaskSchedule();
-		}
-		if ($this->playerEntity->getReports() > 0)
-		{
-			$reports = $this->playerEntity->getReports();
-			if (isset($reports['inventory']))
-				$subscriptions[] = $this->replaceReportInventory();
-			if (isset($reports['play']))
-				$subscriptions[] = $this->replaceReportPlayed();
-			if (isset($reports['events']))
-				$subscriptions[] = $this->replaceReportEvents();
-			if (isset($reports['configuration']))
-				$subscriptions[] = $this->replaceSystemConfiguration();
-			if (isset($reports['executions']))
-				$subscriptions[] = $this->replaceTasksExecutions();
-		}
+
+		if (count($this->playerEntity->getReports()) === 0)
+			return $subscriptions;
+
+		$reports = $this->playerEntity->getReports();
+
+		if (isset($reports['inventory']))
+			$subscriptions[] = $this->replaceReportInventory();
+		if (isset($reports['play']))
+			$subscriptions[] = $this->replaceReportPlayed();
+		if (isset($reports['events']))
+			$subscriptions[] = $this->replaceReportEvents();
+		if (isset($reports['configuration']))
+			$subscriptions[] = $this->replaceSystemConfiguration();
+		if (isset($reports['executions']))
+			$subscriptions[] = $this->replaceTasksExecutions();
+
 		return $subscriptions;
 	}
 
@@ -70,12 +71,11 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 	protected function replaceReportPlayed(): array
 	{
 		return [
-			'SUBSCRIPTION_TYPE', 'PlaylogCollection',
-			'SUBSCRIPTION_ACTION', $this->playerEntity->getReportServer(),
-			'SUBSCRIPTION_METHOD', 'put'
+			'SUBSCRIPTION_TYPE' => 'PlaylogCollection',
+			'SUBSCRIPTION_ACTION' => $this->playerEntity->getReportServer(),
+			'SUBSCRIPTION_METHOD' => 'put'
 		];
 	}
-
 
 	protected function replaceReportEvents(): array
 	{
@@ -101,9 +101,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 	protected function replaceTasksExecutions(): array
 	{
 		return [
-			'SUBSCRIPTION_TYPE', 'TaskExecutionReport',
-			'SUBSCRIPTION_ACTION', $this->playerEntity->getReportServer() . '/task_execution-' . $this->playerEntity->getUuid(). '.xml',
-			'SUBSCRIPTION_METHOD', 'put'
+			'SUBSCRIPTION_TYPE' => 'TaskExecutionReport',
+			'SUBSCRIPTION_ACTION' => $this->playerEntity->getReportServer() . '/task_execution-' . $this->playerEntity->getUuid(). '.xml',
+			'SUBSCRIPTION_METHOD' => 'put'
 		];
 	}
 }
