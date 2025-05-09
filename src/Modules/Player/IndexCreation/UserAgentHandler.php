@@ -25,7 +25,7 @@ use App\Modules\Player\Enums\PlayerModel;
 
 class UserAgentHandler
 {
-	private PlayerDetector $playerDetector;
+	private readonly PlayerDetector $playerDetector;
 	private string $uuid;
 	private string $firmware;
 	private string $name;
@@ -34,6 +34,16 @@ class UserAgentHandler
 	public function __construct(PlayerDetector $playerDetector)
 	{
 		$this->playerDetector = $playerDetector;
+	}
+
+	public function getInfo(): array
+	{
+		return [
+			'uuid'     => $this->getUuid(),
+			'firmware' => $this->getFirmware(),
+			'name'     => $this->getName(),
+			'model'    => $this->getModel(),
+		];
 	}
 
 	public function getUuid(): string

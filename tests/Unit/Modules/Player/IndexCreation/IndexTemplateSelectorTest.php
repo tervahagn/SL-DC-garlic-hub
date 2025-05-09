@@ -7,6 +7,7 @@ use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\Enums\TemplateIndexFiles;
 use App\Modules\Player\IndexCreation\IndexTemplateSelector;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class IndexTemplateSelectorTest extends TestCase
@@ -14,6 +15,9 @@ class IndexTemplateSelectorTest extends TestCase
 	private IndexTemplateSelector $selector;
 	private PlayerEntity $playerEntityMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		parent::setUp();

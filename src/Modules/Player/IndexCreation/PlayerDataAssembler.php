@@ -21,6 +21,7 @@
 
 namespace App\Modules\Player\IndexCreation;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Entities\PlayerEntityFactory;
@@ -33,14 +34,17 @@ class PlayerDataAssembler
 {
 	private UserAgentHandler $userAgentHandler;
 	private readonly PlayerIndexRepository $playerRepository;
+	private readonly Config $config;
 	private readonly PlayerEntityFactory $playerEntityFactory;
 
 	public function __construct(UserAgentHandler $userAgentHandler,
 		PlayerIndexRepository $playerRepository,
+		Config $config,
 		PlayerEntityFactory $playerEntityFactory)
 	{
 		$this->userAgentHandler = $userAgentHandler;
 		$this->playerRepository = $playerRepository;
+		$this->config           = $config;
 		$this->playerEntityFactory = $playerEntityFactory;
 	}
 
@@ -70,8 +74,6 @@ class PlayerDataAssembler
 			$id = $this->playerRepository->insertPlayer(array_merge($saveData, $result));
 			if ($id === 0)
 				throw new ModuleException('player_index', 'Failed to insert local player');
-
-
 		}
 		else if ($result['uuid'] !== $this->userAgentHandler->getUuid())
 			throw new ModuleException('player_index', 'Wrong Uuid for local player: '. $result['uuid'] .' != Agent'. $this->userAgentHandler->getUuid());
@@ -86,7 +88,13 @@ class PlayerDataAssembler
 	public function insertNewPlayer(int $ownerId): PlayerEntity
 	{
 		$saveData = $this->buildInsertArray($ownerId);
-		$id       = $this->playerRepository->insertPlayer($saveData);
+
+		if($this->config->getEdition() === Config::PLATFORM_EDITION_EDGE)
+			$saveData = array_merge($saveData, ['status' => PlayerStatus::RELEASED->value, 'licence_id' => 1]);
+
+		// Todo: integrate license system to handle free licenses
+
+		$id = $this->playerRepository->insertPlayer($saveData);
 		if ($id === 0)
 			throw new ModuleException('player_index', 'Failed to insert local player');
 
@@ -127,7 +135,7 @@ class PlayerDataAssembler
 		];
 	}
 
-	private function buildUpdateArray(): array
+/*	private function buildUpdateArray(): array
 	{
 		return [
 			'player_name' => $this->userAgentHandler->getName(),
@@ -136,5 +144,5 @@ class PlayerDataAssembler
 			'last_access' => date('Y-m-d H:i:s')
 		];
 	}
-
+*/
 }

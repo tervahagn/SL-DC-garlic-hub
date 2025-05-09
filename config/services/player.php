@@ -108,6 +108,7 @@ $dependencies[PlayerDataAssembler::class] = DI\factory(function (ContainerInterf
 	return new PlayerDataAssembler(
 		new UserAgentHandler(new PlayerDetector($container->get(Config::class))),
 		$container->get(PlayerIndexRepository::class),
+		$container->get(Config::class),
 		new PlayerEntityFactory($container->get(Config::class))
 	);
 });

@@ -21,11 +21,6 @@ class PlayerDetector
 		return $this->modelId;
 	}
 
-	public function isAllowedPlayer(): bool
-	{
-		return !($this->modelId === PlayerModel::UNKNOWN);
-	}
-
 	public function detectModelId($modelName): static
 	{
 		$this->modelId = match ($modelName)

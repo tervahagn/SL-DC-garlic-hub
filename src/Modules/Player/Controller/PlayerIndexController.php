@@ -37,7 +37,6 @@ readonly class PlayerIndexController
 		$this->sanitizer     = $sanitizer;
 	}
 
-
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$get        = $request->getQueryParams();
