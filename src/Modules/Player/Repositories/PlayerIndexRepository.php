@@ -43,6 +43,16 @@ class PlayerIndexRepository extends Sql
 	/**
 	 * @throws Exception
 	 */
+	public function insertPlayer(array $saveData): int
+	{
+		$saveData = $this->implodeSaveData($saveData);
+
+		return $this->insert($saveData);
+	}
+
+	/**
+	 * @throws Exception
+	 */
 	public function findPlayerById(string $Id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
@@ -54,16 +64,6 @@ class PlayerIndexRepository extends Sql
 			return [];
 
 		return $this->expandResult($result);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function insertPlayer(array $saveData): int
-	{
-		$saveData = $this->implodeSaveData($saveData);
-
-		return $this->insert($saveData);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class PlayerIndexRepository extends Sql
 	{
 		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times');
 		$queryBuilder->from($this->table);
-		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id =' . $this->table . '.playlist_id');
+		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id = ' . $this->table . '.playlist_id');
 	}
 
 	private function expandResult(array $result): array
