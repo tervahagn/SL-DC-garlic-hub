@@ -48,6 +48,30 @@ class FindOperationsTraitTest extends TestCase
 		$this->repository = new SqlConcreteTrait($this->connectionMock, 'test_table', 'test_id');
 	}
 
+	#[Group('units')]
+	public function testFindFirstById()
+	{
+		$id = '65';
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('*')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('test_table')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('test_id = :id')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('id', $id)
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([[1], [2], [3]]);
+
+		$this->assertEquals([1], $this->repository->findFirstById($id));
+	}
+
 	/**
 	 * @throws Exception
 	 */
@@ -99,9 +123,9 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn($this->resultMock);
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
-			->willReturn([array(1, 2)]);
+			->willReturn([[1], [2]]);
 
-		$this->assertEquals([array(1, 2)], $this->repository->findById($id));
+		$this->assertEquals([[1], [2]], $this->repository->findById($id));
 	}
 
 	/**
