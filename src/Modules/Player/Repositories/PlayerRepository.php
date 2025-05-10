@@ -38,8 +38,8 @@ class PlayerRepository extends FilterBase
 	protected function prepareJoin(): array
 	{
 		return [
-			'user_main' => 'user_main.UID=' . $this->table . '.UID',
-			'playlists' => 'playlists.playlist_id =' . $this->table . '.playlist_id'
+			'user_main' => 'user_main.UID = ' . $this->table . '.UID',
+			'playlists' => 'playlists.playlist_id = ' . $this->table . '.playlist_id'
 		];
 	}
 
@@ -65,15 +65,15 @@ class PlayerRepository extends FilterBase
 						break;
 
 				if ($parameter['value'] === PlayerActivity::ACTIVE->value)
-					$where[] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) < refresh * 2';
+					$where[$key] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) < refresh * 2';
 				else
-					$where[] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) > refresh * 2';
+					$where[$key] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) > refresh * 2';
 					break;
 
 				case 'playlist_id':
 					if ($parameter['value'] > 0)
 					{
-						$where[] = 'playlist_id = '. $parameter['value'];
+						$where[$key] = $parameter['value'];
 					}
 					break;
 
