@@ -33,6 +33,7 @@ use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\TextField;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -59,6 +60,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder = new DatatableBuilder($this->buildServiceMock, $this->parametersMock, $this->aclValidatorMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersDoesNothingForEdgeEdition(): void
 	{
@@ -295,6 +302,31 @@ class DatatableBuilderTest extends TestCase
 
 		$this->builder->createTableFields();
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	#[Group('units')]
+	public function testDetermineAllowedPlayerModessForEdgeEdition(): void
+	{
+		$configMock = $this->createMock(Config::class);
+		$this->aclValidatorMock->method('getConfig')->willReturn($configMock);
+		$configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+
+		$translatorMock = $this->createMock(Translator::class);
+		$this->builder->setTranslator($translatorMock);
+		$translatorMock->method('translateArrayForOptions')
+			->with('playlist_mode_selects', 'playlists')
+			->willReturn([PlaylistMode::MASTER->value => 'Master', PlaylistMode::CHANNEL->value => 'Channel', PlaylistMode::EXTERNAL->value => 'External']);
+
+		$result = $this->builder->determineAllowedPlaylistModes();
+		$this->assertSame([PlaylistMode::MASTER->value => 'Master'], $result);
+
+	}
+
 
 
 }
