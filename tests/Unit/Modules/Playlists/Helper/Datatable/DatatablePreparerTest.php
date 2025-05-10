@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Modules\Playlists\Helper\Datatable;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -30,6 +31,7 @@ use App\Framework\Utils\Datatable\Results\BodyPreparer;
 use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -279,7 +281,6 @@ class DatatablePreparerTest extends TestCase
 		$this->assertEquals('some_value', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
 	}
 
-
 	/**
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -292,7 +293,7 @@ class DatatablePreparerTest extends TestCase
 
 		$this->translatorMock->method('translateArrayForOptions')
 			->with('playlist_mode_selects', 'playlists')
-			->willReturn(['master' => 'Master', 'slave' => 'Slave']);
+			->willReturn([PlaylistMode::MASTER->value => 'Master', 'slave' => 'Slave']);
 
 		$result = $this->datatablePreparer->formatPlaylistContextMenu();
 
@@ -306,4 +307,29 @@ class DatatablePreparerTest extends TestCase
 			$result
 		);
 	}
+
+	#[Group('units')]
+	public function testFormatPlaylistContextMenuEdgeForbidden(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$configMock = $this->createMock(Config::class);
+		$this->aclValidatorMock->method('getConfig')->willReturn($configMock);
+		$configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+
+		$this->translatorMock->method('translateArrayForOptions')
+			->with('playlist_mode_selects', 'playlists')
+			->willReturn([PlaylistMode::MASTER->value => 'Master', PlaylistMode::CHANNEL->value => 'Channel', PlaylistMode::EXTERNAL->value => 'External']);
+
+		$result = $this->datatablePreparer->formatPlaylistContextMenu();
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertEquals(
+			[
+				['CREATE_PLAYLIST_MODE' => 'master', 'LANG_CREATE_PLAYLIST_MODE' => 'Master']
+			],
+			$result
+		);
+	}
+
 }
