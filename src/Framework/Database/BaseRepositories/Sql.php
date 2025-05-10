@@ -210,7 +210,7 @@ abstract class Sql
 	{
 		$result =  $queryBuilder->executeQuery()->fetchAssociative();
 
-		if (($result === false))
+		if ($result === false)
 			return [];
 
 		return $result;
@@ -221,11 +221,7 @@ abstract class Sql
 		if (empty($data))
 			return [];
 
-		$ar = explode(',', $data);
-		if (!is_array($ar))
-			return [];
-
-		return $ar;
+		return explode(',', $data);
 	}
 
 	protected function secureUnserialize(string $data): array

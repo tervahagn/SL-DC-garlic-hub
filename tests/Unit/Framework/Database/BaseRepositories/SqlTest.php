@@ -28,7 +28,27 @@ use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class SqlConcrete extends Sql{}
+class SqlConcrete extends Sql
+{
+	/**
+	 * @throws Exception
+	 */
+	public function testFetchAssociative(QueryBuilder $queryBuilder): array
+	{
+		return $this->fetchAssociative($queryBuilder);
+	}
+
+	public function testSecureExplode(string $data): array
+	{
+		return $this->secureExplode($data);
+	}
+
+	public function testSecureUnserialize(string $data): array
+	{
+		return $this->secureUnserialize($data);
+	}
+
+}
 class SqlTest extends TestCase
 {
 	private Connection	 $connectionMock;
@@ -203,4 +223,70 @@ class SqlTest extends TestCase
 
 		$this->assertEquals(365, $this->repository->deleteBy($conditions));
 	}
+
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFetchAssociativeFails()
+	{
+		$resultMock = $this->createMock(Result::class);
+		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
+		$resultMock->method('fetchAssociative')->willReturn(false);
+
+		$this->assertEmpty($this->repository->testFetchAssociative($this->queryBuilderMock));
+	}
+
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFetchAssociativeSucceed()
+	{
+		$resultMock = $this->createMock(Result::class);
+		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
+		$expected = ['some' => 'result'];
+		$resultMock->method('fetchAssociative')->willReturn($expected);
+
+		$this->assertSame($expected, $this->repository->testFetchAssociative($this->queryBuilderMock));
+	}
+
+	#[Group('units')]
+	public function testSecureExplodeEmpty()
+	{
+		$this->assertEmpty($this->repository->testSecureExplode(''));
+	}
+
+	#[Group('units')]
+	public function testSecureExplode()
+	{
+		$expected = ['some'];
+		$this->assertSame($expected, $this->repository->testSecureExplode('some'));
+
+		$expected = ['some', 'result'];
+		$this->assertSame($expected, $this->repository->testSecureExplode('some,result'));
+	}
+
+	#[Group('units')]
+	public function testSecureUnserializeEmpty()
+	{
+		$this->assertEmpty($this->repository->testSecureUnserialize(''));
+	}
+
+	#[Group('units')]
+	public function testSecureUnserializeError()
+	{
+		$this->assertEmpty($this->repository->testSecureUnserialize('mbmb'));
+	}
+
+	#[Group('units')]
+	public function testSecureUnserialize()
+	{
+		$expected = ['some', 'array', 'result'];
+		$result = $this->repository->testSecureUnserialize(serialize($expected));
+		$this->assertSame($expected, $result);
+	}
+
 }
