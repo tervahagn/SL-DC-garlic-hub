@@ -62,7 +62,7 @@ class PlayerIndexService extends AbstractBaseService
 
 	public function getFileMTime(string $filepath): int
 	{
-		return fileMTime($filepath);
+		return filemTime($filepath);
 	}
 
 	public function getFileSize(string $filepath): int
@@ -129,11 +129,6 @@ class PlayerIndexService extends AbstractBaseService
 				break;
 			case PlayerStatus::TEST_SMIL_ERROR->value:
 				$this->indexProvider->handleCorruptSMIL();
-				break;
-			case PlayerStatus::TEST_EXCEPTION->value:
-				throw new ModuleException('player_index', 'Simulated exception accessing SMIL index!<br />');
-			case PlayerStatus::TEST_NO_INDEX->value:
-				header('Location: https://www.google.com');
 				break;
 			case PlayerStatus::TEST_NO_CONTENT->value:
 				$this->indexProvider->handleCorruptContent();

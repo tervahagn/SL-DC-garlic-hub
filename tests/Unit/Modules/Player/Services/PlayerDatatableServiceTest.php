@@ -22,7 +22,7 @@ class PlayerDatatableServiceTest extends TestCase
 	private readonly PlayerDatatableService $service;
 
 	/**
-	 * @throws Exception
+	 * @throws Exception|\PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{

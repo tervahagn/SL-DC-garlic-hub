@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\unit\Modules\Player\Repositories;
+namespace Tests\Unit\Modules\Player\Repositories;
 
 use App\Modules\Player\Repositories\PlayerIndexRepository;
 use Doctrine\DBAL\Connection;
@@ -40,7 +40,7 @@ class PlayerIndexRepositoryTest extends TestCase
 	}
 
 	/**
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws DBALException
 	 */
 	#[Group('units')]
 	public function testInsertPlayerSuccessfullyAddsData(): void
@@ -78,7 +78,7 @@ class PlayerIndexRepositoryTest extends TestCase
 
 
 	/**
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws DBALException
 	 */
 	#[Group('units')]
 	public function testFindPlayerByIdReturnsEmptyArray(): void
@@ -92,6 +92,9 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->assertEmpty($result);
 	}
 
+	/**
+	 * @throws DBALException
+	 */
 	#[Group('units')]
 	public function testFindPlayerByIdReturnsExpandedResult(): void
 	{
@@ -128,6 +131,9 @@ class PlayerIndexRepositoryTest extends TestCase
 	}
 
 
+	/**
+	 * @throws DBALException
+	 */
 	#[Group('units')]
 	public function testFindPlayerByUuidReturnsEmptyArray(): void
 	{

@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Slim\Psr7\Stream;
 
 class PlayerIndexServiceTest extends TestCase
 {
@@ -38,10 +40,21 @@ class PlayerIndexServiceTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testGetFileMTime(): void
+	{
+		$baseDir = getenv('TEST_BASE_DIR') . '/resources/tmp';
+		$filePath = $baseDir.'/test.bin';
+		file_put_contents($filePath, "\xDE\xAD\xBE\xEF");
+		$this->assertSame(filemtime($filePath), $this->service->getFileMTime($filePath));
+		$this->assertSame(4, $this->service->getFileSize($filePath));
+		$this->assertInstanceOf(Stream::class, $this->service->createStream($filePath));
+		unlink($filePath);
+	}
+
+	#[Group('units')]
 	public function testHandleIndexRequestLocalPlayer(): void
 	{
 		$userAgent   = 'ValidUserAgent';
-		$localPlayer = true;
 		$filePath    = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
@@ -62,7 +75,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, true);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -70,9 +83,8 @@ class PlayerIndexServiceTest extends TestCase
 	#[Group('units')]
 	public function testHandleIndexRequestUnreleasedRemotePlayer(): void
 	{
-		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
-		$filePath    = '/path/to/index';
+		$userAgent = 'ValidUserAgent';
+		$filePath  = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
@@ -91,7 +103,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -99,9 +111,8 @@ class PlayerIndexServiceTest extends TestCase
 	#[Group('units')]
 	public function testHandleIndexRequestNewRemotePlayer(): void
 	{
-		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
-		$filePath    = '/path/to/index';
+		$userAgent = 'ValidUserAgent';
+		$filePath  = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
@@ -122,7 +133,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -130,9 +141,8 @@ class PlayerIndexServiceTest extends TestCase
 	#[Group('units')]
 	public function testHandleIndexRequestDebugFtp(): void
 	{
-		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
-		$filePath    = '/path/to/index';
+		$userAgent = 'ValidUserAgent';
+		$filePath  = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
@@ -151,7 +161,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -159,9 +169,8 @@ class PlayerIndexServiceTest extends TestCase
 	#[Group('units')]
 	public function testHandleIndexRequestCorrectSmil(): void
 	{
-		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
-		$filePath    = '/path/to/index';
+		$userAgent = 'ValidUserAgent';
+		$filePath = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
@@ -180,7 +189,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -189,7 +198,6 @@ class PlayerIndexServiceTest extends TestCase
 	public function testHandleIndexRequestCorruptSmil(): void
 	{
 		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
 		$filePath    = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
@@ -209,7 +217,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -218,7 +226,6 @@ class PlayerIndexServiceTest extends TestCase
 	public function testHandleIndexRequestCorruptContent(): void
 	{
 		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
 		$filePath    = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
@@ -238,7 +245,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
 	}
@@ -247,7 +254,6 @@ class PlayerIndexServiceTest extends TestCase
 	public function testHandleIndexRequestCorruptPrefetch(): void
 	{
 		$userAgent   = 'ValidUserAgent';
-		$localPlayer = false;
 		$filePath    = '/path/to/index';
 
 		$this->loggerMock->expects($this->once())->method('info')
@@ -267,16 +273,40 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, false);
 
 		$this->assertSame($filePath, $result);
+	}
+
+	#[Group('units')]
+	public function testHandleIndexWithException(): void
+	{
+		$userAgent   = 'ValidUserAgent';
+
+		$this->loggerMock->expects($this->once())->method('info')
+			->with('Connection from: ' . $userAgent);
+
+		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
+			->with($userAgent)
+			->willReturn(true);
+
+		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
+			->willReturn($this->playerEntityMock);
+
+		$this->playerEntityMock->method('getStatus')->willReturn(14);
+
+		$this->indexProviderMock->expects($this->never())->method('getFilePath');
+		$this->loggerMock->expects($this->once())->method('error')
+			->with('Error fetch Index: Unknown player status: 14');
+
+		$this->service->setUID(1);
+		$this->assertEmpty($this->service->handleIndexRequest($userAgent, false));
 	}
 
 	#[Group('units')]
 	public function testHandleIndexRequestWithInvalidAgentHandlesForbidden(): void
 	{
 		$userAgent = 'InvalidUserAgent';
-		$localPlayer = false;
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
@@ -287,18 +317,17 @@ class PlayerIndexServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
 
-		$this->service->handleIndexRequest($userAgent, $localPlayer);
+		$this->service->handleIndexRequest($userAgent, false);
 	}
 
 	#[Group('units')]
 	public function testHandleIndexRequestWhenExceptionThrownLogsErrorAndReturnsEmptyString(): void
 	{
 		$userAgent = 'ExceptionUserAgent';
-		$localPlayer = true;
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
-			->willThrowException(new \RuntimeException('Parsing error'));
+			->willThrowException(new RuntimeException('Parsing error'));
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
@@ -306,7 +335,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error fetch Index: Parsing error');
 
-		$result = $this->service->handleIndexRequest($userAgent, $localPlayer);
+		$result = $this->service->handleIndexRequest($userAgent, true);
 
 		$this->assertSame('', $result);
 	}
