@@ -60,9 +60,6 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function isAllowedToDeletePlayer(int $UID, array $player): bool
 	{
-		if ($UID == $player['UID'])
-			return true;
-
 		return $this->isAdmin($UID, $player);
 	}
 

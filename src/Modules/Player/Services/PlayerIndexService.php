@@ -29,6 +29,7 @@ use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\IndexCreation\IndexProvider;
 use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use Doctrine\DBAL\Exception;
+use League\Flysystem\FilesystemException;
 use Psr\Log\LoggerInterface;
 use Slim\Psr7\Stream;
 use Throwable;
@@ -51,7 +52,6 @@ class PlayerIndexService extends AbstractBaseService
 	private readonly PlayerDataAssembler $playerDataAssembler;
 	private readonly IndexProvider $indexProvider;
 	private PlayerEntity $playerEntity;
-	protected readonly LoggerInterface $logger;
 
 	public function __construct(PlayerDataAssembler $playerDataAssembler, IndexProvider $indexProvider, LoggerInterface $logger)
 	{
@@ -101,11 +101,11 @@ class PlayerIndexService extends AbstractBaseService
 	}
 
 
-
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FilesystemException
 	 */
 	private function handlePlayerStats(): void
 	{
