@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Database\BaseRepositories;
+namespace App\Framework\Database\BaseRepositories\Traits;
 
 use Doctrine\DBAL\Exception;
 
@@ -37,7 +37,6 @@ trait TransactionsTrait
 	{
 		return $this->connection->isTransactionActive();
 	}
-
 
 	/**
 	 * @throws Exception

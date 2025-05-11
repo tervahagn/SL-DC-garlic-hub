@@ -18,18 +18,42 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+namespace App\Framework\Database\BaseRepositories;
 
-namespace App\Modules\Mediapool\Repositories;
-
-use App\Framework\Database\BaseRepositories\Sql;
-use App\Framework\Database\BaseRepositories\SqlBase;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
 
-class QueueRepository extends SqlBase
+/**
+ * Abstract class Base
+ *
+ * Provides a base model for database operations.
+ */
+abstract class SqlBase
 {
 
-	public function __construct(Connection $connection)
+	protected readonly string $table;
+	protected readonly string $idField;
+	protected Connection $connection;
+
+	public function __construct(Connection $connection, string $table, string $idField)
 	{
-		parent::__construct($connection,'mediapool_queue', 'queue_id');
+		$this->connection   = $connection;
+		$this->table        = $table;
+		$this->idField      = $idField;
 	}
+
+	public function getTable(): string
+	{
+		return $this->table;
+	}
+
+	public function getIdField(): string
+	{
+		return $this->idField;
+	}
+
 }

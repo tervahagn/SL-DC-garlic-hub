@@ -20,11 +20,15 @@
 
 namespace App\Modules\Users\Repositories\Edge;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 
-class UserAclRepository extends Sql
+class UserAclRepository extends SqlBase
 {
+	use CrudTraits, FindOperationsTrait;
+
 	const string USER_MODULE_ADMIN = 'module_admin';
 	const string USER_SUB_ADMIN = 'sub_admin';
 	const string USER_EDITOR = 'editor';

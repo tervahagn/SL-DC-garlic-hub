@@ -30,7 +30,6 @@ use Doctrine\DBAL\ParameterType;
 
 class PlaylistsRepository extends FilterBase
 {
-
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'playlists', 'playlist_id');

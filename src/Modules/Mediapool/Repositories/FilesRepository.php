@@ -22,11 +22,16 @@
 namespace App\Modules\Mediapool\Repositories;
 
 use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class FilesRepository extends Sql
+class FilesRepository extends SqlBase
 {
+	use CrudTraits, FindOperationsTrait;
+
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'mediapool_files', 'media_id');

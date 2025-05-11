@@ -23,11 +23,10 @@ namespace Tests\Unit\Framework\Database\BaseRepositories;
 
 use App\Framework\Database\BaseRepositories\NestedSetTrait;
 use App\Framework\Database\BaseRepositories\Sql;
-use App\Framework\Database\BaseRepositories\TransactionsTrait;
+use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;

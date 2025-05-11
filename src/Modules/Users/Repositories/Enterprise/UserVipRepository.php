@@ -20,10 +20,10 @@
 
 namespace App\Modules\Users\Repositories\Enterprise;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
 use Doctrine\DBAL\Connection;
 
-class UserVipRepository extends Sql
+class UserVipRepository extends SqlBase
 {
 	public function __construct(Connection $connection)
 	{

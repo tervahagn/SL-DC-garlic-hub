@@ -20,12 +20,14 @@
 
 namespace App\Framework\Database\BaseRepositories;
 
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use Doctrine\DBAL\Exception;
 
-abstract class FilterBase extends Sql
+abstract class FilterBase extends SqlBase
 {
-	use FindOperationsTrait;
+	use CrudTraits, FindOperationsTrait;
 
 	/**
 	 * @throws Exception

@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -18,45 +18,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Database\BaseRepositories;
 
-use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
+namespace App\Framework\Database\BaseRepositories\Traits;
+
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Types\Type;
 
-/**
- * Abstract class Base
- *
- * Provides a base model for database operations.
- */
-abstract class Sql
+trait CrudTraits
 {
-	use FindOperationsTrait;
-
-	protected readonly string $table;
-	protected readonly string $idField;
-	protected Connection $connection;
-
-	public function __construct(Connection $connection, string $table, string $idField)
-	{
-		$this->connection   = $connection;
-		$this->table        = $table;
-		$this->idField      = $idField;
-	}
-
-	public function getTable(): string
-	{
-		return $this->table;
-	}
-
-	public function getIdField(): string
-	{
-		return $this->idField;
-	}
-
 	/**
 	 * Inserts a new record into the database and returns the new insert id.
 	 *
@@ -173,32 +142,7 @@ abstract class Sql
 				$queryBuilder->setParameter($govno, explode(',', $value), $parameter['type']);
 			else
 				$queryBuilder->setParameter($govno, $value);
-
 		}
-	}
-
-	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND', ArrayParameterType $type = ArrayParameterType::INTEGER): array
-	{
-		return ['value' => $value, 'compare' => $compare, 'logic' => $logic, 'type' => $type];
-	}
-
-	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
-	{
-		foreach ($joins as $table => $onCondition)
-		{
-			$queryBuilder->leftJoin($this->table, $table, $table, $onCondition);
-		}
-	}
-
-	public function determineLimit($first = 0, $max = 0): array
-	{
-		if ($first == 0)
-			$first = 1;
-
-		if ($max > 0)
-			return ['first' => ($first - 1) * $max,	'max' => $max];
-
-		return [];
 	}
 
 	/**
@@ -245,5 +189,4 @@ abstract class Sql
 	{
 		return  @serialize($data);
 	}
-
 }

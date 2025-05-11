@@ -20,7 +20,7 @@
 
 namespace Tests\Unit\Framework\Database\BaseRepositories;
 
-use App\Framework\Database\BaseRepositories\TransactionsTrait;
+use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

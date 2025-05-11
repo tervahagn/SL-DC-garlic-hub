@@ -21,7 +21,12 @@
 namespace App\Modules\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Users\Repositories;
+use App\Modules\Users\Repositories\Core\UserContactRepository;
+use App\Modules\Users\Repositories\Core\UserStatsRepository;
+use App\Modules\Users\Repositories\Edge\UserAclRepository;
+use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use App\Modules\Users\Repositories\Enterprise\UserSecurityRepository;
+use App\Modules\Users\Repositories\Enterprise\UserVipRepository;
 use Doctrine\DBAL\Connection;
 
 class UserRepositoryFactory
@@ -44,22 +49,22 @@ class UserRepositoryFactory
 		return match ($this->config->getEdition())
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => [
-				'main'     => new \App\Modules\Users\Repositories\Edge\UserMainRepository($this->connection),
-				'acl'      => new \App\Modules\Users\Repositories\Edge\UserAclRepository($this->connection),
-				'contact'  => new \App\Modules\Users\Repositories\Core\UserContactRepository($this->connection),
-				'stats'    => new \App\Modules\Users\Repositories\Core\UserStatsRepository($this->connection),
-				'vip'      => new \App\Modules\Users\Repositories\Enterprise\UserVipRepository($this->connection),
-				'security' => new \App\Modules\Users\Repositories\Enterprise\UserSecurityRepository($this->connection)
+				'main'     => new UserMainRepository($this->connection),
+				'acl'      => new UserAclRepository($this->connection),
+				'contact'  => new UserContactRepository($this->connection),
+				'stats'    => new UserStatsRepository($this->connection),
+				'vip'      => new UserVipRepository($this->connection),
+				'security' => new UserSecurityRepository($this->connection)
 			],
 			Config::PLATFORM_EDITION_CORE => [
-				'main'    => new \App\Modules\Users\Repositories\Edge\UserMainRepository($this->connection),
-				'acl'     => new \App\Modules\Users\Repositories\Edge\UserAclRepository($this->connection),
-				'contact' => new \App\Modules\Users\Repositories\Core\UserContactRepository($this->connection),
-				'stats'   => new \App\Modules\Users\Repositories\Core\UserStatsRepository($this->connection)
+				'main'    => new UserMainRepository($this->connection),
+				'acl'     => new UserAclRepository($this->connection),
+				'contact' => new UserContactRepository($this->connection),
+				'stats'   => new UserStatsRepository($this->connection)
 			],
 			default => [
-				'main' => new \App\Modules\Users\Repositories\Edge\UserMainRepository($this->connection),
-				'acl'  => new \App\Modules\Users\Repositories\Edge\UserAclRepository($this->connection)
+				'main' => new UserMainRepository($this->connection),
+				'acl'  => new UserAclRepository($this->connection)
 			],
 		};
 	}

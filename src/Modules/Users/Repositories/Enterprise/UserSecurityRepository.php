@@ -20,10 +20,10 @@
 
 namespace App\Modules\Users\Repositories\Enterprise;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
 use Doctrine\DBAL\Connection;
 
-class UserSecurityRepository extends Sql
+class UserSecurityRepository extends SqlBase
 {
 	public function __construct(Connection $connection)
 	{

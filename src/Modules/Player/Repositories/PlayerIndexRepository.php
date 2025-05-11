@@ -21,10 +21,9 @@
 
 namespace App\Modules\Player\Repositories;
 
-use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Framework\Database\BaseRepositories\Sql;
-use App\Framework\Exceptions\ModuleException;
-use App\Modules\Player\PlayerActivity;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -32,8 +31,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
 /**
  * To save overhead of FilterBase
  */
-class PlayerIndexRepository extends Sql
+class PlayerIndexRepository extends SqlBase
 {
+	use CrudTraits, FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{

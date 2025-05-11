@@ -18,8 +18,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Framework\Database\BaseRepositories;
+namespace App\Framework\Database\BaseRepositories\Traits;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -165,5 +166,27 @@ trait FindOperationsTrait
 		return $queryBuilder;
 	}
 
+	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND', ArrayParameterType $type = ArrayParameterType::INTEGER): array
+	{
+		return ['value' => $value, 'compare' => $compare, 'logic' => $logic, 'type' => $type];
+	}
 
+	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
+	{
+		foreach ($joins as $table => $onCondition)
+		{
+			$queryBuilder->leftJoin($this->table, $table, $table, $onCondition);
+		}
+	}
+
+	public function determineLimit($first = 0, $max = 0): array
+	{
+		if ($first == 0)
+			$first = 1;
+
+		if ($max > 0)
+			return ['first' => ($first - 1) * $max,	'max' => $max];
+
+		return [];
+	}
 }

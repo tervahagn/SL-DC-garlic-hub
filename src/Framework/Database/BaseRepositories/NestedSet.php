@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -18,22 +18,33 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 namespace App\Framework\Database\BaseRepositories;
 
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
-/**
- * @mixin Sql
- * @property string $table
- */
-trait NestedSetTrait
+class NestedSet extends SqlBase
 {
-	const string REGION_BEFORE = 'before';
-	const string REGION_AFTER = 'after';
-	const string REGION_APPENDCHILD = 'appendChild';
+	use CrudTraits, TransactionsTrait;
+
+	protected NestedSetHelper $helper;
+	protected LoggerInterface $logger;
+
+	public function __construct(Connection $connection, NestedSetHelper $helper, LoggerInterface $logger, string $table, string $idField)
+	{
+		$this->helper = $helper;
+		$this->logger = $logger;
+		$this->helper->init($connection, $table);
+
+		parent::__construct($connection, $table, $idField);
+	}
 
 	/**
 	 * @throws Exception
@@ -42,13 +53,13 @@ trait NestedSetTrait
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('*, FLOOR((rgt-lft)/2) AS children')
-					 ->from($this->table)
-					 ->leftJoin($this->table,
-						 'user_main',
-						 'user_main',
-						 $this->table.'.UID = user_main.UID')
-					 ->where('parent_id = 0')
-					 ->orderBy('root_order', 'ASC');
+			->from($this->table)
+			->leftJoin($this->table,
+				'user_main',
+				'user_main',
+				$this->table.'.UID = user_main.UID')
+			->where('parent_id = 0')
+			->orderBy('root_order', 'ASC');
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
@@ -236,8 +247,8 @@ trait NestedSetTrait
 				'UID'       => $UID
 			);
 
-			$this->moveNodesToLeftForInsert($parentNode['root_id'], $parentNode['rgt']);
-			$this->moveNodesToRightForInsert($parentNode['root_id'], $parentNode['rgt']);
+			$this->helper->moveNodesToLeftForInsert($parentNode['root_id'], $parentNode['rgt']);
+			$this->helper->moveNodesToRightForInsert($parentNode['root_id'], $parentNode['rgt']);
 
 			$newNodeId = $this->insert($fields);
 			if ($newNodeId == 0)
@@ -267,8 +278,8 @@ trait NestedSetTrait
 			if ($this->delete($node['node_id']) === 0 )
 				throw new \Exception('not exists');
 
-			$this->moveNodesToLeftForDeletion($node['root_id'], $node['rgt']);
-			$this->moveNodesToRightForDeletion($node['root_id'], $node['rgt']);
+			$this->helper->moveNodesToLeftForDeletion($node['root_id'], $node['rgt']);
+			$this->helper->moveNodesToRightForDeletion($node['root_id'], $node['rgt']);
 
 			$this->commitTransaction();
 		}
@@ -289,15 +300,15 @@ trait NestedSetTrait
 		{
 			$this->beginTransaction();
 
-			if ($this->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']) === 0)
+			if ($this->helper->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']) === 0)
 				throw new FrameworkException('not exists');
 
 			// remove other nodes to create some space
 			$move = floor(($node['rgt'] - $node['lft']) / 2);
 			$move = 2 * (1 + $move);
 
-			$this->moveNodesToLeftForDeletion($node['root_id'], $node['rgt'], $move);
-			$this->moveNodesToRightForDeletion($node['root_id'], $node['rgt'], $move);
+			$this->helper->moveNodesToLeftForDeletion($node['root_id'], $node['rgt'], $move);
+			$this->helper->moveNodesToRightForDeletion($node['root_id'], $node['rgt'], $move);
 
 			$this->commitTransaction();
 		}
@@ -319,29 +330,29 @@ trait NestedSetTrait
 		{
 			$this->connection->beginTransaction();
 
-			$diff_level = $this->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
-			$newLgtPos  = $this->determineLgtPositionByRegion($region, $targetNode);
+			$diff_level = $this->helper->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
+			$newLgtPos  = $this->helper->determineLgtPositionByRegion($region, $targetNode);
 			$width      = $movedNode['rgt'] - $movedNode['lft'] + 1;
 
 			// https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
 			// enhanced for including multiple trees with different root_id's in datatable
 
 			// create some space in target
-			$this->moveNodesToRightForInsert($targetNode['root_id'], $newLgtPos, $width);
-			$this->moveNodesToLeftForInsert($targetNode['root_id'], $newLgtPos, $width);
+			$this->helper->moveNodesToRightForInsert($targetNode['root_id'], $newLgtPos, $width);
+			$this->helper->moveNodesToLeftForInsert($targetNode['root_id'], $newLgtPos, $width);
 
-			$i = $this->moveSubTree($movedNode, $targetNode, $newLgtPos, $width, $diff_level);
+			$i = $this->helper->moveSubTree($movedNode, $targetNode, $newLgtPos, $width, $diff_level);
 			if ($i === 0)
 				throw new FrameworkException($movedNode['name']. ' cannot be moved via '.$region.' of '. $targetNode['name']);
 
-			$this->update($movedNode['node_id'], ['parent_id' => $this->determineParentIdByRegion($region,
+			$this->update($movedNode['node_id'], ['parent_id' => $this->helper->determineParentIdByRegion($region,
 				$targetNode)]);
 
 			// close source space if not a root node
 			if ($movedNode['parent_id'] !== 0)
 			{
-				$this->moveNodesToRightForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
-				$this->moveNodesToLeftForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
+				$this->helper->moveNodesToRightForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
+				$this->helper->moveNodesToLeftForDeletion($movedNode['root_id'], $movedNode['rgt'], $width);
 			}
 
 
@@ -354,156 +365,4 @@ trait NestedSetTrait
 		}
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	protected function moveSubTree(array $movedNode, array $targetNode, int $newLgtPos, int $width, int $diffLevel):
-	int
-	{
-		$distance = $newLgtPos - $movedNode['lft'];
-		$tmpPos   = $movedNode['lft'];
-		if ($distance < 0 && $movedNode['root_id'] === $targetNode['root_id'])
-		{
-			$distance -= $width;
-			$tmpPos   += $width;
-		}
-
-		$queryBuilder = $this->connection->createQueryBuilder();
-
-		$queryBuilder->update($this->table)
-			->set('lft', 'lft + :distance')
-			->set('rgt', 'rgt + :distance')
-			->set('level', 'level + :diff_level')
-			->set('root_id', ':target_root_id')
-			->where('root_id = :moved_root_id')
-			->andWhere('lft >= :tmpPos')
-			->andWhere('rgt < :tmpPos + :width')
-			->setParameter('distance', $distance)
-			->setParameter('diff_level', $diffLevel)
-			->setParameter('target_root_id', $targetNode['root_id'])
-			->setParameter('moved_root_id', $movedNode['root_id'])
-			->setParameter('tmpPos', $tmpPos)
-			->setParameter('width', $width)
-		;
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * moves existing nodes out of the way for inserting new nodes
-	 *
-	 * @throws Exception
-	 */
-	protected function moveNodesToRightForInsert(int $rootId, int $position, int $width = 2): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
-					 ->set('lft', 'lft + :steps')
-					 ->where('root_id = :root_id')
-					 ->andWhere('lft >= :position')
-					 ->setParameter('steps', $width)
-					 ->setParameter('root_id', $rootId)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	protected function moveNodesToLeftForInsert(int $rootId, int $position, int $width = 2): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->getTable())
-			->set('rgt', 'rgt + :steps')
-			->where('root_id = :root_id')
-			->andWhere('rgt >= :position')
-			->setParameter('steps', $width)
-			->setParameter('root_id', $rootId)
-			->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	protected function moveNodesToLeftForDeletion(int $rootId, int $position, int $width = 2): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->getTable())
-					 ->set('lft', 'lft - '.$width)
-					 ->where('root_id = :root_id')
-					 ->andWhere('lft > :position')
-					 ->setParameter('root_id', $rootId)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	protected function moveNodesToRightForDeletion(int $rootId, int $position, int $width = 2): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->getTable())
-					 ->set('rgt', 'rgt - '.$width)
-					 ->where('root_id = :root_id')
-					 ->andWhere('rgt > :position')
-					 ->setParameter('root_id', $rootId)
-					 ->setParameter('position', $position);
-
-		return (int) $queryBuilder->executeStatement();
-	}
-
-	/**
-	 * @throws DatabaseException
-	 */
-	protected function determineLgtPositionByRegion(string $region, array $node): int
-	{
-		return match ($region)
-		{
-			self::REGION_BEFORE => $node['lft'],
-			self::REGION_APPENDCHILD => $node['rgt'],
-			self::REGION_AFTER => $node['rgt'] + 1,
-			default => throw new DatabaseException('Unknown region: ' . $region),
-		};
-	}
-
-	protected function calculateDiffLevelByRegion(string $region, int $movedLevel, int $targetLevel): int
-	{
-		$diffLevel = $targetLevel - $movedLevel;
-
-		if ($region === self::REGION_APPENDCHILD)
-		{
-			$diffLevel++;
-		}
-
-		return $diffLevel;
-	}
-
-	protected function determineParentIdByRegion(string $region, array $node): int
-	{
-		if ($region !== self::REGION_APPENDCHILD)
-			return $node['parent_id'];
-
-		return $node['node_id'];
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	protected function deleteFullTree($rootId, $posRgt, $posLft): int
-	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->delete($this->getTable())
-			->where('root_id = :root_id')
-			->andWhere('lft between :pos_lft AND :pos_rgt')
-			->setParameter('root_id', $rootId)
-			->setParameter('pos_lft', $posLft)
-			->setParameter('pos_rgt', $posRgt);
-
-		return (int)  $queryBuilder->executeStatement();
-	}
 }
