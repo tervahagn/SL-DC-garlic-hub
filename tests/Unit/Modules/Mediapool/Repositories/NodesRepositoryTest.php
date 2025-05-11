@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Repositories;
 
+use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -28,11 +29,14 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class NodesRepositoryTest extends TestCase
 {
 	private readonly Connection $connectionMock;
 	private readonly QueryBuilder $queryBuilderMock;
+	private readonly NestedSetHelper $helperMock;
+	private readonly LoggerInterface $loggerMock;
 	private readonly NodesRepository $nodesRepository;
 
 	/**
@@ -42,8 +46,10 @@ class NodesRepositoryTest extends TestCase
 	{
 		$this->connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock  = $this->createMock(QueryBuilder::class);
+		$this->helperMock       = $this->createMock(NestedSetHelper::class);
+		$this->loggerMock       = $this->createMock(LoggerInterface::class);
 
-		$this->nodesRepository = new NodesRepository($this->connectionMock);
+		$this->nodesRepository = new NodesRepository($this->connectionMock, $this->helperMock, $this->loggerMock);
 	}
 
 	/**

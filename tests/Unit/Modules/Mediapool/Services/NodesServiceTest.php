@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
+use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\ModuleException;
@@ -399,7 +400,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
-		$region = NodesRepository::REGION_APPENDCHILD;
+		$region = NestedSetHelper::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 2];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -443,7 +444,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
-		$region = NodesRepository::REGION_APPENDCHILD;
+		$region = NestedSetHelper::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -468,7 +469,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 0;
-		$region = NodesRepository::REGION_APPENDCHILD;
+		$region = NestedSetHelper::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -493,7 +494,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
-		$region = NodesRepository::REGION_BEFORE;
+		$region = NestedSetHelper::REGION_BEFORE;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -518,7 +519,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
-		$region = NodesRepository::REGION_AFTER;
+		$region = NestedSetHelper::REGION_AFTER;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
