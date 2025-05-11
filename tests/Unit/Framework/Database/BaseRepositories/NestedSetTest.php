@@ -645,6 +645,11 @@ class NestedSetTest extends TestCase
 		$this->assertTrue(true);
 	}
 
+	/**
+	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testMoveNodeAfter()
 	{
@@ -680,6 +685,47 @@ class NestedSetTest extends TestCase
 
 
 		$this->connectionMock->expects($this->once())->method('commit');
+
+		$this->repository->moveNode($movedNode, $targetNode, $region);
+		$this->assertTrue(true);
+	}
+
+
+	/**
+	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testMoveNodeFailsOnMoveSubTree()
+	{
+		$movedNode = ['node_id' => 2, 'name' => 'moved', 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'name' => 'target', 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$region = 'after';
+		$width = 4;
+
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$this->helperMock->expects($this->once())->method('moveNodesToRightForInsert')
+			->with($movedNode['root_id'], 0, $width)
+			->willReturn(1);
+
+		$this->helperMock->expects($this->once())->method('moveNodesToLeftForInsert')
+			->with($movedNode['root_id'], 0, $width)
+			->willReturn(1);
+
+		$this->helperMock->expects($this->once())->method('moveSubTree')
+			->with($movedNode, $targetNode, 0, $width, 0)
+			->willReturn(0);
+
+		$this->connectionMock->expects($this->never())->method('update');
+		$this->helperMock->expects($this->never())->method('moveNodesToLeftForDeletion');
+		$this->helperMock->expects($this->never())->method('moveNodesToRightForDeletion');
+		$this->connectionMock->expects($this->never())->method('commit');
+
+		$this->connectionMock->expects($this->once())->method('rollBack');
+		$this->expectException(DatabaseException::class);
+		$this->expectExceptionMessage('Moving nodes failed: '.$movedNode['name'].' cannot be moved via '.$region.' of '. $targetNode['name']);
 
 		$this->repository->moveNode($movedNode, $targetNode, $region);
 		$this->assertTrue(true);

@@ -358,7 +358,7 @@ class NestedSet extends SqlBase
 
 			$this->connection->commit();
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
 			$this->connection->rollBack();
 			throw new DatabaseException('Moving nodes failed: '.$e->getMessage());
