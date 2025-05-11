@@ -23,6 +23,7 @@ namespace App\Framework\Database\BaseRepositories;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
+use Throwable;
 
 /**
  * @mixin Sql
@@ -112,7 +113,6 @@ trait NestedSetTrait
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
-
 
 	/**
 	 * @throws Exception
@@ -290,7 +290,7 @@ trait NestedSetTrait
 			$this->beginTransaction();
 
 			if ($this->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']) === 0)
-				throw new \Exception('not exists');
+				throw new FrameworkException('not exists');
 
 			// remove other nodes to create some space
 			$move = floor(($node['rgt'] - $node['lft']) / 2);
@@ -301,7 +301,7 @@ trait NestedSetTrait
 
 			$this->commitTransaction();
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
 			$this->rollbackTransaction();
 			throw new DatabaseException('Delete tree failed because of: '.$e->getMessage());
@@ -318,7 +318,6 @@ trait NestedSetTrait
 		try
 		{
 			$this->connection->beginTransaction();
-
 
 			$diff_level = $this->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
 			$newLgtPos  = $this->determineLgtPositionByRegion($region, $targetNode);
@@ -390,7 +389,6 @@ trait NestedSetTrait
 		return (int) $queryBuilder->executeStatement();
 	}
 
-
 	/**
 	 * moves existing nodes out of the way for inserting new nodes
 	 *
@@ -416,7 +414,7 @@ trait NestedSetTrait
 	protected function moveNodesToLeftForInsert(int $rootId, int $position, int $width = 2): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
+		$queryBuilder->update($this->getTable())
 			->set('rgt', 'rgt + :steps')
 			->where('root_id = :root_id')
 			->andWhere('rgt >= :position')
@@ -430,14 +428,14 @@ trait NestedSetTrait
 	/**
 	 * @throws Exception
 	 */
-	protected function moveNodesToLeftForDeletion(int $root_id, int $position, int $width = 2): int
+	protected function moveNodesToLeftForDeletion(int $rootId, int $position, int $width = 2): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
+		$queryBuilder->update($this->getTable())
 					 ->set('lft', 'lft - '.$width)
 					 ->where('root_id = :root_id')
 					 ->andWhere('lft > :position')
-					 ->setParameter('root_id', $root_id)
+					 ->setParameter('root_id', $rootId)
 					 ->setParameter('position', $position);
 
 		return (int) $queryBuilder->executeStatement();
@@ -449,7 +447,7 @@ trait NestedSetTrait
 	protected function moveNodesToRightForDeletion(int $rootId, int $position, int $width = 2): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->update($this->table)
+		$queryBuilder->update($this->getTable())
 					 ->set('rgt', 'rgt - '.$width)
 					 ->where('root_id = :root_id')
 					 ->andWhere('rgt > :position')
@@ -496,16 +494,16 @@ trait NestedSetTrait
 	/**
 	 * @throws Exception
 	 */
-	protected function deleteFullTree($root_id, $pos_rgt, $pos_lft): int
+	protected function deleteFullTree($rootId, $posRgt, $posLft): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->delete($this->getTable())
 			->where('root_id = :root_id')
 			->andWhere('lft between :pos_lft AND :pos_rgt')
-			->setParameter('root_id', $root_id)
-			->setParameter('pos_lft', $pos_lft)
-			->setParameter('pos_rgt', $pos_rgt);
+			->setParameter('root_id', $rootId)
+			->setParameter('pos_lft', $posLft)
+			->setParameter('pos_rgt', $posRgt);
 
-		return (int) $queryBuilder->executeStatement();
+		return (int)  $queryBuilder->executeStatement();
 	}
 }

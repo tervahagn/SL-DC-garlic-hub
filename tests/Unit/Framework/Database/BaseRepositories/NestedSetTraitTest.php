@@ -25,11 +25,14 @@ use App\Framework\Database\BaseRepositories\NestedSetTrait;
 use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\TransactionsTrait;
 use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteNestedSet extends Sql
@@ -53,6 +56,7 @@ class NestedSetTraitTest extends TestCase
 		$this->connectionMock   = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 		$this->resultMock       = $this->createMock(Result::class);
+
 		$this->repository       = new ConcreteNestedSet($this->connectionMock, 'table', 'id');
 	}
 
@@ -274,7 +278,7 @@ class NestedSetTraitTest extends TestCase
 			->with('node_id, category_name')
 			->willReturnSelf();
 
-		$resultMock2       = $this->createMock(Result::class);
+		$resultMock2 = $this->createMock(Result::class);
 
 		$queryBuilderMock2->expects($this->once())
 			->method('executeQuery')
@@ -639,4 +643,344 @@ class NestedSetTraitTest extends TestCase
 		$this->repository->deleteSingleNode($node);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception|DatabaseException
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testDeleteTree()
+	{
+		$node = ['root_id' => 1, 'rgt' => 6, 'lft' => 3];
+		$move = 4.0;
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$queryBuilderMock1 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock2 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock3 = $this->createMock(QueryBuilder::class);
+		$this->connectionMock->expects($this->exactly(3))->method('createQueryBuilder')
+			->willReturnOnConsecutiveCalls($queryBuilderMock1, $queryBuilderMock2, $queryBuilderMock3);
+
+		$this->deleteFullTreeMock($queryBuilderMock1, $node, 1);
+
+		$this->moveNodesToLeftForDeletionMock($queryBuilderMock2, $node['root_id'], $node['rgt'], $move, 1);
+		$this->moveNodesToRightForDeletionMock($queryBuilderMock3, $node['root_id'], $node['rgt'], $move, 1);
+
+		$this->connectionMock->expects($this->once())->method('commit');
+
+		$this->repository->deleteTree($node);
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteTreeFails()
+	{
+		$node = ['root_id' => 1, 'rgt' => 6, 'lft' => 3];
+		$move = 4.0;
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$queryBuilderMock = $this->createMock(QueryBuilder::class);
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($queryBuilderMock);
+
+		$this->deleteFullTreeMock($queryBuilderMock, $node, 0);
+
+		$this->expectException(DatabaseException::class);
+		$this->expectExceptionMessage('Delete tree failed because of: not exists');
+		$this->connectionMock->expects($this->once())->method('rollBack');
+
+		$this->repository->deleteTree($node);
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testMoveNodeBefore()
+	{
+		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$region = 'before';
+
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$queryBuilderMock1 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock2 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock3 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock4 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock5 = $this->createMock(QueryBuilder::class);
+		$this->connectionMock->expects($this->exactly(5))->method('createQueryBuilder')
+			->willReturnOnConsecutiveCalls(
+				$queryBuilderMock1, $queryBuilderMock2, $queryBuilderMock3, $queryBuilderMock4, $queryBuilderMock5
+			);
+
+		$this->moveNodesToRightForInsertMock($queryBuilderMock1, $movedNode['root_id'], 7, 4, 1);
+		$this->moveNodesToLeftForInsertMock($queryBuilderMock2, $movedNode['root_id'], 7, 4, 1);
+		$this->moveSubTreeMock($queryBuilderMock3, $movedNode, $targetNode, 4, 3, 4, 0, 1);
+		$this->connectionMock->expects($this->once())->method('update')
+			->with('table', ['parent_id' => 1], ['id' => 2]);
+
+		$this->moveNodesToRightForDeletionMock($queryBuilderMock4, $movedNode['root_id'], $movedNode['rgt'], 4, 1);
+		$this->moveNodesToLeftForDeletionMock($queryBuilderMock5, $movedNode['root_id'], $movedNode['rgt'], 4, 1);
+
+		$this->connectionMock->expects($this->once())->method('commit');
+
+		$this->repository->moveNode($movedNode, $targetNode, $region);
+		$this->assertTrue(true);
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testMoveNodeAfter()
+	{
+		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$region = 'after';
+
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$queryBuilderMock1 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock2 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock3 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock4 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock5 = $this->createMock(QueryBuilder::class);
+		$this->connectionMock->expects($this->exactly(5))->method('createQueryBuilder')
+			->willReturnOnConsecutiveCalls(
+				$queryBuilderMock1, $queryBuilderMock2, $queryBuilderMock3, $queryBuilderMock4, $queryBuilderMock5
+			);
+
+		$this->moveNodesToRightForInsertMock($queryBuilderMock1, $movedNode['root_id'], 9, 4, 1);
+		$this->moveNodesToLeftForInsertMock($queryBuilderMock2, $movedNode['root_id'], 9, 4, 1);
+		$this->moveSubTreeMock($queryBuilderMock3, $movedNode, $targetNode, 6, 3, 4, 0, 1);
+		$this->connectionMock->expects($this->once())->method('update')
+			->with('table', ['parent_id' => 1], ['id' => 2]);
+
+		$this->moveNodesToRightForDeletionMock($queryBuilderMock4, $movedNode['root_id'], $movedNode['rgt'], 4, 1);
+		$this->moveNodesToLeftForDeletionMock($queryBuilderMock5, $movedNode['root_id'], $movedNode['rgt'], 4, 1);
+
+
+		$this->connectionMock->expects($this->once())->method('commit');
+
+		$this->repository->moveNode($movedNode, $targetNode, $region);
+		$this->assertTrue(true);
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testMoveNodeAppendChild()
+	{
+		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$region = 'appendChild';
+
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+
+		$queryBuilderMock1 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock2 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock3 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock4 = $this->createMock(QueryBuilder::class);
+		$queryBuilderMock5 = $this->createMock(QueryBuilder::class);
+		$this->connectionMock->expects($this->exactly(5))->method('createQueryBuilder')
+			->willReturnOnConsecutiveCalls(
+				$queryBuilderMock1, $queryBuilderMock2, $queryBuilderMock3, $queryBuilderMock4, $queryBuilderMock5
+			);
+
+		$this->moveNodesToRightForInsertMock($queryBuilderMock1, $movedNode['root_id'], 8, 4, 1);
+		$this->moveNodesToLeftForInsertMock($queryBuilderMock2, $movedNode['root_id'], 8, 4, 1);
+		$this->moveSubTreeMock($queryBuilderMock3, $movedNode, $targetNode, 5, 3, 4, 1, 1);
+		$this->connectionMock->expects($this->once())->method('update')
+			->with('table', ['parent_id' => 3], ['id' => 2]);
+
+		$this->connectionMock->expects($this->once())->method('commit');
+
+		$this->repository->moveNode($movedNode, $targetNode, $region);
+		$this->assertTrue(true);
+	}
+
+	#[Group('units1')]
+	public function testMoveNodeInvalidRegion()
+	{
+		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'level' => 2];
+		$region = 'invalidRegion';
+
+		$this->connectionMock->expects($this->once())->method('beginTransaction');
+		$this->connectionMock->expects($this->once())->method('rollBack');
+
+		$this->expectException(DatabaseException::class);
+		$this->expectExceptionMessage('Moving nodes failed');
+
+		$this->repository->moveNode($movedNode, $targetNode, $region);
+	}
+
+
+	/************************* Helper *******************************************/
+
+	protected function moveSubTreeMock(MockObject $queryBuilderMock, array $movedNode, array $targetNode, int $distance, int $tmpPos, int $width, int $diffLevel, int $return): void
+	{
+		$queryBuilderMock->expects($this->once())->method('update')
+			->with('table')
+			->willReturnSelf();
+
+		$queryBuilderMock->expects($this->exactly(4))->method('set')
+			->willReturnMap([
+				['lft', 'lft + :distance', $queryBuilderMock],
+				['rgt', 'rgt + :distance', $queryBuilderMock],
+				['level', 'level + :diff_level', $queryBuilderMock],
+				['root_id', ':target_root_id', $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :moved_root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(2))->method('andWhere')
+			->willReturnMap([
+				['lft >= :tmpPos', $queryBuilderMock],
+				['rgt < :tmpPos + :width', $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->exactly(6))->method('setParameter')
+			->willReturnMap([
+				['distance', $distance, $queryBuilderMock],
+				['diff_level', $diffLevel, $queryBuilderMock],
+				['target_root_id', $targetNode['root_id'], $queryBuilderMock],
+				['moved_root_id', $movedNode['root_id'], $queryBuilderMock],
+				['tmpPos', $tmpPos, $queryBuilderMock],
+				['width', $width, $queryBuilderMock]
+			]);
+
+		$queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($return);
+	}
+
+	private function moveNodesToRightForInsertMock(MockObject $queryBuilderMock, int $rootId, int $position, int $width, int $return): void
+	{
+		$queryBuilderMock->expects($this->once())->method('update')
+			->with('table')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('set')
+			->with('lft', 'lft + :steps')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('lft >= :position')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(3))->method('setParameter')
+			->willReturnMap([
+				['steps', $width, $queryBuilderMock],
+				['root_id', $rootId, $queryBuilderMock],
+				['position', $position, $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($return);
+	}
+
+	private function moveNodesToLeftForInsertMock(MockObject $queryBuilderMock, int $rootId, int $position, int $width, int $return): void
+	{
+		$queryBuilderMock->expects($this->once())->method('update')
+			->with('table')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('set')
+			->with('rgt', 'rgt + :steps')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('rgt >= :position')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(3))->method('setParameter')
+			->willReturnMap([
+				['steps', $width, $queryBuilderMock],
+				['root_id', $rootId, $queryBuilderMock],
+				['position', $position, $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($return);
+	}
+	/**
+	 * @throws Exception
+	 */
+	private function moveNodesToLeftForDeletionMock(MockObject $queryBuilderMock, int $rootId, int $position, int $width, int $return): void
+	{
+		$queryBuilderMock->expects($this->once())->method('update')
+			->with('table')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('set')
+			->with('lft', 'lft - '.$width)
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('lft > :position')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(2))->method('setParameter')
+			->willReturnMap([
+				['root_id', $rootId, $queryBuilderMock],
+				['position', $position, $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($return);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function moveNodesToRightForDeletionMock(MockObject $queryBuilderMock, int $rootId, int $position, int $width, int $return)
+	{
+		$queryBuilderMock->expects($this->once())->method('update')
+			->with('table')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('set')
+			->with('rgt', 'rgt - '.$width)
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('rgt > :position')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(2))->method('setParameter')
+			->willReturnMap([
+				['root_id', $rootId, $queryBuilderMock],
+				['position', $position, $queryBuilderMock]
+			]);
+		$queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($return);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function deleteFullTreeMock(MockObject $queryBuilderMock, array $node, int $return): void
+	{
+		$queryBuilderMock->expects($this->once())->method('delete')
+			->with('table')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('where')
+			->with('root_id = :root_id')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->once())->method('andWhere')
+			->with('lft between :pos_lft AND :pos_rgt')
+			->willReturnSelf();
+		$queryBuilderMock->expects($this->exactly(3))->method('setParameter')
+			->willReturnMap([
+				['root_id', $node['root_id'], $queryBuilderMock],
+				['pos_lft', $node['lft'], $queryBuilderMock],
+				['pos_rgt', $node['rgt'], $queryBuilderMock]
+			]);
+		$queryBuilderMock->method('executeStatement')->willReturn($return);
+	}
 }
