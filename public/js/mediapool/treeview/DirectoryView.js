@@ -243,12 +243,19 @@ export class DirectoryView
 
     addRootChild(key, folder_name)
     {
-        this.#tree.addChildren({ key:  key, title: folder_name, isFolder: true });
+		const rights = {"create" : true, "edit" : true, "delete" : true}
+        this.#tree.addChildren({ key:  key, title: folder_name, isFolder: true, rights: rights });
     }
 
     addSubChild(key, folder_name)
     {
-        this.#tree.getActiveNode().addChildren({ key:  key, title: folder_name, isFolder: true });
+		const rights = {"create" : true, "edit" : true, "delete" : true}
+        if (this.#activeNode === null)
+        {
+            console.error("No active node");
+            return;
+        }
+        this.#tree.getActiveNode().addChildren({ key:  key, title: folder_name, isFolder: true, rights: rights });
     }
 
     async #loadMediaInDirectory(key)
