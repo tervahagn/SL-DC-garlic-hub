@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function()
 	{
 		addRootFolder.addEventListener('click', () => {
 			treeDialog.prepareShow("add_root_folder", lang);
-			treeDialog.show();
+			treeDialog.show(directoryView);
 		});
 	}
 
