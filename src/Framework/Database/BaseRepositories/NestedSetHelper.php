@@ -200,7 +200,8 @@ class NestedSetHelper
 			->setParameter('pos_lft', $posLft)
 			->setParameter('pos_rgt', $posRgt);
 
-		return (int)  $queryBuilder->executeStatement();
+		return (int) $queryBuilder->executeStatement();
 	}
+
 
 }

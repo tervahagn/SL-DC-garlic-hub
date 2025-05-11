@@ -20,13 +20,13 @@
 
 namespace App\Framework\OAuth2;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
 use Doctrine\DBAL\Connection;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
-class ScopeRepository extends Sql implements ScopeRepositoryInterface
+class ScopeRepository extends SqlBase implements ScopeRepositoryInterface
 {
 	public function __construct(Connection $connection)
 	{

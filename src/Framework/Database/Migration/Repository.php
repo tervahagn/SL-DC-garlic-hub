@@ -20,13 +20,16 @@
 
 namespace App\Framework\Database\Migration;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class Repository extends Sql
+class Repository extends SqlBase
 {
+	use CrudTraits;
+
 	const string MIGRATION_TABLE_NAME = '_migration_version';
 
 	public function __construct(Connection $connection)

@@ -20,7 +20,9 @@
 
 namespace App\Framework\OAuth2;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
@@ -31,8 +33,10 @@ use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
-class TokensRepository extends Sql implements AuthCodeRepositoryInterface, AccessTokenRepositoryInterface, RefreshTokenRepositoryInterface
+class TokensRepository extends SqlBase implements AuthCodeRepositoryInterface, AccessTokenRepositoryInterface, RefreshTokenRepositoryInterface
 {
+	use CrudTraits, FindOperationsTrait;
+
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'oauth2_credentials', 'id');

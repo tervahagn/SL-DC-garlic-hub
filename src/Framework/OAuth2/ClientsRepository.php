@@ -20,15 +20,18 @@
 
 namespace App\Framework\OAuth2;
 
-use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
-class ClientsRepository extends Sql implements ClientRepositoryInterface
+class ClientsRepository extends SqlBase implements ClientRepositoryInterface
 {
+	use CrudTraits, FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{

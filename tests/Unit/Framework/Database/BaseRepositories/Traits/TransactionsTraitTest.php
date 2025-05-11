@@ -18,11 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Database\BaseRepositories;
+namespace Tests\Unit\Framework\Database\BaseRepositories\Traits;
 
 use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class TransactionsTraitTest extends TestCase
@@ -30,10 +31,14 @@ class TransactionsTraitTest extends TestCase
 	private Connection $connectionMock;
 	private object $traitObject;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->connectionMock = $this->createMock(Connection::class);
-		$this->traitObject = new class($this->connectionMock) {
+		$this->traitObject = new class($this->connectionMock)
+		{
 			use TransactionsTrait;
 
 			public function __construct(private Connection $connection)

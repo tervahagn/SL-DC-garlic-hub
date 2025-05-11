@@ -21,6 +21,9 @@
 namespace Tests\Unit\Framework\Database\BaseRepositories;
 
 use App\Framework\Database\BaseRepositories\Sql;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
+use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -29,12 +32,15 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class SqlConcreteTrait extends Sql{}
+class ConcreteTrait extends SqlBase
+{
+	use CrudTraits, FindOperationsTrait;
+}
 class FindOperationsTraitTest extends TestCase
 {
 	private Connection $connectionMock;
 	private QueryBuilder $queryBuilderMock;
-	private SqlConcreteTrait $repository;
+	private ConcreteTrait $repository;
 	private Result $resultMock;
 
 	/**
@@ -45,7 +51,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 		$this->resultMock = $this->createMock(Result::class);
-		$this->repository = new SqlConcreteTrait($this->connectionMock, 'test_table', 'test_id');
+		$this->repository = new ConcreteTrait($this->connectionMock, 'test_table', 'test_id');
 	}
 
 	#[Group('units')]
