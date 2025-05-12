@@ -85,7 +85,7 @@ class Config
 			'dev' => Level::Debug,
 			'test' => Level::Info,
 			'prod' => Level::Error,
-			default => Level::Warning,
+			default => Level::Info,
 		};
 	}
 

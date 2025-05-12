@@ -12,6 +12,7 @@ mkdir -p \
   /var/www/var/logs \
   /var/www/var/weblogs \
   /var/www/var/keys \
+  /var/www/var/sessions \
   /var/www/public/var/mediapool \
   /var/www/public/var/mediapool/thumbs \
   /var/www/public/var/mediapool/originals

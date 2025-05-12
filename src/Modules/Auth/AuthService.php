@@ -22,7 +22,6 @@ namespace App\Modules\Auth;
 
 use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\UserException;
 use App\Modules\Users\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use DateTime;
@@ -56,7 +55,6 @@ class AuthService
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
-	 * @throws UserException
 	 */
 	public function login(string $identifier, string $password): ?UserEntity
 	{
@@ -91,13 +89,13 @@ class AuthService
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws UserException
 	 */
 	public function loginByCookie(): ?UserEntity
 	{
 		// no cookie? that's it
 		if (!$this->cookie->hasCookie(self::COOKIE_NAME_AUTO_LOGIN))
 		{
+			$this->logger->error('No cookie for autologin was found.');
 			$this->errorMessage = 'No cookie for autologin was found.';
 			return null;
 		}
@@ -106,7 +104,8 @@ class AuthService
 		$UID = (int) $cookie_payload['UID'];
 		if ($UID < 1)
 		{
-			$this->errorMessage = 'No valid UID found.';
+			$this->logger->error('No valid UID found after cookie login.');
+			$this->errorMessage = 'No valid UID found after cookie login.';
 			return null;
 		}
 
@@ -116,10 +115,10 @@ class AuthService
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
-	 * @throws UserException
 	 */
 	public function loginSilent(int $UID, string $sessionId): ?UserEntity
 	{
+		$this->logger->error('Attempt silent login.');
 		$userEntity = $this->getCurrentUser($UID);
 		$this->validateUserStatus($userEntity->getMain()['status']);
 		if (!empty($this->errorMessage))
@@ -144,6 +143,7 @@ class AuthService
 	 */
 	public function logout(array $user): void
 	{
+		$this->logger->error('logout for user: '.$user['UID'].': '.$user['username']);
 		$this->userService->invalidateCache($user['UID']);
 	}
 

@@ -30,7 +30,7 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
 
 /**
- * Userservice handles and caches the userEntity. This is a central point for authentication and checking
+ * User service handles and caches the userEntity. This is a central point for authentication and checking
  *  user access rights for different modules.
  *
  * The class is user agnostic and the methods needs user id to work and return a userEntity.
