@@ -23,7 +23,8 @@
         "slim/http": "^1.4",
         "ext-simplexml": "*",
         "ext-libxml": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+    "doctrine/migrations": "^3.9"
   },
     "autoload": {
         "psr-4": {
