@@ -203,5 +203,12 @@ class ItemsRepository extends SqlBase
 		return $this->update($itemId,['item_order' => $newOrder]);
 	}
 
+	public function findFileResourcesByPlaylistId(array $playlistIds)
+	{
+		$ids =  implode(',', $playlistIds);
+		$sql = 'SELECT file_resource WHERE item_type = '.ItemType::PLAYLIST->value. ' AND file_resource IN('.$ids.')';
+
+		return $this->connection->executeQuery($sql)->fetchAllAssociative();
+	}
 
 }

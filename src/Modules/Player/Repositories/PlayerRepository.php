@@ -35,6 +35,17 @@ class PlayerRepository extends FilterBase
 		parent::__construct($connection,'player', 'player_id');
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function findPlaylistIdsByPlaylistIds(array $playlistIds): array
+	{
+		$ids =  implode(',', $playlistIds);
+		$sql = 'SELECT playlist_id FROM '.$this->getTable().'WHERE playlist_id IN('.$ids.')';
+
+		return $this->connection->executeQuery($sql)->fetchAllAssociative();
+	}
+
 	protected function prepareJoin(): array
 	{
 		return [

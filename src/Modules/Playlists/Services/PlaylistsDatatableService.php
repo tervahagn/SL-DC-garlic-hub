@@ -34,13 +34,16 @@ class PlaylistsDatatableService extends AbstractDatatableService
 	use SearchFilterParamsTrait;
 	private readonly PlaylistsRepository $playlistsRepository;
 	private readonly AclValidator $aclValidator;
-	private BaseParameters $parameters;
+	private readonly BaseParameters $parameters;
+	private readonly PlaylistUsageService $playlistUsageService;
 
-	public function __construct(PlaylistsRepository $playlistsRepository, BaseParameters $parameters, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(PlaylistsRepository $playlistsRepository, BaseParameters $parameters, AclValidator $aclValidator, PlaylistUsageService $playlistUsageService, LoggerInterface $logger)
 	{
-		$this->playlistsRepository = $playlistsRepository;
-		$this->aclValidator = $aclValidator;
-		$this->parameters = $parameters;
+		$this->playlistsRepository  = $playlistsRepository;
+		$this->aclValidator         = $aclValidator;
+		$this->parameters           = $parameters;
+		$this->playlistUsageService = $playlistUsageService;
+
 		parent::__construct($logger);
 	}
 
@@ -73,38 +76,12 @@ class PlaylistsDatatableService extends AbstractDatatableService
 		}
 	}
 
-
 	public function getPlaylistsInUse(array $playlistIds): array
 	{
 		if (empty($playlistIds))
 			return [];
 
-		return $this->arePlayListsInUse($playlistIds);
-	}
-
-
-	protected function arePlayListsInUse(array $playlistIds): array
-	{
-		$results = [];
-		/* later
-			// Todo: Find some smarter way to this
-			foreach($this->playerRepository->findPlaylistIdsByPlaylistIds($playlistIds) as $value)
-			{
-				$results[$value['playlist_id']] = true;
-			}
-			foreach($this->itemRepository->findMediaIdsByPlaylistId($playlistIds) as $value)
-			{
-				$results[$value['media_id']] = true;
-			}
-	*/
-		/* no channels currently
-			foreach($this->channelRepository->findTableIdsByPlaylistIds($playlistIds) as $value)
-			{
-				$results[$value['table_id']] = true;
-			}
-			*/
-
-		return $results;
+		return $this->playlistUsageService->determinePlaylistsInUse($playlistIds);
 	}
 
 }
