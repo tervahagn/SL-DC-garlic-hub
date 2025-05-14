@@ -76,6 +76,9 @@ class PlaylistsDatatableService extends AbstractDatatableService
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function getPlaylistsInUse(array $playlistIds): array
 	{
 		if (empty($playlistIds))

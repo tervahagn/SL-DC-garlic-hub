@@ -4,6 +4,8 @@ namespace App\Modules\Playlists\Services;
 
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Playlists\Repositories\ItemsRepository;
+use Doctrine\DBAL\Exception;
+
 // use App\Modules\Playlists\Repositories\ChannelRepository;
 
 class PlaylistUsageService
@@ -19,12 +21,10 @@ class PlaylistUsageService
         // $this->channelRepository = $channelRepository;
     }
 
-    public function determinePlaylistsInUse(array $playlistIds): array
-    {
-        return $this->checkPlaylistsUsage($playlistIds);
-    }
-
-    protected function checkPlaylistsUsage(array $playlistIds): array
+	/**
+	 * @throws Exception
+	 */
+	public function determinePlaylistsInUse(array $playlistIds): array
     {
         $results = [];
         
@@ -33,8 +33,9 @@ class PlaylistUsageService
             $results[$value['playlist_id']] = true;
         }
         
-        foreach($this->itemsRepository->findFileResourcesByPlaylistId($playlistIds) as $value) {
-            $results[$value['media_id']] = true;
+        foreach($this->itemsRepository->findFileResourcesByPlaylistId($playlistIds) as $value)
+		{
+            $results[$value['playlist_id']] = true;
         }
 
         /* no channels currently

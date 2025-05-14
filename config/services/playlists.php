@@ -29,6 +29,7 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Mediapool\Services\MediaService;
+use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Playlists\Collector\Builder\BuildHelper;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use App\Modules\Playlists\Collector\ContentReader;
@@ -62,6 +63,7 @@ use App\Modules\Playlists\Services\ExportService;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\PlaylistUsageService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
@@ -134,6 +136,9 @@ $dependencies[PlaylistsDatatableService::class] = DI\factory(function (Container
 		$container->get(PlaylistsRepository::class),
 		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class),
 		$container->get(AclValidator::class),
+		new PlaylistUsageService(
+			$container->get(PlayerRepository::class),
+			$container->get(ItemsRepository::class)),
 		$container->get('ModuleLogger')
 	);
 });

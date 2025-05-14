@@ -40,8 +40,11 @@ class PlayerRepository extends FilterBase
 	 */
 	public function findPlaylistIdsByPlaylistIds(array $playlistIds): array
 	{
+		if (empty($playlistIds))
+			return [];
+
 		$ids =  implode(',', $playlistIds);
-		$sql = 'SELECT playlist_id FROM '.$this->getTable().'WHERE playlist_id IN('.$ids.')';
+		$sql = 'SELECT playlist_id FROM '.$this->getTable().' WHERE playlist_id IN('.$ids.')';
 
 		return $this->connection->executeQuery($sql)->fetchAllAssociative();
 	}
