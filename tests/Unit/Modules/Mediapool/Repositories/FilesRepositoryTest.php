@@ -162,4 +162,56 @@ class FilesRepositoryTest extends TestCase
 		$result = $this->filesRepository->findAllByNodeId(456);
 		$this->assertEquals([['username' => 'testuser', 'node_id' => 456]], $result);
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindAllWithOwnerByCheckSum()
+	{
+		$resultMock = $this->createMock(Result::class);
+
+		// Set up expectations for the QueryBuilder
+		$this->connectionMock->expects($this->once())
+			->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('select')
+			->with('user_main.username, company_id, media_id, mediapool_files.UID, node_id, upload_time, checksum, mimetype, metadata, tags, filename, extension, thumb_extension, media_description')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('from')
+			->with('mediapool_files')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('andWhere')
+			->with('checksum = :checksum')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('setParameter')
+			->with('checksum', 'test-checksum')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('leftJoin')
+			->with('mediapool_files', 'user_main', 'user_main', 'user_main.UID=mediapool_files.UID')
+			->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->once())
+			->method('executeQuery')
+			->willReturn($resultMock);
+
+		$resultMock->expects($this->once())
+			->method('fetchAllAssociative')
+			->willReturn([['username' => 'testuser', 'checksum' => 'test-checksum']]);
+
+		// Call the method and assert the result
+		$result = $this->filesRepository->findAllWithOwnerByCheckSum('test-checksum');
+		$this->assertEquals(['username' => 'testuser', 'checksum' => 'test-checksum'], $result);
+	}
 }

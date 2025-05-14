@@ -34,7 +34,7 @@ use League\Flysystem\FilesystemException;
 class Audio extends AbstractMediaHandler
 {
 	private Ffmpeg $ffmpeg;
-	private int $maxVideoSize;
+	private int $maxAudioSize;
 
 	/**
 	 * @throws CoreException
@@ -44,7 +44,7 @@ class Audio extends AbstractMediaHandler
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->ffmpeg       = $ffmpeg;
-		$this->maxVideoSize = $this->config->getConfigValue('videos', 'mediapool', 'max_file_sizes');
+		$this->maxAudioSize = $this->config->getConfigValue('audio', 'mediapool', 'max_file_sizes');
 	}
 
 	/**
@@ -52,8 +52,9 @@ class Audio extends AbstractMediaHandler
 	 */
 	public function checkFileBeforeUpload(int $size): void
 	{
-		if ($size > $this->maxVideoSize)
-			throw new ModuleException('mediapool', 'Filesize: '.$this->calculateToMegaByte($size).' MB exceeds max image size.');	}
+		if ($size > $this->maxAudioSize)
+			throw new ModuleException('mediapool', 'Filesize: '.$this->calculateToMegaByte($size).' MB exceeds max image size.');
+	}
 
 	/**
 	 * @throws ModuleException
@@ -67,22 +68,17 @@ class Audio extends AbstractMediaHandler
 			throw new ModuleException('mediapool', 'After Upload Check: '.$filePath.' not exists.');
 
 		$this->fileSize = $this->filesystem->fileSize($filePath);
-		if ($this->fileSize > $this->maxVideoSize)
-			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max image size.');
+		if ($this->fileSize > $this->maxAudioSize)
+			throw new ModuleException('mediapool', 'After Upload Check: '.$this->calculateToMegaByte($this->fileSize).' MB exceeds max audio size.');
 
 		$this->ffmpeg->setMetadata($this->getMetadata());
 		$this->ffmpeg->init($filePath);
 		$mediaProperties = $this->ffmpeg->getMediaProperties();
-		if ($mediaProperties['width'] > $this->maxWidth)
-			throw new ModuleException('mediapool', 'After Upload Check:  Video width '.$mediaProperties['width'].' exceeds maximum.');
-
-		if ($mediaProperties['height'] > $this->maxHeight)
-			throw new ModuleException('mediapool', 'After Upload Check:  Video height '.$mediaProperties['height'] .' exceeds maximum.');
 
 		$this->setMetadata($this->ffmpeg->getMetadata());
 		$this->duration   = $this->ffmpeg->getDuration();
 
-		$this->dimensions = ['width' => $mediaProperties['width'] , 'height' => $mediaProperties['height'] ];
+		$this->dimensions = [];
 	}
 
 	/**
