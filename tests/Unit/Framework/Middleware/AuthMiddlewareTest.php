@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Exceptions\Middleware;
+namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
@@ -62,7 +62,7 @@ class AuthMiddlewareTest extends TestCase
 	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|Exception
 	 */
 	#[Group('units')]
 	public function testProcessHandlesPublicRoutes(): void
@@ -84,6 +84,13 @@ class AuthMiddlewareTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testProcessRedirectsToLoginIfSessionNull(): void
 	{
@@ -98,6 +105,13 @@ class AuthMiddlewareTest extends TestCase
 		$this->assertEquals(['/login'], $response->getHeader('Location'));
 	}
 
+	/**
+	 * @throws UserException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testProcessRedirectsToLoginIfNotAuth(): void
 	{
@@ -122,6 +136,84 @@ class AuthMiddlewareTest extends TestCase
 		$this->assertEquals(['/login'], $response->getHeader('Location'));
 	}
 
+	/**
+	 * @throws UserException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testProcessRedirectsToLoginIfNotAuthBecauseOfCookie(): void
+	{
+		$this->mockSecurePage();
+		$this->requestMock->method('getAttribute')
+			->willReturnCallback(function ($param)
+			{
+				if ($param === 'cookie')
+					return null;
+				elseif ($param === 'session')
+					return $this->sessionMock;
+				return null;
+			}
+			);
+
+		$this->sessionMock->method('exists')->with('user')->willReturn(false);
+
+		$middleware = new AuthMiddleware($this->authServiceMock);
+		$response = $middleware->process($this->requestMock, $this->handlerMock);
+
+		$this->assertEquals(302, $response->getStatusCode());
+		$this->assertEquals(['/login'], $response->getHeader('Location'));
+	}
+
+	/**
+	 * @throws UserException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testProcessRedirectsToLoginIfNotWithLogin(): void
+	{
+		$this->mockPage('/login');
+		$this->requestMock->method('getAttribute')->with('session')->willReturn(null);
+
+
+		$middleware = new AuthMiddleware($this->authServiceMock);
+		$response = $middleware->process($this->requestMock, $this->handlerMock);
+
+		$this->assertInstanceOf(ResponseInterface::class, $response);
+	}
+
+	/**
+	 * @throws UserException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testProcessRedirectsToLoginIfNotWithApiAccess(): void
+	{
+		$this->mockPage('/async/some-protected-api-call');
+		$this->requestMock->method('getAttribute')->with('session')->willReturn(null);
+
+
+		$middleware = new AuthMiddleware($this->authServiceMock);
+		$response = $middleware->process($this->requestMock, $this->handlerMock);
+
+		$this->assertEquals(401, $response->getStatusCode());
+	}
+
+	/**
+	 * @throws UserException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testProcessHandlesAuthenticatedUser(): void
 	{
@@ -182,12 +274,17 @@ class AuthMiddlewareTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testProcessAutoLoginWithCookieAndLogin(): void
 	{
-		$uriInterfaceMock = $this->createMock(UriInterface::class);
-		$this->requestMock->method('getUri')->willReturn($uriInterfaceMock);
-		$uriInterfaceMock->method('getPath')->willReturn('/login');
+		$this->mockPage('/login');
 
 		$this->requestMock->method('getAttribute')
 			->willReturnCallback(function ($param)
@@ -216,15 +313,22 @@ class AuthMiddlewareTest extends TestCase
 		$this->assertEquals(['/'], $response->getHeader('Location'));
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	private function mockSecurePage(): void
+	{
+		$this->mockPage('/secure-page');
+	}
 
 	/**
 	 * @throws Exception
 	 */
-	private function mockSecurePage()
+	private function mockPage(string $page): void
 	{
 		$uriInterfaceMock = $this->createMock(UriInterface::class);
 		$this->requestMock->method('getUri')->willReturn($uriInterfaceMock);
-		$uriInterfaceMock->method('getPath')->willReturn('/secure-page');
+		$uriInterfaceMock->method('getPath')->willReturn($page);
 	}
 
 }

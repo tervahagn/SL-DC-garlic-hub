@@ -18,15 +18,18 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Exceptions\Middleware;
+namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Modules\Users\Services\AclValidator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -35,6 +38,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
 class FinalRenderMiddlewareTest extends TestCase
@@ -75,6 +79,11 @@ class FinalRenderMiddlewareTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testProcessReturnsControllerFalse(): void
@@ -95,7 +104,12 @@ class FinalRenderMiddlewareTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testProcessReturnsHtmlWithControllerData(): void
@@ -133,7 +147,12 @@ class FinalRenderMiddlewareTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testProcessHandlesDebugMode(): void
@@ -154,6 +173,14 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testProcessWithMessage(): void
 	{
@@ -196,6 +223,14 @@ class FinalRenderMiddlewareTest extends TestCase
 
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testProcessWithUser(): void
 	{
@@ -227,27 +262,27 @@ class FinalRenderMiddlewareTest extends TestCase
 		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
 
 		$this->assertInstanceOf(ResponseInterface::class, $result);
-
 	}
+
 
 
 	private function collectLayoutData(): array
 	{
 		return [
 			'messages' => [],
-			'main_menu' => [['URL' => '/login', 'LANG_MENU_POINT' => 'translatedummy']],
+			'main_menu' => [['URL' => '/login', 'LANG_MENU_POINT' => 'translate-dummy']],
 			'CURRENT_LOCALE_LOWER' => 'en',
 			'CURRENT_LOCALE_UPPER' => 'EN',
 			'language_select' => [],
 			'user_menu' => [],
 			'APP_NAME' => 'edge',
-			'LANG_LEGAL_NOTICE' => 'translatedummy',
-			'LANG_PRIVACY' => 'translatedummy',
-			'LANG_TERMS' => 'translatedummy'
+			'LANG_LEGAL_NOTICE' => 'translate-dummy',
+			'LANG_PRIVACY' => 'translate-dummy',
+			'LANG_TERMS' => 'translate-dummy'
 		];
 	}
 
-	private function executeStandardMocks($hasMessages = false, $hasUser = false)
+	private function executeStandardMocks($hasMessages = false, $hasUser = false): void
 	{
 		$this->handlerMock->method('handle')->willReturn($this->responseMock);
 		$this->requestMock
@@ -269,9 +304,17 @@ class FinalRenderMiddlewareTest extends TestCase
 			});
 		$this->flashMock->method('hasMessage')->willReturn($hasMessages);
 		$this->sessionMock->expects($this->any())->method('exists')->with('user')->willReturn($hasUser);
-		$this->translatorMock->method('translate')->willReturn('translatedummy');
-		$this->translatorMock->method('translateArrayForOptions')->with('languages', 'menu')->willReturn([['key' => 'value']]);
+		$this->translatorMock->method('translate')->willReturn('translate-dummy');
+
+		$this->translatorMock->method('translateArrayForOptions')
+			->with('languages', 'menu')
+			->willReturn(['en_US' => 'english', 'de_DE' => 'german']);
+		$availableLanguages = ['en_US', 'de_DE'];
 		$this->localesMock->method('getLanguageCode')->willReturn('en');
+
+		$this->localesMock->method('getAvailableLocales')->willReturn($availableLanguages);
+
+
 		$this->configMock->method('getEnv')->with('APP_NAME')->willReturn('edge');
 	}
 

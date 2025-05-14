@@ -231,8 +231,6 @@ class FinalRenderMiddleware implements MiddlewareInterface
 					'LOCALE_SMALL' => substr($localeCode, 0, 2), 'LANGUAGE_NAME' => $languages[$localeCode]
 				];
 		}
-
 		return $ret;
 	}
-
 }
