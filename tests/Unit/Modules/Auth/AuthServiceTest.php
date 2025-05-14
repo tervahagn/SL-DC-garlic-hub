@@ -188,7 +188,7 @@ class AuthServiceTest extends TestCase
 		$userEntity = $this->authService->loginByCookie();
 
 		$this->assertNull($userEntity);
-		$this->assertEquals('No valid UID found.', $this->authService->getErrorMessage());
+		$this->assertEquals('No valid UID found after cookie login.', $this->authService->getErrorMessage());
 	}
 
 
