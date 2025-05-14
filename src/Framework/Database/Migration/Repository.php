@@ -70,11 +70,7 @@ class Repository extends SqlBase
 
 		try
 		{
-			$statements = array_filter(array_map('trim', explode(';', $sqlBatch)));
-			foreach ($statements as $statement)
-			{
-				$this->connection->executeStatement($statement);
-			}
+			$this->connection->executeStatement($sqlBatch);
 			$this->connection->commit();
 		}
 		catch (Exception $e)

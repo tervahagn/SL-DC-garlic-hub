@@ -24,7 +24,7 @@
         "ext-simplexml": "*",
         "ext-libxml": "*",
         "ext-curl": "*",
-    "doctrine/migrations": "^3.9"
+    "robmorgan/phinx": "^0.16.8"
   },
     "autoload": {
         "psr-4": {
