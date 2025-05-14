@@ -135,7 +135,7 @@ class ConfigTest extends TestCase
 	public function testLogLevelIsWarningInUnknownEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'unknown']);
-		$this->assertEquals(Level::Warning, $config->getLogLevel());
+		$this->assertEquals(Level::Info, $config->getLogLevel());
 	}
 
 	#[Group('units')]

@@ -261,8 +261,10 @@ class AuthServiceTest extends TestCase
 	#[Group('units')]
 	public function testLogout(): void
 	{
+		$user = ['UID' => 45, 'username' => 'testuser'];
 		$this->userServiceMock->expects($this->once())->method('invalidateCache')->with(45);
-
-		$this->authService->logout(['UID' => 45]);
+		$this->loggerMock->expects($this->once())->method('info')
+			->with('logout for user: '.$user['UID'].': '.$user['username']);
+		$this->authService->logout($user);
 	}
 }

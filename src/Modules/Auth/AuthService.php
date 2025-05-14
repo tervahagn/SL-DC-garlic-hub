@@ -143,7 +143,7 @@ class AuthService
 	 */
 	public function logout(array $user): void
 	{
-		$this->logger->error('logout for user: '.$user['UID'].': '.$user['username']);
+		$this->logger->info('logout for user: '.$user['UID'].': '.$user['username']);
 		$this->userService->invalidateCache($user['UID']);
 	}
 
