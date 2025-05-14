@@ -157,4 +157,63 @@ class PlayerRepositoryTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindPlaylistIdsByPlaylistIdsWithEmptyArray(): void
+	{
+		$result = $this->repository->findPlaylistIdsByPlaylistIds([]);
+		$this->assertSame([], $result);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindPlaylistIdsByPlaylistIdsWithValidIds(): void
+	{
+		$playlistIds = [1, 2, 3];
+		$expectedSql = 'SELECT playlist_id FROM player WHERE playlist_id IN(1,2,3)';
+		$expectedResult = [
+			['playlist_id' => 1],
+			['playlist_id' => 2],
+			['playlist_id' => 3],
+		];
+
+		$this->connectionMock->expects($this->once())
+			->method('executeQuery')
+			->with($expectedSql)
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())
+			->method('fetchAllAssociative')
+			->willReturn($expectedResult);
+
+		$result = $this->repository->findPlaylistIdsByPlaylistIds($playlistIds);
+		$this->assertSame($expectedResult, $result);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindPlaylistIdsByPlaylistIdsWithNonExistentIds(): void
+	{
+		$playlistIds = [4, 5, 6];
+		$expectedSql = 'SELECT playlist_id FROM player WHERE playlist_id IN(4,5,6)';
+		$expectedResult = [];
+
+		$this->connectionMock->expects($this->once())
+			->method('executeQuery')
+			->with($expectedSql)
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())
+			->method('fetchAllAssociative')
+			->willReturn($expectedResult);
+
+		$result = $this->repository->findPlaylistIdsByPlaylistIds($playlistIds);
+		$this->assertSame($expectedResult, $result);
+	}
 }

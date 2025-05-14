@@ -483,4 +483,43 @@ class ItemsRepositoryTest extends TestCase
 	}
 
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindFileResourcesByPlaylistIdWithValidIds(): void
+	{
+		$playlistIds = [123, 456];
+
+		$sql = "SELECT file_resource as playlist_id FROM playlists_items WHERE item_type = '" . ItemType::PLAYLIST->value . "' AND CAST(file_resource AS UNSIGNED) IN(123,456)";
+
+		$this->connectionMock->expects($this->once())
+			->method('executeQuery')
+			->with($sql)
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())
+			->method('fetchAllAssociative')
+			->willReturn([
+				['playlist_id' => '123'],
+				['playlist_id' => '456']
+			]);
+
+		$this->assertEquals(
+			[['playlist_id' => '123'], ['playlist_id' => '456']],
+			$this->repository->findFileResourcesByPlaylistId($playlistIds)
+		);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindFileResourcesByPlaylistIdReturnsEmptyArrayForEmptyInput(): void
+	{
+		$this->connectionMock->expects($this->never())
+			->method('executeQuery');
+
+		$this->assertEquals([], $this->repository->findFileResourcesByPlaylistId([]));
+	}
 }

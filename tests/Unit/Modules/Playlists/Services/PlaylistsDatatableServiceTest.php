@@ -7,6 +7,7 @@ use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
+use App\Modules\Playlists\Services\PlaylistUsageService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -19,6 +20,7 @@ class PlaylistsDatatableServiceTest extends TestCase
 	private readonly PlaylistsRepository $repositoryMock;
 	private readonly Parameters $parametersMock;
 	private readonly AclValidator $aclValidatorMock;
+	private readonly PlaylistUsageService $playlistUsageServiceMock;
 	private readonly PlaylistsDatatableService $service;
 
 	/**
@@ -30,8 +32,9 @@ class PlaylistsDatatableServiceTest extends TestCase
 		$this->repositoryMock   = $this->createMock(PlaylistsRepository::class);
 		$this->parametersMock   = $this->createMock(Parameters::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
+		$this->playlistUsageServiceMock = $this->createMock(PlaylistUsageService::class);
 
-		$this->service = new PlaylistsDatatableService($this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->loggerMock);
+		$this->service = new PlaylistsDatatableService($this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->playlistUsageServiceMock, $this->loggerMock);
 	}
 
 	/**
@@ -106,6 +109,7 @@ class PlaylistsDatatableServiceTest extends TestCase
 	}
 
 	/**
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testGetPlaylistsInUseWithValidIds(): void
@@ -116,18 +120,10 @@ class PlaylistsDatatableServiceTest extends TestCase
 			2 => true,
 			3 => true,
 		];
-
-		$serviceMock = $this->getMockBuilder(PlaylistsDatatableService::class)
-			->setConstructorArgs([$this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->loggerMock])
-			->onlyMethods(['arePlayListsInUse'])
-			->getMock();
-
-		$serviceMock->expects($this->once())
-			->method('arePlayListsInUse')
+		$this->playlistUsageServiceMock->expects($this->once())->method('determinePlaylistsInUse')
 			->with($playlistIds)
 			->willReturn($expectedResult);
-
-		$result = $serviceMock->getPlaylistsInUse($playlistIds);
+		$result = $this->service->getPlaylistsInUse($playlistIds);
 
 		$this->assertSame($expectedResult, $result);
 	}

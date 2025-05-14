@@ -208,7 +208,10 @@ class ItemsRepository extends SqlBase
 	 */
 	public function findFileResourcesByPlaylistId(array $playlistIds)
 	{
-		$ids = implode(',', $playlistIds);
+		if (empty($playlistIds))
+			return [];
+
+		$ids   = implode(',', $playlistIds);
 		$sql   = 'SELECT file_resource as playlist_id FROM '.$this->getTable().' WHERE item_type = \''.ItemType::PLAYLIST->value. '\' AND CAST(file_resource AS UNSIGNED) IN('.$ids.')';
 
 		return $this->connection->executeQuery($sql)->fetchAllAssociative();
