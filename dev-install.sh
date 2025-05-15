@@ -1,15 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-mkdir -p \
-  /var/www/var \
-  /var/www/var/cache \
-  /var/www/var/logs \
-  /var/www/var/weblogs \
-  /var/www/var/sessions \
-  /var/www/var/keys \
-  /var/www/public/var/mediapool \
-  /var/www/public/var/mediapool/thumbs \
-  /var/www/public/var/mediapool/originals
+mkdir -p var/cache
+mkdir -p var/logs
+mkdir -p var/weblogs
+mkdir -p var/sessions
+mkdir -p var/keys
+mkdir -p public/var/mediapool/thumbs
+mkdir -p public/var/mediapool/originals
 
 if [[ -f var/keys/private.key && -f var/keys/public.key && -f var/keys/encryption.key ]]; then
     echo "Keys already exist. Skipping generation."
@@ -21,10 +18,5 @@ else
     echo "Keys successfully created!"
 fi
 
-# Installation when db missing
-if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
-   # sqlite3 /var/www/var/garlic-hub.sqlite < migrations/edge/001_init.up.sql
-	php bin/console.php db:migrate 2>&1
-else
-    echo "Install already done."
-fi
+# start db migration
+php bin/console.php db:migrate 2>&1

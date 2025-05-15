@@ -22,7 +22,8 @@ use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
-use App\Framework\Utils\Ffmpeg;
+use App\Framework\Media\Ffmpeg;
+use App\Framework\Media\MediaProperties;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
@@ -81,6 +82,7 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 		new Ffmpeg(
 			$container->get(Config::class),
 			$container->get('LocalFileSystem'),
+			new MediaProperties(),
 			new ShellExecutor()
 		)
 	);

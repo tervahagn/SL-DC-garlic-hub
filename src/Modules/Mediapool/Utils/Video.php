@@ -25,7 +25,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Ffmpeg;
+use App\Framework\Media\Ffmpeg;
 use Imagick;
 use ImagickException;
 use League\Flysystem\Filesystem;
@@ -94,7 +94,7 @@ class Video extends AbstractMediaHandler
 	 */
 	public function createThumbnail(string $filePath): void
 	{
-		$vidcapPath = $this->ffmpeg->createVidCap('/'.$this->originalPath);
+		$vidcapPath = $this->ffmpeg->createVideoThumbnail('/'.$this->originalPath);
 
 		$fileInfo = pathinfo($filePath);
 		$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['filename'].'.jpg';

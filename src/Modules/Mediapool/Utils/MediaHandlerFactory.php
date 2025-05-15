@@ -23,7 +23,7 @@ namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Utils\Ffmpeg;
+use App\Framework\Media\Ffmpeg;
 use App\Framework\Utils\Widget\ConfigXML;
 use League\Flysystem\Filesystem;
 

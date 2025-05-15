@@ -22,7 +22,7 @@ namespace Tests\Unit\Modules\Mediapool\Utils;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Utils\Ffmpeg;
+use App\Framework\Media\Ffmpeg;
 use App\Modules\Mediapool\Utils\Image;
 use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;

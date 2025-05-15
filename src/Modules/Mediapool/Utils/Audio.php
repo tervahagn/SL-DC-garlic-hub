@@ -25,9 +25,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\Ffmpeg;
-use Imagick;
-use ImagickException;
+use App\Framework\Media\Ffmpeg;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 
@@ -44,7 +42,7 @@ class Audio extends AbstractMediaHandler
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->ffmpeg       = $ffmpeg;
-		$this->maxAudioSize = $this->config->getConfigValue('audio', 'mediapool', 'max_file_sizes');
+		$this->maxAudioSize = (int) $this->config->getConfigValue('audios', 'mediapool', 'max_file_sizes');
 	}
 
 	/**
@@ -73,18 +71,15 @@ class Audio extends AbstractMediaHandler
 
 		$this->ffmpeg->setMetadata($this->getMetadata());
 		$this->ffmpeg->init($filePath);
-		$mediaProperties = $this->ffmpeg->getMediaProperties();
 
 		$this->setMetadata($this->ffmpeg->getMetadata());
-		$this->duration   = $this->ffmpeg->getDuration();
+		$this->duration = $this->ffmpeg->getDuration();
 
 		$this->dimensions = [];
 	}
 
 	/**
 	 * @throws FilesystemException
-	 * @throws FrameworkException
-	 * @throws ImagickException
 	 */
 	public function createThumbnail(string $filePath): void
 	{
