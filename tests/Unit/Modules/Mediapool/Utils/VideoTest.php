@@ -187,7 +187,7 @@ class VideoTest extends TestCase
 		$this->imagickMock->expects($this->once())->method('readImage');
 		$this->imagickMock->expects($this->once())->method('thumbnailImage')->with(150, 150, true);
 		$this->imagickMock->expects($this->once())->method('writeImage');
-		$this->ffmpegMock->expects($this->once())->method('createVidCap');
+		$this->ffmpegMock->expects($this->once())->method('createVideoThumbnail');
 
 		$this->video->createThumbnail('/path/to/file.mp4');
 	}

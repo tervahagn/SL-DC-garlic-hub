@@ -195,7 +195,7 @@ class Ffmpeg
 			throw new FrameworkException('Probing media file failed. Unsupported file type for file ' . $filePath . '. Using command: ' . $command
 			);
 
-		$this->mediaProperties->fromArray($metadata, $this->metadata);
+		$this->mediaProperties->fromStdClass($metadata, $this->metadata);
 	}
 
 	private function getAbsolutePath(string $filePath): string

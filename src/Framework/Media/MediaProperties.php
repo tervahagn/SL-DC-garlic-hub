@@ -112,20 +112,20 @@ class MediaProperties
 	public function toArray(): array
 	{
 		return [
-			'width' => $this->width,
-			'height' => $this->height,
-			'video_codec' => $this->videoCodec,
-			'audio_codec' => $this->audioCodec,
-			'aspect_ratio' => $this->aspectRatio,
-			'start_time' => $this->startTime,
-			'duration' => $this->duration,
-			'filename' => $this->filename,
-			'filesize' => $this->filesize,
-			'container' => $this->container,
+			'width' => $this->getWidth(),
+			'height' => $this->getHeight(),
+			'video_codec' => $this->getVideoCodec(),
+			'audio_codec' => $this->getAudioCodec(),
+			'aspect_ratio' => $this->getAspectRatio(),
+			'start_time' => $this->getStartTime(),
+			'duration' => $this->getDuration(),
+			'filename' => $this->getFilename(),
+			'filesize' => $this->getFilesize(),
+			'container' => $this->getContainer(),
 		];
 	}
 
-	public function fromArray(stdClass $metadata, array $userMetadata = []): void
+	public function fromStdClass(stdClass $metadata, array $userMetadata = []): void
 	{
 		foreach ($metadata->streams as $stream)
 		{

@@ -19,13 +19,15 @@
 */
 
 
-namespace Tests\Unit\Framework\Utils;
+namespace Tests\Unit\Framework\Media;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Utils\Ffmpeg;
+use App\Framework\Media\Ffmpeg;
+use App\Framework\Media\MediaProperties;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -34,16 +36,17 @@ class FfmpegTest extends TestCase
 	private readonly Config $configMock;
 	private readonly Filesystem $filesystemMock;
 	private readonly ShellExecutor $shellExecutorMock;
-
+	private readonly MediaProperties $mediaPropertiesMock;
 	private readonly Ffmpeg $ffmpeg;
 
 	protected function setUp(): void
 	{
-		$this->configMock        = $this->createMock(Config::class);
-		$this->filesystemMock    = $this->createMock(Filesystem::class);
-		$this->shellExecutorMock = $this->createMock(ShellExecutor::class);
+		$this->configMock          = $this->createMock(Config::class);
+		$this->filesystemMock      = $this->createMock(Filesystem::class);
+		$this->mediaPropertiesMock = $this->createMock(MediaProperties::class);
+		$this->shellExecutorMock   = $this->createMock(ShellExecutor::class);
 
-		$this->ffmpeg = new Ffmpeg($this->configMock, $this->filesystemMock, $this->shellExecutorMock);
+		$this->ffmpeg = new Ffmpeg($this->configMock, $this->filesystemMock, $this->mediaPropertiesMock, $this->shellExecutorMock);
 	}
 
 	#[Group('units')]
@@ -64,8 +67,16 @@ class FfmpegTest extends TestCase
 		$this->shellExecutorMock->method('executeSimple')->willReturn('{"format": {"filename": "test.mp4", "size": 12345, "format_name": "mp4", "duration": 60, "start_time": 0}, "streams": [{"codec_type": "video", "codec_name": "h264", "width": 1920, "height": 1080}]}');
 
 		$this->ffmpeg->init('/path/to/video.mp4');
-
+		$this->mediaPropertiesMock->method('toArray')->willReturn(['filename' => 'test.mp4']);
 		$this->assertEquals('test.mp4', $this->ffmpeg->getMediaProperties()['filename']);
+	}
+
+	#[Group('units')]
+	public function testGetDuration()
+	{
+		$this->assertSame(0.0, $this->ffmpeg->getDuration());
+		$this->mediaPropertiesMock->method('getDuration')->willReturn(10.0);
+		$this->assertSame(10.0, $this->ffmpeg->getDuration());
 	}
 
 	#[Group('units')]
@@ -94,24 +105,30 @@ class FfmpegTest extends TestCase
 		$this->ffmpeg->init('/path/to/video.mp4');
 	}
 
+	/**
+	 * @throws FilesystemException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testCreateVidCapWithValidVideo()
+	public function testCreateVideoThumbnailWithValidVideo()
 	{
-		$this->ffmpeg->setMediaProperties(['filename' => 'test.mp4', 'video_codec' => 'h264']);
 		$this->filesystemMock->method('fileExists')->willReturn(true);
-
+		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(true);
 		$this->shellExecutorMock->method('executeSimple')
 			->willReturn('{"streams": [{"codec_type": "video", "codec_name": "h264", "width": 1920, "height": 1080}]}');
 
-		$vidcapPath = $this->ffmpeg->createVidCap('/path/to/destination');
+		$vidcapPath = $this->ffmpeg->createVideoThumbnail('/path/to/destination');
 
 		$this->assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
-	public function testCreateVidCapFails()
+	public function testCreateVideoThumbnailFails()
 	{
-		$this->ffmpeg->setMediaProperties(['filename' => 'test.mp4', 'video_codec' => 'h264']);
+		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(true);
 		$this->filesystemMock->method('fileExists')
 			->willReturn(false);
 
@@ -123,21 +140,21 @@ class FfmpegTest extends TestCase
 			]}');
 
 		$this->expectException(FrameworkException::class);
-		$this->expectExceptionMessage('Vid cap /path/to/destination/vid_1.jpg not found');
-		$vidcapPath = $this->ffmpeg->createVidCap('/path/to/destination');
+		$this->expectExceptionMessage('Thumbnail /path/to/destination/vid_1.jpg not found');
+		$vidcapPath = $this->ffmpeg->createVideoThumbnail('/path/to/destination');
 
 		$this->assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
 	}
 
 
 	#[Group('units')]
-	public function testCreateVidCapWithNoVideoStreamThrowsException()
+	public function testCreateVideoThumbnailWithNoVideoStreamThrowsException()
 	{
-		$this->ffmpeg->setMediaProperties(['filename' => 'test.mp4', 'video_codec' => '']);
+		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(false);
 
 		$this->expectException(FrameworkException::class);
-		$this->expectExceptionMessage('Can create video captions of test.mp4. File has no readable video stream');
+		$this->expectExceptionMessage('Cannot create video thumbnail for . File has no readable video stream');
 
-		$this->ffmpeg->createVidCap('/path/to/destination');
+		$this->ffmpeg->createVideoThumbnail('/path/to/destination');
 	}
 }
