@@ -5,6 +5,7 @@ mkdir -p \
   /var/www/var/cache \
   /var/www/var/logs \
   /var/www/var/weblogs \
+  /var/www/var/sessions \
   /var/www/var/keys \
   /var/www/public/var/mediapool \
   /var/www/public/var/mediapool/thumbs \
@@ -22,8 +23,8 @@ fi
 
 # Installation when db missing
 if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
-    sqlite3 /var/www/var/garlic-hub.sqlite < migrations/edge/001_init.up.sql
-	#php bin/console.php db:migrate 2>&1
+   # sqlite3 /var/www/var/garlic-hub.sqlite < migrations/edge/001_init.up.sql
+	php bin/console.php db:migrate 2>&1
 else
     echo "Install already done."
 fi

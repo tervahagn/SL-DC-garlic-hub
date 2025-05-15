@@ -47,7 +47,7 @@ cp .env.dist .env
 ### Installer
 Create directories, configure the database and more:
 ```bash
-bash install.sh
+bash dev-install.sh
 ```
 The login will be created with the following credentials:
 - **login**: admin
