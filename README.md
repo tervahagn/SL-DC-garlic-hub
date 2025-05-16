@@ -3,7 +3,7 @@
 
 # garlic-hub - Smart Digital Signage Management
 
-Garlic-Hub will become a robust Digital Signage Management Platform designed to handle the core tasks of a CMS and extend into advanced device management. From single-screen setups to distributed signage networks, Garlic-Hub offers centralized control and flexibility for various signage environments.
+Garlic-Hub is a Digital Signage Management Software which handle the core tasks of a CMS together with device management. From single-screen setups to distributed signage networks, Garlic-Hub offers centralized control and flexibility for various signage environments.
 
 > **Note**: Garlic-Hub is currently in heavily development. Core functionalities are still under construction, with some 
 > modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are appreciated as we refine the platform for stability and a full-featured release.
@@ -41,10 +41,10 @@ Probably ready at end of May 2025. But this depends on my real life, time schedu
   including local files, external links, screencasts, camera, stock platforms (Pixabay, Unsplash, Pexels)
   (completed)
 - **SMIL-Based Playlists**: Organize playlists with a playlist manager. and export them in the 
-  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players (almost completed).
+  SMIL (Synchronized Multimedia Integration Language) format, an industry standard for multimedia presentations, ensuring compatibility with a wide range of media players (completed).
 - **Multi-Language Support**: Offers locale-specific configurations and an adaptable UI to support diverse audiences. (englisch, german in progress)
 - **Multi-Zone Content**: Define and control display zones with customizable templates, allowing complex content layouts. (completed)
-- **Player** supports one local media player
+- **Player** supports one local media player (completed)
 
 ### Planned Features
 - **Device Management**: Remotely manage digital signage players, including configuration, updates, and monitoring.
