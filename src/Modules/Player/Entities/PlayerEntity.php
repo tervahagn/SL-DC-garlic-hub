@@ -90,7 +90,7 @@ class PlayerEntity
 		$this->screenTimes          = $data['screen_times'] ?? [];
 
 		if (empty($this->properties))
-			$this->properties = ['width' => 1280, 'height' => 720];
+			$this->properties = ['width' => 1920, 'height' => 1080];
 
 	}
 
