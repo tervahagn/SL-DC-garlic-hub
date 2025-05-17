@@ -61,42 +61,45 @@ readonly class PlayerIndexController
 
 	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
 	{
-		$fileMTime = $this->indexService->getFileMTime($filePath);
+		$fileMTime    = $this->indexService->getFileMTime($filePath);
+		$etag         = $this->indexService->getETag($filePath);
 		$lastModified = gmdate('D, d M Y H:i:s', $fileMTime) . ' GMT';
 		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
-
-		$clientHasModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
-
-		if ($clientHasModifiedSince !== null && (strtotime($clientHasModifiedSince) > $fileMTime))
-		{
-			return $response
-				->withHeader('Cache-Control', $cacheControl)
-				->withHeader('Last-Modified', $lastModified)
-				->withStatus(304);
-		}
 
 		if ($server['REQUEST_METHOD'] === 'HEAD')
 		{
 			return $response
 				->withHeader('Cache-Control', $cacheControl)
 				->withHeader('Content-Type', 'application/smil+xml')
+				->withHeader('eTag', $etag)
 				->withHeader('Last-Modified', $lastModified)
 				->withStatus(200);
 		}
-		else
+
+		$clientHasModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
+		$clientHasNoneMatch     = $server['HTTP_IF_NONE_MATCH'] ?? $server['If-None-Match'] ?? null;
+
+		if ($clientHasModifiedSince === null || $clientHasNoneMatch === null || (strtotime($clientHasModifiedSince) > $fileMTime) || $clientHasNoneMatch !== $etag)
 		{
 			// not cached or cache outdated, 200 OK send index.smil
 			$fileStream = $this->indexService->createStream($filePath);
 			return $response
 				->withBody($fileStream)
 				->withHeader('Cache-Control', $cacheControl)
+				->withHeader('eTag', $etag)
 				->withHeader('Last-Modified', $lastModified)
 				->withHeader('Content-Length', (string) $this->indexService->getFileSize($filePath)) // will not work with php-fpm or nginx
 				->withHeader('Content-Type', 'application/smil+xml')
 				->withHeader('Content-Description', 'File Transfer')
 				->withHeader('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"')
 				->withStatus(200);
-
+		}
+		else
+		{
+			return $response
+				->withHeader('Cache-Control', $cacheControl)
+				->withHeader('Last-Modified', $lastModified)
+				->withStatus(304);
 		}
 	}
 }

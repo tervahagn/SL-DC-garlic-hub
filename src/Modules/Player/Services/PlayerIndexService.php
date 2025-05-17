@@ -65,6 +65,11 @@ class PlayerIndexService extends AbstractBaseService
 		return filemTime($filepath);
 	}
 
+	public function getETag(string $filepath): string
+	{
+		return md5(file_get_contents($filepath));
+	}
+
 	public function getFileSize(string $filepath): int
 	{
 		return filesize($filepath);
