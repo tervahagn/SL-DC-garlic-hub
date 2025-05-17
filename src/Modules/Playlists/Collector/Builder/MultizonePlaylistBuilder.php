@@ -30,10 +30,10 @@ class MultizonePlaylistBuilder extends AbstractPlaylistBuilder
 		$items     = '';
 		$prefetch  = '';
 		$exclusive = '';
-
-		foreach ($this->playerEntity->getZones() as $screenId => $value)
+		$zones = $this->playerEntity->getZones();
+		foreach ($zones['zones'] as $screenId => $value)
 		{
-			$zonePlaylistId = $value['zone_smil_playlist_id'];
+			$zonePlaylistId = $value['zone_playlist_id'];
 
 			$zoneItems = $this->buildHelper->collectItems($zonePlaylistId);
 			$zonePrefetch = $this->buildHelper->collectPrefetches($zonePlaylistId);

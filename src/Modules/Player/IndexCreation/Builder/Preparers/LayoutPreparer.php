@@ -32,7 +32,7 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 		$layout = $this->replaceRootLayout($properties['width'], $properties['height']);
 		if ($this->playerEntity->getPlaylistMode() == PlaylistMode::MULTIZONE->value)
 		{
-			$layout['regions'][] = $this->replaceMultizoneRegions();
+			$layout['regions'] = $this->replaceMultizoneRegions();
 		}
 		else
 		{
