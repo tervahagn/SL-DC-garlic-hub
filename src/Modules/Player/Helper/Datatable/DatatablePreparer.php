@@ -78,14 +78,10 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->translator->translateArrayForOptions('model_selects', 'player')[$player['model']]);
 						break;
 					case 'playlist_id':
-						if ($player['status'] == PlayerStatus::RELEASED->value)
-						{
+						if ($player['status'] == PlayerStatus::RELEASED->value && $player['playlist_id'] > 0)
 							$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player['playlist_name']);
-						}
 						else
-						{
 							$resultElements['is_text'] = '';
-						}
 						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player[$innerKey]);
