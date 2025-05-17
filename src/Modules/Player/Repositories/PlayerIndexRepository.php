@@ -99,6 +99,7 @@ class PlayerIndexRepository extends SqlBase
 		$result['properties']            = $this->secureUnserialize($result['properties']);
 		$result['remote_administration'] = $this->secureUnserialize($result['remote_administration']);
 		$result['categories']            = $this->secureUnserialize($result['categories']);
+		$result['multizone']             = $this->secureUnserialize($result['multizone']);
 		$result['screen_times']          = $this->secureUnserialize($result['screen_times']);
 
 		return $result;
