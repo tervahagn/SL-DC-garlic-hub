@@ -168,7 +168,7 @@ trait CrudTraits
 		return explode(',', $data);
 	}
 
-	protected function secureUnserialize(string $data): array
+	protected function secureUnserialize(?string $data): array
 	{
 		if (empty($data))
 			return [];
