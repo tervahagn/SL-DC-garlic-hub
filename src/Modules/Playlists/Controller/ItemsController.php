@@ -78,7 +78,9 @@ readonly class ItemsController
 		if($insertItem === null)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error inserting item.']);
 
-		$this->setServiceUID($request);
+		$UID = $this->setServiceUID($request);
+
+		$insertItem->setUID($UID);
 		$item = $insertItem->insert($requestData['playlist_id'], $requestData['id'], $requestData['position']);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
@@ -187,10 +189,13 @@ readonly class ItemsController
 	}
 
 
-	private function setServiceUID(ServerRequestInterface $request): void
+	private function setServiceUID(ServerRequestInterface $request): int
 	{
 		$session = $request->getAttribute('session');
-		$this->itemsService->setUID($session->get('user')['UID']);
+		$UID = (int) $session->get('user')['UID'];
+		$this->itemsService->setUID($UID);
+
+		return $UID;
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface

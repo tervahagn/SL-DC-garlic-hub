@@ -33,7 +33,6 @@ abstract class AbstractInsertItem extends AbstractBaseService
 	protected PlaylistsService $playlistsService;
 	protected PlaylistMetricsCalculator $playlistMetricsCalculator;
 
-
 	abstract public function insert(int $playlistId, int|string $insertId, int $position): array;
 
 	/**

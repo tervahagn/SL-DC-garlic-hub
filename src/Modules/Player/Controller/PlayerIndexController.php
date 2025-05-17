@@ -45,7 +45,7 @@ readonly class PlayerIndexController
 		$userAgent  = $server['HTTP_USER_AGENT'];
 		$serverName = $server['SERVER_NAME'];
 
-	//	$userAgent = 'GAPI/1.0 (UUID:dbfbe32a-7bec-4e1d-a5cd-297228ae3ef4; NAME:Arch Greece) garlic-linux/v0.6.0.679 (MODEL:Garlic)';
+	//	$userAgent = 'GAPI/1.0 (UUID:3f0cd56c-d511-486a-a8e1-9d2cefd78b3f; NAME:9d2cefd78b3f) garlic-macOS/v0.6.0.679 (MODEL:Garlic)';
 		$this->indexService->setUID($ownerId);
 		if (str_contains($serverName, 'localhost') || str_contains($serverName, 'ddev'))
 			$localPlayer = true;
