@@ -60,26 +60,6 @@ class PlayerIndexService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function getFileMTime(string $filepath): int
-	{
-		return filemTime($filepath);
-	}
-
-	public function getETag(string $filepath): string
-	{
-		return md5(file_get_contents($filepath));
-	}
-
-	public function getFileSize(string $filepath): int
-	{
-		return filesize($filepath);
-	}
-
-	public function createStream(string $filePath): Stream
-	{
-		return new Stream(fopen($filePath, 'rb'));
-	}
-
 	public function handleIndexRequest(string $userAgent, bool $localPlayer): string
 	{
 		try

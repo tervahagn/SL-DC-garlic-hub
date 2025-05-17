@@ -33,6 +33,8 @@ use App\Modules\Player\Entities\PlayerEntityFactory;
 use App\Modules\Player\Helper\Datatable\ControllerFacade;
 use App\Modules\Player\Helper\Datatable\DatatableBuilder;
 use App\Modules\Player\Helper\Datatable\Parameters;
+use App\Modules\Player\Helper\Index\FileUtils;
+use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use App\Modules\Player\IndexCreation\Builder\Preparers\PreparerFactory;
 use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
 use App\Modules\Player\IndexCreation\IndexCreator;
@@ -73,6 +75,7 @@ $dependencies[PlayerIndexController::class] = DI\factory(function (ContainerInte
 {
 	return new PlayerIndexController(
 		$container->get(PlayerIndexService::class),
+		new IndexResponseHandler(new FileUtils()),
 		$container->get(Sanitizer::class)
 	);
 });

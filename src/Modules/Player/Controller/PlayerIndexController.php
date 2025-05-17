@@ -22,19 +22,22 @@
 namespace App\Modules\Player\Controller;
 
 use App\Framework\Core\Sanitizer;
+use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use App\Modules\Player\Services\PlayerIndexService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 readonly class PlayerIndexController
 {
-	private PlayerIndexService $indexService;
-	private Sanitizer $sanitizer;
+	private readonly PlayerIndexService $indexService;
+	private readonly IndexResponseHandler $indexResponseHandler;
+	private readonly Sanitizer $sanitizer;
 
-	public function __construct(PlayerIndexService $indexService, Sanitizer $sanitizer)
+	public function __construct(PlayerIndexService $indexService, IndexResponseHandler $indexResponseHandler, Sanitizer $sanitizer)
 	{
-		$this->indexService  = $indexService;
-		$this->sanitizer     = $sanitizer;
+		$this->indexService         = $indexService;
+		$this->indexResponseHandler = $indexResponseHandler;
+		$this->sanitizer            = $sanitizer;
 	}
 
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -61,45 +64,14 @@ readonly class PlayerIndexController
 
 	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
 	{
-		$fileMTime    = $this->indexService->getFileMTime($filePath);
-		$etag         = $this->indexService->getETag($filePath);
-		$lastModified = gmdate('D, d M Y H:i:s', $fileMTime) . ' GMT';
-		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
-
+		$this->indexResponseHandler->init($server, $filePath);
 		if ($server['REQUEST_METHOD'] === 'HEAD')
 		{
-			return $response
-				->withHeader('Cache-Control', $cacheControl)
-				->withHeader('Content-Type', 'application/smil+xml')
-				->withHeader('eTag', $etag)
-				->withHeader('Last-Modified', $lastModified)
-				->withStatus(200);
+			return $this->indexResponseHandler->doHEAD($response);
 		}
 
-		$clientHasModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'] ?? $server['If-Modified-Since'] ?? null;
-		$clientHasNoneMatch     = $server['HTTP_IF_NONE_MATCH'] ?? $server['If-None-Match'] ?? null;
+		return 	$this->indexResponseHandler->doGET($response);
 
-		if ($clientHasModifiedSince === null || $clientHasNoneMatch === null || (strtotime($clientHasModifiedSince) > $fileMTime) || $clientHasNoneMatch !== $etag)
-		{
-			// not cached or cache outdated, 200 OK send index.smil
-			$fileStream = $this->indexService->createStream($filePath);
-			return $response
-				->withBody($fileStream)
-				->withHeader('Cache-Control', $cacheControl)
-				->withHeader('eTag', $etag)
-				->withHeader('Last-Modified', $lastModified)
-				->withHeader('Content-Length', (string) $this->indexService->getFileSize($filePath)) // will not work with php-fpm or nginx
-				->withHeader('Content-Type', 'application/smil+xml')
-				->withHeader('Content-Description', 'File Transfer')
-				->withHeader('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"')
-				->withStatus(200);
-		}
-		else
-		{
-			return $response
-				->withHeader('Cache-Control', $cacheControl)
-				->withHeader('Last-Modified', $lastModified)
-				->withStatus(304);
-		}
 	}
+
 }
