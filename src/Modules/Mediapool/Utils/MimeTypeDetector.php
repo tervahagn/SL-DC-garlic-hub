@@ -28,6 +28,54 @@ class MimeTypeDetector
 {
 	private finfo $finfo;
 
+	private $preferredMimeTypes = [
+		// Images
+		'image/jpeg'            => 'jpg',
+		'image/png'             => 'png',
+		'image/gif'             => 'gif',
+		'image/webp'            => 'webp',
+		'image/svg+xml'         => 'svg',
+		'image/bmp'             => 'bmp',
+		'image/x-bmp'           => 'bmp',
+		'image/x-ms-bmp'        => 'bmp',
+		'image/tiff'            => 'tif',
+
+		// Audios
+		'audio/mpeg'            => 'mp3',
+		'audio/mp4' 			=> 'mp4',
+		'audio/ogg' 			=> 'ogg',
+		'audio/opus' 	        => 'opus',
+		'audio/wav'             => 'wav',
+
+		// Videos
+		'video/mp4'             => 'mp4',
+		'video/x-msvideo'       => 'avi',
+		'video/x-matroska'      => 'mkv',
+		'video/webm'            => 'webm',
+		'video/ogg'             => 'ogg',
+		'video/quicktime'       => 'mov',
+		'video/mpeg'            => 'mpg',
+
+		// PDF
+		'application/pdf'       => 'pdf',
+
+		// Widgets
+		'application/widget'       => 'wgt',
+		'application/octet-stream' => 'wgt',
+
+		// Miscellaneous
+		'application/zip'			=> 'zip',
+		'application/json'			=> 'json',
+		'application/xml'			=> 'xml',
+		'application/rss+xml'		=> 'rss',
+		'application/atom+xml'		=> 'atom',
+		'application/vnd.android.package-archive' => 'apk',
+		'application/smil'			=> 'smil',
+		'text/xml'			        => 	'xml',
+		'text/plain'			    => 'txt',
+		'text/csv'			        => 'csv',
+	];
+
 	public function __construct()
 	{
 		$this->finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -56,8 +104,12 @@ class MimeTypeDetector
 		if ($mimeType === false)
 			throw new ModuleException('mediapool', "MIME-Type for '$filePath' could not be detected.");
 
-
 		return $mimeType;
+	}
+
+	public function determineExtensionByType(string $mimeType): string
+	{
+		return $this->preferredMimeTypes[$mimeType] ?? 'bin';
 	}
 
 	/**

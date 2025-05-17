@@ -152,7 +152,9 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		if (empty($dataSet))
 		{
 			$mimetype    = $this->mimeTypeDetector->detectFromFile($mediaHandler->getAbsolutePath($uploadedPath));
-			$newFilePath = $mediaHandler->determineNewFilePath($uploadedPath, $fileHash, $mimetype);
+			// extensions can be wrong we get the from mimetype
+			$ext         = $this->mimeTypeDetector->determineExtensionByType($mimetype);
+			$newFilePath = $mediaHandler->determineNewFilePath($uploadedPath, $fileHash, $ext);
 			$mediaHandler->rename($uploadedPath, $newFilePath);
 			$mediaHandler->checkFileAfterUpload($newFilePath);
 			$mediaHandler->createThumbnail($newFilePath);

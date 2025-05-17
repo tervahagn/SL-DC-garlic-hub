@@ -63,7 +63,7 @@ class MediaHandlerFactory
 			),
 			$mimeType === 'application/zip' || $mimeType === 'application/json', $mimeType === 'text/csv' ||
 				$mimeType === 'application/xml' || $mimeType === 'application/rss+xml' || $mimeType === 'application/atom+xml' ||
-				$mimeType === 'application/vnd.android.package-archive' || $mimeType === 'application/octet-stream' ||
+				$mimeType === 'application/vnd.android.package-archive' ||
 				$mimeType === 'application/smil', $mimeType === 'text/xml'
 				=> new Miscellaneous($this->config, $this->fileSystem),
 
