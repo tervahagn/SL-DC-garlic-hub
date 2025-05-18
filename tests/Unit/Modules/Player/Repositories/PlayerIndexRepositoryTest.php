@@ -107,6 +107,8 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => 'a:0:{}',
 			'categories' => 'a:0:{}',
 			'screen_times' => 'a:0:{}',
+			'multizone'  => '',
+
 		];
 
 		$expandedData = [
@@ -118,6 +120,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => [],
 			'categories' => [],
 			'screen_times' => [],
+			'multizone'  => []
 		];
 
 		$this->mockQueryBuilder();
@@ -160,6 +163,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => 'a:0:{}',
 			'categories' => 'a:0:{}',
 			'screen_times' => 'a:0:{}',
+			'multizone'  => ''
 		];
 
 		$expectedData = [
@@ -171,6 +175,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => [],
 			'categories' => [],
 			'screen_times' => [],
+			'multizone'  => []
 		];
 
 		$this->mockQueryBuilder();

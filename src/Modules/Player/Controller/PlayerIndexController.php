@@ -29,9 +29,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 readonly class PlayerIndexController
 {
-	private readonly PlayerIndexService $indexService;
-	private readonly IndexResponseHandler $indexResponseHandler;
-	private readonly Sanitizer $sanitizer;
+	private PlayerIndexService $indexService;
+	private IndexResponseHandler $indexResponseHandler;
+	private Sanitizer $sanitizer;
 
 	public function __construct(PlayerIndexService $indexService, IndexResponseHandler $indexResponseHandler, Sanitizer $sanitizer)
 	{
@@ -70,7 +70,7 @@ readonly class PlayerIndexController
 			return $this->indexResponseHandler->doHEAD($response);
 		}
 
-		return 	$this->indexResponseHandler->doGET($response);
+		return $this->indexResponseHandler->doGET($response);
 
 	}
 

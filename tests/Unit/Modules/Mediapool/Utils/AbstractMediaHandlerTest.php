@@ -146,9 +146,9 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$oldFilePath = '/path/to/file.txt';
 		$filehash = '1234567890abcdef';
-		$mimeType = 'text/plain';
+		$extension = 'txt';
 
-		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $mimeType);
+		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
 		$this->assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
 	}
@@ -158,11 +158,11 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$oldFilePath = '/path/to/file';
 		$filehash = '1234567890abcdef';
-		$mimeType = 'text/plain';
+		$extension = 'txt';
 
-		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $mimeType);
+		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
-		$this->assertEquals('/path/to/1234567890abcdef.plain', $newFilePath);
+		$this->assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
 	}
 
 	#[Group('units')]
@@ -170,9 +170,9 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$oldFilePath = '/path/to/file.jpeg';
 		$filehash = '1234567890abcdef';
-		$mimeType = 'image/jpeg';
+		$extension = 'jpg';
 
-		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $mimeType);
+		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
 		$this->assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
 	}
@@ -182,9 +182,9 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$oldFilePath = '/path/to/file';
 		$filehash = '1234567890abcdef';
-		$mimeType = 'image/jpeg';
+		$extension = 'jpg';
 
-		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $mimeType);
+		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
 		$this->assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
 	}

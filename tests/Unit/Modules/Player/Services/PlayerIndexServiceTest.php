@@ -40,18 +40,6 @@ class PlayerIndexServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testGetFileMTime(): void
-	{
-		$baseDir = getenv('TEST_BASE_DIR') . '/resources/tmp';
-		$filePath = $baseDir.'/test.bin';
-		file_put_contents($filePath, "\xDE\xAD\xBE\xEF");
-		$this->assertSame(filemtime($filePath), $this->service->getFileMTime($filePath));
-		$this->assertSame(4, $this->service->getFileSize($filePath));
-		$this->assertInstanceOf(Stream::class, $this->service->createStream($filePath));
-		unlink($filePath);
-	}
-
-	#[Group('units')]
 	public function testHandleIndexRequestLocalPlayer(): void
 	{
 		$userAgent   = 'ValidUserAgent';

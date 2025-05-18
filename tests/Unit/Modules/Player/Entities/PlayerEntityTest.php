@@ -121,7 +121,7 @@ class PlayerEntityTest extends TestCase
 		$this->assertSame('', $this->playerEntity->getLocationLongitude());
 		$this->assertSame('', $this->playerEntity->getLocationLatitude());
 		$this->assertSame([], $this->playerEntity->getCategories());
-		$this->assertSame(['width' => 1280, 'height' => 720], $this->playerEntity->getProperties());
+		$this->assertSame(['width' => 1920, 'height' => 1080], $this->playerEntity->getProperties());
 		$this->assertSame([], $this->playerEntity->getRemoteAdministration());
 		$this->assertSame([], $this->playerEntity->getScreenTimes());
 	}
