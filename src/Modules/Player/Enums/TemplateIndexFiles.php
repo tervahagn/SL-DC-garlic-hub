@@ -24,6 +24,6 @@ namespace App\Modules\Player\Enums;
 enum TemplateIndexFiles : string
 {
 	case GARLIC  = 'garlic.smil';
-	case XMP2XXX = 'xmp2xxx.smil';
+	case XMP2XXX = 'xmp2x00.smil';
 	case SIMPLE  = 'simple.smil';
 }

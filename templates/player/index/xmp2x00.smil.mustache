@@ -30,11 +30,11 @@
 	</head>
 	<body>
 		<excl repeatCount="indefinite">
-			{{#set_standby_times}}
+			{{#standby_times}}
             <priorityClass>
 				<ref begin="{{{BEGIN_WALLCLOCKS}}}" end="{{{END_WALLCLOCKS}}}" dur="indefinite" src="adapi:blankScreen"/>
 			</priorityClass>
-            {{/set_standby_times}}
+            {{/standby_times}}
 {{#playlist}}
 {{{INSERT_PRIORITY_CLASSES}}}
             <priorityClass higher="pause">
