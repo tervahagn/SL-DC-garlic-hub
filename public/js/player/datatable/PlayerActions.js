@@ -33,7 +33,8 @@ export class PlayerActions
 
    init()
    {
-        for (let i = 0; i < this.#selectPlaylist.length; i++) {
+        for (let i = 0; i < this.#selectPlaylist.length; i++)
+		{
             const element = this.#selectPlaylist[i];
             element.addEventListener("click", async (event) => {
                 let parentWithDataId = this.#findDataIdInResultsBody(event.target)
@@ -43,45 +44,52 @@ export class PlayerActions
                 else
                     return;
 
-             let editPlaylist = parentWithDataId.querySelector(".playlist_id");
+				let editPlaylist = parentWithDataId.querySelector(".playlist_id");
 
-            this.#playerNameAutocomplete = this.#autocompleteFactory.create("playlist_name", "/async/playlists/find/for-player/");
-            this.#playerNameAutocomplete.initWithCreateFields(editPlaylist);
-            this.#playerNameAutocomplete.getHiddenIdElement().addEventListener("change", async (event) => {
-                const playlist_id = event.target.value;
-                const result = await this.#playerService.replacePlaylist(playerId, event.target.value);
-                if (result.success)
-                {
-                    this.#playerNameAutocomplete.restore(result.playlist_name);
-                    const li1 = document.createElement("li");
-                    const a1 = document.createElement("a");
-                    a1.href = "#";
-                    a1.dataset.action   = "playlist";
-                    a1.dataset.actionId = playlist_id;
-                    a1.className = "bi bi-x-circle remove-playlist";
-                    li1.appendChild(a1);
-                    this.#addRemoveEventListener(a1);
+				this.#playerNameAutocomplete = this.#autocompleteFactory.create("playlist_name", "/async/playlists/find/for-player/");
+				this.#playerNameAutocomplete.initWithCreateFields(editPlaylist);
+				this.#playerNameAutocomplete.getHiddenIdElement().addEventListener("change", async (event) => {
+					const playlist_id = event.target.value;
+					const result = await this.#playerService.replacePlaylist(playerId, event.target.value);
+					if (result.success)
+					{
+						this.#playerNameAutocomplete.restore(result.playlist_name);
+						let removePlaylist = parentWithDataId.querySelector(".remove-playlist");
+						const actions = parentWithDataId.querySelector(".actions ul");
+						if (removePlaylist === null)
+						{
+							const li1 = document.createElement("li");
+							removePlaylist = document.createElement("a");
+							removePlaylist.href = "#";
+							removePlaylist.dataset.action = "playlist";
+							removePlaylist.className = "bi bi-x-circle remove-playlist";
+							li1.appendChild(removePlaylist);
+							this.#addRemoveEventListener(removePlaylist);
+							actions.appendChild(li1);
+						}
+						removePlaylist.dataset.actionId = playlist_id;
 
-                    const li2 = document.createElement("li");
-                    const a2 = document.createElement("a");
-                    a2.href = "/playlists/compose/" + playlist_id;
-                    a2.dataset.action   = "playlist";
-                    a2.dataset.actionId = playlist_id;
-                    a2.className = "bi bi-music-note-list playlist-link";
-                    li2.appendChild(a2);
-                    const actions = parentWithDataId.querySelector(".actions ul");
-                    actions.appendChild(li1);
-                    actions.appendChild(li2);
-                }
-            });
-
-
+						let linkPlaylist = parentWithDataId.querySelector(".playlist-link");
+						if (linkPlaylist === null)
+						{
+							const li2 = document.createElement("li");
+							linkPlaylist = document.createElement("a");
+							linkPlaylist.dataset.action   = "playlist";
+							linkPlaylist.className = "bi bi-music-note-list playlist-link";
+							li2.appendChild(linkPlaylist);
+							actions.appendChild(li2);
+ 						}
+						linkPlaylist.dataset.actionId = playlist_id;
+						linkPlaylist.href = "/playlists/compose/" + playlist_id;
+					}
+				});
             });
         }
 
-       for (let i = 0; i < this.#removePlaylist.length; i++) {
+       for (let i = 0; i < this.#removePlaylist.length; i++)
+	   {
            this.#addRemoveEventListener(this.#removePlaylist[i]);
-        }
+	   }
     }
 
     #addRemoveEventListener(element)

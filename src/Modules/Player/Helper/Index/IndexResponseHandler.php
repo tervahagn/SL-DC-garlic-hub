@@ -80,11 +80,12 @@ class IndexResponseHandler
 	 * If a player do not send any HEAD requests we need to secure that
 	 * he will get an index for sure.
 	 *
-	 * A full index send will happens when:
-	 *  1. there is no If-Modified-Since or one with older dateime
-	 *  2. there is no If-None-Match sended or is different then current etag
+	 * A full index send will happen when:
+	 *  1. there is no If-Modified-Since or one with older datetime
+	 *  2. there is no If-None-Match sent or is different from current etag
 	 *
-	 * otherwise 304 status will be send
+	 * /+
+	 * otherwise 304 status will be sent
 	 */
 	public function doGET(ResponseInterface $response)
 	{
