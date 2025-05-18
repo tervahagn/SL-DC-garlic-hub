@@ -58,7 +58,7 @@ class LayoutPreparerTest extends TestCase
 		$this->assertArrayHasKey('regions', $result[0]);
 		$this->assertIsArray($result[0]['regions']);
 		$this->assertCount(1, $result[0]['regions']);
-		$this->assertEquals('0%', $result[0]['regions'][0][0]['REGION_LEFT']);
+		$this->assertEquals('0%', $result[0]['regions'][0]['REGION_LEFT']);
 	}
 
 	#[Group('units')]
@@ -96,7 +96,7 @@ class LayoutPreparerTest extends TestCase
 		$this->assertArrayHasKey('regions', $result[0]);
 		$this->assertIsArray($result[0]['regions']);
 		$this->assertCount(1, $result[0]['regions']);
-		$this->assertEquals('0', $result[0]['regions'][0][0]['REGION_LEFT']);
+		$this->assertEquals('0', $result[0]['regions'][0]['REGION_LEFT']);
 	}
 
 

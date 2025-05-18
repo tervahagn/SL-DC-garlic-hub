@@ -41,13 +41,13 @@ class MultizonePlaylistBuilderTest extends TestCase
 	#[Group('units')]
 	public function testBuildPlaylistWithValidZones(): void
 	{
-		$zones = [1 => ['zone_smil_playlist_id' => 101]];
+		$zones = ['zones' => [1 => ['zone_playlist_id' => 101]]];
 
 		$this->playerEntityMock->method('getZones')->willReturn($zones);
 
 		$this->buildHelperMock->method('collectItems')
 			->with(101)
-			->willReturn('item 101')
+			->willReturn('region="screen" item 101')
 		;
 
 		$this->buildHelperMock->method('collectPrefetches')
@@ -57,18 +57,18 @@ class MultizonePlaylistBuilderTest extends TestCase
 
 		$this->buildHelperMock->method('collectExclusives')
 			->with(101)
-			->willReturn('exclusive 101')
+			->willReturn('region="screen" exclusive 101')
 		;
 
 		$playlistStructureMock = $this->createMock(PlaylistStructureInterface::class);
 
 		$items = Base::TABSTOPS_TAG . '<seq id="media1" repeatCount="indefinite">' . "\n" .
-			'item 101'.
+			'region="screen1" item 101'.
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
 
 		$this->simplePlaylistStructureFactoryMock->method('create')
-			->with($items, 'prefetch 101'. "\n", 'exclusive 101')
+			->with($items, 'prefetch 101'. "\n", 'region="screen1" exclusive 101')
 			->willReturn($playlistStructureMock);
 
 		$result = $this->builder->buildPlaylist();
