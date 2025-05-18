@@ -24,6 +24,27 @@ namespace App\Modules\Player\Helper\Index;
 use App\Modules\Player\Services\PlayerIndexService;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class responsible for handling HTTP responses for index files.
+ * This class manages the caching mechanisms including ETags and Last-Modified headers,
+ * and ensures appropriate HTTP response codes such as 200 (OK) or 304 (Not Modified).
+ *
+ * Strategy:
+ * There are two HTTP variables player can send:
+ * 1. If-None-Match with a previous sent etag
+ * 2. If-Modified-Since with the timestamp of the current file
+ *
+ * We prioritize If-None-Match. If is sent and the match is equal the script responds with 304 (nothing changed) even
+ * when If-Modified-Since differ
+ *
+ * If If-None-Match then we will look at If-Modified-Since
+ *
+ * Server will always (HEAD and GET) responds with Cache-Control, etag, and Last-Modified.
+ * This is to ensure that the client can also decide if he wants to set a GET-Request or not.
+ *
+ * etag for index.smil is always the md5-hash of the content.
+ *
+ */
 class IndexResponseHandler
 {
 	private readonly FileUtils $fileUtils;
@@ -63,10 +84,8 @@ class IndexResponseHandler
 	 */
 	public function doHEAD(ResponseInterface $response): ResponseInterface
 	{
-		if ($this->clientHasNoneMatch !== null && $this->clientHasNoneMatch === $this->etag)
-		{
+		if ($this->shouldSend304())
 			return $this->return304($response);
-		}
 
 		return $response
 			->withHeader('Cache-Control', $this->cacheControl)
@@ -87,25 +106,23 @@ class IndexResponseHandler
 	 * /+
 	 * otherwise 304 status will be sent
 	 */
-	public function doGET(ResponseInterface $response)
+	public function doGET(ResponseInterface $response): ResponseInterface
 	{
-		if ($this->clientHasModifiedSince === null || $this->clientHasNoneMatch === null || (strtotime($this->clientHasModifiedSince) > $this->fileMTime) || $this->clientHasNoneMatch !== $this->etag)
-		{
-			// not cached or cache outdated, 200 OK send index.smil
-			$fileStream = $this->fileUtils->createStream($this->filePath);
-			return $response
-				->withBody($fileStream)
-				->withHeader('Cache-Control', $this->cacheControl)
-				->withHeader('etag', $this->etag)
-				->withHeader('Last-Modified', $this->lastModified)
-				->withHeader('Content-Length', (string) $this->fileUtils->getFileSize($this->filePath)) // will not work with php-fpm or nginx
-				->withHeader('Content-Type', 'application/smil+xml')
-				->withHeader('Content-Description', 'File Transfer')
-				->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->filePath) . '"')
-				->withStatus(200);
-		}
-		else
+		if ($this->shouldSend304())
 			return $this->return304($response);
+
+		// not cached or cache outdated, 200 OK send index.smil
+		$fileStream = $this->fileUtils->createStream($this->filePath);
+		return $response
+			->withBody($fileStream)
+			->withHeader('Cache-Control', $this->cacheControl)
+			->withHeader('etag', $this->etag)
+			->withHeader('Last-Modified', $this->lastModified)
+			->withHeader('Content-Length', (string) $this->fileUtils->getFileSize($this->filePath)) // will not work with php-fpm or nginx
+			->withHeader('Content-Type', 'application/smil+xml')
+			->withHeader('Content-Description', 'File Transfer')
+			->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->filePath) . '"')
+			->withStatus(200);
 	}
 
 
@@ -113,7 +130,19 @@ class IndexResponseHandler
 	{
 		return $response
 			->withHeader('Cache-Control', $this->cacheControl)
+			->withHeader('etag', $this->etag)
 			->withHeader('Last-Modified', $this->lastModified)
 			->withStatus(304);
+	}
+
+	private function shouldSend304(): bool
+	{
+		if ($this->clientHasNoneMatch !== null)
+			return $this->clientHasNoneMatch === $this->etag;
+
+		if ($this->clientHasModifiedSince !== null)
+			return strtotime($this->clientHasModifiedSince) > $this->fileMTime;
+
+		return false; // if both are not present in request return always a 200.
 	}
 }

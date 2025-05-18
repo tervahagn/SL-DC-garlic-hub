@@ -89,9 +89,9 @@ class MediaService
 			{
 				$media['metadata'] = json_decode($media['metadata'], true);
 
-				$media['paths']['original']  = $this->pathOriginals.'/'.$media['checksum'].'.'.$media['extension'];
+				$media['paths']['original']  = $this->getPathOriginals().'/'.$media['checksum'].'.'.$media['extension'];
 				$media['paths']['preview']   = $this->pathPreviews.'/'.$media['checksum'].'.'.$media['extension'];
-				$media['paths']['thumbnail'] = $this->pathThumbnails.'/'.$media['checksum'].'.'.$media['thumb_extension'];
+				$media['paths']['thumbnail'] = $this->getPathThumbnails().'/'.$media['checksum'].'.'.$media['thumb_extension'];
 			}
 
 			return $result;

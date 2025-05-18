@@ -34,6 +34,7 @@ use Psr\Log\LoggerInterface;
 
 class MediaServiceTest extends TestCase
 {
+
 	private readonly MediaService $mediaService;
 	private readonly FilesRepository $mediaRepositoryMock;
 	private readonly NodesRepository $nodesRepositoryMock;
@@ -293,4 +294,24 @@ class MediaServiceTest extends TestCase
 
 		$this->mediaService->cloneMedia($mediaId);
 	}
+
+	#[Group('units')]
+	public function testFetchMediaByChecksumReturnsMedia(): void
+	{
+		$checksum = 'checksum-123';
+		$media = [
+			'id' => 'media-1',
+			'metadata' => json_encode(['key' => 'value']),
+			'checksum' => $checksum,
+			'extension' => 'jpg'
+		];
+
+		$this->mediaRepositoryMock->method('findAllWithOwnerByCheckSum')->willReturn($media);
+
+		$result = $this->mediaService->fetchMediaByChecksum($checksum);
+
+		$this->assertEquals(['key' => 'value'], $result['metadata']);
+		$this->assertEquals($checksum, $result['checksum']);
+	}
+
 }

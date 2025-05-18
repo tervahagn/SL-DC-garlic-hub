@@ -65,6 +65,7 @@ class PlayerIndexService extends AbstractBaseService
 		try
 		{
 			$this->logger->info('Connection from: ' . $userAgent);
+
 			if ($this->playerDataAssembler->parseUserAgent($userAgent))
 			{
 				$this->determinePlayerEntities($localPlayer);
