@@ -21,14 +21,11 @@
 namespace App\Modules\Mediapool\Utils;
 
 use App\Framework\Exceptions\ModuleException;
-use finfo;
 use InvalidArgumentException;
 
 class MimeTypeDetector
 {
-	private finfo $finfo;
-
-	private $preferredMimeTypes = [
+	private array $preferredMimeTypes = [
 		// Images
 		'image/jpeg'            => 'jpg',
 		'image/png'             => 'png',
@@ -75,16 +72,11 @@ class MimeTypeDetector
 		'text/plain'			    => 'txt',
 		'text/csv'			        => 'csv',
 	];
+	private readonly FileInfoWrapper $fileInfoWrapper;
 
-	public function __construct()
+	public function __construct(FileInfoWrapper $fileInfoWrapper)
 	{
-		$this->finfo = finfo_open(FILEINFO_MIME_TYPE);
-	}
-
-	public function __destruct()
-	{
-		if (isset($this->finfo)) // needed because of the tests
-			finfo_close($this->finfo);
+		$this->fileInfoWrapper = $fileInfoWrapper;
 	}
 
 	/**
@@ -92,24 +84,18 @@ class MimeTypeDetector
 	 */
 	public function detectFromFile(string $filePath): string
 	{
-		if (!file_exists($filePath))
+		if (!$this->fileInfoWrapper->fileExists($filePath))
 			throw new InvalidArgumentException("File '$filePath' not exists.");
-
 
 		// exception for the digital signage widgets
 		if (pathinfo($filePath, PATHINFO_EXTENSION) === 'wgt')
 			return 'application/widget';
 
-		$mimeType = finfo_file($this->finfo, $filePath);
+		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromFile($filePath);
 		if ($mimeType === false)
 			throw new ModuleException('mediapool', "MIME-Type for '$filePath' could not be detected.");
 
 		return $mimeType;
-	}
-
-	public function determineExtensionByType(string $mimeType): string
-	{
-		return $this->preferredMimeTypes[$mimeType] ?? 'bin';
 	}
 
 	/**
@@ -117,18 +103,22 @@ class MimeTypeDetector
 	 */
 	public function detectFromStream($stream): string
 	{
-		if (!is_resource($stream) || get_resource_type($stream) !== 'stream')
+		if (!$this->fileInfoWrapper->isStream($stream))
 			throw new InvalidArgumentException('Invalid stream.');
 
-		$content = stream_get_contents($stream, -1, 0);
+		$content = $this->fileInfoWrapper->getStreamContent($stream);
 		if ($content === false)
-			throw new ModuleException('mediapool','Stream was not readable');
+			throw new ModuleException('mediapool','Stream was not readable.');
 
-
-		$mimeType = finfo_buffer($this->finfo, $content);
+		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent($content);
 		if ($mimeType === false)
-			throw new ModuleException('mediapool', 'MIME-Type could not be detected from stream');
+			throw new ModuleException('mediapool', 'MIME-Type could not be detected from stream.');
 
 		return $mimeType;
+	}
+
+	public function determineExtensionByType(string $mimeType): string
+	{
+		return $this->preferredMimeTypes[$mimeType] ?? 'bin';
 	}
 }

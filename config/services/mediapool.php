@@ -34,6 +34,7 @@ use App\Modules\Mediapool\Services\AclValidator;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
+use App\Modules\Mediapool\Utils\FileInfoWrapper;
 use App\Modules\Mediapool\Utils\ImagickFactory;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
@@ -87,14 +88,13 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 		)
 	);
 });
-
 $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UploadService(
 		$container->get(MediaHandlerFactory::class),
 		new Client(),
 		new FilesRepository($container->get('SqlConnection')),
-		new MimeTypeDetector(),
+		new MimeTypeDetector(new FileInfoWrapper()),
 		$container->get('ModuleLogger')
 	);
 });
