@@ -36,9 +36,9 @@ class PropertiesTest extends TestCase
 
 		$properties = new Properties($this->configMock, []);
 
-		$this->assertSame('fit="meetBest"', $properties->getFit());
-		$this->assertSame('mediaAlign="center"', $properties->getMediaAlign());
-		$this->assertSame('soundLevel="100"', $properties->getVolume());
+		$this->assertSame('fit="meetBest" ', $properties->getFit());
+		$this->assertSame('mediaAlign="center" ', $properties->getMediaAlign());
+		$this->assertSame('soundLevel="100" ', $properties->getVolume());
 	}
 
 	/**
@@ -49,9 +49,9 @@ class PropertiesTest extends TestCase
 	{
 		$properties = new Properties($this->configMock, ['fit' => 'slice', 'media_align' => 'midRight', 'volume' => '56']);
 
-		$this->assertSame('fit="slice"', $properties->getFit());
-		$this->assertSame('mediaAlign="midRight"', $properties->getMediaAlign());
-		$this->assertSame('soundLevel="56"', $properties->getVolume());
+		$this->assertSame('fit="slice" ', $properties->getFit());
+		$this->assertSame('mediaAlign="midRight" ', $properties->getMediaAlign());
+		$this->assertSame('soundLevel="56" ', $properties->getVolume());
 	}
 
 	/**
@@ -67,7 +67,7 @@ class PropertiesTest extends TestCase
 
 		$this->assertEmpty($properties->getFit());
 		$this->assertEmpty($properties->getMediaAlign());
-		$this->assertSame('soundLevel="100"', $properties->getVolume());
+		$this->assertSame('soundLevel="100" ', $properties->getVolume());
 	}
 
 }

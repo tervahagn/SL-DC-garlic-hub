@@ -47,7 +47,7 @@ class Properties
 	public function getFit(): string
 	{
 		if (in_array($this->fit, $this->fits))
-			return 'fit="'.$this->fit.'"';
+			return 'fit="'.$this->fit.'" ';
 
 		return '';
 	}
@@ -55,14 +55,14 @@ class Properties
 	public function getMediaAlign(): string
 	{
 		if (in_array($this->mediaAlign, $this->mediaAligns))
-			return 'mediaAlign="'.$this->mediaAlign.'"';
+			return 'mediaAlign="'.$this->mediaAlign.'" ';
 
 		return '';
 	}
 
 	public function getVolume(): string
 	{
-		return 'soundLevel="'.$this->volume.'"';
+		return 'soundLevel="'.$this->volume.'" ';
 	}
 
 }
