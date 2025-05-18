@@ -83,14 +83,6 @@ $dependencies[PlayerController::class] = DI\factory(function (ContainerInterface
 {
 	return new PlayerController($container->get(PlayerService::class));
 });
-$dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new PlaylistBuilderFactory(
-		new \App\Modules\Playlists\Collector\ContentReader($container->get(Config::class), $container->get('LocalFileSystem')),
-		new ExternalContentReader($container->get('LocalFileSystem'), new Client(), 'todo'),
-		$container->get('ModuleLogger'),
-	);
-});
 $dependencies[IndexCreator::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new IndexCreator(
