@@ -125,7 +125,6 @@ class IndexResponseHandler
 			->withStatus(200);
 	}
 
-
 	private function return304(ResponseInterface $response): ResponseInterface
 	{
 		return $response
