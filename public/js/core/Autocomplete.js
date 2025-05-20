@@ -40,6 +40,7 @@ export class Autocomplete
 	#apiEndpoint       = null;
 	#debounce_timeout  = null;
 	#fieldName         = ""
+	#ignoreBlur         = false; // datalist do not fire events sometimes. @see #handleNotSelected()
 
 
 	/**
@@ -155,7 +156,8 @@ export class Autocomplete
 			this.#debounce(() => this.#fetchSuggestions(), Autocomplete.DEBOUNCE_DELAY)
 		);
 		// Add a 'change' listener to detect when a user selects from the datalist.
-		this.#autocompleteView.inputElement.addEventListener('input', () => this.#handleSelection());
+		this.#autocompleteView.inputElement.addEventListener('change', () => this.#handleSelection());
+		this.#autocompleteView.inputElement.addEventListener('blur', () => this.#handleNotSelected());
 	}
 
 	/**
@@ -165,9 +167,40 @@ export class Autocomplete
 	 */
 	#handleSelection()
 	{
+		this.#ignoreBlur = true;
+		this.#doSelectionChange();
+		this.#autocompleteView.inputElement.blur();
+	}
+
+
+	#handleNotSelected()
+	{
+		// Crappy datalist input will not trigger an event wenn search term in input is equal to datalist suggestion value
+		// we need to secure the value will be selected. The not so elegant solution is to wait for a blur event.
+		// But because selection triggers a blur we want to prevent a repeatedly db update
+		// For this idiocy we need to set ignoreBlur and check it here
+		if (this.#ignoreBlur === true)
+		{
+			this.#ignoreBlur = false;
+			return;
+		}
+
+		this.#doSelectionChange();
+	}
+
+	/**
+	 * Clears the value of the selected hidden field.
+	 */
+	#clearSelection()
+	{
+		this.#autocompleteView.hiddenElement.value = '';
+	}
+
+	#doSelectionChange()
+	{
 		const value = this.#autocompleteView.inputElement.value;
 		const options = this.#autocompleteView.datalistElement.querySelectorAll('option');
-
+		this.#ignoreBlur = true;
 		// Loop through the options to find a match
 		for (let i = 0; i < options.length; i++)
 		{
@@ -177,18 +210,9 @@ export class Autocomplete
 				this.#autocompleteView.hiddenElement.value = option.getAttribute('data-value');
 				this.#autocompleteView.hiddenElement.dispatchEvent(new Event('change'));
 				this.#autocompleteView.inputElement.dataset.id = option.getAttribute('data-value');
-				this.#autocompleteView.inputElement.blur();
 				break; // important
 			}
 		}
-	}
-
-	/**
-	 * Clears the value of the selected hidden field.
-	 */
-	#clearSelection()
-	{
-		this.#autocompleteView.hiddenElement.value = '';
 	}
 
 	/**
