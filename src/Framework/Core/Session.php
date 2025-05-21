@@ -40,7 +40,7 @@ class Session
 			'cookie_lifetime' => 0, // to end when browser closed
 			'cookie_path' => '/',
 			'cookie_domain' => '',
-			'cookie_secure' => true,
+			'cookie_secure' => false,
 			'cookie_httponly' => true,
 			'cookie_samesite' => 'Strict',
 		];
