@@ -69,7 +69,7 @@ class Cookie
 	public function createCookie(string $name, string $content, DateTime $expire): void
 	{
 		$expire  = $expire->getTimestamp();
-		$result  = setcookie($name, $content, $expire, '/', '', true, true);
+		$result  = setcookie($name, $content, $expire, '/', '', false, true);
 
 		if ($result == false)
 			throw new FrameworkException('Cookie failed to set.');

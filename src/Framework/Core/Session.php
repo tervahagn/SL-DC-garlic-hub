@@ -42,7 +42,7 @@ class Session
 			'cookie_domain' => '',
 			'cookie_secure' => true,
 			'cookie_httponly' => true,
-			'cookie_samesite' => 'Lax',
+			'cookie_samesite' => 'Strict',
 		];
 
 		$settings = array_merge($defaultOptions, $options);
