@@ -79,6 +79,12 @@ You can start, stop or restart the container later with:
 docker start|stop|restart garlic-hub-container
 ```
 
+### Admin User
+
+There is an admin user created:
+login: admin
+password: thymian
+
 ### Remarks
 
 There are two `var` directories: one located in the system root and another in the `htdocs` root (public).
