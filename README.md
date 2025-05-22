@@ -20,23 +20,24 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 
 Garlic-Hub is being developed in three phases, each delivering a distinct edition:
 
-| Edition | Target Environment                 | Key Features                                                             | Status |
-|---------|------------------------------------|--------------------------------------------------------------------------|--------|
-| **Edge** (Phase 1) | Single-device or small deployments | Basic media management, SMIL playlist creation, lightweight architecture | ✅ Feature complete, in testing |
-| **Core** (Phase 2) | Mid-sized networks, NAS            | Limited device management, enhanced content creation                     | 🔄 Planned |
-| **Enterprise** (Phase 3) | Large-scale networks               | SaaS/on-premise, role-based permissions, advanced analytics              | 🔄 Planned |
+| Edition                  | Target Environment                 | Key Features                                                             | Status                         |
+|--------------------------|------------------------------------|--------------------------------------------------------------------------|--------------------------------|
+| **Edge** (Phase 1)       | Single-device or small deployments | Basic media management, SMIL playlist creation, lightweight architecture | ✅ Feature complete, in testing |
+| **Core** (Phase 2)       | Mid-sized networks, NAS            | Limited device management, enhanced content creation                     | 🔄 Planned                     |
+| **Enterprise** (Phase 3) | Large-scale networks               | SaaS/on-premise, role-based permissions, advanced analytics              | 🔄 Planned                     |
 
 Each edition builds upon previous features, ensuring a smooth upgrade path as Garlic-Hub evolves into a comprehensive, SMIL-based digital signage solution.
 
 ### Current Features (Edge Edition)
-
-- **Core Framework** ✅ - Database, migrations, logging, routing, middleware and error handling with SLIM 4
-- **Authentication** ✅ - Session-based login with remember-me functionality and basic OAuth2 token authorization
-- **Media Management** ✅ - Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key)
-- **SMIL Playlists** ✅ - Playlist management and export in industry-standard SMIL format
-- **Multi-Zone Content** ✅ - Display zone control with customizable templates for complex layouts
-- **Local Player Support** ✅ - Integration with one local media player
-- **Internationalization** ✅ - Locale-specific configurations and adaptable UI (English complete, German complete)
+| Section                  | Status | description                                                                                                                            |
+|--------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------|
+| **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                      |
+| **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                                |
+| **Media Management**     | ✅      | Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key) |
+| **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                        |
+| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                            |
+| **Local Player Support** | ✅      | Integration with one local media player                                                                                                |
+| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English complete, German complete)                                                    |
 
 ### Coming Soon
 - Online documentation
@@ -54,18 +55,19 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 ### Stack
 - PHP 8.3
 - SLIM 4 Framework
+- Vanilla JavaScript with some external libs support
 - Selected composer libraries
 - PHPUnit 11 (targeting >95% test coverage)
 - no vibe coding!
 
 ### Developer Documentation
-- [Coding Standards](docs%2Fcoding-standards.md)
-- [Exceptions](docs%2Fexceptions.md)
-- [DI-Container](docs%2Fdi-container.md)
-- [SQL Repository Usage](docs%2Fsql-repository-usage.md)
-- [CLI.php - Command Line Interface](docs%2Fcli.md)
-- [Api/Oauth2 - API and Oauth2](docs%2Foauth2.md)
-- [User- Administration](docs%2Fuser-administration.md)
+- [Coding Standards](docs/coding-standards.md)
+- [Exceptions](docs/exceptions.md)
+- [DI-Container](docs/di-container.md)
+- [SQL Repository Usage](docs/sql-repository-usage.md)
+- [CLI.php - Command Line Interface](docs/cli.md)
+- [Api/Oauth2 - API and Oauth2](docs/oauth2.md)
+- [User- Administration](docs/user-administration.md)
 
 # Contributing
 Contributions are highly encouraged. As the project is in early development, please note that code, features, and documentation are subject to change as we evolve toward a production-ready state.
