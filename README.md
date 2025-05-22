@@ -7,6 +7,8 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 
 > **Note**: Garlic-Hub is currently under active development. Core functionalities are still under construction, with some modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are welcome as we refine the platform.
 
+![Garlic-Hub Mediapool Screenshot](docs/media/screenshot.jpg)
+
 ## Quick Start
 
 - [Installation Guide](docs/install.md)
