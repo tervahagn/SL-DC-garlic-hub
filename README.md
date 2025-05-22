@@ -5,7 +5,7 @@
 
 Garlic-Hub is a comprehensive Digital Signage Management solution that handles core CMS tasks alongside device management. From single-screen setups to distributed networks, it provides centralized control with flexibility for various signage environments.
 
-> **Note**: Garlic-Hub is currently under active development. Core functionalities are still under construction, with some modules incomplete or in early testing stages. This version is not recommended for production use. Feedback and contributions are welcome as we refine the platform.
+> **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback..
 
 ![Garlic-Hub Mediapool Screenshot](docs/media/screenshot.jpg)
 
@@ -20,11 +20,11 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 
 Garlic-Hub is being developed in three phases, each delivering a distinct edition:
 
-| Edition                  | Target Environment                 | Key Features                                                             | Status                         |
-|--------------------------|------------------------------------|--------------------------------------------------------------------------|--------------------------------|
-| **Edge** (Phase 1)       | Single-device or small deployments | Basic media management, SMIL playlist creation, lightweight architecture | ✅ Feature complete, in testing |
-| **Core** (Phase 2)       | Mid-sized networks, NAS            | Limited device management, enhanced content creation                     | 🔄 Planned                     |
-| **Enterprise** (Phase 3) | Large-scale networks               | SaaS/on-premise, role-based permissions, advanced analytics              | 🔄 Planned                     |
+| Edition                  | Target Environment                 | Key Features                                                             | Status                  |
+|--------------------------|------------------------------------|--------------------------------------------------------------------------|-------------------------|
+| **Edge** (Phase 1)       | Single-device or small deployments | Basic media management, SMIL playlist creation, lightweight architecture | ✅ MVP ready, in testing |
+| **Core** (Phase 2)       | Mid-sized networks, NAS            | Limited device management, enhanced content creation                     | 🔄 Planned              |
+| **Enterprise** (Phase 3) | Large-scale networks               | SaaS/on-premise, role-based permissions, advanced analytics              | 🔄 Planned              |
 
 Each edition builds upon previous features, ensuring a smooth upgrade path as Garlic-Hub evolves into a comprehensive, SMIL-based digital signage solution.
 
