@@ -44,6 +44,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - Real-time reporting and system health monitoring
 - Image templating engine
 - Raspberry Pi Player / CMS Bundle
+- Modern design
 - Scalable deployment options
 
 ## Technical Details
