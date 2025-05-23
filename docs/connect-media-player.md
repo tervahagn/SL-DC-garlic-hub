@@ -88,7 +88,7 @@ HTTP/1.1 304 Not Modified
    Last-Modified: Wed, 15 Nov 2023 12:30:45 GMT
    Cache-Control: public, must-revalidate, max-age=864000, pre-check=864000
 ```
-Some player do not send HEAD request. For this case even after a GET request the server will check and send a response with a 304 if nothing changed 
+> **Note**: Some players might skip the initial HEAD request and directly send a GET. In such cases, the server will still check for changes and respond with 304 Not-Modified if nothing has been updated.
 
 4.2. **Server Response if changed**:
 ```
@@ -126,7 +126,7 @@ following format:
 - **UUID**: Universally Unique Identifier.THis should be definitely unique!
 - **NAME**: Name of the player which will be shown in the overview.
 - **Firmware-version**: A string of your current app or firmware version
-- **MODEL**; A short ID without spaces to detect specific player and give them probably a different SMIL index
+- **MODEL**: A short ID without spaces to detect specific player and give them probably a different SMIL index
 
 #### API Explanation
 
@@ -142,20 +142,20 @@ The Garlic player sends this user agent
  GAPI/1.0 (UUID:a8294bat-c28f-50af-f94o-800869af5854; NAME:Player with spaces in name) garlic-linux/v0.6.0.745 (MODEL:Garlic)
 ```
 
-The XMP-330 from IAdea sends following user-agent
+The XMP-330 from IAdea sends following user-agent:
 
 ```
  ADAPI/1.0 (UUID:b8294bat-c28f-50af-f94o-800869af5854; NAME:Player with spaces in name) SK8855-ADAPI/2.0.5 (MODEL:XMP-330)
 ```
 
-The first 4K player from IAdea was 
+The first 4K player from IAdea use: 
 
 ```
 ADAPI/2.0 (UUID:22a6d755-8ca6-4a82-a724-2cc548000d06) RK3288-ADAPI/1.0.3.74 (MODEL:XMP-7300)
 ```
 
-Please leave a request in the issues if you want support for your player model. 
+Please leave a request in the issues if you need support for your player. 
 
 ## Passwords
 
-There is also an option to use User authentication with a password in SMIL header, but currently most player do not use. 
+There is also an option to use a user authentication with a password in SMIL header, but currently most player do not use. 
