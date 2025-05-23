@@ -5,14 +5,14 @@
 
 Garlic-Hub is a comprehensive Digital Signage Management solution that handles core CMS tasks alongside device management. From single-screen setups to distributed networks, it provides centralized control with flexibility for various signage environments.
 
-> **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback..
+> **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback.
 
 ![Garlic-Hub Mediapool Screenshot](docs/media/screenshot.jpg)
 
 ## Quick Start
 
 - [Installation Guide](docs/install.md)
-- [Connecting Media Players](docs/how-tos/connect-mediaplayer.md)
+- [Connecting Media Players for User](docs/how-tos/connect-mediaplayer-user.md)
 
 ## Project Overview
 
@@ -68,6 +68,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - [CLI.php - Command Line Interface](docs/cli.md)
 - [Api/Oauth2 - API and Oauth2](docs/oauth2.md)
 - [User- Administration](docs/user-administration.md)
+- [Connect MediaPlayer](docs/connect-media-player.md)
 
 # Contributing
 Contributions are highly encouraged. As the project is in early development, please note that code, features, and documentation are subject to change as we evolve toward a production-ready state.
