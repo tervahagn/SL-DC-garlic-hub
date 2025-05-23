@@ -1,9 +1,9 @@
-# Connect Media Player to the Garlic-Hub:
+# Connect Media Player to the Garlic-Hub
 
 This tutorial describes how a player can securely connect to the server to efficiently detect updates and only download data when necessary. It covers both the HTTP caching mechanisms for optimal performance and the authorization process using User-Agent to ensure secure access to server resources.
 
 **Prerequisites**
-You should be familiar with HTTP requests and responses. Especially HEAD / GET and what means codes liken 301, 304, 200.
+You should be familiar with HTTP requests and responses. Especially about Etag, HEAD / GET and what means codes like 301, 304, 200.
 
 ## HTTP-Requests
 

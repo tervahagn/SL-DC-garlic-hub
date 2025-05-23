@@ -68,7 +68,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - [CLI.php - Command Line Interface](docs/cli.md)
 - [Api/Oauth2 - API and Oauth2](docs/oauth2.md)
 - [User- Administration](docs/user-administration.md)
-- [Connect MediaPlayer](docs/connect-media-player.md)
+- [Connect Media Player](docs/connect-media-player.md)
 
 # Contributing
 Contributions are highly encouraged. As the project is in early development, please note that code, features, and documentation are subject to change as we evolve toward a production-ready state.
