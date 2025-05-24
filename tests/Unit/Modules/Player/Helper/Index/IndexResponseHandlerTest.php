@@ -47,11 +47,15 @@ class IndexResponseHandlerTest extends TestCase
 			->willReturn($fileMTime);
 
 
-		$this->responseMock->expects($this->exactly(3))->method('withHeader')
+		$this->responseMock->expects($this->exactly(7))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -80,12 +84,16 @@ class IndexResponseHandlerTest extends TestCase
 			->willReturn($fileMTime);
 
 
-		$this->responseMock->expects($this->exactly(4))->method('withHeader')
+		$this->responseMock->expects($this->exactly(8))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['Content-Type',  'application/smil+xml', $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(200);
 
@@ -113,12 +121,17 @@ class IndexResponseHandlerTest extends TestCase
 			->with($filePath)
 			->willReturn($fileMTime);
 
-		$this->responseMock->expects($this->exactly(4))->method('withHeader')
+		$this->responseMock->expects($this->exactly(8))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['Content-Type',  'application/smil+xml', $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+
 			]);
 		$this->responseMock->method('withStatus')->with(200);
 
@@ -146,11 +159,15 @@ class IndexResponseHandlerTest extends TestCase
 			->with($filePath)
 			->willReturn($fileMTime);
 
-		$this->responseMock->expects($this->exactly(3))->method('withHeader')
+		$this->responseMock->expects($this->exactly(7))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -178,11 +195,15 @@ class IndexResponseHandlerTest extends TestCase
 			->with($filePath)
 			->willReturn($fileMTime);
 
-		$this->responseMock->expects($this->exactly(3))->method('withHeader')
+		$this->responseMock->expects($this->exactly(7))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -210,12 +231,16 @@ class IndexResponseHandlerTest extends TestCase
 			->with($filePath)
 			->willReturn($fileMTime);
 
-		$this->responseMock->expects($this->exactly(4))->method('withHeader')
+		$this->responseMock->expects($this->exactly(8))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['Content-Type',  'application/smil+xml', $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(200);
 
@@ -257,11 +282,15 @@ class IndexResponseHandlerTest extends TestCase
 
 		$this->responseMock->method('withBody')->with($filestreamMock)->willReturnSelf();
 
-		$this->responseMock->expects($this->exactly(7))->method('withHeader')
+		$this->responseMock->expects($this->exactly(11))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock],
 				['Content-Length', (string) $fileSize, $this->responseMock],
 				['Content-Type', 'application/smil+xml', $this->responseMock],
 				['Content-Description', 'File Transfer', $this->responseMock],
@@ -300,11 +329,15 @@ class IndexResponseHandlerTest extends TestCase
 
 		$this->responseMock->expects($this->never())->method('withBody');
 
-		$this->responseMock->expects($this->exactly(3))->method('withHeader')
+		$this->responseMock->expects($this->exactly(7))->method('withHeader')
 			->willReturnMap([
 				['Cache-Control', $cacheControl, $this->responseMock],
 				['etag', $etag, $this->responseMock],
-				['Last-Modified', $lastModified, $this->responseMock]
+				['Last-Modified', $lastModified, $this->responseMock],
+				['Access-Control-Allow-Origin', '*', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Max-Age', '86400', $this->responseMock],
+				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
