@@ -45,7 +45,8 @@ readonly class PlayerIndexController
 		$get        = $request->getQueryParams();
 		$ownerId    = $this->sanitizer->int($get['owner_id'] ?? 0);
 		$server     = $request->getServerParams();
-
+		$this->indexResponseHandler->debugHeader($request->getHeaders());
+		$this->indexResponseHandler->debugServer();
 		// because JavaScript player cannot send a User-Agent.
 		if (isset($server['HTTP_X_SIGNAGE_AGENT']))
 			$userAgent  = $server['HTTP_X_SIGNAGE_AGENT'];

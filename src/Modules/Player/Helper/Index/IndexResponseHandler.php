@@ -64,6 +64,8 @@ class IndexResponseHandler
 		$this->fileUtils = $fileUtils;
 	}
 
+
+
 	public function init(array $server, string $filePath): void
 	{
 		$this->filePath               = $filePath;
@@ -74,6 +76,26 @@ class IndexResponseHandler
 		$this->etag         = $this->fileUtils->getETag($filePath);
 		$this->lastModified = gmdate('D, d M Y H:i:s', $this->fileMTime) . ' GMT';
 		$this->cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
+	}
+
+	public function debugServer(): void
+	{
+		$logFilePath = '../var/logs/server-variable.log';
+		$formattedHeaders = print_r($_SERVER, true);
+		$formattedHeaders .= "\n---------------------------------------------------\n";
+		file_put_contents($logFilePath, $formattedHeaders, FILE_APPEND);
+	}
+
+
+	public function debugHeader(array $headers): void
+	{
+		$logFilePath = '../var/logs/client-headers.log';
+		$formattedHeaders = '';
+		foreach ($headers as $name => $values)
+		{
+			$formattedHeaders .= $name . ': ' . implode(', ', $values) . PHP_EOL;
+		}
+		file_put_contents($logFilePath, $formattedHeaders, FILE_APPEND);
 	}
 
 	/**
