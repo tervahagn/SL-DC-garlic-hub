@@ -53,9 +53,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -91,9 +91,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(200);
 
@@ -128,9 +128,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 
 			]);
 		$this->responseMock->method('withStatus')->with(200);
@@ -165,9 +165,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -201,9 +201,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
@@ -238,9 +238,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(200);
 
@@ -288,9 +288,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock],
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock],
 				['Content-Length', (string) $fileSize, $this->responseMock],
 				['Content-Type', 'application/smil+xml', $this->responseMock],
 				['Content-Description', 'File Transfer', $this->responseMock],
@@ -335,9 +335,9 @@ class IndexResponseHandlerTest extends TestCase
 				['etag', $etag, $this->responseMock],
 				['Last-Modified', $lastModified, $this->responseMock],
 				['Access-Control-Allow-Origin', '*', $this->responseMock],
-				['Access-Control-Allow-Methods', 'HEAD, GET', $this->responseMock],
+				['Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS', $this->responseMock],
 				['Access-Control-Max-Age', '86400', $this->responseMock],
-				['Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent', $this->responseMock]
+				['Access-Control-Allow-Headers', 'User-Agent, If-None-Match, If-Modified-Since, Authorization, X-Signage-Agent', $this->responseMock]
 			]);
 		$this->responseMock->method('withStatus')->with(304);
 
