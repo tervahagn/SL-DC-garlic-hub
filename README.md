@@ -11,8 +11,8 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 
 ## Quick Start
 
-- [Installation Guide](docs/install.md)
-- [Connecting Media Players for User](docs/how-tos/connect-mediaplayer-user.md)
+- [User Installation Guide](docs/how-tos/install-user.md)
+- [Connecting Media Players](docs/how-tos/connect-mediaplayer-user.md)
 
 ## Project Overview
 
@@ -62,6 +62,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 
 ### Developer Documentation
 - [Coding Standards](docs/coding-standards.md)
+- [Installation](docs/install.md)
 - [Exceptions](docs/exceptions.md)
 - [DI-Container](docs/di-container.md)
 - [SQL Repository Usage](docs/sql-repository-usage.md)
