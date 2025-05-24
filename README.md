@@ -65,7 +65,6 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - [Installation](docs/install.md)
 - [Exceptions](docs/exceptions.md)
 - [DI-Container](docs/di-container.md)
-- [SQL Repository Usage](docs/sql-repository-usage.md)
 - [CLI.php - Command Line Interface](docs/cli.md)
 - [Api/Oauth2 - API and Oauth2](docs/oauth2.md)
 - [User- Administration](docs/user-administration.md)
