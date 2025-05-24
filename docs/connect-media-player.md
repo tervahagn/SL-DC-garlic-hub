@@ -2,6 +2,8 @@
 
 This tutorial describes how a player can securely connect to the server to efficiently detect updates and only download data when necessary. It covers both the HTTP caching mechanisms for optimal performance and the authorization process using User-Agent to ensure secure access to server resources.
 
+**Once the player is successfully identified, Garlic-Hub will add it to the player database.**
+
 **Prerequisites**
 You should be familiar with HTTP requests and responses. Especially about Etag, HEAD / GET and what means codes like 301, 304, 200.
 
@@ -110,11 +112,18 @@ HTTP/1.1 200 OK
 - The etag for media will be determined from the webserver by default
 - This method minimizes data traffic and allows for efficient updates
 
-## Authentication with User-Agent
+## Player Authentication with User-Agent or X-Signage-Agent
 
-Garlic-Hub will detect the player according to his User-Agent.
-To be compatible with SMIL player from IAdea and QBic International player should use:
+Garlic-Hub identifies and authenticates media players through two primary methods: by checking the User-Agent or the X-Signage-Agent in the request header. Regardless of the method chosen, the string format for identification must be consistent.
 
+### X-Signage-Agent
+For media player applications built for web browsers, the User-Agent is typically set by the browser and cannot be altered. In such scenarios, Garlic-Hub provides the X-Signage-Agent header as an alternative for authentication. Please use the same specified format as you would for the User-Agent.
+
+### User-Agent
+If your media player application is developed for a specific operating system, you have complete control over the User-Agent string. We recommend using the User-Agent for these applications, although the X-Signage-Agent remains a viable alternative.
+
+### Detection String Format
+To be compatible with SMIL player from IAdea and QBic International player should use
 following format:
 
 ```

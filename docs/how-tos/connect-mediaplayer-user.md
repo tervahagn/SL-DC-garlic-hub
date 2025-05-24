@@ -43,3 +43,4 @@ If Garlic-Hub is hosted at `http://localhost:8090`, your content URL will be: `h
 4. Enter your content URL (`http://<your-domain>:<port>/smil-index`) in the content-url field
 5. Press the "Set" button to save your configuration
 
+If the player is correctly recognized, Garlic-Hub will store its information in the player database. You will see it in the player overview. 
