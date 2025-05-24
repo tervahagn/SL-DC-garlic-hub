@@ -42,13 +42,14 @@ class PlayerIndexControllerTest extends TestCase
 		$this->requestMock->method('getQueryParams')->willReturn([]);
 		$this->requestMock->method('getServerParams')->willReturn([
 			'HTTP_USER_AGENT' => 'TestAgent',
+			'HTTP_X_SIGNAGE_AGENT' => 'extra useragent',
 			'SERVER_NAME' => 'extern'
 		]);
 
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('TestAgent', false)
+			->with('extra useragent', false)
 			->willReturn('');
 		$this->indexResponseHandler->expects($this->never())->method('init');
 

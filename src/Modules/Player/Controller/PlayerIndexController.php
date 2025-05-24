@@ -45,7 +45,13 @@ readonly class PlayerIndexController
 		$get        = $request->getQueryParams();
 		$ownerId    = $this->sanitizer->int($get['owner_id'] ?? 0);
 		$server     = $request->getServerParams();
-		$userAgent  = $server['HTTP_USER_AGENT'];
+
+		// because JavaScript player cannot send a User-Agent.
+		if (isset($server['HTTP_X_SIGNAGE_AGENT']))
+			$userAgent  = $server['HTTP_X_SIGNAGE_AGENT'];
+		else
+			$userAgent  = $server['HTTP_USER_AGENT'];
+
 		$serverName = $server['SERVER_NAME'];
 
 	//	$userAgent = 'GAPI/1.0 (UUID:3f0cd56c-d511-486a-a8e1-9d2cefd78b3f; NAME:9d2cefd78b3f) garlic-macOS/v0.6.0.679 (MODEL:Garlic)';
