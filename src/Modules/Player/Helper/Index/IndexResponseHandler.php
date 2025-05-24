@@ -109,15 +109,12 @@ class IndexResponseHandler
 		if ($this->shouldSend304())
 			return $this->return304($response);
 
+		$response = $this->addAAccessControlHeader($response);
 		return $response
 			->withHeader('Cache-Control', $this->cacheControl)
 			->withHeader('Content-Type', 'application/smil+xml')
 			->withHeader('etag', $this->etag)
 			->withHeader('Last-Modified', $this->lastModified)
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Access-Control-Allow-Methods', 'HEAD, GET')
-			->withHeader('Access-Control-Max-Age', '86400')
-			->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent')
 			->withStatus(200);
 	}
 
@@ -139,15 +136,12 @@ class IndexResponseHandler
 
 		// not cached or cache outdated, 200 OK send index.smil
 		$fileStream = $this->fileUtils->createStream($this->filePath);
+		$response   = $this->addAAccessControlHeader($response);
 		return $response
 			->withBody($fileStream)
 			->withHeader('Cache-Control', $this->cacheControl)
 			->withHeader('etag', $this->etag)
 			->withHeader('Last-Modified', $this->lastModified)
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Access-Control-Allow-Methods', 'HEAD, GET')
-			->withHeader('Access-Control-Max-Age', '86400')
-			->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent')
 			->withHeader('Content-Length', (string) $this->fileUtils->getFileSize($this->filePath)) // will not work with php-fpm or nginx
 			->withHeader('Content-Type', 'application/smil+xml')
 			->withHeader('Content-Description', 'File Transfer')
@@ -157,14 +151,11 @@ class IndexResponseHandler
 
 	private function return304(ResponseInterface $response): ResponseInterface
 	{
+		$response = $this->addAAccessControlHeader($response);
 		return $response
 			->withHeader('Cache-Control', $this->cacheControl)
 			->withHeader('etag', $this->etag)
 			->withHeader('Last-Modified', $this->lastModified)
-			->withHeader('Access-Control-Allow-Origin', '*')
-			->withHeader('Access-Control-Allow-Methods', 'HEAD, GET')
-			->withHeader('Access-Control-Max-Age', '86400')
-			->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent')
 			->withStatus(304);
 	}
 
@@ -177,5 +168,13 @@ class IndexResponseHandler
 			return strtotime($this->clientHasModifiedSince) > $this->fileMTime;
 
 		return false; // if both are not present in request return always a 200.
+	}
+
+	private function addAAccessControlHeader(ResponseInterface $response): ResponseInterface
+	{
+		return $response->withHeader('Access-Control-Allow-Origin', '*')
+						->withHeader('Access-Control-Allow-Methods', 'HEAD, GET, OPTIONS')
+						->withHeader('Access-Control-Max-Age', '86400')
+						->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Signage-Agent');
 	}
 }
