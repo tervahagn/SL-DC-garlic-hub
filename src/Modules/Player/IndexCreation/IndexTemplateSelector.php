@@ -46,6 +46,7 @@ class IndexTemplateSelector
 			case PlayerModel::IADEA_XMP3X0:
 			case PlayerModel::IADEA_XMP3X50:
 			case PlayerModel::IDS:
+			case PlayerModel::SCREENLITE:
 			case PlayerModel::COMPATIBLE:
 			default:
 				$indexFileName = TemplateIndexFiles::SIMPLE;

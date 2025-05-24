@@ -33,6 +33,7 @@ class PlayerDetector
 			'Garlic' => PlayerModel::GARLIC,
 			'IDS-App' => PlayerModel::IDS,
 			'BXP-202', 'BXP-301', 'TD-1050' => PlayerModel::QBIC,
+			'ScreenliteWeb' => PlayerModel::SCREENLITE,
 			default => PlayerModel::UNKNOWN,
 		};
 		return $this;

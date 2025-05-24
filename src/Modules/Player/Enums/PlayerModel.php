@@ -30,7 +30,8 @@ enum PlayerModel: int
 	case COMPATIBLE     = 4; // fs5 Kathrein crap with only h264 in ts Container
 	case IADEA_XMP2X00  = 5; // IAdea new 2000, 6000 and 7000 (4K) Android Series with new xml config and SMIL Structure
 	case GARLIC         = 6; // Sagiadinos open source software player garlic
-	case IDS            = 7; // Isaria Digital Signage Player
+	case IDS            = 7; // iDSPlayer
 	case QBIC           = 8; // QBiC Signage Player
+	case SCREENLITE     = 9; // https://github.com/screenlite
 
 }

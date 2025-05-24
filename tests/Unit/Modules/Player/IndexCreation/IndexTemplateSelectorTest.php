@@ -94,6 +94,17 @@ class IndexTemplateSelectorTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testSelectReturnsSimpleForScreenlite(): void
+	{
+		$this->playerEntityMock
+			->method('getModel')
+			->willReturn(PlayerModel::SCREENLITE);
+
+		$result = $this->selector->select($this->playerEntityMock);
+
+		$this->assertSame(TemplateIndexFiles::SIMPLE, $result);
+	}
+	#[Group('units')]
 	public function testSelectReturnsSimpleForUnknownModel(): void
 	{
 		$this->playerEntityMock

@@ -194,6 +194,25 @@ class UserAgentHandlerTest extends TestCase
 		$this->assertEquals($expected, $this->handler->getInfo());
 	}
 
+
+
+	#[Group('units')]
+	public function testParseScreenLitePlaye()
+	{
+		$userAgent = 'GAPI/1.0 (UUID:15920d5d-7e68-4a61-a145-15b58b6d2090; NAME:Screenlite Web Test) screenlite-web/0.0.1 (MODEL:ScreenliteWeb)';
+		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
+		$this->playerDetectorMock->method('getModelId')->willReturn(PlayerModel::SCREENLITE);
+		$this->handler->parseUserAgent($userAgent);
+
+		$expected = [
+			'uuid' => '15920d5d-7e68-4a61-a145-15b58b6d2090',
+			'firmware' => 'screenlite-web/0.0.1',
+			'name' => 'Screenlite Web Test',
+			'model' => PlayerModel::SCREENLITE
+		];
+		$this->assertEquals($expected, $this->handler->getInfo());
+	}
+
 	#[Group('units')]
 	public function testParseFallbackOldIadeas()
 	{

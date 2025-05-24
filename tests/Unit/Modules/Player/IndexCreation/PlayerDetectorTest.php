@@ -80,6 +80,13 @@ class PlayerDetectorTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testDetectModelIdForScreenlite(): void
+	{
+		$this->detector->detectModelId('ScreenliteWeb');
+		$this->assertSame(PlayerModel::SCREENLITE, $this->detector->getModelId());
+	}
+
+	#[Group('units')]
 	public function testDetectModelIdForUnknown(): void
 	{
 		$this->detector->detectModelId('NonExistingModel');
