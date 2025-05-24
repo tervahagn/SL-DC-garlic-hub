@@ -30,7 +30,7 @@ class AutocompleteRendererTest extends TestCase
 		$this->fieldMock->method('getDataLabel')->willReturn('Test Label');
 
 		$expectedHtml = '<input id="test-field_search" list="test-field_suggestions" value="Test Label" data-id="123" aria-describedby="error_test-field">
-		<input type="hidden" id="test-field" name="test-field" value="123">
+		<input type="hidden" id="test-field" name="test-field" value="123" autocomplete="off">
 		<datalist id = "test-field_suggestions" ></datalist>';
 
 		$result = $this->renderer->render($this->fieldMock);
