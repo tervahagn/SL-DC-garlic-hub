@@ -41,17 +41,18 @@ body{background-color: #F7FAFC;}
 	header nav
     {
         display: flex;
-        gap:1rem;
         align-items: center;
-        justify-content:space-between;
+        justify-content: space-between;
+        gap: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         padding: 0 1rem;
         background-color: #fff;
     }
 	header nav ul {list-style: none;}
-	header nav .main_menu {display: flex; gap: 1rem;padding:0;align-items: center;justify-items: flex-start}
+	header nav .menu {display: flex; gap: 1rem;padding:0;align-items: center;justify-items: flex-start}
+    header nav .main-menu {margin-left: auto;}
     header nav #language_select {margin-left: auto}
-	header nav .main_menu ul
+	header nav .menu ul
 	{
 		position: absolute;
 		z-index: 10;
@@ -59,10 +60,11 @@ body{background-color: #F7FAFC;}
 		background-color: #fff;
 		box-shadow: var(--gh-box-shadow);
 	}
-	.main_menu ul a:hover{ color: #fff; background-color: #000; }
-	nav .main_menu ul, nav .main_menu li:hover .main_menu ul, nav .main_menu ul li:hover .main_menu ul{display: none;}
-	nav .main_menu li:hover ul, nav .main_menu ul li:hover ul, nav .main_menu ul ul li:hover ul {display: block;}
-	.main_menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
+    header nav .right_menu{margin-left: auto;}
+	.menu ul a:hover{ color: #fff; background-color: #000; }
+	nav .menu ul, nav .menu li:hover .menu ul, nav .menu ul li:hover .menu ul{display: none;}
+	nav .menu li:hover ul, nav .menu ul li:hover ul, nav .menu ul ul li:hover ul {display: block;}
+	.menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
 
 a{text-decoration: none;color: var(--gh-link-text-color);}
 h1{font-size: 1.3rem; font-family: var(--gh-font-bold); margin-top:0;}

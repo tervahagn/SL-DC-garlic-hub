@@ -42,14 +42,14 @@
 			<div>
 				<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
 			</div>
-			<ul class="main_menu">
+			<ul class="menu main-menu">
 				{{#main_menu}}
 					<li>
 						<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
 					</li>
 				{{/main_menu}}
 			</ul>
-			<ul id="language_select" class="main_menu">
+			<ul id="language_select" class="menu">
 				<li>
 					{{CURRENT_LOCALE_UPPER}}
 					<ul>
@@ -62,7 +62,7 @@
 				</li>
 			</ul>
 			{{#user_menu}}
-			<ul class="main_menu" id="user_menu">
+			<ul class="menu" id="user_menu">
 				<li>
 					{{LANG_LOGIN_AS}}: {{USERNAME}}
 					<ul>
