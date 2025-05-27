@@ -10,7 +10,6 @@ main
 
     aside
     {
-        border-right: 1px solid #ddd;
         padding: 0.25em;
         overflow-y: auto;
     }
