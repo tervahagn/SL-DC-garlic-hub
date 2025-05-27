@@ -1,3 +1,5 @@
+#mediaList{min-height:50vh;}
+
 .media-list-grid-view
 {
     display:grid;

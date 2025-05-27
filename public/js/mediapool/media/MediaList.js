@@ -50,7 +50,7 @@ export class MediaList
     {
         this.#mediaListElement.innerHTML = ""; // Clear previous content
 		if (localStorage.getItem("media-list-view") !== null)
-			this.#mediaListElement.className = localStorage.getItem("media-list-view");
+			this.#mediaListElement.classList.add(localStorage.getItem("media-list-view"));
 
         data.forEach((media) => {
             this.#addMediaToList(media);
@@ -127,14 +127,15 @@ export class MediaList
 	{
 		this.#setListView.addEventListener("click", () =>
 		{
-			this.#mediaListElement.className = "media-list-list-view";
+			this.#mediaListElement.classList.remove("media-list-grid-view");
+			this.#mediaListElement.classList.add("media-list-list-view");
 			localStorage.setItem("media-list-view", "media-list-list-view");
-
 		});
 
 		this.#setGridView.addEventListener("click", () =>
 		{
-			this.#mediaListElement.className = "media-list-grid-view";
+			this.#mediaListElement.classList.remove("media-list-list-view");
+			this.#mediaListElement.classList.add("media-list-grid-view");
 			localStorage.setItem("media-list-view", "media-list-grid-view");
 
 		});
