@@ -4,17 +4,21 @@ main header
     gap: 1rem;
     margin:0 0 0.5rem 0;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     background-color: #f3f3f3;
     padding: 0.5rem;
 }
-    main header section
+    main header .information
     {
+        flex-grow: 1;
         display: flex;
         gap: 1rem;
         align-items: center;
+        justify-content: start;
     }
-#insertMenu{cursor: pointer;margin-right: auto;}
+    main header .information div:last-child{margin-left: auto;}
+
+#insertMenu{cursor: pointer;}
 #insertMenu .context-menu
 {
     display: none;
@@ -22,6 +26,7 @@ main header
     top:0;
 }
 #insertMenu:hover .context-menu {display: block;}
+
 .playlist-composer
 {
     display: flex;
@@ -124,3 +129,4 @@ main header
     font-size: 0.8rem;
     margin-right:0.25rem;
 }
+div:has(#shufflePicking){display: none;}

@@ -106,15 +106,17 @@ dialog
     dialog .close-button {color: #fff;}
 
 
-main{
-    flex: 1;
-    margin:1em;
-    position:relative;
+main{flex: 1; margin:1em; position:relative;}
+
+.main-element-group
+{
     background-color: #fff;
     border-radius: var(--gh-border-radius);
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    padding: 1em;
+    padding: 1rem;
+    margin: 0.5rem 0.5rem 1rem 0.5rem;
 }
+
 footer{text-align: right;background-color: #f2f3f6;border-top: 1px solid #ddd;}
 	footer nav ul
 	{
@@ -227,17 +229,19 @@ footer nav ul #compile_time {margin-left: auto;}
         height:3em;
     }
 
-    .results-listing > li:nth-of-type(odd){background-color:#efefef;}
+  /*  .results-listing > li:nth-of-type(odd){background-color:#e0eaf4;}*/
     .results-listing * {white-space: nowrap;}
 
-        .results-header a{ color: #fff; font-weight: bold; }
+        .results-header *{ color: #000;
+            font-family: OpenSans-Regular, sans-serif; font-weight: bold}
         .results-header > li, .results-body > li {flex-wrap: nowrap;min-width:20px;padding:0 0.5rem;}
         .results-listing .actions {width:6%;margin-left: auto;}
 
-        .results-header {background-color: #666}
-        .results-header *{color: #fff;}
-        .results-header a:hover{color:#f60;transition: color .25s ease, margin .25s ease;}
+        .results-header {background-color: #e0eaf4
+        }
+        .results-header a:hover{color: #e0eaf4;transition: color .25s ease, margin .25s ease;}
 
+        .results-body {border-bottom: 1px solid #ddd;}
         .results-body:hover{background-color:rgba(200, 214, 221, 0.41);}
         .results-body .actions ul
         {

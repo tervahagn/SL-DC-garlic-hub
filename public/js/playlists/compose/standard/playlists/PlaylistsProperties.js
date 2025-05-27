@@ -42,7 +42,10 @@ export class PlaylistsProperties
 			const result = await this.#playlistsService.toggleShuffle(playlistId);
 		//	if (!result.success)
 
-			this.#shufflePicking.disabled = !this.#toggleShuffle.checked;
+			if (this.#toggleShuffle.checked)
+				this.#shufflePicking.parentElement.style.display = "block";
+			else
+				this.#shufflePicking.parentElement.style.display = "none";
 
 			this.display(result.playlist_metrics);
 			PlaylistsProperties.notifySave();

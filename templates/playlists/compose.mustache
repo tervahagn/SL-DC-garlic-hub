@@ -24,22 +24,18 @@
 				</ul>
 			</div>
 			<section class="information">
-				<div>{{{LANG_PLAYLIST_DURATION}}}: <span id="playlistDuration">00:00:00</span></div>
-				<div>{{{LANG_TOTAL}}}: <span id="totalItems">0</span></div>
-				<div>{{{LANG_TOTAL_FILESIZE}}}: <span id="totalFilesize">0 MB</span></div>
+				<div>{{{LANG_PLAYLIST_DURATION}}}: <strong id="playlistDuration">00:00:00</strong></div>
+				<div>{{{LANG_TOTAL}}}: <strong id="totalItems">0</strong></div>
+				<div>{{{LANG_TOTAL_FILESIZE}}}: <strong id="totalFilesize">0 MB</strong></div>
 				{{#has_time_limit}}
 					<div>{{{LANG_PLAYLIST_REMAIN_DURATION}}}: <span id="remain_playlist_duration"></span></div>
 				{{/has_time_limit}}
-			</section>
-
-			<section class="actions">
 				<div><label for="toggleShuffle"><input type="checkbox" value="1" id="toggleShuffle" /> {{{LANG_SHUFFLE}}}</label></div>
 				<div>
-					 <select id="shufflePicking">
-					 </select> <label for="shufflePicking">{{{LANG_PICKING_MEDIA_PER_CYCLE}}}</label>
+					 <select id="shufflePicking"></select> <label for="shufflePicking">{{{LANG_PICKING_MEDIA_PER_CYCLE}}}</label>
 				</div>
 				<div>
-					<button id="playerExport" class="{{CLASS_EXPORT_NOTIFY}}" >{{{LANG_PLAYER_EXPORT}}}</button>
+					<button id="playerExport" class="{{CLASS_EXPORT_NOTIFY}}"><i class="bi bi-floppy"></i> {{{LANG_PLAYER_EXPORT}}}</button>
 		<!--			<button id="preview">{{{LANG_PLAYLIST_PREVIEW}}}</button> -->
 				</div>
 			</section>
