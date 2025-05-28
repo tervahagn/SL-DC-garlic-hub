@@ -72,7 +72,16 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($player['UID'], $player['username']);
 						break;
 					case 'status':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->translator->translateArrayForOptions('status_selects', 'player')[$player['status']]);
+						$title = $this->translator->translateArrayForOptions('status_selects', 'player')[$player['status']];
+						if ($player['status'] == PlayerStatus::RELEASED->value)
+							$iconClass = 'bi bi-check';
+						else if ($player['status'] == PlayerStatus::UNRELEASED)
+							$iconClass = 'bi bi-x';
+						else
+							$iconClass = 'bi bi-bug';
+
+						$resultElements['is_icon'] = $this->prepareService->getBodyPreparer()->formatIcon($iconClass, $title);
+
 						break;
 					case 'model':
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->translator->translateArrayForOptions('model_selects', 'player')[$player['model']]);

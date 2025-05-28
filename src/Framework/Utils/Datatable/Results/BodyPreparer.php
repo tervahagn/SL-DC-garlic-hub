@@ -23,14 +23,15 @@ namespace App\Framework\Utils\Datatable\Results;
 class BodyPreparer
 {
 
-	public function formatLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = ''): array
+	public function formatLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = '', string $addText = ''): array
 	{
 		return [
 			'CONTROL_ELEMENT_VALUE_NAME'  => $valueName,
 			'CONTROL_ELEMENT_VALUE_TITLE' => $title,
 			'CONTROL_ELEMENT_VALUE_LINK' => $href,
 			'CONTROL_ELEMENT_VALUE_ID' => $valueId,
-			'CONTROL_ELEMENT_VALUE_CLASS' => $cssClass
+			'CONTROL_ELEMENT_VALUE_CLASS' => $cssClass,
+			'CONTROL_ELEMENT_ADDITIONAL_TEXT' => $addText
 		];
 	}
 
@@ -48,6 +49,15 @@ class BodyPreparer
 			'CONTROL_ELEMENT_VALUE_TEXT' => $text
 		];
 	}
+
+	public function formatIcon(string $iconClass, string $title): array
+	{
+		return [
+			'ICON_CLASS' => $iconClass,
+			'ICON_TITLE' => $title
+		];
+	}
+
 	public function formatAction(string $lang, string $link, string $name, string $id, string $cssClass): array
 	{
 		return 	[

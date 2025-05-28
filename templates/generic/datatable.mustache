@@ -1,6 +1,6 @@
 	<h1>{{{LANG_PAGE_HEADER}}}</h1>
 	{{{INSERT_SUBMENU}}}
-	<form action="{{{FORM_ACTION}}}" method="get" id="form_elements_search" w>
+	<form action="{{{FORM_ACTION}}}" method="get" id="form_elements_search">
 				<input type="hidden" name="sort_column" id="sort_column" value="{{{SORT_COLUMN}}}">
 				<input type="hidden" name="sort_order" id="sort_order" value="{{{SORT_ORDER}}}">
 				<input type="hidden" name="elements_page" id="elements_page" value="{{{ELEMENTS_PAGE}}}">
@@ -74,19 +74,16 @@
 				<li class="{{{CONTROL_NAME_BODY}}}">
 					{{#is_link}}
 					<a href="{{{CONTROL_ELEMENT_VALUE_LINK}}}" id="{{{CONTROL_ELEMENT_VALUE_ID}}}" class="{{{CONTROL_ELEMENT_VALUE_CLASS}}}" title="{{{CONTROL_ELEMENT_VALUE_TITLE}}}">{{{CONTROL_ELEMENT_VALUE_NAME}}}</a>
+						{{{CONTROL_ELEMENT_ADDITIONAL_TEXT}}}
 					{{/is_link}}
 
 					{{#is_text}}
 					{{{CONTROL_ELEMENT_VALUE_TEXT}}}
 					{{/is_text}}
 
-					{{#is_icon_column}}
-                    <div class="{{{CONTROL_ICON_CLASSNAME}}}"><span title="{{{CONTROL_ELEMENT_MESSAGE}}}"></span></div>
-					{{/is_icon_column}}
-
-					{{#is_bullet}}
-                    <div class="thymian-icon thymian-icon-{{{BULLET_COLOR}}}" title="{{{LANG_MONITORING}}}">&nbsp;</div>
-					{{/is_bullet}}
+					{{#is_icon}}
+						<i class="{{{ICON_CLASS}}}" title="{{{ICON_TITLE}}}"></i>
+					{{/is_icon}}
 
 					{{#is_checkbox}}
 						<label><input type="checkbox" {{{SELECT_DISABLED}}} title="{{{LANG_CHECKBOX_NAME}}}"></label>

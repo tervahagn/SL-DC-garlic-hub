@@ -86,7 +86,6 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						break;
 					case 'UID':
 						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($playlist['UID'], $playlist['username']);
-
 						break;
 					case 'duration':
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->convertSeconds($playlist['duration']));
