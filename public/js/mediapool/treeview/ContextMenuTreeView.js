@@ -17,6 +17,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import {AdjustMenus} from "../../core/AdjustMenus.js";
+
 export class ContextMenuTreeView
 {
     #menu = null;
@@ -37,7 +39,9 @@ export class ContextMenuTreeView
         document.querySelectorAll('.context-menu').forEach(el => el.remove());  // remove all previous menu
         this.#menu.style.left = `${event.pageX}px`;
         this.#menu.style.top = `${event.pageY}px`;
-        document.body.appendChild(this.#menu);
+
+		document.body.appendChild(this.#menu);
+		AdjustMenus.adjustDropdownPosition(this.#menu);
         document.addEventListener('click', () => this.#menu.remove(), {once: true});
     }
 

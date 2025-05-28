@@ -51,7 +51,7 @@ body{background-color: #F7FAFC;}
 	header nav ul {list-style: none;}
 	header nav .menu {display: flex; gap: 1rem;padding:0;align-items: center;justify-items: flex-start}
     header nav .main-menu {margin-left: auto;}
-    header nav #language_select {margin-left: auto}
+    header nav #language_select {margin-left: auto;}
 	header nav .menu ul
 	{
 		position: absolute;
