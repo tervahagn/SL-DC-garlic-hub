@@ -59,7 +59,7 @@ class EditPasswordController
 			$flash->addMessage('error', $e->getMessage());
 		}
 
-		return $response->withHeader('Location', '/user/edit')->withStatus(302);
+		return $response->withHeader('Location', '/users/edit')->withStatus(302);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class EditPasswordController
 					'template' => 'generic/edit', // Template-name
 					'data' => [
 						'LANG_PAGE_HEADER' =>  $this->translator->translate('options', 'users'),
-						'FORM_ACTION' => '/user/edit/password',
+						'FORM_ACTION' => '/users/edit/password',
 						'element_hidden' => $elements['hidden'],
 						'form_element' => $elements['visible'],
 						'form_button' => [
