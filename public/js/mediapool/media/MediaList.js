@@ -125,6 +125,13 @@ export class MediaList
 
 	#setViewActions()
 	{
+		if (localStorage.getItem("media-list-view") === null)
+		{
+			this.#mediaListElement.classList.remove("media-list-grid-view");
+			this.#mediaListElement.classList.add("media-list-list-view");
+			localStorage.setItem("media-list-view", "media-list-list-view");
+		}
+
 		this.#setListView.addEventListener("click", () =>
 		{
 			this.#mediaListElement.classList.remove("media-list-grid-view");
