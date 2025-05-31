@@ -43,13 +43,14 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - Online documentation
 - Trigger based on time, events, touch, keys, and network
 - Conditional play
+- last device connection (in work)
 - Device management for remote configuration and monitoring
 - Real-time reporting and system health monitoring
 - Image templating engine
 - Raspberry Pi Player / CMS Bundle
 - Modern design
 - Scalable deployment options
-
+- add multimple languages
 ## Technical Details
 
 ### Stack
