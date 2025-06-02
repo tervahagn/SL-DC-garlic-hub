@@ -53,6 +53,16 @@ class PlayerIndexRepository extends SqlBase
 	/**
 	 * @throws Exception
 	 */
+	public function updateLastAccess(int $id): void
+	{
+		$this->connection->executeStatement(
+			'UPDATE '.$this->table.' SET last_access = CURRENT_TIMESTAMP WHERE player_id = '.$id
+		);
+	}
+
+	/**
+	 * @throws Exception
+	 */
 	public function findPlayerById(string $Id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();

@@ -140,6 +140,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	 */
 	public function createTableFields(): static
 	{
+		$this->buildService->createDatatableField('last_access', true);
 		$this->buildService->createDatatableField('player_name', true);
 
 		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
