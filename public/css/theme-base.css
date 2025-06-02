@@ -237,9 +237,8 @@ footer nav ul #compile_time {margin-left: auto;}
         .results-header > li, .results-body > li {flex-wrap: nowrap;min-width:20px;padding:0 0.5rem;}
         .results-listing .actions {width:6%;margin-left: auto;}
 
-        .results-header {background-color: #e0eaf4
-        }
-        .results-header a:hover{color: #e0eaf4;transition: color .25s ease, margin .25s ease;}
+        .results-header {background-color: #e0eaf4}
+        .results-header a:hover{color: darkorange;transition: color .25s ease, margin .25s ease;}
 
         .results-body {border-bottom: 1px solid #ddd;}
         .results-body:hover{background-color:rgba(200, 214, 221, 0.41);}
