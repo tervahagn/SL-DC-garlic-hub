@@ -16,7 +16,7 @@ class TimeUnitsCalculator
 	const int HOUR   =  3600;
 	const int DAY    =  86400;
 	const int WEEK   =  604800;
-	const int MONTH  =  2678400;
+	const int MONTH  =  2592000;
 	const int YEAR   =  31536000;
 
 	private int $lastAccessTimeStamp = 0;
@@ -72,7 +72,6 @@ class TimeUnitsCalculator
 			$number    = $this->divide($seconds, self::YEAR);
 			$time_unit = 'years';
 		}
-
 
 		return $this->translator->translateArrayWithPlural($time_unit, 'time_unit_ago', 'main', $number);
 	}
