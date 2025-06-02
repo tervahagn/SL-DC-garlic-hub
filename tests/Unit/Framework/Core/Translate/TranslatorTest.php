@@ -183,8 +183,49 @@ class TranslatorTest extends TestCase
         $this->cacheMock->method('has')->willReturn(false);
         $this->loaderMock->method('load')->willReturn(['options' => 'Not an array']);
 
-        $result = $this->translator->translateArrayForOptions('options', 'test_module');
-        $this->assertIsArray($result);
+		$result = $this->translator->translateArrayForOptions('options', 'test_module');
+		$this->assertIsArray($result);
         $this->assertEmpty($result);
     }
+
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testTranslateArrayWithPluralReturnsFormattedStringSuccessfully(): void
+	{
+		$this->localesMock->method('getLanguageCode')->willReturn('en');
+		$this->cacheMock->method('has')->willReturn(false);
+		$this->loaderMock->method('load')->willReturn(['time_unit_ago' => ['days' => '{count} days ago']]);
+
+		$formatterMock = $this->createMock(MessageFormatter::class);
+		$formatterMock->method('format')->willReturn('5 days ago');
+		$this->formatterFactoryMock->method('create')->willReturn($formatterMock);
+
+		$result = $this->translator->translateArrayWithPlural('days', 'time_unit_ago', 'test_module', 5);
+		$this->assertEquals('5 days ago', $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testTranslateArrayWithPluralHandlesMissingKeyGracefully(): void
+	{
+		$this->localesMock->method('getLanguageCode')->willReturn('en');
+		$this->cacheMock->method('has')->willReturn(false);
+		$this->loaderMock->method('load')->willReturn(['time_unit_ago' => ['hours' => '{count} hours ago']]);
+
+		$formatterMock = $this->createMock(MessageFormatter::class);
+		$formatterMock->method('format')->willReturn('');
+		$this->formatterFactoryMock->method('create')->willReturn($formatterMock);
+
+		$result = $this->translator->translateArrayWithPlural('days', 'time_unit_ago', 'test_module', 5);
+		$this->assertEquals('', $result);
+	}
+
 }
