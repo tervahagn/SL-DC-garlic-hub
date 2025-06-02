@@ -68,6 +68,189 @@ class DatatablePreparerTest extends TestCase
 		$this->assertEmpty($result);
 	}
 
+	#[Group('units')]
+	public function testPrepareTableBodyWithLastAccessPlayerActive(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('last_access');
+		$fields[0]->method('isSortable')->willReturn(true);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+
+		$this->translatorMock->method('translate')
+			->willReturnMap([
+				['select_playlist', 'player', [], 'Select playlist'],
+				['remove_playlist', 'player', [], 'Remove playlist'],
+				['goto_playlist', 'player', [], 'Goto playlist']
+			]);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
+			->with(time(), '2025-01-01 00:00:00')
+			->willReturn(1600);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
+			->willReturn('some string');
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatSpan')
+			->with(
+				'some string',
+				'2025-01-01 00:00:00',
+				'last_access',
+				'player-active'
+			);
+
+		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
+			->willReturnMap([
+				['Select playlist', '#', 'edit', '123', 'pencil select-playlist', []],
+				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
+				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
+			]);
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 13,
+					'last_access' => '2025-01-01 00:00:00',
+					'status' => PlayerStatus::RELEASED->value,
+					'refresh' => '900',
+					'model' => PlayerModel::GARLIC->value,
+					'playlist_id' => 123,
+				]
+			],
+			$fields,
+			123
+		);
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
+	#[Group('units')]
+	public function testPrepareTableBodyWithLastAccessPlayerPending(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('last_access');
+		$fields[0]->method('isSortable')->willReturn(true);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+
+		$this->translatorMock->method('translate')
+			->willReturnMap([
+				['select_playlist', 'player', [], 'Select playlist'],
+				['remove_playlist', 'player', [], 'Remove playlist'],
+				['goto_playlist', 'player', [], 'Goto playlist']
+			]);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
+			->with(time(), '2025-01-01 00:00:00')
+			->willReturn(2400);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
+			->willReturn('some string');
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatSpan')
+			->with(
+				'some string',
+				'2025-01-01 00:00:00',
+				'last_access',
+				'player-pending'
+			);
+
+		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
+			->willReturnMap([
+				['Select playlist', '#', 'edit', '123', 'pencil select-playlist', []],
+				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
+				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
+			]);
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 13,
+					'last_access' => '2025-01-01 00:00:00',
+					'status' => PlayerStatus::RELEASED->value,
+					'refresh' => '900',
+					'model' => PlayerModel::GARLIC->value,
+					'playlist_id' => 123,
+				]
+			],
+			$fields,
+			123
+		);
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
+	#[Group('units')]
+	public function testPrepareTableBodyWithLastAccessPlayerInactive(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('last_access');
+		$fields[0]->method('isSortable')->willReturn(true);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+
+		$this->translatorMock->method('translate')
+			->willReturnMap([
+				['select_playlist', 'player', [], 'Select playlist'],
+				['remove_playlist', 'player', [], 'Remove playlist'],
+				['goto_playlist', 'player', [], 'Goto playlist']
+			]);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
+			->with(time(), '2025-01-01 00:00:00')
+			->willReturn(24000);
+
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
+			->willReturn('some string');
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatSpan')
+			->with(
+				'some string',
+				'2025-01-01 00:00:00',
+				'last_access',
+				'player-inactive'
+			);
+
+		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
+			->willReturnMap([
+				['Select playlist', '#', 'edit', '123', 'pencil select-playlist', []],
+				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
+				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
+			]);
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 13,
+					'last_access' => '2025-01-01 00:00:00',
+					'status' => PlayerStatus::RELEASED->value,
+					'refresh' => '900',
+					'model' => PlayerModel::GARLIC->value,
+					'playlist_id' => 123,
+				]
+			],
+			$fields,
+			123
+		);
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException
@@ -178,7 +361,7 @@ class DatatablePreparerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testPrepareTableBodyWithStatus(): void
+	public function testPrepareTableBodyWithStatusUnreleased(): void
 	{
 		$this->datatablePreparer->setTranslator($this->translatorMock);
 		$fields = [$this->createMock(HeaderField::class)];
@@ -191,7 +374,8 @@ class DatatablePreparerTest extends TestCase
 			->with('status_selects', 'player')
 			->willReturn([PlayerStatus::UNRELEASED->value => 'unreleased']);
 
-		$this->bodyPreparerMock->expects($this->never())->method('formatText');
+		$this->bodyPreparerMock->expects($this->once())->method('formatIcon')
+			->with('bi bi-x', 'unreleased');
 
 		$result = $this->datatablePreparer->prepareTableBody(
 			[
@@ -200,6 +384,80 @@ class DatatablePreparerTest extends TestCase
 					'UID' => 15,
 					'username' => 'Zapappalas',
 					'status' => PlayerStatus::UNRELEASED->value,
+					'playlist_id' => 0,
+				]
+			],
+			$fields,
+			123
+		);
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
+	#[Group('units')]
+	public function testPrepareTableBodyWithStatusReleased(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('status');
+		$fields[0]->method('isSortable')->willReturn(true);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+		$this->translatorMock->method('translateArrayForOptions')
+			->with('status_selects', 'player')
+			->willReturn([PlayerStatus::RELEASED->value => 'released']);
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatIcon')
+			->with('bi bi-check', 'released');
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 15,
+					'username' => 'Zapappalas',
+					'status' => PlayerStatus::RELEASED->value,
+					'player_name' => 'Player name',
+					'model' => PlayerModel::GARLIC->value,
+					'playlist_id' => 0,
+				]
+			],
+			$fields,
+			123
+		);
+
+		$this->assertIsArray($result);
+		$this->assertCount(1, $result);
+		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
+	#[Group('units')]
+	public function testPrepareTableBodyWithStatusDebug(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('status');
+		$fields[0]->method('isSortable')->willReturn(true);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+		$this->translatorMock->method('translateArrayForOptions')
+			->with('status_selects', 'player')
+			->willReturn([PlayerStatus::TEST_NO_PREFETCH->value => 'no-prefetch']);
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatIcon')
+			->with('bi bi-bug', 'no-prefetch');
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 15,
+					'username' => 'Zapappalas',
+					'status' => PlayerStatus::TEST_NO_PREFETCH->value,
 					'player_name' => 'Player name',
 					'model' => PlayerModel::GARLIC->value,
 					'playlist_id' => 0,

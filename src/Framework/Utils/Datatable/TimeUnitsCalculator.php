@@ -19,11 +19,18 @@ class TimeUnitsCalculator
 	const int MONTH  =  2678400;
 	const int YEAR   =  31536000;
 
+	private int $lastAccessTimeStamp = 0;
 	private Translator $translator;
 
 	public function __construct(Translator $translator)
 	{
 		$this->translator = $translator;
+	}
+
+	public function calculateLastAccess(int $currentTime, string $lastAccess): int
+	{
+		$this->lastAccessTimeStamp = $currentTime - strtotime($lastAccess);
+		return $this->lastAccessTimeStamp;
 	}
 
 	/**
@@ -32,8 +39,9 @@ class TimeUnitsCalculator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function printDistance(int $seconds): string
+	public function printDistance(): string
 	{
+		$seconds = $this->lastAccessTimeStamp;
 		if ($seconds < self::MINUTE)
 		{
 			$number    = $seconds;

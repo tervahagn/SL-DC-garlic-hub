@@ -73,7 +73,8 @@ class DatatablePreparer extends AbstractDatatablePreparer
 				switch ($innerKey)
 				{
 					case 'last_access':
-						$lastAccessSince = time() - strtotime($player['last_access']);
+
+						$lastAccessSince = $this->timeUnitsCalculator->calculateLastAccess(time(), $player['last_access']);
 
 						if ($lastAccessSince < (2 * $player['refresh']))
 							$class = 'player-active';
@@ -83,7 +84,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 							$class = 'player-inactive';
 
 						$resultElements['is_span'] = $this->prepareService->getBodyPreparer()->formatSpan(
-							$this->timeUnitsCalculator->printDistance($lastAccessSince),
+							$this->timeUnitsCalculator->printDistance(),
 							$player['last_access'],
 							'last_access',
 							$class
@@ -96,7 +97,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$title = $this->translator->translateArrayForOptions('status_selects', 'player')[$player['status']];
 						if ($player['status'] == PlayerStatus::RELEASED->value)
 							$iconClass = 'bi bi-check';
-						else if ($player['status'] == PlayerStatus::UNRELEASED)
+						else if ($player['status'] == PlayerStatus::UNRELEASED->value)
 							$iconClass = 'bi bi-x';
 						else
 							$iconClass = 'bi bi-bug';
