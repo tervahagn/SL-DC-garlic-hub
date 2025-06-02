@@ -4,6 +4,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.results-listing .last_access {width:15%;}
 .results-listing .player_name {flex-grow: 1}
 .results-listing .UID {width:15%;}
 .results-listing .status {width:10%;}
