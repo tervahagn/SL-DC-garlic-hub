@@ -77,6 +77,10 @@
 						{{{CONTROL_ELEMENT_ADDITIONAL_TEXT}}}
 					{{/is_link}}
 
+					{{#is_span}}
+						<span id="{{{CONTROL_ELEMENT_VALUE_ID}}}" class="{{{CONTROL_ELEMENT_VALUE_CLASS}}}" title="{{{CONTROL_ELEMENT_VALUE_TITLE}}}">{{{CONTROL_ELEMENT_VALUE_NAME}}}</span>
+					{{/is_span}}
+
 					{{#is_text}}
 					{{{CONTROL_ELEMENT_VALUE_TEXT}}}
 					{{/is_text}}

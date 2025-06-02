@@ -110,6 +110,25 @@ class Translator
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function translateArrayWithPlural(string $key, string $section, string $module, int $count, array $replacements = []): string
+	{
+		$languageCode = $this->locales->getLanguageCode();
+		$section  = $this->findTranslation($section, $module, $languageCode);
+
+		$translation = $section[$key] ?? '';
+
+		// add number of replacements
+		$replacements['count'] = $count;
+
+		return $this->formatWithMessageFormatter($translation, $replacements);
+	}
+
+	/**
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */

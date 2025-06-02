@@ -26,6 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Services\AclValidator;
 use DateTime;
@@ -36,10 +37,13 @@ use Psr\SimpleCache\InvalidArgumentException;
 class DatatablePreparer extends AbstractDatatablePreparer
 {
 	private AclValidator $aclValidator;
+	private TimeUnitsCalculator $timeUnitsCalculator;
 
-	public function __construct(PrepareService $prepareService, AclValidator $aclValidator, Parameters $parameters)
+	public function __construct(PrepareService $prepareService, AclValidator $aclValidator, Parameters $parameters, TimeUnitsCalculator $timeUnitsCalculator)
 	{
-		$this->aclValidator = $aclValidator;
+		$this->aclValidator        = $aclValidator;
+		$this->timeUnitsCalculator = $timeUnitsCalculator;
+
 		parent::__construct('player', $prepareService, $parameters);
 	}
 
@@ -68,6 +72,23 @@ class DatatablePreparer extends AbstractDatatablePreparer
 				$resultElements['CONTROL_NAME_BODY'] = $innerKey;
 				switch ($innerKey)
 				{
+					case 'last_access':
+						$lastAccessSince = time() - strtotime($player['last_access']);
+
+						if ($lastAccessSince < (2 * $player['refresh']))
+							$class = 'player-active';
+						else if ($lastAccessSince < (4 * $player['refresh']))
+							$class = 'player-pending';
+						else
+							$class = 'player-inactive';
+
+						$resultElements['is_span'] = $this->prepareService->getBodyPreparer()->formatSpan(
+							$this->timeUnitsCalculator->printDistance($lastAccessSince),
+							$player['last_access'],
+							'last_access',
+							$class
+						);
+						break;
 					case 'UID':
 						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($player['UID'], $player['username']);
 						break;

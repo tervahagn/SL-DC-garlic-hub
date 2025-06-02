@@ -26,6 +26,7 @@ use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowDatatableController;
@@ -153,7 +154,8 @@ $dependencies[DatatablePreparer::class] = DI\factory(function (ContainerInterfac
 	return new DatatablePreparer(
 		$container->get(PrepareService::class),
 		$container->get(AclValidator::class),
-		$container->get(Parameters::class)
+		$container->get(Parameters::class),
+		$container->get(TimeUnitsCalculator::class)
 	);
 });
 $dependencies[ControllerFacade::class] = DI\factory(function (ContainerInterface $container)

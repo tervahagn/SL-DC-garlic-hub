@@ -43,6 +43,7 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Results\BodyPreparer;
 use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
+use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FieldsFactory;
@@ -228,6 +229,10 @@ $dependencies[DatatableTemplatePreparer::class] = DI\factory(function (Container
 $dependencies[FormTemplatePreparer::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new FormTemplatePreparer($container->get(Translator::class));
+});
+$dependencies[TimeUnitsCalculator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new TimeUnitsCalculator($container->get(Translator::class));
 });
 
 

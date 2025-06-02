@@ -23,6 +23,16 @@ namespace App\Framework\Utils\Datatable\Results;
 class BodyPreparer
 {
 
+	public function formatSpan(string $valueName, string $title,  string $valueId, string $cssClass = ''): array
+	{
+		return [
+			'CONTROL_ELEMENT_VALUE_NAME'  => $valueName,
+			'CONTROL_ELEMENT_VALUE_TITLE' => $title,
+			'CONTROL_ELEMENT_VALUE_ID' => $valueId,
+			'CONTROL_ELEMENT_VALUE_CLASS' => $cssClass,
+		];
+	}
+
 	public function formatLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = '', string $addText = ''): array
 	{
 		return [

@@ -22,11 +22,9 @@
 namespace App\Modules\Player\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\PlayerActivity;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class PlayerRepository extends FilterBase
 {
@@ -57,9 +55,17 @@ class PlayerRepository extends FilterBase
 		];
 	}
 
+
 	protected function prepareSelectFiltered(): array
 	{
-		return [$this->table.'.*, playlists.playlist_name'];
+		return ['player_id',
+				$this->table.'.playlist_id',
+				'playlist_name',
+				'firmware', $this->table.'.status', 'model',
+				'commands',	'reports',
+				$this->table.'.last_access',
+				'refresh', 'player_name, '.$this->table.'.UID'
+		];
 	}
 
 	protected function prepareSelectFilteredForUser(): array
