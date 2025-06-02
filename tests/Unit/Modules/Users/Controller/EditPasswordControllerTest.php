@@ -100,7 +100,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->flashMock->expects($this->once())->method('addMessage')->with('success', 'User data changed');
 
 		$this->responseMock->expects($this->once())->method('withHeader')
-						   ->with('Location', '/user/edit')
+						   ->with('Location', '/users/edit')
 						   ->willReturnSelf();
 
 		$this->responseMock->expects($this->once())->method('withStatus')
@@ -138,7 +138,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->flashMock->expects($this->once())->method('addMessage')->with('error', 'CSRF Token mismatch');
 
 		$this->responseMock->expects($this->once())->method('withHeader')
-						   ->with('Location', '/user/edit')
+						   ->with('Location', '/users/edit')
 						   ->willReturnSelf();
 
 		$this->responseMock->expects($this->once())->method('withStatus')
@@ -176,7 +176,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->flashMock->expects($this->once())->method('addMessage')->with('error', 'Password too small');
 
 		$this->responseMock->expects($this->once())->method('withHeader')
-						   ->with('Location', '/user/edit')
+						   ->with('Location', '/users/edit')
 						   ->willReturnSelf();
 
 		$this->responseMock->expects($this->once())->method('withStatus')
@@ -214,7 +214,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->flashMock->expects($this->once())->method('addMessage')->with('error', 'Password not same');
 
 		$this->responseMock->expects($this->once())->method('withHeader')
-						   ->with('Location', '/user/edit')
+						   ->with('Location', '/users/edit')
 						   ->willReturnSelf();
 
 		$this->responseMock->expects($this->once())->method('withStatus')
@@ -262,7 +262,7 @@ class EditPasswordControllerTest extends TestCase
 		$this->flashMock->expects($this->once())->method('addMessage')->with('error', 'User data could not be changed');
 
 		$this->responseMock->expects($this->once())->method('withHeader')
-						   ->with('Location', '/user/edit')
+						   ->with('Location', '/users/edit')
 						   ->willReturnSelf();
 
 		$this->responseMock->expects($this->once())->method('withStatus')
@@ -294,12 +294,12 @@ class EditPasswordControllerTest extends TestCase
 			  });
 
 		$this->translatorMock->expects($this->exactly(2))->method('translate')
-			->willReturnCallback(function ($param, $module)
+			->willReturnCallback(function ($param)
 			{
 				return match ($param)
 				{
 					'edit_password' => 'translated_edit_password',
-					'repeat_password' => 'translated_repeaat_password',
+					'repeat_password' => 'translated_repeat_password',
 					default => null,
 				};
 			});

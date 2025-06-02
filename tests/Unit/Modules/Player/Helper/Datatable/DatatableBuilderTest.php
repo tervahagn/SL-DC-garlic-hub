@@ -42,6 +42,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder = new DatatableBuilder($this->buildServiceMock, $this->parametersMock, $this->aclValidatorMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersDoesNothingForEdgeEdition(): void
 	{
@@ -55,6 +61,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->configureParameters(123);
 	}
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForModuleAdmin(): void
 	{
@@ -77,6 +89,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->configureParameters(123);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForSubAdmin(): void
 	{
@@ -199,10 +217,10 @@ class DatatableBuilderTest extends TestCase
 		$this->assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $form);
 		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
 		$this->assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_UID, $form);
+		$this->assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
 
 		$this->assertEquals($playerNameFieldMock, $form[Parameters::PARAMETER_PLAYER_NAME]);
-		$this->assertEquals($ownerFieldMock, $form[Parameters::PARAMETER_UID]);
+		$this->assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
 		$this->assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
 	}
 
@@ -268,6 +286,11 @@ class DatatableBuilderTest extends TestCase
 		$this->assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCreateTableFields(): void
 	{
@@ -276,9 +299,10 @@ class DatatableBuilderTest extends TestCase
 
 		$this->buildServiceMock->method('getDatatableFields')->willReturn([]);
 
-		$this->buildServiceMock->expects($this->exactly(5))
+		$this->buildServiceMock->expects($this->exactly(6))
 			->method('createDatatableField')
 			->willReturnMap([
+				['last_access', true],
 				['player_name', true],
 				['UID', true],
 				['status', true],

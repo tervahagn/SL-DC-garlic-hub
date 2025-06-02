@@ -56,7 +56,7 @@ class PlayerRepositoryTest extends TestCase
 		];
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('player.*, playlists.playlist_name, user_main.username, user_main.company_id')->willReturnSelf();
+			->with('player_id, player.playlist_id, playlist_name, firmware, player.status, model, commands, reports, player.last_access, refresh, player_name, player.UID, user_main.username, user_main.company_id')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('player');
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('leftJoin')
@@ -100,7 +100,7 @@ class PlayerRepositoryTest extends TestCase
 		];
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('player.*, playlists.playlist_name, user_main.username, user_main.company_id')->willReturnSelf();
+			->with('player_id, player.playlist_id, playlist_name, firmware, player.status, model, commands, reports, player.last_access, refresh, player_name, player.UID, user_main.username, user_main.company_id')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('player');
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('leftJoin')
@@ -136,7 +136,7 @@ class PlayerRepositoryTest extends TestCase
 		];
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
-			->with('player.*, playlists.playlist_name, user_main.username, user_main.company_id')->willReturnSelf();
+			->with('player_id, player.playlist_id, playlist_name, firmware, player.status, model, commands, reports, player.last_access, refresh, player_name, player.UID, user_main.username, user_main.company_id')->willReturnSelf();
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('player');
 
 		$this->queryBuilderMock->expects($this->exactly(2))->method('leftJoin')

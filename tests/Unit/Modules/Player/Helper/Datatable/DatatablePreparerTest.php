@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Modules\Player\Helper\Datatable;
 
-use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -10,6 +9,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Results\BodyPreparer;
 use App\Framework\Utils\Datatable\Results\HeaderField;
+use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
@@ -27,10 +27,12 @@ class DatatablePreparerTest extends TestCase
 	private readonly AclValidator $aclValidatorMock;
 	private readonly BodyPreparer $bodyPreparerMock;
 	private readonly Translator $translatorMock;
+	private readonly TimeUnitsCalculator $timeUnitsCalculatorMock;
 	private readonly DatatablePreparer $datatablePreparer;
 
 	/**
 	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
@@ -39,14 +41,24 @@ class DatatablePreparerTest extends TestCase
 		$parametersMock           = $this->createMock(Parameters::class);
 		$this->translatorMock     = $this->createMock(Translator::class);
 		$this->bodyPreparerMock = $this->createMock(BodyPreparer::class);
+		$this->timeUnitsCalculatorMock = $this->createMock(TimeUnitsCalculator::class);
 
 		$this->datatablePreparer = new DatatablePreparer(
 			$this->prepareServiceMock,
 			$this->aclValidatorMock,
-			$parametersMock
+			$parametersMock,
+			$this->timeUnitsCalculatorMock
 		);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithEmptyData(): void
 	{
@@ -113,6 +125,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithUsername(): void
 	{
@@ -147,6 +168,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatus(): void
 	{
@@ -161,8 +191,7 @@ class DatatablePreparerTest extends TestCase
 			->with('status_selects', 'player')
 			->willReturn([PlayerStatus::UNRELEASED->value => 'unreleased']);
 
-		$this->bodyPreparerMock->expects($this->once())->method('formatText')
-			->with('unreleased');
+		$this->bodyPreparerMock->expects($this->never())->method('formatText');
 
 		$result = $this->datatablePreparer->prepareTableBody(
 			[
@@ -185,6 +214,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithModel(): void
 	{
@@ -223,6 +261,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithPlaylistIdReleased(): void
 	{
@@ -272,6 +319,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithPlaylistIdUnReleased(): void
 	{

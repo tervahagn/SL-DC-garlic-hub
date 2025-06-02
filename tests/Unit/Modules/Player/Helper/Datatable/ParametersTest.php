@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Sanitizer $sanitizerMock;
 	private readonly Session $sessionMock;
 	private readonly Parameters $parameters;
 
@@ -23,10 +22,10 @@ class ParametersTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
+		$sanitizerMock = $this->createMock(Sanitizer::class);
 		$this->sessionMock   = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($this->sanitizerMock, $this->sessionMock);
+		$this->parameters    = new Parameters($sanitizerMock, $this->sessionMock);
 	}
 
 	#[Group('units')]

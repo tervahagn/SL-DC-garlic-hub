@@ -22,12 +22,14 @@
 namespace Tests\Unit\Modules\Users\Controller;
 
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\ScalarType;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\UserStatus;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -61,8 +63,11 @@ class UsersControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testFindByNameReturnsCorrectResponse(): void

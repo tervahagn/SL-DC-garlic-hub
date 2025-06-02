@@ -4,15 +4,19 @@ namespace Tests\Unit\Modules\Users\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Users\Controller\ShowDatatableController;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
@@ -26,6 +30,9 @@ class ShowDatatableControllerTest extends TestCase
 	private readonly StreamInterface $streamInterfaceMock;
 
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->facadeMock           = $this->createMock(DatatableFacadeInterface::class);
@@ -40,7 +47,10 @@ class ShowDatatableControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testShowMethodReturnsResponseWithSerializedTemplateData(): void

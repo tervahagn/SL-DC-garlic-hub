@@ -126,7 +126,8 @@ class BodyPreparerTest extends TestCase
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
-			'CONTROL_ELEMENT_VALUE_CLASS' => 'test-class'
+			'CONTROL_ELEMENT_VALUE_CLASS' => 'test-class',
+			'CONTROL_ELEMENT_ADDITIONAL_TEXT' => ''
 		], $result);
 	}
 
@@ -145,7 +146,8 @@ class BodyPreparerTest extends TestCase
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
-			'CONTROL_ELEMENT_VALUE_CLASS' => ''
+			'CONTROL_ELEMENT_VALUE_CLASS' => '',
+		    'CONTROL_ELEMENT_ADDITIONAL_TEXT' => ''
 		], $result);
 	}
 
@@ -159,7 +161,8 @@ class BodyPreparerTest extends TestCase
 			'CONTROL_ELEMENT_VALUE_TITLE' => '',
 			'CONTROL_ELEMENT_VALUE_LINK' => '',
 			'CONTROL_ELEMENT_VALUE_ID' => '',
-			'CONTROL_ELEMENT_VALUE_CLASS' => ''
+			'CONTROL_ELEMENT_VALUE_CLASS' => '',
+		    'CONTROL_ELEMENT_ADDITIONAL_TEXT' => ''
 		], $result);
 	}
 
@@ -172,14 +175,15 @@ class BodyPreparerTest extends TestCase
 		$valueId = 'id-456';
 		$cssClass = '.some-class#unique';
 
-		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId, $cssClass);
+		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId, $cssClass, 'some suffix');
 
 		$this->assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'val@123',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Title & More',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com?page=1&name=test',
 			'CONTROL_ELEMENT_VALUE_ID' => 'id-456',
-			'CONTROL_ELEMENT_VALUE_CLASS' => '.some-class#unique'
+			'CONTROL_ELEMENT_VALUE_CLASS' => '.some-class#unique',
+		    'CONTROL_ELEMENT_ADDITIONAL_TEXT' => 'some suffix'
 		], $result);
 	}
 
