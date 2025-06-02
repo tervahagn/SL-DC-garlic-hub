@@ -4,6 +4,8 @@ namespace App\Framework\Utils\Datatable;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use DateInterval;
+use DateTime;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -12,14 +14,8 @@ use Psr\SimpleCache\InvalidArgumentException;
  */
 class TimeUnitsCalculator
 {
-	const int MINUTE =  60;
-	const int HOUR   =  3600;
-	const int DAY    =  86400;
-	const int WEEK   =  604800;
-	const int MONTH  =  2592000;
-	const int YEAR   =  31536000;
-
 	private int $lastAccessTimeStamp = 0;
+	private DateInterval $interval;
 	private Translator $translator;
 
 	public function __construct(Translator $translator)
@@ -27,11 +23,25 @@ class TimeUnitsCalculator
 		$this->translator = $translator;
 	}
 
-	public function calculateLastAccess(int $currentTime, string $lastAccess): int
+	/**
+	 * @throws FrameworkException
+	 */
+	public function calculateLastAccess(DateTime $currentTime, DateTime $lastAccess): static
 	{
-		$this->lastAccessTimeStamp = $currentTime - strtotime($lastAccess);
+		$this->lastAccessTimeStamp = $currentTime->getTimestamp() - $lastAccess->getTimestamp();
+		if ($this->lastAccessTimeStamp < 0)
+			throw new FrameworkException('Negative time difference.');
+
+		$this->interval = $currentTime->diff($lastAccess);
+
+		return $this;
+	}
+
+	public function getLastAccessTimeStamp(): int
+	{
 		return $this->lastAccessTimeStamp;
 	}
+
 
 	/**
 	 * @throws CoreException
@@ -41,44 +51,36 @@ class TimeUnitsCalculator
 	 */
 	public function printDistance(): string
 	{
-		$seconds = $this->lastAccessTimeStamp;
-		if ($seconds < self::MINUTE)
+		if ($this->interval->y > 0)
 		{
-			$number    = $seconds;
-			$time_unit = 'seconds';
+			$number = $this->interval->y;
+			$time_unit = 'years';
 		}
-		else if ($seconds < self::HOUR)
+		elseif ($this->interval->m > 0)
 		{
-			$number    = $this->divide($seconds, self::MINUTE);
-			$time_unit = 'minutes';
+			$number = $this->interval->m;
+			$time_unit = 'months';
 		}
-		else if ($seconds < self::DAY)
+		elseif ($this->interval->d > 0)
 		{
-			$number    = $this->divide($seconds, self::HOUR);
-			$time_unit = 'hours';
-		}
-		else if ($seconds < self::MONTH)
-		{
-			$number    = $this->divide($seconds, self::DAY);
+			$number = $this->interval->d;
 			$time_unit = 'days';
 		}
-		else if ($seconds < self::YEAR)
+		elseif ($this->interval->h > 0) {
+			$number = $this->interval->h;
+			$time_unit = 'hours';
+		}
+		elseif ($this->interval->i > 0)
 		{
-			$number    = $this->divide($seconds, self::MONTH);
-			$time_unit = 'months';
+			$number = $this->interval->i;
+			$time_unit = 'minutes';
 		}
 		else
 		{
-			$number    = $this->divide($seconds, self::YEAR);
-			$time_unit = 'years';
+			$number = $this->interval->s;
+			$time_unit = 'seconds';
 		}
-
 		return $this->translator->translateArrayWithPlural($time_unit, 'time_unit_ago', 'main', $number);
-	}
-
-	private function divide(int $number, int $divisor): int
-	{
-		return floor($number / $divisor);
 	}
 
 }

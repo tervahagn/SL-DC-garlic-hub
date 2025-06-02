@@ -68,6 +68,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertEmpty($result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerActive(): void
 	{
@@ -87,7 +96,8 @@ class DatatablePreparerTest extends TestCase
 			]);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
-			->with(time(), '2025-01-01 00:00:00')
+			->willReturnSelf();
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('getLastAccessTimeStamp')
 			->willReturn(1600);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
@@ -129,6 +139,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerPending(): void
 	{
@@ -148,7 +167,8 @@ class DatatablePreparerTest extends TestCase
 			]);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
-			->with(time(), '2025-01-01 00:00:00')
+			->willReturnSelf();
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('getLastAccessTimeStamp')
 			->willReturn(2400);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
@@ -190,6 +210,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerInactive(): void
 	{
@@ -209,7 +238,8 @@ class DatatablePreparerTest extends TestCase
 			]);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('calculateLastAccess')
-			->with(time(), '2025-01-01 00:00:00')
+			->willReturnSelf();
+		$this->timeUnitsCalculatorMock->expects($this->once())->method('getLastAccessTimeStamp')
 			->willReturn(24000);
 
 		$this->timeUnitsCalculatorMock->expects($this->once())->method('printDistance')
@@ -396,6 +426,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatusReleased(): void
 	{
@@ -434,6 +473,15 @@ class DatatablePreparerTest extends TestCase
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatusDebug(): void
 	{

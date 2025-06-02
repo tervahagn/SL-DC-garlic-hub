@@ -74,7 +74,9 @@ class DatatablePreparer extends AbstractDatatablePreparer
 				{
 					case 'last_access':
 
-						$lastAccessSince = $this->timeUnitsCalculator->calculateLastAccess(time(), $player['last_access']);
+						$lastAccessSince = $this->timeUnitsCalculator->calculateLastAccess(
+							new DateTime('now'), new DateTime($player['last_access'])
+						)->getLastAccessTimeStamp();
 
 						if ($lastAccessSince < (2 * $player['refresh']))
 							$class = 'player-active';

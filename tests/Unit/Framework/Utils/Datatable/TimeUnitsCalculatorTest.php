@@ -3,6 +3,7 @@
 namespace Tests\Unit\Framework\Utils\Datatable;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -24,11 +25,35 @@ class TimeUnitsCalculatorTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testCalculateLastAccess()
+	{
+
+		$this->timeUnitsCalculator->calculateLastAccess(
+			new \DateTime('2025-01-01 00:00:11'),
+			new \DateTime('2025-01-01 00:00:00')
+		);
+
+		$this->assertSame(11, $this->timeUnitsCalculator->getLastAccessTimeStamp());
+	}
+
+	#[Group('units')]
+	public function testCalculateLastAccessNegative()
+	{
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Negative time difference.');
+
+		$this->timeUnitsCalculator->calculateLastAccess(
+			new \DateTime('2025-01-01 00:00:00'),
+			new \DateTime('2025-01-01 00:00:10')
+		);
+	}
+
+	#[Group('units')]
 	public function testPrintDistanceSecond()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2025-01-01 00:00:01'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2025-01-01 00:00:01'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
@@ -41,8 +66,8 @@ class TimeUnitsCalculatorTest extends TestCase
 	public function testPrintDistanceMinutes()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2025-01-01 00:10:10'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2025-01-01 00:10:10'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
@@ -55,8 +80,8 @@ class TimeUnitsCalculatorTest extends TestCase
 	public function testPrintDistanceHours()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2025-01-01 01:10:10'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2025-01-01 01:10:10'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
@@ -69,8 +94,8 @@ class TimeUnitsCalculatorTest extends TestCase
 	public function testPrintDistanceDays()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2025-01-03 01:10:10'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2025-01-03 01:10:10'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
@@ -83,8 +108,8 @@ class TimeUnitsCalculatorTest extends TestCase
 	public function testPrintDistanceMonths()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2025-05-03 01:10:10'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2025-05-03 01:10:10'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
@@ -97,8 +122,8 @@ class TimeUnitsCalculatorTest extends TestCase
 	public function testPrintDistanceYears()
 	{
 		$this->timeUnitsCalculator->calculateLastAccess(
-			strtotime('2030-01-02 01:10:10'),
-			'2025-01-01 00:00:00'
+			new \DateTime('2030-01-02 01:10:10'),
+			new \DateTime('2025-01-01 00:00:00')
 		);
 
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
