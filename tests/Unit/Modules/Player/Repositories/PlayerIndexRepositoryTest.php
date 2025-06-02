@@ -31,6 +31,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->repository = new PlayerIndexRepository($this->connectionMock);
 
 		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$this->connectionMock->method('executeStatement');
 	}
 
 	#[Group('units')]
@@ -133,6 +134,20 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->assertSame($expandedData, $result);
 	}
 
+	/**
+	 * @throws DBALException
+	 */
+	#[Group('units')]
+	public function testUpdateLastAccessSuccessfully(): void
+	{
+		$id = 123;
+
+		$this->connectionMock->expects($this->once())
+			->method('executeStatement')
+			->with('UPDATE player SET last_access = CURRENT_TIMESTAMP WHERE player_id = ' . $id);
+
+		$this->repository->updateLastAccess($id);
+	}
 
 	/**
 	 * @throws DBALException
@@ -196,6 +211,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->queryBuilderMock->method('leftJoin')
 			->with('player', 'playlists', '', 'playlists.playlist_id = player.playlist_id');
 	}
+
 	private function mockQueryBuilderForId(): void
 	{
 		$this->queryBuilderMock->method('where')

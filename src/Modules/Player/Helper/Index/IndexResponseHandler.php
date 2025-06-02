@@ -78,6 +78,8 @@ class IndexResponseHandler
 		$this->cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
 	}
 
+/*
+	 only for debugging and should be replace by some better concept
 	public function debugServer(): void
 	{
 		$logFilePath = '../var/logs/server-variable.log';
@@ -97,7 +99,7 @@ class IndexResponseHandler
 		}
 		file_put_contents($logFilePath, $formattedHeaders, FILE_APPEND);
 	}
-
+*/
 	/**
 	 * if player sends an If-None-Match with etag then check it and response with
 	 * 200 and a new etag
