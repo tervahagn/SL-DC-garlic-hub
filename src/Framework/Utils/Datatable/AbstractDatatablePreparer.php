@@ -41,7 +41,7 @@ abstract class AbstractDatatablePreparer
 		$this->moduleName     = $moduleName;
 		$this->prepareService = $prepareService;
 		$this->parameters     = $parameters;
-		$this->prepareService->configure($parameters, 'playlists');
+		$this->prepareService->configure($parameters, $moduleName);
 	}
 
 	public function setTranslator(Translator $translator): AbstractDatatablePreparer

@@ -53,9 +53,7 @@ use App\Modules\Player\Services\PlayerDatatableService;
 use App\Modules\Player\Services\PlayerIndexService;
 use App\Modules\Player\Services\PlayerService;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
-use App\Modules\Playlists\Collector\ExternalContentReader;
 use App\Modules\Playlists\Services\PlaylistsService;
-use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
