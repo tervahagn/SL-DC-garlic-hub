@@ -35,6 +35,23 @@ class HomeController
 		return $this->setContentType($response);
 	}
 
+	public function legals(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$data = [
+			'main_layout' => [
+				'LANG_PAGE_TITLE' => 'Garlic Hub - Website Legal Notice',
+			],
+			'this_layout' => [
+				'template' => 'legals/legals',
+				'data' => []
+			]
+		];
+
+		$this->writeResponseData($response, $data);
+		return $this->setContentType($response);
+	}
+
+
 	private function generateHomePageData(Session $session): array
 	{
 		return [

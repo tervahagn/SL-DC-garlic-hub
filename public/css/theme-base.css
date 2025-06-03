@@ -116,6 +116,14 @@ main{flex: 1; margin:1em; position:relative;}
     padding: 1rem;
     margin: 0.5rem 0 1rem 0;
 }
+.main-element-group-centered
+{
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    max-width: 840px;
+}
+
 
 footer{text-align: right;background-color: #f2f3f6;border-top: 1px solid #ddd;}
 	footer nav ul

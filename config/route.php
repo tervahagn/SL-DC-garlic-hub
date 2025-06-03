@@ -50,6 +50,7 @@ $app->get('/smil-index', [PlayerIndexController::class, 'index']);
 $app->group('', function (RouteCollectorProxy $group)
 {
 	$group->get('/', [HomeController::class, 'index']);
+	$group->get('/legals', [HomeController::class, 'legals']);
 	$group->get('/login', [LoginController::class, 'showLogin']);
 	$group->post('/login', [LoginController::class, 'login']);
 	$group->get('/logout', [LoginController::class, 'logout']);
