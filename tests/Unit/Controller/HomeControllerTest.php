@@ -64,4 +64,20 @@ class HomeControllerTest extends TestCase
 
 		$this->assertSame($this->responseMock, $result);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testLegalsReturnsLegalPage(): void
+	{
+		$this->responseMock->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+
+		$controller = new HomeController();
+		$result = $controller->legals($this->requestMock, $this->responseMock);
+
+		$this->assertSame($this->responseMock, $result);
+	}
+
 }
