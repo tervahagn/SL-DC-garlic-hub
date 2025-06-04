@@ -21,28 +21,57 @@
 
 namespace App\Modules\Player\Dashboard;
 
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Dashboards\DashboardInterface;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Modules\Player\Services\PlayerService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
-class PlayerDashboard implements DashboardInterface
+readonly class PlayerDashboard implements DashboardInterface
 {
+	private PlayerService $playerService;
+	private Translator $translator;
+
+	public function __construct(PlayerService $playerService, Translator $translator)
+	{
+		$this->playerService = $playerService;
+		$this->translator = $translator;
+	}
 
 	public function getId(): string
 	{
-		// TODO: Implement getId() method.
+		return 'player';
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function getTitle(): string
 	{
-		// TODO: Implement getTitle() method.
+		return $this->translator->translate('dashboard', 'player');
 	}
 
-	public function getContent(): string
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function renderContent(): string
 	{
-		// TODO: Implement getContent() method.
-	}
+		$ar = $this->playerService->findAllForDashboard();
 
-	public function getOrder(): int
-	{
-		// TODO: Implement getOrder() method.
+		return '<ul>
+	<li><strong>'.$this->translator->translate('count_active', 'player').'</strong><span>'.$ar['active'].'</span>
+	<li><strong>'.$this->translator->translate('count_pending', 'player').'</strong><span>'.$ar['pending'].'</span>
+	<li><strong>'.$this->translator->translate('count_inactive', 'player').'</strong><span>'.$ar['inactive'].'</span>
+</ul>';
 	}
 }

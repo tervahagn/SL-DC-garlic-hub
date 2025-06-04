@@ -47,6 +47,19 @@ class PlayerService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function findAllForDashboard(): array
+	{
+		$ret = $this->playerRepository->findAllForDashboard();
+		if (empty($ar))
+			$ret = ['active' => 0, 'inactive' => 0, 'pending' => 0];
+
+		return $ret;
+	}
+
+
 	public function replaceMasterPlaylist(int $playerId, int $playlistId): array
 	{
 		try

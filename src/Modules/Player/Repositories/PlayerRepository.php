@@ -33,6 +33,40 @@ class PlayerRepository extends FilterBase
 		parent::__construct($connection,'player', 'player_id');
 	}
 
+	public function findAllForDashboard(): array
+	{
+		$platform   = $this->connection->getDatabasePlatform();
+		$driverName = strtolower(str_replace('Doctrine\DBAL\Platforms\\', '', get_class($platform)));
+		if ($driverName === 'sqliteplatform')
+		{
+			$sql = "SELECT
+						SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (2 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
+						SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (2 * p.refresh) || ' seconds')
+								  AND p.last_access < DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
+						SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
+					FROM
+						player p;";
+		}
+		else
+		{
+			$sql = "SELECT
+            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS active,
+            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND)
+                      AND p.last_access < DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
+            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
+        FROM
+            player p;";
+		}
+
+		$result =  $this->connection->fetchAssociative($sql);
+		if ($result === false)
+			return [];
+
+		return $result;
+
+	}
+
+
 	/**
 	 * @throws Exception
 	 */

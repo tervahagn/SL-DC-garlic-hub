@@ -30,6 +30,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Dashboards\DashboardsAggregator;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
@@ -234,6 +235,4 @@ $dependencies[TimeUnitsCalculator::class] = DI\factory(function (ContainerInterf
 {
 	return new TimeUnitsCalculator($container->get(Translator::class));
 });
-
-
 return $dependencies;

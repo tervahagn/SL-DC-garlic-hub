@@ -18,12 +18,24 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use App\Controller\HomeController;
+use App\Framework\Dashboards\DashboardsAggregator;
+use Psr\Container\ContainerInterface;
 
-namespace App\Framework\Dashboards;
+$dependencies = [];
 
-interface DashboardInterface
+$dependencies[DashboardsAggregator::class] = DI\factory(function (ContainerInterface $container)
 {
-	public function getId(): string;
-	public function getTitle(): string;
-	public function renderContent(): string;
-}
+	$aggregator = new DashboardsAggregator();
+	$aggregator->registerDashboard($container->get(\App\Modules\Player\Dashboard\PlayerDashboard::class));
+
+	return $aggregator;
+});
+$dependencies[HomeController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new HomeController(
+		$container->get(DashboardsAggregator::class)
+	);
+});
+
+return $dependencies;

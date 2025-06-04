@@ -37,13 +37,14 @@ class DashboardsAggregator
 	public function renderDashboardsContents(): array
 	{
 		$resolvedDashboards = [];
-		foreach ($this->dashboards as $id => $dashboard)
+		foreach ($this->dashboards as $dashboard)
 		{
 			/** @var DashboardInterface $dashboard */
-			$resolvedDashboards[$id] = $dashboard->getContent();
+			$resolvedDashboards[] = [
+				'LANG_DASHBOARD_TITLE' => $dashboard->getTitle(),
+				'DASHBOARD_CONTENT'    =>$dashboard->renderContent()
+			];
 		}
-
-		usort($resolvedDashboards, fn($a, $b) => $a->getOrder() <=> $b->getOrder());
 
 		return $resolvedDashboards;
 	}
