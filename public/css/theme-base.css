@@ -272,3 +272,27 @@ footer nav ul #compile_time {margin-left: auto;}
     background: #fff url("/images/icons/ajax-loader.gif") no-repeat center center;
     opacity: 0.8;
 }
+
+.dashboard {width: 20rem;}
+.dashboard ul {padding: 0; margin:0;}
+.dashboard ul li {display: flex; gap: 1rem;padding: 0; margin: 0.25rem 0;}
+.dashboard ul li strong
+{
+    display: block;
+    min-width: 10rem;
+}
+.dashboard ul li span
+{
+    display: block;
+}
+.dashboard ul {list-style: none;}
+.dashboard ul li {display: flex; gap: 1rem;}
+.dashboard ul li strong
+{
+    display: block;
+    min-width: 10rem;
+}
+.dashboard ul li span
+{
+    display: block;
+}
