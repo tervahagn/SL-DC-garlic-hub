@@ -26,6 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class HomeController
 {
+
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$session = $request->getAttribute('session');
