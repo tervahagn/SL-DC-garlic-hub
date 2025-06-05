@@ -78,8 +78,7 @@ class PlayerDataAssembler
 		else if ($result['uuid'] !== $this->userAgentHandler->getUuid())
 			throw new ModuleException('player_index', 'Wrong Uuid for local player: '. $result['uuid'] .' != Agent'. $this->userAgentHandler->getUuid());
 
-		$this->playerRepository->updateLastAccess((int) $result['player_id']);
-
+		$this->playerRepository->updateLastAccess(1);
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}

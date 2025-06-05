@@ -40,20 +40,20 @@ class PlayerRepository extends FilterBase
 		if ($driverName === 'sqliteplatform')
 		{
 			$sql = "SELECT
-						SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (2 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
-						SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (2 * p.refresh) || ' seconds')
-								  AND p.last_access < DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
-						SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
-					FROM
-						player p;";
+				SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (2 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
+				SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (2 * p.refresh) || ' seconds')
+						 AND p.last_access >= DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
+				SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
+			FROM
+				player p;";
 		}
 		else
 		{
 			$sql = "SELECT
-            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS active,
-            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND)
-                      AND p.last_access < DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
-            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
+            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS active,
+            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND)
+                      AND p.last_access >= DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
+            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
         FROM
             player p;";
 		}

@@ -53,7 +53,7 @@ class PlayerService extends AbstractBaseService
 	public function findAllForDashboard(): array
 	{
 		$ret = $this->playerRepository->findAllForDashboard();
-		if (empty($ar))
+		if (empty($ret))
 			$ret = ['active' => 0, 'inactive' => 0, 'pending' => 0];
 
 		return $ret;
