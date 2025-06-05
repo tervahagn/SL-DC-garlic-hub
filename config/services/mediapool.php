@@ -84,7 +84,7 @@ $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterf
 			$container->get(Config::class),
 			$container->get('LocalFileSystem'),
 			new MediaProperties(),
-			new ShellExecutor()
+			$container->get(ShellExecutor::class)
 		)
 	);
 });

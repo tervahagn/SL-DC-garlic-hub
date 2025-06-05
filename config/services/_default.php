@@ -27,10 +27,12 @@ use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\Core\ShellExecutor;
+use App\Framework\Core\SystemStats;
 use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
-use App\Framework\Dashboards\DashboardsAggregator;
+use App\Framework\Dashboards\SystemDashboard;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
 use App\Framework\Middleware\FinalRenderMiddleware;
@@ -235,4 +237,20 @@ $dependencies[TimeUnitsCalculator::class] = DI\factory(function (ContainerInterf
 {
 	return new TimeUnitsCalculator($container->get(Translator::class));
 });
+$dependencies[ShellExecutor::class] = DI\factory(function ()
+{
+	return new ShellExecutor();
+});
+$dependencies[SystemStats::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SystemStats($container->get(ShellExecutor::class));
+});
+$dependencies[SystemDashboard::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new SystemDashboard(
+		$container->get(SystemStats::class),
+		$container->get(Translator::class),
+	);
+});
+
 return $dependencies;

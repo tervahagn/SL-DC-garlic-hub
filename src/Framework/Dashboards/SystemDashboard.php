@@ -49,6 +49,8 @@ class SystemDashboard implements DashboardInterface
 
 	public function renderContent(): string
 	{
-		// TODO: Implement renderContent() method.
+		$this->systemStats->determineSystemStats();
+
+		return '';
 	}
 }

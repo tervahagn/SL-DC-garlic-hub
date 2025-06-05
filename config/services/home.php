@@ -19,8 +19,11 @@
 */
 
 use App\Controller\HomeController;
+use App\Framework\Core\Config\Config;
 use App\Framework\Dashboards\DashboardsAggregator;
+use App\Framework\Dashboards\SystemDashboard;
 use App\Modules\Player\Dashboard\PlayerDashboard;
+use App\Modules\Users\Services\AclValidator;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -28,7 +31,11 @@ $dependencies = [];
 $dependencies[DashboardsAggregator::class] = DI\factory(function (ContainerInterface $container)
 {
 	$aggregator = new DashboardsAggregator();
+
 	$aggregator->registerDashboard($container->get(PlayerDashboard::class));
+
+	$aggregator->registerDashboard($container->get(PlayerDashboard::class));
+	$aggregator->registerDashboard($container->get(SystemDashboard::class));
 
 	return $aggregator;
 });
