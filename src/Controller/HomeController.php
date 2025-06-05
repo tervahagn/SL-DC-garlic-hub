@@ -73,7 +73,7 @@ class HomeController
 				'template' => 'home',
 				'data' => [
 					'LANG_PAGE_HEADER' => 'Garlic Hub - Dashboard',
-					'SHOW_SESSION' => print_r($session->get('user'), true),
+		/*			'SHOW_SESSION' => print_r($session->get('user'), true),*/
 					'dashboard' => $this->dashboardAggregator->renderDashboardsContents()
 				],
 			],
