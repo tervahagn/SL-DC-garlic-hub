@@ -95,9 +95,9 @@ class SystemStats
 	{
 		$load = sys_getloadavg();
 		$this->loadData =  [
-			'1_min' => $load[0],
-			'5_min' => $load[1],
-			'15_min' => $load[2]
+			'1_min' => number_format($load[0], 2, '.', ''),
+			'5_min' => number_format($load[1], 2, '.', ''),
+			'15_min' => number_format($load[2], 2, '.', '')
 		];
 	}
 
@@ -113,7 +113,7 @@ class SystemStats
 		{
 			$line = trim($line);
 
-			if (str_starts_with($line, 'Total'))
+			if (str_starts_with($line, 'total'))
 			{
 				$parts = preg_split('/\s+/', $line);
 				if (count($parts) >= 6)

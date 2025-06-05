@@ -69,9 +69,9 @@ readonly class PlayerDashboard implements DashboardInterface
 		$ar = $this->playerService->findAllForDashboard();
 
 		return '<ul>
-	<li><strong>'.$this->translator->translate('count_active', 'player').'</strong><span>'.$ar['active'].'</span>
-	<li><strong>'.$this->translator->translate('count_pending', 'player').'</strong><span>'.$ar['pending'].'</span>
-	<li><strong>'.$this->translator->translate('count_inactive', 'player').'</strong><span>'.$ar['inactive'].'</span>
+	<li><strong>'.$this->translator->translate('count_active', 'player').':</strong><span>'.$ar['active'].'</span></li>
+	<li><strong>'.$this->translator->translate('count_pending', 'player').':</strong><span>'.$ar['pending'].'</span></li>
+	<li><strong>'.$this->translator->translate('count_inactive', 'player').':</strong><span>'.$ar['inactive'].'</span></li>
 </ul>';
 	}
 }

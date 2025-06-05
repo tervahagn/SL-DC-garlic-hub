@@ -23,6 +23,10 @@ namespace App\Framework\Dashboards;
 
 use App\Framework\Core\SystemStats;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /** works only on Linux */
 class SystemDashboard implements DashboardInterface
@@ -42,15 +46,39 @@ class SystemDashboard implements DashboardInterface
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function getTitle(): string
 	{
 		return $this->translator->translate('system_dashboard', 'main');
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function renderContent(): string
 	{
 		$this->systemStats->determineSystemStats();
+		$load = implode( ' | ', $this->systemStats->getLoadData());
 
-		return '';
+		$ar = $this->systemStats->getRamStats();
+		$memory = sprintf($this->translator->translate('memory_used', 'main'), $ar['used'], $ar['total']);
+
+		$ar = $this->systemStats->getDiscInfo();
+		$disc = sprintf($this->translator->translate('disc_used', 'main'), $ar['used'], $ar['size'], $ar['percent']);
+
+		return '<ul>
+	<li><strong>'.$this->translator->translate('system_load', 'main').':</strong><span>'.$load.'</span></li>
+	<li><strong>'.$this->translator->translate('memory_usage', 'main').':</strong><span>'.$memory.'</span></li>
+	<li><strong>'.$this->translator->translate('disc_usage', 'main').':</strong><span>'.$disc.'</span></li>
+</ul>';
+
 	}
 }
