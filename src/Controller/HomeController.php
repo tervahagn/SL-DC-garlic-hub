@@ -22,7 +22,6 @@ namespace App\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Dashboards\DashboardsAggregator;
-use App\Modules\Player\Dashboard\PlayerDashboard;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -68,13 +67,12 @@ class HomeController
 	{
 		return [
 			'main_layout' => [
-				'LANG_PAGE_TITLE' => 'Garlic Hub - Home',
+				'LANG_PAGE_TITLE' => 'Garlic Hub - Dashboard',
 			],
 			'this_layout' => [
 				'template' => 'home',
 				'data' => [
-					'LANG_PAGE_HEADER' => 'Welcome',
-					'LANG_CONTENT' => 'Yes! This is our starting homepage. And I know is is pretty useless to welcome people here. But hey, it is a start. So, do not overestimate it. At the end it is some more entertaining than this boring Lorem Ipsum text. So, enjoy your stay!',
+					'LANG_PAGE_HEADER' => 'Garlic Hub - Dashboard',
 					'SHOW_SESSION' => print_r($session->get('user'), true),
 					'dashboard' => $this->dashboardAggregator->renderDashboardsContents()
 				],

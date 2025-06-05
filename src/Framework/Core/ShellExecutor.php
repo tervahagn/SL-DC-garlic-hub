@@ -15,9 +15,10 @@ class ShellExecutor
 
 	public function __construct() {}
 
-	public function setCommand(string $command): void
+	public function setCommand(string $command): static
 	{
 		$this->command = $command;
+		return $this;
 	}
 
 	/**
