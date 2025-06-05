@@ -22,7 +22,7 @@
 namespace App\Modules\Player\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Modules\Player\PlayerActivity;
+use App\Modules\Player\Enums\PlayerActivity;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -40,22 +40,22 @@ class PlayerRepository extends FilterBase
 		if ($driverName === 'sqliteplatform')
 		{
 			$sql = "SELECT
-				SUM(CASE WHEN p.last_access >= DATETIME('now', '-' || (2 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
-				SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (2 * p.refresh) || ' seconds')
-						 AND p.last_access >= DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
-				SUM(CASE WHEN p.last_access < DATETIME('now', '-' || (4 * p.refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
+				SUM(CASE WHEN last_access >= DATETIME('now', '-' || (2 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
+				SUM(CASE WHEN last_access < DATETIME('now', '-' || (2 * refresh) || ' seconds')
+						 AND last_access >= DATETIME('now', '-' || (4 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
+				SUM(CASE WHEN last_access < DATETIME('now', '-' || (4 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
 			FROM
-				player p;";
+				player;";
 		}
 		else
 		{
 			$sql = "SELECT
-            SUM(CASE WHEN p.last_access >= DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS active,
-            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (2 * p.refresh) SECOND)
-                      AND p.last_access >= DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
-            SUM(CASE WHEN p.last_access < DATE_SUB(NOW(), INTERVAL (4 * p.refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
+            SUM(CASE WHEN last_access >= DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND) THEN 1 ELSE 0 END) AS active,
+            SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND)
+                      AND last_access >= DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
+            SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
         FROM
-            player p;";
+            player;";
 		}
 
 		$result =  $this->connection->fetchAssociative($sql);

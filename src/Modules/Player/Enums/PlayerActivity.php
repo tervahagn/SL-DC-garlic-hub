@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Player;
+namespace App\Modules\Player\Enums;
 
 enum PlayerActivity: string
 {
