@@ -31,7 +31,7 @@ else
     echo "Keys successfully created!"
 fi
 
-php bin/console.php db:migrate 2>&1
+php bin/console.php db:migrate
 
 # Installation when db missing
 #if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
