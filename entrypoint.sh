@@ -2,7 +2,6 @@
 
 # create .env secret only when not exists
 
-
 chown -R www-data:www-data /var/www/public/var /var/www/var
 chmod -R 775 /var/www/public/var /var/www/var
 
@@ -31,13 +30,16 @@ else
     head -c 32 /dev/urandom | base64 > var/keys/encryption.key
     echo "Keys successfully created!"
 fi
+
+php bin/console.php db:migrate 2>&1
+
 # Installation when db missing
-if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
-    sqlite3 /var/www/var/garlic-hub.sqlite < migrations/edge/001_init.up.sql
-	#php bin/console.php db:migrate 2>&1
-else
-    echo "Install already done."
-fi
+#if [ ! -f /var/www/var/garlic-hub.sqlite ]; then
+ #   sqlite3 /var/www/var/garlic-hub.sqlite < migrations/edge/001_init.up.sql
+#	php bin/console.php db:migrate 2>&1
+#else
+#    echo "Install already done."
+#fi
 
 chown -R www-data:www-data /var/www/public/var /var/www/var
 chmod -R 775 /var/www/public/var /var/www/var
