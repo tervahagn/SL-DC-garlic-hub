@@ -86,8 +86,8 @@ class Widget extends AbstractMediaHandler
 		$zipFilesystem = $this->zipFilesystemFactory->create($this->getAbsolutePath($filePath));
 		if ($zipFilesystem->fileExists('config.xml'))
 		{
-			$configContent = $zipFilesystem->read('config.xml');
-			$this->configXML->load($configContent)->parseBasic();
+			$this->configData = $zipFilesystem->read('config.xml');
+			$this->configXML->load($this->configData)->parseBasic();
 		}
 
 		$fileInfo  = pathinfo($filePath);

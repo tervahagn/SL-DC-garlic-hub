@@ -47,6 +47,7 @@ abstract class AbstractMediaHandler
 	protected int $fileSize = 0;
 	protected string $thumbExtension = 'jpg';
 	protected float $duration = 0.0;
+	protected string $configData = '';
 
 	protected array $metadata = [];
 	/**
@@ -81,6 +82,10 @@ abstract class AbstractMediaHandler
 		return $this->metadata;
 	}
 
+	public function getConfigData(): string
+	{
+		return $this->configData;
+	}
 
 	public function getDimensions(): array
 	{

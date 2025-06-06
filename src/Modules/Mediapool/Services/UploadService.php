@@ -158,7 +158,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			$mediaHandler->rename($uploadedPath, $newFilePath);
 			$mediaHandler->checkFileAfterUpload($newFilePath);
 			$mediaHandler->createThumbnail($newFilePath);
-
+			$configData  = $mediaHandler->getConfigData();
 			$metadata    =  $this->combineMetaData($mediaHandler, $extMetadata);
 			$description = '';
 
@@ -172,7 +172,8 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		else
 		{
 			$mediaHandler->removeUploadedFile($uploadedPath);
-			$mimetype    = $dataSet['mimetype'];
+			$mimetype       = $dataSet['mimetype'];
+			$configData     = $dataSet['config_data'];
 			$metadata       = $dataSet['metadata'];
 			$extension      = $dataSet['extension'];
 			$description    = $dataSet['media_description'];
@@ -189,6 +190,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 			'filename'  => $pathInfo['basename'],
 			'extension' => $extension,
 			'thumb_extension' => $thumbExtension,
+			'config_data' => $configData,
 			'media_description' => $description
 		];
 		$this->mediaRepository->insert($fileData);
