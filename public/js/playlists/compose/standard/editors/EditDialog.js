@@ -18,13 +18,14 @@
 */
 export class EditDialog
 {
-	#dialogElement      = document.getElementById("editItemDialog");
-	#itemIdElement      = document.getElementById("editItemId");
-	#itemNameElement    = document.getElementById("editItemName");
-	#itemContentElement = document.getElementById("editItemContent");
-	#saveButton         = this.#dialogElement.querySelector('button[type="submit"]');
-	#cancelButton       = this.#dialogElement.querySelector('button[value="cancel"]');
-	#saveCallback = null;
+	#dialogElement        = document.getElementById("editItemDialog");
+	#itemIdElement        = document.getElementById("editItemId");
+	#itemNameElement      = document.getElementById("editItemName");
+	#itemContentElement   = document.getElementById("editItemContent");
+	#editItemForm         = document.getElementById("editItemForm");
+	#editItemErrorMessage = document.getElementById("editItemErrorMessage");
+	#cancelButton         = this.#dialogElement.querySelector('button[value="cancel"]');
+	#saveCallback         = null;
 
 	constructor() {}
 
@@ -41,6 +42,11 @@ export class EditDialog
 	setId(id)
 	{
 		this.#itemIdElement.value = id;
+	}
+
+	setErrorMessage(message)
+	{
+		this.#editItemErrorMessage.innerText = message;
 	}
 
 	setTitle(title)
@@ -63,19 +69,19 @@ export class EditDialog
 	onSave(callback)
 	{
 		this.#saveCallback = callback
-		this.#saveButton.addEventListener('click', this.#saveCallback);
+		this.#editItemForm.addEventListener("submit", this.#saveCallback);
 	}
 
 	onCancel()
 	{
 		this.cancelHandler = (e) => {
 			e.preventDefault();
-			this.#cancelButton.removeEventListener('click', this.cancelHandler);
-			this.#saveButton.removeEventListener('click', this.#saveCallback);
+			this.#cancelButton.removeEventListener("click", this.cancelHandler);
+			this.#editItemForm.removeEventListener("click", this.#saveCallback);
 			this.empty();
 			this.closeDialog();
 		};
-		this.#cancelButton.addEventListener('click', this.cancelHandler);
+		this.#cancelButton.addEventListener("click", this.cancelHandler);
 	}
 
 

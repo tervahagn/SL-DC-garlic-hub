@@ -260,10 +260,22 @@ export class Item
 				widgetForm.parsePreferences(widgetData.data.preferences, widgetData.data.values);
 				editDialog.setContent(widgetForm.getForm());
 
-				let saveCallBack = function ()
+				let saveCallBack = async function (e)
 				{
-					let result = widgetForm.collectValues();
-					widgetsService.saveWidgetValues(result);
+					e.preventDefault();
+					let values = widgetForm.collectValues();
+					let result = await widgetsService.saveWidgetValues(widgetData.data.item_id, values);
+					if (result.success === false)
+					{
+						editDialog.setErrorText(jsonResponse.message);
+					}
+					else
+					{
+						editDialog.closeDialog();
+						// jPlaylist.setSaveAlert();
+					}
+
+
 				}
 				editDialog.onSave(saveCallBack);
 				editDialog.onCancel();

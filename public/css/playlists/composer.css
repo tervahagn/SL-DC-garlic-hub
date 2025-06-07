@@ -132,3 +132,4 @@ div:has(#shufflePicking){display: none;}
 #editItemDialog{width:40%;}
 #editItemContent{padding:1rem;}
 #editItemContent ul{list-style: none;padding:0;margin:0;}
+#editItemErrorMessage {color:red;}

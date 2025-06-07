@@ -47,9 +47,22 @@ class WidgetsController
 		if (empty($data))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Widget load failed.']);
 
-
 		return $this->jsonResponse($response, ['success' => true, 'data' => $data]);
+	}
 
+	public function save(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$requestData = $request->getParsedBody();
+		$itemId = $requestData['item_id'] ?? 0;
+		if ($itemId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
+
+		$this->widgetsService->setUID($request->getAttribute('session')->get('user')['UID']);
+
+		if (!$this->widgetsService->saveWidget($itemId, $requestData))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $this->widgetsService->getErrorText()]);
+
+		return $this->jsonResponse($response, ['success' => true]);
 	}
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface

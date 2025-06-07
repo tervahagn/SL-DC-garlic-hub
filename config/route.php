@@ -116,6 +116,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->get('/playlists/item/{item_id:\d+}', [ItemsController::class, 'fetch']);
 	$group->patch('/playlists/item', [ItemsController::class, 'edit']);
 	$group->get('/playlists/widget/fetch/{item_id:\d+}', [WidgetsController::class, 'fetch']);
+	$group->patch('/playlists/widget/save', [WidgetsController::class, 'save']);
 
 	$group->patch('/player/playlist', [PlayerController::class, 'replacePlaylist']);
 
