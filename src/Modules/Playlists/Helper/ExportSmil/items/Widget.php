@@ -48,11 +48,10 @@ class Widget extends Media
 		if (empty($this->item['content_data']))
 			return $ret;
 
-		$parameters = @unserialize($this->item['content_data']);
-		if (!is_array($parameters))
+		if (!is_array($this->item['content_data']))
 			return $ret;
 
-		foreach ($parameters as $key => $value)
+		foreach ($this->item['content_data'] as $key => $value)
 		{
 			$ret .=  self::TABSTOPS_PARAMETER.'<param name="'.$key.'" value="'.$value.'" />'."\n";
 		}
