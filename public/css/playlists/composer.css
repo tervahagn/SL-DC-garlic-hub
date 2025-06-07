@@ -1,14 +1,13 @@
-main header
+main .composer-header
 {
     display: flex;
     gap: 1rem;
     margin:0 0 0.5rem 0;
     align-items: center;
     justify-content: flex-start;
-    background-color: #f3f3f3;
     padding: 0.5rem;
 }
-    main header .information
+    main .composer-header .information
     {
         flex-grow: 1;
         display: flex;
@@ -16,7 +15,7 @@ main header
         align-items: center;
         justify-content: start;
     }
-    main header .information div:last-child{margin-left: auto;}
+    main .composer-header .information div:last-child{margin-left: auto;}
 
 #insertMenu{cursor: pointer;}
 #insertMenu .context-menu
@@ -130,3 +129,6 @@ main header
     margin-right:0.25rem;
 }
 div:has(#shufflePicking){display: none;}
+#editItemDialog{width:40%;}
+#editItemContent{padding:1rem;}
+#editItemContent ul{list-style: none;padding:0;margin:0;}

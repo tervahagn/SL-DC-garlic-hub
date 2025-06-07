@@ -26,7 +26,8 @@ import {ItemList}          from "./items/ItemList.js";
 import {ItemFactory}       from "./items/ItemFactory.js";
 import {DragDropHandler}   from "./DragDropHandler.js";
 import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
-import {PlaylistsService}    from "./playlists/PlaylistsService.js";
+import {PlaylistsService} from "./playlists/PlaylistsService.js";
+import {WidgetsService}   from "./editors/WidgetsService.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
@@ -46,5 +47,26 @@ document.addEventListener("DOMContentLoaded", function ()
 	itemsList.buildPlaylist(playlistId);
 
 	playlistsProperties.init(playlistId);
+
+	const widgetEdit = document.getElementsByClassName("edit-widget");
+	for (let i = 0; i < widgetEdit.length; i++)
+	{
+		widgetEdit[i].onclick = function ()
+		{
+			let widgetService = new WidgetsService(new FetchClient());
+			let widgetData =  widgetService.fetchConfiguration(widgetEdit[i].parentElement.dataset.itemid);
+
+			/*
+	let jsonResponse = JSON.parse(MyRequest.responseText);
+
+	this.MyWidgetForm = new CreateWidgetForm(jsonResponse.preferences, jsonResponse.values, jsonResponse.translations);
+	this.MyWidgetForm.parsePreferences();
+	this.MyModalEdit = new TModalContainer('');
+	this.MyWidgetForm.openOverlay(this.MyModalEdit);
+	*/
+
+		}
+	}
+
 
 });

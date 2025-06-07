@@ -29,41 +29,11 @@ export class WidgetsService extends BaseService
 		let url = "/async/playlists/widget/fetch/" + id;
 		return await this._sendRequest(url, "GET");
 	}
+	async saveWidgetValues(id, jsonValues)
+	{
+		let url = "/async/playlists/widget/save/";
+		let data = JSON.stringify(jsonValues);
 
-	/*
-	saveWidgetValues(json_values) {
-		try {
-			let url = ThymianConfig.main_site + "?site=playlists_async_widget"
-				+ url_separator + "item_id=" + this.itemId + url_separator + "action=save";
-
-			let MyRequest = new XMLHttpRequest();
-			MyRequest.open("POST", url, true);
-			MyRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			MyRequest.onload = () => {
-				if (MyRequest.status !== 200) {
-					jThymian.printError(MyRequest.statusText);
-				} else {
-					let jsonResponse = JSON.parse(MyRequest.responseText);
-					if (jsonResponse.success === false) {
-						this.MyModalEdit.setErrorText(jsonResponse.message);
-					} else {
-						this.MyModalEdit.close();
-						jPlaylist.setSaveAlert();
-					}
-				}
-			};
-			MyRequest.onerror = () => {
-				jThymian.printError(MyRequest.statusText);
-				ThymianLog.log(MyRequest.statusText, 0, window.location.pathname);
-			};
-			let body = JSON.stringify(json_values);
-
-			MyRequest.send(body);
-		} catch (err) {
-			ThymianLog.logException(err);
-			jThymian.printError(err);
-		}
+		return await this._sendRequest(url, "PATCH", data);
 	}
-
-	 */
 }

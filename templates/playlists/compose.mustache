@@ -1,5 +1,5 @@
 		<h1>{{{LANG_PAGE_HEADER}}}</h1>
-		<header>
+		<header class="composer-header main-element-group">
 			<input type="hidden" id="playlist_id" value="{{{PLAYLIST_ID}}}" />
 			<input type="hidden" id="cms_edition" value="{{{CMS_EDITION}}}" />
 			<div id="insertMenu" tabindex="0" title="{{{LANG_INSERT}}}">
@@ -70,21 +70,21 @@
 				</li>
 			</template>
 			<dialog id="editItemDialog">
+				<header>
+					<span>{{{LANG_ITEM_NAME}}}: </span><span id="editItemName"></span>
+					<button id="closeEditDialog" class="close-button bi bi-x" aria-label="Close"></button>
+				</header>
 				<form method="dialog">
-					<header>
-						{{{LANG_ITEM_NAME}}}: <span class="item-name"></span>
-						<button id="closeEditDialog" class="close-button bi bi-x" aria-label="Close"></button>
-					</header>
-					<fieldset>
+					<div id="editItemContent">
 
-					</fieldset>
+					</div>
 
-					<input type="hidden" id="item_id" name="item_id">
+					<input type="hidden" id="editItemId" name="editItemId">
 
-					<div class="dlg_buttons">
+					<footer>
 						<button value="submit" type="submit">{{{LANG_SAVE}}}</button>
 						<button value="cancel" formnovalidate autofocus>{{{LANG_CANCEL}}}</button>
-					</div>
+					</footer>
 				</form>
 			</dialog>
 

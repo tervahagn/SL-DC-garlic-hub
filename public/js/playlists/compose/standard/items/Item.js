@@ -18,6 +18,10 @@
 */
 
 import {Utils} from "../../../../core/Utils.js";
+import {WidgetsService} from "../editors/WidgetsService.js";
+import {FetchClient} from "../../../../core/FetchClient.js";
+import {CreateWidgetForm} from "../editors/CreateWidgetForm.js";
+import {EditDialog} from "../editors/EditDialog.js";
 
 export class Item
 {
@@ -243,7 +247,30 @@ export class Item
 		}
 
 		if (this.#itemData.mimetype === "application/widget")
+		{
 			this.#editWidgetAction  = this.#playlistItem.querySelector('.edit-widget');
+			this.#editWidgetAction.addEventListener("click", async () =>
+			{
+				let widgetsService = new WidgetsService(new FetchClient());
+				let widgetData =  await widgetsService.fetchConfiguration(this.#itemData.item_id);
+				let widgetForm = new CreateWidgetForm();
+				let editDialog =  new EditDialog()
+				editDialog.setTitle(widgetData.data.item_name);
+				editDialog.setId(widgetData.data.item_id);
+				widgetForm.parsePreferences(widgetData.data.preferences, widgetData.data.values);
+				editDialog.setContent(widgetForm.getForm());
+
+				let saveCallBack = function ()
+				{
+					let result = widgetForm.collectValues();
+					widgetsService.saveWidgetValues(result);
+				}
+				editDialog.onSave(saveCallBack);
+				editDialog.onCancel();
+
+				editDialog.openDialog();
+			});
+		}
 		else
 			this.#playlistItem.querySelector('.edit-widget').remove();
 
