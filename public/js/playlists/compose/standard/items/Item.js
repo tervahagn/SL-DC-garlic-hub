@@ -22,6 +22,7 @@ import {WidgetsService} from "../editors/WidgetsService.js";
 import {FetchClient} from "../../../../core/FetchClient.js";
 import {CreateWidgetForm} from "../editors/CreateWidgetForm.js";
 import {EditDialog} from "../editors/EditDialog.js";
+import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class Item
 {
@@ -272,7 +273,7 @@ export class Item
 					else
 					{
 						editDialog.closeDialog();
-						// jPlaylist.setSaveAlert();
+						PlaylistsProperties.notifySave();
 					}
 
 
