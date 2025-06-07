@@ -105,10 +105,11 @@ class ItemsService extends AbstractBaseService
 		switch ($item['item_type'])
 		{
 			case ItemType::MEDIAPOOL->value:
+				$this->mediaService->setUID($this->UID);
+				$media = $this->mediaService->fetchMediaByChecksum($item['file_resource']);
+				$item['config_data'] = $media['config_data'];
 				if (str_starts_with($item['mimetype'], 'video/'))
 				{
-					$this->mediaService->setUID($this->UID);
-					$media = $this->mediaService->fetchMediaByChecksum($item['file_resource']);
 					if (empty($media))
 						throw new ModuleException('items', 'Item not found');
 

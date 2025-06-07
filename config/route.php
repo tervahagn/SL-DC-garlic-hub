@@ -34,6 +34,7 @@ use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Users\Controller\EditLocalesController;
 use App\Modules\Users\Controller\EditPasswordController;
 use App\Modules\Users\Controller\UsersController;
@@ -114,6 +115,7 @@ $app->group('/async', function (RouteCollectorProxy $group)
 	$group->patch('/playlists/items', [ItemsController::class, 'updateItemOrders']);
 	$group->get('/playlists/item/{item_id:\d+}', [ItemsController::class, 'fetch']);
 	$group->patch('/playlists/item', [ItemsController::class, 'edit']);
+	$group->get('/playlists/widget/fetch/{item_id:\d+}', [WidgetsController::class, 'fetch']);
 
 	$group->patch('/player/playlist', [PlayerController::class, 'replacePlaylist']);
 
