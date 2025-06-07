@@ -21,19 +21,20 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Utils\Widget\ConfigXML;
 use App\Modules\Playlists\Services\ItemsService;
+use App\Modules\Playlists\Services\WidgetsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class WidgetsController
 {
-	private ItemsService $itemsService;
+	private WidgetsService $widgetsService;
 
-	public function __construct(ItemsService $itemsService)
+	public function __construct(WidgetsService $itemsService)
 	{
-		$this->itemsService = $itemsService;
+		$this->widgetsService = $itemsService;
 	}
-
 
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -41,12 +42,13 @@ class WidgetsController
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$this->itemsService->setUID($request->getAttribute('session')->get('user')['UID']);
-		$item = $this->itemsService->fetchItemById($itemId);
-		if ($item['mimetype'] !== 'application/widget')
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Not a widget item.']);
+		$this->widgetsService->setUID($request->getAttribute('session')->get('user')['UID']);
+		$data = $this->widgetsService->fetchWidgetByItemId($itemId);
+		if (empty($data))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Widget load failed.']);
 
-		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
+
+		return $this->jsonResponse($response, ['success' => true, 'data' => $data]);
 
 	}
 

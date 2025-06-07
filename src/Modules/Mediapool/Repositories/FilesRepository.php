@@ -42,7 +42,7 @@ class FilesRepository extends SqlBase
 	 */
 	public function findAllWithOwnerById(string $mediaId): array
 	{
-		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
+		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description', 'config_data'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
 			'media_id' => $this->generateWhereClause($mediaId),
@@ -54,7 +54,7 @@ class FilesRepository extends SqlBase
 
 	public function findAllWithOwnerByCheckSum(string $checksum): array
 	{
-		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description'];
+		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description', 'config_data'];
 		$join       = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where      = [
 			'checksum' => $this->generateWhereClause($checksum)

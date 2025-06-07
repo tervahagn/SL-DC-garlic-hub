@@ -28,6 +28,7 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Framework\Utils\Widget\ConfigXML;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Playlists\Collector\Builder\BuildHelper;
@@ -41,6 +42,7 @@ use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Playlists\Helper\Compose\RightsChecker;
 use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
@@ -64,6 +66,7 @@ use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\PlaylistUsageService;
+use App\Modules\Playlists\Services\WidgetsService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
@@ -273,6 +276,19 @@ $dependencies[PlaylistBuilderFactory::class] = DI\factory(function (ContainerInt
 		new SimplePlaylistStructureFactory()
 	);
 });
+$dependencies[WidgetsService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new WidgetsService(
+		$container->get(ItemsService::class),
+		new ConfigXML(),
+		$container->get('ModuleLogger')
+	);
+});
 
+$dependencies[WidgetsController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new WidgetsController(
+		$container->get(WidgetsService::class));
+});
 
 return $dependencies;
