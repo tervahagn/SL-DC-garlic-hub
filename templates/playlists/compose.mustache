@@ -69,6 +69,25 @@
 					</div>
 				</li>
 			</template>
+			<dialog id="editItemDialog">
+				<form method="dialog">
+					<header>
+						{{{LANG_ITEM_NAME}}}: <span class="item-name"></span>
+						<button id="closeEditDialog" class="close-button bi bi-x" aria-label="Close"></button>
+					</header>
+					<fieldset>
+
+					</fieldset>
+
+					<input type="hidden" id="item_id" name="item_id">
+
+					<div class="dlg_buttons">
+						<button value="submit" type="submit">{{{LANG_SAVE}}}</button>
+						<button value="cancel" formnovalidate autofocus>{{{LANG_CANCEL}}}</button>
+					</div>
+				</form>
+			</dialog>
+
 		</section>
 	<script>
 		let lang = {

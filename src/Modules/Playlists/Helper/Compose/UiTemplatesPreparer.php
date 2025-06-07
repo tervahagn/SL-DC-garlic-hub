@@ -173,7 +173,10 @@ readonly class UiTemplatesPreparer
 					'LANG_PICKING_OPTION_ALL' => $this->translator->translate('all', self::MODULE_NAME),
 					'LANG_PICKING_MEDIA_PER_CYCLE' => $this->translator->translate('picking_media_per_cycle', self::MODULE_NAME),
 					'LANG_PLAYER_EXPORT' => $this->translator->translate('player_export', self::MODULE_NAME),
-					'LANG_PLAYLIST_PREVIEW' => $this->translator->translate('preview', self::MODULE_NAME)
+					'LANG_PLAYLIST_PREVIEW' => $this->translator->translate('preview', self::MODULE_NAME),
+					'LANG_ITEM_NAME' => $this->translator->translate('item_name', self::MODULE_NAME),
+					'LANG_SAVE' => $this->translator->translate('save', 'main'),
+					'LANG_CANCEL' => $this->translator->translate('cancel', 'main')
 				]
 			]
 		];
