@@ -24,7 +24,7 @@ main .composer-header
     position: absolute;
     top:0;
 }
-#insertMenu:hover .context-menu {display: block;}
+#insertMenu:hover .context-menu {display: block;margin-top:50px;}
 
 .playlist-composer
 {
