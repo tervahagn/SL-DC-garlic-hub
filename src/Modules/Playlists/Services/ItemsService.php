@@ -155,7 +155,11 @@ class ItemsService extends AbstractBaseService
 					else
 						$ext = 'jpg';
 
-					$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.'.$ext;
+					if ($value['mimetype'] === 'application/widget' && $value['content_data'] == '')
+						$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.svg';
+					else
+						$tmp['paths']['thumbnail'] = $thumbnailPath.'/'.$value['file_resource'].'.'.$ext;
+
 					$items[] = $tmp;
 					break;
 				case ItemType::PLAYLIST->value:
