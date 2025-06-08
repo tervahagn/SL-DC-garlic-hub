@@ -86,7 +86,7 @@ class WidgetsService extends AbstractBaseService
 		{
 			$item            = $this->fetchItem($itemId);
 			$requestData     = $this->prepareContentData($item['config_data'], $requestData);
-			$this->itemService->updateField($itemId, 'content_data', serialize($requestData));
+			$this->itemService->updateField($itemId, 'content_data', $requestData);
 			return true;
 		}
 		catch (Throwable $e)
