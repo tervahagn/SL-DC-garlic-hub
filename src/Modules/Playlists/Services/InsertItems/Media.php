@@ -21,12 +21,14 @@
 namespace App\Modules\Playlists\Services\InsertItems;
 
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\WidgetsService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
@@ -34,17 +36,20 @@ use Psr\Log\LoggerInterface;
 class Media extends AbstractInsertItem
 {
 	private MediaService $mediaService;
+	private WidgetsService $widgetsService;
 
 	public function __construct(
 		ItemsRepository $itemsRepository,
 		MediaService $mediaService,
 		PlaylistsService $playlistsService,
 		PlaylistMetricsCalculator $playlistMetricsCalculator,
+		WidgetsService $widgetsService,
 		LoggerInterface $logger)
 	{
 		$this->itemsRepository  = $itemsRepository;
 		$this->playlistsService = $playlistsService;
 		$this->mediaService     = $mediaService;
+		$this->widgetsService   = $widgetsService;
 		$this->playlistMetricsCalculator = $playlistMetricsCalculator;
 
 		parent::__construct($logger);
@@ -52,6 +57,7 @@ class Media extends AbstractInsertItem
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function insert(int $playlistId, int|string $insertId, int $position): array
 	{
@@ -82,9 +88,14 @@ class Media extends AbstractInsertItem
 				'file_resource' => $media['checksum'],
 				'mimetype'      => $media['mimetype'],
 			];
+			if ($media['mimetype'] === 'application/widget' && !empty($media['config_data']))
+			{
+				$saveItem['content_data'] = $this->widgetsService->prepareContentData($media['config_data'], [], true);
+			}
+
 			$insertId = $this->itemsRepository->insert($saveItem);
 			if ($insertId === 0)
-				throw new ModuleException('items', 'Playlist item could not inserted.');
+				throw new ModuleException('items', 'Playlist item could not be inserted.');
 
 			$saveItem['item_id'] = $insertId;
 			$saveItem['paths'] = $media['paths'];

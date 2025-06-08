@@ -25,6 +25,7 @@ use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\WidgetsService;
 use Psr\Log\LoggerInterface;
 
 class InsertItemFactory
@@ -33,6 +34,7 @@ class InsertItemFactory
 	protected readonly ItemsRepository $itemsRepository;
 	protected readonly PlaylistsService $playlistsService;
 	protected readonly PlaylistMetricsCalculator $playlistMetricsCalculator;
+	protected readonly WidgetsService $widgetsService;
 	protected readonly LoggerInterface $logger;
 
 
@@ -40,12 +42,14 @@ class InsertItemFactory
 		ItemsRepository $itemsRepository,
 		PlaylistsService $playlistsService,
 		PlaylistMetricsCalculator $playlistMetricsCalculator,
+		WidgetsService $widgetsService,
 		LoggerInterface $logger)
 	{
 		$this->mediaService = $mediaService;
 		$this->itemsRepository = $itemsRepository;
 		$this->playlistsService = $playlistsService;
 		$this->playlistMetricsCalculator = $playlistMetricsCalculator;
+		$this->widgetsService = $widgetsService;
 		$this->logger = $logger;
 	}
 
@@ -53,7 +57,7 @@ class InsertItemFactory
 	{
 		$item = match ($source)
 		{
-			'mediapool' => new Media($this->itemsRepository, $this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger),
+			'mediapool' => new Media($this->itemsRepository, $this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->widgetsService, $this->logger),
 			'playlist' => new Playlist($this->itemsRepository, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger),
 			default => null,
 		};

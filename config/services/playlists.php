@@ -212,6 +212,7 @@ $dependencies[InsertItemFactory::class] = DI\factory(function (ContainerInterfac
 		$container->get(ItemsRepository::class),
 		$container->get(PlaylistsService::class),
 		$container->get(PlaylistMetricsCalculator::class),
+		$container->get(WidgetsService::class),
 		$container->get('ModuleLogger')
 	);
 });
@@ -284,7 +285,6 @@ $dependencies[WidgetsService::class] = DI\factory(function (ContainerInterface $
 		$container->get('ModuleLogger')
 	);
 });
-
 $dependencies[WidgetsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new WidgetsController(

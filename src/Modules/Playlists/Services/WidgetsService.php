@@ -85,34 +85,7 @@ class WidgetsService extends AbstractBaseService
 		try
 		{
 			$item            = $this->fetchItem($itemId);
-			$preferencesData = $this->determinePreferences($item['config_data']);
-
-			foreach ($preferencesData as $key => $value)
-			{
-				$mandatory = (array_key_exists('mandatory', $value) && $value['mandatory'] === 'true');
-				$has_key   = (array_key_exists($key, $requestData) && !empty($requestData[$key]));
-				if (!$has_key && $mandatory)
-					throw new ModuleException('items', $key. ' is mandatory field.');
-
-				if (!$has_key)
-					continue;
-
-				switch($value['types'])
-				{
-					case 'colorOpacity':
-					case 'integer':
-						$requestData[$key]  = (int) $requestData[$key];
-						break;
-					default:
-					case 'text':
-					case 'radio':
-					case 'color':
-					case 'list':
-					case 'combo':
-						$requestData[$key]  = htmlspecialchars($requestData[$key], ENT_QUOTES);
-						break;
-				}
-			}
+			$requestData     = $this->prepareContentData($item['config_data'], $requestData);
 			$this->itemService->updateField($itemId, 'content_data', serialize($requestData));
 			return true;
 		}
@@ -124,6 +97,43 @@ class WidgetsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
+	public function prepareContentData($configData, $requestData, $init = false): string
+	{
+		$preferencesData = $this->determinePreferences($configData);
+
+		foreach ($preferencesData as $key => $value)
+		{
+			$mandatory = (array_key_exists('mandatory', $value) && $value['mandatory'] === 'true');
+			$has_key   = (array_key_exists($key, $requestData) && !empty($requestData[$key]));
+			if (!$init && !$has_key && $mandatory)
+				throw new ModuleException('items', $key. ' is mandatory field.');
+
+			if (!$has_key)
+				continue;
+
+			switch($value['types'])
+			{
+				case 'colorOpacity':
+				case 'integer':
+					$requestData[$key]  = (int) $requestData[$key];
+					break;
+				default:
+				case 'text':
+				case 'radio':
+				case 'color':
+				case 'list':
+				case 'combo':
+					$requestData[$key]  = htmlspecialchars($requestData[$key], ENT_QUOTES);
+					break;
+			}
+		}
+
+		return serialize($requestData);
+	}
 
 	/**
 	 * @throws ModuleException
