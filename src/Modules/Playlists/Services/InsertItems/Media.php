@@ -89,9 +89,9 @@ class Media extends AbstractInsertItem
 				'mimetype'      => $media['mimetype'],
 			];
 			if ($media['mimetype'] === 'application/widget' && !empty($media['config_data']))
-			{
 				$saveItem['content_data'] = $this->widgetsService->prepareContentData($media['config_data'], [], true);
-			}
+			else
+				$saveItem['content_data'] = '';
 
 			$insertId = $this->itemsRepository->insert($saveItem);
 			if ($insertId === 0)
