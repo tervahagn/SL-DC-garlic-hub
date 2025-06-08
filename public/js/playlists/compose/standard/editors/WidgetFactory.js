@@ -16,21 +16,19 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+import {WidgetsService} from "./WidgetsService.js";
+import {FetchClient}    from "../../../../core/FetchClient.js";
+import {WidgetForm}     from "./WidgetForm.js";
+import {EditDialog}     from "./EditDialog.js";
+import {Widget}         from "./Widget.js";
 
-import {Item} from "./Item.js";
-
-export class ItemFactory
+export class WidgetFactory
 {
-	#widgetFactory = null;
 
-
-	constructor(widgetFactory)
+	create()
 	{
-		this.#widgetFactory = widgetFactory;
+		return new Widget(new EditDialog(), new WidgetForm(), new WidgetsService(new FetchClient()))
+
 	}
 
-	create(itemData, itemsService)
-	{
-		return new Item(itemData, itemsService, this.#widgetFactory);
-	}
 }

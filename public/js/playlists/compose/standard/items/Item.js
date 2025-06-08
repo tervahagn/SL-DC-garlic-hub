@@ -20,14 +20,15 @@
 import {Utils} from "../../../../core/Utils.js";
 import {WidgetsService} from "../editors/WidgetsService.js";
 import {FetchClient} from "../../../../core/FetchClient.js";
-import {CreateWidgetForm} from "../editors/CreateWidgetForm.js";
-import {EditDialog} from "../editors/EditDialog.js";
+import {WidgetForm}  from "../editors/WidgetForm.js";
+import {EditDialog}  from "../editors/EditDialog.js";
 import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class Item
 {
 	#itemData = null
 	#itemsService = null;
+	#widgetFactory = null;
 	#playlistItem = null;
 	#cmsEdition = document.getElementById("cms_edition").value;
 
@@ -44,10 +45,11 @@ export class Item
 	#itemDuration = null;
 	#isItemDurationInProcess = false;
 
-	constructor(itemData, itemsService)
+	constructor(itemData, itemsService, widgetFactory)
 	{
 		this.#itemData = itemData;
 		this.#itemsService = itemsService;
+		this.#widgetFactory = widgetFactory;
 	}
 
 
@@ -252,36 +254,9 @@ export class Item
 			this.#editWidgetAction  = this.#playlistItem.querySelector('.edit-widget');
 			this.#editWidgetAction.addEventListener("click", async () =>
 			{
-				let widgetsService = new WidgetsService(new FetchClient());
-				let widgetData =  await widgetsService.fetchConfiguration(this.#itemData.item_id);
-				let widgetForm = new CreateWidgetForm();
-				let editDialog =  new EditDialog()
-				editDialog.setTitle(widgetData.data.item_name);
-				editDialog.setId(widgetData.data.item_id);
-				widgetForm.parsePreferences(widgetData.data.preferences, widgetData.data.values);
-				editDialog.setContent(widgetForm.getForm());
-
-				let saveCallBack = async function (e)
-				{
-					e.preventDefault();
-					let values = widgetForm.collectValues();
-					let result = await widgetsService.saveWidgetValues(widgetData.data.item_id, values);
-					if (result.success === false)
-					{
-						editDialog.setErrorText(jsonResponse.message);
-					}
-					else
-					{
-						editDialog.closeDialog();
-						PlaylistsProperties.notifySave();
-					}
-
-
-				}
-				editDialog.onSave(saveCallBack);
-				editDialog.onCancel();
-
-				editDialog.openDialog();
+				let widget = this.#widgetFactory.create();
+				await widget.fetch(this.#itemData.item_id);
+				widget.initDialog();
 			});
 		}
 		else

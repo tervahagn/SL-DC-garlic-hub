@@ -28,6 +28,7 @@ import {DragDropHandler}   from "./DragDropHandler.js";
 import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
 import {PlaylistsService} from "./playlists/PlaylistsService.js";
 import {WidgetsService}   from "./editors/WidgetsService.js";
+import {WidgetFactory} from "./editors/WidgetFactory.js";
 
 document.addEventListener("DOMContentLoaded", function ()
 {
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function ()
 	const playlistsService    = new PlaylistsService(new FetchClient());
 	const itemsService        = new ItemsService(new FetchClient());
 	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
-	const itemsList           = new ItemList(new ItemFactory(), itemsService, dropTarget, playlistsProperties);
+	const itemsList           = new ItemList(new ItemFactory(new WidgetFactory()), itemsService, dropTarget, playlistsProperties);
 	const dragDropHandler     = new DragDropHandler(dropTarget, itemsService, itemsList);
 	dragDropHandler.playlistId = playlistId;
 
