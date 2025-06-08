@@ -9,6 +9,7 @@ use App\Modules\Playlists\Services\InsertItems\Media;
 use App\Modules\Playlists\Services\InsertItems\Playlist;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\WidgetsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -17,6 +18,7 @@ use Psr\Log\LoggerInterface;
 class InsertItemFactoryTest extends TestCase
 {
 	private InsertItemFactory $factory;
+
 
 	/**
 	 * @throws Exception
@@ -27,6 +29,7 @@ class InsertItemFactoryTest extends TestCase
 		$itemsRepositoryMock = $this->createMock(ItemsRepository::class);
 		$playlistsServiceMock = $this->createMock(PlaylistsService::class);
 		$playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
+		$widgetsServiceMock = $this->createMock(WidgetsService::class);
 		$loggerMock = $this->createMock(LoggerInterface::class);
 
 		$this->factory = new InsertItemFactory(
@@ -34,6 +37,7 @@ class InsertItemFactoryTest extends TestCase
 			$itemsRepositoryMock,
 			$playlistsServiceMock,
 			$playlistMetricsCalculatorMock,
+			$widgetsServiceMock,
 			$loggerMock
 		);
 	}

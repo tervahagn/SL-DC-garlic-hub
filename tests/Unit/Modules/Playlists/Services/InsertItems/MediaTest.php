@@ -7,6 +7,7 @@ use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\InsertItems\Media;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
+use App\Modules\Playlists\Services\WidgetsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,7 @@ class MediaTest extends TestCase
 	private readonly ItemsRepository $itemsRepositoryMock;
 	private readonly PlaylistsService $playlistsServiceMock;
 	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
+	private readonly WidgetsService $widgetsServiceMock;
 	private readonly LoggerInterface $loggerMock;
 	private Media $media;
 
@@ -30,6 +32,7 @@ class MediaTest extends TestCase
 		$this->itemsRepositoryMock = $this->createMock(ItemsRepository::class);
 		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
 		$this->playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);
+		$this->widgetsServiceMock = $this->createMock(WidgetsService::class);
 		$this->loggerMock = $this->createMock(LoggerInterface::class);
 
 		$this->media = new Media(
@@ -37,6 +40,7 @@ class MediaTest extends TestCase
 			$this->mediaServiceMock,
 			$this->playlistsServiceMock,
 			$this->playlistMetricsCalculatorMock,
+			$this->widgetsServiceMock,
 			$this->loggerMock
 		);
 	}
@@ -149,7 +153,7 @@ class MediaTest extends TestCase
 			->method('rollBackTransaction');
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains('Error insert media: Playlist item could not inserted.'));
+			->with($this->stringContains('Error insert media: Playlist item could not be inserted.'));
 
 		$result = $this->media->insert(1, 'mediaId', 2);
 

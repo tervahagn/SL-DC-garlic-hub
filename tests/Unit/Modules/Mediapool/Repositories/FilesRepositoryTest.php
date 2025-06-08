@@ -58,7 +58,7 @@ class FilesRepositoryTest extends TestCase
 
 		$this->queryBuilderMock ->expects($this->once())
 			->method('select')
-			->with('user_main.username, company_id, media_id, mediapool_files.UID, node_id, upload_time, checksum, mimetype, metadata, tags, filename, extension, thumb_extension, media_description')
+			->with('user_main.username, company_id, media_id, mediapool_files.UID, node_id, upload_time, checksum, mimetype, metadata, tags, filename, extension, thumb_extension, media_description, config_data')
 			->willReturnSelf();
 
 		$this->queryBuilderMock ->expects($this->once())
@@ -179,7 +179,7 @@ class FilesRepositoryTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->once())
 			->method('select')
-			->with('user_main.username, company_id, media_id, mediapool_files.UID, node_id, upload_time, checksum, mimetype, metadata, tags, filename, extension, thumb_extension, media_description')
+			->with('user_main.username, company_id, media_id, mediapool_files.UID, node_id, upload_time, checksum, mimetype, metadata, tags, filename, extension, thumb_extension, media_description, config_data')
 			->willReturnSelf();
 
 		$this->queryBuilderMock->expects($this->once())

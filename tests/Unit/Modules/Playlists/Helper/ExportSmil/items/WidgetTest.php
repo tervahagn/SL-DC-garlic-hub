@@ -62,7 +62,7 @@ class WidgetTest extends TestCase
 		$this->conditionalMock->method('determineExprAttribute')->willReturn('');
 		$this->propertiesMock->method('getVolume')->willReturn('soundLevel="100"');
 
-		$contentData = serialize(['key' => 'value', 'key2' => 'value2']);
+		$contentData = ['key' => 'value', 'key2' => 'value2'];
 		$item = ['item_id' => 1, 'item_name' => 'Sample widget', 'item_duration' => 50, 'flags' => 0, 'datasource' => 'file', 'content_data' => $contentData];
 		$this->widget = new Widget($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
 

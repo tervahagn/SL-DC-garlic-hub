@@ -189,7 +189,7 @@ class UiTemplatesPreparerTest extends TestCase
 	{
 		$playlist = ['playlist_id' => 789, 'playlist_name' => 'Circular Playlist', 'time_limit' => 3600];
 
-		$this->translator->expects($this->exactly(11))
+		$this->translator->expects($this->exactly(14))
 			->method('translate')
 			->willReturnMap([
 				['composer', UiTemplatesPreparer::MODULE_NAME, [], 'Composer'],
@@ -202,7 +202,10 @@ class UiTemplatesPreparerTest extends TestCase
 				['all', UiTemplatesPreparer::MODULE_NAME, [], 'All'],
 				['picking_media_per_cycle', UiTemplatesPreparer::MODULE_NAME, [], 'Picking Media Per Cycle'],
 				['player_export', UiTemplatesPreparer::MODULE_NAME, [], 'Player Export'],
+				['item_name', UiTemplatesPreparer::MODULE_NAME, [], 'Item Name'],
 				['preview', UiTemplatesPreparer::MODULE_NAME, [], 'Playlist Preview'],
+				['save', 'main', [], 'Save'],
+				['cancel', 'main', [], 'Cancel']
 			]);
 
 		$this->rightsChecker->expects($this->once())
@@ -271,6 +274,9 @@ class UiTemplatesPreparerTest extends TestCase
 					'LANG_PICKING_MEDIA_PER_CYCLE' => 'Picking Media Per Cycle',
 					'LANG_PLAYER_EXPORT' => 'Player Export',
 					'LANG_PLAYLIST_PREVIEW' => 'Playlist Preview',
+					'LANG_ITEM_NAME' => 'Item Name',
+					'LANG_SAVE' => 'Save',
+					'LANG_CANCEL' => 'Cancel'
 				],
 			],
 		];

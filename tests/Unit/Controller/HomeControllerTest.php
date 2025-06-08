@@ -22,6 +22,7 @@ namespace Tests\Unit\Controller;
 
 use App\Controller\HomeController;
 use App\Framework\Core\Session;
+use App\Framework\Dashboards\DashboardsAggregator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -34,6 +35,7 @@ class HomeControllerTest extends TestCase
 	private ServerRequestInterface $requestMock;
 	private ResponseInterface $responseMock;
 	private Session $sessionMock;
+	private readonly DashboardsAggregator $dashboardsAggregatorMock;
 
 	/**
 	 * @throws Exception
@@ -45,6 +47,7 @@ class HomeControllerTest extends TestCase
 		$this->sessionMock  = $this->getMockBuilder(Session::class)
 			->disableOriginalConstructor()
 			->getMock();
+		$this->dashboardsAggregatorMock = $this->createMock(DashboardsAggregator::class);
 	}
 
 	/**
@@ -59,7 +62,7 @@ class HomeControllerTest extends TestCase
 		$this->responseMock->method('getBody')->willReturn($this->createMock(StreamInterface::class));
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new HomeController();
+		$controller = new HomeController($this->dashboardsAggregatorMock);
 		$result = $controller->index($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -74,7 +77,7 @@ class HomeControllerTest extends TestCase
 		$this->responseMock->method('getBody')->willReturn($this->createMock(StreamInterface::class));
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new HomeController();
+		$controller = new HomeController($this->dashboardsAggregatorMock);
 		$result = $controller->legals($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);

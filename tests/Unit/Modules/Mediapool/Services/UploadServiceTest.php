@@ -445,7 +445,7 @@ class UploadServiceTest extends TestCase
 		$mediaHandler->method('uploadFromExternal')->willReturn('/tmp/video.webm');
 		$mediaHandler->method('determineNewFilename')->willReturn('abc123');
 		$mediaHandler->method('removeUploadedFile')->with('/tmp/video.webm');
-		$dataSet = ['mimetype' => 'video/webm', 'metadata' => [], 'extension' => 'webm', 'media_description' => '', 'thumb_extension' => 'jpg'];
+		$dataSet = ['mimetype' => 'video/webm', 'metadata' => [], 'extension' => 'webm', 'media_description' => '', 'thumb_extension' => 'jpg', 'config_data' => ''];
 
 		$this->mediaRepositoryMock->method('findFirstBy')->willReturn($dataSet);
 

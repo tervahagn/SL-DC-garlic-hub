@@ -159,7 +159,7 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
 			->with($itemData['playlist_id']);
 
-		$media = ['metadata' => ['duration' => 120]];
+		$media = ['metadata' => ['duration' => 120], 'config_data' => ''];
 		$this->mediaServiceMock->expects($this->once())->method('setUID')
 			->with(1);
 		$this->mediaServiceMock->expects($this->once())->method('fetchMediaByChecksum')
@@ -188,7 +188,8 @@ class ItemsServiceTest extends TestCase
 			'playlist_id' => 1,
 			'item_type' => 'mediapool',
 			'mimetype' => 'image/webp',
-			'file_resource' => 'checksum_value'
+			'file_resource' => 'checksum_value',
+			'config_data' => ''
 		];
 
 		$this->itemsService->setUID(1);
@@ -202,8 +203,8 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
 			->with($itemData['playlist_id']);
 
-		$this->mediaServiceMock->expects($this->never())->method('setUID');
-		$this->mediaServiceMock->expects($this->never())->method('fetchMediaByChecksum');
+		$this->mediaServiceMock->expects($this->once())->method('setUID');
+		$this->mediaServiceMock->expects($this->once())->method('fetchMediaByChecksum')->willReturn(['config_data' => '']);
 
 		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getDefaultDuration')
 			->willReturn(17);
