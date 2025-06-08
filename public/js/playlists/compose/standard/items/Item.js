@@ -247,7 +247,7 @@ export class Item
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
 
-		if (this.#itemData.mimetype === "application/widget")
+		if (this.#itemData.mimetype === "application/widget" && this.#itemData.content_data !== "")
 		{
 			this.#editWidgetAction  = this.#playlistItem.querySelector('.edit-widget');
 			this.#editWidgetAction.addEventListener("click", async () =>
