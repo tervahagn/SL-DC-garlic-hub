@@ -29,10 +29,10 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 /** works only on Linux */
-class SystemDashboard implements DashboardInterface
+readonly class SystemDashboard implements DashboardInterface
 {
-	private readonly SystemStats $systemStats;
-	private readonly Translator $translator;
+	private SystemStats $systemStats;
+	private Translator $translator;
 
 	public function __construct(SystemStats $systemStats, Translator $translator)
 	{
