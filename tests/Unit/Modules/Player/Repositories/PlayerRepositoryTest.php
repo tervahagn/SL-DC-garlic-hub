@@ -34,6 +34,73 @@ class PlayerRepositoryTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testFindAllForDashboardSqlite(): void
+	{
+		$sqliteplatform = new \Doctrine\DBAL\Platforms\SQLitePlatform();
+		$this->connectionMock->expects($this->once())
+			->method('getDatabasePlatform')
+			->willReturn($sqliteplatform);
+
+		$SqLiteSql = "SELECT
+				SUM(CASE WHEN last_access >= DATETIME('now', '-' || (2 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS active,
+				SUM(CASE WHEN last_access < DATETIME('now', '-' || (2 * refresh) || ' seconds')
+						 AND last_access >= DATETIME('now', '-' || (4 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS pending,
+				SUM(CASE WHEN last_access < DATETIME('now', '-' || (4 * refresh) || ' seconds') THEN 1 ELSE 0 END) AS inactive
+			FROM
+				player;";
+
+		$this->connectionMock->expects($this->once())->method('fetchAssociative')
+			->with($SqLiteSql)
+			->willReturn(['active' => 3, 'pending' => 2, 'inactive' => 5]);
+
+		$result = $this->repository->findAllForDashboard();
+		$this->assertNotEmpty($result);
+		$this->assertEquals(3, $result['active']);
+		$this->assertEquals(2, $result['pending']);
+		$this->assertEquals(5, $result['inactive']);
+	}
+
+	#[Group('units')]
+	public function testFindAllForDashboardMariaDB(): void
+	{
+		$sqliteplatform = new \Doctrine\DBAL\Platforms\MariaDBPlatform();
+		$this->connectionMock->expects($this->once())
+			->method('getDatabasePlatform')
+			->willReturn($sqliteplatform);
+
+		$mariaDBSql = "SELECT
+            SUM(CASE WHEN last_access >= DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND) THEN 1 ELSE 0 END) AS active,
+            SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND)
+                      AND last_access >= DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
+            SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
+        FROM
+            player;";
+
+		$this->connectionMock->expects($this->once())->method('fetchAssociative')
+			->with($mariaDBSql)
+			->willReturn(['active' => 6, 'pending' => 7, 'inactive' => 8]);
+
+		$result = $this->repository->findAllForDashboard();
+		$this->assertNotEmpty($result);
+		$this->assertEquals(6, $result['active']);
+		$this->assertEquals(7, $result['pending']);
+		$this->assertEquals(8, $result['inactive']);
+	}
+	#[Group('units')]
+	public function testFindAllForDashboardEmpty(): void
+	{
+		$sqliteplatform = new \Doctrine\DBAL\Platforms\PostgreSQLPlatform();
+		$this->connectionMock->expects($this->once())
+			->method('getDatabasePlatform')
+			->willReturn($sqliteplatform);
+
+		$this->connectionMock->expects($this->once())->method('fetchAssociative')
+			->willReturn(false);
+
+		$this->assertEmpty($this->repository->findAllForDashboard());
+	}
+
+	#[Group('units')]
 	public function testConstructorInitializesConnection(): void
 	{
 		$this->assertInstanceOf(PlayerRepository::class, $this->repository);

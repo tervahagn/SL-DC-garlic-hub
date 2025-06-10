@@ -30,6 +30,28 @@ class PlayerServiceTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testFindAllForDashboardReturnsValidData(): void
+	{
+		$this->playerRepositoryMock->method('findAllForDashboard')
+			->willReturn(['active' => 5, 'inactive' => 3, 'pending' => 2]);
+
+		$result = $this->service->findAllForDashboard();
+
+		$this->assertSame(['active' => 5, 'inactive' => 3, 'pending' => 2], $result);
+	}
+
+	#[Group('units')]
+	public function testFindAllForDashboardReturnsDefaultValuesOnEmptyData(): void
+	{
+		$this->playerRepositoryMock->method('findAllForDashboard')
+			->willReturn([]);
+
+		$result = $this->service->findAllForDashboard();
+
+		$this->assertSame(['active' => 0, 'inactive' => 0, 'pending' => 0], $result);
+	}
+
+	#[Group('units')]
 	public function testReplaceMasterPlaylis(): void
 	{
 		$this->service->setUID(1);
