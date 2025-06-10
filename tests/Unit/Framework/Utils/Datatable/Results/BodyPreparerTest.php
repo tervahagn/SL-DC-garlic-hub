@@ -28,6 +28,55 @@ class BodyPreparerTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testFormatSpanWithAllParameters(): void
+	{
+		$valueName = 'Sample Name';
+		$title = 'Sample Title';
+		$valueId = '123';
+		$cssClass = 'test-class';
+
+		$result = $this->bodyPreparer->formatSpan($valueName, $title, $valueId, $cssClass);
+
+		$this->assertEquals([
+			'CONTROL_ELEMENT_VALUE_NAME' => 'Sample Name',
+			'CONTROL_ELEMENT_VALUE_TITLE' => 'Sample Title',
+			'CONTROL_ELEMENT_VALUE_ID' => '123',
+			'CONTROL_ELEMENT_VALUE_CLASS' => 'test-class',
+		], $result);
+	}
+
+	#[Group('units')]
+	public function testFormatSpanWithoutCssClass(): void
+	{
+		$valueName = 'Sample Name';
+		$title = 'Sample Title';
+		$valueId = '123';
+
+		$result = $this->bodyPreparer->formatSpan($valueName, $title, $valueId);
+
+		$this->assertEquals([
+			'CONTROL_ELEMENT_VALUE_NAME' => 'Sample Name',
+			'CONTROL_ELEMENT_VALUE_TITLE' => 'Sample Title',
+			'CONTROL_ELEMENT_VALUE_ID' => '123',
+			'CONTROL_ELEMENT_VALUE_CLASS' => '',
+		], $result);
+	}
+
+	#[Group('units')]
+	public function testFormatSpanWithEmptyValues(): void
+	{
+		$result = $this->bodyPreparer->formatSpan('', '', '');
+
+		$this->assertEquals([
+			'CONTROL_ELEMENT_VALUE_NAME' => '',
+			'CONTROL_ELEMENT_VALUE_TITLE' => '',
+			'CONTROL_ELEMENT_VALUE_ID' => '',
+			'CONTROL_ELEMENT_VALUE_CLASS' => '',
+		], $result);
+	}
+
+
+	#[Group('units')]
 	public function testFormatActionWithValidParameters(): void
 	{
 		$lang = 'en';
@@ -294,6 +343,48 @@ class BodyPreparerTest extends TestCase
 			'DELETE_ID' => 'del-123#456',
 			'LANG_CONFIRM_DELETE' => 'Conf!rm@tion??',
 			'ELEMENT_DELETE_CLASS' => '.del-class#special',
+		], $result);
+	}
+
+	#[Group('units')]
+	public function testFormatIconWithValidValues(): void
+	{
+		$iconClass = 'icon-class-test';
+		$title = 'Icon Test';
+
+		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
+
+		$this->assertEquals([
+			'ICON_CLASS' => 'icon-class-test',
+			'ICON_TITLE' => 'Icon Test',
+		], $result);
+	}
+
+	#[Group('units')]
+	public function testFormatIconWithEmptyValues(): void
+	{
+		$iconClass = '';
+		$title = '';
+
+		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
+
+		$this->assertEquals([
+			'ICON_CLASS' => '',
+			'ICON_TITLE' => '',
+		], $result);
+	}
+
+	#[Group('units')]
+	public function testFormatIconWithSpecialCharacters(): void
+	{
+		$iconClass = '.icon-class@special';
+		$title = 'Special@Icon!';
+
+		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
+
+		$this->assertEquals([
+			'ICON_CLASS' => '.icon-class@special',
+			'ICON_TITLE' => 'Special@Icon!',
 		], $result);
 	}
 }

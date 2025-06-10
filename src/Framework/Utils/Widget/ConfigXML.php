@@ -377,9 +377,6 @@ class ConfigXML extends BaseSimpleXml
 				$value = (string) $v;
 		}
 
-		if (!isset($key) || !isset($value))
-			return array();
-
 		return array($key => $value);
 	}
 

@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 class SystemStatsTest extends TestCase
 {
 	use PHPMock;
-
 	private readonly ShellExecutor $shellExecutorMock;
 	private SystemStats $systemStats;
 

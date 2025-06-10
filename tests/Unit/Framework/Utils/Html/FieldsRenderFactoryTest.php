@@ -21,7 +21,10 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\FieldInterface;
+use App\Framework\Utils\Html\FieldRenderInterface;
 use App\Framework\Utils\Html\FieldsRenderFactory;
+use App\Framework\Utils\Html\TextField;
+use App\Framework\Utils\Html\TextRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -45,7 +48,23 @@ class FieldsRenderFactoryTest extends TestCase
 		$fieldMock = $this->createMock(FieldInterface::class);
 
 		$this->expectException(InvalidArgumentException::class);
-
+		$this->expectExceptionMessage('Unsupported field type: ');
 		$this->fieldsRenderFactory->getRenderer($fieldMock);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testGetRendererForSupportedField(): void
+	{
+		$textFieldMock = $this->createMock(TextField::class);
+		$textRenderFieldMock = $this->createMock(TextRenderer::class);
+
+		$renderedText = '<input type="text" name="" id="" value="" aria-describedby="error_">';
+		$textRenderFieldMock->method('render');
+
+		$this->assertSame($renderedText,  $this->fieldsRenderFactory->getRenderer($textFieldMock));
+	}
+
 }

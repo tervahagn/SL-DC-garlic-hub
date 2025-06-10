@@ -77,6 +77,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildFormField();
 
+		$this->assertSame($this->resultsBuilderMock, $this->buildService->getResultsBuilder());
 		$this->assertSame($this->fieldMock, $result);
 	}
 

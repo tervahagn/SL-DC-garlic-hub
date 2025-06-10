@@ -240,6 +240,59 @@ class ConfigXMLTest extends TestCase
 		$this->assertEquals($expected, $preferences['align']);
 	}
 
+	#[Group('units')]
+	public function testParsePreferencesNoNaming()
+	{
+		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
+		<widget xmlns       = "http://www.w3.org/ns/widgets"
+				id          = "http://example.org/exampleWidget"
+				viewmodes   = "fullscreen"></widget>';
+
+		$TestClass = new ConfigXML();
+		$TestClass->load($xml_string)->parseBasic();
+
+		$TestClass->parsePreferences();
+		$this->assertEmpty($TestClass->getPreferences());
+	}
+
+	#[Group('units')]
+	public function testParsePreferencesWithNoName()
+	{
+		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
+		<widget xmlns       = "http://www.w3.org/ns/widgets"
+				id          = "http://example.org/exampleWidget"
+				viewmodes   = "fullscreen">
+				<name short="Example 2.0" xml:lang="en-us">The example Widget!</name>
+     <preference value="ea31ad3a23fd2f" readonly="false" />
+
+</widget>';
+
+
+		$TestClass = new ConfigXML();
+		$TestClass->load($xml_string)->parseBasic();
+
+		$TestClass->parsePreferences();
+		$this->assertEmpty($TestClass->getPreferences());
+
+	}
+
+	#[Group('units')]
+	public function testParseDefaultDirection()
+	{
+		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" dir="rtl" xml:lang="fa">
+	<name short="برنامه">برنامه</name>
+
+     <preference value="ea31ad3a23fd2f" readonly="false" />
+
+</widget>';
+		$TestClass = new ConfigXML();
+		$TestClass->load($xml_string)->parseBasic();
+
+		$TestClass->parsePreferences();
+		$this->assertEmpty($TestClass->getPreferences());
+	}
+
 	/**
 	 * @throws FrameworkException
 	 * @throws ModuleException
