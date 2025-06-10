@@ -66,12 +66,15 @@ class Cookie
 	}
 
 
+	/**
+	 * @throws FrameworkException
+	 */
 	public function createCookie(string $name, string $content, DateTime $expire): void
 	{
 		$expire  = $expire->getTimestamp();
 		$result  = setcookie($name, $content, $expire, '/', '', false, true);
 
-		if ($result == false)
+		if ($result === false)
 			throw new FrameworkException('Cookie failed to set.');
 	}
 
@@ -99,15 +102,16 @@ class Cookie
 	 */
 	private function validateAndUnpackContent(string $raw_content):array
 	{
-		[$content, $checksum] = unserialize($raw_content);
-
-		if ($content === false || $checksum === false)
+		$data = @unserialize($raw_content);
+		if (!is_array($data) || count($data) !== 2)
 			throw new FrameworkException('Failed to unserialize content.');
+
+		[$content, $checksum] = $data;
 
 		if (!hash_equals($checksum, $this->crypt->createSha256Hash($content)))
 			throw new FrameworkException('Possible cookie manipulation detected. Checksum does of ' . $checksum . ' does not match');
 
-		$ret =  unserialize($content);
+		$ret =  @unserialize($content);
 		if ($ret === false)
 			return [];
 

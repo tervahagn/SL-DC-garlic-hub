@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Core;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
 use App\Framework\Exceptions\FrameworkException;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -30,6 +31,8 @@ use PHPUnit\Framework\TestCase;
 #[Group('units')]
 class CookieTest extends TestCase
 {
+	use PHPMock;
+
 	private Cookie $cookie;
 	private Crypt $cryptMock;
 
@@ -46,6 +49,8 @@ class CookieTest extends TestCase
 	public function testCreateCookie(): void
 	{
 		$this->cryptMock->expects($this->once())->method('createSha256Hash')->willReturn('mocked_hash');
+		$setcookie = $this->getFunctionMock('App\Framework\Core', 'setcookie');
+		$setcookie->expects($this->once())->willReturn(['content', 'checksum']);
 
 		$contents = ['UID' => 123, 'LSID' => 'test_session'];
 		$expire = new \DateTime('+1 day');
@@ -56,6 +61,38 @@ class CookieTest extends TestCase
 
 		$this->assertTrue(true); // If no exception is thrown, the test passes.
 	}
+
+	#[Group('units')]
+	public function testgetHashedCookieException(): void
+	{
+		$_COOKIE['test_cookie'] = false;
+		$this->expectException(FrameworkException::class);
+
+		$this->cookie->getHashedCookie('test_cookie');
+	}
+
+	#[Group('units')]
+	public function testgetHashedCookieContetnFalse(): void
+	{
+		$this->cryptMock->expects($this->once())->method('createSha256Hash')->willReturn(hash('sha256','mocked_hash'));
+
+		$_COOKIE['test_cookie'] = serialize(['content', hash('sha256','mocked_hash')]);
+
+		$this->assertEmpty($this->cookie->getHashedCookie('test_cookie'));
+	}
+
+	#[Group('units')]
+	public function testCreateCookieFalse(): void
+	{
+		$setcookie = $this->getFunctionMock('App\Framework\Core', 'setcookie');
+		$setcookie->expects($this->once())->willReturn(false);
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Cookie failed to set.');
+
+		$this->cookie->createCookie('nocookie', 'content', new \DateTime('+1 day'));
+	}
+
 
 	#[Group('units')]
 	public function testGetCookie(): void
