@@ -32,9 +32,22 @@ class SystemStats
 	private array $loadData = [];
 	private bool $isLinux = false;
 
+	public function __construct(ShellExecutor $shellExecutor)
+	{
+		$this->shellExecutor = $shellExecutor;
+
+		if (strcasecmp(PHP_OS, 'Linux') == 0)
+			$this->isLinux = true;
+	}
+
 	public function isLinux(): bool
 	{
 		return $this->isLinux;
+	}
+
+	public function setIsLinux(bool $is): void
+	{
+		$this->isLinux = $is;
 	}
 
 	public function getDiscInfo(): array
@@ -50,14 +63,6 @@ class SystemStats
 	public function getLoadData(): array
 	{
 		return $this->loadData;
-	}
-
-	public function __construct(ShellExecutor $shellExecutor)
-	{
-		$this->shellExecutor = $shellExecutor;
-
-		if (strcasecmp(PHP_OS, 'Linux') == 0)
-			$this->isLinux = true;
 	}
 
 	/**
@@ -78,9 +83,20 @@ class SystemStats
 	 */
 	public function determineRamStats(): void
 	{
-		$free = $this->shellExecutor->setCommand('free -m')->executeSimple();
+		$free    = $this->shellExecutor->setCommand('free -m')->executeSimple();
 		$freeArr = explode("\n", $free);
+		if (!isset($freeArr[1]))
+		{
+			$this->ramStats = ['total' => null, 'used'  => null, 'free'  => null];
+			return;
+		}
 		$mem = explode(" ", $freeArr[1]);
+		if (count($mem) < 3)
+		{
+			$this->ramStats = ['total' => null, 'used'  => null, 'free'  => null];
+			return;
+		}
+
 		$mem = array_filter($mem); // Remove empty values
 		$mem = array_merge($mem); // Reindex array
 
