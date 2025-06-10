@@ -9,12 +9,17 @@ use Slim\Psr7\Stream;
 
 class FileUtilsTest extends TestCase
 {
-	private readonly FileUtils $fileUtils;
+	private FileUtils $fileUtils;
+
+	protected function setUp(): void
+	{
+		$this->fileUtils = new FileUtils();
+	}
+
 
 	#[Group('units')]
 	public function testGetFileMethods(): void
 	{
-		$this->fileUtils = new FileUtils();
 
 		$baseDir = getenv('TEST_BASE_DIR') . '/resources/tmp';
 		$filePath = $baseDir.'/test.bin';

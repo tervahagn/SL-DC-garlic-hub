@@ -19,6 +19,7 @@ class PlaylistTest extends TestCase
 	private readonly PlaylistsService $playlistsServiceMock;
 	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
 	private readonly LoggerInterface $loggerMock;
+	private readonly MediaService $mediaServiceMock;
 	private Playlist $playlist;
 
 	protected function setUp(): void

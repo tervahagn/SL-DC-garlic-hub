@@ -87,7 +87,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock, []);
+		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
@@ -114,7 +114,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock, []);
+		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 

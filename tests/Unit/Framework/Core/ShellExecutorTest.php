@@ -33,7 +33,7 @@ class ShellExecutorTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->executor   = new ShellExecutor($this->loggerMock);
+		$this->executor   = new ShellExecutor();
 	}
 
 	/**

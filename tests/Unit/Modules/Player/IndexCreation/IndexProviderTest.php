@@ -17,6 +17,8 @@ class IndexProviderTest extends TestCase
 {
 	private readonly Config $configMock;
 	private readonly IndexCreator $indexCreatorMock;
+	private readonly PlayerEntity $playerEntityMock;
+
 	private IndexProvider $indexProvider;
 
 	/**

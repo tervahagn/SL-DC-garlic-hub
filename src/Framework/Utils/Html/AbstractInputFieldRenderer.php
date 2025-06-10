@@ -34,10 +34,9 @@ abstract class AbstractInputFieldRenderer
 		$this->addBaseAttributes()->addCustomAttributes()->addValidationAttributes();
 
 		$parts = [];
-		$default = '';
 		foreach ($this->attributes as $key => $value)
 		{
-			$parts[] = sprintf('%s="%s"', $key, $value ?? $default);
+			$parts[] = sprintf('%s="%s"', $key, $value ?? '');
 		}
 		return implode(' ', $parts);
 	}

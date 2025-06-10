@@ -116,9 +116,6 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
-	 * @param array $playlist
-	 * @param array $items
-	 * @return PlaylistMetricsCalculator
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException

@@ -440,6 +440,6 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->parseInputFilterByName('boolParam');
 
 		$this->assertSame(42, $this->baseParameters->getValueOfParameter('intParam'));
-		$this->assertSame(true, $this->baseParameters->getValueOfParameter('boolParam'));
+		$this->assertTrue($this->baseParameters->getValueOfParameter('boolParam'));
 	}
 }
