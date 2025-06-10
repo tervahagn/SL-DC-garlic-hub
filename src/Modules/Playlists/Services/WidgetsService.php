@@ -25,22 +25,22 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
-use App\Framework\Utils\Widget\ConfigXML;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
+use Tests\Unit\Modules\Playlists\Helper\Widget\ContentDataPreparer;
 use Throwable;
 
 class WidgetsService extends AbstractBaseService
 {
 	private readonly ItemsService $itemService;
-	private readonly ConfigXml $configXml;
+	private readonly ContentDataPreparer $contentDataPreparer;
 	private string $errorText = '';
 
-	public function __construct(ItemsService $itemService, ConfigXml $configXml, LoggerInterface $logger)
+	public function __construct(ItemsService $itemService, ContentDataPreparer $contentDataPreparer, LoggerInterface $logger)
 	{
-		$this->itemService = $itemService;
-		$this->configXml = $configXml;
+		$this->itemService         = $itemService;
+		$this->contentDataPreparer = $contentDataPreparer;
 		parent::__construct($logger);
 	}
 
@@ -54,16 +54,14 @@ class WidgetsService extends AbstractBaseService
 		try
 		{
 			$item            = $this->fetchItem($itemId);
-			$preferencesData = $this->determinePreferences($item['config_data']);
+			$preferencesData = $this->contentDataPreparer->determinePreferences($item['config_data']);
 
 			$values = array();
 			if (!is_null($item['content_data']))
 			{
 				$ar = unserialize($item['content_data']);
 				if (is_array($ar))
-				{
 					$values = $ar;
-				}
 			}
 
 			return [
@@ -101,38 +99,10 @@ class WidgetsService extends AbstractBaseService
 	 * @throws ModuleException
 	 * @throws FrameworkException
 	 */
-	public function prepareContentData($configData, $requestData, $init = false): string
+	public function prepareContentData(string $configData, array $requestData, bool $init = false): string
 	{
-		$preferencesData = $this->determinePreferences($configData);
-
-		foreach ($preferencesData as $key => $value)
-		{
-			$mandatory = (array_key_exists('mandatory', $value) && $value['mandatory'] === 'true');
-			$has_key   = (array_key_exists($key, $requestData) && !empty($requestData[$key]));
-			if (!$init && !$has_key && $mandatory)
-				throw new ModuleException('items', $key. ' is mandatory field.');
-
-			if (!$has_key)
-				continue;
-
-			switch($value['types'])
-			{
-				case 'colorOpacity':
-				case 'integer':
-					$requestData[$key]  = (int) $requestData[$key];
-					break;
-				default:
-				case 'text':
-				case 'radio':
-				case 'color':
-				case 'list':
-				case 'combo':
-					$requestData[$key]  = htmlspecialchars($requestData[$key], ENT_QUOTES);
-					break;
-			}
-		}
-
-		return serialize($requestData);
+		$contentData = $this->contentDataPreparer->prepareContentData($configData, $requestData, $init);
+		return serialize($contentData);
 	}
 
 	/**
@@ -149,20 +119,6 @@ class WidgetsService extends AbstractBaseService
 			throw new ModuleException('items', 'Not a widget item.');
 
 		return $item;
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws FrameworkException
-	 */
-	private function determinePreferences(string $configData): array
-	{
-		if (!$this->configXml->load($configData)->hasEditablePreferences())
-			throw new ModuleException('items', 'Widget has no editable preferences.');
-
-		$this->configXml->parseBasic()->parsePreferences();
-
-		return $this->configXml->getPreferences();
 	}
 
 }

@@ -69,6 +69,7 @@ use App\Modules\Playlists\Services\PlaylistUsageService;
 use App\Modules\Playlists\Services\WidgetsService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
+use Tests\Unit\Modules\Playlists\Helper\Widget\ContentDataPreparer;
 
 $dependencies = [];
 
@@ -281,7 +282,7 @@ $dependencies[WidgetsService::class] = DI\factory(function (ContainerInterface $
 {
 	return new WidgetsService(
 		$container->get(ItemsService::class),
-		new ConfigXML(),
+		new ContentDataPreparer(new ConfigXML()),
 		$container->get('ModuleLogger')
 	);
 });
