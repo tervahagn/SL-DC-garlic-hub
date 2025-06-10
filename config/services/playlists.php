@@ -56,6 +56,7 @@ use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
@@ -69,7 +70,6 @@ use App\Modules\Playlists\Services\PlaylistUsageService;
 use App\Modules\Playlists\Services\WidgetsService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
-use Tests\Unit\Modules\Playlists\Helper\Widget\ContentDataPreparer;
 
 $dependencies = [];
 

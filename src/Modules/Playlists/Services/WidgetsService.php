@@ -25,10 +25,10 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
+use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
-use Tests\Unit\Modules\Playlists\Helper\Widget\ContentDataPreparer;
 use Throwable;
 
 class WidgetsService extends AbstractBaseService

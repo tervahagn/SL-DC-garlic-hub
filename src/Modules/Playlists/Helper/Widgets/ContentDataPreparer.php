@@ -19,7 +19,7 @@
 */
 
 
-namespace Tests\Unit\Modules\Playlists\Helper\Widget;
+namespace App\Modules\Playlists\Helper\Widgets;
 
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;

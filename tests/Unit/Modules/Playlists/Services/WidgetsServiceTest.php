@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Modules\Playlists\Services;
 
+use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\WidgetsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Tests\Unit\Modules\Playlists\Helper\Widget\ContentDataPreparer;
 
 class WidgetsServiceTest extends TestCase
 {
