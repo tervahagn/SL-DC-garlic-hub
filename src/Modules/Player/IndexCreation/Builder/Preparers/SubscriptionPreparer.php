@@ -23,6 +23,9 @@ namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
 class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 {
+	/**
+	 * @return array<string, string>
+	 */
 	public function prepare(): array
 	{
 		$subscriptions = [];
@@ -49,6 +52,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		return $subscriptions;
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	private function replaceTaskSchedule(): array
 	{
 		return [
@@ -59,6 +65,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function replaceReportInventory(): array
 	{
 		return [
@@ -68,6 +77,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function replaceReportPlayed(): array
 	{
 		return [
@@ -77,6 +89,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function replaceReportEvents(): array
 	{
 		return [
@@ -86,6 +101,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function replaceSystemConfiguration(): array
 	{
 		return [
@@ -95,8 +113,9 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+
 	/**
-	 * @return $this
+	 * @return array<string, string>
 	 */
 	protected function replaceTasksExecutions(): array
 	{

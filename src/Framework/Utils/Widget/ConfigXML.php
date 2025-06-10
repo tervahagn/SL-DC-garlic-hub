@@ -369,6 +369,8 @@ class ConfigXML extends BaseSimpleXml
 
 	private function generateRadioOptionArray(SimpleXMLElement $option): array
 	{
+		$key = '';
+		$value = '';
 		foreach($option->attributes() as $k => $v)
 		{
 			if ($k == 'resourceKey')

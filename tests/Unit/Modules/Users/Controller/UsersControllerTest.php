@@ -29,9 +29,10 @@ use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\UserStatus;
+use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,15 +40,16 @@ use Psr\Http\Message\StreamInterface;
 
 class UsersControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private UsersDatatableService $usersServiceMock;
-	private readonly Parameters $parametersMock;
-
-	private StreamInterface $streamInterfaceMock;
+	private ServerRequestInterface&MockObject  $requestMock;
+	private ResponseInterface&MockObject  $responseMock;
+	private UsersDatatableService&MockObject $usersServiceMock;
+	private Parameters&MockObject  $parametersMock;
+	private StreamInterface&MockObject  $streamInterfaceMock;
+	private UsersController $controller;
 
 	/**
 	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
@@ -68,6 +70,7 @@ class UsersControllerTest extends TestCase
 	 * @throws CoreException
 	 * @throws \Doctrine\DBAL\Exception
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	#[Group('units')]
 	public function testFindByNameReturnsCorrectResponse(): void

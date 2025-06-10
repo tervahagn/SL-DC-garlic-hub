@@ -30,7 +30,7 @@ class ScopeEntity implements ScopeEntityInterface
 	 */
 	public function getIdentifier(): string
 	{
-		return '';
+		return 'dummy';
 	}
 
 	/**

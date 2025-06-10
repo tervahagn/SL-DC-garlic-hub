@@ -41,7 +41,7 @@ class NestedSetHelper
 	const string REGION_AFTER = 'after';
 	const string REGION_APPENDCHILD = 'appendChild';
 
-	private readonly string $table;
+	private string $table;
 	private Connection $connection;
 
 	public function init(Connection $connection, string $table): void

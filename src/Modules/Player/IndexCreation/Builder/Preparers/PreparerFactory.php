@@ -40,6 +40,8 @@ class PreparerFactory
 				return new ScreenTimesPreparer($playerEntity);
 			case IndexSections::PLAYLIST:
 				return new PlaylistPreparer($playerEntity);
+			default:
+				throw new \Exception('Unknown index section');
 		}
 	}
 }

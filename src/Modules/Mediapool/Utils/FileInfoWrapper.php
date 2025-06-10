@@ -25,7 +25,7 @@ use finfo;
 
 class FileInfoWrapper
 {
-	private finfo $fileInfo;
+	private ?finfo $fileInfo;
 
 	public function __construct()
 	{
