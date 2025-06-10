@@ -29,9 +29,6 @@ class ContentDataPreparer
 {
 	private Readonly ConfigXML $configXml;
 
-	/**
-	 * @param ConfigXML $configXML
-	 */
 	public function __construct(ConfigXML $configXml)
 	{
 		$this->configXml = $configXml;
