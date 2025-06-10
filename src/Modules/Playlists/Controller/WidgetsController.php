@@ -21,8 +21,6 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Framework\Utils\Widget\ConfigXML;
-use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\WidgetsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
