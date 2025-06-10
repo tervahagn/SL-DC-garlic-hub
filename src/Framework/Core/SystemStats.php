@@ -91,12 +91,6 @@ class SystemStats
 			return;
 		}
 		$mem = explode(" ", $freeArr[1]);
-		if (count($mem) < 3)
-		{
-			$this->ramStats = ['total' => null, 'used'  => null, 'free'  => null];
-			return;
-		}
-
 		$mem = array_filter($mem); // Remove empty values
 		$mem = array_merge($mem); // Reindex array
 
