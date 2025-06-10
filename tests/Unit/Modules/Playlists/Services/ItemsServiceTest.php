@@ -423,6 +423,50 @@ class ItemsServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
+	public function testLoadItemsByPlaylistIdForComposerWithWidget(): void
+	{
+		$playlistId = 1;
+		$playlistData = ['playlist_id' => $playlistId];
+		$itemsData = [
+			[
+				'item_type' => ItemType::MEDIAPOOL->value,
+				'mimetype' => 'application/widget',
+				'file_resource' => 'image_checksum',
+				'content_data' => ''
+			]
+		];
+
+		$this->itemsService->setUID(1);
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')
+			->with(1);
+
+		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
+			->with($playlistId)
+			->willReturn($playlistData);
+
+		$this->mediaServiceMock->expects($this->once())->method('getPathThumbnails')
+			->willReturn('/path/to/thumbnails');
+
+		$this->itemsRepositoryMock->expects($this->once())->method('findAllByPlaylistId')
+			->with($playlistId)
+			->willReturn($itemsData);
+
+		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
+
+		$this->assertIsArray($result);
+		$this->assertArrayHasKey('items', $result);
+		$this->assertCount(1, $result['items']);
+		$this->assertEquals('/path/to/thumbnails/image_checksum.svg', $result['items'][0]['paths']['thumbnail']);
+	}
+
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
 	public function testLoadItemsByPlaylistIdForComposerWithPlaylistType(): void
 	{
 		$playlistId = 1;
