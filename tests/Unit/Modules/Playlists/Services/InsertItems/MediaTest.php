@@ -53,28 +53,59 @@ class MediaTest extends TestCase
 	{
 		$this->checkAclMockSuccessful();
 
-		$this->mediaServiceMock->expects($this->once())
-			->method('fetchMedia')
+		$this->mediaServiceMock->expects($this->once())->method('fetchMedia')
 			->with('mediaId')
 			->willReturn(['metadata' => ['size' => 1024], 'filename' => 'test_file.mp4', 'checksum' => 'abc123', 'mimetype' => 'video/mp4', 'paths' => ['/path']]);
 
 		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateRemainingMediaDuration')
 			->willReturn(5000);
 
-		$this->itemsRepositoryMock->expects($this->once())
-			->method('updatePositionsWhenInserted')
+		$this->itemsRepositoryMock->expects($this->once())->method('updatePositionsWhenInserted')
 			->with(1, 2);
 
-		$this->itemsRepositoryMock->expects($this->once())
-			->method('insert')
+		$this->itemsRepositoryMock->expects($this->once())->method('insert')
 			->willReturn(123);
 
-		$this->playlistMetricsCalculatorMock->expects($this->once())
-			->method('calculateFromPlaylistData')
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
 			->willReturnSelf();
 
-		$this->playlistMetricsCalculatorMock->expects($this->once())
-			->method('getMetricsForFrontend')
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getMetricsForFrontend')
+			->willReturn(['frontend_metrics']);
+
+		$this->itemsRepositoryMock->expects($this->once())->method('commitTransaction');
+
+		$result = $this->media->insert(1, 'mediaId', 2);
+
+		$this->assertNotEmpty($result);
+		$this->assertIsArray($result);
+		$this->assertArrayHasKey('playlist_metrics', $result);
+		$this->assertArrayHasKey('item', $result);
+	}
+
+	#[Group('units')]
+	public function testInsertSuccessWithWidget(): void
+	{
+		$this->checkAclMockSuccessful();
+
+		$this->mediaServiceMock->expects($this->once())->method('fetchMedia')
+			->with('mediaId')
+			->willReturn(['metadata' => ['size' => 1024], 'filename' => 'test_file.mp4', 'checksum' => 'abc123', 'mimetype' => 'application/widget', 'config_data' => 'some config xml', 'paths' => ['/path']]);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateRemainingMediaDuration')
+			->willReturn(5000);
+		$this->widgetsServiceMock->expects($this->once())->method('prepareContentData')
+			->with('some config xml', [], true);
+
+		$this->itemsRepositoryMock->expects($this->once())->method('updatePositionsWhenInserted')
+			->with(1, 2);
+
+		$this->itemsRepositoryMock->expects($this->once())->method('insert')
+			->willReturn(123);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->willReturnSelf();
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getMetricsForFrontend')
 			->willReturn(['frontend_metrics']);
 
 		$this->itemsRepositoryMock->expects($this->once())->method('commitTransaction');

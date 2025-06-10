@@ -77,6 +77,7 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$this->assertEmpty($this->concreteMediaHandler->getDimensions());
 		$this->assertEmpty($this->concreteMediaHandler->getFileSize());
+		$this->assertEmpty($this->concreteMediaHandler->getConfigData());
 		$this->assertEquals(0.0, $this->concreteMediaHandler->getDuration());}
 
 	/**
