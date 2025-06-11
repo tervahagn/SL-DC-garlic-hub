@@ -10,15 +10,16 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class WidgetTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly Properties $propertiesMock;
-	private readonly Trigger $beginMock;
-	private readonly Trigger $endMock;
-	private readonly Conditional $conditionalMock;
+	private readonly Config&MockObject $configMock;
+	private readonly Properties&MockObject $propertiesMock;
+	private readonly Trigger&MockObject $beginMock;
+	private readonly Trigger&MockObject $endMock;
+	private readonly Conditional&MockObject $conditionalMock;
 
 	private Widget $widget;
 

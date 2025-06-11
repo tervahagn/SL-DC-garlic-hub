@@ -25,12 +25,13 @@ use App\Framework\Core\Locales\SessionLocaleExtractor;
 use App\Framework\Core\Session;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SlimSession\Helper;
 
 class SessionLocaleExtractorTest extends TestCase
 {
-	private Session $sessionMock;
+	private Session&MockObject $sessionMock;
 	private LocaleExtractorInterface $localeExtractor;
 
 	/**
@@ -46,7 +47,7 @@ class SessionLocaleExtractorTest extends TestCase
 	#[Group('units')]
 	public function testExtractLocaleFromSession()
 	{
-		$this->sessionMock->method('get')->with('locale', 'en_US')->willReturn('de_DE');
+		$this->sessionMock->method('get')->with('locale')->willReturn('de_DE');
 
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);
@@ -57,7 +58,7 @@ class SessionLocaleExtractorTest extends TestCase
 	#[Group('units')]
 	public function testExtractLocaleFallbackToDefault()
 	{
-		$this->sessionMock->method('get')->with('locale', 'en_US')->willReturn(null);
+		$this->sessionMock->method('get')->with('locale')->willReturn(null);
 
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);
@@ -68,7 +69,7 @@ class SessionLocaleExtractorTest extends TestCase
 	#[Group('units')]
 	public function testExtractLocaleFallbackToDefaultForInvalidLocale()
 	{
-		$this->sessionMock->method('get')->with('locale', 'en_US')->willReturn(['locale' => 'es_ES']);
+		$this->sessionMock->method('get')->with('locale')->willReturn(['locale' => 'es_ES']);
 
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);

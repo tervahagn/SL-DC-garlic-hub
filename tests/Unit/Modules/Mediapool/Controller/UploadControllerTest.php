@@ -27,6 +27,7 @@ use App\Modules\Mediapool\Services\UploadService;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,9 +36,9 @@ use Slim\Psr7\UploadedFile;
 
 class UploadControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly UploadService $uploadServiceMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly UploadService&MockObject $uploadServiceMock;
 	private readonly UploadController $controller;
 
 	/**

@@ -26,11 +26,12 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ClientsRepositoryTest extends TestCase
 {
-	private ClientsRepository $repository;
+	private ClientsRepository&MockObject $repository;
 
 	/**
 	 * Wird vor jedem Test ausgeführt.

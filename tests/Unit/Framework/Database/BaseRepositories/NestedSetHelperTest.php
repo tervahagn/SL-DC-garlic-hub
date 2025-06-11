@@ -8,11 +8,12 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class NestedSetHelperTest extends TestCase
 {
-	private QueryBuilder $queryBuilderMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
 	private NestedSetHelper $nestedSetHelper;
 
 	/**

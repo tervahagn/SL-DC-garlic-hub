@@ -8,6 +8,7 @@ use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use App\Modules\Player\Services\PlayerIndexService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,11 +16,11 @@ use Slim\Psr7\Stream;
 
 class PlayerIndexControllerTest extends TestCase
 {
-	private readonly PlayerIndexService $playerIndexServiceMock;
-	private readonly IndexResponseHandler $indexResponseHandler;
-	private readonly Sanitizer $sanitizerMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly ServerRequestInterface $requestMock;
+	private readonly PlayerIndexService&MockObject $playerIndexServiceMock;
+	private readonly IndexResponseHandler&MockObject $indexResponseHandler;
+	private readonly Sanitizer&MockObject $sanitizerMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
 	private PlayerIndexController $playerIndexController;
 
 	/**

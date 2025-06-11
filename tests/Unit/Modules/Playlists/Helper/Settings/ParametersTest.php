@@ -8,12 +8,13 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Sanitizer $sanitizerMock;
-	private readonly Session $sessionMock;
+	private readonly Sanitizer&MockObject $sanitizerMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly Parameters $parameters;
 
 	/**

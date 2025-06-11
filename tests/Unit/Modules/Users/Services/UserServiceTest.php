@@ -29,15 +29,16 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\InvalidArgumentException;
 
 class UserServiceTest extends TestCase
 {
+	private UserEntityFactory&MockObject $entityFactoryMock;
+	private Psr16Adapter&MockObject $cacheMock;
+	private UserMainRepository&MockObject $userMainRepositoryMock;
 	private UsersService $usersService;
-	private UserEntityFactory $entityFactoryMock;
-	private Psr16Adapter $cacheMock;
-	private UserMainRepository $userMainRepositoryMock;
 
 	/**
 	 * @throws Exception

@@ -10,13 +10,14 @@ use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class UiTemplatesPreparerTest extends TestCase
 {
-	private readonly Translator $translator;
-	private readonly RightsChecker $rightsChecker;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly RightsChecker&MockObject $rightsCheckerMock;
 	private readonly UiTemplatesPreparer $preparer;
 
 	/**
@@ -24,10 +25,10 @@ class UiTemplatesPreparerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->translator   = $this->createMock(Translator::class);
-		$this->rightsChecker = $this->createMock(RightsChecker::class);
+		$this->translatorMock   = $this->createMock(Translator::class);
+		$this->rightsCheckerMock = $this->createMock(RightsChecker::class);
 
-		$this->preparer = new UiTemplatesPreparer($this->translator, $this->rightsChecker);
+		$this->preparer = new UiTemplatesPreparer($this->translatorMock, $this->rightsCheckerMock);
 	}
 
 
@@ -42,7 +43,7 @@ class UiTemplatesPreparerTest extends TestCase
 	{
 		$playlist = ['playlist_id' => 123, 'playlist_name' => 'My Playlist'];
 
-		$this->translator->expects($this->exactly(4))
+		$this->translatorMock->expects($this->exactly(4))
 			->method('translate')
 			->willReturnMap([
 				['external_edit', UiTemplatesPreparer::MODULE_NAME, [], 'External Editor'],
@@ -85,7 +86,7 @@ class UiTemplatesPreparerTest extends TestCase
 	{
 		$playlist = ['playlist_id' => 456, 'playlist_name' => 'Multizone Playlist'];
 
-		$this->translator->expects($this->exactly(30))
+		$this->translatorMock->expects($this->exactly(30))
 			->method('translate')
 			->willReturnMap([
 				['zone_edit', UiTemplatesPreparer::MODULE_NAME, [], 'Zone Editor'],
@@ -118,7 +119,7 @@ class UiTemplatesPreparerTest extends TestCase
 				['confirm_close_editor', UiTemplatesPreparer::MODULE_NAME, [], 'Confirm Close Editor']
 			]);
 
-		$this->translator->expects($this->once())
+		$this->translatorMock->expects($this->once())
 			->method('translateArrayForOptions')
 			->with('export_unit_selects', UiTemplatesPreparer::MODULE_NAME)
 			->willReturn([
@@ -189,7 +190,7 @@ class UiTemplatesPreparerTest extends TestCase
 	{
 		$playlist = ['playlist_id' => 789, 'playlist_name' => 'Circular Playlist', 'time_limit' => 3600];
 
-		$this->translator->expects($this->exactly(14))
+		$this->translatorMock->expects($this->exactly(14))
 			->method('translate')
 			->willReturnMap([
 				['composer', UiTemplatesPreparer::MODULE_NAME, [], 'Composer'],
@@ -208,33 +209,33 @@ class UiTemplatesPreparerTest extends TestCase
 				['cancel', 'main', [], 'Cancel']
 			]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('getEdition')
 			->willReturn('Pro Edition');
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkInsertExternalMedia')
 			->willReturn([]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkInsertPlaylist')
 			->with($playlist['time_limit'])
 			->willReturn([]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkInsertExternalPlaylist')
 			->with($playlist['time_limit'])
 			->willReturn([]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkInsertTemplates')
 			->willReturn([]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkInsertChannels')
 			->willReturn([]);
 
-		$this->rightsChecker->expects($this->once())
+		$this->rightsCheckerMock->expects($this->once())
 			->method('checkTimeLimit')
 			->with($playlist['time_limit'])
 			->willReturn([]);

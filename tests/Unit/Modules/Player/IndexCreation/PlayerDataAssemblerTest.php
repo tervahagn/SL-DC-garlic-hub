@@ -13,14 +13,15 @@ use App\Modules\Player\IndexCreation\UserAgentHandler;
 use App\Modules\Player\Repositories\PlayerIndexRepository;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlayerDataAssemblerTest extends TestCase
 {
-	private readonly UserAgentHandler $userAgentHandlerMock;
-	private readonly PlayerIndexRepository $playerRepositoryMock;
-	private readonly Config $configMock;
-	private readonly PlayerEntityFactory $playerEntityFactoryMock;
+	private readonly UserAgentHandler&MockObject $userAgentHandlerMock;
+	private readonly PlayerIndexRepository&MockObject $playerRepositoryMock;
+	private readonly Config&MockObject $configMock;
+	private readonly PlayerEntityFactory&MockObject $playerEntityFactoryMock;
 	private readonly PlayerDataAssembler $assembler;
 
 	/**

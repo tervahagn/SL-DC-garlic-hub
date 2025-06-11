@@ -29,6 +29,7 @@ use App\Modules\Mediapool\Services\AclValidator;
 use App\Modules\Mediapool\Services\MediaService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -36,11 +37,11 @@ class MediaServiceTest extends TestCase
 {
 
 	private readonly MediaService $mediaService;
-	private readonly FilesRepository $mediaRepositoryMock;
-	private readonly NodesRepository $nodesRepositoryMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly Config $configMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly FilesRepository&MockObject $mediaRepositoryMock;
+	private readonly NodesRepository&MockObject $nodesRepositoryMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly Config&MockObject $configMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception

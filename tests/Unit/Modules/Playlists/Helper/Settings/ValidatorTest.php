@@ -12,8 +12,8 @@ use PHPUnit\Framework\TestCase;
 class ValidatorTest extends TestCase
 {
 	private Validator $validator;
-	private MockObject $translatorMock;
-	private MockObject $parametersMock;
+	private Translator&MockObject $translatorMock;
+	private Parameters&MockObject $parametersMock;
 
 	protected function setUp(): void
 	{

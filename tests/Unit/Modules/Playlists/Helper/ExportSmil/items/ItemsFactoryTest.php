@@ -15,11 +15,12 @@ use App\Modules\Playlists\Helper\ExportSmil\items\Widget;
 use App\Modules\Playlists\Helper\ItemType;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ItemsFactoryTest extends TestCase
 {
-	private readonly Config $configMock;
+	private readonly Config&MockObject $configMock;
 	private ItemsFactory $itemsFactory;
 
 	/**

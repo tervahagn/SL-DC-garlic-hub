@@ -30,12 +30,13 @@ use App\Modules\Mediapool\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class NodesServiceTest extends TestCase
 {
-	private readonly NodesRepository $nodesRepositoryMock;
-	private readonly AclValidator $aclValidatorMock;
+	private readonly NodesRepository&MockObject $nodesRepositoryMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
 	private readonly NodesService $nodesService;
 
 	/**

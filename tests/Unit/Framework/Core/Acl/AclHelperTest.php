@@ -10,14 +10,15 @@ use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AclHelperTest extends TestCase
 {
 	private readonly AclHelper $aclHelper;
-	private readonly Config $configMock;
-	private readonly UsersService $usersServiceMock;
-	private readonly UserEntity $userEntityMock;
+	private readonly Config&MockObject $configMock;
+	private readonly UsersService&MockObject $usersServiceMock;
+	private readonly UserEntity&MockObject $userEntityMock;
 
 	protected function setUp(): void
 	{

@@ -26,6 +26,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Services\MediaService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,9 +34,9 @@ use Psr\Http\Message\StreamInterface;
 
 class MediaControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly MediaService $mediaServiceMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly MediaService&MockObject $mediaServiceMock;
 	private readonly MediaController $controller;
 
 	/**

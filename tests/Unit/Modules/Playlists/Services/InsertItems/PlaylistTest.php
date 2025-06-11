@@ -10,16 +10,17 @@ use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsService;
 use Doctrine\DBAL\Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class PlaylistTest extends TestCase
 {
-	private readonly ItemsRepository $itemsRepositoryMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
-	private readonly LoggerInterface $loggerMock;
-	private readonly MediaService $mediaServiceMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
+	private readonly MediaService&MockObject $mediaServiceMock;
 	private Playlist $playlist;
 
 	protected function setUp(): void

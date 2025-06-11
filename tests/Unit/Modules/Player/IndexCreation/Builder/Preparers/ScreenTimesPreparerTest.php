@@ -9,11 +9,12 @@ use DateInterval;
 use DateTime;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ScreenTimesPreparerTest extends TestCase
 {
-	private readonly PlayerEntity $playerEntityMock;
+	private readonly PlayerEntity&MockObject $playerEntityMock;
 	private ScreenTimesPreparer $preparer;
 
 	/**

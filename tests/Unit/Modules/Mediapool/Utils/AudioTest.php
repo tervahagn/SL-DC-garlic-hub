@@ -12,12 +12,13 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AudioTest extends TestCase
 {
-	private readonly Filesystem $filesystemMock;
-	private readonly Ffmpeg $ffmpegMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private readonly Ffmpeg&MockObject $ffmpegMock;
 	private Audio $audio;
 
 	/**

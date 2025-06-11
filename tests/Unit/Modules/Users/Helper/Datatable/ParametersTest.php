@@ -25,12 +25,13 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Sanitizer $sanitizerMock;
-	private readonly Session $sessionMock;
+	private readonly Sanitizer&MockObject $sanitizerMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly Parameters $parameters;
 
 	protected function setUp(): void

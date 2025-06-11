@@ -30,12 +30,13 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
 {
-	private readonly Filesystem $filesystemMock;
-	private readonly Imagick $imagickMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private readonly Imagick&MockObject $imagickMock;
 	private readonly Image $image;
 
 	/**

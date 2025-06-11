@@ -9,17 +9,17 @@ use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use App\Modules\Player\Services\PlayerIndexService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Slim\Psr7\Stream;
 
 class PlayerIndexServiceTest extends TestCase
 {
-	private readonly PlayerDataAssembler $playerDataAssemblerMock;
-	private readonly IndexProvider $indexProviderMock;
-	private readonly LoggerInterface $loggerMock;
-	private PlayerEntity $playerEntityMock;
+	private readonly PlayerDataAssembler&MockObject $playerDataAssemblerMock;
+	private readonly IndexProvider&MockObject $indexProviderMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private PlayerIndexService $service;
 
 	/**

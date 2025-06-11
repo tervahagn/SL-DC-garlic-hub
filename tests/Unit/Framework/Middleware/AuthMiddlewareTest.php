@@ -30,6 +30,7 @@ use App\Modules\Users\Entities\UserEntity;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,12 +40,12 @@ use Slim\Psr7\Response;
 
 class AuthMiddlewareTest extends TestCase
 {
-	private ServerRequestInterface $requestMock;
-	private RequestHandlerInterface $handlerMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private RequestHandlerInterface&MockObject $handlerMock;
 
-	private AuthService $authServiceMock;
-	private Session $sessionMock;
-	private Cookie $cookieMock;
+	private AuthService&MockObject $authServiceMock;
+	private Session&MockObject $sessionMock;
+	private Cookie&MockObject $cookieMock;
 
 	/**
 	 * @throws Exception

@@ -8,6 +8,7 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,13 +17,13 @@ use Psr\Http\Message\StreamInterface;
 class ShowDatatableControllerTest extends TestCase
 {
 	private readonly ShowDatatableController $controller;
-	private readonly Facade $facadeMock;
-	private readonly DatatableTemplatePreparer $templatePreparerMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly Translator $translatorMock;
-	private readonly Session $sessionMock;
-	private readonly StreamInterface $streamInterfaceMock;
+	private readonly Facade&MockObject $facadeMock;
+	private readonly DatatableTemplatePreparer&MockObject $templatePreparerMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
 
 	protected function setUp(): void
 	{

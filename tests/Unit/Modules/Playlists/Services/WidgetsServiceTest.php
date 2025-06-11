@@ -7,14 +7,15 @@ use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\WidgetsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class WidgetsServiceTest extends TestCase
 {
-	private readonly ItemsService $itemsServiceMock;
-	private readonly ContentDataPreparer $contentDataMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly ItemsService&MockObject $itemsServiceMock;
+	private readonly ContentDataPreparer&MockObject $contentDataMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private WidgetsService $widgetsService;
 
 	/**

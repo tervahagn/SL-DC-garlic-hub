@@ -36,15 +36,16 @@ use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparerTest extends TestCase
 {
-	private readonly PrepareService $prepareServiceMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly BodyPreparer $bodyPreparerMock;
-	private readonly Translator $translatorMock;
+	private readonly PrepareService&MockObject $prepareServiceMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly BodyPreparer&MockObject $bodyPreparerMock;
+	private readonly Translator&MockObject $translatorMock;
 	private readonly DatatablePreparer $datatablePreparer;
 
 	/**

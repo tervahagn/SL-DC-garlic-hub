@@ -12,6 +12,7 @@ use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,13 +21,13 @@ use Psr\Http\Message\StreamInterface;
 class PlaylistControllerTest extends TestCase
 {
 	private readonly PlaylistsController $controller;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly PlaylistsDatatableService $playlistsDatatableServiceMock;
-	private readonly Parameters $parametersMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly StreamInterface $streamInterfaceMock;
-	private readonly Session $sessionMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly PlaylistsDatatableService&MockObject $playlistsDatatableServiceMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private readonly Session&MockObject $sessionMock;
 	/**
 	 * @throws Exception
 	 */

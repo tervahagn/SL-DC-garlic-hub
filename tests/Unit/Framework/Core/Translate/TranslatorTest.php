@@ -30,16 +30,17 @@ use MessageFormatter;
 use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class TranslatorTest extends TestCase
 {
     private Translator $translator;
-    private Locales $localesMock;
-    private TranslationLoaderInterface $loaderMock;
-    private Psr16Adapter $cacheMock;
-    private MessageFormatterFactory $formatterFactoryMock;
+    private Locales&MockObject $localesMock;
+    private TranslationLoaderInterface&MockObject $loaderMock;
+    private Psr16Adapter&MockObject $cacheMock;
+    private MessageFormatterFactory&MockObject $formatterFactoryMock;
 
     /**
      * @throws Exception

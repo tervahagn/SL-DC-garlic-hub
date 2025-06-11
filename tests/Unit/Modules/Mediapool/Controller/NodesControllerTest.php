@@ -30,6 +30,7 @@ use App\Modules\Mediapool\Services\NodesService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,9 +38,9 @@ use Psr\Http\Message\StreamInterface;
 
 class NodesControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly NodesService $nodesServiceMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly NodesService&MockObject $nodesServiceMock;
 	private readonly NodesController $controller;
 
 	/**

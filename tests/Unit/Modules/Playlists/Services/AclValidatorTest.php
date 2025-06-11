@@ -10,12 +10,13 @@ use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AclValidatorTest extends TestCase
 {
 	private readonly AclValidator $aclValidator;
-	private readonly AclHelper $aclHelperMock;
+	private readonly AclHelper&MockObject $aclHelperMock;
 
 	/**
 	 * @throws Exception

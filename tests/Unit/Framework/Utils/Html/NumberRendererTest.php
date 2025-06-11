@@ -7,12 +7,13 @@ use App\Framework\Utils\Html\NumberField;
 use App\Framework\Utils\Html\NumberRenderer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class NumberRendererTest extends TestCase
 {
 	private NumberRenderer $numberRenderer;
-	private NumberField $fieldMock;
+	private NumberField&MockObject $fieldMock;
 
 	/**
 	 * @throws Exception

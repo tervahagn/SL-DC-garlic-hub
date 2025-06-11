@@ -26,12 +26,13 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LocalesTest extends TestCase
 {
-	private Config $configMock;
-	private LocaleExtractorInterface $localeExtractorMock;
+	private Config&MockObject $configMock;
+	private LocaleExtractorInterface&MockObject $localeExtractorMock;
 
 	/**
 	 * @throws Exception

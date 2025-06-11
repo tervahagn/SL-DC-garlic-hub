@@ -9,12 +9,13 @@ use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlayerEntityFactoryTest extends TestCase
 {
-	private Config $configMock;
-	private UserAgentHandler $userAgentHandlerMock;
+	private Config&MockObject $configMock;
+	private UserAgentHandler&MockObject $userAgentHandlerMock;
 	private PlayerEntityFactory $factory;
 
 	/**

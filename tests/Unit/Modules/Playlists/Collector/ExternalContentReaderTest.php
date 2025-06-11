@@ -8,13 +8,14 @@ use GuzzleHttp\Client;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
 class ExternalContentReaderTest extends TestCase
 {
-	private readonly FileSystem $fileSystemMock;
-	private readonly Client $clientMock;
+	private readonly FileSystem&MockObject $fileSystemMock;
+	private readonly Client&MockObject $clientMock;
 	private readonly ExternalContentReader $reader;
 
 	/**

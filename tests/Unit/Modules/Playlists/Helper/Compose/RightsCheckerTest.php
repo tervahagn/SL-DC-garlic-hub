@@ -10,14 +10,15 @@ use App\Modules\Playlists\Helper\Compose\RightsChecker;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class RightsCheckerTest extends TestCase
 {
-	private readonly Translator $translatorMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly Config $configMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly Config&MockObject $configMock;
 	private RightsChecker $checker;
 
 

@@ -9,12 +9,13 @@ use App\Modules\Player\IndexCreation\UserAgentHandler;
 use DateTime;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlayerEntityTest extends TestCase
 {
-	private Config $configMock;
-	private UserAgentHandler $userAgentHandlerMock;
+	private readonly Config&MockObject $configMock;
+	private readonly UserAgentHandler&MockObject $userAgentHandlerMock;
 	private PlayerEntity $playerEntity;
 
 	/**

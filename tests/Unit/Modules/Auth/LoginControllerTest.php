@@ -30,6 +30,7 @@ use App\Modules\Users\Entities\UserEntity;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -40,12 +41,12 @@ use Slim\Flash\Messages;
 
 class LoginControllerTest extends TestCase
 {
-	private Translator $translatorMock;
-	private ServerRequestInterface $requestMock;
-	private ResponseInterface $responseMock;
-	private Session $sessionMock;
-	private AuthService $authServiceMock;
-	private LoggerInterface $loggerMock;
+	private Translator&MockObject $translatorMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private Session&MockObject $sessionMock;
+	private AuthService&MockObject $authServiceMock;
+	private LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception

@@ -31,6 +31,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -42,10 +43,9 @@ class ConcreteMediaHandler extends AbstractMediaHandler
 }
 class AbstractMediaHandlerTest extends TestCase
 {
-
 	private readonly AbstractMediaHandler $concreteMediaHandler;
-	private readonly Filesystem $filesystemMock;
-	private readonly Config $configMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private readonly Config&MockObject $configMock;
 
 	/**
 	 * @throws Exception

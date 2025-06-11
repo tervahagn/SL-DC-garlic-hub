@@ -7,11 +7,12 @@ use App\Framework\Exceptions\CoreException;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
 {
-	private readonly Config $configMock;
+	private readonly Config&MockObject $configMock;
 
 	/**
 	 * @throws Exception

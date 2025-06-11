@@ -9,13 +9,14 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlayerRepositoryTest extends TestCase
 {
-	private readonly Connection	 $connectionMock;
-	private readonly QueryBuilder $queryBuilderMock;
-	private readonly Result $resultMock;
+	private readonly Connection&MockObject	 $connectionMock;
+	private readonly QueryBuilder&MockObject $queryBuilderMock;
+	private readonly Result&MockObject $resultMock;
 	private PlayerRepository $repository;
 
 	/**

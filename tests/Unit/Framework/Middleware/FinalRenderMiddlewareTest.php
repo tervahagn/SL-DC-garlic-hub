@@ -32,6 +32,7 @@ use App\Modules\Users\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,17 +45,17 @@ use Slim\Flash\Messages;
 class FinalRenderMiddlewareTest extends TestCase
 {
 	private readonly FinalRenderMiddleware $middleware;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly AdapterInterface $templateServiceMock;
-	private readonly ServerRequestInterface $requestMock ;
-	private readonly ResponseInterface $responseMock;
-	private readonly RequestHandlerInterface $handlerMock;
-	private readonly UriInterface $uriInterfaceMock;
-	private Translator $translatorMock;
-	private Session $sessionMock;
-	private Config $configMock;
-	private Locales $localesMock;
-	private Messages $flashMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly AdapterInterface&MockObject $templateServiceMock;
+	private readonly ServerRequestInterface&MockObject $requestMock ;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly RequestHandlerInterface&MockObject $handlerMock;
+	private readonly UriInterface&MockObject $uriInterfaceMock;
+	private Translator&MockObject $translatorMock;
+	private Session&MockObject $sessionMock;
+	private Config&MockObject $configMock;
+	private Locales&MockObject $localesMock;
+	private Messages&MockObject $flashMock;
 
 	/**
 	 * @throws \Exception|Exception

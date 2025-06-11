@@ -13,13 +13,14 @@ use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class FormElementsCreatorTest extends TestCase
 {
-	private readonly FormBuilder $formBuilderMock;
-	private readonly Translator $translatorMock;
+	private readonly FormBuilder&MockObject $formBuilderMock;
+	private readonly Translator&MockObject $translatorMock;
 	private readonly FormElementsCreator $collector;
 
 	/**

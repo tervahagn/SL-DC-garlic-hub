@@ -30,6 +30,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteTrait extends SqlBase
@@ -38,10 +39,10 @@ class ConcreteTrait extends SqlBase
 }
 class FindOperationsTraitTest extends TestCase
 {
-	private Connection $connectionMock;
-	private QueryBuilder $queryBuilderMock;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
 	private ConcreteTrait $repository;
-	private Result $resultMock;
+	private Result&MockObject $resultMock;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

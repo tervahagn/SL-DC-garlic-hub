@@ -28,15 +28,16 @@ use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FormBuilder;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PrepareServiceTest extends TestCase
 {
 	private PrepareService $prepareService;
-	private HeaderPreparer $headerPreparerMock;
-	private BodyPreparer $bodyPreparerMock;
-	private Preparer $paginationPreparerMock;
-	private FormBuilder $formBuilderMock;
+	private HeaderPreparer&MockObject $headerPreparerMock;
+	private BodyPreparer&MockObject $bodyPreparerMock;
+	private Preparer&MockObject $paginationPreparerMock;
+	private FormBuilder&MockObject $formBuilderMock;
 
 	protected function setUp(): void
 	{

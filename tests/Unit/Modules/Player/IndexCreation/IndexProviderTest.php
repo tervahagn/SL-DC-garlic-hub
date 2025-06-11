@@ -11,13 +11,14 @@ use App\Modules\Player\IndexCreation\IndexProvider;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class IndexProviderTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly IndexCreator $indexCreatorMock;
-	private readonly PlayerEntity $playerEntityMock;
+	private readonly Config&MockObject $configMock;
+	private readonly IndexCreator&MockObject $indexCreatorMock;
+	private readonly PlayerEntity&MockObject $playerEntityMock;
 
 	private IndexProvider $indexProvider;
 

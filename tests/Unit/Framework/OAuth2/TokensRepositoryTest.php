@@ -30,13 +30,14 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TokensRepositoryTest extends TestCase
 {
-	private Connection $connectionMock;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
 	private TokensRepository $repository;
-	private QueryBuilder $queryBuilderMock;
 
 	/**
 	 * setUp() wird vor jedem Test aufgerufen

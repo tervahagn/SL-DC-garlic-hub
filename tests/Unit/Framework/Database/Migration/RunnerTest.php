@@ -29,13 +29,14 @@ use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class RunnerTest extends TestCase
 {
 	private Runner $runner;
-	private Repository $repositoryMock;
-	private Filesystem $filesystemMock;
+	private Repository&MockObject $repositoryMock;
+	private Filesystem&MockObject $filesystemMock;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

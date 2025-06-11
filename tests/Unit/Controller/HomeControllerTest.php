@@ -25,6 +25,7 @@ use App\Framework\Core\Session;
 use App\Framework\Dashboards\DashboardsAggregator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,9 +33,9 @@ use Psr\Http\Message\StreamInterface;
 
 class HomeControllerTest extends TestCase
 {
-	private ServerRequestInterface $requestMock;
-	private ResponseInterface $responseMock;
-	private Session $sessionMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private Session&MockObject $sessionMock;
 	private readonly DashboardsAggregator $dashboardsAggregatorMock;
 
 	/**

@@ -7,13 +7,14 @@ use App\Modules\Player\Dashboard\PlayerDashboard;
 use App\Modules\Player\Services\PlayerService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlayerDashboardTest extends TestCase
 {
 	private PlayerDashboard $playerDashboard;
-	private PlayerService $playerServiceMock;
-	private Translator $translatorMock;
+	private PlayerService&MockObject $playerServiceMock;
+	private Translator&MockObject $translatorMock;
 
 	/**
 	 * @throws Exception

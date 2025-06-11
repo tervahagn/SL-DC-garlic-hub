@@ -7,12 +7,13 @@ use App\Modules\Player\IndexCreation\Builder\Preparers\PlaylistPreparer;
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlaylistPreparerTest extends TestCase
 {
-	private readonly PlayerEntity $playerEntityMock;
-	private PlaylistStructureInterface $playlistStructureMock;
+	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private PlaylistStructureInterface&MockObject $playlistStructureMock;
 	private PlaylistPreparer $preparer;
 
 	/**

@@ -26,6 +26,7 @@ use App\Framework\Database\Migration\Runner;
 use App\Framework\Exceptions\DatabaseException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,9 +34,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateCommandTest extends TestCase
 {
-	private Runner $runnerMock;
-	private InputInterface $inputMock;
-	private OutputInterface $outputMock;
+	private Runner&MockObject $runnerMock;
+	private InputInterface&MockObject $inputMock;
+	private OutputInterface&MockObject $outputMock;
 	private MigrateCommand $command;
 
 	/**

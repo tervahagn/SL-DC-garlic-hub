@@ -7,11 +7,12 @@ use App\Modules\Player\IndexCreation\Builder\Preparers\LayoutPreparer;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LayoutPreparerTest extends TestCase
 {
-	private readonly PlayerEntity $playerEntityMock;
+	private readonly PlayerEntity&MockObject $playerEntityMock;
 	private LayoutPreparer $preparer;
 
 	/**

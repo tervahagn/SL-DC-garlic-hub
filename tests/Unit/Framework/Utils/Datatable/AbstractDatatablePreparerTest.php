@@ -13,6 +13,7 @@ use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -23,8 +24,8 @@ class ConcreteDatatablePreparer extends AbstractDatatablePreparer
 class AbstractDatatablePreparerTest extends TestCase
 {
 	private AbstractDatatablePreparer $datatablePreparer;
-	private PrepareService $prepareServiceMock;
-	private BaseFilterParameters $parametersMock;
+	private PrepareService&MockObject $prepareServiceMock;
+	private BaseFilterParameters&MockObject $parametersMock;
 
 	/**
 	 * @throws Exception

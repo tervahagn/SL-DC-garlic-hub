@@ -28,13 +28,14 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableTemplatePreparerTest extends TestCase
 {
 	private DatatableTemplatePreparer $preparer;
-	private Translator $translatorMock;
+	private Translator&MockObject $translatorMock;
 
 	/**
 	 * @throws Exception

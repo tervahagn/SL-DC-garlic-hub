@@ -8,11 +8,12 @@ use App\Framework\Utils\Widget\ConfigXML;
 use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ContentDataPreparerTest extends TestCase
 {
-	private readonly ConfigXML $configXmlMock;
+	private readonly ConfigXML&MockObject $configXmlMock;
 	private ContentDataPreparer $contentDataPreparer;
 
 	/**

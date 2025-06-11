@@ -7,11 +7,12 @@ use App\Modules\Player\IndexCreation\PlayerDetector;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UserAgentHandlerTest extends TestCase
 {
-	private readonly PlayerDetector $playerDetectorMock;
+	private readonly PlayerDetector&MockObject $playerDetectorMock;
 	private readonly UserAgentHandler $handler;
 
 	/**

@@ -10,13 +10,14 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TextTest extends TestCase
 {
-	private readonly Trigger $beginMock;
-	private readonly Trigger $endMock;
-	private readonly Conditional $conditionalMock;
+	private readonly Trigger&MockObject $beginMock;
+	private readonly Trigger&MockObject $endMock;
+	private readonly Conditional&MockObject $conditionalMock;
 	private Text $text;
 
 	/**

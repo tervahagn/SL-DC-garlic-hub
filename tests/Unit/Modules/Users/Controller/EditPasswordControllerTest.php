@@ -30,6 +30,7 @@ use App\Modules\Users\Controller\EditPasswordController;
 use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -39,14 +40,14 @@ use Slim\Psr7\Response;
 
 class EditPasswordControllerTest extends TestCase
 {
-	private FormBuilder $formBuilderMock;
-	private UsersService $userServiceMock;
-	private Request $requestMock;
-	private Response $responseMock;
+	private FormBuilder&MockObject $formBuilderMock;
+	private UsersService&MockObject $userServiceMock;
+	private Request&MockObject $requestMock;
+	private Response&MockObject $responseMock;
 	private EditPasswordController $controller;
-	private Session $sessionMock;
-	private Messages $flashMock;
-	private Translator $translatorMock;
+	private Session&MockObject $sessionMock;
+	private Messages&MockObject $flashMock;
+	private Translator&MockObject $translatorMock;
 
 	/**
 	 * @throws Exception

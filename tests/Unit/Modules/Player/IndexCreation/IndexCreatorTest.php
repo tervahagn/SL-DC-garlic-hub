@@ -18,15 +18,16 @@ use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class IndexCreatorTest extends TestCase
 {
-	private readonly PlaylistBuilderFactory $playlistBuilderFactoryMock;
-	private readonly IndexTemplateSelector $templateSelectorMock;
-	private readonly IndexFile $indexFileMock;
-	private readonly TemplatePreparer $templatePreparerMock;
-	private readonly AdapterInterface $templateServiceMock;
+	private readonly PlaylistBuilderFactory&MockObject $playlistBuilderFactoryMock;
+	private readonly IndexTemplateSelector&MockObject $templateSelectorMock;
+	private readonly IndexFile&MockObject $indexFileMock;
+	private readonly TemplatePreparer&MockObject $templatePreparerMock;
+	private readonly AdapterInterface&MockObject $templateServiceMock;
 	private readonly IndexCreator $indexCreator;
 
 	/**

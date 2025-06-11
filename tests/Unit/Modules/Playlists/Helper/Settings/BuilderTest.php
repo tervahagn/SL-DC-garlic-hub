@@ -12,15 +12,16 @@ use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Services\AclValidator;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
 {
-	private readonly FormElementsCreator $collectorMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly Validator $validatorMock;
-	private readonly Parameters $parametersMock;
-	private readonly Session $sessionMock;
+	private readonly FormElementsCreator&MockObject $collectorMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly Validator&MockObject $validatorMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly Builder $builder;
 
 	protected function setUp(): void

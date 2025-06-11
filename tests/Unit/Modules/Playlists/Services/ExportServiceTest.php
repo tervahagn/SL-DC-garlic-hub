@@ -11,18 +11,19 @@ use App\Modules\Playlists\Services\ItemsService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ExportServiceTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly ItemsService $itemsServiceMock;
-	private readonly LocalWriter $localSmilWriterMock;
-	private readonly PlaylistContent $playlistContentMock;
-	private readonly LoggerInterface $loggerMock;
-	private readonly ItemsRepository $itemsRepositoryMock;
+	private readonly Config&MockObject $configMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly ItemsService&MockObject $itemsServiceMock;
+	private readonly LocalWriter&MockObject $localSmilWriterMock;
+	private readonly PlaylistContent&MockObject $playlistContentMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
 	private ExportService $service;
 
 	/**

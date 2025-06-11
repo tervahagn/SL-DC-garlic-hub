@@ -10,11 +10,12 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LocalWriterTest extends TestCase
 {
-	private readonly Filesystem $fileSystemMock;
+	private readonly Filesystem&MockObject $fileSystemMock;
 	private LocalWriter $writer;
 
 	/**

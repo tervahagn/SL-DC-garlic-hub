@@ -7,15 +7,16 @@ use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersDatatableService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class UsersDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface $loggerMock;
-	private readonly UserMainRepository $repositoryMock;
-	private readonly Parameters $parametersMock;
-	private readonly AclValidator $aclValidatorMock;
+	protected readonly LoggerInterface&MockObject $loggerMock;
+	private readonly UserMainRepository&MockObject $repositoryMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
 	private readonly UsersDatatableService $service;
 
 	protected function setUp(): void

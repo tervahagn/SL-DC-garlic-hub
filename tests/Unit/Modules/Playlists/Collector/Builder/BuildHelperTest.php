@@ -7,15 +7,16 @@ use App\Modules\Playlists\Collector\Contracts\ContentReaderInterface;
 use App\Modules\Playlists\Collector\Contracts\ExternalContentReaderInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class BuildHelperTest extends TestCase
 {
-	private ContentReaderInterface $contentReaderMock;
-	private ExternalContentReaderInterface $externalContentReaderMock;
-	private LoggerInterface $loggerMock;
+	private ContentReaderInterface&MockObject $contentReaderMock;
+	private ExternalContentReaderInterface&MockObject $externalContentReaderMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private BuildHelper $buildHelper;
 
 

@@ -10,17 +10,18 @@ use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\WidgetsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class MediaTest extends TestCase
 {
-	private readonly MediaService $mediaServiceMock;
-	private readonly ItemsRepository $itemsRepositoryMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
-	private readonly WidgetsService $widgetsServiceMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly MediaService&MockObject $mediaServiceMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private readonly WidgetsService&MockObject $widgetsServiceMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private Media $media;
 
 	/**

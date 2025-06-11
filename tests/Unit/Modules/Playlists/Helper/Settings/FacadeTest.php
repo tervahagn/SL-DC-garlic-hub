@@ -10,14 +10,15 @@ use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class FacadeTest extends TestCase
 {
-	private readonly Builder $settingsFormBuilder;
-	private readonly PlaylistsService $playlistsService;
-	private readonly Parameters $settingsParameters;
-	private readonly Translator $translatorMock;
+	private readonly Builder&MockObject $settingsFormBuilderMock;
+	private readonly PlaylistsService&MockObject $playlistsService;
+	private readonly Parameters&MockObject $settingsParameters;
+	private readonly Translator&MockObject $translatorMock;
 	private readonly Facade $facade;
 
 	/**
@@ -25,12 +26,12 @@ class FacadeTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->settingsFormBuilder = $this->createMock(Builder::class);
+		$this->settingsFormBuilderMock = $this->createMock(Builder::class);
 		$this->playlistsService    = $this->createMock(PlaylistsService::class);
 		$this->settingsParameters  = $this->createMock(Parameters::class);
 		$this->translatorMock      = $this->createMock(Translator::class);
 		$this->facade = new Facade(
-			$this->settingsFormBuilder,
+			$this->settingsFormBuilderMock,
 			$this->playlistsService,
 			$this->settingsParameters,
 		);
@@ -46,7 +47,7 @@ class FacadeTest extends TestCase
 			->with('user')
 			->willReturn(['UID' => 123]);
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('init')
 			->with($sessionMock);
 
@@ -85,11 +86,11 @@ class FacadeTest extends TestCase
 			->with(42)
 			->willReturn($expectedPlaylist);
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('configEditParameter')
 			->with($expectedPlaylist);
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('handleUserInput')
 			->with($post)
 			->willReturn($expectedResult);
@@ -105,11 +106,11 @@ class FacadeTest extends TestCase
 		$post = ['playlist_mode' => 'new_mode', 'other_key' => 'value'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('configNewParameter')
 			->with('new_mode');
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('handleUserInput')
 			->with($post)
 			->willReturn($expectedResult);
@@ -176,7 +177,7 @@ class FacadeTest extends TestCase
 	{
 		$playlistMode = 'new_mode';
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('configNewParameter')
 			->with($playlistMode);
 
@@ -188,7 +189,7 @@ class FacadeTest extends TestCase
 	{
 		$playlist = ['id' => 123, 'name' => 'Test Playlist'];
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('configEditParameter')
 			->with($playlist);
 
@@ -226,7 +227,7 @@ class FacadeTest extends TestCase
 			->with('playlist_mode_selects', 'playlists')
 			->willReturn(['create' => 'Create']);
 
-		$this->settingsFormBuilder->expects($this->once())
+		$this->settingsFormBuilderMock->expects($this->once())
 			->method('buildForm')
 			->with($post)
 			->willReturn($formData);

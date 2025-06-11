@@ -11,6 +11,7 @@ use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -21,13 +22,13 @@ use Slim\Flash\Messages;
 
 class ShowComposeControllerTest extends TestCase
 {
-	private readonly ResponseInterface $responseMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly StreamInterface $streamInterfaceMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly UiTemplatesPreparer $uiTemplatesPreparerMock;
-	private Messages $flashMock;
-	private readonly Session $sessionMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly UiTemplatesPreparer&MockObject $uiTemplatesPreparerMock;
+	private Messages &MockObject$flashMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly ShowComposeController $controller;
 
 

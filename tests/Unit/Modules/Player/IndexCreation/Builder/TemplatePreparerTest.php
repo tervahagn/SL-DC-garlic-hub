@@ -15,13 +15,14 @@ use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TemplatePreparerTest extends TestCase
 {
-	private PlayerEntity $playerEntityMock;
-	private PlaylistStructureInterface $playlistStructureMock;
-	private readonly PreparerFactory $preparerFactoryMock;
+	private PlayerEntity&MockObject $playerEntityMock;
+	private PlaylistStructureInterface&MockObject $playlistStructureMock;
+	private readonly PreparerFactory&MockObject $preparerFactoryMock;
 	private TemplatePreparer $templatePreparer;
 
 	/**

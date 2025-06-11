@@ -11,13 +11,14 @@ use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlaylistMetricsCalculatorTest extends TestCase
 {
-	private readonly ItemsRepository $itemsRepositoryMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly Config $configMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly Config&MockObject $configMock;
 	private PlaylistMetricsCalculator $calculator;
 
 	protected function setUp(): void

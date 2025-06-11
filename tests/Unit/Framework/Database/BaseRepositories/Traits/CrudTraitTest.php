@@ -28,6 +28,7 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SqlConcrete extends SqlBase
@@ -54,8 +55,8 @@ class SqlConcrete extends SqlBase
 }
 class CrudTraitTest extends TestCase
 {
-	private Connection	 $connectionMock;
-	private QueryBuilder $queryBuilderMock;
+	private Connection&MockObject	 $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
 	private SqlConcrete $repository;
 
 	/**

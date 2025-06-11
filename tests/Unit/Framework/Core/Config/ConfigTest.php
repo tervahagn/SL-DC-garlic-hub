@@ -26,12 +26,13 @@ use App\Framework\Exceptions\CoreException;
 use Monolog\Level;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
     private Config $config;
-    private ConfigLoaderInterface $configLoaderMock;
+    private ConfigLoaderInterface&MockObject $configLoaderMock;
 
     /**
      * @throws Exception

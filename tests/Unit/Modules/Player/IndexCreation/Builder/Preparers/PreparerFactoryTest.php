@@ -12,11 +12,12 @@ use App\Modules\Player\IndexCreation\Builder\Preparers\ScreenTimesPreparer;
 use App\Modules\Player\IndexCreation\Builder\Preparers\SubscriptionPreparer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PreparerFactoryTest extends TestCase
 {
-	private PlayerEntity $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private PreparerFactory $preparerFactory;
 
 	/**

@@ -6,11 +6,12 @@ use App\Framework\Utils\Html\AutocompleteField;
 use App\Framework\Utils\Html\AutocompleteRenderer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AutocompleteRendererTest extends TestCase
 {
-	private AutocompleteField $fieldMock;
+	private AutocompleteField&MockObject $fieldMock;
 	private AutocompleteRenderer $renderer;
 
 	/**

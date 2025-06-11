@@ -29,11 +29,12 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MiscellaneousTest extends TestCase
 {
-	private readonly Filesystem $filesystemMock;
+	private readonly Filesystem&MockObject $filesystemMock;
 	private readonly Miscellaneous $misc;
 
 	/**

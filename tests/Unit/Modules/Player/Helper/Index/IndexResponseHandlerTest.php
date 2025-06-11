@@ -6,14 +6,15 @@ use App\Modules\Player\Helper\Index\FileUtils;
 use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Stream;
 
 class IndexResponseHandlerTest extends TestCase
 {
-	private readonly ResponseInterface $responseMock;
-	private readonly FileUtils $fileUtilsMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly FileUtils&MockObject $fileUtilsMock;
 	private readonly IndexResponseHandler $handler;
 
 	/**

@@ -65,6 +65,4 @@ class BaseValidatorTest extends TestCase
 	{
 		$this->assertFalse($this->baseValidator->isJson(''));
 	}
-
-
 }

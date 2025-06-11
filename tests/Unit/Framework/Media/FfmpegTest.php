@@ -29,14 +29,15 @@ use App\Framework\Media\MediaProperties;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class FfmpegTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly Filesystem $filesystemMock;
-	private readonly ShellExecutor $shellExecutorMock;
-	private readonly MediaProperties $mediaPropertiesMock;
+	private readonly Config&MockObject $configMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private readonly ShellExecutor&MockObject $shellExecutorMock;
+	private readonly MediaProperties&MockObject $mediaPropertiesMock;
 	private readonly Ffmpeg $ffmpeg;
 
 	protected function setUp(): void

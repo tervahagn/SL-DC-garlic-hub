@@ -13,6 +13,7 @@ use App\Modules\Playlists\Helper\Settings\Facade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,12 +23,12 @@ use Slim\Flash\Messages;
 
 class ShowSettingsControllerTest extends TestCase
 {
-	private readonly Facade $facadeMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly StreamInterface $streamInterfaceMock;
-	private readonly FormTemplatePreparer $formElementPreparerMock;
-	private readonly Messages $flashMock;
+	private readonly Facade&MockObject $facadeMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private readonly FormTemplatePreparer&MockObject $formElementPreparerMock;
+	private readonly Messages&MockObject $flashMock;
 	private readonly ShowSettingsController $controller;
 
 	/**

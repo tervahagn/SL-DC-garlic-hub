@@ -25,12 +25,13 @@ use App\Modules\Mediapool\Utils\FileInfoWrapper;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 
 class MimeTypeDetectorTest extends TestCase
 {
-	private readonly FileInfoWrapper $fileInfoWrapperMock;
+	private readonly FileInfoWrapper&MockObject $fileInfoWrapperMock;
 
 	private MimeTypeDetector $mimeTypeDetector;
 	private string $baseDirectory;

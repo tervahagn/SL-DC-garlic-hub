@@ -14,16 +14,17 @@ use App\Modules\Player\Services\PlayerDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class ControllerFacadeTest extends TestCase
 {
-	private readonly DatatableBuilder $datatableBuilderMock;
-	private readonly DatatablePreparer $datatablePreparerMock;
-	private readonly PlayerDatatableService $playerServiceMock;
-	private readonly Translator $translatorMock;
-	private readonly Session $sessionMock;
+	private readonly DatatableBuilder&MockObject $datatableBuilderMock;
+	private readonly DatatablePreparer&MockObject $datatablePreparerMock;
+	private readonly PlayerDatatableService&MockObject $playerServiceMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly ControllerFacade $controllerFacade;
 
 	/**

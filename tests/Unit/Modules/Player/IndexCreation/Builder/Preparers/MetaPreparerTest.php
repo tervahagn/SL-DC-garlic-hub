@@ -6,11 +6,12 @@ use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\IndexCreation\Builder\Preparers\MetaPreparer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MetaPreparerTest extends TestCase
 {
-	private readonly PlayerEntity $playerEntityMock;
+	private readonly PlayerEntity&MockObject $playerEntityMock;
 	private MetaPreparer $preparer;
 
 	/**

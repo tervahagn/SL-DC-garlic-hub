@@ -12,6 +12,7 @@ use App\Modules\Playlists\Services\ItemsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,12 +21,12 @@ use Psr\Http\Message\StreamInterface;
 class ItemsControllerTest extends TestCase
 {
 	private ItemsController $itemsController;
-	private readonly ItemsService $itemsServiceMock;
-	private readonly InsertItemFactory $insertItemFactoryMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly Session $sessionMock;
-	private readonly StreamInterface $streamInterfaceMock;
+	private readonly ItemsService&MockObject $itemsServiceMock;
+	private readonly InsertItemFactory&MockObject $insertItemFactoryMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
 
 	/**
 	 * @throws Exception

@@ -6,13 +6,14 @@ use App\Framework\Core\ShellExecutor;
 use App\Framework\Core\SystemStats;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 
 class SystemStatsTest extends TestCase
 {
 	use PHPMock;
-	private readonly ShellExecutor $shellExecutorMock;
+	private readonly ShellExecutor&MockObject $shellExecutorMock;
 	private SystemStats $systemStats;
 
 	protected function setUp(): void

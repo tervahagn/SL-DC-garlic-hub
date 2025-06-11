@@ -11,12 +11,13 @@ use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlaylistBuilderFactoryTest extends TestCase
 {
 	private PlaylistBuilderFactory $factory;
-	private PlayerEntity $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 
 	/**
 	 * @throws Exception

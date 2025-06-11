@@ -32,6 +32,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Stream;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -41,11 +42,11 @@ use Slim\Psr7\UploadedFile;
 class UploadServiceTest extends TestCase
 {
 	private readonly UploadService $uploadService;
-	private readonly MediaHandlerFactory $mediaHandlerFactoryMock;
-	private readonly Client $clientMock;
-	private readonly FilesRepository $mediaRepositoryMock;
-	private MimeTypeDetector $mimeTypeDetectorMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly MediaHandlerFactory&MockObject $mediaHandlerFactoryMock;
+	private readonly Client&MockObject $clientMock;
+	private readonly FilesRepository&MockObject $mediaRepositoryMock;
+	private MimeTypeDetector&MockObject $mimeTypeDetectorMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception
@@ -55,7 +56,7 @@ class UploadServiceTest extends TestCase
 		$this->mediaHandlerFactoryMock = $this->createMock(MediaHandlerFactory::class);
 		$this->clientMock = $this->createMock(Client::class);
 		$this->mediaRepositoryMock = $this->createMock(FilesRepository::class);
-		$this->mimeTypeDetectorMock = $this->createStub(MimeTypeDetector::class);
+		$this->mimeTypeDetectorMock = $this->createMock(MimeTypeDetector::class);
 		$this->loggerMock = $this->createMock(LoggerInterface::class);
 
 		$this->uploadService = new UploadService(

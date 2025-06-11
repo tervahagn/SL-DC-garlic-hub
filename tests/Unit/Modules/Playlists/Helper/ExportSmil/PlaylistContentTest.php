@@ -15,12 +15,13 @@ use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlaylistContentTest extends TestCase
 {
-	private readonly ItemsFactory $itemsFactoryMock;
-	private readonly Config $configMock;
+	private readonly ItemsFactory&MockObject $itemsFactoryMock;
+	private readonly Config&MockObject $configMock;
 	private PlaylistContent $playlistContent;
 
 	/**

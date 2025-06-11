@@ -19,14 +19,15 @@ use App\Modules\Player\Services\AclValidator;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableBuilderTest extends TestCase
 {
-	private readonly BuildService $buildServiceMock;
-	private readonly Parameters $parametersMock;
-	private readonly AclValidator $aclValidatorMock;
+	private readonly BuildService&MockObject $buildServiceMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
 	private readonly DatatableBuilder $builder;
 
 	/**

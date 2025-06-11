@@ -18,7 +18,6 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
 use App\Framework\Utils\Datatable\Paginator\Builder;
@@ -37,7 +36,6 @@ class BuilderTest extends TestCase
 	#[Group('units')]
 	public function testInitSetsPropertiesCorrectly(): void
 	{
-
 		$this->builder->configure(2, 10, 50, true, false);
 		$this->builder->buildPagerLinks();
 

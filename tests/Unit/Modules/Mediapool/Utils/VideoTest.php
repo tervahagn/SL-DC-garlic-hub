@@ -33,14 +33,15 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class VideoTest extends TestCase
 {
 	private readonly Video $video;
-	private readonly Filesystem $filesystemMock;
-	private readonly Imagick $imagickMock;
-	private readonly Ffmpeg $ffmpegMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private readonly Imagick&MockObject $imagickMock;
+	private readonly Ffmpeg&MockObject $ffmpegMock;
 
 	/**
 	 * @throws Exception

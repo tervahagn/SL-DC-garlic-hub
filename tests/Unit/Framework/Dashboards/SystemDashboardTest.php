@@ -6,12 +6,13 @@ use App\Framework\Core\SystemStats;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Dashboards\SystemDashboard;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SystemDashboardTest extends TestCase
 {
-	private SystemStats $systemStatsMock;
-	private Translator $translatorMock;
+	private SystemStats&MockObject $systemStatsMock;
+	private Translator&MockObject $translatorMock;
 	private SystemDashboard $systemDashboard;
 
 	protected function setUp(): void

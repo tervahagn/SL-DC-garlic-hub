@@ -8,6 +8,7 @@ use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteDatatableBuilder extends AbstractDatatableBuilder
@@ -27,8 +28,8 @@ class ConcreteDatatableBuilder extends AbstractDatatableBuilder
 class AbstractDatatableBuilderTest extends TestCase
 {
 	private AbstractDatatableBuilder $datatableBuilder;
-	private BuildService $buildServiceMock;
-	private BaseFilterParameters $parametersMock;
+	private BuildService&MockObject $buildServiceMock;
+	private BaseFilterParameters&MockObject $parametersMock;
 
 	/**
 	 * @throws Exception

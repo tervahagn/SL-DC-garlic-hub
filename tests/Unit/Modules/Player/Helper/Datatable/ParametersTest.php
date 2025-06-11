@@ -8,11 +8,12 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Helper\Datatable\Parameters;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Session $sessionMock;
+	private readonly Session&MockObject $sessionMock;
 	private readonly Parameters $parameters;
 
 	/**

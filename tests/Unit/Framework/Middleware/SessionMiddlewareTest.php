@@ -24,6 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Middleware\SessionMiddleware;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,11 +33,11 @@ use Slim\Flash\Messages;
 
 class SessionMiddlewareTest extends TestCase
 {
-	private Session $sessionMock;
-	private Cookie $cookieMock;
-	private Messages $flashMock;
-	private RequestHandlerInterface $handlerMock;
-	private ServerRequestInterface $requestMock;
+	private Session&MockObject $sessionMock;
+	private Cookie&MockObject $cookieMock;
+	private Messages&MockObject $flashMock;
+	private RequestHandlerInterface&MockObject $handlerMock;
+	private ServerRequestInterface&MockObject $requestMock;
 
 	protected function setUp(): void
 	{

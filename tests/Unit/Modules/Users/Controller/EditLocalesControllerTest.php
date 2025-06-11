@@ -26,17 +26,18 @@ use App\Modules\Users\Controller\EditLocalesController;
 use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EditLocalesControllerTest extends TestCase
 {
-	private ServerRequestInterface $requestMock;
-	private ResponseInterface $responseMock;
-	private Session $sessionMock;
-	private Locales $localesMock;
-	private UsersService $userServiceMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private Session&MockObject $sessionMock;
+	private Locales&MockObject $localesMock;
+	private UsersService&MockObject $userServiceMock;
 
 	/**
 	 * @throws Exception

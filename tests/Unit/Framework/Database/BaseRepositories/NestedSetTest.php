@@ -11,16 +11,17 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class NestedSetTest extends TestCase
 {
-	private readonly Connection	 $connectionMock;
-	private readonly QueryBuilder $queryBuilderMock;
-	private readonly Result $resultMock;
-	private readonly NestedSetHelper $helperMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly Connection&MockObject $connectionMock;
+	private readonly QueryBuilder&MockObject $queryBuilderMock;
+	private readonly Result&MockObject $resultMock;
+	private readonly NestedSetHelper&MockObject $helperMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private NestedSet $repository;
 
 	/**

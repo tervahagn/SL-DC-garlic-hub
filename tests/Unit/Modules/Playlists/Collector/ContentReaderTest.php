@@ -9,12 +9,13 @@ use App\Modules\Playlists\Collector\Contracts\ContentReaderInterface;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ContentReaderTest extends TestCase
 {
-	private readonly Filesystem $fileSystemMock;
-	private Config $configMock;
+	private readonly Filesystem&MockObject $fileSystemMock;
+	private Config&MockObject $configMock;
 
 	private readonly ContentReaderInterface $reader;
 

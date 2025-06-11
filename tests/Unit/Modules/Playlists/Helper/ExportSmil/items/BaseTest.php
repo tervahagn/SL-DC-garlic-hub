@@ -9,6 +9,7 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 cLass ConcreteBase extends Base
@@ -52,11 +53,11 @@ cLass ConcreteBase extends Base
 
 class BaseTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly Trigger $beginMock;
-	private readonly Trigger $endMock;
-	private readonly Conditional $conditionalMock;
-	private readonly Properties $propertiesMock;
+	private readonly Config&MockObject $configMock;
+	private readonly Trigger&MockObject $beginMock;
+	private readonly Trigger&MockObject $endMock;
+	private readonly Conditional&MockObject $conditionalMock;
+	private readonly Properties&MockObject $propertiesMock;
 	private ConcreteBase $concreteBase;
 
 	/**

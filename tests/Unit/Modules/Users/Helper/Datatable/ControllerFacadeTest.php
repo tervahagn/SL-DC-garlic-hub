@@ -35,11 +35,11 @@ use PHPUnit\Framework\TestCase;
 class ControllerFacadeTest extends TestCase
 {
 	private readonly ControllerFacade $controllerFacade;
-	private readonly DatatableBuilder $datatableBuilderMock;
-	private readonly DatatablePreparer $datatablePreparerMock;
-	private readonly UsersDatatableService $usersServiceMock;
-	private readonly Translator $translatorMock;
-	private readonly Session $sessionMock;
+	private readonly DatatableBuilder&MockObject $datatableBuilderMock;
+	private readonly DatatablePreparer&MockObject $datatablePreparerMock;
+	private readonly UsersDatatableService&MockObject $usersServiceMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Session&MockObject $sessionMock;
 
 	protected function setUp(): void
 	{

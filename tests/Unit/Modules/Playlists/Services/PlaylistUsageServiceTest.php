@@ -6,12 +6,13 @@ use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\PlaylistUsageService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PlaylistUsageServiceTest extends TestCase
 {
-	private readonly PlayerRepository $playerRepositoryMock;
-	private readonly ItemsRepository $itemsRepositoryMock;
+	private readonly PlayerRepository&MockObject $playerRepositoryMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
 	private readonly PlaylistUsageService $service;
 
 	protected function setUp(): void

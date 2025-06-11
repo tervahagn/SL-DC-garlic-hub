@@ -28,6 +28,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequestInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,10 +38,10 @@ use Psr\Log\LoggerInterface;
 class OAuth2ControllerTest extends TestCase
 {
 	private OAuth2Controller $controller;
-	private AuthService $authServiceMock;
-	private AuthorizationServer $authServerMock;
-	private ServerRequestInterface $requestMock;
-	private ResponseInterface $responseMock;
+	private AuthService&MockObject $authServiceMock;
+	private AuthorizationServer&MockObject $authServerMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
 
 	/**
 	 * @throws Exception

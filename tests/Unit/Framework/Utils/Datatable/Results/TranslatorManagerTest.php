@@ -8,11 +8,12 @@ use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TranslatorManagerTest extends TestCase
 {
-	private Translator $translator;
+	private Translator&MockObject $translatorMock;
 	private TranslatorManager $translatorManager;
 
 	/**
@@ -20,8 +21,8 @@ class TranslatorManagerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->translator = $this->createMock(Translator::class);
-		$this->translatorManager = new TranslatorManager($this->translator);
+		$this->translatorMock = $this->createMock(Translator::class);
+		$this->translatorManager = new TranslatorManager($this->translatorMock);
 	}
 
 	/**
@@ -50,7 +51,7 @@ class TranslatorManagerTest extends TestCase
 		$headerField->method('getSpecificLanguageModule')->willReturn('specific_lang_module');
 		$headerField->method('getName')->willReturn('key');
 
-		$this->translator->expects($this->once())
+		$this->translatorMock->expects($this->once())
 			->method('translate')
 			->with('key', 'specific_lang_module')
 			->willReturn('translated_value');
@@ -73,7 +74,7 @@ class TranslatorManagerTest extends TestCase
 
 		$this->translatorManager->addLanguageModule('module_1')->addLanguageModule('module_2');
 
-		$this->translator->method('translate')->willReturnMap([
+		$this->translatorMock->method('translate')->willReturnMap([
 			['key', 'module_1', [], ''],
 			['key', 'module_2', [], 'translated_value']
 		]);
@@ -96,7 +97,7 @@ class TranslatorManagerTest extends TestCase
 
 		$this->translatorManager->addLanguageModule('module_1')->addLanguageModule('module_2');
 
-		$this->translator->method('translate')->willReturn('');
+		$this->translatorMock->method('translate')->willReturn('');
 
 		$result = $this->translatorManager->translate($headerField);
 
@@ -116,7 +117,7 @@ class TranslatorManagerTest extends TestCase
 
 		$this->translatorManager->addLanguageModule('module_1')->addLanguageModule('module_2');
 
-		$this->translator->method('translate')->will($this->throwException(new FrameworkException('error')));
+		$this->translatorMock->method('translate')->will($this->throwException(new FrameworkException('error')));
 
 		$result = $this->translatorManager->translate($headerField);
 

@@ -11,16 +11,17 @@ use App\Modules\Playlists\Services\PlaylistUsageService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class PlaylistsDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface $loggerMock;
-	private readonly PlaylistsRepository $repositoryMock;
-	private readonly Parameters $parametersMock;
-	private readonly AclValidator $aclValidatorMock;
-	private readonly PlaylistUsageService $playlistUsageServiceMock;
+	protected readonly LoggerInterface&MockObject $loggerMock;
+	private readonly PlaylistsRepository&MockObject $repositoryMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly PlaylistUsageService&MockObject $playlistUsageServiceMock;
 	private readonly PlaylistsDatatableService $service;
 
 	/**

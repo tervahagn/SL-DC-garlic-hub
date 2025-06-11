@@ -27,6 +27,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 
@@ -39,14 +40,14 @@ class ConcreteEditBaseParameters extends BaseEditParameters
 
 	public function addDefaultParameter(): void
 	{
-		$this->currentParameters =$this->defaultParameters;
+		$this->currentParameters = $this->defaultParameters;
 	}
 }
 
 class BaseEditParametersTest extends TestCase
 {
-	private readonly Session $sessionMock;
-	private BaseEditParameters $baseEditParameters;
+	private readonly Session&MockObject $sessionMock;
+	private ConcreteEditBaseParameters $baseEditParameters;
 
 	/**
 	 * @throws Exception

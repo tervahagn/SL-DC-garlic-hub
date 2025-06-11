@@ -26,6 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 #[Group('units')]
@@ -34,7 +35,7 @@ class CookieTest extends TestCase
 	use PHPMock;
 
 	private Cookie $cookie;
-	private Crypt $cryptMock;
+	private Crypt&MockObject $cryptMock;
 
 	/**
 	 * @throws Exception

@@ -26,13 +26,14 @@ use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PreparerTest extends TestCase
 {
 	private Preparer $preparer;
-	private BaseFilterParameters $baseFilterParametersMock;
-	private UrlBuilder $urlBuilderMock;
+	private BaseFilterParameters&MockObject $baseFilterParametersMock;
+	private UrlBuilder&MockObject $urlBuilderMock;
 
 	/**
 	 * @throws Exception

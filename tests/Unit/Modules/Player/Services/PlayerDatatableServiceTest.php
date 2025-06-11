@@ -10,15 +10,16 @@ use App\Modules\Player\Services\PlayerDatatableService;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class PlayerDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface $loggerMock;
-	private readonly PlayerRepository $repositoryMock;
-	private readonly Parameters $parametersMock;
-	private readonly AclValidator $aclValidatorMock;
+	protected readonly LoggerInterface&MockObject $loggerMock;
+	private readonly PlayerRepository&MockObject $repositoryMock;
+	private readonly Parameters&MockObject $parametersMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
 	private readonly PlayerDatatableService $service;
 
 	/**

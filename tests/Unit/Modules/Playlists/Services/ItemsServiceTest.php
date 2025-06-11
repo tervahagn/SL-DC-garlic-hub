@@ -14,16 +14,17 @@ use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ItemsServiceTest extends TestCase
 {
-	private readonly ItemsRepository $itemsRepositoryMock;
-	private readonly PlaylistsService $playlistsServiceMock;
-	private readonly MediaService $mediaServiceMock;
-	private readonly PlaylistMetricsCalculator $playlistMetricsCalculatorMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
+	private readonly PlaylistsService&MockObject $playlistsServiceMock;
+	private readonly MediaService&MockObject $mediaServiceMock;
+	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private readonly ItemsService $itemsService;
 
 	/**

@@ -7,6 +7,7 @@ use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Services\ExportService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,11 +16,11 @@ use Psr\Http\Message\StreamInterface;
 class ExportControllerTest extends TestCase
 {
 	private ExportController $exportController;
-	private readonly ExportService $exportServiceMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly Session $sessionMock;
-	private readonly StreamInterface $streamInterfaceMock;
+	private readonly ExportService&MockObject $exportServiceMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
 
 	/**
 	 * @throws Exception

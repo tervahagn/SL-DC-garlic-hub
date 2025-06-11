@@ -23,11 +23,10 @@ namespace Tests\Unit\Framework\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractDatatableService;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use Doctrine\DBAL\Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -50,9 +49,9 @@ class ConcreteDatatableService extends AbstractDatatableService
 }
 class AbstractDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface $loggerMock;
-	private readonly FilterBase $repositoryMock;
-	private readonly BaseParameters $parametersMock;
+	protected readonly LoggerInterface&MockObject $loggerMock;
+	private readonly FilterBase&MockObject $repositoryMock;
+	private readonly BaseParameters&MockObject $parametersMock;
 	private readonly ConcreteDatatableService $service;
 
 	protected function setUp(): void

@@ -10,13 +10,14 @@ use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 use App\Modules\Playlists\Helper\ExportSmil\items\Base;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MultizonePlaylistBuilderTest extends TestCase
 {
-	private PlayerEntity $playerEntityMock;
-	private BuildHelper $buildHelperMock;
-	private SimplePlaylistStructureFactory $simplePlaylistStructureFactoryMock;
+	private PlayerEntity&MockObject $playerEntityMock;
+	private BuildHelper&MockObject $buildHelperMock;
+	private SimplePlaylistStructureFactory&MockObject $simplePlaylistStructureFactoryMock;
 	private MultizonePlaylistBuilder $builder;
 
 	/**

@@ -28,6 +28,7 @@ use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Services\NodesService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,13 +37,13 @@ use Psr\Http\Message\StreamInterface;
 
 class ShowControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly NodesService $nodesServiceMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly NodesService&MockObject $nodesServiceMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Config&MockObject $configMock;
 	private readonly ShowController $controller;
-	private readonly Session $sessionMock;
-	private readonly Translator $translatorMock;
-	private readonly Config $configMock;
 
 	/**
 	 * @throws Exception

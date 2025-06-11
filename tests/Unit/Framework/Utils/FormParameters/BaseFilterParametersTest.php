@@ -29,6 +29,7 @@ use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Framework\Utils\FormParameters\ScalarType;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteFilterBaseParameters extends BaseFilterParameters
@@ -47,8 +48,8 @@ class ConcreteFilterBaseParameters extends BaseFilterParameters
 
 class BaseFilterParametersTest extends TestCase
 {
-	private readonly Session $sessionMock;
-	private readonly Sanitizer $sanitizerMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly Sanitizer&MockObject $sanitizerMock;
 	private BaseFilterParameters $baseFilterParameters;
 
 	/**

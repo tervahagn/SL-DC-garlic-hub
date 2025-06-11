@@ -8,13 +8,14 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class IndexFileTest extends TestCase
 {
-	private readonly FileSystem $fileSystemMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly FileSystem&MockObject $fileSystemMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private IndexFile $indexFile;
 
 	/**

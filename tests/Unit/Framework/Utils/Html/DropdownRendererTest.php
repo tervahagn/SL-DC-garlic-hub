@@ -6,12 +6,13 @@ use App\Framework\Utils\Html\DropdownField;
 use App\Framework\Utils\Html\DropdownRenderer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DropdownRendererTest extends TestCase
 {
 	private DropdownRenderer $renderer;
-	private DropdownField $dropdownFieldMock;
+	private DropdownField&MockObject $dropdownFieldMock;
 
 	/**
 	 * @throws Exception

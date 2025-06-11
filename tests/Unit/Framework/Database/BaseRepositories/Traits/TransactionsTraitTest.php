@@ -24,11 +24,12 @@ use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TransactionsTraitTest extends TestCase
 {
-	private Connection $connectionMock;
+	private Connection&MockObject $connectionMock;
 	private object $traitObject;
 
 	/**

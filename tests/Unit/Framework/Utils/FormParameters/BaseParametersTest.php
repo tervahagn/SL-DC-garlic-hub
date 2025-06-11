@@ -27,6 +27,7 @@ use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteBaseParameters extends BaseParameters
@@ -36,7 +37,7 @@ class ConcreteBaseParameters extends BaseParameters
 
 class BaseParametersTest extends TestCase
 {
-	private readonly Sanitizer $sanitizerMock;
+	private readonly Sanitizer&MockObject $sanitizerMock;
 	private BaseParameters $baseParameters;
 
 	/**

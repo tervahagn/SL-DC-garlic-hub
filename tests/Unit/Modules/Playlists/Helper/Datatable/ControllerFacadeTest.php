@@ -11,21 +11,21 @@ use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
-use App\Modules\Playlists\Services\PlaylistsService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class ControllerFacadeTest extends TestCase
 {
 	private readonly ControllerFacade $controllerFacade;
-	private readonly DatatableBuilder $datatableBuilderMock;
-	private readonly DatatablePreparer $datatablePreparerMock;
-	private readonly PlaylistsDatatableService $playlistsServiceMock;
-	private readonly Translator $translatorMock;
-	private readonly Session $sessionMock;
+	private readonly DatatableBuilder&MockObject $datatableBuilderMock;
+	private readonly DatatablePreparer&MockObject $datatablePreparerMock;
+	private readonly PlaylistsDatatableService&MockObject $playlistsServiceMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Session&MockObject $sessionMock;
 
 	/**
 	 * @throws Exception

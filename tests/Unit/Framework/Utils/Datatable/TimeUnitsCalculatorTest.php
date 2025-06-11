@@ -7,11 +7,12 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TimeUnitsCalculatorTest extends TestCase
 {
-	private readonly Translator $translatorMock;
+	private readonly Translator&MockObject $translatorMock;
 	private TimeUnitsCalculator $timeUnitsCalculator;
 
 	/**

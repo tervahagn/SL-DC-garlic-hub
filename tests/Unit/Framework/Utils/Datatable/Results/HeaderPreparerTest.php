@@ -10,13 +10,14 @@ use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class HeaderPreparerTest extends TestCase
 {
-	private TranslatorManager $translatorManagerMock;
-	private UrlBuilder $urlBuilderMock;
-	private BaseFilterParameters $filterParametersMock;
+	private TranslatorManager&MockObject $translatorManagerMock;
+	private UrlBuilder&MockObject $urlBuilderMock;
+	private BaseFilterParameters&MockObject $filterParametersMock;
 	private HeaderPreparer $headerPreparer;
 
 	/**

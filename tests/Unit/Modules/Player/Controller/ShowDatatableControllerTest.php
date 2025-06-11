@@ -13,6 +13,7 @@ use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,13 +22,13 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
-	private readonly Facade $facadeMock;
-	private readonly DatatableTemplatePreparer $templatePreparerMock;
-	private readonly ServerRequestInterface $requestMock;
-	private readonly ResponseInterface $responseMock;
-	private readonly Translator $translatorMock;
-	private readonly Session $sessionMock;
-	private readonly StreamInterface $streamInterfaceMock;
+	private readonly Facade&MockObject $facadeMock;
+	private readonly DatatableTemplatePreparer&MockObject $templatePreparerMock;
+	private readonly ServerRequestInterface&MockObject $requestMock;
+	private readonly ResponseInterface&MockObject $responseMock;
+	private readonly Translator&MockObject $translatorMock;
+	private readonly Session&MockObject $sessionMock;
+	private readonly StreamInterface&MockObject $streamInterfaceMock;
 	private readonly ShowDatatableController $controller;
 
 	/**

@@ -25,12 +25,13 @@ use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\FieldType;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CsrfTokenFieldTest extends TestCase
 {
 
-	private Session $sessionMock;
+	private Session&MockObject $sessionMock;
 
 	protected function setUp(): void
 	{

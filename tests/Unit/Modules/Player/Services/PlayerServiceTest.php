@@ -8,15 +8,16 @@ use App\Modules\Player\Services\PlayerService;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class PlayerServiceTest extends TestCase
 {
-	private readonly PlayerRepository $playerRepositoryMock;
-	private readonly PlaylistsService $playlistServiceMock;
-	private readonly AclValidator $playerValidatorMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly PlayerRepository&MockObject $playerRepositoryMock;
+	private readonly PlaylistsService&MockObject $playlistServiceMock;
+	private readonly AclValidator&MockObject $playerValidatorMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private PlayerService $service;
 
 	protected function setUp(): void

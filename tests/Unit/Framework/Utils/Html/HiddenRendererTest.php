@@ -14,7 +14,7 @@ class HiddenRendererTest extends TestCase
 {
 	private HiddenRenderer $hiddenRenderer;
 
-	private HiddenField $fieldMock;
+	private HiddenField&MockObject $fieldMock;
 
 	/**
 	 * @throws Exception

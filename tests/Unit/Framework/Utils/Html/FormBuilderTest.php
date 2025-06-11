@@ -34,12 +34,13 @@ use App\Framework\Utils\Html\PasswordField;
 use App\Framework\Utils\Html\TextField;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class FormBuilderTest extends TestCase
 {
-	private FieldsFactory       $fieldsFactoryMock;
-	private FieldsRenderFactory $fieldsRenderFactoryMock;
+	private FieldsFactory&MockObject       $fieldsFactoryMock;
+	private FieldsRenderFactory&MockObject $fieldsRenderFactoryMock;
 	private FormBuilder         $formBuilder;
 
 	/**

@@ -34,15 +34,16 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class WidgetTest extends TestCase
 {
-	private readonly Filesystem $filesystemMock;
-	private ZipFilesystemFactory $zipFilesystemFactoryMock;
-	private readonly Imagick $imagickMock;
+	private readonly Filesystem&MockObject $filesystemMock;
+	private ZipFilesystemFactory&MockObject $zipFilesystemFactoryMock;
+	private readonly Imagick&MockObject $imagickMock;
+	private readonly ConfigXML&MockObject $configXmlMock;
 	private readonly Widget $widget;
-	private readonly ConfigXML $configXmlMock;
 
 	/**
 	 * @throws Exception

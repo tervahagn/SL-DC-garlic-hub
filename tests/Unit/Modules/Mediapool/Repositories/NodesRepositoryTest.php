@@ -28,15 +28,16 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class NodesRepositoryTest extends TestCase
 {
-	private readonly Connection $connectionMock;
-	private readonly QueryBuilder $queryBuilderMock;
-	private readonly NestedSetHelper $helperMock;
-	private readonly LoggerInterface $loggerMock;
+	private readonly Connection&MockObject $connectionMock;
+	private readonly QueryBuilder&MockObject $queryBuilderMock;
+	private readonly NestedSetHelper&MockObject $helperMock;
+	private readonly LoggerInterface&MockObject $loggerMock;
 	private readonly NodesRepository $nodesRepository;
 
 	/**

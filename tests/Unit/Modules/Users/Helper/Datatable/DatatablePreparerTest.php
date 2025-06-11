@@ -35,16 +35,17 @@ use App\Modules\Users\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparerTest extends TestCase
 {
 
-	private readonly PrepareService $prepareServiceMock;
-	private readonly AclValidator $aclValidatorMock;
+	private readonly PrepareService&MockObject $prepareServiceMock;
+	private readonly AclValidator&MockObject $aclValidatorMock;
+	private readonly Translator&MockObject $translatorMock;
 	private readonly DatatablePreparer $datatablePreparer;
-	private readonly Translator $translatorMock;
 
 	/**
 	 * @throws Exception

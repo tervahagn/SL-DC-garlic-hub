@@ -29,6 +29,7 @@ use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -36,9 +37,9 @@ use Psr\Log\LoggerInterface;
 class AuthServiceTest extends TestCase
 {
 	private AuthService $authService;
-	private UsersService $userServiceMock;
-	private Cookie $cookieMock;
-	private LoggerInterface $loggerMock;
+	private UsersService&MockObject $userServiceMock;
+	private Cookie&MockObject $cookieMock;
+	private LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception

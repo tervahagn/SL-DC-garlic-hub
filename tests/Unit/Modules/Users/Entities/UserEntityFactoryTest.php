@@ -25,11 +25,12 @@ use App\Modules\Users\Entities\UserEntity;
 use App\Modules\Users\Entities\UserEntityFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UserEntityFactoryTest extends TestCase
 {
-	private Config $configMock;
+	private Config&MockObject $configMock;
 	private UserEntityFactory $factory;
 
 	/**

@@ -9,14 +9,15 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Conditional;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SeqContainerTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly Trigger $beginMock;
-	private readonly Trigger $endMock;
-	private readonly Conditional $conditionalMock;
+	private readonly Config&MockObject $configMock;
+	private readonly Trigger&MockObject $beginMock;
+	private readonly Trigger&MockObject $endMock;
+	private readonly Conditional&MockObject $conditionalMock;
 	private readonly Properties $propertiesMock;
 	private SeqContainer $seqContainer;
 

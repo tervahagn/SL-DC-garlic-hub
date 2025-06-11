@@ -35,12 +35,13 @@ use Imagick;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MediaHandlerFactoryTest extends TestCase
 {
-	private readonly Config $configMock;
-	private readonly ImagickFactory $imagickFactoryMock;
+	private readonly Config&MockObject $configMock;
+	private readonly ImagickFactory&MockObject $imagickFactoryMock;
 	private readonly MediaHandlerFactory $mediaHandlerFactory;
 
 	/**

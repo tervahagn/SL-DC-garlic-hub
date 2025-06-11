@@ -9,6 +9,7 @@ use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,10 +21,10 @@ use PHPUnit\Framework\TestCase;
 class BuildServiceTest extends TestCase
 {
 	private BuildService $buildService;
-	private Builder $paginatorBuilderMock;
-	private \App\Framework\Utils\Datatable\Results\Builder $resultsBuilderMock;
-	private FormBuilder $formBuilderMock;
-	private FieldInterface $fieldMock;
+	private Builder&MockObject $paginatorBuilderMock;
+	private \App\Framework\Utils\Datatable\Results\Builder&MockObject $resultsBuilderMock;
+	private FormBuilder&MockObject $formBuilderMock;
+	private FieldInterface&MockObject $fieldMock;
 
 	/**
 	 * @throws Exception
