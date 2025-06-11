@@ -36,14 +36,14 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class Builder
+class Builder
 {
 	private readonly FormElementsCreator $formElementsCreator;
 	private readonly AclValidator $aclValidator;
 	private readonly Validator $validator;
 	private readonly Parameters $parameters;
-	private readonly int $UID;
-	private readonly string $username;
+	private int $UID;
+	private string $username;
 	private string $edition;
 
 	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)

@@ -47,36 +47,36 @@ class UserEntity implements UserEntityInterface
 
 	public function getMain(): array
 	{
-		return $this->main ?? [];
+		return $this->main;
 	}
 
 	public function getContact(): array
 	{
-		return $this->contact ?? [];
+		return $this->contact;
 	}
 
 	public function getStats(): array
 	{
-		return $this->stats ?? [];
+		return $this->stats;
 	}
 
 	public function getSecurity(): array
 	{
-		return $this->security ?? [];
+		return $this->security;
 	}
 
 	public function getAcl(): array
 	{
-		return $this->acl ?? [];
+		return $this->acl;
 	}
 
 	public function getVip(): array
 	{
-		return $this->vip ?? [];
+		return $this->vip;
 	}
 
 	public function getIdentifier(): string
 	{
-		return $this->main['id'] ?? '';
+		return $this->main['id'];
 	}
 }

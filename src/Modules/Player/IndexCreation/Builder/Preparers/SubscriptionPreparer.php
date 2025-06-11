@@ -24,7 +24,7 @@ namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 {
 	/**
-	 * @return array<string>
+	 * @return array<int, array<string, string>>
 	 */
 	public function prepare(): array
 	{
@@ -53,7 +53,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 	}
 
 	/**
-	 * @return array<string, string>
+	 * @return array<string, string|int>
 	 */
 	private function replaceTaskSchedule(): array
 	{

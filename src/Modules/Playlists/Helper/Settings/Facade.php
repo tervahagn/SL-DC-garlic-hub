@@ -30,11 +30,11 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class Facade
+class Facade
 {
-	private Builder $settingsFormBuilder;
-	private PlaylistsService $playlistsService;
-	private Parameters $settingsParameters;
+	private readonly Builder $settingsFormBuilder;
+	private readonly PlaylistsService $playlistsService;
+	private readonly Parameters $settingsParameters;
 	private array $oldPlaylist;
 	private Translator $translator;
 
