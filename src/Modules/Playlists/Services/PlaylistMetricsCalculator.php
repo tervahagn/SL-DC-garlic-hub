@@ -166,8 +166,8 @@ class PlaylistMetricsCalculator
 		$this->countEntries      = $tmp['count_items'] ?? 0;
 		$this->countOwnerEntries = $tmp['count_owner_items'] ?? 0;
 		$this->fileSize          = $tmp['filesize'] ?? 0;
-		$this->duration          = (int) $tmp['duration'] ?? 0;
-		$this->ownerDuration     = (int) $tmp['owner_duration'] ?? 0; // because some videos are floats!
+		$this->duration          = (int) $tmp['duration'];
+		$this->ownerDuration     = (int) $tmp['owner_duration']; // because some videos are floats!
 
 		$this->calculateAverageDuration($playlist);
 
