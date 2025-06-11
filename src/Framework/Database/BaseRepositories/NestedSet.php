@@ -321,7 +321,6 @@ class NestedSet extends SqlBase
 
 	/**
 	 * @throws Exception
-	 * @throws FrameworkException
 	 * @throws DatabaseException
 	 */
 	public function moveNode(array $movedNode, array $targetNode, string $region): void

@@ -30,6 +30,8 @@ abstract class FilterBase extends SqlBase
 	use CrudTraits, FindOperationsTrait;
 
 	/**
+	 * @param array<string, array<string, string>> $fields
+	 * @return int
 	 * @throws Exception
 	 */
 	public function countAllFiltered(array $fields): int
@@ -40,6 +42,8 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
+	 * @param array<string, array<string, string>> $fields
+	 * @return array<string,string>
 	 * @throws Exception
 	 */
 	public function findAllFiltered(array $fields): array
@@ -57,9 +61,11 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
+	 * @param int[] $companyIds
+	 * @param array<string, array<string, string>> $fields
 	 * @throws Exception
 	 */
-	public function countAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, $UID): int
+	public function countAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, int $UID): int
 	{
 		$join  = $this->prepareJoin();
 		$where = $this->buildRestrictedWhereForCountAndFindSearch($companyIds, $fields, $UID);
@@ -67,9 +73,12 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
+	 * @param int[] $companyIds
+	 * @param array<string, array<string, string>> $fields
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
-	public function findAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, $UID): array
+	public function findAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, int $UID): array
 	{
 		$selects = $this->prepareSelectFiltered();
 		$where   = $this->buildRestrictedWhereForCountAndFindSearch($companyIds,  $fields, $UID);
@@ -84,9 +93,10 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
+	 * @param array<string, array<string, string>> $fields
 	 * @throws Exception
 	 */
-	public function countAllFilteredByUID(array $fields, $UID): int
+	public function countAllFilteredByUID(array $fields, int $UID): int
 	{
 		$where = $this->prepareWhereForFiltering($fields);
 		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
@@ -95,9 +105,11 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
+	 * @param array<string, array<string, string>> $fields
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
-	public function findAllFilteredByUID(array $fields, $UID): array
+	public function findAllFilteredByUID(array $fields, int $UID): array
 	{
 		$selects = $this->prepareSelectFiltered();
 		$where   = $this->prepareWhereForFiltering($fields);
@@ -111,9 +123,14 @@ abstract class FilterBase extends SqlBase
 		return $this->findAllByWithFields($selects, $where, [], $limit, '', $orderBy);
 	}
 
-	private function buildRestrictedWhereForCountAndFindSearch(array $companyIds, array $search_fields, $UID): array
+	/**
+	 * @param int[] $companyIds
+	 * @param array<string, array<string, string>> $searchFields
+	 * @return array<string,array|string>
+	 */
+	private function buildRestrictedWhereForCountAndFindSearch(array $companyIds, array $searchFields, int $UID): array
 	{
-		$where                      = $this->prepareWhereForFiltering($search_fields);
+		$where                      = $this->prepareWhereForFiltering($searchFields);
 		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
 
 		if (!empty($companyIds))
@@ -122,13 +139,27 @@ abstract class FilterBase extends SqlBase
 		return $where;
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	abstract protected function prepareJoin(): array;
 
+	/**
+	 * @return array<string, string>
+	 */
 	abstract protected function prepareSelectFiltered(): array;
 
+	/**
+	 * @return array<string, string>
+	 */
 	abstract protected function prepareSelectFilteredForUser(): array;
 
-	protected function prepareOrderBy(array $fields, $useUserMain = true): array
+	/**
+	 * @param array $fields
+	 * @param bool $useUserMain
+	 * @return array<string,string>
+	 */
+	protected function prepareOrderBy(array $fields, bool $useUserMain = true): array
 	{
 		// no sort column
 		if (!array_key_exists(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN, $fields) ||
@@ -155,9 +186,17 @@ abstract class FilterBase extends SqlBase
 		return ['sort' => $this->table.'.'.$fields[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN]['value'], 'order' => $sort_order];
 	}
 
+	/**
+	 * @param array<string, array<string, string>> $filterFields
+	 * @return array<string,string>
+	 */
 	abstract protected function prepareWhereForFiltering(array $filterFields): array;
 
-	protected function determineWhereForFiltering($key, $parameter): array
+	/**
+	 * @return array<string,string|int>
+	 * @return array<string,array>
+	 */
+	protected function determineWhereForFiltering(string $key, array $parameter): array
 	{
 		$where = [];
 		switch ($key)
@@ -179,7 +218,7 @@ abstract class FilterBase extends SqlBase
 
 			case 'company_id':
 				if ((int) $parameter['value'] > 0)
-					$where['user_main.'.$key] = $this->generateWhereClause($parameter['value'], '=');
+					$where['user_main.'.$key] = $this->generateWhereClause($parameter['value']);
 				break;
 
 			default:
