@@ -23,14 +23,19 @@ namespace Tests\Unit\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
 use App\Modules\Users\Services\UsersDatatableService;
-use App\Modules\Users\Services\UsersService;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ControllerFacadeTest extends TestCase
 {
@@ -41,6 +46,9 @@ class ControllerFacadeTest extends TestCase
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
@@ -59,6 +67,11 @@ class ControllerFacadeTest extends TestCase
 	}
 
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigure(): void
 	{
@@ -90,6 +103,11 @@ class ControllerFacadeTest extends TestCase
 
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testProcessSubmittedUserInput(): void
 	{
@@ -100,6 +118,12 @@ class ControllerFacadeTest extends TestCase
 		$this->controllerFacade->processSubmittedUserInput();
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareDataGrid(): void
 	{
@@ -120,6 +144,14 @@ class ControllerFacadeTest extends TestCase
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testPrepareUITemplate(): void
 	{

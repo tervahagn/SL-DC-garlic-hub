@@ -46,8 +46,6 @@ class AbstractDatatableBuilderTest extends TestCase
 	public function testCreatePaginationWithValidData(): void
 	{
 		$resultCount = 100;
-		$usePager = true;
-		$isShortened = true;
 
 		$currentPage = 1;
 		$itemsPerPage = 10;
@@ -63,10 +61,10 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->buildServiceMock
 			->expects($this->once())
 			->method('buildPaginationLinks')
-			->with($currentPage, $itemsPerPage, $resultCount, $usePager, $isShortened)
+			->with($currentPage, $itemsPerPage, $resultCount, true, true)
 			->willReturn($paginationLinks);
 
-		$this->datatableBuilder->createPagination($resultCount, $usePager, $isShortened);
+		$this->datatableBuilder->createPagination($resultCount);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 		$this->assertArrayHasKey('pager', $datatableStructure);
@@ -77,8 +75,6 @@ class AbstractDatatableBuilderTest extends TestCase
 	public function testCreatePaginationWithoutPager(): void
 	{
 		$resultCount = 50;
-		$usePager = false;
-		$isShortened = false;
 
 		$currentPage = 1;
 		$itemsPerPage = 20;
@@ -94,10 +90,10 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->buildServiceMock
 			->expects($this->once())
 			->method('buildPaginationLinks')
-			->with($currentPage, $itemsPerPage, $resultCount, $usePager, $isShortened)
+			->with($currentPage, $itemsPerPage, $resultCount, false, false)
 			->willReturn($paginationLinks);
 
-		$this->datatableBuilder->createPagination($resultCount, $usePager, $isShortened);
+		$this->datatableBuilder->createPagination($resultCount, false, false);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 		$this->assertArrayHasKey('pager', $datatableStructure);
@@ -108,8 +104,6 @@ class AbstractDatatableBuilderTest extends TestCase
 	public function testCreatePaginationWithZeroResults(): void
 	{
 		$resultCount = 0;
-		$usePager = true;
-		$isShortened = true;
 
 		$currentPage = 1;
 		$itemsPerPage = 10;
@@ -125,10 +119,10 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->buildServiceMock
 			->expects($this->once())
 			->method('buildPaginationLinks')
-			->with($currentPage, $itemsPerPage, $resultCount, $usePager, $isShortened)
+			->with($currentPage, $itemsPerPage, $resultCount, true, true)
 			->willReturn($paginationLinks);
 
-		$this->datatableBuilder->createPagination($resultCount, $usePager, $isShortened);
+		$this->datatableBuilder->createPagination($resultCount);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
 		$this->assertArrayHasKey('pager', $datatableStructure);

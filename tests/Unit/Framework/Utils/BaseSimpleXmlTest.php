@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Utils;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\BaseSimpleXml;
+use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;
@@ -66,6 +67,9 @@ class BaseSimpleXmlTest extends TestCase
 		$this->concreteSimpleXml = new ConcreteBaseSimpleXml();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testSetAndGetXmlObj(): void
 	{
@@ -75,6 +79,9 @@ class BaseSimpleXmlTest extends TestCase
 		$this->assertSame($xmlObj, $this->concreteSimpleXml->getXmlObj());
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testLoadXmlFromString(): void
 	{
@@ -90,6 +97,9 @@ class BaseSimpleXmlTest extends TestCase
 		$this->concreteSimpleXml->loadXmlFromStringPublic('<root><child>value</child>');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testLoadXmlFromFile(): void
 	{
@@ -123,7 +133,6 @@ class BaseSimpleXmlTest extends TestCase
 			$exception_thrown = false;
 
 			$this->concreteSimpleXml->loadXmlFromStringPublic($invalid_xml);
-			$this->assertIsArray($this->concreteSimpleXml->getXmlErrorArray());
 		}
 		catch (ModuleException $me)
 		{
@@ -140,7 +149,6 @@ class BaseSimpleXmlTest extends TestCase
 		{
 			$this->assertInstanceOf('\LibXMLError', $error);
 			$this->assertEquals(LIBXML_ERR_FATAL, $error->level);
-			$this->assertIsString($error->message);
 		}
 
 		$xml_error_string = $this->concreteSimpleXml->getXmlErrorsAsString();
@@ -150,7 +158,7 @@ class BaseSimpleXmlTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testLoadXmlFromStringWithInvalidXmlMissingClosingTags()
+	public function testLoadXmlFromStringWithInvalidXmlMissingClosingTags(): void
 	{
 		$invalid_xml = $this->getInvalidTestXmlFailedClosingTags();
 
@@ -196,7 +204,7 @@ class BaseSimpleXmlTest extends TestCase
 	/**
 	 * @return string
 	 */
-	protected function getValidTestXml()
+	protected function getValidTestXml(): string
 	{
 		return <<<XML
 <?xml version='1.0'?>
@@ -212,7 +220,7 @@ class BaseSimpleXmlTest extends TestCase
 XML;
 	}
 
-	protected function getInvalidTestXmlFailedCDATA()
+	protected function getInvalidTestXmlFailedCDATA(): string
 	{
 		return <<<XML
 <?xml version='1.0'?>
@@ -228,7 +236,7 @@ XML;
 XML;
 	}
 
-	protected function getInvalidTestXmlFailedClosingTags()
+	protected function getInvalidTestXmlFailedClosingTags(): string
 	{
 		return <<<XML
 <?xml version='1.0'?>

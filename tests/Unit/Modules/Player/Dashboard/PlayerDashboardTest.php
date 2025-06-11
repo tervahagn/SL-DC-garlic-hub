@@ -3,12 +3,16 @@
 namespace Tests\Unit\Modules\Player\Dashboard;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Player\Dashboard\PlayerDashboard;
 use App\Modules\Player\Services\PlayerService;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class PlayerDashboardTest extends TestCase
 {
@@ -37,6 +41,12 @@ class PlayerDashboardTest extends TestCase
 		$this->assertSame('player', $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetTitle(): void
 	{
@@ -51,6 +61,13 @@ class PlayerDashboardTest extends TestCase
 		$this->assertSame('Player Dashboard', $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testRenderContent(): void
 	{

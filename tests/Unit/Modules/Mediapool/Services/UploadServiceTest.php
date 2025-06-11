@@ -324,7 +324,7 @@ class UploadServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testUploadMediaFilesWithErrorByextension(): void
+	public function testUploadMediaFilesWithErrorByExtension(): void
 	{
 		$uploadedFile = $this->createMock(UploadedFile::class);
 		$uploadedFile->method('getError')->willReturn(UPLOAD_ERR_EXTENSION);

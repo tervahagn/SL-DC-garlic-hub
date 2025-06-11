@@ -12,7 +12,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Psr7\Stream;
 
 class PlayerIndexControllerTest extends TestCase
 {

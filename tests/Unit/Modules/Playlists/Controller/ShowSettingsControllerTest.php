@@ -164,6 +164,7 @@ class ShowSettingsControllerTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws \Doctrine\DBAL\Exception
 	 * @throws FrameworkException
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testEditPlaylistFormWithNonExistentPlaylist(): void

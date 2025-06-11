@@ -35,7 +35,7 @@ class ZipFilesystemFactoryTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCreateReturnsFilesystemInstance()
+	public function testCreateReturnsFilesystemInstance(): void
 	{
 		$zipPath    = $this->baseDirectory.'/widget.wgt';
 		$factory    = new ZipFilesystemFactory();

@@ -6,6 +6,8 @@ use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
@@ -143,7 +145,7 @@ class PlaylistsRepositoryTest extends TestCase
 	{
 		$id = 1;
 		$expectedResult = 1;
-		$sqliteplatform = new \Doctrine\DBAL\Platforms\SQLitePlatform();
+		$sqliteplatform = new SQLitePlatform();
 		$this->connectionMock->expects($this->once())
 			->method('getDatabasePlatform')
 			->willReturn($sqliteplatform);
@@ -214,7 +216,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlist_id = :playlist_id')->willReturnSelf();
 
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')
-			->with('playlist_id', $playlistId, \Doctrine\DBAL\ParameterType::INTEGER)->willReturnSelf();
+			->with('playlist_id', $playlistId, ParameterType::INTEGER)->willReturnSelf();
 
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn($expectedResult);
 
@@ -224,7 +226,7 @@ class PlaylistsRepositoryTest extends TestCase
 	}
 
 	/**
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCountAllFilteredReturnsCorrectCount(): void

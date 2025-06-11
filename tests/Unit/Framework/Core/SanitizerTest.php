@@ -45,7 +45,7 @@ class SanitizerTest extends TestCase
 	public function testHtmlSanitization(): void
 	{
 		$this->assertSame('<b>bold</b>', $this->sanitizer->html('<b>bold</b>'));
-		$this->assertSame('text', $this->sanitizer->html('<script>text</script>'));
+		$this->assertSame('alert()', $this->sanitizer->html('<script>alert()</script>'));
 	}
 
 	#[Group('units')]

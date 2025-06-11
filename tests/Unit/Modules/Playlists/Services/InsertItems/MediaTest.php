@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Playlists\Services\InsertItems;
 
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\InsertItems\Media;
@@ -48,6 +49,7 @@ class MediaTest extends TestCase
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testInsertSuccess(): void
@@ -78,11 +80,14 @@ class MediaTest extends TestCase
 		$result = $this->media->insert(1, 'mediaId', 2);
 
 		$this->assertNotEmpty($result);
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('playlist_metrics', $result);
 		$this->assertArrayHasKey('item', $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testInsertSuccessWithWidget(): void
 	{
@@ -114,12 +119,12 @@ class MediaTest extends TestCase
 		$result = $this->media->insert(1, 'mediaId', 2);
 
 		$this->assertNotEmpty($result);
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('playlist_metrics', $result);
 		$this->assertArrayHasKey('item', $result);
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -142,6 +147,7 @@ class MediaTest extends TestCase
 
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -164,6 +170,7 @@ class MediaTest extends TestCase
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

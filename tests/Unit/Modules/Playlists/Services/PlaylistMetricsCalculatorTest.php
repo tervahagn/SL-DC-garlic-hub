@@ -21,6 +21,9 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	private Config&MockObject $configMock;
 	private PlaylistMetricsCalculator $calculator;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->itemsRepositoryMock = $this->createMock(ItemsRepository::class);
@@ -31,9 +34,10 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCalculateFromItemsProcessesMetrics(): void
@@ -68,6 +72,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCalculateFromItemsAdjustsMetricsWithShuffle(): void
@@ -96,6 +101,12 @@ class PlaylistMetricsCalculatorTest extends TestCase
 		$this->assertSame($expectedMetrics, $frontendMetrics);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCalculateFromItemsAdjustsMetricsWithShuffle2(): void
 	{
@@ -120,6 +131,12 @@ class PlaylistMetricsCalculatorTest extends TestCase
 		$this->assertSame($expectedMetrics, $frontendMetrics);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCalculateFromItemsAdjustsMetricsWithShuffle3(): void
 	{
@@ -169,9 +186,10 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCalculateFromPlaylistData(): void
@@ -196,9 +214,10 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCalculateFromPlaylistDataHandlesEmptyPlaylist(): void
@@ -226,6 +245,12 @@ class PlaylistMetricsCalculatorTest extends TestCase
 		$this->assertSame($expectedMetrics2, $this->calculator->getMetricsForPlaylistTable());
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationWithoutTimeLimit(): void
 	{
@@ -241,6 +266,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationExceedsTimeLimitPartially(): void
@@ -266,6 +292,12 @@ class PlaylistMetricsCalculatorTest extends TestCase
 		$this->assertSame(20, $result); // Expected remaining time
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationExceedsTimeLimitFull(): void
 	{
@@ -292,9 +324,10 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCalculateRemainingMediaDurationHandlesDefaultDuration(): void

@@ -25,6 +25,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\AutocompleteField;
@@ -80,6 +81,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->configureParameters(123);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForModuleAdmin(): void
 	{
@@ -102,6 +109,12 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->configureParameters(123);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigureParametersCallsAddOwnerAndCompanyForSubAdmin(): void
 	{
@@ -167,7 +180,7 @@ class DatatableBuilderTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
-	 * @throws Exception
+	 * @throws Exception|ModuleException
 	 */
 	#[Group('units')]
 	public function testCollectFormElements(): void
@@ -215,11 +228,11 @@ class DatatableBuilderTest extends TestCase
 		$form = $this->builder->getDatatableStructure()['form'];
 
 		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_NAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_UID, $form);
+		$this->assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
 		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_MODE, $form);
 
 		$this->assertEquals($playlistNameFieldMock, $form[Parameters::PARAMETER_PLAYLIST_NAME]);
-		$this->assertEquals($ownerFieldMock, $form[Parameters::PARAMETER_UID]);
+		$this->assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
 		$this->assertEquals($playlistModeFieldMock, $form[Parameters::PARAMETER_PLAYLIST_MODE]);
 	}
 
@@ -228,7 +241,7 @@ class DatatableBuilderTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
-	 * @throws Exception
+	 * @throws Exception|ModuleException
 	 */
 	#[Group('units')]
 	public function testCollectFormElementsMinimum(): void
@@ -311,7 +324,7 @@ class DatatableBuilderTest extends TestCase
 	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
-	public function testDetermineAllowedPlayerModessForEdgeEdition(): void
+	public function testDetermineAllowedPlayerModesForEdgeEdition(): void
 	{
 		$configMock = $this->createMock(Config::class);
 		$this->aclValidatorMock->method('getConfig')->willReturn($configMock);

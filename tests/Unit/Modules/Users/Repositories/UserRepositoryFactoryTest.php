@@ -37,7 +37,6 @@ use PHPUnit\Framework\TestCase;
 class UserRepositoryFactoryTest extends TestCase
 {
 	private Config&MockObject $configMock;
-	private Connection&MockObject $connectionMock;
 	private UserRepositoryFactory $factory;
 
 	/**
@@ -46,8 +45,8 @@ class UserRepositoryFactoryTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->configMock = $this->createMock(Config::class);
-		$this->connectionMock = $this->createMock(Connection::class);
-		$this->factory = new UserRepositoryFactory($this->configMock, $this->connectionMock);
+		$connectionMock = $this->createMock(Connection::class);
+		$this->factory = new UserRepositoryFactory($this->configMock, $connectionMock);
 	}
 
 	#[Group('units')]

@@ -5,7 +5,9 @@ namespace Tests\Unit\Modules\Playlists\Collector;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Collector\ExternalContentReader;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -29,6 +31,12 @@ class ExternalContentReaderTest extends TestCase
 		$this->reader = new ExternalContentReader($this->fileSystemMock, $this->clientMock, 'path/to/cache');
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws GuzzleException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsWithoutCachedFile(): void
 	{
@@ -42,7 +50,6 @@ class ExternalContentReaderTest extends TestCase
 			->method('head')
 			->with('playlist/url')
 			->willReturn($responseMock);
-		;
 
 		$responseMock->expects($this->once())->method('getStatusCode')->willReturn(200);
 
@@ -61,6 +68,12 @@ class ExternalContentReaderTest extends TestCase
 		$this->assertSame('file_content', $this->reader->loadPlaylistItems());
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws GuzzleException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsWithExistingOutdatedCachedFile(): void
 	{
@@ -102,6 +115,12 @@ class ExternalContentReaderTest extends TestCase
 		$this->assertSame('existing_file_content', $this->reader->loadPlaylistItems());
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws GuzzleException
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsWithExistingCurrentCachedFile(): void
 	{
@@ -143,6 +162,11 @@ class ExternalContentReaderTest extends TestCase
 	}
 
 
+	/**
+	 * @throws FilesystemException
+	 * @throws GuzzleException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsWhenStatusCodeNot200(): void
 	{
@@ -158,7 +182,6 @@ class ExternalContentReaderTest extends TestCase
 			->method('head')
 			->with('playlist/url')
 			->willReturn($responseMock);
-		;
 
 		$responseMock->method('getStatusCode')->willReturn(300);
 

@@ -16,19 +16,19 @@ class MediaPropertiesTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testMediaProperties()
+	public function testMediaProperties(): void
 	{
 		$json = '{"format": {"filename": "test.mp4", "size": 12345, "format_name": "mp4", "duration": 60, "start_time": 0}, "streams": [{"codec_type": "video", "codec_name": "h264", "width": 1920, "height": 1080}]}';
 
 		$stdClass = json_decode($json);
-		$this->mediaProperties->fromStdClass($stdClass, []);
+		$this->mediaProperties->fromStdClass($stdClass);
 
 		$this->assertEquals('test.mp4', $this->mediaProperties->getFilename());
 		$this->assertEquals(60, $this->mediaProperties->getDuration());
 	}
 
 	#[Group('units')]
-	public function testMediaPropertiesWithUserValues()
+	public function testMediaPropertiesWithUserValues(): void
 	{
 		$json = '{"format": {"filename": "test.mp4", "size": 12345, "format_name": "mp4", "start_time": 0}, "streams": [{"codec_type": "video", "codec_name": "h264", "width": 1920, "height": 1080}]}';
 
@@ -40,12 +40,12 @@ class MediaPropertiesTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testFromArrayWithVideoAndAudioStream()
+	public function testFromArrayWithVideoAndAudioStream(): void
 	{
 		$json = '{"format": {"filename": "media.mp4", "size": 10000, "format_name": "mp4", "duration": 120, "start_time": 0}, "streams": [{"codec_type": "video", "codec_name": "vp9", "width": 1280, "height": 720}, {"codec_type": "audio", "codec_name": "aac"}]}';
 
 		$stdClass = json_decode($json);
-		$this->mediaProperties->fromStdClass($stdClass, []);
+		$this->mediaProperties->fromStdClass($stdClass);
 
 		$this->assertEquals(1280, $this->mediaProperties->getWidth());
 		$this->assertEquals(720, $this->mediaProperties->getHeight());
@@ -57,7 +57,7 @@ class MediaPropertiesTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testToArray()
+	public function testToArray(): void
 	{
 		// Test default values in toArray output
 		$expected = [
@@ -78,12 +78,12 @@ class MediaPropertiesTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testToArrayWithPopulatedValues()
+	public function testToArrayWithPopulatedValues(): void
 	{
 		// Set the object values using fromStdClass
 		$json = '{"format": {"filename": "video.mp4", "size": 20000, "format_name": "mkv", "duration": 150, "start_time": 0.5}, "streams": [{"codec_type": "video", "codec_name": "h265", "width": 1280, "height": 720}, {"codec_type": "audio", "codec_name": "aac"}]}';
 		$stdClass = json_decode($json);
-		$this->mediaProperties->fromStdClass($stdClass, []);
+		$this->mediaProperties->fromStdClass($stdClass);
 
 		// Test populated values in toArray output
 		$expected = [
@@ -103,12 +103,12 @@ class MediaPropertiesTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testReset()
+	public function testReset(): void
 	{
 		// Populate the MediaProperties object with sample values
 		$json = '{"format": {"filename": "sample.mp4", "size": 50000, "format_name": "avi", "duration": 300.5, "start_time": 0.1}, "streams": [{"codec_type": "video", "codec_name": "mpeg4", "width": 1024, "height": 768}, {"codec_type": "audio", "codec_name": "mp3"}]}';
 		$stdClass = json_decode($json);
-		$this->mediaProperties->fromStdClass($stdClass, []);
+		$this->mediaProperties->fromStdClass($stdClass);
 
 		// Reset the object
 		$this->mediaProperties->reset();

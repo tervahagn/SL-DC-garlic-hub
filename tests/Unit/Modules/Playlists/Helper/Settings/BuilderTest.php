@@ -3,7 +3,9 @@
 namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Session;
-use App\Framework\Utils\FormParameters\BaseEditParameters;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Modules\Playlists\Helper\Settings\Builder;
@@ -11,9 +13,12 @@ use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
 use App\Modules\Playlists\Services\AclValidator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class BuilderTest extends TestCase
 {
@@ -24,6 +29,9 @@ class BuilderTest extends TestCase
 	private Session&MockObject $sessionMock;
 	private Builder $builder;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->collectorMock    = $this->createMock(FormElementsCreator::class);
@@ -43,6 +51,12 @@ class BuilderTest extends TestCase
 		$this->assertSame($this->builder, $this->builder->init($this->sessionMock));
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigNewParameterWithSimpleAdmin(): void
 	{
@@ -60,6 +74,12 @@ class BuilderTest extends TestCase
 		$this->builder->configNewParameter('internal');
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigNewParameterWithoutAdminPrivileges(): void
 	{
@@ -75,6 +95,12 @@ class BuilderTest extends TestCase
 		$this->builder->configNewParameter('internal');
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigNewParameterWithNoTimeLimit(): void
 	{
@@ -90,6 +116,12 @@ class BuilderTest extends TestCase
 		$this->builder->configNewParameter('external');
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigEditParameterAddsPlaylistId(): void
 	{
@@ -100,6 +132,12 @@ class BuilderTest extends TestCase
 		$this->builder->configEditParameter(['company_id' => 1, 'playlist_mode' => '']);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigEditParameterAddsOwnerIfAdmin(): void
 	{
@@ -113,6 +151,12 @@ class BuilderTest extends TestCase
 		$this->builder->configEditParameter(['company_id' => 123, 'playlist_mode' => '']);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigEditParameterAddsTimeLimitIfTimeLimitPlaylist(): void
 	{
@@ -127,6 +171,12 @@ class BuilderTest extends TestCase
 		$this->builder->configEditParameter(['company_id' => 123, 'playlist_mode' => 'internal']);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testConfigEditParameterReturnsIfNotAdmin(): void
 	{
@@ -141,6 +191,14 @@ class BuilderTest extends TestCase
 		$this->builder->configEditParameter(['company_id' => 456, 'playlist_mode' => 'internal']);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testBuildFormWithEmptyPlaylistStandard(): void
 	{
@@ -174,11 +232,19 @@ class BuilderTest extends TestCase
 		$this->assertSame(['preparedForm'], $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testBuildFormWithAllParameters(): void
 	{
 		$playlist = [
-			BaseEditParameters::PARAMETER_UID => 123,
+			BaseParameters::PARAMETER_UID => 123,
 			'username' => 'mockUsername',
 			Parameters::PARAMETER_TIME_LIMIT => 600,
 			Parameters::PARAMETER_PLAYLIST_ID => 456,
@@ -203,11 +269,11 @@ class BuilderTest extends TestCase
 		$fieldInterfaceMock = $this->createMock(FieldInterface::class);
 
 		$this->collectorMock->method('createPlaylistNameField')
-			->with( $playlist[Parameters::PARAMETER_PLAYLIST_NAME],)
+			->with( $playlist[Parameters::PARAMETER_PLAYLIST_NAME])
 			->willReturn($fieldInterfaceMock);
 
 		$this->collectorMock->method('createUIDField')
-			->with($playlist[BaseParameters::PARAMETER_UID],)
+			->with($playlist[BaseParameters::PARAMETER_UID])
 			->willReturn($fieldInterfaceMock);
 
 		$this->collectorMock->method('createTimeLimitField')
@@ -244,7 +310,13 @@ class BuilderTest extends TestCase
 	}
 
 
-
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testHandleUserInput(): void
 	{

@@ -56,6 +56,9 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(1, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateNewSuccessfullyInsertsDataWithoutUID(): void
 	{
@@ -72,6 +75,9 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(1, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateNewThrowsExceptionOnRepositoryError(): void
 	{
@@ -88,6 +94,12 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->createNew($postData);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testToggleShuffleTurnsOnWhenInitiallyOff(): void
 	{
@@ -119,6 +131,12 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testToggleShuffleTurnsOffWhenInitiallyOn(): void
 	{
@@ -150,6 +168,11 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testToggleShuffleThrowsExceptionWhenPlaylistNotEditable(): void
 	{
@@ -170,6 +193,13 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->service->toggleShuffle($playlistId);
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testShufflePickingSuccessfullyUpdatesData(): void
 	{
@@ -202,6 +232,11 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testShufflePickingThrowsExceptionWhenPlaylistNotEditable(): void
 	{
@@ -224,6 +259,11 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->shufflePicking($playlistId, $shufflePicking);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testShufflePickingThrowsExceptionWhenPlaylistNotFound(): void
 	{
@@ -266,6 +306,12 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->updateSecure($postData);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testUpdate(): void
 	{
@@ -300,6 +346,12 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->updateExport($playlistId, $saveData);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDeleteSucceedsWhenPlaylistIsEditable(): void
 	{
@@ -324,6 +376,11 @@ class PlaylistsServiceTest extends TestCase
 		$this->assertEquals(1, $result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDeleteThrowsExceptionWhenPlaylistNotEditable(): void
 	{
@@ -348,6 +405,12 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->delete($playlistId);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testDeleteThrowsExceptionOnRepositoryError(): void
 	{

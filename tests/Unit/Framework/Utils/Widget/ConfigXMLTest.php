@@ -24,7 +24,6 @@ namespace Tests\Unit\Framework\Utils\Widget;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Widget\ConfigXML;
-use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -42,7 +41,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testEmptyString()
+	public function testEmptyString(): void
 	{
 		$TestClass = new ConfigXML();
 		$this->expectException('App\Framework\Exceptions\ModuleException');
@@ -56,7 +55,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testWrongXMLString()
+	public function testWrongXMLString(): void
 	{
 		$xml_string = '<?xml version="1.0" encoding="UTF-8"?><not_widget></not_widget>';
 		$TestClass  = new ConfigXML();
@@ -71,7 +70,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testParseBasicsDefaultsOnly()
+	public function testParseBasicsDefaultsOnly(): void
 	{
 		$xml_string = '<?xml version="1.0" encoding="UTF-8"?><widget></widget>';
 		$TestClass = new ConfigXML();
@@ -92,7 +91,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testParseBasicsStandard()
+	public function testParseBasicsStandard(): void
 	{
 		$TestClass = new ConfigXML();
 
@@ -109,7 +108,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testParseBasicsIAdea()
+	public function testParseBasicsIAdea(): void
 	{
 		$TestClass = new ConfigXML();
 
@@ -125,7 +124,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testWithUnavailableDefaultLanguage()
+	public function testWithUnavailableDefaultLanguage(): void
 	{
 		$TestClass = new ConfigXML();
 
@@ -144,7 +143,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testAnalyzeFullStandard()
+	public function testAnalyzeFullStandard(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/standard_config.xml');
 		$TestClass = new ConfigXML();
@@ -187,7 +186,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testAnalyzeFullIAdea()
+	public function testAnalyzeFullIAdea(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
 		$TestClass = new ConfigXML();
@@ -240,8 +239,12 @@ class ConfigXMLTest extends TestCase
 		$this->assertEquals($expected, $preferences['align']);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testParsePreferencesNoNaming()
+	public function testParsePreferencesNoNaming(): void
 	{
 		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
 		<widget xmlns       = "http://www.w3.org/ns/widgets"
@@ -255,8 +258,12 @@ class ConfigXMLTest extends TestCase
 		$this->assertEmpty($TestClass->getPreferences());
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testParsePreferencesWithNoName()
+	public function testParsePreferencesWithNoName(): void
 	{
 		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
 		<widget xmlns       = "http://www.w3.org/ns/widgets"
@@ -276,8 +283,12 @@ class ConfigXMLTest extends TestCase
 
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testParseDefaultDirection()
+	public function testParseDefaultDirection(): void
 	{
 		$xml_string = '<?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" dir="rtl" xml:lang="fa">
@@ -298,7 +309,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testHasEditablePreferencesTrue()
+	public function testHasEditablePreferencesTrue(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
 		$TestClass = new ConfigXML();
@@ -311,7 +322,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testHasEditablePreferencesFalse()
+	public function testHasEditablePreferencesFalse(): void
 	{
 		$xml_string = $this->getReadOnly();
 		$TestClass = new ConfigXML();
@@ -324,7 +335,7 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testHasEditablePreferencesWithNoPreference()
+	public function testHasEditablePreferencesWithNoPreference(): void
 	{
 		$xml_string = $this->getNoDefaultLanguage();
 		$TestClass = new ConfigXML();

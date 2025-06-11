@@ -81,7 +81,6 @@ class NumberFieldTest extends TestCase
 		$this->assertArrayHasKey('max', $rAttributes);
 
 		$this->assertSame('5', $rAttributes['min']);
-		$this->assertSame('15', $rAttributes['max']);;
-
+		$this->assertSame('15', $rAttributes['max']);
 	}
 }

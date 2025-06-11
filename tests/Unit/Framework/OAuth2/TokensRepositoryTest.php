@@ -87,7 +87,6 @@ class TokensRepositoryTest extends TestCase
 		);
 		$this->connectionMock->expects($this->once())->method('lastInsertId');
 		$this->repository->persistNewAuthCode($mockAuthCodeEntity);
-		$this->assertTrue(true); // Wenn kein Fehler geworfen wurde, war der Test erfolgreich
 	}
 
 	/**
@@ -155,9 +154,9 @@ class TokensRepositoryTest extends TestCase
 		$mockAccessTokenEntity->method('getUserIdentifier')->willReturn('test-user-id');
 		$mockAccessTokenEntity->method('getExpiryDateTime')->willReturn(new DateTimeImmutable('now +1 hour'));
 		$mockAccessTokenEntity->method('getScopes')->willReturn([]);
+		$this->connectionMock->expects($this->once())->method('insert');
 
 		$this->repository->persistNewAccessToken($mockAccessTokenEntity);
-		$this->assertTrue(true);
 	}
 
 	/**
@@ -224,8 +223,10 @@ class TokensRepositoryTest extends TestCase
 		$mockAccessTokenEntity->method('getScopes')->willReturn([]);
 		$mockRefreshTokenEntity->method('getAccessToken')->willReturn($mockAccessTokenEntity);
 
+		$this->connectionMock->expects($this->once())->method('insert');
+
 		$this->repository->persistNewRefreshToken($mockRefreshTokenEntity);
-		$this->assertTrue(true);
+
 	}
 
 	/**

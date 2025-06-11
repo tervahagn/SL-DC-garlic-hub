@@ -23,12 +23,14 @@ namespace Tests\Unit\Framework\Media;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\ShellExecutor;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Media\Ffmpeg;
 use App\Framework\Media\MediaProperties;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -40,6 +42,9 @@ class FfmpegTest extends TestCase
 	private MediaProperties&MockObject $mediaPropertiesMock;
 	private Ffmpeg $ffmpeg;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->configMock          = $this->createMock(Config::class);
@@ -51,7 +56,7 @@ class FfmpegTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testSetMetaData()
+	public function testSetMetaData(): void
 	{
 		$metadata = ['test' => 'test'];
 		$this->ffmpeg->setMetadata($metadata);
@@ -59,8 +64,13 @@ class FfmpegTest extends TestCase
 		$this->assertEquals($metadata, $this->ffmpeg->getMetadata());
 	}
 
+	/**
+	 * @throws FilesystemException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testInitWithValidFilePath()
+	public function testInitWithValidFilePath(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->configMock->expects($this->exactly(3))->method('getConfigValue')->willReturn('');
@@ -73,15 +83,19 @@ class FfmpegTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testGetDuration()
+	public function testGetDuration(): void
 	{
 		$this->assertSame(0.0, $this->ffmpeg->getDuration());
 		$this->mediaPropertiesMock->method('getDuration')->willReturn(10.0);
 		$this->assertSame(10.0, $this->ffmpeg->getDuration());
 	}
 
+	/**
+	 * @throws FilesystemException
+	 * @throws CoreException
+	 */
 	#[Group('units')]
-	public function testInitWithNonExistentFileThrowsException()
+	public function testInitWithNonExistentFileThrowsException(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(false);
 		$this->configMock->expects($this->exactly(3))->method('getConfigValue')->willReturn('');
@@ -92,8 +106,12 @@ class FfmpegTest extends TestCase
 		$this->ffmpeg->init('/path/to/video.mp4');
 	}
 
+	/**
+	 * @throws FilesystemException
+	 * @throws CoreException
+	 */
 	#[Group('units')]
-	public function testInitProbeFileNull()
+	public function testInitProbeFileNull(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->configMock->expects($this->exactly(3))->method('getConfigValue')->willReturn('');
@@ -111,7 +129,7 @@ class FfmpegTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testCreateVideoThumbnailWithValidVideo()
+	public function testCreateVideoThumbnailWithValidVideo(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(true);
@@ -127,7 +145,7 @@ class FfmpegTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCreateVideoThumbnailFails()
+	public function testCreateVideoThumbnailFails(): void
 	{
 		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(true);
 		$this->filesystemMock->method('fileExists')
@@ -148,8 +166,11 @@ class FfmpegTest extends TestCase
 	}
 
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
-	public function testCreateVideoThumbnailWithNoVideoStreamThrowsException()
+	public function testCreateVideoThumbnailWithNoVideoStreamThrowsException(): void
 	{
 		$this->mediaPropertiesMock->method('hasVideoStream')->willReturn(false);
 

@@ -27,7 +27,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use SlimSession\Helper;
 
 class SessionLocaleExtractorTest extends TestCase
 {
@@ -45,7 +44,7 @@ class SessionLocaleExtractorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testExtractLocaleFromSession()
+	public function testExtractLocaleFromSession(): void
 	{
 		$this->sessionMock->method('get')->with('locale')->willReturn('de_DE');
 
@@ -56,7 +55,7 @@ class SessionLocaleExtractorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testExtractLocaleFallbackToDefault()
+	public function testExtractLocaleFallbackToDefault(): void
 	{
 		$this->sessionMock->method('get')->with('locale')->willReturn(null);
 
@@ -67,7 +66,7 @@ class SessionLocaleExtractorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testExtractLocaleFallbackToDefaultForInvalidLocale()
+	public function testExtractLocaleFallbackToDefaultForInvalidLocale(): void
 	{
 		$this->sessionMock->method('get')->with('locale')->willReturn(['locale' => 'es_ES']);
 

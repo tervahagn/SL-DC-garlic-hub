@@ -29,7 +29,7 @@ class BaseValidator
 
 	public function isJson(string $value): bool
 	{
-		json_decode($value); // Just decode, don't need the result for validation
-		return json_last_error() === JSON_ERROR_NONE;
+		// Just decode, don't need the result for validation
+		return json_validate($value);
 	}
 }

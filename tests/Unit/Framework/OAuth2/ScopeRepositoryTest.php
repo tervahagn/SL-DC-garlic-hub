@@ -66,7 +66,6 @@ class ScopeRepositoryTest extends TestCase
 
 		$result = $this->repository->finalizeScopes([], 'authorization_code', $mockClientEntity);
 
-		$this->assertIsArray($result);
 		$this->assertEmpty($result);
 	}
 }

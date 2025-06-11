@@ -33,7 +33,6 @@ use PHPUnit\Framework\TestCase;
 class ParametersTest extends TestCase
 {
 	private Sanitizer&MockObject $sanitizerMock;
-	private Session&MockObject $sessionMock;
 	private Parameters $parameters;
 
 	/**
@@ -43,13 +42,13 @@ class ParametersTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock   = $this->createMock(Session::class);
+		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($this->sanitizerMock, $this->sessionMock);
+		$this->parameters    = new Parameters($this->sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]
-	public function testConstructor()
+	public function testConstructor(): void
 	{
 		$this->assertCount(6, $this->parameters->getCurrentParameters());
 		$this->assertSame('playlists', $this->parameters->getModuleName());

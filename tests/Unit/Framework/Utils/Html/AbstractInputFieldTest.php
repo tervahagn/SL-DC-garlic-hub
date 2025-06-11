@@ -16,9 +16,6 @@ class ConcreteInputField extends AbstractInputField
 class AbstractInputFieldTest extends TestCase
 {
 
-	/**
-	 * @throws Exception
-	 */
 	#[Group('units')]
 	public function testConstructorWithValidAttributes(): void
 	{

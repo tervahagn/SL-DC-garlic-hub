@@ -3,6 +3,7 @@
 namespace Tests\Unit\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Services\ExportService;
 use PHPUnit\Framework\Attributes\Group;
@@ -36,6 +37,9 @@ class ExportControllerTest extends TestCase
 		$this->exportController = new ExportController($this->exportServiceMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testExport(): void
 	{
@@ -52,6 +56,9 @@ class ExportControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testExportWithInvalidPlaylistId(): void
 	{
@@ -66,6 +73,9 @@ class ExportControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testExportWhenPlaylistNotFound(): void
 	{

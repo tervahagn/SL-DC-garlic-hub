@@ -23,6 +23,9 @@ class PlaylistTest extends TestCase
 	private MediaService&MockObject $mediaServiceMock;
 	private Playlist $playlist;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->mediaServiceMock = $this->createMock(MediaService::class);
@@ -99,6 +102,9 @@ class PlaylistTest extends TestCase
 		$this->assertSame($saveItem, $result['item']);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testInsertCheRecursionFailsSamePlaylist(): void
 	{
@@ -123,6 +129,9 @@ class PlaylistTest extends TestCase
 		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testInsertCheRecursionFailsSamePlaylistAfterRecursion(): void
 	{
@@ -151,6 +160,9 @@ class PlaylistTest extends TestCase
 		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testInsertFailsOnUpdatePosition(): void
 	{
@@ -181,6 +193,9 @@ class PlaylistTest extends TestCase
 		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testInsertFails(): void
 	{
@@ -189,7 +204,6 @@ class PlaylistTest extends TestCase
 		$position = 1;
 		$playlistTargetData = ['playlist_id' => 1, 'duration' => 300, 'filesize' => 2048, 'playlist_name' => 'Test'];
 		$playlistInsertData = ['playlist_id' => 2, 'duration' => 150, 'filesize' => 1024, 'playlist_name' => 'Insert'];
-		$playlistMetrics = ['some_metrics'];
 
 		$this->playlist->setUID(1);
 		$this->itemsRepositoryMock->expects($this->once())->method('beginTransaction');

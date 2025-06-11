@@ -110,6 +110,9 @@ class FormBuilderTest extends TestCase
 		$this->assertEmpty($result['hidden']);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareFormWithOnlyHiddenFields(): void
 	{

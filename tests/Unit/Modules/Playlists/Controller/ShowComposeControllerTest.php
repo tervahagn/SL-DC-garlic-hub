@@ -13,7 +13,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -90,6 +89,12 @@ class ShowComposeControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowCallsBuildMultizoneEditorForMultizoneMode(): void
 	{
@@ -105,6 +110,12 @@ class ShowComposeControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowCallsBuildMultizoneEditorForExternalMode(): void
 	{
@@ -120,6 +131,12 @@ class ShowComposeControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowCallsBuildMultizoneEditorForStandards(): void
 	{
@@ -136,6 +153,13 @@ class ShowComposeControllerTest extends TestCase
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowCallsUnsupported(): void
 	{
@@ -148,6 +172,12 @@ class ShowComposeControllerTest extends TestCase
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowFlashErrors(): void
 	{

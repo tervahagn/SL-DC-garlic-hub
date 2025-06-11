@@ -101,6 +101,7 @@ class PlaylistsDatatableServiceTest extends TestCase
 	}
 
 	/**
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testGetPlaylistsInUseWithEmptyIds(): void

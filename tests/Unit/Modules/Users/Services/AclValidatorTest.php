@@ -25,22 +25,20 @@ use App\Framework\Core\Acl\AclHelper;
 use App\Modules\Users\Services\AclValidator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AclValidatorTest extends TestCase
 {
 	private AclValidator $aclValidator;
-	private AclHelper&MockObject $aclHelperMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->aclHelperMock = $this->createMock(AclHelper::class);
+		$aclHelperMock = $this->createMock(AclHelper::class);
 
-		$this->aclValidator    = new AclValidator($this->aclHelperMock);
+		$this->aclValidator    = new AclValidator($aclHelperMock);
 	}
 
 	/**

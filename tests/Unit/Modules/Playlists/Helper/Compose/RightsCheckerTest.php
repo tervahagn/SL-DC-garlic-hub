@@ -10,6 +10,7 @@ use App\Modules\Playlists\Helper\Compose\RightsChecker;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -22,6 +23,9 @@ class RightsCheckerTest extends TestCase
 	private RightsChecker $checker;
 
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->translatorMock   = $this->createMock(Translator::class);
@@ -104,10 +108,6 @@ class RightsCheckerTest extends TestCase
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCheckInsertExternalPlaylistEdgeWithTimeLimit(): void
@@ -121,10 +121,6 @@ class RightsCheckerTest extends TestCase
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCheckInsertExternalPlaylistCoreWithTimeLimit(): void
@@ -138,10 +134,6 @@ class RightsCheckerTest extends TestCase
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCheckInsertExternalPlaylistCoreWithoutTimeLimit(): void
@@ -219,6 +211,12 @@ class RightsCheckerTest extends TestCase
 		$this->assertSame(['LANG_INSERT_CHANNELS' => 'Translated Channels Message'], $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCheckTimeLimitWithZero(): void
 	{
@@ -229,6 +227,12 @@ class RightsCheckerTest extends TestCase
 		$this->assertSame([], $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCheckTimeLimitWithNonZero(): void
 	{

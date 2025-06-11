@@ -24,15 +24,19 @@ use App\Framework\Database\Migration\Repository;
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-//Todo: Put this in Integrationtests
+//Todo: Put this in Integration tests
 class RepositoryTest extends TestCase
 {
 	private Repository $repository;
 	private Connection $connection;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->connection = DriverManager::getConnection([
@@ -46,6 +50,9 @@ class RepositoryTest extends TestCase
 		$this->repository->createMigrationTable();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateMigrationTable(): void
 	{
@@ -57,6 +64,9 @@ class RepositoryTest extends TestCase
 		$this->assertContains('_migration_version', $tableNames);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testGetAppliedMigrationsEmpty(): void
 	{
@@ -64,6 +74,10 @@ class RepositoryTest extends TestCase
 		$this->assertEmpty($appliedMigrations, 'Expected no applied migrations in a fresh database.');
 	}
 
+	/**
+	 * @throws DatabaseException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testApplySqlBatch(): void
 	{
@@ -82,6 +96,9 @@ class RepositoryTest extends TestCase
 		$this->assertContains(2, $versions);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testApplySqlBatchWithException(): void
 	{
@@ -95,6 +112,9 @@ class RepositoryTest extends TestCase
 		$this->repository->applySqlBatch($sqlBatch);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testShowColumns(): void
 	{

@@ -23,6 +23,7 @@ namespace Tests\Unit\Modules\Mediapool\Services;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use App\Modules\Mediapool\Services\NodesService;
@@ -55,7 +56,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsModuleAdmin()
+	public function testIsModuleAdmin(): void
 	{
 		$uid = 123;
 		$this->aclValidatorMock->expects($this->once())
@@ -74,7 +75,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testGetNodesRoot()
+	public function testGetNodesRoot(): void
 	{
 		$parentId = 0;
 		$nodes = [['node_id' => 1, 'name' => 'Root Node', 'children' => 0, 'parent_id' => 0, 'UID' => 123, 'visibility' => 1]];
@@ -104,7 +105,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testGetNodesSub()
+	public function testGetNodesSub(): void
 	{
 		$parentId = 21;
 		$nodes = [['node_id' => 1, 'name' => 'Sub Node', 'children' => 0, 'parent_id' => 0, 'UID' => 123, 'visibility' => 1]];
@@ -134,7 +135,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddRootNode()
+	public function testAddRootNode(): void
 	{
 		$uid = 123;
 		$name = 'New Root Node';
@@ -161,7 +162,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddRootNodeFails()
+	public function testAddRootNodeFails(): void
 	{
 		$uid = 123;
 		$name = 'New Root Node';
@@ -191,7 +192,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddSubNode()
+	public function testAddSubNode(): void
 	{
 		$uid = 123;
 		$parentNodeId = 1;
@@ -226,7 +227,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddSubNodeFailsNopParentNode()
+	public function testAddSubNodeFailsNopParentNode(): void
 	{
 		$uid = 123;
 		$parentNodeId = 1;
@@ -258,7 +259,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddSubNodeFailsNoRights()
+	public function testAddSubNodeFailsNoRights(): void
 	{
 		$uid = 123;
 		$parentNodeId = 1;
@@ -294,7 +295,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testEditNodeSucceed()
+	public function testEditNodeSucceed(): void
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
@@ -330,7 +331,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testEditNodeFailsByNode()
+	public function testEditNodeFailsByNode(): void
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
@@ -362,7 +363,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testEditNodeFailsByRights()
+	public function testEditNodeFailsByRights(): void
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
@@ -394,10 +395,10 @@ class NodesServiceTest extends TestCase
 	/**
 	 * @throws ModuleException
 	 * @throws DatabaseException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|FrameworkException
 	 */
 	#[Group('units')]
-	public function testMoveNodeSucceed()
+	public function testMoveNodeSucceed(): void
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
@@ -419,10 +420,12 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsByRegion()
+	public function testMoveNodeFailsByRegion(): void
 	{
 		$movedNodeId  = 1;
 		$targetNodeId = 2;
@@ -438,10 +441,12 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsByMovedNodeRootDir()
+	public function testMoveNodeFailsByMovedNodeRootDir(): void
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
@@ -463,10 +468,12 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsByTargetCreateRoot()
+	public function testMoveNodeFailsByTargetCreateRoot(): void
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 0;
@@ -488,10 +495,12 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsByTargetCreateRootWithBefore()
+	public function testMoveNodeFailsByTargetCreateRootWithBefore(): void
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
@@ -513,10 +522,12 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsByTargetCreateRootWithAfter()
+	public function testMoveNodeFailsByTargetCreateRootWithAfter(): void
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
@@ -545,7 +556,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteOneNodeSucceed()
+	public function testDeleteOneNodeSucceed(): void
 	{
 		$nodeId = 1;
 		$this->nodesService->setUID(354);
@@ -585,7 +596,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteFailsByNode()
+	public function testDeleteFailsByNode(): void
 	{
 		$nodeId = 1;
 		$this->nodesService->setUID(34);
@@ -617,7 +628,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteFailsByRights()
+	public function testDeleteFailsByRights(): void
 	{
 		$nodeId = 1;
 		$this->nodesService->setUID(34);
@@ -654,7 +665,7 @@ class NodesServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteNodeTreeSucceed()
+	public function testDeleteNodeTreeSucceed(): void
 	{
 		$nodeId = 1;
 		$this->nodesService->setUID(354);

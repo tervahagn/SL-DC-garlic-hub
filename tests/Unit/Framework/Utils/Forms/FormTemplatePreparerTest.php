@@ -3,21 +3,35 @@
 namespace Tests\Unit\Framework\Utils\Forms;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class FormTemplatePreparerTest extends TestCase
 {
 	private FormTemplatePreparer $formTemplatePreparer;
 	private Translator $translatorMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->formTemplatePreparer = new FormTemplatePreparer($this->translatorMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareUITemplateReturnsCorrectStructure(): void
 	{
@@ -61,6 +75,12 @@ class FormTemplatePreparerTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareUITemplateHandlesEmptyData(): void
 	{

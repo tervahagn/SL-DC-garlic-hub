@@ -7,6 +7,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Modules\Playlists\Collector\ContentReader;
 use App\Modules\Playlists\Collector\Contracts\ContentReaderInterface;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,6 +35,9 @@ class ContentReaderTest extends TestCase
 		$this->reader = new ContentReader($this->configMock, $this->fileSystemMock);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsReturnsContent(): void
 	{
@@ -53,6 +57,9 @@ class ContentReaderTest extends TestCase
 		$this->assertSame($fileContent, $result);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistItemsReturnsEmptyForInvalidPlaylistId(): void
 	{
@@ -63,6 +70,9 @@ class ContentReaderTest extends TestCase
 		$this->assertSame('', $result);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistPrefetchReturnsContent(): void
 	{
@@ -81,6 +91,9 @@ class ContentReaderTest extends TestCase
 		$this->assertSame($fileContent, $result);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistPrefetchReturnsEmptyForInvalidPlaylistId(): void
 	{
@@ -91,6 +104,9 @@ class ContentReaderTest extends TestCase
 		$this->assertSame('', $result);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistExclusiveReturnsContent(): void
 	{
@@ -109,6 +125,9 @@ class ContentReaderTest extends TestCase
 		$this->assertSame($fileContent, $result);
 	}
 
+	/**
+	 * @throws FilesystemException
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistExclusiveReturnsEmptyForInvalidPlaylistId(): void
 	{

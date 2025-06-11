@@ -59,7 +59,6 @@ class AuthServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -86,6 +85,11 @@ class AuthServiceTest extends TestCase
 		$this->assertEmpty($this->authService->getErrorMessage());
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testLoginInvalidCredentials(): void
 	{
@@ -103,6 +107,11 @@ class AuthServiceTest extends TestCase
 		$this->assertEquals('Invalid credentials.', $this->authService->getErrorMessage());
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testLoginUserDeleted(): void
 	{
@@ -121,6 +130,11 @@ class AuthServiceTest extends TestCase
 		$this->assertEquals('login//account_deleted', $this->authService->getErrorMessage());
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testLoginUserNotActive(): void
 	{
@@ -140,7 +154,6 @@ class AuthServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -163,6 +176,11 @@ class AuthServiceTest extends TestCase
 		$this->assertInstanceOf(UserEntity::class, $userEntity);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testLoginByCookieNoCookie(): void
 	{
@@ -174,6 +192,12 @@ class AuthServiceTest extends TestCase
 		$this->assertEquals('No cookie for autologin was found.', $this->authService->getErrorMessage());
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testLoginByCookieNoUID(): void
 	{
@@ -195,7 +219,6 @@ class AuthServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -218,7 +241,6 @@ class AuthServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */

@@ -23,23 +23,27 @@ namespace Tests\Unit\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private Sanitizer&MockObject $sanitizerMock;
-	private Session&MockObject $sessionMock;
 	private Parameters $parameters;
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock   = $this->createMock(Session::class);
+		$sanitizerMock = $this->createMock(Sanitizer::class);
+		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($this->sanitizerMock, $this->sessionMock);
+		$this->parameters    = new Parameters($sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]

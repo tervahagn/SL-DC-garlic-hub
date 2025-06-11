@@ -4,15 +4,21 @@ namespace Tests\Unit\Modules\Playlists\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
@@ -25,6 +31,9 @@ class ShowDatatableControllerTest extends TestCase
 	private Session&MockObject $sessionMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->facadeMock           = $this->createMock(Facade::class);
@@ -39,6 +48,13 @@ class ShowDatatableControllerTest extends TestCase
 		$this->controller = new ShowDatatableController($this->facadeMock, $this->templatePreparerMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testShowMethodReturnsResponseWithSerializedTemplateData(): void
 	{

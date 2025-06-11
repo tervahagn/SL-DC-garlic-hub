@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Core;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
 use App\Framework\Exceptions\FrameworkException;
+use DateTime;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -46,6 +47,9 @@ class CookieTest extends TestCase
 		$this->cookie    = new Cookie($this->cryptMock);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testCreateCookie(): void
 	{
@@ -54,7 +58,7 @@ class CookieTest extends TestCase
 		$setcookie->expects($this->once())->willReturn(['content', 'checksum']);
 
 		$contents = ['UID' => 123, 'LSID' => 'test_session'];
-		$expire = new \DateTime('+1 day');
+		$expire = new DateTime('+1 day');
 
 		$this->expectOutputRegex('/.*/'); // Prevent PHP warnings from setcookie()
 
@@ -72,8 +76,11 @@ class CookieTest extends TestCase
 		$this->cookie->getHashedCookie('test_cookie');
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
-	public function testgetHashedCookieContetnFalse(): void
+	public function testgetHashedCookieContentFalse(): void
 	{
 		$this->cryptMock->expects($this->once())->method('createSha256Hash')->willReturn(hash('sha256','mocked_hash'));
 
@@ -91,10 +98,13 @@ class CookieTest extends TestCase
 		$this->expectException(FrameworkException::class);
 		$this->expectExceptionMessage('Cookie failed to set.');
 
-		$this->cookie->createCookie('nocookie', 'content', new \DateTime('+1 day'));
+		$this->cookie->createCookie('no_cookie', 'content', new DateTime('+1 day'));
 	}
 
 
+	/**
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetCookie(): void
 	{
@@ -111,6 +121,9 @@ class CookieTest extends TestCase
 		$this->assertEquals($contents, $result);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetCookieNotExists(): void
 	{

@@ -22,6 +22,9 @@ class WidgetsControllerTest extends TestCase
 	private StreamInterface&MockObject $streamInterfaceMock;
 	private WidgetsController $controller;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->requestMock           = $this->createMock(ServerRequestInterface::class);

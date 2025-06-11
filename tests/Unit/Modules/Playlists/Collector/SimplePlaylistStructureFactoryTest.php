@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Modules\Playlists\Collector;
 
-use App\Modules\Playlists\Collector\SimplePlaylistStructure;
 use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +20,7 @@ class SimplePlaylistStructureFactoryTest extends TestCase
 
 		$this->assertSame($items, $entity->getItems());
 		$this->assertSame($prefetch, $entity->getPrefetch());
-		$this->assertSame($exclusive, $entity->getExclusive());;
+		$this->assertSame($exclusive, $entity->getExclusive());
 	}
 
 }

@@ -24,6 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Middleware\SessionMiddleware;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -39,6 +40,9 @@ class SessionMiddlewareTest extends TestCase
 	private RequestHandlerInterface&MockObject $handlerMock;
 	private ServerRequestInterface&MockObject $requestMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->sessionMock = $this->createMock(Session::class);
@@ -48,6 +52,9 @@ class SessionMiddlewareTest extends TestCase
 		$this->requestMock = $this->createMock(ServerRequestInterface::class);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testProcessAddsAttributesToRequest(): void
 	{

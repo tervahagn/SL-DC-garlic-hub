@@ -127,7 +127,7 @@ class UiTemplatesPreparerTest extends TestCase
 				'unit_two' => 'Unit Two',
 			]);
 
-		$result = $this->preparer->buildMultizoneEditor($playlist);
+		$this->preparer->buildMultizoneEditor($playlist);
 
 		$expected = [
 			'main_layout' => [

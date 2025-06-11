@@ -42,11 +42,11 @@ class TransactionsTraitTest extends TestCase
 		{
 			use TransactionsTrait;
 
-			public function __construct(private Connection $connection)
+			public function __construct(private readonly Connection $connection)
 			{
 			}
 
-			public function __get($name)
+			public function __get($name): string
 			{
 				return $this->$name;
 			}

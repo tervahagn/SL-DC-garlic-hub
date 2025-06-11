@@ -40,6 +40,7 @@ class ItemsFactoryTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCreateItemReturnsImage(): void
@@ -59,6 +60,7 @@ class ItemsFactoryTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCreateItemReturnsVideo(): void
@@ -78,6 +80,7 @@ class ItemsFactoryTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCreateItemReturnsAudio(): void
@@ -96,7 +99,7 @@ class ItemsFactoryTest extends TestCase
 	}
 
 	/**
-	 * @throws CoreException
+	 * @throws CoreException|ModuleException
 	 */
 	#[Group('units')]
 	public function testCreateItemReturnsWidget(): void
@@ -116,6 +119,7 @@ class ItemsFactoryTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCreateItemReturnsText(): void
@@ -151,6 +155,10 @@ class ItemsFactoryTest extends TestCase
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testCreateItemReturnsPlaylistType(): void
 	{
@@ -166,6 +174,9 @@ class ItemsFactoryTest extends TestCase
 		$this->assertInstanceOf(ItemInterface::class, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testCreateItemThrowsExceptionForUnsupportedType(): void
 	{

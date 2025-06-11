@@ -40,7 +40,6 @@ class BuilderTest extends TestCase
 		$this->builder->buildPagerLinks();
 
 		$pagerLinks = $this->builder->getPagerLinks();
-		$this->assertIsArray($pagerLinks);
 		$this->assertCount(9, $pagerLinks);
 
 	}
@@ -180,7 +179,7 @@ class BuilderTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testcreateDropdown(): void
+	public function testCreateDropdown(): void
 	{
 		$this->builder->createDropDown(10, 1000, 100);
 

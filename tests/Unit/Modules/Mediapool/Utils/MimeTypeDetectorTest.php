@@ -25,6 +25,7 @@ use App\Modules\Mediapool\Utils\FileInfoWrapper;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -34,8 +35,10 @@ class MimeTypeDetectorTest extends TestCase
 	private FileInfoWrapper&MockObject $fileInfoWrapperMock;
 
 	private MimeTypeDetector $mimeTypeDetector;
-	private string $baseDirectory;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->fileInfoWrapperMock = $this->createMock(FileInfoWrapper::class);
@@ -47,7 +50,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromFileReturnsCorrectMimeType()
+	public function testDetectFromFileReturnsCorrectMimeType(): void
 	{
 		$filePath = 'some/testfile.txt';
 		$this->fileInfoWrapperMock->method('fileExists')
@@ -65,7 +68,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromFileThrowsExceptionForNonExistentFile()
+	public function testDetectFromFileThrowsExceptionForNonExistentFile(): void
 	{
 		$this->fileInfoWrapperMock->method('fileExists')->willReturn(false);
 		$this->fileInfoWrapperMock->expects($this->never())->method('detectMimeTypeFromFile');
@@ -80,7 +83,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromFileReturnsWidgetMimeTypeForWgtExtension()
+	public function testDetectFromFileReturnsWidgetMimeTypeForWgtExtension(): void
 	{
 		$filePath = 'some/path/to/a/testfile.wgt';
 		$this->fileInfoWrapperMock->method('fileExists')->willReturn(true);
@@ -95,9 +98,9 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromFileFails()
+	public function testDetectFromFileFails(): void
 	{
-		$filePath = 'some/undetectableMime.taype';
+		$filePath = 'some/undetectableMime.type';
 		$this->fileInfoWrapperMock->method('fileExists')->willReturn(true);
 		$this->fileInfoWrapperMock->expects($this->once())->method('detectMimeTypeFromFile')
 			->with($filePath)
@@ -112,7 +115,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromStreamReturnsCorrectMimeType()
+	public function testDetectFromStreamReturnsCorrectMimeType(): void
 	{
 		$stream        = 'some stream';
 		$streamContent = 'some stream content';
@@ -135,7 +138,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromStreamThrowsExceptionForInvalidStream()
+	public function testDetectFromStreamThrowsExceptionForInvalidStream(): void
 	{
 		$stream        = 'some not stream';
 		$this->fileInfoWrapperMock->method('isStream')
@@ -154,7 +157,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromStreamThrowsModuleExceptionForUnreadableStream()
+	public function testDetectFromStreamThrowsModuleExceptionForUnreadableStream(): void
 	{
 		$stream        = 'some stream';
 		$this->fileInfoWrapperMock->method('isStream')
@@ -175,7 +178,7 @@ class MimeTypeDetectorTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testDetectFromStreamThrowsModuleExceptionForUnknownMimeType()
+	public function testDetectFromStreamThrowsModuleExceptionForUnknownMimeType(): void
 	{
 		$stream        = 'some stream';
 		$streamContent = 'some stream content';
@@ -197,7 +200,7 @@ class MimeTypeDetectorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetermineExtensionByTypeReturnsCorrectExtension()
+	public function testDetermineExtensionByTypeReturnsCorrectExtension(): void
 	{
 		$mimeTypeMap = [
 			'image/jpeg' => 'jpg',
@@ -214,7 +217,7 @@ class MimeTypeDetectorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetermineExtensionByTypeReturnsBinForUnknownMimeType()
+	public function testDetermineExtensionByTypeReturnsBinForUnknownMimeType(): void
 	{
 		$this->assertEquals('bin', $this->mimeTypeDetector->determineExtensionByType('unknown/mime-type'));
 	}

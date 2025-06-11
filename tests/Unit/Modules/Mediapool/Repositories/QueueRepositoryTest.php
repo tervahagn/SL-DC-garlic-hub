@@ -24,12 +24,16 @@ namespace Tests\Unit\Modules\Mediapool\Repositories;
 use App\Modules\Mediapool\Repositories\QueueRepository;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class QueueRepositoryTest extends TestCase
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
-	public function testConstructor()
+	public function testConstructor(): void
 	{
 		$connectionMock = $this->createMock(Connection::class);
 		$repository = new QueueRepository($connectionMock);

@@ -61,6 +61,10 @@ class ContentDataPreparerTest extends TestCase
 		$this->assertSame($preferences, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareContentDataSuccess(): void
 	{
@@ -88,6 +92,9 @@ class ContentDataPreparerTest extends TestCase
 		$this->assertSame(['preference1' => '&lt;value&gt;', 'preference2' => 123], $result);
 	}
 
+	/**
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareContentDataThrowsModuleExceptionForMandatoryField(): void
 	{
@@ -115,6 +122,10 @@ class ContentDataPreparerTest extends TestCase
 		$this->contentDataPreparer->prepareContentData($configData, $requestData);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareContentDataWithInitIgnoresMandatoryFields(): void
 	{

@@ -35,7 +35,7 @@ class AbstractAclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testGetConfig()
+	public function testGetConfig(): void
 	{
 		$configMock = $this->createMock(Config::class);
 		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
@@ -43,10 +43,12 @@ class AbstractAclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsSimpleAdminReturnsTrueWhenIsModuleAdmin()
+	public function testIsSimpleAdminReturnsTrueWhenIsModuleAdmin(): void
 	{
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(true);
 		$this->aclHelperMock->expects($this->never())->method('isSubAdmin');
@@ -55,10 +57,12 @@ class AbstractAclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsSimpleAdminReturnsTrueWhenIsSubAdmin()
+	public function testIsSimpleAdminReturnsTrueWhenIsSubAdmin(): void
 	{
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(false);
 		$this->aclHelperMock->expects($this->once())->method('isSubAdmin')->with(1, 'testModule')->willReturn(true);
@@ -67,10 +71,12 @@ class AbstractAclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsSimpleAdminReturnsFalse()
+	public function testIsSimpleAdminReturnsFalse(): void
 	{
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(false);
 		$this->aclHelperMock->expects($this->once())->method('isSubAdmin')->with(1, 'testModule')->willReturn(false);
@@ -84,7 +90,7 @@ class AbstractAclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsAdminModuleAdmin()
+	public function testIsAdminModuleAdmin(): void
 	{
 		$UID = 1;
 
@@ -105,7 +111,7 @@ class AbstractAclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsAdminSubAdminAccess()
+	public function testIsAdminSubAdminAccess(): void
 	{
 		$UID = 1;
 		$unit = ['UID' => 1, 'company_id' => 4];
@@ -139,7 +145,7 @@ class AbstractAclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsAdminFails()
+	public function testIsAdminFails(): void
 	{
 		$UID = 1;
 		$unit = ['UID' => 1, 'company_id' => 4];

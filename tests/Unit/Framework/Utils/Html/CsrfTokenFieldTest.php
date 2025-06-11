@@ -33,6 +33,9 @@ class CsrfTokenFieldTest extends TestCase
 
 	private Session&MockObject $sessionMock;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->sessionMock = $this->createMock(Session::class);

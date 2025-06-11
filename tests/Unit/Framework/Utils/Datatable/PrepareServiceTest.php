@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Framework\Utils\Datatable;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\Paginator\Preparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Results\BodyPreparer;
@@ -28,6 +29,7 @@ use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\Html\FormBuilder;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +41,9 @@ class PrepareServiceTest extends TestCase
 	private Preparer&MockObject $paginationPreparerMock;
 	private FormBuilder&MockObject $formBuilderMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->headerPreparerMock = $this->createMock(HeaderPreparer::class);
@@ -71,6 +76,9 @@ class PrepareServiceTest extends TestCase
 		$this->assertSame($preparedForm, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testPreparePaginationReturnsPreparedPaginationArray(): void
 	{
@@ -96,6 +104,9 @@ class PrepareServiceTest extends TestCase
 		$this->assertSame(['links' => $preparedLinks, 'dropdown' => $preparedDropdown], $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareDatatableHeaderReturnsPreparedHeaderArray(): void
 	{

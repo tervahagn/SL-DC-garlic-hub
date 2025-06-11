@@ -21,9 +21,11 @@
 
 namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\Paginator\Preparer;
 use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -45,6 +47,9 @@ class PreparerTest extends TestCase
 		$this->preparer                 = new Preparer($this->urlBuilderMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testPrepareLinks(): void
 	{
@@ -61,9 +66,9 @@ class PreparerTest extends TestCase
 		$this->baseFilterParametersMock->expects($this->exactly(3))
 			->method('getValueOfParameter')
 			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_SORT_COLUMN, 'name'],
-				[BaseFilterParameters::PARAMETER_SORT_ORDER, 'asc'],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 100]
+				[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN, 'name'],
+				[BaseFilterParametersInterface::PARAMETER_SORT_ORDER, 'asc'],
+				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, 100]
 			]);
 		$this->urlBuilderMock->expects($this->once())->method('setSortColumn')
 			->with('name')->willReturn($this->urlBuilderMock);
@@ -94,6 +99,9 @@ class PreparerTest extends TestCase
 		$this->assertSame($expectedResult, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testRenderElementsPerSiteDropDown(): void
 	{
@@ -106,10 +114,10 @@ class PreparerTest extends TestCase
 		$this->baseFilterParametersMock
 			->method('getValueOfParameter')
 			->willReturnMap([
-				[BaseFilterParameters::PARAMETER_SORT_COLUMN, 'name'],
-				[BaseFilterParameters::PARAMETER_SORT_ORDER, 'asc'],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PAGE, $elementsPage],
-				[BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE, 20]
+				[BaseFilterParametersInterface::PARAMETER_SORT_COLUMN, 'name'],
+				[BaseFilterParametersInterface::PARAMETER_SORT_ORDER, 'asc'],
+				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, $elementsPage],
+				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, 20]
 			]);
 
 		$this->urlBuilderMock->expects($this->once())->method('setSortColumn')

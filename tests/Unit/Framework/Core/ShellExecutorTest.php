@@ -25,7 +25,6 @@ use App\Framework\Core\ShellExecutor;
 use App\Framework\Exceptions\CoreException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class ShellExecutorTest extends TestCase
 {
@@ -40,7 +39,7 @@ class ShellExecutorTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testExecuteWithValidCommand()
+	public function testExecuteWithValidCommand(): void
 	{
 		$this->executor->setCommand('echo "Hello, World!"');
 		$result = $this->executor->execute();
@@ -50,14 +49,14 @@ class ShellExecutorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testExecuteWithoutCommandThrowsException()
+	public function testExecuteWithoutCommandThrowsException(): void
 	{
 		$this->expectException(CoreException::class);
 		$this->executor->execute();
 	}
 
 	#[Group('units')]
-	public function testLoggerCalledOnError()
+	public function testLoggerCalledOnError(): void
 	{
 		$this->expectException(CoreException::class);
 		$this->expectExceptionMessageMatches('*Command failed*');
@@ -66,8 +65,11 @@ class ShellExecutorTest extends TestCase
 		$this->executor->execute();
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
-	public function testExecuteSimpleWithValidCommand()
+	public function testExecuteSimpleWithValidCommand(): void
 	{
 		$this->executor->setCommand('echo "Hello, World!"');
 		$result = $this->executor->executeSimple();

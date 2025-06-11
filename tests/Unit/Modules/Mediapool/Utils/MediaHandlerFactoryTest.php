@@ -68,7 +68,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testCreateHandlerReturnsImageForImageMimeType()
+	public function testCreateHandlerReturnsImageForImageMimeType(): void
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
@@ -93,7 +93,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testCreateHandlerReturnsVideoForVideoMimeType()
+	public function testCreateHandlerReturnsVideoForVideoMimeType(): void
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
@@ -118,7 +118,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testCreateHandlerReturnsPdfForPdfMimeType()
+	public function testCreateHandlerReturnsPdfForPdfMimeType(): void
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
@@ -143,7 +143,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testCreateHandlerReturnsWidgetForWidgetMimeType()
+	public function testCreateHandlerReturnsWidgetForWidgetMimeType(): void
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
@@ -168,7 +168,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testCreateHandlerReturnsMiscellaneousForMiscellaneousMimeType()
+	public function testCreateHandlerReturnsMiscellaneousForMiscellaneousMimeType(): void
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
@@ -189,7 +189,7 @@ class MediaHandlerFactoryTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCreateHandlerThrowsExceptionForUnsupportedMimeType()
+	public function testCreateHandlerThrowsExceptionForUnsupportedMimeType(): void
 	{
 		$this->expectException(CoreException::class);
 		$this->mediaHandlerFactory->createHandler('unsupported/mime');

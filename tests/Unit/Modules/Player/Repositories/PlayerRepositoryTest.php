@@ -5,6 +5,9 @@ namespace Tests\Unit\Modules\Player\Repositories;
 use App\Modules\Player\Repositories\PlayerRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Platforms\MariaDBPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
@@ -37,7 +40,7 @@ class PlayerRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindAllForDashboardSqlite(): void
 	{
-		$sqliteplatform = new \Doctrine\DBAL\Platforms\SQLitePlatform();
+		$sqliteplatform = new SQLitePlatform();
 		$this->connectionMock->expects($this->once())
 			->method('getDatabasePlatform')
 			->willReturn($sqliteplatform);
@@ -64,7 +67,7 @@ class PlayerRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindAllForDashboardMariaDB(): void
 	{
-		$sqliteplatform = new \Doctrine\DBAL\Platforms\MariaDBPlatform();
+		$sqliteplatform = new MariaDBPlatform();
 		$this->connectionMock->expects($this->once())
 			->method('getDatabasePlatform')
 			->willReturn($sqliteplatform);
@@ -90,7 +93,7 @@ class PlayerRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testFindAllForDashboardEmpty(): void
 	{
-		$sqliteplatform = new \Doctrine\DBAL\Platforms\PostgreSQLPlatform();
+		$sqliteplatform = new PostgreSQLPlatform();
 		$this->connectionMock->expects($this->once())
 			->method('getDatabasePlatform')
 			->willReturn($sqliteplatform);

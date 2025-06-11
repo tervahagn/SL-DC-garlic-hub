@@ -5,9 +5,14 @@ namespace Tests\Unit\Framework\Dashboards;
 use App\Framework\Core\SystemStats;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Dashboards\SystemDashboard;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class SystemDashboardTest extends TestCase
 {
@@ -15,6 +20,9 @@ class SystemDashboardTest extends TestCase
 	private Translator&MockObject $translatorMock;
 	private SystemDashboard $systemDashboard;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->systemStatsMock = $this->createMock(SystemStats::class);
@@ -31,6 +39,12 @@ class SystemDashboardTest extends TestCase
 		$this->assertSame('system', $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testGetTitleReturnsCorrectTranslatedValue(): void
 	{
@@ -44,6 +58,12 @@ class SystemDashboardTest extends TestCase
 		$this->assertSame('System Dashboard', $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testRenderContentReturnsCorrectHtml(): void
 	{

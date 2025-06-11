@@ -51,7 +51,6 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
 		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
 		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
@@ -89,7 +88,6 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
 		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
 		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
@@ -113,7 +111,6 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
 		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
 		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);

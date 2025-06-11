@@ -24,7 +24,7 @@ class FileInfoWrapperTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDestructClosesFileInfo()
+	public function testDestructClosesFileInfo(): void
 	{
 		$fileInfoWrapperMock = $this->getMockBuilder(FileInfoWrapper::class)
 			->disableOriginalConstructor()
@@ -65,21 +65,21 @@ class FileInfoWrapperTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetectFromStreamReturnsCorrectMimeType()
+	public function testDetectFromStreamReturnsCorrectMimeType(): void
 	{
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent('test content');
 		$this->assertEquals('text/plain', $mimeType);
 	}
 
 	#[Group('units')]
-	public function testDetectFromStreamReturnsFalse()
+	public function testDetectFromStreamReturnsFalse(): void
 	{
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent('');
 		$this->assertEquals('application/x-empty', $mimeType);
 	}
 
 	#[Group('units')]
-	public function testDetectIsStreamSucceed()
+	public function testDetectIsStreamSucceed(): void
 	{
 		$stream = fopen('php://memory', 'r+');
 		fwrite($stream, 'test content');
@@ -89,7 +89,7 @@ class FileInfoWrapperTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testGetStreamContent()
+	public function testGetStreamContent(): void
 	{
 		$stream = fopen('php://memory', 'r+');
 		fwrite($stream, 'test content');

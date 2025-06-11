@@ -26,6 +26,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\BuildService;
+use App\Framework\Utils\Datatable\Results\Builder;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 use App\Framework\Utils\Html\DropdownField;
 use App\Framework\Utils\Html\EmailField;
@@ -315,6 +316,9 @@ class DatatableBuilderTest extends TestCase
 		$this->assertEquals($emailFieldMock, $form[Parameters::PARAMETER_EMAIL]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateTableFieldsAddsCorrectFieldsForCoreAndEnterpriseEditions(): void
 	{
@@ -322,7 +326,7 @@ class DatatableBuilderTest extends TestCase
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => Config::PLATFORM_EDITION_CORE]));
 
-		$resultsBuilderMock = $this->createMock(\App\Framework\Utils\Datatable\Results\Builder::class);
+		$resultsBuilderMock = $this->createMock(Builder::class);
 		$this->buildServiceMock->method('getResultsBuilder')->willReturn($resultsBuilderMock);
 
 		$resultsBuilderMock->expects($this->exactly(6))
@@ -339,6 +343,9 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->createTableFields();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testCreateTableFieldsAddsLimitedFieldsForEdgeEdition(): void
 	{
@@ -346,7 +353,7 @@ class DatatableBuilderTest extends TestCase
 			->method('getConfig')
 			->willReturn($this->createConfiguredMock(Config::class, ['getEdition' => Config::PLATFORM_EDITION_EDGE]));
 
-		$resultsBuilderMock = $this->createMock(\App\Framework\Utils\Datatable\Results\Builder::class);
+		$resultsBuilderMock = $this->createMock(Builder::class);
 		$this->buildServiceMock->method('getResultsBuilder')->willReturn($resultsBuilderMock);
 
 		$resultsBuilderMock->expects($this->exactly(3))

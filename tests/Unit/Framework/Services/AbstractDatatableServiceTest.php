@@ -54,6 +54,9 @@ class AbstractDatatableServiceTest extends TestCase
 	private BaseParameters&MockObject $parametersMock;
 	private ConcreteDatatableService $service;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->loggerMock = $this->createMock(LoggerInterface::class);

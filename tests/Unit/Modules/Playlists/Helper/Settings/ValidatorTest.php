@@ -3,11 +3,17 @@
 namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ValidatorTest extends TestCase
 {
@@ -15,6 +21,9 @@ class ValidatorTest extends TestCase
 	private Translator&MockObject $translatorMock;
 	private Parameters&MockObject $parametersMock;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->translatorMock = $this->createMock(Translator::class);
@@ -22,6 +31,13 @@ class ValidatorTest extends TestCase
 		$this->validator = new Validator($this->translatorMock, $this->parametersMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateUserInputWithErrors(): void
 	{
@@ -44,6 +60,13 @@ class ValidatorTest extends TestCase
 		$this->assertEquals($expectedErrors, $errors);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateUserInputWithErrors2(): void
 	{
@@ -66,6 +89,13 @@ class ValidatorTest extends TestCase
 		$this->assertEquals($expectedErrors, $errors);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateUserInputPasses(): void
 	{

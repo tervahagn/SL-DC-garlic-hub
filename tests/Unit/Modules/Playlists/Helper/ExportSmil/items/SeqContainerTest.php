@@ -9,6 +9,7 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Conditional;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Properties;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -21,6 +22,9 @@ class SeqContainerTest extends TestCase
 	private Properties $propertiesMock;
 	private SeqContainer $seqContainer;
 
+	/**
+	 * @throws Exception
+	 */
 	public function setUp(): void
 	{
 		$this->configMock = $this->createMock(Config::class);

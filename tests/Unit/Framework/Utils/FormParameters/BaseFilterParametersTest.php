@@ -63,11 +63,14 @@ class BaseFilterParametersTest extends TestCase
 		$this->baseFilterParameters = new ConcreteFilterBaseParameters($this->sanitizerMock, $this->sessionMock, 'testKeyStore');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testSetParameterDefaultValuesSuccessfullySetsDefault()
+	public function testSetParameterDefaultValuesSuccessfullySetsDefault(): void
 	{
 		$this->baseFilterParameters->setParameterDefaultValues('column_name');
-		$this->assertSame('column_name', $this->baseFilterParameters->getDefaultValueOfParameter(BaseFilterParameters::PARAMETER_SORT_COLUMN));
+		$this->assertSame('column_name', $this->baseFilterParameters->getDefaultValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN));
 	}
 
 
@@ -75,7 +78,7 @@ class BaseFilterParametersTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testSetElementsParametersToNullSetsValuesToZero()
+	public function testSetElementsParametersToNullSetsValuesToZero(): void
 	{
 		$this->baseFilterParameters->setValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, 10);
 		$this->baseFilterParameters->setValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, 10);
@@ -93,24 +96,27 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->assertSame(
 			0,
-			$this->baseFilterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE)
+			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE)
 		);
 		$this->assertSame(
 			0,
-			$this->baseFilterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE)
+			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE)
 		);
 	}
 
 	#[Group('units')]
-	public function testAddCompany()
+	public function testAddCompany(): void
 	{
 		$this->baseFilterParameters->addCompany();
 
-		$this->assertTrue($this->baseFilterParameters->hasParameter(BaseFilterParameters::PARAMETER_COMPANY_ID));
+		$this->assertTrue($this->baseFilterParameters->hasParameter(BaseFilterParametersInterface::PARAMETER_COMPANY_ID));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testParseInputFilterAllUsersUsesStoredSessionParameters()
+	public function testParseInputFilterAllUsersUsesStoredSessionParameters(): void
 	{
 		$this->baseFilterParameters->setUserInputs([]);
 		$sessionStored = [
@@ -138,7 +144,7 @@ class BaseFilterParametersTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testParseInputFilterAllUsersParsesAllParameters()
+	public function testParseInputFilterAllUsersParsesAllParameters(): void
 	{
 		$this->baseFilterParameters->setUserInputs([]);
 
@@ -148,12 +154,15 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->baseFilterParameters->parseInputFilterAllUsers();
 
-		$this->assertSame(10, $this->baseFilterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PER_PAGE));
-		$this->assertSame(1, $this->baseFilterParameters->getValueOfParameter(BaseFilterParameters::PARAMETER_ELEMENTS_PAGE));
+		$this->assertSame(10, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
+		$this->assertSame(1, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testParseInputFilterAllUsersStoresParametersInSession()
+	public function testParseInputFilterAllUsersStoresParametersInSession(): void
 	{
 		$baseFilterParameters1 = new ConcreteFilterBaseParameters($this->sanitizerMock, $this->sessionMock, '');
 

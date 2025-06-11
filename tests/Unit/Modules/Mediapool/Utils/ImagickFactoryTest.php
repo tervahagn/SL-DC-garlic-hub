@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 class ImagickFactoryTest extends TestCase
 {
 	#[Group('units')]
-	public function testCreateImagickReturnsImagickInstance()
+	public function testCreateImagickReturnsImagickInstance(): void
 	{
 		$factory = new ImagickFactory();
 		$imagick = $factory->createImagick();
@@ -36,7 +36,7 @@ class ImagickFactoryTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCreateImagickCreatesNewInstanceEachTime()
+	public function testCreateImagickCreatesNewInstanceEachTime(): void
 	{
 		$factory = new ImagickFactory();
 		$imagick1 = $factory->createImagick();

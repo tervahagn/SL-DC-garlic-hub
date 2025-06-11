@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Database\Migration;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
 use App\Framework\Exceptions\DatabaseException;
+use ArrayIterator;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\DirectoryListing;
 use League\Flysystem\FileAttributes;
@@ -72,7 +73,7 @@ class RunnerTest extends TestCase
 
 		$mockDirectoryListing = $this->createMock(DirectoryListing::class);
 		$mockDirectoryListing->method('getIterator')
-			->willReturn(new \ArrayIterator([$fileMock1, $fileMock2]));
+			->willReturn(new ArrayIterator([$fileMock1, $fileMock2]));
 
 		$this->filesystemMock->expects($this->once())
 			->method('listContents')
@@ -90,6 +91,11 @@ class RunnerTest extends TestCase
 		$this->assertTrue($this->runner->isApplied());
 	}
 
+	/**
+	 * @throws FilesystemException
+	 * @throws DatabaseException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testExecuteWithOutMigrationsTable(): void
 	{
@@ -102,6 +108,12 @@ class RunnerTest extends TestCase
 		$this->assertFalse($this->runner->isApplied());
 	}
 
+	/**
+	 * @throws DatabaseException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws FilesystemException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testExecuteWithoutMigrations(): void
 	{
@@ -123,6 +135,12 @@ class RunnerTest extends TestCase
 		$this->assertFalse($this->runner->isApplied());
 	}
 
+	/**
+	 * @throws DatabaseException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws FilesystemException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testRollbackWithMigrations(): void
 	{
@@ -140,7 +158,7 @@ class RunnerTest extends TestCase
 
 		$mockDirectoryListing = $this->createMock(DirectoryListing::class);
 		$mockDirectoryListing->method('getIterator')
-			->willReturn(new \ArrayIterator([$fileMock1, $fileMock2]));
+			->willReturn(new ArrayIterator([$fileMock1, $fileMock2]));
 
 		$this->filesystemMock->method('listContents')
 			->willReturn($mockDirectoryListing);

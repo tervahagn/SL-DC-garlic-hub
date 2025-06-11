@@ -135,7 +135,7 @@ class NestedSetHelperTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodesToRightForDeletionMock()
+	public function testMoveNodesToRightForDeletionMock(): void
 	{
 		$rootId = 1;
 		$width  = 6;

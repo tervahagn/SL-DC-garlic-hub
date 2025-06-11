@@ -130,7 +130,11 @@ class FormElementsCreatorTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCreateTimeLimitField(): void
@@ -165,6 +169,7 @@ class FormElementsCreatorTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCreateHiddenPlaylistIdField(): void
@@ -190,11 +195,12 @@ class FormElementsCreatorTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCreatePlaylistModeField(): void
 	{
-		$value = 2;
+		$value = "2";
 		$expectedField = $this->createMock(FieldInterface::class);
 
 		$this->formBuilderMock
@@ -214,6 +220,7 @@ class FormElementsCreatorTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testCreateCSRFTokenField(): void

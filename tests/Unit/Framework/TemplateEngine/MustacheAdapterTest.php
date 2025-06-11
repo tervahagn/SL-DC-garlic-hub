@@ -32,7 +32,7 @@ class MustacheAdapterTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testRenderReturnsExpectedOutput()
+	public function testRenderReturnsExpectedOutput(): void
 	{
 		$mustacheMock = $this->createMock(Mustache_Engine::class);
 

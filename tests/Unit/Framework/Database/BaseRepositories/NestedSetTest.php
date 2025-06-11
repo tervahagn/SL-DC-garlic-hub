@@ -42,7 +42,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllRootNodes()
+	public function testFindAllRootNodes(): void
 	{
 		$expectedResult = [
 			[
@@ -96,7 +96,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindTreeByRootId()
+	public function testFindTreeByRootId(): void
 	{
 		$rootId = 1;
 		$expectedResult = [
@@ -124,7 +124,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception|DatabaseException
 	 */
 	#[Group('units')]
-	public function testFindNodeOwner()
+	public function testFindNodeOwner(): void
 	{
 		$nodeId = 2;
 		$expectedResult = ['UID' => 1, 'node_id' => 2, 'name' => 'Child Node 1', 'company_id' => 1];
@@ -148,7 +148,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindNodeOwnerNotFound()
+	public function testFindNodeOwnerNotFound(): void
 	{
 		$nodeId = 999; // Non-existent node ID
 
@@ -173,7 +173,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllChildNodesByParentNode()
+	public function testFindAllChildNodesByParentNode(): void
 	{
 		$parentId = 1;
 		$expectedResult = [
@@ -200,7 +200,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception|Exception
 	 */
 	#[Group('units')]
-	public function testFindAllChildrenInTreeOfNodeId()
+	public function testFindAllChildrenInTreeOfNodeId(): void
 	{
 		$nodeId = 2;
 		$nodeData = [['root_id' => 1, 'rgt' => 6, 'lft' => 3]];
@@ -244,7 +244,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllChildrenInTreeOfNodeIdNoNodeData()
+	public function testFindAllChildrenInTreeOfNodeIdNoNodeData(): void
 	{
 		$nodeId = 999; // Non-existent node
 
@@ -267,7 +267,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindRootIdRgtAndLevelByNodeId()
+	public function testFindRootIdRgtAndLevelByNodeId(): void
 	{
 		$nodeId = 2;
 		$expectedResult = ['root_id' => 1, 'rgt' => 6, 'lft' => 3];
@@ -306,7 +306,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllSubNodeIdsByRootIdsAndPosition()
+	public function testFindAllSubNodeIdsByRootIdsAndPosition(): void
 	{
 		$rootId = 1;
 		$nodeRgt = 6;
@@ -363,7 +363,7 @@ class NestedSetTest extends TestCase
 	 * @throws DatabaseException
 	 */
 	#[Group('units')]
-	public function testAddRootNode()
+	public function testAddRootNode(): void
 	{
 		$uid = 1;
 		$name = 'Test Root';
@@ -401,7 +401,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddRootNodeInsertFails()
+	public function testAddRootNodeInsertFails(): void
 	{
 		$uid = 1;
 		$name = 'Test Root';
@@ -423,7 +423,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception|DatabaseException
 	 */
 	#[Group('units')]
-	public function testAddRootNodeUpdateFails()
+	public function testAddRootNodeUpdateFails(): void
 	{
 		$uid = 1;
 		$name = 'Test Root';
@@ -450,7 +450,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception|DatabaseException
 	 */
 	#[Group('units')]
-	public function testAddSubNode()
+	public function testAddSubNode(): void
 	{
 		$uid = 2;
 		$name = 'Test Sub Node';
@@ -478,7 +478,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testAddSubNodeInsertFails()
+	public function testAddSubNodeInsertFails(): void
 	{
 		$uid = 2;
 		$name = 'Test Sub Node';
@@ -508,7 +508,7 @@ class NestedSetTest extends TestCase
 	 * @throws DatabaseException
 	 */
 	#[Group('units')]
-	public function testDeleteSingleNode()
+	public function testDeleteSingleNode(): void
 	{
 		$node = ['node_id' => 2, 'root_id' => 1, 'rgt' => 5];
 
@@ -524,15 +524,13 @@ class NestedSetTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('commit');
 
 		$this->repository->deleteSingleNode($node);
-
-		$this->assertTrue(true);
 	}
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteSingleNodeDeleteFails()
+	public function testDeleteSingleNodeDeleteFails(): void
 	{
 		$node = ['node_id' => 2, 'root_id' => 1, 'rgt' => 5];
 
@@ -557,7 +555,7 @@ class NestedSetTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testDeleteTree()
+	public function testDeleteTree(): void
 	{
 		$node = ['root_id' => 1, 'rgt' => 6, 'lft' => 3];
 		$move = 4.0;
@@ -586,7 +584,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteTreeFails()
+	public function testDeleteTreeFails(): void
 	{
 		$node = ['root_id' => 1, 'rgt' => 6, 'lft' => 3];
 		$this->connectionMock->expects($this->once())->method('beginTransaction');
@@ -608,7 +606,7 @@ class NestedSetTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeBefore()
+	public function testMoveNodeBefore(): void
 	{
 		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
 		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
@@ -643,7 +641,6 @@ class NestedSetTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('commit');
 
 		$this->repository->moveNode($movedNode, $targetNode, $region);
-		$this->assertTrue(true);
 	}
 
 	/**
@@ -652,7 +649,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeAfter()
+	public function testMoveNodeAfter(): void
 	{
 		$movedNode = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
 		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
@@ -688,7 +685,6 @@ class NestedSetTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('commit');
 
 		$this->repository->moveNode($movedNode, $targetNode, $region);
-		$this->assertTrue(true);
 	}
 
 
@@ -698,7 +694,7 @@ class NestedSetTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testMoveNodeFailsOnMoveSubTree()
+	public function testMoveNodeFailsOnMoveSubTree(): void
 	{
 		$movedNode = ['node_id' => 2, 'name' => 'moved', 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
 		$targetNode = ['node_id' => 3, 'name' => 'target', 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
@@ -729,7 +725,6 @@ class NestedSetTest extends TestCase
 		$this->expectExceptionMessage('Moving nodes failed: '.$movedNode['name'].' cannot be moved via '.$region.' of '. $targetNode['name']);
 
 		$this->repository->moveNode($movedNode, $targetNode, $region);
-		$this->assertTrue(true);
 	}
 
 }

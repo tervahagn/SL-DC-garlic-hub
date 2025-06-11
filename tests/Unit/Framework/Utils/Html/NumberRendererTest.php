@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\NumberField;
 use App\Framework\Utils\Html\NumberRenderer;
 use PHPUnit\Framework\Attributes\Group;

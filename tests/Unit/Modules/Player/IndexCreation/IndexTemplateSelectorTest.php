@@ -39,7 +39,7 @@ class IndexTemplateSelectorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testSelectReturnsXmp2xxxForQbic(): void
+	public function testSelectReturnsXmp2xxxForQBic(): void
 	{
 		$this->playerEntityMock
 			->method('getModel')
@@ -95,7 +95,7 @@ class IndexTemplateSelectorTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testSelectReturnsSimpleForScreenlite(): void
+	public function testSelectReturnsSimpleForScreenLite(): void
 	{
 		$this->playerEntityMock
 			->method('getModel')

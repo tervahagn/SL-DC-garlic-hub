@@ -6,6 +6,7 @@ use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\Builder\Preparers\ScreenTimesPreparer;
 use DateInterval;
+use DateInvalidOperationException;
 use DateTime;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -26,6 +27,9 @@ class ScreenTimesPreparerTest extends TestCase
 		$this->preparer         = new ScreenTimesPreparer($this->playerEntityMock);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testPrepareReturnsEmpty(): void
 	{
@@ -38,6 +42,10 @@ class ScreenTimesPreparerTest extends TestCase
 		$this->assertEmpty($result);
 	}
 
+	/**
+	 * @throws DateInvalidOperationException
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testPrepareReturnsScreenTimesForValidScreenTimes(): void
 	{
@@ -67,6 +75,9 @@ class ScreenTimesPreparerTest extends TestCase
 		$this->assertEquals($expectedResult, $result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testPrepareReturnsEmptyArrayWhenNoValidScreenTimesExist(): void
 	{

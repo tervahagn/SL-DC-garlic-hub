@@ -69,7 +69,7 @@ class PdfTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUploadValidSizeDoesNotThrowException()
+	public function testCheckFileBeforeUploadValidSizeDoesNotThrowException(): void
 	{
 		$this->expectNotToPerformAssertions();
 		$this->pdf->checkFileBeforeUpload(1073741824);
@@ -79,7 +79,7 @@ class PdfTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->pdf->checkFileBeforeUpload(1073741824 + 1);
@@ -90,7 +90,7 @@ class PdfTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadFileExistsDoesNotThrowException()
+	public function testCheckFileAfterUploadFileExistsDoesNotThrowException(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
@@ -103,7 +103,7 @@ class PdfTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUpload_FileNotExistsThrowsModuleException()
+	public function testCheckFileAfterUpload_FileNotExistsThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->filesystemMock->method('fileExists')->willReturn(false);
@@ -114,7 +114,7 @@ class PdfTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUpload_ExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileAfterUpload_ExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->filesystemMock->method('fileExists')->willReturn(true);

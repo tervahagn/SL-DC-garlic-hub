@@ -27,6 +27,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use MessageFormatter;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -60,11 +61,12 @@ class TranslatorTest extends TestCase
         );
     }
 
-    /**
-     * @throws InvalidArgumentException
-     * @throws CoreException
-     * @throws FrameworkException
-     */
+	/**
+	 * @throws InvalidArgumentException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslateReturnsTranslation(): void
     {
@@ -79,11 +81,12 @@ class TranslatorTest extends TestCase
         $this->assertEquals('Hello, John!', $result);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     * @throws CoreException
-     * @throws FrameworkException
-     */
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslateSucceedWithCacheKey(): void
     {
@@ -97,11 +100,12 @@ class TranslatorTest extends TestCase
         $this->assertEquals('Hello, John!', $result);
     }
 
-    /**
-     * @throws CoreException
-     * @throws InvalidArgumentException
-     * @throws FrameworkException
-     */
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslateThrowsExceptionForMissingKey(): void
     {
@@ -114,12 +118,13 @@ class TranslatorTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    /**
-     * @throws CoreException
-     * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws FrameworkException
-     */
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslatePluralReturnsFormattedString(): void
     {
@@ -138,7 +143,9 @@ class TranslatorTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
     public function testTranslatePluralReturnsFrameworkException(): void
@@ -156,10 +163,11 @@ class TranslatorTest extends TestCase
     }
 
 
-    /**
-     * @throws InvalidArgumentException
-     * @throws CoreException
-     */
+	/**
+	 * @throws InvalidArgumentException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslateArrayForOptionsReturnsArray(): void
     {
@@ -168,15 +176,15 @@ class TranslatorTest extends TestCase
         $this->loaderMock->method('load')->willReturn(['options' => ['opt1' => 'Option 1', 'opt2' => 'Option 2']]);
 
         $result = $this->translator->translateArrayForOptions('options', 'test_module');
-        $this->assertIsArray($result);
         $this->assertArrayHasKey('opt1', $result);
         $this->assertEquals('Option 1', $result['opt1']);
     }
 
-    /**
-     * @throws CoreException
-     * @throws InvalidArgumentException
-     */
+	/**
+	 * @throws CoreException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
     #[Group('units')]
     public function testTranslateArrayForOptionsHandlesNonArrayGracefully(): void
     {
@@ -185,14 +193,15 @@ class TranslatorTest extends TestCase
         $this->loaderMock->method('load')->willReturn(['options' => 'Not an array']);
 
 		$result = $this->translator->translateArrayForOptions('options', 'test_module');
-		$this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
 	/**
 	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testTranslateArrayWithPluralReturnsFormattedStringSuccessfully(): void
@@ -211,8 +220,10 @@ class TranslatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testTranslateArrayWithPluralHandlesMissingKeyGracefully(): void

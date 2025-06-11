@@ -36,8 +36,6 @@ class NodesRepositoryTest extends TestCase
 {
 	private Connection&MockObject $connectionMock;
 	private QueryBuilder&MockObject $queryBuilderMock;
-	private NestedSetHelper&MockObject $helperMock;
-	private LoggerInterface&MockObject $loggerMock;
 	private NodesRepository $nodesRepository;
 
 	/**
@@ -47,10 +45,10 @@ class NodesRepositoryTest extends TestCase
 	{
 		$this->connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock  = $this->createMock(QueryBuilder::class);
-		$this->helperMock       = $this->createMock(NestedSetHelper::class);
-		$this->loggerMock       = $this->createMock(LoggerInterface::class);
+		$helperMock = $this->createMock(NestedSetHelper::class);
+		$loggerMock = $this->createMock(LoggerInterface::class);
 
-		$this->nodesRepository = new NodesRepository($this->connectionMock, $this->helperMock, $this->loggerMock);
+		$this->nodesRepository = new NodesRepository($this->connectionMock, $helperMock, $loggerMock);
 	}
 
 	/**
@@ -58,7 +56,7 @@ class NodesRepositoryTest extends TestCase
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	#[Group('units')]
-	public function testGetNodeReturnsCorrectData()
+	public function testGetNodeReturnsCorrectData(): void
 	{
 		$node_id = 1;
 		$select = 'mediapool_nodes.UID, username, company_id, node_id, visibility, root_id, is_user_folder, parent_id, level, lft, rgt, last_updated, create_date, name, media_location, ROUND((rgt - lft - 1) / 2) AS children';

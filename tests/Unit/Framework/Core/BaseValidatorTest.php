@@ -24,7 +24,6 @@ namespace Tests\Unit\Framework\Core;
 use App\Framework\Core\BaseValidator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 class BaseValidatorTest extends TestCase
 {

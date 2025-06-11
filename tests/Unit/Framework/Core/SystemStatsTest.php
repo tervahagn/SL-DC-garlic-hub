@@ -4,11 +4,12 @@ namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Core\SystemStats;
+use App\Framework\Exceptions\CoreException;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-
 
 class SystemStatsTest extends TestCase
 {
@@ -16,9 +17,12 @@ class SystemStatsTest extends TestCase
 	private ShellExecutor&MockObject $shellExecutorMock;
 	private SystemStats $systemStats;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
-		$this->shellExecutorMock = $this->createMock(\App\Framework\Core\ShellExecutor::class);
+		$this->shellExecutorMock = $this->createMock(ShellExecutor::class);
 		$this->systemStats = new SystemStats($this->shellExecutorMock);
 	}
 
@@ -46,6 +50,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineRamStatsSetsRamStatsCorrectly(): void
 	{
@@ -63,6 +70,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expected, $this->systemStats->getRamStats());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineRamStatsHandlesInvalidOutput(): void
 	{
@@ -81,6 +91,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expected, $this->systemStats->getRamStats());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineDiskUsageSetsDiskStatsCorrectly(): void
 	{
@@ -105,6 +118,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineDiskUsageHandlesInvalidOutput(): void
 	{
@@ -123,6 +139,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineSystemStatsHandlesNonLinuxSystems(): void
 	{
@@ -136,6 +155,9 @@ class SystemStatsTest extends TestCase
 		$this->assertSame([], $this->systemStats->getLoadData());
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testDetermineSystemStatsSetsAllStatsCorrectly(): void
 	{

@@ -4,14 +4,19 @@ namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Services\PlaylistsService;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class FacadeTest extends TestCase
 {
@@ -37,6 +42,9 @@ class FacadeTest extends TestCase
 		);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testInit(): void
 	{
@@ -58,6 +66,9 @@ class FacadeTest extends TestCase
 		$this->facade->init($this->translatorMock, $sessionMock);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testLoadPlaylistForEdit(): void
 	{
@@ -74,6 +85,14 @@ class FacadeTest extends TestCase
 		$this->assertSame($expectedPlaylist, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithPlaylistId(): void
 	{
@@ -100,6 +119,14 @@ class FacadeTest extends TestCase
 		$this->assertSame($expectedResult, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithoutPlaylistId(): void
 	{
@@ -120,6 +147,12 @@ class FacadeTest extends TestCase
 		$this->assertSame($expectedResult, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistWithExistingId(): void
 	{
@@ -146,6 +179,12 @@ class FacadeTest extends TestCase
 		$this->assertSame($expectedId, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStorePlaylistWithoutId(): void
 	{
@@ -172,6 +211,12 @@ class FacadeTest extends TestCase
 		$this->assertSame($expectedId, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testBuildCreateNewParameter(): void
 	{
@@ -184,6 +229,12 @@ class FacadeTest extends TestCase
 		$this->facade->buildCreateNewParameter($playlistMode);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testBuildEditParameter(): void
 	{
@@ -196,6 +247,14 @@ class FacadeTest extends TestCase
 		$this->facade->buildEditParameter($playlist);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPrepareUITemplateWithValidMode(): void
 	{
@@ -212,7 +271,7 @@ class FacadeTest extends TestCase
 		]);
 
 		$sessionMock = $this->createMock(Session::class);
-		$sessionMock->expects($this->once())->method('get')->willReturn(['UID' => 123]);;
+		$sessionMock->expects($this->once())->method('get')->willReturn(['UID' => 123]);
 		$this->facade->init($this->translatorMock, $sessionMock);
 
 		$this->translatorMock->expects($this->exactly(2))

@@ -312,10 +312,8 @@ class IndexResponseHandlerTest extends TestCase
 	{
 		$filePath     = '/tmp/test.smil';
 		$etag         = '"SomeEtagStuf"';
-		$etag         = '"SomeEtagStuf"';
 		$server       = ['HTTP_IF_NONE_MATCH' => $etag];
 		$fileMTime    = 1234567890;
-		$fileSize     = 1024;
 		$cacheControl = 'public, must-revalidate, max-age=864000, pre-check=864000';
 
 		$this->fileUtilsMock->method('getFileMTime')->willReturn($fileMTime);

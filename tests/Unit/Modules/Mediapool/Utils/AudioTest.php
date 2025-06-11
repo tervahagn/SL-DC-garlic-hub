@@ -52,7 +52,7 @@ class AudioTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUploadValidSizeDoesNotThrowException()
+	public function testCheckFileBeforeUploadValidSizeDoesNotThrowException(): void
 	{
 		$this->expectNotToPerformAssertions();
 		$this->audio->checkFileBeforeUpload(1073741824);
@@ -62,7 +62,7 @@ class AudioTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->audio->checkFileBeforeUpload(1073741824 + 1);
@@ -75,7 +75,7 @@ class AudioTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadFileExistsDoesNotThrowException()
+	public function testCheckFileAfterUploadFileExistsDoesNotThrowException(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
@@ -93,7 +93,7 @@ class AudioTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadFileNotExistsThrowsModuleException()
+	public function testCheckFileAfterUploadFileNotExistsThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->filesystemMock->method('fileExists')->willReturn(false);
@@ -107,7 +107,7 @@ class AudioTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileAfterUploadExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 		$this->filesystemMock->method('fileExists')->willReturn(true);
@@ -119,10 +119,9 @@ class AudioTest extends TestCase
 
 	/**
 	 * @throws FilesystemException
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnail()
+	public function testCreateThumbnail(): void
 	{
 		$this->filesystemMock->method('copy')
 			->with('//icons/audio.svg', '//thumbnails/file.svg');

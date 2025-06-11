@@ -25,7 +25,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgent()
+	public function testParseUserAgent(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:b8375cab-c52f-40ce-b51f-001060b32d06; NAME:testplayername) SK8855-ADAPI/2.0.5 (MODEL:XDS-101)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -43,7 +43,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithSpaces()
+	public function testParseUserAgentWithSpaces(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:a8294bat-c28f-50af-f94o-800869af5854; NAME:Player with spaces in name) SK8855-ADAPI/2.0.5 (MODEL:XMP-330)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -59,7 +59,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithDeprecatedIadeaAndroidPlayer()
+	public function testParseUserAgentWithDeprecatedIadeaAndroidPlayer(): void
 	{
 		$userAgent = 'Mozilla/5.0 (Linux; U; Android 4.0.4; en-us; Build/ICS.MBX.20121225) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30 
 	ADAPI/2.0 (UUID:80db43f3-c323-41b5-914a-d0aeece2df95) AML8726M3-ADAPI/20121225.020028 (MODEL:XMP-2200)';
@@ -77,7 +77,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithNetopsiePlayer()
+	public function testParseUserAgentWithNetopsiePlayer(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:80db43f3-c323-41b5-abcd-542aa2fff06c; NAME:TEST PLAYER) WIN74D-ADAPI/2.0.0 (MODEL:GDATA-1100)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -94,7 +94,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWith6xxxXIadeaAndroidPlayer()
+	public function testParseUserAgentWith6xxxXIadeaAndroidPlayer(): void
 	{
 		$userAgent = 'ADAPI/2.0 (UUID:9e7df0ed-2a5c-4a19-bec7-2cc548004d30) RK3188-ADAPI/1.2.59.161 (MODEL:XMP-6250)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -111,7 +111,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithXIadeaMbrPlayer()
+	public function testParseUserAgentWithXIadeaMbrPlayer(): void
 	{
 		$userAgent = 'ADAPI/2.0 (UUID:0e8df0ed-2a5c-4a19-bec7-ecf00e3012e6) RK3188-ADAPI/1.2.52.152 (MODEL:MBR-1100)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -128,7 +128,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithIadea7300Player()
+	public function testParseUserAgentWithIadea7300Player(): void
 	{
 		$userAgent = 'ADAPI/2.0 (UUID:22a6d755-8ca6-4a82-a724-2cc548000d06) RK3288-ADAPI/1.0.3.74 (MODEL:XMP-7300)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -145,7 +145,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithUnknownPlayer()
+	public function testParseUserAgentWithUnknownPlayer(): void
 	{
 		$userAgent = 'ADAPI/2.0 (UUID:0d8df0bd-3a5c-4a19-bec7-ecf00e3012e6;)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -162,7 +162,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithQbicPlayer()
+	public function testParseUserAgentWithQbicPlayer(): void
 	{
 		$userAgent = 'SmartAPI/1.0 (UUID:cc009f47-5a8d-42b4-af5a-1865710c05ba; NAME:05B200T100223; VERSION:v1.0.16; MODEL:TD-1050)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -179,7 +179,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseUserAgentWithIdsApp()
+	public function testParseUserAgentWithIdsApp(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:898a48587eb9f96f; NAME:Android-App-898a48587eb9f96f) Android/1.0.180vv (MODEL:IDS-App)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -198,7 +198,7 @@ class UserAgentHandlerTest extends TestCase
 
 
 	#[Group('units')]
-	public function testParseScreenLitePlaye()
+	public function testParseScreenlitePlayer(): void
 	{
 		$userAgent = 'GAPI/1.0 (UUID:15920d5d-7e68-4a61-a145-15b58b6d2090; NAME:Screenlite Web Test) screenlite-web/0.0.1 (MODEL:ScreenliteWeb)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -215,7 +215,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseFallbackOldIadeas()
+	public function testParseFallbackOldIadeas(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:b8375cab-c52f-40ce-b51f-001060b32d06; NAME:testplayername) SK8855-ADAPI/2.0.5 (MODEL:XDS-101)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -233,7 +233,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseFallbackOldIadeasWithSpaces()
+	public function testParseFallbackOldIadeasWithSpaces(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:a8294bat-c28f-50af-f94o-800869af5854; NAME:Player with spaces in name) SK8855-ADAPI/2.0.5 (MODEL:XMP-330)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -250,7 +250,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseFallbackNetopsie()
+	public function testParseFallbackNetopsie(): void
 	{
 		$userAgent = 'ADAPI/1.0 (UUID:80db43f3-c323-41b5-abcd-542aa2fff06c; NAME:TEST PLAYER) WIN74D-ADAPI/2.0.0 (MODEL:GDATA-1100)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();
@@ -267,7 +267,7 @@ class UserAgentHandlerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testParseFallbackAndroidIAdeaPlayer()
+	public function testParseFallbackAndroidIAdeaPlayer(): void
 	{
 		$userAgent = 'ADAPI/2.0 (UUID:0e8df0ed-2a5c-4a19-bec7-ecf00e3012e6) RK3188-ADAPI/1.2.52.152 (MODEL:MBR-1100)';
 		$this->playerDetectorMock->method('detectModelId')->willReturnSelf();

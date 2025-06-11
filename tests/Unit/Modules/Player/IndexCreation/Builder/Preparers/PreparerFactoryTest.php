@@ -29,6 +29,9 @@ class PreparerFactoryTest extends TestCase
 		$this->preparerFactory = new PreparerFactory();
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testCreateReturnsMetaPreparer(): void
 	{
@@ -36,6 +39,9 @@ class PreparerFactoryTest extends TestCase
 		$this->assertInstanceOf(MetaPreparer::class, $result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testCreateReturnsSubscriptionPreparer(): void
 	{
@@ -43,6 +49,9 @@ class PreparerFactoryTest extends TestCase
 		$this->assertInstanceOf(SubscriptionPreparer::class, $result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testCreateReturnsLayoutPreparer(): void
 	{
@@ -50,6 +59,9 @@ class PreparerFactoryTest extends TestCase
 		$this->assertInstanceOf(LayoutPreparer::class, $result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testCreateReturnsScreenTimesPreparer(): void
 	{
@@ -57,6 +69,9 @@ class PreparerFactoryTest extends TestCase
 		$this->assertInstanceOf(ScreenTimesPreparer::class, $result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testCreateReturnsPlaylistPreparer(): void
 	{

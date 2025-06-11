@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\HiddenField;
 use App\Framework\Utils\Html\HiddenRenderer;
 use PHPUnit\Framework\Attributes\Group;

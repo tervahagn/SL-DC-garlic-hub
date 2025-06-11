@@ -47,7 +47,7 @@ class ScopeEntityTest extends TestCase
 	public function testGetIdentifierReturnsString(): void
 	{
 		$result = $this->scopeEntity->getIdentifier();
-		$this->assertIsString($result);
+		$this->assertSame('dummy', $result);
 	}
 
 	#[Group('units')]

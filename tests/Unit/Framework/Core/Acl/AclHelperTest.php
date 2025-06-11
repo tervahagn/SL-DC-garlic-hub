@@ -20,6 +20,9 @@ class AclHelperTest extends TestCase
 	private UsersService&MockObject $usersServiceMock;
 	private UserEntity&MockObject $userEntityMock;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->configMock       = $this->createMock(Config::class);
@@ -34,6 +37,11 @@ class AclHelperTest extends TestCase
 		$this->assertSame($this->configMock, $this->aclHelper->getConfig());
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsModuleAdminReturnsTrueForValidAdmin(): void
 	{
@@ -52,6 +60,11 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsModuleAdminReturnsFalseForInvalidAdmin(): void
 	{
@@ -70,6 +83,11 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsSubAdminReturnsTrueForValidSubAdmin(): void
 	{
@@ -88,6 +106,11 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsSubAdminReturnsFalseForInvalidSubAdmin(): void
 	{
@@ -106,6 +129,11 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsEditorReturnsTrueForValidEditor(): void
 	{
@@ -147,6 +175,11 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsViewerReturnsTrueForValidViewer(): void
 	{
@@ -165,6 +198,11 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testIsViewerReturnsFalseForInvalidViewer(): void
 	{
@@ -183,6 +221,10 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasSubAdminAccessOnCompanyReturnsTrueForValidAccess(): void
 	{
@@ -201,6 +243,10 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasSubAdminAccessOnCompanyReturnsFalseForInvalidAccess(): void
 	{
@@ -219,13 +265,15 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasSubAdminAccessOnCompanyReturnsFalseWhenVIPIsEmpty(): void
 	{
 		$UID = 1;
 		$companyId = 100;
-		$moduleName = 'testModule_subadmin';
-
 		$this->userEntityMock->method('getVip')->willReturn([]);
 
 		$this->usersServiceMock->method('getUserById')->willReturn($this->userEntityMock);
@@ -234,6 +282,10 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasEditorAccessOnUnitReturnsTrueForValidAccess(): void
 	{
@@ -252,6 +304,10 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasViewerAccessOnUnitReturnsTrueForValidAccess(): void
 	{
@@ -270,6 +326,10 @@ class AclHelperTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasViewerAccessOnUnitReturnsFalseForInvalidAccess(): void
 	{
@@ -288,12 +348,15 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasViewerAccessOnUnitReturnsFalseWhenVIPIsEmpty(): void
 	{
 		$UID = 1;
 		$unitId = 300;
-		$moduleName = 'testModule_viewer';
 
 		$this->userEntityMock->method('getVip')->willReturn([]);
 
@@ -304,6 +367,10 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasEditorAccessOnUnitReturnsFalseForInvalidAccess(): void
 	{
@@ -322,12 +389,15 @@ class AclHelperTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testHasEditorAccessOnUnitReturnsFalseWhenVIPIsEmpty(): void
 	{
 		$UID = 1;
 		$unitId = 200;
-		$moduleName = 'testModule_editor';
 
 		$this->userEntityMock->method('getVip')->willReturn([]);
 

@@ -87,7 +87,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadByPlaylistForExport($playlist, $edition);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('playlist_metrics', $result);
 		$this->assertArrayHasKey('items', $result);
 
@@ -123,7 +122,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadByPlaylistForExport($playlist, $edition);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('playlist_metrics', $result);
 		$this->assertArrayHasKey('items', $result);
 
@@ -169,7 +167,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('default_duration', $result);
 		$this->assertEquals(120, $result['default_duration']);
 	}
@@ -212,7 +209,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('default_duration', $result);
 		$this->assertEquals(17, $result['default_duration']);
 	}
@@ -288,7 +284,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('default_duration', $result);
 		$this->assertEquals(150, $result['default_duration']);
 	}
@@ -327,7 +322,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('default_duration', $result);
 		$this->assertEquals(100, $result['default_duration']);
 	}
@@ -369,7 +363,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertCount(1, $result['items']);
 		$this->assertEquals('/path/to/thumbnails/video_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
@@ -411,7 +404,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertCount(1, $result['items']);
 		$this->assertEquals('/path/to/thumbnails/image_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
@@ -454,7 +446,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertCount(1, $result['items']);
 		$this->assertEquals('/path/to/thumbnails/image_checksum.svg', $result['items'][0]['paths']['thumbnail']);
@@ -496,7 +487,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertCount(1, $result['items']);
 		$this->assertEquals('public/images/icons/playlist.svg', $result['items'][0]['paths']['thumbnail']);
@@ -530,7 +520,6 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('items', $result);
 		$this->assertCount(0, $result['items']);
 	}
@@ -672,13 +661,15 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->delete($playlistId, $itemId);
 
-		$this->assertIsArray($result);
 		$this->assertArrayHasKey('playlist_metrics', $result);
 		$this->assertArrayHasKey('delete_id', $result);
 		$this->assertEquals($metrics, $result['playlist_metrics']);
 		$this->assertEquals(1, $result['delete_id']);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testDeletePlaylistNotFound(): void
 	{
@@ -706,6 +697,9 @@ class ItemsServiceTest extends TestCase
 		$this->assertEmpty($this->itemsService->delete($playlistId, $itemId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testDeleteItemNotFound(): void
 	{
@@ -741,9 +735,6 @@ class ItemsServiceTest extends TestCase
 	/**
 	 * Test deletion fails if the item cannot be deleted.
 	 *
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -788,6 +779,9 @@ class ItemsServiceTest extends TestCase
 		$this->assertEmpty($this->itemsService->delete($playlistId, $itemId));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateItemsMetricsSuccessfully(): void
 	{

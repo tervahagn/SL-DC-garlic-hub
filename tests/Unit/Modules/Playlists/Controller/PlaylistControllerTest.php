@@ -405,6 +405,12 @@ class PlaylistControllerTest extends TestCase
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindForPlayerAssignment(): void
 	{

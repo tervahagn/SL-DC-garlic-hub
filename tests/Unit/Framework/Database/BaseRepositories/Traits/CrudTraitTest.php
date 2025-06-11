@@ -20,7 +20,6 @@
 
 namespace Tests\Unit\Framework\Database\BaseRepositories;
 
-use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use Doctrine\DBAL\Connection;

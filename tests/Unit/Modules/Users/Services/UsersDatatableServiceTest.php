@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 
 class UsersDatatableServiceTest extends TestCase
 {
-	private LoggerInterface&MockObject $loggerMock;
 	private UserMainRepository&MockObject $repositoryMock;
 	private Parameters&MockObject $parametersMock;
 	private AclValidator&MockObject $aclValidatorMock;
@@ -27,12 +26,12 @@ class UsersDatatableServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->loggerMock       = $this->createMock(LoggerInterface::class);
+		$loggerMock = $this->createMock(LoggerInterface::class);
 		$this->repositoryMock   = $this->createMock(UserMainRepository::class);
 		$this->parametersMock   = $this->createMock(Parameters::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 
-		$this->service = new UsersDatatableService($this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->loggerMock);
+		$this->service = new UsersDatatableService($this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $loggerMock);
 	}
 
 	/**

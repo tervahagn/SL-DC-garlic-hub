@@ -166,7 +166,6 @@ class FilesRepositoryTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testFindAllWithOwnerByCheckSum()

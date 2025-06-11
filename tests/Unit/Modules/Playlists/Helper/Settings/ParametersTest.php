@@ -8,37 +8,36 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private Sanitizer&MockObject $sanitizerMock;
-	private Session&MockObject $sessionMock;
 	private Parameters $parameters;
 
 	/**
-	 * @throws ModuleException
-	 * @throws Exception
+	 * @throws Exception|\PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock   = $this->createMock(Session::class);
+		$sanitizerMock = $this->createMock(Sanitizer::class);
+		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($this->sanitizerMock, $this->sessionMock);
+		$this->parameters    = new Parameters($sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]
-	public function testConstructor()
+	public function testConstructor(): void
 	{
 		$this->assertCount(2, $this->parameters->getCurrentParameters());
 		$this->assertSame('playlists', $this->parameters->getModuleName());
 		$this->assertInstanceOf(Parameters::class, $this->parameters);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testAddPlaylistMode()
+	public function testAddPlaylistMode(): void
 	{
 		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
 		$this->parameters->addPlaylistMode();
@@ -46,8 +45,11 @@ class ParametersTest extends TestCase
 		$this->assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testAddPlaylistId()
+	public function testAddPlaylistId(): void
 	{
 		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
 		$this->parameters->addPlaylistId();
@@ -55,8 +57,11 @@ class ParametersTest extends TestCase
 		$this->assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
-	public function testAddTimeLimit()
+	public function testAddTimeLimit(): void
 	{
 		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT));
 		$this->parameters->addTimeLimit();

@@ -55,7 +55,7 @@ class BuildHelperTest extends TestCase
 	{
 		$playlistId = 1;
 		$playlistContent = "Content before placeholder {ITEMS_2} content after.";
-		$subPlaylistContent = "Subplaylist content.";
+		$subPlaylistContent = "SubPlaylist content.";
 
 		$this->contentReaderMock->method('init')
 			->willReturnOnConsecutiveCalls(
@@ -79,7 +79,7 @@ class BuildHelperTest extends TestCase
 	{
 		$playlistId = 1;
 		$playlistContent = "Playlist content {ITEMS_2}.";
-		$subPlaylistContent1 = "Subplaylist 2 content {ITEMS_3}.";
+		$subPlaylistContent1 = "SubPlaylist 2 content {ITEMS_3}.";
 		$subPlaylistContent2 = "Final resolved content.{ITEMS_4}";
 		$subPlaylistContent3 = "";
 
@@ -100,7 +100,7 @@ class BuildHelperTest extends TestCase
 
 		$result = $this->buildHelper->collectItems($playlistId);
 
-		$expected = "Playlist content \nSubplaylist 2 content \nFinal resolved content.\n.\n.";
+		$expected = "Playlist content \nSubPlaylist 2 content \nFinal resolved content.\n.\n.";
 		$this->assertSame($expected, $result);
 	}
 
@@ -257,7 +257,7 @@ class BuildHelperTest extends TestCase
 	{
 		$playlistId = 1;
 		$exclusiveContent = "Exclusive content {ITEMS_2}.";
-		$subPlaylistContent1 = "Subcontent 2 {ITEMS_3}.";
+		$subPlaylistContent1 = "SubContent 2 {ITEMS_3}.";
 		$subPlaylistContent2 = "Resolved content.";
 
 		$this->contentReaderMock->expects($this->exactly(5))
@@ -277,7 +277,7 @@ class BuildHelperTest extends TestCase
 
 		$result = $this->buildHelper->collectExclusives($playlistId);
 
-		$expected = "Exclusive content Subcontent 2 Resolved content...";
+		$expected = "Exclusive content SubContent 2 Resolved content...";
 		$this->assertSame($expected, $result);
 	}
 

@@ -96,7 +96,7 @@ class BuildServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCreateDatatableFieldWithUnsortableField(): void
+	public function testCreateDatatableFieldWithUnSortableField(): void
 	{
 		$fieldName = 'age';
 
@@ -222,7 +222,6 @@ class BuildServiceTest extends TestCase
 		$currentPage = 2;
 		$itemsPerPage = 20;
 		$totalItems = 200;
-		$usePager = true;
 		$expectedLinks = [
 			['page' => 1, 'label' => '1'],
 			['page' => 2, 'label' => '2']
@@ -231,7 +230,7 @@ class BuildServiceTest extends TestCase
 		$this->paginatorBuilderMock
 			->expects($this->once())
 			->method('configure')
-			->with($currentPage, $itemsPerPage, $totalItems, $usePager, true)
+			->with($currentPage, $itemsPerPage, $totalItems, true, true)
 			->willReturnSelf();
 
 		$this->paginatorBuilderMock
@@ -244,7 +243,7 @@ class BuildServiceTest extends TestCase
 			->method('getPagerLinks')
 			->willReturn($expectedLinks);
 
-		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, $usePager);
+		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, true);
 
 		$this->assertSame($expectedLinks, $result);
 	}
@@ -255,7 +254,6 @@ class BuildServiceTest extends TestCase
 		$currentPage = 3;
 		$itemsPerPage = 5;
 		$totalItems = 50;
-		$shortened = false;
 		$expectedLinks = [
 			['page' => 1, 'label' => '1'],
 			['page' => 2, 'label' => '2'],
@@ -265,7 +263,7 @@ class BuildServiceTest extends TestCase
 		$this->paginatorBuilderMock
 			->expects($this->once())
 			->method('configure')
-			->with($currentPage, $itemsPerPage, $totalItems, false, $shortened)
+			->with($currentPage, $itemsPerPage, $totalItems, false, false)
 			->willReturnSelf();
 
 		$this->paginatorBuilderMock
@@ -278,7 +276,7 @@ class BuildServiceTest extends TestCase
 			->method('getPagerLinks')
 			->willReturn($expectedLinks);
 
-		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, false, $shortened);
+		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, false, false);
 
 		$this->assertSame($expectedLinks, $result);
 	}

@@ -47,6 +47,12 @@ class DatatableTemplatePreparerTest extends TestCase
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPreparerUITemplateReturnsCorrectStructure(): void
 	{

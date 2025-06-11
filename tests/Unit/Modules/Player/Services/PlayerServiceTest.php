@@ -8,6 +8,7 @@ use App\Modules\Player\Services\PlayerService;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -20,6 +21,9 @@ class PlayerServiceTest extends TestCase
 	private LoggerInterface&MockObject $loggerMock;
 	private PlayerService $service;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->playerRepositoryMock = $this->createMock(PlayerRepository::class);
@@ -30,6 +34,9 @@ class PlayerServiceTest extends TestCase
 		$this->service = new PlayerService($this->playerRepositoryMock, $this->playlistServiceMock, $this->playerValidatorMock, $this->loggerMock);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllForDashboardReturnsValidData(): void
 	{
@@ -41,6 +48,9 @@ class PlayerServiceTest extends TestCase
 		$this->assertSame(['active' => 5, 'inactive' => 3, 'pending' => 2], $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllForDashboardReturnsDefaultValuesOnEmptyData(): void
 	{
@@ -53,7 +63,7 @@ class PlayerServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testReplaceMasterPlaylis(): void
+	public function testReplaceMasterPlaylist(): void
 	{
 		$this->service->setUID(1);
 		$this->playerRepositoryMock->method('findFirstById')

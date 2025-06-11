@@ -24,6 +24,7 @@ use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
 use App\Modules\Users\Entities\UserEntity;
@@ -97,7 +98,7 @@ class LoginControllerTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|UserException
 	 */
 	#[Group('units')]
 	public function testLoginSuccessfulLogin(): void
@@ -138,7 +139,7 @@ class LoginControllerTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|UserException
 	 */
 	#[Group('units')]
 	public function testLoginCreateAutologin(): void
@@ -185,6 +186,7 @@ class LoginControllerTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws UserException
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToApiOnSuccessfulLogin(): void
@@ -234,7 +236,7 @@ class LoginControllerTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|UserException
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToLoginOnInvalidCredentials(): void
@@ -267,7 +269,7 @@ class LoginControllerTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|UserException
 	 */
 	#[Group('units')]
 	public function testLoginRedirectsToLoginOnTokenMismatch(): void

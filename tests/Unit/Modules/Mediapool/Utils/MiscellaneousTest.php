@@ -24,7 +24,6 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Utils\Miscellaneous;
-use Imagick;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;

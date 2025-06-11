@@ -34,7 +34,7 @@ class AclValidatorTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException|ModuleException
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableOwner()
+	public function testIsPlaylistEditableOwner(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 1, 'company_id' => 4, 'playlist_id' => 12];
@@ -52,7 +52,7 @@ class AclValidatorTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableModuleAdmin()
+	public function testIsPlaylistEditableModuleAdmin(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -73,7 +73,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableEdgeEdition()
+	public function testIsPlaylistEditableEdgeEdition(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -88,13 +88,14 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws \App\Framework\Exceptions\ModuleException
+	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableMissingCompanyOrUID()
+	public function testIsPlaylistEditableMissingCompanyOrUID(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2];
@@ -110,8 +111,14 @@ class AclValidatorTest extends TestCase
 	}
 
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableSubAdminAccessFailed()
+	public function testIsPlaylistEditableSubAdminAccessFailed(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -129,8 +136,14 @@ class AclValidatorTest extends TestCase
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableSubAdminAccessSucceed()
+	public function testIsPlaylistEditableSubAdminAccessSucceed(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -151,10 +164,10 @@ class AclValidatorTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws \Doctrine\DBAL\Exception|ModuleException
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableEditorAccess()
+	public function testIsPlaylistEditableEditorAccess(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -174,11 +187,12 @@ class AclValidatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableNoAccess()
+	public function testIsPlaylistEditableNoAccess(): void
 	{
 		$UID = 1;
 		$playlist = ['UID' => 2, 'company_id' => 4, 'playlist_id' => 12];
@@ -195,6 +209,4 @@ class AclValidatorTest extends TestCase
 
 		$this->assertFalse($result);
 	}
-
-
 }

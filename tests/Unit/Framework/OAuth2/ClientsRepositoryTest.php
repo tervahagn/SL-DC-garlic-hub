@@ -34,8 +34,6 @@ class ClientsRepositoryTest extends TestCase
 	private ClientsRepository&MockObject $repository;
 
 	/**
-	 * Wird vor jedem Test ausgeführt.
-	 *
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
