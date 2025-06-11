@@ -38,10 +38,10 @@ use Psr\Http\Message\StreamInterface;
 
 class NodesControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly NodesService&MockObject $nodesServiceMock;
-	private readonly NodesController $controller;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private NodesService&MockObject $nodesServiceMock;
+	private NodesController $controller;
 
 	/**
 	 * @throws Exception

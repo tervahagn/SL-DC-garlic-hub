@@ -30,6 +30,7 @@ use App\Modules\Users\Repositories\Enterprise\UserVipRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +40,9 @@ class UserRepositoryFactoryTest extends TestCase
 	private Connection&MockObject $connectionMock;
 	private UserRepositoryFactory $factory;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->configMock = $this->createMock(Config::class);

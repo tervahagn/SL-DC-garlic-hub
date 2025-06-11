@@ -16,11 +16,11 @@ use Psr\Log\LoggerInterface;
 
 class PlaylistTest extends TestCase
 {
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
-	private readonly MediaService&MockObject $mediaServiceMock;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private LoggerInterface&MockObject $loggerMock;
+	private MediaService&MockObject $mediaServiceMock;
 	private Playlist $playlist;
 
 	protected function setUp(): void

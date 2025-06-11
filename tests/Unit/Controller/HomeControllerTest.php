@@ -36,7 +36,7 @@ class HomeControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
 	private Session&MockObject $sessionMock;
-	private readonly DashboardsAggregator $dashboardsAggregatorMock;
+	private DashboardsAggregator $dashboardsAggregatorMock;
 
 	/**
 	 * @throws Exception

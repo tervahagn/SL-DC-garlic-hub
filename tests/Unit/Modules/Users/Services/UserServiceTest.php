@@ -59,9 +59,6 @@ class UserServiceTest extends TestCase
 		);
 	}
 
-	/**
-	 * @throws \Doctrine\DBAL\Exception
-	 */
 	#[Group('units')]
 	public function testUpdatePassword(): void
 	{

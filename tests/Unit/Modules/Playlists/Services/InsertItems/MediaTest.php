@@ -16,12 +16,12 @@ use Psr\Log\LoggerInterface;
 
 class MediaTest extends TestCase
 {
-	private readonly MediaService&MockObject $mediaServiceMock;
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
-	private readonly WidgetsService&MockObject $widgetsServiceMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private MediaService&MockObject $mediaServiceMock;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private WidgetsService&MockObject $widgetsServiceMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private Media $media;
 
 	/**

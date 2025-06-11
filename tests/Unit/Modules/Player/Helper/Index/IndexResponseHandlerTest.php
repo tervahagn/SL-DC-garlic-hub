@@ -13,9 +13,9 @@ use Slim\Psr7\Stream;
 
 class IndexResponseHandlerTest extends TestCase
 {
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly FileUtils&MockObject $fileUtilsMock;
-	private readonly IndexResponseHandler $handler;
+	private ResponseInterface&MockObject $responseMock;
+	private FileUtils&MockObject $fileUtilsMock;
+	private IndexResponseHandler $handler;
 
 	/**
 	 * @throws Exception

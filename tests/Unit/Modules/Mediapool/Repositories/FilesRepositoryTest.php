@@ -32,9 +32,9 @@ use PHPUnit\Framework\TestCase;
 
 class FilesRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly FilesRepository $filesRepository;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private FilesRepository $filesRepository;
 
 	/**
 	 * @throws Exception

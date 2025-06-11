@@ -38,10 +38,10 @@ use PHPUnit\Framework\TestCase;
 
 class VideoTest extends TestCase
 {
-	private readonly Video $video;
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Imagick&MockObject $imagickMock;
-	private readonly Ffmpeg&MockObject $ffmpegMock;
+	private Video $video;
+	private Filesystem&MockObject $filesystemMock;
+	private Imagick&MockObject $imagickMock;
+	private Ffmpeg&MockObject $ffmpegMock;
 
 	/**
 	 * @throws Exception

@@ -18,9 +18,9 @@ use Psr\Log\LoggerInterface;
 class PlaylistsServiceTest extends TestCase
 {
 	private LoggerInterface&MockObject $loggerMock;
-	private readonly PlaylistsRepository&MockObject $playlistsRepositoryMock;
-	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
+	private PlaylistsRepository&MockObject $playlistsRepositoryMock;
+	private PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private AclValidator&MockObject $aclValidatorMock;
 	private PlaylistsService $service;
 
 

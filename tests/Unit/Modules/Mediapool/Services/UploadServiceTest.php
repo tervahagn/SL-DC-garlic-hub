@@ -41,12 +41,12 @@ use Slim\Psr7\UploadedFile;
 
 class UploadServiceTest extends TestCase
 {
-	private readonly UploadService $uploadService;
-	private readonly MediaHandlerFactory&MockObject $mediaHandlerFactoryMock;
-	private readonly Client&MockObject $clientMock;
-	private readonly FilesRepository&MockObject $mediaRepositoryMock;
+	private UploadService $uploadService;
+	private MediaHandlerFactory&MockObject $mediaHandlerFactoryMock;
+	private Client&MockObject $clientMock;
+	private FilesRepository&MockObject $mediaRepositoryMock;
 	private MimeTypeDetector&MockObject $mimeTypeDetectorMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception

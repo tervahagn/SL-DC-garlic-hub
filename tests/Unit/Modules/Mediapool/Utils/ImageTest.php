@@ -35,9 +35,9 @@ use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
 {
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Imagick&MockObject $imagickMock;
-	private readonly Image $image;
+	private Filesystem&MockObject $filesystemMock;
+	private Imagick&MockObject $imagickMock;
+	private Image $image;
 
 	/**
 	 * @throws Exception

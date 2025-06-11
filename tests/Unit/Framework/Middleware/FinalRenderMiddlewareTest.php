@@ -44,13 +44,13 @@ use Slim\Flash\Messages;
 
 class FinalRenderMiddlewareTest extends TestCase
 {
-	private readonly FinalRenderMiddleware $middleware;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly AdapterInterface&MockObject $templateServiceMock;
-	private readonly ServerRequestInterface&MockObject $requestMock ;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly RequestHandlerInterface&MockObject $handlerMock;
-	private readonly UriInterface&MockObject $uriInterfaceMock;
+	private FinalRenderMiddleware $middleware;
+	private AclValidator&MockObject $aclValidatorMock;
+	private AdapterInterface&MockObject $templateServiceMock;
+	private ServerRequestInterface&MockObject $requestMock ;
+	private ResponseInterface&MockObject $responseMock;
+	private RequestHandlerInterface&MockObject $handlerMock;
+	private UriInterface&MockObject $uriInterfaceMock;
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 	private Config&MockObject $configMock;

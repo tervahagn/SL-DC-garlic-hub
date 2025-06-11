@@ -43,7 +43,7 @@ class ConcreteTraitService extends AbstractBaseService
 }
 class SearchFilterParamsTraitTest extends TestCase
 {
-	private readonly ConcreteTraitService $searchFilterService;
+	private ConcreteTraitService $searchFilterService;
 
 	/**
 	 * @throws Exception

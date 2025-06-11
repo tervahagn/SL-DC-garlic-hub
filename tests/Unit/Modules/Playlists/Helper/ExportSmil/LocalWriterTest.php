@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class LocalWriterTest extends TestCase
 {
-	private readonly Filesystem&MockObject $fileSystemMock;
+	private Filesystem&MockObject $fileSystemMock;
 	private LocalWriter $writer;
 
 	/**

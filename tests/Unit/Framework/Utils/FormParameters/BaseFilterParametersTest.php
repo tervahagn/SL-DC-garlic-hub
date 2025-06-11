@@ -48,8 +48,8 @@ class ConcreteFilterBaseParameters extends BaseFilterParameters
 
 class BaseFilterParametersTest extends TestCase
 {
-	private readonly Session&MockObject $sessionMock;
-	private readonly Sanitizer&MockObject $sanitizerMock;
+	private Session&MockObject $sessionMock;
+	private Sanitizer&MockObject $sanitizerMock;
 	private BaseFilterParameters $baseFilterParameters;
 
 	/**

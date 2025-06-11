@@ -16,9 +16,9 @@ use RuntimeException;
 
 class PlayerIndexServiceTest extends TestCase
 {
-	private readonly PlayerDataAssembler&MockObject $playerDataAssemblerMock;
-	private readonly IndexProvider&MockObject $indexProviderMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private PlayerDataAssembler&MockObject $playerDataAssemblerMock;
+	private IndexProvider&MockObject $indexProviderMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private PlayerEntity&MockObject $playerEntityMock;
 	private PlayerIndexService $service;
 

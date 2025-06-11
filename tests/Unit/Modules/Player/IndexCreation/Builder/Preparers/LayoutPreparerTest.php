@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class LayoutPreparerTest extends TestCase
 {
-	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private LayoutPreparer $preparer;
 
 	/**

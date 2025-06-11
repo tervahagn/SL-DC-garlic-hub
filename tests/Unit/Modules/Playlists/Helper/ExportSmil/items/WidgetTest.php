@@ -15,11 +15,11 @@ use PHPUnit\Framework\TestCase;
 
 class WidgetTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly Properties&MockObject $propertiesMock;
-	private readonly Trigger&MockObject $beginMock;
-	private readonly Trigger&MockObject $endMock;
-	private readonly Conditional&MockObject $conditionalMock;
+	private Config&MockObject $configMock;
+	private Properties&MockObject $propertiesMock;
+	private Trigger&MockObject $beginMock;
+	private Trigger&MockObject $endMock;
+	private Conditional&MockObject $conditionalMock;
 
 	private Widget $widget;
 

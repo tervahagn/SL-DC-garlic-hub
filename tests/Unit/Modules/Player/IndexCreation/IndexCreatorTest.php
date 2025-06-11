@@ -23,12 +23,12 @@ use PHPUnit\Framework\TestCase;
 
 class IndexCreatorTest extends TestCase
 {
-	private readonly PlaylistBuilderFactory&MockObject $playlistBuilderFactoryMock;
-	private readonly IndexTemplateSelector&MockObject $templateSelectorMock;
-	private readonly IndexFile&MockObject $indexFileMock;
-	private readonly TemplatePreparer&MockObject $templatePreparerMock;
-	private readonly AdapterInterface&MockObject $templateServiceMock;
-	private readonly IndexCreator $indexCreator;
+	private PlaylistBuilderFactory&MockObject $playlistBuilderFactoryMock;
+	private IndexTemplateSelector&MockObject $templateSelectorMock;
+	private IndexFile&MockObject $indexFileMock;
+	private TemplatePreparer&MockObject $templatePreparerMock;
+	private AdapterInterface&MockObject $templateServiceMock;
+	private IndexCreator $indexCreator;
 
 	/**
 	 * @throws Exception

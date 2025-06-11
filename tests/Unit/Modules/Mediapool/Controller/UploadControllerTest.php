@@ -36,10 +36,10 @@ use Slim\Psr7\UploadedFile;
 
 class UploadControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly UploadService&MockObject $uploadServiceMock;
-	private readonly UploadController $controller;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private UploadService&MockObject $uploadServiceMock;
+	private UploadController $controller;
 
 	/**
 	 * @throws Exception

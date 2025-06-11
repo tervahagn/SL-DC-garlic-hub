@@ -25,10 +25,10 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatableBuilderTest extends TestCase
 {
-	private readonly BuildService&MockObject $buildServiceMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly DatatableBuilder $builder;
+	private BuildService&MockObject $buildServiceMock;
+	private Parameters&MockObject $parametersMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private DatatableBuilder $builder;
 
 	/**
 	 * @throws Exception

@@ -40,11 +40,11 @@ class ConcreteMedia extends Media
 
 class MediaTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly Trigger&MockObject $beginMock;
-	private readonly Trigger&MockObject $endMock;
-	private readonly Conditional&MockObject $conditionalMock;
-	private readonly Properties&MockObject $propertiesMock;
+	private Config&MockObject $configMock;
+	private Trigger&MockObject $beginMock;
+	private Trigger&MockObject $endMock;
+	private Conditional&MockObject $conditionalMock;
+	private Properties&MockObject $propertiesMock;
 	private ConcreteMedia $concreteMedia;
 
 	/**

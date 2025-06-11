@@ -12,8 +12,8 @@ use PHPUnit\Framework\TestCase;
 
 class UserAgentHandlerTest extends TestCase
 {
-	private readonly PlayerDetector&MockObject $playerDetectorMock;
-	private readonly UserAgentHandler $handler;
+	private PlayerDetector&MockObject $playerDetectorMock;
+	private UserAgentHandler $handler;
 
 	/**
 	 * @throws Exception

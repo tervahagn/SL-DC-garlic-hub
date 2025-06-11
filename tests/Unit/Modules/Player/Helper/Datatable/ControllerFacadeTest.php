@@ -20,12 +20,12 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ControllerFacadeTest extends TestCase
 {
-	private readonly DatatableBuilder&MockObject $datatableBuilderMock;
-	private readonly DatatablePreparer&MockObject $datatablePreparerMock;
-	private readonly PlayerDatatableService&MockObject $playerServiceMock;
-	private readonly Translator&MockObject $translatorMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly ControllerFacade $controllerFacade;
+	private DatatableBuilder&MockObject $datatableBuilderMock;
+	private DatatablePreparer&MockObject $datatablePreparerMock;
+	private PlayerDatatableService&MockObject $playerServiceMock;
+	private Translator&MockObject $translatorMock;
+	private Session&MockObject $sessionMock;
+	private ControllerFacade $controllerFacade;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

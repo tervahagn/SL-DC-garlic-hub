@@ -20,12 +20,12 @@ use Psr\Log\LoggerInterface;
 
 class ItemsServiceTest extends TestCase
 {
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly MediaService&MockObject $mediaServiceMock;
-	private readonly PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
-	private readonly ItemsService $itemsService;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private MediaService&MockObject $mediaServiceMock;
+	private PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
+	private LoggerInterface&MockObject $loggerMock;
+	private ItemsService $itemsService;
 
 	/**
 	 * @throws Exception

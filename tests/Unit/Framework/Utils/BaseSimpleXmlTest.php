@@ -59,7 +59,7 @@ class ConcreteBaseSimpleXml extends BaseSimpleXml
 
 class BaseSimpleXmlTest extends TestCase
 {
-	private readonly ConcreteBaseSimpleXml $concreteSimpleXml;
+	private ConcreteBaseSimpleXml $concreteSimpleXml;
 
 	protected function setUp(): void
 	{

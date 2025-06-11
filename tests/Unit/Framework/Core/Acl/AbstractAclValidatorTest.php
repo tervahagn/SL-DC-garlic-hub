@@ -19,8 +19,8 @@ class ConcreteAclValidator extends AbstractAclValidator
 
 class AbstractAclValidatorTest extends TestCase
 {
-	private readonly ConcreteAclValidator $aclValidator;
-	private readonly AclHelper&MockObject $aclHelperMock;
+	private ConcreteAclValidator $aclValidator;
+	private AclHelper&MockObject $aclHelperMock;
 
 	/**
 	 * @throws Exception

@@ -21,14 +21,14 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
-	private readonly ShowDatatableController $controller;
-	private readonly DatatableFacadeInterface&MockObject $facadeMock;
-	private readonly DatatableTemplatePreparer&MockObject $templatePreparerMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly Translator&MockObject $translatorMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private ShowDatatableController $controller;
+	private DatatableFacadeInterface&MockObject $facadeMock;
+	private DatatableTemplatePreparer&MockObject $templatePreparerMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private Translator&MockObject $translatorMock;
+	private Session&MockObject $sessionMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
 
 
 	/**

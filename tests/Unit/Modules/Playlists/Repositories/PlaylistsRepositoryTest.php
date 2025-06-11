@@ -14,10 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 class PlaylistsRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject	 $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
-	private readonly PlaylistsRepository $repository;
+	private Connection&MockObject	 $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
+	private PlaylistsRepository $repository;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

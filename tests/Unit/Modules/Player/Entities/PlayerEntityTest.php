@@ -14,8 +14,8 @@ use PHPUnit\Framework\TestCase;
 
 class PlayerEntityTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly UserAgentHandler&MockObject $userAgentHandlerMock;
+	private Config&MockObject $configMock;
+	private UserAgentHandler&MockObject $userAgentHandlerMock;
 	private PlayerEntity $playerEntity;
 
 	/**

@@ -20,14 +20,14 @@ use Psr\Http\Message\StreamInterface;
 
 class PlaylistControllerTest extends TestCase
 {
-	private readonly PlaylistsController $controller;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly PlaylistsDatatableService&MockObject $playlistsDatatableServiceMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
-	private readonly Session&MockObject $sessionMock;
+	private PlaylistsController $controller;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private PlaylistsDatatableService&MockObject $playlistsDatatableServiceMock;
+	private Parameters&MockObject $parametersMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
+	private Session&MockObject $sessionMock;
 	/**
 	 * @throws Exception
 	 */

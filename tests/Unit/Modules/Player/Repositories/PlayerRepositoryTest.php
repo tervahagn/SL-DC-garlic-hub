@@ -14,9 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 class PlayerRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject	 $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
+	private Connection&MockObject	 $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
 	private PlayerRepository $repository;
 
 	/**

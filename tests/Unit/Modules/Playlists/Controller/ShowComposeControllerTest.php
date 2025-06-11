@@ -22,14 +22,14 @@ use Slim\Flash\Messages;
 
 class ShowComposeControllerTest extends TestCase
 {
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly UiTemplatesPreparer&MockObject $uiTemplatesPreparerMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private UiTemplatesPreparer&MockObject $uiTemplatesPreparerMock;
 	private Messages &MockObject$flashMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly ShowComposeController $controller;
+	private Session&MockObject $sessionMock;
+	private ShowComposeController $controller;
 
 
 	/**

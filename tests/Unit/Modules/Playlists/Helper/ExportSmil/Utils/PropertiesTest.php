@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class PropertiesTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
+	private Config&MockObject $configMock;
 
 	/**
 	 * @throws Exception

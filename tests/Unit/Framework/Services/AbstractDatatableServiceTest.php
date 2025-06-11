@@ -49,10 +49,10 @@ class ConcreteDatatableService extends AbstractDatatableService
 }
 class AbstractDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface&MockObject $loggerMock;
-	private readonly FilterBase&MockObject $repositoryMock;
-	private readonly BaseParameters&MockObject $parametersMock;
-	private readonly ConcreteDatatableService $service;
+	protected LoggerInterface&MockObject $loggerMock;
+	private FilterBase&MockObject $repositoryMock;
+	private BaseParameters&MockObject $parametersMock;
+	private ConcreteDatatableService $service;
 
 	protected function setUp(): void
 	{

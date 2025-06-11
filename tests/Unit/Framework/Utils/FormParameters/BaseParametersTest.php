@@ -37,7 +37,7 @@ class ConcreteBaseParameters extends BaseParameters
 
 class BaseParametersTest extends TestCase
 {
-	private readonly Sanitizer&MockObject $sanitizerMock;
+	private Sanitizer&MockObject $sanitizerMock;
 	private BaseParameters $baseParameters;
 
 	/**

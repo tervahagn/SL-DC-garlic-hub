@@ -16,9 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 class IndexProviderTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly IndexCreator&MockObject $indexCreatorMock;
-	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private Config&MockObject $configMock;
+	private IndexCreator&MockObject $indexCreatorMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 
 	private IndexProvider $indexProvider;
 

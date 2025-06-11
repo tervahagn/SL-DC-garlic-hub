@@ -32,10 +32,10 @@ use PHPUnit\Framework\TestCase;
 
 class UserMainRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject	 $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
-	private readonly UserMainRepository $userMain;
+	private Connection&MockObject	 $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
+	private UserMainRepository $userMain;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

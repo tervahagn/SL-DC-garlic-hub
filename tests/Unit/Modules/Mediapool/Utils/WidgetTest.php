@@ -39,11 +39,11 @@ use PHPUnit\Framework\TestCase;
 
 class WidgetTest extends TestCase
 {
-	private readonly Filesystem&MockObject $filesystemMock;
+	private Filesystem&MockObject $filesystemMock;
 	private ZipFilesystemFactory&MockObject $zipFilesystemFactoryMock;
-	private readonly Imagick&MockObject $imagickMock;
-	private readonly ConfigXML&MockObject $configXmlMock;
-	private readonly Widget $widget;
+	private Imagick&MockObject $imagickMock;
+	private ConfigXML&MockObject $configXmlMock;
+	private Widget $widget;
 
 	/**
 	 * @throws Exception

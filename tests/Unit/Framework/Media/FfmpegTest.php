@@ -34,11 +34,11 @@ use PHPUnit\Framework\TestCase;
 
 class FfmpegTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly ShellExecutor&MockObject $shellExecutorMock;
-	private readonly MediaProperties&MockObject $mediaPropertiesMock;
-	private readonly Ffmpeg $ffmpeg;
+	private Config&MockObject $configMock;
+	private Filesystem&MockObject $filesystemMock;
+	private ShellExecutor&MockObject $shellExecutorMock;
+	private MediaProperties&MockObject $mediaPropertiesMock;
+	private Ffmpeg $ffmpeg;
 
 	protected function setUp(): void
 	{

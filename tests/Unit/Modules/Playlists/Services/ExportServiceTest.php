@@ -17,13 +17,13 @@ use Psr\Log\LoggerInterface;
 
 class ExportServiceTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly PlaylistsService&MockObject $playlistsServiceMock;
-	private readonly ItemsService&MockObject $itemsServiceMock;
-	private readonly LocalWriter&MockObject $localSmilWriterMock;
-	private readonly PlaylistContent&MockObject $playlistContentMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
+	private Config&MockObject $configMock;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private ItemsService&MockObject $itemsServiceMock;
+	private LocalWriter&MockObject $localSmilWriterMock;
+	private PlaylistContent&MockObject $playlistContentMock;
+	private LoggerInterface&MockObject $loggerMock;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
 	private ExportService $service;
 
 	/**

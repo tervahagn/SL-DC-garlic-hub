@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Sanitizer&MockObject $sanitizerMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly Parameters $parameters;
+	private Sanitizer&MockObject $sanitizerMock;
+	private Session&MockObject $sessionMock;
+	private Parameters $parameters;
 
 	/**
 	 * @throws ModuleException

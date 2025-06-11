@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentDataPreparerTest extends TestCase
 {
-	private readonly ConfigXML&MockObject $configXmlMock;
+	private ConfigXML&MockObject $configXmlMock;
 	private ContentDataPreparer $contentDataPreparer;
 
 	/**

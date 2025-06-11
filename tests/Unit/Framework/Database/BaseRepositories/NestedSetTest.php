@@ -17,11 +17,11 @@ use Psr\Log\LoggerInterface;
 
 class NestedSetTest extends TestCase
 {
-	private readonly Connection&MockObject $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
-	private readonly NestedSetHelper&MockObject $helperMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
+	private NestedSetHelper&MockObject $helperMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private NestedSet $repository;
 
 	/**

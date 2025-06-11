@@ -17,12 +17,12 @@ use Psr\Log\LoggerInterface;
 
 class PlaylistsDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface&MockObject $loggerMock;
-	private readonly PlaylistsRepository&MockObject $repositoryMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly PlaylistUsageService&MockObject $playlistUsageServiceMock;
-	private readonly PlaylistsDatatableService $service;
+	protected LoggerInterface&MockObject $loggerMock;
+	private PlaylistsRepository&MockObject $repositoryMock;
+	private Parameters&MockObject $parametersMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private PlaylistUsageService&MockObject $playlistUsageServiceMock;
+	private PlaylistsDatatableService $service;
 
 	/**
 	 * @throws Exception

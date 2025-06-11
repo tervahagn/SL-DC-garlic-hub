@@ -36,12 +36,12 @@ use Psr\Log\LoggerInterface;
 class MediaServiceTest extends TestCase
 {
 
-	private readonly MediaService $mediaService;
-	private readonly FilesRepository&MockObject $mediaRepositoryMock;
-	private readonly NodesRepository&MockObject $nodesRepositoryMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly Config&MockObject $configMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private MediaService $mediaService;
+	private FilesRepository&MockObject $mediaRepositoryMock;
+	private NodesRepository&MockObject $nodesRepositoryMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private Config&MockObject $configMock;
+	private LoggerInterface&MockObject $loggerMock;
 
 	/**
 	 * @throws Exception

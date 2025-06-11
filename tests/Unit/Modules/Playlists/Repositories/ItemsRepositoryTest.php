@@ -15,10 +15,10 @@ use PHPUnit\Framework\TestCase;
 
 class ItemsRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
-	private readonly ItemsRepository $repository;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
+	private ItemsRepository $repository;
 
 	/**
 	 * @throws Exception

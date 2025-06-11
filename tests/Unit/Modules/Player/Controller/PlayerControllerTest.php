@@ -15,11 +15,11 @@ use Psr\Http\Message\StreamInterface;
 
 class PlayerControllerTest extends TestCase
 {
-	private readonly PlayerService&MockObject $playerServiceMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private PlayerService&MockObject $playerServiceMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private Session&MockObject $sessionMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
 	private PlayerController $playerController;
 
 	/**

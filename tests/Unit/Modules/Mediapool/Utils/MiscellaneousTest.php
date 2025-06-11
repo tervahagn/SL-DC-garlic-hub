@@ -34,8 +34,8 @@ use PHPUnit\Framework\TestCase;
 
 class MiscellaneousTest extends TestCase
 {
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Miscellaneous $misc;
+	private Filesystem&MockObject $filesystemMock;
+	private Miscellaneous $misc;
 
 	/**
 	 * @throws Exception

@@ -16,10 +16,10 @@ use Psr\Http\Message\StreamInterface;
 class WidgetsControllerTest extends TestCase
 {
 	private WidgetsService&MockObject $widgetsServiceMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private Session&MockObject $sessionMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
 	private WidgetsController $controller;
 
 	protected function setUp(): void

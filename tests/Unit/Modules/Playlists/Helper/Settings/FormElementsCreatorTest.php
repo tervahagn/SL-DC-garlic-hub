@@ -19,9 +19,9 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class FormElementsCreatorTest extends TestCase
 {
-	private readonly FormBuilder&MockObject $formBuilderMock;
-	private readonly Translator&MockObject $translatorMock;
-	private readonly FormElementsCreator $collector;
+	private FormBuilder&MockObject $formBuilderMock;
+	private Translator&MockObject $translatorMock;
+	private FormElementsCreator $collector;
 
 	/**
 	 * @throws Exception

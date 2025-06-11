@@ -35,9 +35,9 @@ use PHPUnit\Framework\TestCase;
 
 class PdfTest extends TestCase
 {
-	private readonly Pdf $pdf;
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Imagick&MockObject $imagickMock;
+	private Pdf $pdf;
+	private Filesystem&MockObject $filesystemMock;
+	private Imagick&MockObject $imagickMock;
 
 	/**
 	 * @throws Exception|CoreException

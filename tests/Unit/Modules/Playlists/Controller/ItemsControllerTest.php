@@ -21,12 +21,12 @@ use Psr\Http\Message\StreamInterface;
 class ItemsControllerTest extends TestCase
 {
 	private ItemsController $itemsController;
-	private readonly ItemsService&MockObject $itemsServiceMock;
-	private readonly InsertItemFactory&MockObject $insertItemFactoryMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
+	private ItemsService&MockObject $itemsServiceMock;
+	private InsertItemFactory&MockObject $insertItemFactoryMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private Session&MockObject $sessionMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
 
 	/**
 	 * @throws Exception

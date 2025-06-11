@@ -16,9 +16,9 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class UiTemplatesPreparerTest extends TestCase
 {
-	private readonly Translator&MockObject $translatorMock;
-	private readonly RightsChecker&MockObject $rightsCheckerMock;
-	private readonly UiTemplatesPreparer $preparer;
+	private Translator&MockObject $translatorMock;
+	private RightsChecker&MockObject $rightsCheckerMock;
+	private UiTemplatesPreparer $preparer;
 
 	/**
 	 * @throws Exception

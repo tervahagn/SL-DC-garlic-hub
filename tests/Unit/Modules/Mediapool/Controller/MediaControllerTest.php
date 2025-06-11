@@ -34,10 +34,10 @@ use Psr\Http\Message\StreamInterface;
 
 class MediaControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly MediaService&MockObject $mediaServiceMock;
-	private readonly MediaController $controller;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private MediaService&MockObject $mediaServiceMock;
+	private MediaController $controller;
 
 	/**
 	 * @throws Exception

@@ -2,23 +2,29 @@
 
 namespace Tests\Unit\Modules\Users\Services;
 
+use App\Framework\Exceptions\CoreException;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersDatatableService;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class UsersDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface&MockObject $loggerMock;
-	private readonly UserMainRepository&MockObject $repositoryMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly UsersDatatableService $service;
+	private LoggerInterface&MockObject $loggerMock;
+	private UserMainRepository&MockObject $repositoryMock;
+	private Parameters&MockObject $parametersMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private UsersDatatableService $service;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		$this->loggerMock       = $this->createMock(LoggerInterface::class);
@@ -29,6 +35,11 @@ class UsersDatatableServiceTest extends TestCase
 		$this->service = new UsersDatatableService($this->repositoryMock, $this->parametersMock, $this->aclValidatorMock, $this->loggerMock);
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFetchForModuleAdmin(): void
 	{
@@ -55,6 +66,11 @@ class UsersDatatableServiceTest extends TestCase
 		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFetchForUser(): void
 	{

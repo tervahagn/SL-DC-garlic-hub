@@ -16,11 +16,11 @@ use Psr\Log\LoggerInterface;
 
 class PlayerDatatableServiceTest extends TestCase
 {
-	protected readonly LoggerInterface&MockObject $loggerMock;
-	private readonly PlayerRepository&MockObject $repositoryMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly PlayerDatatableService $service;
+	protected LoggerInterface&MockObject $loggerMock;
+	private PlayerRepository&MockObject $repositoryMock;
+	private Parameters&MockObject $parametersMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private PlayerDatatableService $service;
 
 	/**
 	 * @throws Exception|\PHPUnit\Framework\MockObject\Exception

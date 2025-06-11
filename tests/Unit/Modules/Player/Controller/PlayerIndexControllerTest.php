@@ -16,11 +16,11 @@ use Slim\Psr7\Stream;
 
 class PlayerIndexControllerTest extends TestCase
 {
-	private readonly PlayerIndexService&MockObject $playerIndexServiceMock;
-	private readonly IndexResponseHandler&MockObject $indexResponseHandler;
-	private readonly Sanitizer&MockObject $sanitizerMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
+	private PlayerIndexService&MockObject $playerIndexServiceMock;
+	private IndexResponseHandler&MockObject $indexResponseHandler;
+	private Sanitizer&MockObject $sanitizerMock;
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
 	private PlayerIndexController $playerIndexController;
 
 	/**

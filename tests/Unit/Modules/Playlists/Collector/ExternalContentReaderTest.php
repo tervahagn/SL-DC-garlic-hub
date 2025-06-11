@@ -14,9 +14,9 @@ use Psr\Http\Message\ResponseInterface;
 
 class ExternalContentReaderTest extends TestCase
 {
-	private readonly FileSystem&MockObject $fileSystemMock;
-	private readonly Client&MockObject $clientMock;
-	private readonly ExternalContentReader $reader;
+	private FileSystem&MockObject $fileSystemMock;
+	private Client&MockObject $clientMock;
+	private ExternalContentReader $reader;
 
 	/**
 	 * @throws Exception

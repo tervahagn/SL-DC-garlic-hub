@@ -18,11 +18,11 @@ use PHPUnit\Framework\TestCase;
 
 class PlayerDataAssemblerTest extends TestCase
 {
-	private readonly UserAgentHandler&MockObject $userAgentHandlerMock;
-	private readonly PlayerIndexRepository&MockObject $playerRepositoryMock;
-	private readonly Config&MockObject $configMock;
-	private readonly PlayerEntityFactory&MockObject $playerEntityFactoryMock;
-	private readonly PlayerDataAssembler $assembler;
+	private UserAgentHandler&MockObject $userAgentHandlerMock;
+	private PlayerIndexRepository&MockObject $playerRepositoryMock;
+	private Config&MockObject $configMock;
+	private PlayerEntityFactory&MockObject $playerEntityFactoryMock;
+	private PlayerDataAssembler $assembler;
 
 	/**
 	 * @throws Exception

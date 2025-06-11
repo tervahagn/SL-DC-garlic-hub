@@ -37,13 +37,13 @@ use Psr\Http\Message\StreamInterface;
 
 class ShowControllerTest extends TestCase
 {
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly NodesService&MockObject $nodesServiceMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly Translator&MockObject $translatorMock;
-	private readonly Config&MockObject $configMock;
-	private readonly ShowController $controller;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private NodesService&MockObject $nodesServiceMock;
+	private Session&MockObject $sessionMock;
+	private Translator&MockObject $translatorMock;
+	private Config&MockObject $configMock;
+	private ShowController $controller;
 
 	/**
 	 * @throws Exception

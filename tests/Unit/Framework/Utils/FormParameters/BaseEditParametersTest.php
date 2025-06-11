@@ -46,7 +46,7 @@ class ConcreteEditBaseParameters extends BaseEditParameters
 
 class BaseEditParametersTest extends TestCase
 {
-	private readonly Session&MockObject $sessionMock;
+	private Session&MockObject $sessionMock;
 	private ConcreteEditBaseParameters $baseEditParameters;
 
 	/**

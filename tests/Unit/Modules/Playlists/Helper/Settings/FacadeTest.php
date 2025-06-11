@@ -15,11 +15,11 @@ use PHPUnit\Framework\TestCase;
 
 class FacadeTest extends TestCase
 {
-	private readonly Builder&MockObject $settingsFormBuilderMock;
-	private readonly PlaylistsService&MockObject $playlistsService;
-	private readonly Parameters&MockObject $settingsParameters;
-	private readonly Translator&MockObject $translatorMock;
-	private readonly Facade $facade;
+	private Builder&MockObject $settingsFormBuilderMock;
+	private PlaylistsService&MockObject $playlistsService;
+	private Parameters&MockObject $settingsParameters;
+	private Translator&MockObject $translatorMock;
+	private Facade $facade;
 
 	/**
 	 * @throws Exception

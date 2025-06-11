@@ -14,10 +14,10 @@ use Psr\Log\LoggerInterface;
 
 class PlayerServiceTest extends TestCase
 {
-	private readonly PlayerRepository&MockObject $playerRepositoryMock;
-	private readonly PlaylistsService&MockObject $playlistServiceMock;
-	private readonly AclValidator&MockObject $playerValidatorMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private PlayerRepository&MockObject $playerRepositoryMock;
+	private PlaylistsService&MockObject $playlistServiceMock;
+	private AclValidator&MockObject $playerValidatorMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private PlayerService $service;
 
 	protected function setUp(): void

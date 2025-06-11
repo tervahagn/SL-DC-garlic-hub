@@ -15,10 +15,10 @@ use PHPUnit\Framework\TestCase;
 
 class AclHelperTest extends TestCase
 {
-	private readonly AclHelper $aclHelper;
-	private readonly Config&MockObject $configMock;
-	private readonly UsersService&MockObject $usersServiceMock;
-	private readonly UserEntity&MockObject $userEntityMock;
+	private AclHelper $aclHelper;
+	private Config&MockObject $configMock;
+	private UsersService&MockObject $usersServiceMock;
+	private UserEntity&MockObject $userEntityMock;
 
 	protected function setUp(): void
 	{

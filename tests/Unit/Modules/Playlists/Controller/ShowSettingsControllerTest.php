@@ -23,13 +23,13 @@ use Slim\Flash\Messages;
 
 class ShowSettingsControllerTest extends TestCase
 {
-	private readonly Facade&MockObject $facadeMock;
-	private readonly ServerRequestInterface&MockObject $requestMock;
-	private readonly ResponseInterface&MockObject $responseMock;
-	private readonly StreamInterface&MockObject $streamInterfaceMock;
-	private readonly FormTemplatePreparer&MockObject $formElementPreparerMock;
-	private readonly Messages&MockObject $flashMock;
-	private readonly ShowSettingsController $controller;
+	private Facade&MockObject $facadeMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private ResponseInterface&MockObject $responseMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
+	private FormTemplatePreparer&MockObject $formElementPreparerMock;
+	private Messages&MockObject $flashMock;
+	private ShowSettingsController $controller;
 
 	/**
 	 * @throws Exception

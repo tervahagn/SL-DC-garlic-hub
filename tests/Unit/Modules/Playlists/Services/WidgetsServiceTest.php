@@ -13,9 +13,9 @@ use Psr\Log\LoggerInterface;
 
 class WidgetsServiceTest extends TestCase
 {
-	private readonly ItemsService&MockObject $itemsServiceMock;
-	private readonly ContentDataPreparer&MockObject $contentDataMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private ItemsService&MockObject $itemsServiceMock;
+	private ContentDataPreparer&MockObject $contentDataMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private WidgetsService $widgetsService;
 
 	/**

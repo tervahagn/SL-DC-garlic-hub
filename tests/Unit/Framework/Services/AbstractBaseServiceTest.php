@@ -41,7 +41,7 @@ class ConcreteService extends AbstractBaseService
 }
 class AbstractBaseServiceTest extends TestCase
 {
-	private readonly ConcreteService $service;
+	private ConcreteService $service;
 
 	/**
 	 * @throws Exception

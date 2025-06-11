@@ -16,9 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 class PlaylistMetricsCalculatorTest extends TestCase
 {
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly Config&MockObject $configMock;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private Config&MockObject $configMock;
 	private PlaylistMetricsCalculator $calculator;
 
 	protected function setUp(): void

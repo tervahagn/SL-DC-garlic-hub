@@ -35,9 +35,9 @@ use PHPUnit\Framework\TestCase;
 
 class NodesServiceTest extends TestCase
 {
-	private readonly NodesRepository&MockObject $nodesRepositoryMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly NodesService $nodesService;
+	private NodesRepository&MockObject $nodesRepositoryMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private NodesService $nodesService;
 
 	/**
 	 * @throws Exception

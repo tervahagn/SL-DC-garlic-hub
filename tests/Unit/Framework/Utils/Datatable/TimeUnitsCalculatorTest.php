@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class TimeUnitsCalculatorTest extends TestCase
 {
-	private readonly Translator&MockObject $translatorMock;
+	private Translator&MockObject $translatorMock;
 	private TimeUnitsCalculator $timeUnitsCalculator;
 
 	/**

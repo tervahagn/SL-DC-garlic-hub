@@ -43,9 +43,9 @@ class ConcreteMediaHandler extends AbstractMediaHandler
 }
 class AbstractMediaHandlerTest extends TestCase
 {
-	private readonly AbstractMediaHandler $concreteMediaHandler;
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Config&MockObject $configMock;
+	private AbstractMediaHandler $concreteMediaHandler;
+	private Filesystem&MockObject $filesystemMock;
+	private Config&MockObject $configMock;
 
 	/**
 	 * @throws Exception

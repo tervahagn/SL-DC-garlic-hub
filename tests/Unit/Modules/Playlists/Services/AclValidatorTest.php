@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 
 class AclValidatorTest extends TestCase
 {
-	private readonly AclValidator $aclValidator;
-	private readonly AclHelper&MockObject $aclHelperMock;
+	private AclValidator $aclValidator;
+	private AclHelper&MockObject $aclHelperMock;
 
 	/**
 	 * @throws Exception

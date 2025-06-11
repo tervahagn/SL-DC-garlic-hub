@@ -40,9 +40,9 @@ use PHPUnit\Framework\TestCase;
 
 class MediaHandlerFactoryTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
-	private readonly ImagickFactory&MockObject $imagickFactoryMock;
-	private readonly MediaHandlerFactory $mediaHandlerFactory;
+	private Config&MockObject $configMock;
+	private ImagickFactory&MockObject $imagickFactoryMock;
+	private MediaHandlerFactory $mediaHandlerFactory;
 
 	/**
 	 * @throws Exception

@@ -11,9 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class PlaylistUsageServiceTest extends TestCase
 {
-	private readonly PlayerRepository&MockObject $playerRepositoryMock;
-	private readonly ItemsRepository&MockObject $itemsRepositoryMock;
-	private readonly PlaylistUsageService $service;
+	private PlayerRepository&MockObject $playerRepositoryMock;
+	private ItemsRepository&MockObject $itemsRepositoryMock;
+	private PlaylistUsageService $service;
 
 	protected function setUp(): void
 	{

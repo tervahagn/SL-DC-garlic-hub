@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class MetaPreparerTest extends TestCase
 {
-	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private MetaPreparer $preparer;
 
 	/**

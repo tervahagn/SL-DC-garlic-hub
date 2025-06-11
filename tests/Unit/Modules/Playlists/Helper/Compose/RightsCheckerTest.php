@@ -16,9 +16,9 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class RightsCheckerTest extends TestCase
 {
-	private readonly Translator&MockObject $translatorMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly Config&MockObject $configMock;
+	private Translator&MockObject $translatorMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private Config&MockObject $configMock;
 	private RightsChecker $checker;
 
 

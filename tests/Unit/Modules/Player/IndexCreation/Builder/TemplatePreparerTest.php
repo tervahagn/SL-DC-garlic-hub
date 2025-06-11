@@ -22,7 +22,7 @@ class TemplatePreparerTest extends TestCase
 {
 	private PlayerEntity&MockObject $playerEntityMock;
 	private PlaylistStructureInterface&MockObject $playlistStructureMock;
-	private readonly PreparerFactory&MockObject $preparerFactoryMock;
+	private PreparerFactory&MockObject $preparerFactoryMock;
 	private TemplatePreparer $templatePreparer;
 
 	/**

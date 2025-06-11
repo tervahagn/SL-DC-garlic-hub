@@ -64,10 +64,10 @@ class ConcreteFilterBase extends FilterBase
 }
 class FilterBaseTest extends TestCase
 {
-	private readonly Connection&MockObject	 $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly Result&MockObject $resultMock;
-	private readonly ConcreteFilterBase $FilterBase;
+	private Connection&MockObject	 $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
+	private ConcreteFilterBase $FilterBase;
 
 	/**
 	 * @throws Exception

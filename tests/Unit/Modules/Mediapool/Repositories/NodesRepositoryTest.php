@@ -34,11 +34,11 @@ use Psr\Log\LoggerInterface;
 
 class NodesRepositoryTest extends TestCase
 {
-	private readonly Connection&MockObject $connectionMock;
-	private readonly QueryBuilder&MockObject $queryBuilderMock;
-	private readonly NestedSetHelper&MockObject $helperMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
-	private readonly NodesRepository $nodesRepository;
+	private Connection&MockObject $connectionMock;
+	private QueryBuilder&MockObject $queryBuilderMock;
+	private NestedSetHelper&MockObject $helperMock;
+	private LoggerInterface&MockObject $loggerMock;
+	private NodesRepository $nodesRepository;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

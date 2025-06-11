@@ -17,12 +17,12 @@ use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
 {
-	private readonly FormElementsCreator&MockObject $collectorMock;
-	private readonly AclValidator&MockObject $aclValidatorMock;
-	private readonly Validator&MockObject $validatorMock;
-	private readonly Parameters&MockObject $parametersMock;
-	private readonly Session&MockObject $sessionMock;
-	private readonly Builder $builder;
+	private FormElementsCreator&MockObject $collectorMock;
+	private AclValidator&MockObject $aclValidatorMock;
+	private Validator&MockObject $validatorMock;
+	private Parameters&MockObject $parametersMock;
+	private Session&MockObject $sessionMock;
+	private Builder $builder;
 
 	protected function setUp(): void
 	{

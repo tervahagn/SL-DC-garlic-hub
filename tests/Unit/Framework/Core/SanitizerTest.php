@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class SanitizerTest extends TestCase
 {
-	private readonly Sanitizer $sanitizer;
+	private Sanitizer $sanitizer;
 
 	protected function setUp(): void
 	{

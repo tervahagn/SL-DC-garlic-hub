@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class PlaylistPreparerTest extends TestCase
 {
-	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private PlaylistStructureInterface&MockObject $playlistStructureMock;
 	private PlaylistPreparer $preparer;
 

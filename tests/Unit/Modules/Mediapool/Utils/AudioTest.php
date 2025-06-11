@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 class AudioTest extends TestCase
 {
-	private readonly Filesystem&MockObject $filesystemMock;
-	private readonly Ffmpeg&MockObject $ffmpegMock;
+	private Filesystem&MockObject $filesystemMock;
+	private Ffmpeg&MockObject $ffmpegMock;
 	private Audio $audio;
 
 	/**

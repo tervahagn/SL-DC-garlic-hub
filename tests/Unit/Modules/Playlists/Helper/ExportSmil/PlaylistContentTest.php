@@ -20,8 +20,8 @@ use PHPUnit\Framework\TestCase;
 
 class PlaylistContentTest extends TestCase
 {
-	private readonly ItemsFactory&MockObject $itemsFactoryMock;
-	private readonly Config&MockObject $configMock;
+	private ItemsFactory&MockObject $itemsFactoryMock;
+	private Config&MockObject $configMock;
 	private PlaylistContent $playlistContent;
 
 	/**

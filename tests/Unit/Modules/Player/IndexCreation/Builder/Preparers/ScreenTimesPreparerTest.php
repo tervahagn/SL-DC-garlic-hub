@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class ScreenTimesPreparerTest extends TestCase
 {
-	private readonly PlayerEntity&MockObject $playerEntityMock;
+	private PlayerEntity&MockObject $playerEntityMock;
 	private ScreenTimesPreparer $preparer;
 
 	/**

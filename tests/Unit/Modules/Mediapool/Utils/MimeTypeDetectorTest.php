@@ -31,7 +31,7 @@ use PHPUnit\Framework\TestCase;
 
 class MimeTypeDetectorTest extends TestCase
 {
-	private readonly FileInfoWrapper&MockObject $fileInfoWrapperMock;
+	private FileInfoWrapper&MockObject $fileInfoWrapperMock;
 
 	private MimeTypeDetector $mimeTypeDetector;
 	private string $baseDirectory;

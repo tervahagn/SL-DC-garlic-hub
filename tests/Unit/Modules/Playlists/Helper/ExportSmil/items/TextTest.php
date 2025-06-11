@@ -15,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 
 class TextTest extends TestCase
 {
-	private readonly Trigger&MockObject $beginMock;
-	private readonly Trigger&MockObject $endMock;
-	private readonly Conditional&MockObject $conditionalMock;
+	private Trigger&MockObject $beginMock;
+	private Trigger&MockObject $endMock;
+	private Conditional&MockObject $conditionalMock;
 	private Text $text;
 
 	/**

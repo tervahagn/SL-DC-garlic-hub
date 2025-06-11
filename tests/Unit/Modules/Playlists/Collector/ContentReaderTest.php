@@ -14,10 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 class ContentReaderTest extends TestCase
 {
-	private readonly Filesystem&MockObject $fileSystemMock;
+	private Filesystem&MockObject $fileSystemMock;
 	private Config&MockObject $configMock;
 
-	private readonly ContentReaderInterface $reader;
+	private ContentReaderInterface $reader;
 
 	/**
 	 * @throws Exception|CoreException

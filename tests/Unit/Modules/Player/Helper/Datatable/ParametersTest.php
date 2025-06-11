@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private readonly Session&MockObject $sessionMock;
-	private readonly Parameters $parameters;
+	private Session&MockObject $sessionMock;
+	private Parameters $parameters;
 
 	/**
 	 * @throws ModuleException

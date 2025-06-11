@@ -14,8 +14,8 @@ use Psr\Log\LoggerInterface;
 
 class IndexFileTest extends TestCase
 {
-	private readonly FileSystem&MockObject $fileSystemMock;
-	private readonly LoggerInterface&MockObject $loggerMock;
+	private FileSystem&MockObject $fileSystemMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private IndexFile $indexFile;
 
 	/**

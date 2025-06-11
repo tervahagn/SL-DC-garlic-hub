@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class SystemStatsTest extends TestCase
 {
 	use PHPMock;
-	private readonly ShellExecutor&MockObject $shellExecutorMock;
+	private ShellExecutor&MockObject $shellExecutorMock;
 	private SystemStats $systemStats;
 
 	protected function setUp(): void

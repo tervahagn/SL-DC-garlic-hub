@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class ItemsFactoryTest extends TestCase
 {
-	private readonly Config&MockObject $configMock;
+	private Config&MockObject $configMock;
 	private ItemsFactory $itemsFactory;
 
 	/**
