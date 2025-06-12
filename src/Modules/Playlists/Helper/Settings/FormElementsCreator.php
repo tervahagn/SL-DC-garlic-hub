@@ -43,6 +43,10 @@ readonly class FormElementsCreator
 		$this->translator = $translator;
 	}
 
+	/**
+	 * @param array<string, mixed> $form
+	 * @return array<string, mixed>
+	 */
 	public function prepareForm(array $form): array
 	{
 		return $this->formBuilder->prepareForm($form);

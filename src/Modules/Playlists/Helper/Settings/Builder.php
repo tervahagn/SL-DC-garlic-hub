@@ -22,14 +22,10 @@ namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Session;
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\FormParameters\BaseParameters;
-use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use Doctrine\DBAL\Exception;
@@ -57,6 +53,7 @@ class Builder
 
 	public function init(Session $session): static
 	{
+		/** @var array{UID: int, username: string} $user */
 		$user = $session->get('user');
 		$this->UID      = $user['UID'];
 		$this->username = $user['username'];
@@ -65,7 +62,6 @@ class Builder
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
@@ -83,9 +79,9 @@ class Builder
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
 	 * @throws CoreException
 	 * @throws Exception
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function configEditParameter(array $playlist): void
@@ -101,6 +97,8 @@ class Builder
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
@@ -114,7 +112,7 @@ class Builder
 			$playlist[Parameters::PARAMETER_PLAYLIST_NAME] ?? ''
 		);
 
-		if ($this->parameters->hasParameter(BaseEditParameters::PARAMETER_UID))
+		if ($this->parameters->hasParameter(BaseParameters::PARAMETER_UID))
 		{
 			$form['UID'] = $this->formElementsCreator->createUIDField(
 				$playlist[BaseParameters::PARAMETER_UID] ?? $this->UID,
@@ -143,18 +141,20 @@ class Builder
 	}
 
 	/**
+	 * @param array<string,mixed> $post
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function handleUserInput(array $userInput): array
+	public function handleUserInput(array $post): array
 	{
-		$this->parameters->setUserInputs($userInput)
+		$this->parameters->setUserInputs($post)
 			->parseInputAllParameters();
 
-		return $this->validator->validateUserInput($userInput);
+		return $this->validator->validateUserInput($post);
 	}
 
 

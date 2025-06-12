@@ -22,7 +22,6 @@ namespace App\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
@@ -34,6 +33,9 @@ class Parameters extends BaseEditParameters
 	const string PARAMETER_TIME_LIMIT     = 'time_limit';
 	const string PARAMETER_MULTIZONE      = 'multizone';
 
+	/**
+	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
+	 */
 	protected array $moduleParameters = [
 		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
 	];
@@ -45,7 +47,6 @@ class Parameters extends BaseEditParameters
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	public function addPlaylistMode(): void
 	{
@@ -53,7 +54,6 @@ class Parameters extends BaseEditParameters
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	public function addPlaylistId(): void
 	{
@@ -61,7 +61,6 @@ class Parameters extends BaseEditParameters
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	public function addTimeLimit(): void
 	{

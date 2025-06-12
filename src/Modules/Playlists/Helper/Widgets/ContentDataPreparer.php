@@ -25,9 +25,9 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Widget\ConfigXML;
 
-class ContentDataPreparer
+readonly class ContentDataPreparer
 {
-	private Readonly ConfigXML $configXml;
+	private ConfigXML $configXml;
 
 	public function __construct(ConfigXML $configXml)
 	{
@@ -35,6 +35,8 @@ class ContentDataPreparer
 	}
 
 	/**
+	 * @param array<string, mixed> $requestData
+	 * @return array<string, mixed>
 	 * @throws ModuleException
 	 * @throws FrameworkException
 	 */
@@ -73,6 +75,7 @@ class ContentDataPreparer
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws ModuleException
 	 * @throws FrameworkException
 	 */

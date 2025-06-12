@@ -21,8 +21,6 @@
 namespace App\Modules\Playlists\Repositories;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Modules\Playlists\Helper\ItemType;
-use App\Modules\Playlists\Helper\Settings\Parameters;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -46,6 +44,7 @@ class PlaylistsRepository extends FilterBase
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function findFirstWithUserName(int $playlistId): array
@@ -53,14 +52,14 @@ class PlaylistsRepository extends FilterBase
 		$select = $this->prepareSelectFilteredForUser();
 		$join   = ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 		$where  = ['playlist_id' => ['value' => $playlistId, 'operator' => '=']];
-		$result =  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
-		return $result;
+		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
 	/**
+	 * @param array<string, mixed> $saveData
 	 * @throws Exception
 	 */
-	public function updateExport(int $playlistId, array $saveData): int
+	public function updateExport(int $playlistId, array $saveData): int|string
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->update($this->table);
@@ -76,21 +75,34 @@ class PlaylistsRepository extends FilterBase
 		return $queryBuilder->executeStatement();
 	}
 
+	/**
+	 * @return string[]
+	 */
 	protected function prepareJoin(): array
 	{
 		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 	}
 
+	/**
+	 * @return string[]
+	 */
 	protected function prepareSelectFiltered(): array
 	{
 		return [$this->table.'.*'];
 	}
 
+	/**
+	 * @return string[]
+	 */
 	protected function prepareSelectFilteredForUser(): array
 	{
 		return array_merge($this->prepareSelectFiltered(),['user_main.username', 'user_main.company_id']);
 	}
 
+	/**
+	 * @param array<string, mixed> $filterFields
+	 * @return array<string, mixed>
+	 */
 	protected function prepareWhereForFiltering(array $filterFields): array
 	{
 		$where = [];

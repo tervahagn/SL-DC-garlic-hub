@@ -35,6 +35,7 @@ class Facade
 	private readonly Builder $settingsFormBuilder;
 	private readonly PlaylistsService $playlistsService;
 	private readonly Parameters $settingsParameters;
+	/** @var array<string, mixed> */
 	private array $oldPlaylist;
 	private Translator $translator;
 
@@ -53,9 +54,9 @@ class Facade
 	}
 
 	/**
-	 * @throws Exception
+	 * @return array<string,mixed>
 	 */
-	public function loadPlaylistForEdit($playlistId): array
+	public function loadPlaylistForEdit(int $playlistId): array
 	{
 		$this->oldPlaylist = $this->playlistsService->loadPlaylistForEdit($playlistId);
 
@@ -64,6 +65,8 @@ class Facade
 
 
 	/**
+	 * @param array<string,mixed> $post
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -87,12 +90,13 @@ class Facade
 	}
 
 	/**
+	 * @param array<string,mixed> $post
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function storePlaylist($post): int
+	public function storePlaylist(array $post): int
 	{
 		$saveData  = array_combine(
 			$this->settingsParameters->getInputParametersKeys(),

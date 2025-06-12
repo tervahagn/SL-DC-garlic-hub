@@ -45,13 +45,15 @@ class Validator extends BaseValidator
 	}
 
 	/**
+	 * @param array<string, mixed> $post
+	 * @return array<array<string, mixed>>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function validateUserInput(array $userInputs): array
+	public function validateUserInput(array $post): array
 	{
 		$this->inputEditParameters->checkCsrfToken();
 
@@ -60,11 +62,11 @@ class Validator extends BaseValidator
 			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
 
 		// we need userInput here as getValueOfParameter will throw an exception if not set
-		if (!isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !isset($userInputs[Parameters::PARAMETER_PLAYLIST_ID]))
+		if (!isset($post[Parameters::PARAMETER_PLAYLIST_MODE]) && !isset($post[Parameters::PARAMETER_PLAYLIST_ID]))
 			$errors[] = $this->translator->translate('parameters_missing', 'playlists');
 
-		if (isset($userInputs[Parameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($userInputs))
-			$errors[] = sprintf($this->translator->translate('playlist_mode_unsupported', 'playlists'), $userInputs['playlist_mode']);
+		if (isset($post[Parameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($post))
+			$errors[] = sprintf($this->translator->translate('playlist_mode_unsupported', 'playlists'), $post['playlist_mode']);
 
 		return $errors;
 	}

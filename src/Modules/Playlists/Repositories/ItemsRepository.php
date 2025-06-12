@@ -46,6 +46,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function findAllByPlaylistId(int $playlistId): array
@@ -57,6 +58,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllByPlaylistIdWithJoins(int $playlistId, string $edition): array
@@ -107,21 +109,23 @@ class ItemsRepository extends SqlBase
 
 	/**
 	 * This method finds all nested playlists, in a playlist
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
-	public function findAllPlaylistItemsByPlaylistId($playlist_id): array
+	public function findAllPlaylistItemsByPlaylistId(int $playlistId): array
 	{
 		$where = [
-			'playlist_id' => $this->generateWhereClause($playlist_id),
+			'playlist_id' => $this->generateWhereClause($playlistId),
 			'item_type'  => $this->generateWhereClause(ItemType::PLAYLIST->value)
 		];
 		return $this->findAllBy($where);
 	}
 
 	/**
+	 * @return array<string,mixed>|false
 	 * @throws Exception
 	 */
-	public function sumAndCountMetricsByPlaylistIdAndOwner(int $playlistId, int $owner): array
+	public function sumAndCountMetricsByPlaylistIdAndOwner(int $playlistId, int $owner): array|false
 	{
 		$qb = $this->connection->createQueryBuilder();
 		$qb->select(
@@ -142,6 +146,7 @@ class ItemsRepository extends SqlBase
 	/**
 	 *  This method finds all playlists which has nested the playlistId
 	 *
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function findAllPlaylistsContainingPlaylist(int $playlistId): array
@@ -198,15 +203,17 @@ class ItemsRepository extends SqlBase
 	/**
 	 * @throws Exception
 	 */
-	public function updateItemOrder($itemId, $newOrder): int
+	public function updateItemOrder(int $itemId, int $newOrder): int
 	{
 		return $this->update($itemId,['item_order' => $newOrder]);
 	}
 
 	/**
+	 * @param int[] $playlistIds
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
-	public function findFileResourcesByPlaylistId(array $playlistIds)
+	public function findFileResourcesByPlaylistId(array $playlistIds): array
 	{
 		if (empty($playlistIds))
 			return [];
