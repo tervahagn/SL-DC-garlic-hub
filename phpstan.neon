@@ -1,3 +1,4 @@
 includes:
-    - phpstan-src.neon
-    - phpstan-tests.neon
+ # we deactivate this tempoarary to clean up the mess with IDE based phpstan
+ #   - phpstan-src.neon
+ #   - phpstan-tests.neon
