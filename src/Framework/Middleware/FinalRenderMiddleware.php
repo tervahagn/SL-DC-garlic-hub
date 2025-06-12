@@ -205,8 +205,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$UID =	$this->session->get('user')['UID'];
 		$adminMenuPoints = [];
 
-		if (($this->config->getEdition() !== Config::PLATFORM_EDITION_EDGE)
-		&& ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isSubAdmin($UID)))
+		if ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isSubAdmin($UID))
 		{
 			$adminMenuPoints[] = [
 				'LINK_USER_ACCESS' => '/users',
