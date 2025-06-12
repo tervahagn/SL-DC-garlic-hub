@@ -21,14 +21,14 @@
 
 namespace App\Modules\Playlists\Controller;
 
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\ExportService;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ExportController
+readonly class ExportController
 {
-	private readonly ExportService $exportService;
+	private ExportService $exportService;
 
 	public function __construct(ExportService $exportService)
 	{
@@ -36,10 +36,11 @@ class ExportController
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws Exception
 	 */
 	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
 
 		if (!isset($post['playlist_id']))
@@ -54,9 +55,12 @@ class ExportController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
+	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

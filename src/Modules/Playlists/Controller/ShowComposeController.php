@@ -45,6 +45,7 @@ class ShowComposeController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
@@ -53,7 +54,7 @@ class ShowComposeController
 	public function show(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->setImportantAttributes($request);
-		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->redirectWithErrors($response, 'Playlist ID not valid.');
 

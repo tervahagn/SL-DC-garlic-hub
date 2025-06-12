@@ -34,6 +34,9 @@ class WidgetsController
 		$this->widgetsService = $itemsService;
 	}
 
+	/**
+	 * @param array<string, mixed> $args
+	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$itemId = $args['item_id'] ?? 0;
@@ -50,6 +53,7 @@ class WidgetsController
 
 	public function save(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		$itemId = $requestData['item_id'] ?? 0;
 		if ($itemId === 0)
@@ -63,10 +67,12 @@ class WidgetsController
 		return $this->jsonResponse($response, ['success' => true]);
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
+	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
-
 }

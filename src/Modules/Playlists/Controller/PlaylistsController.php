@@ -58,6 +58,7 @@ class PlaylistsController
 	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
 		$playlistId = $post['playlist_id'] ?? 0;
 		if ($playlistId === 0)
@@ -78,7 +79,8 @@ class PlaylistsController
 	 */
 	public function toggleShuffle(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$post        = $request->getParsedBody();
+		/** @var array<string,mixed> $post */
+		$post = $request->getParsedBody();
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -98,7 +100,8 @@ class PlaylistsController
 	 */
 	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$post        = $request->getParsedBody();
+		/** @var array<string,mixed> $post */
+		$post = $request->getParsedBody();
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -114,9 +117,12 @@ class PlaylistsController
 		return $this->jsonResponse($response, ['success' => true, 'playlist_metrics' => $data['playlist_metrics']]);
 	}
 
+	/**
+	 * @param array<string,mixed> $args
+	 */
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -128,9 +134,12 @@ class PlaylistsController
 		return $this->jsonResponse($response, ['success' => true, 'zones' => $multizone]);
 	}
 
+	/**
+	 * @param array<string,mixed> $args
+	 */
 	public function saveZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -144,6 +153,7 @@ class PlaylistsController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -155,7 +165,9 @@ class PlaylistsController
 		$this->parameters->parseInputAllParameters();
 
 		$this->session = $request->getAttribute('session');
-		$this->playlistsDatatableService->setUID($this->session->get('user')['UID']);
+		/** @var array<string,mixed> $user */
+		$user = $this->session->get('user');
+		$this->playlistsDatatableService->setUID($user['UID']);
 		$this->playlistsDatatableService->loadDatatable();
 		$results = [];
 		foreach ($this->playlistsDatatableService->getCurrentFilterResults() as $value)
@@ -164,10 +176,10 @@ class PlaylistsController
 		}
 
 		return $this->jsonResponse($response, $results);
-
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -176,25 +188,15 @@ class PlaylistsController
 	public function findForPlayerAssignment(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$args['playlist_mode'] = 'master,multizone'; // important! no space after comma
-		$this->parameters->setUserInputs($args);
-		$this->parameters->parseInputAllParameters();
-
-		$this->session = $request->getAttribute('session');
-		$this->playlistsDatatableService->setUID($this->session->get('user')['UID']);
-		$this->playlistsDatatableService->loadDatatable();
-		$results = [];
-		foreach ($this->playlistsDatatableService->getCurrentFilterResults() as $value)
-		{
-			$results[] = ['id' => $value['playlist_id'], 'name' => $value['playlist_name']];
-		}
-
-		return $this->jsonResponse($response, $results);
-
+		return $this->findByName($request, $response, $args);
 	}
 
+	/**
+	 * @param array<string,mixed> $args
+	 */
 	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -206,12 +208,17 @@ class PlaylistsController
 	private function setServiceUID(ServerRequestInterface $request): void
 	{
 		$this->session = $request->getAttribute('session');
-		$this->playlistsService->setUID($this->session->get('user')['UID']);
+		/** @var array<string,mixed> $user */
+		$user = $this->session->get('user');
+		$this->playlistsService->setUID($user['UID']);
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
+	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

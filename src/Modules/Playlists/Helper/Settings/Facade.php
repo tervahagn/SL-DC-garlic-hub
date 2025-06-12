@@ -50,7 +50,9 @@ class Facade
 	{
 		$this->translator = $translator;
 		$this->settingsFormBuilder->init($session);
-		$this->playlistsService->setUID($session->get('user')['UID']);
+		/** @var array{UID: int} $user */
+		$user = $session->get('user');
+		$this->playlistsService->setUID($user['UID']);
 	}
 
 	/**
@@ -111,7 +113,6 @@ class Facade
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
@@ -122,7 +123,7 @@ class Facade
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param array<string,mixed> $playlist
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
@@ -133,6 +134,8 @@ class Facade
 	}
 
 	/**
+	 * @param array<string,mixed> $post
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

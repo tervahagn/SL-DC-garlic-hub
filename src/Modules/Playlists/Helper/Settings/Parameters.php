@@ -31,7 +31,6 @@ class Parameters extends BaseEditParameters
 	const string PARAMETER_PLAYLIST_NAME  = 'playlist_name';
 	const string PARAMETER_PLAYLIST_MODE  = 'playlist_mode';
 	const string PARAMETER_TIME_LIMIT     = 'time_limit';
-	const string PARAMETER_MULTIZONE      = 'multizone';
 
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
@@ -46,8 +45,6 @@ class Parameters extends BaseEditParameters
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
 	}
 
-	/**
-	 */
 	public function addPlaylistMode(): void
 	{
 		$this->addParameter(self::PARAMETER_PLAYLIST_MODE, ScalarType::STRING, '');

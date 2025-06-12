@@ -41,6 +41,7 @@ readonly class ItemsController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -48,7 +49,7 @@ readonly class ItemsController
 	 */
 	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = isset($args['playlist_id']) ? (int) $args['playlist_id'] : 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -60,6 +61,7 @@ readonly class ItemsController
 
 	public function insert(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -94,6 +96,7 @@ readonly class ItemsController
 	 */
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
@@ -125,6 +128,7 @@ readonly class ItemsController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -132,7 +136,7 @@ readonly class ItemsController
 	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$itemId = isset($args['item_id']) ? (int) $args['item_id'] : 0;
+		$itemId = $args['item_id'] ?? 0;
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -145,14 +149,9 @@ readonly class ItemsController
 	}
 
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -171,6 +170,7 @@ readonly class ItemsController
 	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -198,9 +198,13 @@ readonly class ItemsController
 		return $UID;
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
+	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
+
 }

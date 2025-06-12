@@ -45,6 +45,7 @@ class ShowSettingsController
 	}
 
 	/**
+	 * @param array<string,string> $args
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -63,6 +64,7 @@ class ShowSettingsController
 	}
 
 	/**
+	 * @param array<string,string> $args
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws ModuleException
@@ -72,7 +74,7 @@ class ShowSettingsController
 	 */
 	public function editPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'] ?? 0;
+		$playlistId = $args['playlist_id'] ?? 0;
 
 		$this->initFacade($request);
 
@@ -82,7 +84,7 @@ class ShowSettingsController
 			return $response->withHeader('Location', '/playlists')->withStatus(302);
 		}
 
-		$playlist = $this->facade->loadPlaylistForEdit($playlistId);
+		$playlist = $this->facade->loadPlaylistForEdit((int) $playlistId);
 		if (empty($playlist))
 		{
 			$this->flash->addMessage('error', 'Playlist not found.');
@@ -103,7 +105,8 @@ class ShowSettingsController
 	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$post        = $request->getParsedBody();
+		/** @var array<string,mixed> $post */
+		$post = $request->getParsedBody();
 
 		$this->initFacade($request);
 		$errors = $this->facade->configurePlaylistFormParameter($post);
@@ -126,15 +129,16 @@ class ShowSettingsController
 	}
 
 	/**
+	 * @param array<string,mixed> $post
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 */
-	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, array $post): ResponseInterface
 	{
-		$dataSections = $this->facade->prepareUITemplate($userInput);
+		$dataSections = $this->facade->prepareUITemplate($post);
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));
