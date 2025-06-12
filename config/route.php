@@ -37,88 +37,109 @@ use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Users\Controller\EditLocalesController;
 use App\Modules\Users\Controller\EditPasswordController;
+use App\Modules\Users\Controller\ShowEditUserController;
 use App\Modules\Users\Controller\UsersController;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
+/**
+ * @param string[] $controllerCallable
+ */
+function createControllerCallable(array $controllerCallable, ContainerInterface $container): Closure
+{
+	if (count($controllerCallable) !== 2)
+		throw new InvalidArgumentException('Controller callable must be an array like [ControllerClass::class, \'methodName\'].');
+
+	[$controllerClass, $methodName] = $controllerCallable;
+
+	return function (Request $request, Response $response, array $args) use ($controllerClass, $methodName, $container)
+	{
+		$controller = $container->get($controllerClass);
+		return $controller->{$methodName}($request, $response, $args);
+	};
+}
 /* @var App $app */
 /** @phpstan-ignore-next-line */
 assert($app instanceof App);
+/** @var ContainerInterface $container */
 $container = $app->getContainer();
 
-$app->get('/smil-index', [PlayerIndexController::class, 'index']);
+$app->get('/smil-index', createControllerCallable([PlayerIndexController::class, 'index'], $container));
 
-$app->group('', function (RouteCollectorProxy $group)
+$app->group('', function (RouteCollectorProxy $group) use ($container)
 {
-	$group->get('/', [HomeController::class, 'index']);
-	$group->get('/legals', [HomeController::class, 'legals']);
-	$group->get('/login', [LoginController::class, 'showLogin']);
-	$group->post('/login', [LoginController::class, 'login']);
-	$group->get('/logout', [LoginController::class, 'logout']);
-	$group->get('/set-locales/{locale}', [EditLocalesController::class, 'setLocales']);
+	$group->get('/', createControllerCallable([HomeController::class, 'index'], $container));
+	$group->get('/legals', createControllerCallable([HomeController::class, 'legals'], $container));
+	$group->get('/login', createControllerCallable([LoginController::class, 'showLogin'], $container));
+	$group->post('/login', createControllerCallable([LoginController::class, 'login'], $container));
+	$group->get('/logout', createControllerCallable([LoginController::class, 'logout'], $container));
+	$group->get('/set-locales/{locale}', createControllerCallable([EditLocalesController::class, 'setLocales'], $container));
 
-	$group->get('/users', [\App\Modules\Users\Controller\ShowDatatableController::class, 'show']);
-	$group->get('/users/edit', [EditPasswordController::class, 'showForm']);
-	$group->post('/users/edit/password', [EditPasswordController::class, 'editPassword']);
+	$group->get('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'show'], $container));
+	$group->get('/users/edit', createControllerCallable([EditPasswordController::class, 'showForm'], $container));
+	$group->post('/users/edit/password', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
 
-	$group->get('/mediapool', [ShowController::class, 'show']);
+	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));
 
-	$group->get('/playlists', [ShowDatatableController::class, 'show']);
-	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', [ShowSettingsController::class, 'newPlaylistForm']);
-	$group->get('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'editPlaylistForm']);
-	$group->delete('/playlists/settings/{playlist_id:\d+}', [ShowSettingsController::class, 'delete']);
-	$group->post('/playlists/settings', [ShowSettingsController::class, 'store']);
-	$group->get('/playlists/compose/{playlist_id}', [ShowComposeController::class, 'show']);
+	$group->get('/playlists', createControllerCallable([ShowDatatableController::class, 'show'], $container));
+	$group->get('/playlists/settings/{playlist_mode:master|internal|external|multizone|channel}', createControllerCallable([ShowSettingsController::class, 'newPlaylistForm'], $container));
+	$group->get('/playlists/settings/{playlist_id:\d+}', createControllerCallable([ShowSettingsController::class, 'editPlaylistForm'], $container));
+	$group->delete('/playlists/settings/{playlist_id:\d+}', createControllerCallable([ShowSettingsController::class, 'delete'], $container));
+	$group->post('/playlists/settings', createControllerCallable([ShowSettingsController::class, 'store'], $container));
+	$group->get('/playlists/compose/{playlist_id}', createControllerCallable([ShowComposeController::class, 'show'], $container));
 
-	$group->get('/player', [\App\Modules\Player\Controller\ShowDatatableController::class, 'show']);
+	$group->get('/player', createControllerCallable([\App\Modules\Player\Controller\ShowDatatableController::class, 'show'], $container));
 })->add($container->get(FinalRenderMiddleware::class));
 
-$app->group('/api', function (RouteCollectorProxy $group)
+$app->group('/api', function (RouteCollectorProxy $group) use ($container)
 {
-	$group->get('/authorize', [OAuth2Controller::class, 'authorize']);
-	$group->post('/token', [OAuth2Controller::class, 'token']);
+	$group->get('/authorize', createControllerCallable([OAuth2Controller::class, 'authorize'], $container));
+	$group->post('/token', createControllerCallable([OAuth2Controller::class, 'token'], $container));
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
 
-$app->group('/async', function (RouteCollectorProxy $group)
+$app->group('/async', function (RouteCollectorProxy $group) use ($container)
 {
-	$group->get('/users/find/{username}', [UsersController::class, 'findByName']);
+	$group->get('/users/find/{username}', createControllerCallable([UsersController::class, 'findByName'], $container));
 
-	$group->get('/mediapool/node[/{parent_id:\d+}]', [NodesController::class, 'list']); // parent_id is optional with []
-	$group->post('/mediapool/node', [NodesController::class, 'add']);
-	$group->delete('/mediapool/node', [NodesController::class, 'delete']);
-	$group->patch('/mediapool/node', [NodesController::class, 'edit']);
-	$group->post('/mediapool/node/move', [NodesController::class, 'move']);
-	$group->post('/mediapool/uploadLocalFile', [UploadController::class, 'uploadLocalFile']);
-	$group->post('/mediapool/uploadFromUrl', [UploadController::class, 'uploadFromUrl']);
-	$group->post('/mediapool/searchStockImages', [UploadController::class, 'searchStockImages']);
-	$group->get('/mediapool/media/list/{node_id:\d+}', [MediaController::class, 'list']);
-	$group->get('/mediapool/media/{media_id}', [MediaController::class, 'getInfo']);
-	$group->post('/mediapool/media', [MediaController::class, 'add']);
-	$group->delete('/mediapool/media', [MediaController::class, 'delete']);
-	$group->post('/mediapool/media/edit', [MediaController::class, 'edit']);
-	$group->post('/mediapool/media/move', [MediaController::class, 'move']);
-	$group->post('/mediapool/media/clone', [MediaController::class, 'clone']);
+	$group->get('/mediapool/node[/{parent_id:\d+}]', createControllerCallable([NodesController::class, 'list'], $container)); // parent_id is optional with []
+	$group->post('/mediapool/node', createControllerCallable([NodesController::class, 'add'], $container));
+	$group->delete('/mediapool/node', createControllerCallable([NodesController::class, 'delete'], $container));
+	$group->patch('/mediapool/node', createControllerCallable([NodesController::class, 'edit'], $container));
+	$group->post('/mediapool/node/move', createControllerCallable([NodesController::class, 'move'], $container));
+	$group->post('/mediapool/uploadLocalFile', createControllerCallable([UploadController::class, 'uploadLocalFile'], $container));
+	$group->post('/mediapool/uploadFromUrl', createControllerCallable([UploadController::class, 'uploadFromUrl'], $container));
+	$group->post('/mediapool/searchStockImages', createControllerCallable([UploadController::class, 'searchStockImages'], $container));
+	$group->get('/mediapool/media/list/{node_id:\d+}',createControllerCallable( [MediaController::class, 'list'], $container));
+	$group->get('/mediapool/media/{media_id}', createControllerCallable([MediaController::class, 'getInfo'], $container));
+	$group->post('/mediapool/media', createControllerCallable([MediaController::class, 'add'], $container));
+	$group->delete('/mediapool/media', createControllerCallable([MediaController::class, 'delete'], $container));
+	$group->post('/mediapool/media/edit', createControllerCallable([MediaController::class, 'edit'], $container));
+	$group->post('/mediapool/media/move', createControllerCallable([MediaController::class, 'move'], $container));
+	$group->post('/mediapool/media/clone', createControllerCallable([MediaController::class, 'clone'], $container));
 
-	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}[/{playlist_name}]', [PlaylistsController::class, 'findByName']);
-	$group->get('/playlists/find/for-player[/{playlist_name}]', [PlaylistsController::class, 'findForPlayerAssignment']);
-	$group->delete('/playlists', [PlaylistsController::class, 'delete']);
-	$group->put('/playlists', [ExportController::class, 'export']);
-	$group->get('/playlists/find/{playlist_id:\d+}', [PlaylistsController::class, 'findById']);
-	$group->get('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'loadZone']);
-	$group->post('/playlists/multizone/{playlist_id:\d+}', [PlaylistsController::class, 'saveZone']);
-	$group->patch('/playlists/shuffle', [PlaylistsController::class, 'toggleShuffle']);
-	$group->patch('/playlists/picking', [PlaylistsController::class, 'shufflePicking']);
+	$group->get('/playlists/find/{playlist_mode:master|internal|external|multizone|channel}[/{playlist_name}]', createControllerCallable([PlaylistsController::class, 'findByName'], $container));
+	$group->get('/playlists/find/for-player[/{playlist_name}]', createControllerCallable([PlaylistsController::class, 'findForPlayerAssignment'], $container));
+	$group->delete('/playlists', createControllerCallable([PlaylistsController::class, 'delete'], $container));
+	$group->put('/playlists', createControllerCallable([ExportController::class, 'export'], $container));
+	$group->get('/playlists/find/{playlist_id:\d+}', createControllerCallable([PlaylistsController::class, 'findById'], $container));
+	$group->get('/playlists/multizone/{playlist_id:\d+}', createControllerCallable([PlaylistsController::class, 'loadZone'], $container));
+	$group->post('/playlists/multizone/{playlist_id:\d+}', createControllerCallable([PlaylistsController::class, 'saveZone'], $container));
+	$group->patch('/playlists/shuffle', createControllerCallable([PlaylistsController::class, 'toggleShuffle'], $container));
+	$group->patch('/playlists/picking', createControllerCallable([PlaylistsController::class, 'shufflePicking'], $container));
 
-	$group->get('/playlists/items/load/{playlist_id:\d+}', [ItemsController::class, 'loadItems']);
-	$group->post('/playlists/items/insert', [ItemsController::class, 'insert']);
-	$group->delete('/playlists/items', [ItemsController::class, 'delete']);
-	$group->patch('/playlists/items', [ItemsController::class, 'updateItemOrders']);
-	$group->get('/playlists/item/{item_id:\d+}', [ItemsController::class, 'fetch']);
-	$group->patch('/playlists/item', [ItemsController::class, 'edit']);
-	$group->get('/playlists/widget/fetch/{item_id:\d+}', [WidgetsController::class, 'fetch']);
-	$group->patch('/playlists/widget/save', [WidgetsController::class, 'save']);
+	$group->get('/playlists/items/load/{playlist_id:\d+}', createControllerCallable([ItemsController::class, 'loadItems'], $container));
+	$group->post('/playlists/items/insert', createControllerCallable([ItemsController::class, 'insert'], $container));
+	$group->delete('/playlists/items', createControllerCallable([ItemsController::class, 'delete'], $container));
+	$group->patch('/playlists/items', createControllerCallable([ItemsController::class, 'updateItemOrders'], $container));
+	$group->get('/playlists/item/{item_id:\d+}', createControllerCallable([ItemsController::class, 'fetch'], $container));
+	$group->patch('/playlists/item', createControllerCallable([ItemsController::class, 'edit'], $container));
+	$group->get('/playlists/widget/fetch/{item_id:\d+}', createControllerCallable([WidgetsController::class, 'fetch'], $container));
+	$group->patch('/playlists/widget/save', createControllerCallable([WidgetsController::class, 'save'], $container));
 
-	$group->patch('/player/playlist', [PlayerController::class, 'replacePlaylist']);
+	$group->patch('/player/playlist', createControllerCallable([PlayerController::class, 'replacePlaylist'], $container));
 
 
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});
