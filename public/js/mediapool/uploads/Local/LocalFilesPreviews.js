@@ -26,7 +26,6 @@ export class LocalFilesPreviews extends BasePreviewHandler
         super(previewArea, previewFactory)
     }
 
-
     handleFiles(files)
     {
         Array.from(files).forEach(file => {
