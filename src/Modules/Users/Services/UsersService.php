@@ -20,6 +20,8 @@
 
 namespace App\Modules\Users\Services;
 
+use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Framework\Services\AbstractBaseService;
 use App\Modules\Users\Entities\UserEntity;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
@@ -28,6 +30,7 @@ use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 /**
  * User service handles and caches the userEntity. This is a central point for authentication and checking
@@ -35,7 +38,7 @@ use Psr\Cache\InvalidArgumentException;
  *
  * The class is user agnostic and the methods needs user id to work and return a userEntity.
  */
-class UsersService
+class UsersService extends AbstractBaseService
 {
 	const int USER_STATUS_DELETED       = 0;
 	const int USER_STATUS_LOCKED        = 1;
@@ -50,21 +53,33 @@ class UsersService
 
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
-	private array $userRepositories;
 	private Psr16Adapter $cache;
+	private array $userRepositories;
 
 	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, Psr16Adapter
-	$cache)
+	$cache, LoggerInterface $logger)
 	{
 		$this->userRepositoryFactory = $userRepositoryFactory;
 		$this->userEntityFactory     = $userEntityFactory;
 		$this->cache                 = $cache;
 		$this->userRepositories      = $this->userRepositoryFactory->create();
+		parent::__construct($logger);
 	}
 
+	/**
+	 * @return array<string,FilterBase>
+	 */
 	public function getUserRepositories(): array
 	{
 		return $this->userRepositories;
+	}
+
+	/**
+	 * @return array<string,string>
+	 */
+	public function loadForEdit(int $UID): array
+	{
+		return $this->getUserRepositories()['main']->findById($UID);
 	}
 
 	public function updatePassword(int $UID, $password): int
@@ -72,6 +87,11 @@ class UsersService
 		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 
 		return $this->updateUser($UID, $data);
+	}
+
+	public function inserNewUser(array $data): int
+	{
+		return $this->getUserRepositories()['main']->insert($data);
 	}
 
 	public function updateUser(int $UID, array $data): int

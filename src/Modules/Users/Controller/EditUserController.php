@@ -21,7 +21,7 @@
 
 namespace App\Modules\Users\Controller;
 
-class AddUserController
+class EditUserController
 {
 
 }

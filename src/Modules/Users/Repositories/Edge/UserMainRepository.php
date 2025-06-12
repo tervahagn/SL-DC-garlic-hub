@@ -39,6 +39,7 @@ class UserMainRepository extends FilterBase
 	 * We do not want to use * as this will transfer user sensitive data
 	 * like passwords, tokens etc.
 	 *
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function findById(int|string $id): array
@@ -55,7 +56,7 @@ class UserMainRepository extends FilterBase
 	/**
 	 * @param string $identifier
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function findByIdentifier(string $identifier): array
@@ -78,6 +79,9 @@ class UserMainRepository extends FilterBase
 		return [];
 	}
 
+	/**
+	 * @return string[]
+	 */
 	protected function prepareSelectFiltered(): array
 	{
 		return [$this->table.'.*'];
@@ -88,6 +92,10 @@ class UserMainRepository extends FilterBase
 		return $this->prepareSelectFiltered();
 	}
 
+	/**
+	 * @param array<string,mixed> $filterFields
+	 * @return array<string,mixed>
+	 */
 	protected function prepareWhereForFiltering(array $filterFields): array
 	{
 		$where = [];

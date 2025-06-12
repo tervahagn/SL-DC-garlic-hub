@@ -32,12 +32,14 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class UserServiceTest extends TestCase
 {
 	private UserEntityFactory&MockObject $entityFactoryMock;
 	private Psr16Adapter&MockObject $cacheMock;
 	private UserMainRepository&MockObject $userMainRepositoryMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private UsersService $usersService;
 
 	/**
@@ -49,13 +51,15 @@ class UserServiceTest extends TestCase
 		$this->entityFactoryMock     = $this->createMock(UserEntityFactory::class);
 		$this->cacheMock             = $this->createMock(Psr16Adapter::class);
 		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
+		$this->loggerMock            = $this->createMock(LoggerInterface::class);
 		$repositoryFactoryMock->method('create')
 			->willReturn(['main' => $this->userMainRepositoryMock]);
 
 		$this->usersService = new UsersService(
 			$repositoryFactoryMock,
 			$this->entityFactoryMock,
-			$this->cacheMock
+			$this->cacheMock,
+			$this->loggerMock
 		);
 	}
 

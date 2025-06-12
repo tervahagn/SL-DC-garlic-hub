@@ -39,7 +39,6 @@ class UsersController
 		$this->parameters = $parameters;
 	}
 
-
 	/**
 	 * @throws ModuleException
 	 * @throws \App\Framework\Exceptions\CoreException

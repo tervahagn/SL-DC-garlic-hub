@@ -54,7 +54,8 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 	return new UsersService(
 		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
 		new UserEntityFactory($container->get(Config::class)),
-		$container->get(Psr16Adapter::class)
+		$container->get(Psr16Adapter::class),
+		$container->get('ModuleLogger')
 	);
 });
 $dependencies[UsersDatatableService::class] = DI\factory(function (ContainerInterface $container)
