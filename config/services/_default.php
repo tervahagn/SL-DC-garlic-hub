@@ -247,9 +247,9 @@ $dependencies[DatatableTemplatePreparer::class] = DI\factory(function (Container
 {
 	return new DatatableTemplatePreparer($container->get(Translator::class));
 });
-$dependencies[FormTemplatePreparer::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[FormTemplatePreparer::class] = DI\factory(function ()
 {
-	return new FormTemplatePreparer($container->get(Translator::class));
+	return new FormTemplatePreparer();
 });
 $dependencies[TimeUnitsCalculator::class] = DI\factory(function (ContainerInterface $container)
 {
