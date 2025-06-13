@@ -28,6 +28,7 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
+use Throwable;
 use function intl_get_error_message;
 
 class Translator
@@ -35,6 +36,7 @@ class Translator
 	protected Locales $locales;
 	protected TranslationLoaderInterface $loader;
 	protected CacheInterface $cache;
+	/** @var array<string,mixed>  */
 	protected array $translationStack = [];
 	protected MessageFormatterFactory $MessageFormatterFactory;
 
@@ -49,6 +51,7 @@ class Translator
 	}
 
 	/**
+	 * @param array<string,string> $replacements
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
@@ -62,15 +65,8 @@ class Translator
 		return !empty($replacements) ? $this->doReplacements($translation, $replacements) : $translation;
 	}
 
-
 	/**
-	 * we are using an array of translations for various HTMl dropdown (option tags)
-	 *
-	 * @param string $key
-	 * @param string $module
-	 *
-	 * @return  array
-	 * @throws CoreException|InvalidArgumentException|PhpfastcacheSimpleCacheException
+	 * @return  array<string,mixed>
 	 */
 	public function translateArrayForOptions(string $key, string $module): array
 	{
@@ -86,7 +82,7 @@ class Translator
 
 			return $translation_array;
 		}
-		catch(FrameworkException $e)
+		catch(Throwable $e)
 		{
 			/// logger
 			return array();
@@ -94,6 +90,7 @@ class Translator
 	}
 
 	/**
+	 * @param array<string,int|string> $replacements
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
@@ -110,6 +107,7 @@ class Translator
 	}
 
 	/**
+	 * @param array<string,int|string> $replacements
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -128,6 +126,7 @@ class Translator
 	}
 
 	/**
+	 * @return string|array<string,mixed>
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
@@ -151,6 +150,7 @@ class Translator
 	}
 
 	/**
+	 * @param array<string,int|string> $replacements
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 */
@@ -167,6 +167,9 @@ class Translator
 		return $formatted;
 	}
 
+	/**
+	 * @param array<string,string> $replacements
+	 */
 	protected function doReplacements(string $input, array $replacements): string
 	{
 		return str_replace(array_keys($replacements), array_values($replacements), $input);

@@ -12,7 +12,11 @@ class Crypt
 	 */
 	public function generateRandomString(int $length = 32): string
 	{
-		return bin2hex(random_bytes($length / 2));
+		$bytesToGenerate = intdiv($length, 2);
+		if ($bytesToGenerate < 1)
+			$bytesToGenerate = 16;
+
+		return bin2hex(random_bytes($bytesToGenerate));
 	}
 
 	/**
@@ -39,27 +43,27 @@ class Crypt
 
 	}
 
-	public function checkPassword($clear_text, $hash): bool
+	public function checkPassword(string $clearText, string $hash): bool
 	{
-		return password_verify($clear_text, $hash);
+		return password_verify($clearText, $hash);
 	}
 
-	public function createPasswordHash(string $clear_text):string
+	public function createPasswordHash(string $clearText):string
 	{
-		return password_hash($clear_text, PASSWORD_BCRYPT);
+		return password_hash($clearText, PASSWORD_BCRYPT);
 	}
 
-	public function createSha256Hash(string $clear_text): string
+	public function createSha256Hash(string $clearText): string
 	{
-		return hash('sha256', $clear_text);
+		return hash('sha256', $clearText);
 	}
 
-	public function createCrc32bHash(string $clear_text): string
+	public function createCrc32bHash(string $clearText): string
 	{
-		return hash('crc32b', $clear_text);
+		return hash('crc32b', $clearText);
 	}
 
-	public function createMd5Hash(string $clear_text): string
+	public function createMd5Hash(string $clearText): string
 	{
-		return hash('md5', $clear_text);
+		return hash('md5', $clearText);
 	}}

@@ -27,9 +27,12 @@ class SystemStats
 {
 	private ShellExecutor $shellExecutor;
 
-	private array $ramStats = [];
-	private array $discInfo = [];
-	private array $loadData = [];
+	/** @var array{total: int, used: int, free: int} */
+	private array $ramStats = ['total' => 0, 'used'  => 0, 'free'  => 0,];
+	/** @var array{size: string, used: string, available: string, percent: string} */
+	private array $discInfo = ['size' => '', 'used' => '', 'available' => '', 'percent' => ''];
+	/** @var array{'1_min': string, '5_min': string, '15_min': string} */
+	private array $loadData = ['1_min' => '', '5_min' => '', '15_min' => ''];
 	private bool $isLinux = false;
 
 	public function __construct(ShellExecutor $shellExecutor)
@@ -50,16 +53,25 @@ class SystemStats
 		$this->isLinux = $is;
 	}
 
+	/**
+	 * @return array{size: string, used: string, available: string, percent: string}
+	 */
 	public function getDiscInfo(): array
 	{
 		return $this->discInfo;
 	}
 
+	/**
+	 * @return array{total: int, used: int, free: int}
+	 */
 	public function getRamStats(): array
 	{
 		return $this->ramStats;
 	}
 
+	/**
+	 * @return array{'1_min': string, '5_min': string, '15_min': string}
+	 */
 	public function getLoadData(): array
 	{
 		return $this->loadData;
@@ -86,24 +98,25 @@ class SystemStats
 		$free    = $this->shellExecutor->setCommand('free -m')->executeSimple();
 		$freeArr = explode("\n", $free);
 		if (!isset($freeArr[1]))
-		{
-			$this->ramStats = ['total' => null, 'used'  => null, 'free'  => null];
 			return;
-		}
+
 		$mem = explode(" ", $freeArr[1]);
 		$mem = array_filter($mem); // Remove empty values
 		$mem = array_merge($mem); // Reindex array
 
 		$this->ramStats = [
-			'total' => $mem[1],
-			'used'  => $mem[2],
-			'free'  => $mem[3],
+			'total' => (int) $mem[1],
+			'used'  => (int) $mem[2],
+			'free'  => (int) $mem[3]
 		];
 	}
 
 	public function determineSystemLoad(): void
 	{
 		$load = sys_getloadavg();
+		if ($load === false || count($load) < 3)
+			return;
+
 		$this->loadData =  [
 			'1_min' => number_format($load[0], 2, '.', ''),
 			'5_min' => number_format($load[1], 2, '.', ''),
@@ -123,19 +136,19 @@ class SystemStats
 		{
 			$line = trim($line);
 
-			if (str_starts_with($line, 'total'))
-			{
-				$parts = preg_split('/\s+/', $line);
-				if (count($parts) >= 6)
-				{
-					$this->discInfo = [
-						'size' => $parts[1],
-						'used' => $parts[2],
-						'available' => $parts[3],
-						'percent' => $parts[4]
-					];
-				}
-			}
+			if (!str_starts_with($line, 'total'))
+				continue;
+
+			$parts = preg_split('/\s+/', $line);
+			if ($parts === false || count($parts) < 5)
+				return;
+
+			$this->discInfo = [
+				'size' => $parts[1],
+				'used' => $parts[2],
+				'available' => $parts[3],
+				'percent' => $parts[4]
+			];
 		}
 	}
 

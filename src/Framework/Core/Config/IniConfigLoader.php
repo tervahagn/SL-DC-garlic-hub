@@ -49,7 +49,7 @@ class IniConfigLoader implements ConfigLoaderInterface
 	 * Loads and parses the configuration for a specific module.
 	 *
 	 * @param string $module The name of the module.
-	 * @return array The parsed configuration data.
+	 * @return array<string,mixed> The parsed configuration data.
 	 * @throws CoreException If the configuration file is missing, unreadable, or invalid.
 	 */
 	public function load(string $module): array

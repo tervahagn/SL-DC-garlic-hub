@@ -22,5 +22,8 @@ namespace App\Framework\Core\Translate;
 
 interface TranslationLoaderInterface
 {
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function load(string $languageCode, string $module): array;
 }

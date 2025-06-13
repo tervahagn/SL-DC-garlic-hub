@@ -67,9 +67,11 @@ abstract class AbstractAclValidator
 	}
 
 	/**
+	 * @param array<string,mixed> $unitData
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function isAdmin(int $UID, array $unitData): bool
 	{
@@ -95,7 +97,7 @@ abstract class AbstractAclValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function isSimpleAdmin($UID): bool
+	public function isSimpleAdmin(int $UID): bool
 	{
 		if ($this->helper->isModuleAdmin($UID, $this->moduleName) || $this->helper->isSubAdmin($UID, $this->moduleName))
 			return true;
@@ -142,7 +144,7 @@ abstract class AbstractAclValidator
 	 * @throws Exception
 	 * @throws CoreException
 	 */
-	public function isEditorWithAccessOnUnit($UID, int|string $unitId): bool
+	public function isEditorWithAccessOnUnit(int $UID, int|string $unitId): bool
 	{
 		return ($this->isEditor($UID) && $this->helper->hasEditorAccessOnUnit($UID, $unitId, $this->moduleName));
 	}

@@ -34,6 +34,10 @@ class Session
 		session_name($sessionName);
 	}
 
+	/**
+	 * @param array<string,mixed> $options
+	 * @return void
+	 */
 	public function start(array $options = []): void
 	{
 		$defaultOptions = [
@@ -59,21 +63,39 @@ class Session
 			throw new FrameworkException('Session not active for regenerating.');
 
 		session_regenerate_id(true);
-		setcookie(session_name(), session_id(), ini_get("session.cookie_lifetime"), "/");
+		$sessionName = session_name();
+		if ($sessionName === false)
+			throw new FrameworkException('Session name failed for regenerating.');
+
+		$sessionId = session_id();
+		if ($sessionId === false)
+			throw new FrameworkException('Session Id failed for regenerating.');
+
+		$cookieLifetime = ini_get("session.cookie_lifetime");
+		if ($cookieLifetime === false)
+			throw new FrameworkException('Cookie lifetime failed for regenerating.');
+
+		setcookie($sessionName, $sessionId, (int) $cookieLifetime, "/");
 	}
 
 
+	/**
+	 * @return string|array<string,mixed>|null
+	 */
 	public function get(string $key): null|string|array
 	{
 		return $this->exists($key) ? $_SESSION[$key] : null;
 	}
 
+	/**
+	 * @param string|array<string,mixed> $value
+	 */
 	public function set(string $key, string|array $value): void
 	{
 		$_SESSION[$key] = $value;
 	}
 
-	public function delete($key): void
+	public function delete(string $key): void
 	{
 		if ($this->exists($key))
 			unset($_SESSION[$key]);

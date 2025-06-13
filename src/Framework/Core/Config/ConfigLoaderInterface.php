@@ -25,14 +25,7 @@ use App\Framework\Exceptions\CoreException;
 interface ConfigLoaderInterface
 {
 	/**
-	 * Loads the configuration for a specific module.
-	 *
-	 * This method retrieves configuration data from a file based on the
-	 * given module name. The data is cached to avoid redundant file reads.
-	 *
-	 * @param string $module The name of the module to load the configuration for.
-	 * @return array The configuration data as an associative array.
-	 * @throws CoreException If the configuration file is missing or invalid.
+	 * @return array<string,mixed>
 	 */
 	public function load(string $module): array;
 }

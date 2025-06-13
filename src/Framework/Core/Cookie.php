@@ -33,11 +33,12 @@ class Cookie
 	}
 
 	/**
+	 * @return ?array<string,string>
 	 * @throws  FrameworkException
 	 */
-	public function getHashedCookie($cookie_name): ?array
+	public function getHashedCookie(string $cookieName): ?array
 	{
-		$payload = $this->getCookie($cookie_name);
+		$payload = $this->getCookie($cookieName);
 
 		if (is_null($payload))
 			return null;
@@ -45,18 +46,16 @@ class Cookie
 		return $this->validateAndUnpackContent($payload);
 	}
 
-
-	public function getCookie($cookie_name): ?string
+	public function getCookie(string $cookieName): ?string
 	{
-		if (!array_key_exists($cookie_name, $_COOKIE))
+		if (!array_key_exists($cookieName, $_COOKIE))
 			return null;
 
-		$tmp = $_COOKIE[$cookie_name];
-
-		return $tmp;
+		return $_COOKIE[$cookieName];
 	}
 
 	/**
+	 * @param array<string,string> $contents
 	 * @throws FrameworkException
 	 */
 	public function createHashedCookie(string $name, array $contents, DateTime $expire): void
@@ -90,6 +89,9 @@ class Cookie
 	}
 
 
+	/**
+	 * @param array<string,string> $payload
+	 */
 	private function hashContent(array $payload): string
 	{
 		$content  = serialize($payload);
@@ -98,9 +100,10 @@ class Cookie
 	}
 
 	/**
+	 * @return array<string,string>
 	 * @throws  FrameworkException
 	 */
-	private function validateAndUnpackContent(string $raw_content):array
+	private function validateAndUnpackContent(string $raw_content): array
 	{
 		$data = @unserialize($raw_content);
 		if (!is_array($data) || count($data) !== 2)

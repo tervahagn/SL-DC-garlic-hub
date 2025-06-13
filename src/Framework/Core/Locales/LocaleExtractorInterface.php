@@ -22,5 +22,8 @@ namespace App\Framework\Core\Locales;
 
 interface LocaleExtractorInterface
 {
+	/**
+	 * @param string[] $whiteList
+	 */
 	public function extractLocale(array $whiteList): string;
 }

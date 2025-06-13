@@ -24,7 +24,7 @@ class Sanitizer
 {
 	private string $allowedTags;
 
-	public function __construct(string $allowedTags = null)
+	public function __construct(string $allowedTags = '')
 	{
 		$this->allowedTags = $allowedTags;
 	}
@@ -34,47 +34,61 @@ class Sanitizer
 		return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 	}
 
-	public function html(?string $value): string
+	public function html(string $value = ''): string
 	{
 		return strip_tags($value, $this->allowedTags);
 	}
 
-	public function int(?string $value): int
+	public function int(string $value = ''): int
 	{
-		return (int) $value ?? 0;
+		return (int) $value;
 	}
 
-	public function float(?string $value): float
+	public function float(string $value = ''): float
 	{
 		return (float) $value; // Simple cast for sanitization
 	}
 
-	public function bool(?string $value): bool
+	public function bool(string $value = ''): bool
 	{
 		return (bool) $value;
 	}
 
-	public function stringArray(?array $values): array
+	/**
+	 * @param string[] $values
+	 * @return string[]
+	 */
+	public function stringArray(array $values = []): array
 	{
-		return array_map(function ($s){
+		return array_map(function (string $s){
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		}, $values);
 	}
 
-	public function intArray(?array $values): array
+	/**
+	 * @param int[] $values
+	 * @return int[]
+	 */
+	public function intArray(array $values = []): array
 	{
-		return array_map(function ($i) {
-			return (int)$i;
+		return array_map(function (int $i) {
+			return $i;
 		}, $values);
 	}
 
-	public function floatArray(?array $values): array
+	/**
+	 * @param float[] $values
+	 * @return float[]
+	 */	public function floatArray(array $values = []): array
 	{
-		return array_map(function ($f) {
-			return (float)$f;
+		return array_map(function (float $f) {
+			return $f;
 		}, $values);
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function jsonArray(string $jsonString): array
 	{
 		$data = json_decode($jsonString, true);

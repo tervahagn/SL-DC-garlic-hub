@@ -26,12 +26,11 @@ use App\Framework\Exceptions\FrameworkException;
 class Locales
 {
 	const string CONFIG_MODULE_NAME = 'locales';
-
 	private Config $config;
 	private LocaleExtractorInterface $localeExtractor;
-
 	private string $currentLocale;
 	private string $defaultLocale;
+	/** @var string[] */
 	private array $availableLocales;
 
 	/**
@@ -56,6 +55,9 @@ class Locales
 		return $this->defaultLocale;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getAvailableLocales(): array
 	{
 		return $this->availableLocales;
@@ -109,6 +111,7 @@ class Locales
 	}
 
 	/**
+	 * @return string[]
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 */

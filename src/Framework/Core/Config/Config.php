@@ -35,22 +35,18 @@ class Config
 	const string PLATFORM_EDITION_CORE = 'core';
 	const string PLATFORM_EDITION_ENTERPRISE = 'enterprise';
 
-	/**
-	 * @var ConfigLoaderInterface Handles the loading of configuration files.
-	 */
 	private ConfigLoaderInterface $configLoader;
 
-	/**
-	 * @var array Caches loaded configuration data to reduce redundant loads.
-	 */
+	/** @var array<string,mixed> */
 	private array $configCache = [];
+	/** @var array<string,string> */
 	private array $paths;
+	/** @var array<string,string>  */
 	private array $env;
 
 	/**
-	 * Initializes the Config class with a configuration loader.
-	 *
-	 * @param ConfigLoaderInterface $configLoader The loader responsible for fetching configuration data.
+	 * @param array<string,string> $paths
+	 * @param array<string,string> $env
 	 */
 	public function __construct(ConfigLoaderInterface $configLoader, array $paths = [], array $env = [])
 	{
@@ -83,7 +79,6 @@ class Config
 		return match ($this->getEnv('APP_ENV'))
 		{
 			'dev' => Level::Debug,
-			'test' => Level::Info,
 			'prod' => Level::Error,
 			default => Level::Info,
 		};
@@ -113,11 +108,7 @@ class Config
 	}
 
 	/**
-	 * Retrieves all configuration data for a specific module.
-	 *
-	 * @param string $module The name of the module.
-	 *
-	 * @return array The full configuration data for the module.
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 */
 	public function getFullConfigDataByModule(string $module): array
@@ -126,11 +117,7 @@ class Config
 	}
 
 	/**
-	 * Loads configuration data for a module, caching it for future use.
-	 *
-	 * @param string $module The name of the module.
-	 *
-	 * @return array The cached configuration data for the module.
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 */
 	private function getConfigForModule(string $module): array
@@ -143,13 +130,7 @@ class Config
 	}
 
 	/**
-	 * Preloads configuration data for multiple modules.
-	 *
-	 * This method ensures the configuration for the specified modules is cached.
-	 *
-	 * @param array $modules An array of module names to preload.
-	 *
-	 * @return void
+	 * @param string[] $modules An array of module names to preload.
 	 * @throws CoreException
 	 */
 	public function preloadModules(array $modules): void

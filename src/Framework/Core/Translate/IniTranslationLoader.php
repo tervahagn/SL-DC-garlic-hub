@@ -24,7 +24,6 @@ use App\Framework\Exceptions\CoreException;
 
 class IniTranslationLoader implements TranslationLoaderInterface
 {
-
 	protected string $baseDirectory;
 
 	public function __construct(string $baseDirectory)
@@ -33,6 +32,7 @@ class IniTranslationLoader implements TranslationLoaderInterface
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 */
 	public function load(string $languageCode, string $module): array

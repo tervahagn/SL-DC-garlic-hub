@@ -4,7 +4,6 @@
 namespace App\Framework\Core;
 
 use App\Framework\Exceptions\CoreException;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class ShellExecute
@@ -22,11 +21,12 @@ class ShellExecutor
 	}
 
 	/**
+	 * @return array{output: array<string>, code: int}
 	 * @throws CoreException
 	 */
 	public function execute(): array
 	{
-		$this->checkforCommand();
+		$this->checkCommand();
 
 		$output = [];
 		$returnCode = 0;
@@ -43,13 +43,18 @@ class ShellExecutor
 	 */
 	public function executeSimple(): string
 	{
-		$this->checkforCommand();
-		$output = shell_exec($this->command . ' 2>&1');
+		$this->checkCommand();
+		$response = shell_exec($this->command . ' 2>&1');
+		if ($response === false || $response === null)
+			throw new CoreException("Command failed: $this->command");
 
-		return $output;
+		return $response;
 	}
 
-	private function checkforCommand()
+	/**
+	 * @throws CoreException
+	 */
+	private function checkCommand(): void
 	{
 		if (empty($this->command))
 			throw new CoreException('No command set for execution.');

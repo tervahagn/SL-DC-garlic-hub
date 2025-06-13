@@ -20,7 +20,6 @@
 
 namespace App\Controller;
 
-use App\Framework\Core\Session;
 use App\Framework\Dashboards\DashboardsAggregator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,8 +38,7 @@ class HomeController
 
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		$session = $request->getAttribute('session');
-		$data = $this->generateHomePageData($session);
+		$data = $this->generateHomePageData();
 		$this->writeResponseData($response, $data);
 
 		return $this->setContentType($response);
@@ -63,7 +61,10 @@ class HomeController
 	}
 
 
-	private function generateHomePageData(Session $session): array
+	/**
+	 * @return array<string,mixed>
+	 */
+	private function generateHomePageData(): array
 	{
 		return [
 			'main_layout' => [
@@ -73,13 +74,15 @@ class HomeController
 				'template' => 'home',
 				'data' => [
 					'LANG_PAGE_HEADER' => 'Garlic Hub - Dashboard',
-		/*			'SHOW_SESSION' => print_r($session->get('user'), true),*/
 					'dashboard' => $this->dashboardAggregator->renderDashboardsContents()
 				],
 			],
 		];
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function writeResponseData(ResponseInterface $response, array $data): void
 	{
 		$response->getBody()->write(serialize($data));
