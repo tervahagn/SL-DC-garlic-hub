@@ -21,6 +21,7 @@
 namespace App\Framework\Utils\Datatable;
 
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
 
@@ -38,6 +39,7 @@ class BuildService
 	}
 
 	/**
+	 * @param array<string,mixed> $attributes
 	 * @throws FrameworkException
 	 */
 	public function buildFormField(array $attributes = []): FieldInterface
@@ -55,16 +57,25 @@ class BuildService
 		$this->resultsBuilder->createField($fieldName, $sortable);
 	}
 
+	/**
+	 * @return list<HeaderField>
+	 */
 	public function getDatatableFields(): array
 	{
 		return $this->resultsBuilder->getHeaderFields();
 	}
 
+	/**
+	 * @return array{min: int, max: int, steps: int}
+	 */
 	public function buildPaginationDropDown(int $min = 10, int $max = 100, int $steps = 10): array
 	{
 		return $this->paginationBuilder->createDropDown($min, $max, $steps)->getDropDownSettings();
 	}
 
+	/**
+	 * @return list<array{name: string, page: int}>
+	 */
 	public function buildPaginationLinks(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager = false, bool $shortened = true): array
 	{
 		return $this->paginationBuilder->configure($currentPage, $itemsPerPage, $totalItems, $usePager, $shortened)

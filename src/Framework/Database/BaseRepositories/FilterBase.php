@@ -126,7 +126,7 @@ abstract class FilterBase extends SqlBase
 	/**
 	 * @param int[] $companyIds
 	 * @param array<string, array<string, string>> $searchFields
-	 * @return array<string,array|string>
+	 * @return array<string,mixed>
 	 */
 	private function buildRestrictedWhereForCountAndFindSearch(array $companyIds, array $searchFields, int $UID): array
 	{
@@ -155,9 +155,9 @@ abstract class FilterBase extends SqlBase
 	abstract protected function prepareSelectFilteredForUser(): array;
 
 	/**
-	 * @param array $fields
+	 * @param array<string,mixed> $fields
 	 * @param bool $useUserMain
-	 * @return array<string,string>
+	 * @return array<string,mixed>
 	 */
 	protected function prepareOrderBy(array $fields, bool $useUserMain = true): array
 	{
@@ -193,8 +193,8 @@ abstract class FilterBase extends SqlBase
 	abstract protected function prepareWhereForFiltering(array $filterFields): array;
 
 	/**
-	 * @return array<string,string|int>
-	 * @return array<string,array>
+	 * @param  array<string,mixed> $parameter
+	 * @return array<string,mixed>
 	 */
 	protected function determineWhereForFiltering(string $key, array $parameter): array
 	{

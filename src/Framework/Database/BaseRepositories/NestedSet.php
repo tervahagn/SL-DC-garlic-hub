@@ -47,6 +47,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllRootNodes(): array
@@ -65,6 +66,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findTreeByRootId(int $rootId): array
@@ -84,6 +86,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws Exception|DatabaseException
 	 */
 	public function findNodeOwner(int $nodeId): array
@@ -100,13 +103,14 @@ class NestedSet extends SqlBase
 			->setParameter('id', $nodeId);
 
 		$ret = $queryBuilder->executeQuery()->fetchAssociative();
-		if (!$ret)
+		if ($ret === false)
 			throw new DatabaseException('Node not found');
 
 		return $ret;
 	}
 
 	/**
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllChildNodesByParentNode(int $nodeId): array
@@ -126,6 +130,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllChildrenInTreeOfNodeId(int $nodeId): array
@@ -150,6 +155,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function findRootIdRgtAndLevelByNodeId(int $node_id):array
@@ -166,6 +172,7 @@ class NestedSet extends SqlBase
 	/**
 	 * returns all node ids of a given root_id
 	 *
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllSubNodeIdsByRootIdsAndPosition(int $root_id, int $node_rgt, int $node_lft): array
@@ -204,7 +211,7 @@ class NestedSet extends SqlBase
 			];
 
 			$this->beginTransaction();
-			$newNodeId = $this->insert($nodeData);
+			$newNodeId = (int) $this->insert($nodeData);
 
 			if ($newNodeId == 0)
 				throw new DatabaseException('Insert new node failed');
@@ -226,6 +233,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @param array<string,mixed> $parentNode
 	 * @throws Exception
 	 * @throws DatabaseException
 	 */
@@ -250,7 +258,7 @@ class NestedSet extends SqlBase
 			$this->helper->moveNodesToLeftForInsert($parentNode['root_id'], $parentNode['rgt']);
 			$this->helper->moveNodesToRightForInsert($parentNode['root_id'], $parentNode['rgt']);
 
-			$newNodeId = $this->insert($fields);
+			$newNodeId = (int) $this->insert($fields);
 			if ($newNodeId == 0)
 				throw new \Exception('Insert new sub node failed');
 
@@ -266,6 +274,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @param array<string,mixed> $node
 	 * @throws DatabaseException
 	 * @throws Exception
 	 */
@@ -291,6 +300,7 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @param array<string,mixed> $node
 	 * @throws DatabaseException
 	 * @throws Exception
 	 */
@@ -320,6 +330,8 @@ class NestedSet extends SqlBase
 	}
 
 	/**
+	 * @param array<string,mixed> $movedNode
+	 * @param array<string,mixed> $targetNode
 	 * @throws Exception
 	 * @throws DatabaseException
 	 */

@@ -108,7 +108,17 @@ class MediaProperties
 		$this->filesize = 0;
 		$this->container = '';
 	}
-
+	/**
+	 * @return array{width: int, height: int,
+	 * video_codec: string, audio_codec: string,
+	 * aspect_ratio: string,
+	 * start_time: string,
+	 * duration: float,
+	 * filename: string,
+	 * filesize: int,
+	 * container: string
+	 * }
+	 */
 	public function toArray(): array
 	{
 		return [
@@ -125,20 +135,28 @@ class MediaProperties
 		];
 	}
 
+	/**
+	 * @param array<string,mixed> $userMetadata
+	 */
 	public function fromStdClass(stdClass $metadata, array $userMetadata = []): void
 	{
 		foreach ($metadata->streams as $stream)
 		{
-			if ($stream->codec_type === 'video' && isset($stream->codec_name))
+			if (!is_object($stream))
+				continue;
+			if (!isset($stream->codec_type) || !is_string($stream->codec_type) || !isset($stream->codec_name) || !is_string($stream->codec_name))
+				continue;
+
+			if ($stream->codec_type === 'video')
 			{
-				$this->videoCodec  = (string)$stream->codec_name;
+				$this->videoCodec  = $stream->codec_name;
 				$this->aspectRatio = isset($stream->display_aspect_ratio) ? (string)$stream->display_aspect_ratio : '1:1';
-				$this->width  = (int)$stream->width;
-				$this->height = (int)$stream->height;
+				$this->width       = isset($stream->width) && is_numeric($stream->width) ? (int)$stream->width : 0;
+				$this->height      = isset($stream->height) && is_numeric($stream->height) ? (int)$stream->height : 0;
 			}
 			elseif ($stream->codec_type === 'audio')
 			{
-				$this->audioCodec = (string)$stream->codec_name;
+				$this->audioCodec = $stream->codec_name;
 			}
 		}
 

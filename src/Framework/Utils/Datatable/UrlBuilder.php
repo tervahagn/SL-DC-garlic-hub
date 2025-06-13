@@ -29,6 +29,7 @@ class UrlBuilder
 	private int $elementsPerPage;
 	private string $sortColumn;
 	private string $sortOrder;
+	/** @var array<string,mixed>  */
 	private array $additionalUrlParameters;
 
 	public function setSite(string $site): static
@@ -79,7 +80,7 @@ class UrlBuilder
 		return $this->site . '?' . http_build_query($params);
 	}
 
-	public function addAdditionalUrlParameter($key, $value): static
+	public function addAdditionalUrlParameter(string $key, string $value): static
 	{
 		$this->additionalUrlParameters[$key] = $value;
 		return $this;

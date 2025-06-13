@@ -62,7 +62,7 @@ class BaseException extends Exception
 	/**
 	 * Returns exception details as an associative array.
 	 *
-	 * @return array Exception details
+	 * @return array{module_name: string, message: string, code: int|mixed, file: string, line: int, trace: string}
 	 * - 'module_name': The module name.
 	 * - 'message': The exception message.
 	 * - 'code': The exception code.

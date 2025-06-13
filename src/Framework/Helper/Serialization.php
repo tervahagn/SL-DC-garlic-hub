@@ -22,7 +22,10 @@ namespace App\Framework\Helper;
 
 class Serialization
 {
-	public static function unserializeSecure($value): array
+	/**
+	 * @return array<string, mixed>
+	 */
+	public static function unserializeSecure(string $value): array
 	{
 		$ar = @unserialize($value);
 		return is_array($ar) ? $ar : [];

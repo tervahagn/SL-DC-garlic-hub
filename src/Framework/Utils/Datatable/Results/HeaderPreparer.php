@@ -20,10 +20,14 @@
 
 namespace App\Framework\Utils\Datatable\Results;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class HeaderPreparer
 {
@@ -41,6 +45,9 @@ class HeaderPreparer
 		$this->urlBuilder = $urlBuilder;
 	}
 
+	/**
+	 * @param string[] $languageModules
+	 */
 	public function configure(BaseFilterParameters $filterParameter, string $site, array $languageModules): void
 	{
 		$this->filterParameter = $filterParameter;
@@ -51,10 +58,18 @@ class HeaderPreparer
 		}
 	}
 
+	/**
+	 * @param list<HeaderField> $tableHeaderFields
+	 * @return list<array<string,mixed>>
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function prepareTableHeader(array $tableHeaderFields): array
 	{
 		$header = [];
-		/* @var $headerField HeaderField */
 		foreach($tableHeaderFields as $headerField)
 		{
 			$headerFieldName = $headerField->getName();
@@ -72,7 +87,13 @@ class HeaderPreparer
 	}
 
 	/**
+	 * @param HeaderField $headerField
+	 * @return array{SORTABLE_ORDER:string, SORT_CONTROL_NAME:string,LINK_CONTROL_SORT_ORDER: string, LANG_CONTROL_NAME: string}
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	protected function prepareSortableHeaderField(HeaderField $headerField):array
 	{

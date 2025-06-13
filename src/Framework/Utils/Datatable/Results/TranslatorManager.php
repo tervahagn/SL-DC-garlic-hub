@@ -21,11 +21,15 @@
 namespace App\Framework\Utils\Datatable\Results;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class TranslatorManager
 {
 	private readonly Translator $translator;
+	/** @var string[] */
 	private array $languageModules;
 
 	public function __construct(Translator $translator)
@@ -34,12 +38,18 @@ class TranslatorManager
 		$this->languageModules = [];
 	}
 
-	public function addLanguageModule($moduleName): static
+	public function addLanguageModule(string $moduleName): static
 	{
 		$this->languageModules[] = $moduleName;
 		return $this;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function translate(HeaderField $HeaderField): string
 	{
 		if ($HeaderField->shouldSkipTranslation())

@@ -24,6 +24,9 @@ interface FieldInterface
 {
 	public function getName(): string;
 
+	/**
+	 * @param array<string,mixed> $rules
+	 */
 	public function setValidationRules(array $rules): static;
 
 	public function getId(): string;
@@ -32,9 +35,15 @@ interface FieldInterface
 
 	public function getValue(): ?string;
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getValidationRules(): array;
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getAttributes(): array;
 
-	public function getType();
+	public function getType(): FieldType;
 }

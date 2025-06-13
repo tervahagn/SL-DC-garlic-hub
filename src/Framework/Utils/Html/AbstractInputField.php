@@ -28,11 +28,16 @@ class AbstractInputField implements FieldInterface
 	private string $id;
 	private string $title;
 	private FieldType $type;
-	private ?string $value;
-	private ?string $defaultValue;
+	private string $value;
+	private string $defaultValue;
+	/** @var array<string,mixed>  */
 	private array $attributes;
+	/** @var array<string,mixed>  */
 	private array $validationRules;
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function __construct(array $attributes = [])
 	{
 		$this->id              = $attributes['id'];
@@ -52,19 +57,22 @@ class AbstractInputField implements FieldInterface
 		return $this;
 	}
 
+	/**
+	 * @param array<string,mixed> $rules
+	 */
 	public function setValidationRules(array $rules): static
 	{
 		$this->validationRules = $rules;
 		return $this;
 	}
 
-	public function setAttribute(string $name, string $value): self
+	public function setAttribute(string $name, string $value): static
 	{
 		$this->attributes[$name] = $value;
 		return $this;
 	}
 
-	public function addValidationRule(string $rule, $value = true): self
+	public function addValidationRule(string $rule, bool $value = true): static
 	{
 		$this->validationRules[$rule] = $value;
 		return $this;
@@ -103,11 +111,17 @@ class AbstractInputField implements FieldInterface
 		return $this->value;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getAttributes(): array
 	{
 		return $this->attributes;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getValidationRules(): array
 	{
 		return $this->validationRules;

@@ -23,7 +23,6 @@ namespace App\Framework\Utils\Datatable;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -47,6 +46,8 @@ class DatatableTemplatePreparer
 	}
 
 	/**
+	 * @param array<string,mixed> $dataSections
+	 * @return array{main_layout: array<string,mixed>, this_layout: array<string,mixed>}
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException

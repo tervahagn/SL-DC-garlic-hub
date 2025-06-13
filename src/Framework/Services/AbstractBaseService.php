@@ -26,6 +26,7 @@ abstract class AbstractBaseService
 {
 	protected readonly LoggerInterface $logger;
 	protected int $UID;
+	/** @var string[]  */
 	protected array $errorMessages = [];
 
 	/**
@@ -42,6 +43,9 @@ abstract class AbstractBaseService
 		return $this;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getErrorMessages(): array
 	{
 		return $this->errorMessages;

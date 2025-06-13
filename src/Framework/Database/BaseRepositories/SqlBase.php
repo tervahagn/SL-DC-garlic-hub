@@ -20,12 +20,7 @@
 
 namespace App\Framework\Database\BaseRepositories;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\ParameterType;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Types\Type;
 
 /**
  * Abstract class Base
@@ -34,7 +29,6 @@ use Doctrine\DBAL\Types\Type;
  */
 abstract class SqlBase
 {
-
 	protected readonly string $table;
 	protected readonly string $idField;
 	protected Connection $connection;

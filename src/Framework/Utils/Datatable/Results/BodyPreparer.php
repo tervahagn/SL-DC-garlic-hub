@@ -22,7 +22,14 @@ namespace App\Framework\Utils\Datatable\Results;
 
 class BodyPreparer
 {
-
+	/**
+	 * @return array{
+	 * CONTROL_ELEMENT_VALUE_NAME: string,
+	 * CONTROL_ELEMENT_VALUE_TITLE: string,
+	 * CONTROL_ELEMENT_VALUE_ID: string,
+	 * CONTROL_ELEMENT_VALUE_CLASS: string
+	 * }
+	 */
 	public function formatSpan(string $valueName, string $title,  string $valueId, string $cssClass = ''): array
 	{
 		return [
@@ -33,6 +40,15 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return array{
+	 * CONTROL_ELEMENT_VALUE_NAME: string,
+	 * CONTROL_ELEMENT_VALUE_TITLE: string,
+	 * CONTROL_ELEMENT_VALUE_ID: string,
+	 * CONTROL_ELEMENT_VALUE_CLASS: string,
+	 * CONTROL_ELEMENT_ADDITIONAL_TEXT: string
+	 * }
+	 */
 	public function formatLink(string $valueName, string $title, string $href, string $valueId, string $cssClass = '', string $addText = ''): array
 	{
 		return [
@@ -45,6 +61,9 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return array{OWNER_UID: int, OWNER_NAME: string}
+	 */
 	public function formatUID(int $UID, string $username): array
 	{
 		return [
@@ -53,6 +72,9 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return array{CONTROL_ELEMENT_VALUE_TEXT: string}
+	 */
 	public function formatText(string $text): array
 	{
 		return [
@@ -60,6 +82,9 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return array{ICON_CLASS: string, ICON_TITLE: string}
+	 */
 	public function formatIcon(string $iconClass, string $title): array
 	{
 		return [
@@ -68,6 +93,9 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return array{LANG_ACTION: string, LINK_ACTION: string, ACTION_ID: string, ACTION_NAME: string}
+	 */
 	public function formatAction(string $lang, string $link, string $name, string $id, string $cssClass): array
 	{
 		return 	[
@@ -79,6 +107,9 @@ class BodyPreparer
 			];
 	}
 
+	/**
+	 * @return array{LANG_DELETE_ACTION: string, DELETE_ID: string, LANG_CONFIRM_DELETE: string, ELEMENT_DELETE_CLASS: string}
+	 */
 	public function formatActionDelete(string $lang, string $langConfirm, string $id, string $cssClass): array
 	{
 		return 	[

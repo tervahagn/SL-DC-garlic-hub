@@ -56,6 +56,7 @@ abstract class AbstractDatatablePreparer
 	}
 
 	/**
+	 * @return array{links: mixed, dropdown: mixed}
 	 * @throws ModuleException
 	 */
 	public function preparePagination(array $paginationLinks, array $dropDownSettings): array
@@ -69,6 +70,7 @@ abstract class AbstractDatatablePreparer
 	}
 
 	/**
+	 * @return array{ADD_BI_ICON:string, LANG_ELEMENTS_ADD_LINK: string, ELEMENTS_ADD_LINK: string }
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -84,6 +86,7 @@ abstract class AbstractDatatablePreparer
 	}
 
 	/**
+	 * @return array{column: string, order:string}
 	 * @throws ModuleException
 	 */
 	public function prepareSort(): array
@@ -95,6 +98,7 @@ abstract class AbstractDatatablePreparer
 	}
 
 	/**
+	 * @return array{current:int, num_elements: int}
 	 * @throws ModuleException
 	 */
 	public function preparePage(): array
@@ -106,6 +110,11 @@ abstract class AbstractDatatablePreparer
 	}
 
 
+	/**
+	 * @param array<string,mixed> $currentFilterResults
+	 * @param array<string,mixed> $fields
+	 * @return array<string,mixed>
+	 */
 	abstract public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array;
 
 }

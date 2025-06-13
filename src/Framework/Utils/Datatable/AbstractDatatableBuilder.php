@@ -28,6 +28,7 @@ abstract class AbstractDatatableBuilder
 	protected Translator $translator;
 	protected BuildService $buildService;
 	protected BaseFilterParametersInterface $parameters;
+	/** @var array<string,mixed> */
 	protected array $datatableStructure = [];
 
 	public function __construct(BuildService $buildService, BaseFilterParametersInterface $parameters)
@@ -42,6 +43,9 @@ abstract class AbstractDatatableBuilder
 		return $this;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getDatatableStructure(): array
 	{
 		return $this->datatableStructure;

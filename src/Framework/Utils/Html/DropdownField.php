@@ -20,10 +20,9 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\AbstractInputField;
-
 class DropdownField extends AbstractInputField
 {
+	/** @var array<string,mixed> */
 	private array $options;
 
 	public function __construct(array $attributes)
@@ -32,6 +31,9 @@ class DropdownField extends AbstractInputField
 		$this->options = $attributes['options'];
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getOptions(): array
 	{
 		return $this->options;

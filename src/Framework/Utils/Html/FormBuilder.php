@@ -37,15 +37,19 @@ class FormBuilder
 		$this->session             = $session;
 	}
 
+	/**
+	 * @param list<array<string,FieldInterface>> $formFields
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
+	 */
 	public function prepareForm(array $formFields): array
 	{
 		$hidden = [];
 		$visible = [];
 
 		/** @var FieldInterface $element */
-		foreach ($formFields as $key => $element)
+		foreach ($formFields as $element)
 		{
-			if ($element->getType() === FieldType::HIDDEN || $element->getType() === FieldType::CSRF)
+			if ($element->getType() === FieldType::HIDDEN->value || $element->getType() === FieldType::CSRF->value)
 			{
 				$hidden[] = [
 					'HIDDEN_HTML_ELEMENT'        => $this->renderField($element)
@@ -66,6 +70,7 @@ class FormBuilder
 
 
 	/**
+	 * @param array<string,mixed> $attributes
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */

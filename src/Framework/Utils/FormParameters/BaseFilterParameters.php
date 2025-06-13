@@ -40,6 +40,7 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	protected readonly string $sessionStoreKey;
 	protected readonly Session $session;
 
+	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
 	protected array $defaultParameters = array(
 		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,    'parsed' => false),
 		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => 1,     'parsed' => false),
@@ -58,9 +59,9 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	/**
 	 * @throws ModuleException
 	 */
-	public function setParameterDefaultValues($default_sort_column): static
+	public function setParameterDefaultValues(string $defaultSortColumn): static
 	{
-		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, $default_sort_column);
+		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, $defaultSortColumn);
 		return $this;
 	}
 
@@ -74,14 +75,10 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	public function setElementsParametersToNull(): static
 	{
 		if ($this->hasParameter(self::PARAMETER_ELEMENTS_PAGE))
-		{
 			$this->setValueOfParameter(self::PARAMETER_ELEMENTS_PAGE, 0);
-		}
 
 		if ($this->hasParameter(self::PARAMETER_ELEMENTS_PER_PAGE))
-		{
 			$this->setValueOfParameter(self::PARAMETER_ELEMENTS_PER_PAGE, 0);
-		}
 
 		return $this;
 	}
@@ -114,12 +111,14 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 		$this->addParameter(self::PARAMETER_COMPANY_ID, ScalarType::STRING, '');
 	}
 
-	protected function storeSearchParamsToSession(array $ar_search): static
+	/**
+	 * @param array<string,mixed> $search
+	 */
+	protected function storeSearchParamsToSession(array $search): static
 	{
 		if ($this->hasSessionKeyStore())
-		{
-			$this->session->set($this->sessionStoreKey, $ar_search);
-		}
+			$this->session->set($this->sessionStoreKey, $search);
+
 		return $this;
 	}
 
@@ -133,11 +132,15 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @return array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
 	 */
 	protected function getStoredSearchParamsFromSession(): array
 	{
-		return $this->session->get($this->sessionStoreKey);
+		$ret =  $this->session->get($this->sessionStoreKey);
+		if (!is_array($ret))
+			return [];
+
+		return $ret;
 	}
 
 }

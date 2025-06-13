@@ -20,26 +20,15 @@
 
 namespace App\Framework\Utils\Forms;
 
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\FrameworkException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
-
 class FormTemplatePreparer
 {
-	private Translator $translator;
-
-	public function __construct(Translator $translator)
+	public function __construct()
 	{
-		$this->translator = $translator;
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
+	 * @param array<string,mixed> $dataSections
+	 * @return array{main_layout: array<string,mixed>, this_layout: array<string,mixed>}
 	 */
 	public function prepareUITemplate(array $dataSections): array
 	{

@@ -20,12 +20,18 @@
 
 namespace App\Framework\Utils\Datatable;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\Paginator\Preparer;
 use App\Framework\Utils\Datatable\Results\BodyPreparer;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * The `PrepareServiceLocator` class implements the Service Locator pattern, which acts as a central registry for preparing data grids in the application.
@@ -54,6 +60,10 @@ class PrepareService
 		$this->bodyPreparer       = $bodyFormatter;
 	}
 
+	/**
+	 * @param list<array<string,FieldInterface>> $datatableForm
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
+	 */
 	public function prepareForm(array $datatableForm): array
 	{
 		return $this->formBuilder->prepareForm($datatableForm);
@@ -67,6 +77,9 @@ class PrepareService
 	}
 
 	/**
+	 * @param list<array{name: string, page: int, active: ?bool}> $paginationLinks
+	 * @param array{min: int, max: int, steps: int} $dropDownSettings
+	 * @return array{links: mixed, dropdown: mixed}
 	 * @throws ModuleException
 	 */
 	public function preparePagination(array $paginationLinks, array $dropDownSettings): array
@@ -77,6 +90,16 @@ class PrepareService
 			];
 	}
 
+	/**
+	 * @param list<HeaderField> $fields
+	 * @param string[] $langModules
+	 * @return list<array<string,mixed>>
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function prepareDatatableHeader(array $fields, array $langModules):  array
 	{
 		$this->headerPreparer->configure($this->parameters, $this->moduleName, $langModules);

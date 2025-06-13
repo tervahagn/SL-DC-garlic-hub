@@ -2,7 +2,6 @@
 namespace App\Framework\Utils\FormParameters;
 
 use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
 
 /**
@@ -31,7 +30,9 @@ abstract class BaseParameters
 
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
+	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
 	protected array $currentParameters;
+	/** @var array<string,mixed>  */
 	protected array $userInputs;
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer)
@@ -40,6 +41,10 @@ abstract class BaseParameters
 		$this->sanitizer  = $sanitizer;
 	}
 
+	/**
+	 * @param array<string,mixed> $userInputs
+	 * @return $this
+	 */
 	public function setUserInputs(array $userInputs): static
 	{
 		$this->userInputs = $userInputs;
@@ -72,7 +77,7 @@ abstract class BaseParameters
 	}
 
 	/**
-	 * method to remove multiple parameters at once
+	 * @param string[] $parameterNames
 	 */
 	public function removeParameters(array $parameterNames): static
 	{
@@ -186,7 +191,7 @@ abstract class BaseParameters
 	/**
 	 * @throws  ModuleException
 	 */
-	public function parseInputFilterByName(string|array $parameterName): static
+	public function parseInputFilterByName(string $parameterName): static
 	{
 		if (!array_key_exists($parameterName, $this->currentParameters))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');

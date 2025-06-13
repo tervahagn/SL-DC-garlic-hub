@@ -20,9 +20,6 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\AbstractInputFieldRenderer;
-use App\Framework\Utils\Html\FieldRenderInterface;
-
 class DropdownRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 

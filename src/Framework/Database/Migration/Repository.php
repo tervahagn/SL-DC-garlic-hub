@@ -25,6 +25,7 @@ use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\Table;
 
 class Repository extends SqlBase
 {
@@ -51,6 +52,7 @@ class Repository extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function getAppliedMigrations(): array
@@ -84,9 +86,7 @@ class Repository extends SqlBase
 	}
 
 	/**
-	 * Shows columns of the table.
-	 *
-	 * @return array Columns data
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function showColumns(): array
@@ -95,6 +95,7 @@ class Repository extends SqlBase
 	}
 
 	/**
+	 * @return list<Table>
 	 * @throws Exception
 	 */
 	public function showTables(): array

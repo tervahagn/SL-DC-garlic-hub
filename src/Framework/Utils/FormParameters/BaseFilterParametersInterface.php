@@ -20,10 +20,6 @@
 
 namespace App\Framework\Utils\FormParameters;
 
-use App\Framework\Core\Sanitizer;
-use App\Framework\Core\Session;
-use App\Framework\Exceptions\ModuleException;
-
 /**
  * BaseFilterParametersInterface provides a structure to handle filter parameter operations which can be
  * used in datatables, including default value management, nullification, parsing, session checks,
@@ -37,7 +33,7 @@ interface BaseFilterParametersInterface
 	public const string PARAMETER_SORT_ORDER        = 'sort_order';
 	const string PARAMETER_COMPANY_ID               = 'company_id';
 
-	public function setParameterDefaultValues($default_sort_column): static;
+	public function setParameterDefaultValues(string $defaultSortColumn): static;
 
 	public function setElementsParametersToNull(): static;
 

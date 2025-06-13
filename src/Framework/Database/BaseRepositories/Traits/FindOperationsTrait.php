@@ -27,6 +27,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
 trait FindOperationsTrait
 {
 
+	/**
+	 * @throws Exception
+	 */
 	public function findFirstById(int|string $id): array
 	{
 		return $this->getFirstDataSet($this->findById($id));

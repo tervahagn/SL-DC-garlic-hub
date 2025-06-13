@@ -28,7 +28,7 @@ use Exception;
 class CsrfTokenField extends AbstractInputField
 {
 	const string CSRF_TOKEN_COOKIE_NAME = 'csrf_token';
-	const string CSRF_TOKEN_COOKIE_EXPIRE = '+1 hours';
+	// later const string CSRF_TOKEN_COOKIE_EXPIRE = '+1 hours';
 	private Session $session;
 
 	/**

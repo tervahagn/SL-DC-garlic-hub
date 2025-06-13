@@ -24,6 +24,7 @@ use InvalidArgumentException;
 
 class FieldsRenderFactory
 {
+	/** @var array<string,FieldRenderInterface>  */
 	private array $rendererCache = [];
 
 	public function getRenderer(FieldInterface $field): string
@@ -44,9 +45,15 @@ class FieldsRenderFactory
 
 	private function getCachedRenderer(string $rendererClass): FieldRenderInterface
 	{
+		if (!is_a($rendererClass, FieldRenderInterface::class, true))
+			throw new InvalidArgumentException(sprintf(
+				'Renderer class "%s" must implement "%s".',
+				$rendererClass,
+				FieldRenderInterface::class
+			));
+
 		if (!isset($this->rendererCache[$rendererClass]))
 			$this->rendererCache[$rendererClass] = new $rendererClass();
-
 
 		return $this->rendererCache[$rendererClass];
 	}

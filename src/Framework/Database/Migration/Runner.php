@@ -137,8 +137,8 @@ class Runner
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
-	 *
 	 */
 	private function getAppliedMigrations(): array
 	{
@@ -146,6 +146,7 @@ class Runner
 	}
 
 	/**
+	 * @return array<int,string>
 	 * @throws FilesystemException
 	 */
 	private function determineAvailableMigrations(): array
@@ -154,6 +155,7 @@ class Runner
 	}
 
 	/**
+	 * @return array<int,string>
 	 * @throws FilesystemException
 	 */
 	private function determineAvailableRollbacks(): array
@@ -162,6 +164,7 @@ class Runner
 	}
 
 	/**
+	 * @return array<int,string>
 	 * @throws FilesystemException
 	 */
 	private function determineAvailableTasks(string $direction = 'up'): array

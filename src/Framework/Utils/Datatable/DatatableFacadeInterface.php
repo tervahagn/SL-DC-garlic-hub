@@ -32,5 +32,8 @@ interface DatatableFacadeInterface
 	public function configure(Translator $translator, Session $session): void;
 	public function processSubmittedUserInput(): void;
 	public function prepareDataGrid(): static;
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function prepareUITemplate(): array;
 }

@@ -58,6 +58,7 @@ class Ffmpeg
 	private string $options = '';
 
 	private MediaProperties $mediaProperties;
+	/** @var array<string,mixed>  */
 	private array $metadata = [];
 
 	public function __construct(Config $config, Filesystem $filesystem, MediaProperties $mediaProperties, ShellExecutor $shellExecutor)
@@ -68,17 +69,26 @@ class Ffmpeg
 		$this->mediaProperties = $mediaProperties;
 	}
 
-	public function setMetadata(array $metadata): self
+	/**
+	 * @param array<string,mixed> $metadata
+	 */
+	public function setMetadata(array $metadata): static
 	{
 		$this->metadata = $metadata;
 		return $this;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMetadata(): array
 	{
 		return $this->metadata;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMediaProperties(): array
 	{
 		return $this->mediaProperties->toArray();
@@ -191,9 +201,8 @@ class Ffmpeg
 		$result = $this->shellExecutor->executeSimple();
 
 		$metadata = json_decode($result);
-		if (is_null($metadata) || !isset($metadata->format))
-			throw new FrameworkException('Probing media file failed. Unsupported file type for file ' . $filePath . '. Using command: ' . $command
-			);
+		if (!($metadata instanceof stdClass) || !isset($metadata->format))
+			throw new FrameworkException('Probing media file failed. Unsupported file type for file ' . $filePath . '. Using command: ' . $command);
 
 		$this->mediaProperties->fromStdClass($metadata, $this->metadata);
 	}

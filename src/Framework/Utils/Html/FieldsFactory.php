@@ -25,45 +25,67 @@ use Exception;
 
 class FieldsFactory
 {
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createTextField(array $attributes): TextField
 	{
 		return new TextField($attributes);
 	}
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createNumberField(array $attributes): NumberField
 	{
 		return new NumberField($attributes);
 	}
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createAutocompleteField(array $attributes): AutocompleteField
 	{
 		return new AutocompleteField($attributes);
 	}
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createDropdownField(array $attributes): DropdownField
 	{
 		return new DropdownField($attributes);
 	}
 
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createEmailField(array $attributes): EmailField
 	{
 		return new EmailField($attributes);
 	}
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
 	public function createPasswordField(array $attributes): PasswordField
 	{
 		return new PasswordField($attributes);
 	}
 
 	/**
+	 * @param array<string,mixed> $attributes
 	 * @throws Exception
 	 */
-	public function createCsrfTokenField(array $attributes, $session): CsrfTokenField
+	public function createCsrfTokenField(array $attributes, Session $session): CsrfTokenField
 	{
 		return new CsrfTokenField($attributes, $session);
 	}
 
+	/**
+	 * @param array<string,mixed> $options
+	 */
 	public function createHiddenField(array $options): HiddenField
 	{
 		return new HiddenField($options);

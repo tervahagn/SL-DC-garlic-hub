@@ -22,8 +22,12 @@ namespace App\Framework\Utils\Datatable\Results;
 
 class Builder
 {
+	/** @var list<HeaderField>  */
 	private array $tableHeaderFields = [];
 
+	/**
+	 * @return list<HeaderField>
+	 */
 	public function getHeaderFields(): array
 	{
 		return $this->tableHeaderFields;

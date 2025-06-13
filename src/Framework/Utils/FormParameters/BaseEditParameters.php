@@ -27,9 +27,9 @@ use App\Framework\Exceptions\ModuleException;
 abstract class BaseEditParameters extends BaseParameters
 {
 	protected Session $session;
-
 	public const string PARAMETER_CSRF_TOKEN  = 'csrf_token';
 
+	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
 	protected array $defaultParameters = array(
 		self::PARAMETER_CSRF_TOKEN  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
 	);

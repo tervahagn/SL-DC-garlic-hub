@@ -120,12 +120,21 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$finalContent = $this->templateService->render('layouts/main_layout', array_merge($layoutData,
 			['MAIN_CONTENT' => $mainContent], $controllerData['main_layout']));
 
-		$response = $response->withBody(new Stream(fopen('php://temp', 'r+')));
+		$resource = fopen('php://temp', 'r+');
+		if ($resource === false)
+			return $response->withHeader('Content-Type', 'text/html');
+
+		$stream = new Stream($resource);
+
+		$response = $response->withBody($stream);
 		$response->getBody()->write($finalContent);
 
 		return $response->withHeader('Content-Type', 'text/html');
 	}
 
+	/**
+	 * @return list<array{MESSAGE_TYPE: string, has_close_button: bool, MESSAGE_TEXT: string}>
+	 */
 	private function outputFlashMessages(ServerRequestInterface $request): array
 	{
 		/** @var Messages $flash */
@@ -146,6 +155,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	}
 
 	/**
+	 * @return list<array<string,string>>
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
@@ -166,7 +176,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	}
 
 	/**
-	 * @return array
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FrameworkException
@@ -185,7 +195,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 			[
 				'LANG_LOGIN_AS'       => $this->translator->translate('logged_in_as', 'menu'),
 				'USERNAME'            => $username,
-				'has_user_access'    => $this->createAdminMenuPoints(),
+				'has_user_access'     => $this->createAdminMenuPoints(),
 				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
 				'LANG_LOGOUT'         => $this->translator->translate('logout', 'menu')
 			]
@@ -193,7 +203,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	}
 
 	/**
-	 * @return array
+	 * @return list<array<string,string>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FrameworkException
@@ -202,7 +212,8 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	 */
 	private function createAdminMenuPoints(): array
 	{
-		$UID =	$this->session->get('user')['UID'];
+		$user = $this->session->get('user');
+		$UID =	$user['UID'] ?? 0;
 		$adminMenuPoints = [];
 
 		if ($this->userAclValidator->isModuleAdmin($UID) || $this->userAclValidator->isSubAdmin($UID))
@@ -216,8 +227,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws InvalidArgumentException|PhpfastcacheSimpleCacheException
+	 * @return list<array<string,string>>
 	 */
 	private function createLanguageSelect(): array
 	{

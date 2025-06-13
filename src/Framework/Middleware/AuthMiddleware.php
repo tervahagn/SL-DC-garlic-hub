@@ -24,7 +24,6 @@ namespace App\Framework\Middleware;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\AuthService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -50,6 +49,7 @@ use Slim\Psr7\Response;
 class AuthMiddleware implements MiddlewareInterface
 {
 	private AuthService $authService;
+	/** @var string[]  */
 	private array $publicRoutes = [
 		'set-locales',
 		'smil-index',
@@ -70,7 +70,6 @@ class AuthMiddleware implements MiddlewareInterface
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
 	 * @throws Exception
@@ -84,14 +83,14 @@ class AuthMiddleware implements MiddlewareInterface
 
 		/** @var Session $session */
 		$session = $request->getAttribute('session');
-		if ($session === null)
+		if ($session == null)
 			return $this->respondNonAuth($matches[1], $request, $handler);
 
 		if (!$session->exists('user'))
 		{
 			/** @var Cookie $cookie */
 			$cookie     = $request->getAttribute('cookie');
-			if ($cookie === null)
+			if ($cookie == null)
 				return $this->respondNonAuth($matches[1], $request, $handler);
 
 			$userEntity = null;
@@ -129,7 +128,10 @@ class AuthMiddleware implements MiddlewareInterface
 		if ($isApiRequest)
 		{
 			$data = ['success' => false, 'message' => 'Unauthorized access. Please log in first.'];
-			$response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
+			$json = json_encode($data, JSON_UNESCAPED_UNICODE);
+			if ($json !== false)
+				$response->getBody()->write($json);
+
 			return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
 		}
 		else

@@ -43,11 +43,16 @@ class ConfigXML extends BaseSimpleXml
 	protected string $version = '';
 	protected string $icon = 'icon.png';
 	protected string $content = 'index.html';
-	protected array $name = array();
-	protected array $description = array();
-	protected array $license = array();
-	protected array $preferences = array();
-	protected array $author = array();
+	/** @var array<string,mixed> */
+	protected array $name = [];
+	/** @var array<string,mixed> */
+	protected array $description = [];
+	/** @var array<string,mixed> */
+	protected array $license = [];
+	/** @var array<string,mixed> */
+	protected array $preferences = [];
+	/** @var array<string,mixed> */
+	protected array $author = [];
 
 
 	public function __construct()
@@ -79,6 +84,9 @@ class ConfigXML extends BaseSimpleXml
 		return $this->content;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getName(): array
 	{
 		return $this->name;
@@ -89,6 +97,9 @@ class ConfigXML extends BaseSimpleXml
 		return $this->checkLanguageKeyOfArray($this->name, $lang);
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getDescription(): array
 	{
 		return $this->description;
@@ -99,12 +110,15 @@ class ConfigXML extends BaseSimpleXml
 		return $this->checkLanguageKeyOfArray($this->description, $lang);
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getLicense(): array
 	{
 		return $this->license;
 	}
 
-	public function getLicenseByLanguage($lang = self::DEFAULT_LANGUAGE): string
+	public function getLicenseByLanguage(string $lang = self::DEFAULT_LANGUAGE): string
 	{
 		return $this->checkLanguageKeyOfArray($this->license, $lang);
 	}
@@ -115,11 +129,17 @@ class ConfigXML extends BaseSimpleXml
 	}
 
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getAuthor(): array
 	{
 		return $this->author;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getPreferences(): array
 	{
 		return $this->preferences;
@@ -189,21 +209,33 @@ class ConfigXML extends BaseSimpleXml
 
 	public function hasEditablePreferences(): bool
 	{
+		if ($this->MyXML === null)
+			return false;
+
 		// this bullshit must be done before due to xpath need to register the default namespace
 		// https://www.php.net/manual/de/simplexmlelement.xpath.php#116622
 		$this->MyXML->registerXPathNamespace('f', 'http://www.w3.org/ns/widgets');
 
-		$count_preferences = count($this->MyXML->xpath('//f:preference'));
-		if ($count_preferences == 0)
+		$preferences = $this->MyXML->xpath('//f:preference');
+		if (empty($preferences))
 			return false;
 
-		$count_readonly    = count ($this->MyXML->xpath('//f:preference[contains(@readonly,\'true\')]'));
+		$countPreferences = count($preferences);
 
-		return ($count_preferences-$count_readonly > 0);
+		$readOnlyPreferences = $this->MyXML->xpath('//f:preference[contains(@readonly,\'true\')]');
+		if (empty($readOnlyPreferences))
+			$countReadonly = 0;
+		else
+			$countReadonly = count($readOnlyPreferences);
+
+		return ($countPreferences - $countReadonly > 0);
 	}
 
 	protected function parseDefaultLanguage(): static
 	{
+		if ($this->MyXML === null)
+			return $this;
+
 		$attr =  $this->MyXML->attributes('xml', true);
 		if (isset($attr['lang']))
 			$this->default_language = strtolower(substr($attr['lang'], 0, 2));
@@ -243,8 +275,11 @@ class ConfigXML extends BaseSimpleXml
 
 	protected function parseAuthor(): static
 	{
+		if ($this->MyXML === null)
+			return $this;
+
 		if (!isset($this->MyXML->author))
-			$this->author = array();
+			$this->author = [];
 		if (isset($this->MyXML->author['href']))
 			$this->author['href'] = $this->MyXML->author['href'];
 		if (isset($this->MyXML->author['email']))
@@ -255,22 +290,31 @@ class ConfigXML extends BaseSimpleXml
 		return $this;
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	protected function parseName(): array
 	{
-		if (!isset($this->MyXML->name))
-			return array();
+		if ($this->MyXML === null || !isset($this->MyXML->name))
+			return [];
 
 		return $this->parseLanguages($this->MyXML->name);
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	protected function parseDescription(): array
 	{
-		if (!isset($this->MyXML->description))
-			return array();
+		if ($this->MyXML === null || !isset($this->MyXML->description))
+			return [];
 
 		return $this->parseLanguages($this->MyXML->description);
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	protected function parseLicense(): array
 	{
 		if (!isset($this->MyXML->license))
@@ -279,6 +323,9 @@ class ConfigXML extends BaseSimpleXml
 		return $this->parseLanguages($this->MyXML->license);
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	protected function parseLanguages(SimpleXMLElement $element): array
 	{
 		$ret = array();
@@ -299,9 +346,12 @@ class ConfigXML extends BaseSimpleXml
 		return $ret;
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	protected function parsePreference(SimpleXMLElement $pref): array
 	{
-		$ret = array();
+		$ret = [];
 
 		if (isset($pref['value']))
 			$ret['value'] = (string) $pref['value'];
@@ -335,9 +385,9 @@ class ConfigXML extends BaseSimpleXml
 					else if ($ret['types'] == 'combo')
 					{
 						if (!empty($ret['options']))
-							$ret['options'] = array_merge($ret['options'], array((string) $child => (string) $child ));
+							$ret['options'] = array_merge($ret['options'], [(string) $child => (string) $child]);
 						else
-							$ret['options'] = array((string) $child => (string) $child );
+							$ret['options'] = [(string) $child => (string) $child];
 					}
 
 					continue 2;
@@ -355,9 +405,11 @@ class ConfigXML extends BaseSimpleXml
 		return 'widget_config_xml';
 	}
 
+	/**
+	 * @return array<string,string>
+	 */
 	private function generateNotesArray(SimpleXMLElement $note): array
 	{
-
 		$attr = $note->attributes('xml', true);
 		$lang = self::DEFAULT_LANGUAGE;
 		if (isset($attr['lang']))
@@ -367,6 +419,9 @@ class ConfigXML extends BaseSimpleXml
 
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	private function generateRadioOptionArray(SimpleXMLElement $option): array
 	{
 		$key = '';
@@ -382,6 +437,9 @@ class ConfigXML extends BaseSimpleXml
 		return array($key => $value);
 	}
 
+	/**
+	 * @param array<string,mixed> $ar
+	 */
 	private function checkLanguageKeyOfArray(array $ar, string $lang): string
 	{
 		if (empty($ar))

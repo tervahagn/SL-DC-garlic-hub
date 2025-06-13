@@ -51,6 +51,8 @@ class NestedSetHelper
 	}
 
 	/**
+	 * @param array<string,mixed> $movedNode
+	 * @param array<string,mixed> $targetNode
 	 * @throws Exception
 	 */
 	public function moveSubTree(array $movedNode, array $targetNode, int $newLgtPos, int $width, int $diffLevel):
@@ -154,6 +156,7 @@ class NestedSetHelper
 	}
 
 	/**
+	 * @param array<string,mixed> $node
 	 * @throws DatabaseException
 	 */
 	public function determineLgtPositionByRegion(string $region, array $node): int
@@ -179,6 +182,9 @@ class NestedSetHelper
 		return $diffLevel;
 	}
 
+	/**
+	 * @param array<string,mixed> $node
+	 */
 	public function determineParentIdByRegion(string $region, array $node): int
 	{
 		if ($region !== self::REGION_APPENDCHILD)
@@ -190,7 +196,7 @@ class NestedSetHelper
 	/**
 	 * @throws Exception
 	 */
-	public function deleteFullTree($rootId, $posRgt, $posLft): int
+	public function deleteFullTree(int $rootId, int $posRgt, int $posLft): int
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->delete($this->table)

@@ -51,6 +51,8 @@ class Preparer
 	}
 
 	/**
+	 * @param list<array{name: string, page: int, active: ?bool}> $pageLinks
+	 * @return list<array<string,mixed>>
 	 * @throws ModuleException
 	 */
 	public function prepareLinks(array $pageLinks): array
@@ -70,7 +72,7 @@ class Preparer
 				'ELEMENTS_PAGELINK'   => $this->urlBuilder->buildFilterUrl(),
 				'ELEMENTS_PAGENAME'   => $values['name'],
 				'ELEMENTS_PAGENUMBER' => $values['page'],
-				'ELEMENTS_ACTIVE_PAGE' => (isset($values['active']) && $values['active'] === true) ? 'active_page' : ''
+				'ELEMENTS_ACTIVE_PAGE' => isset($values['active']) ? 'active_page' : ''
 			];
 		}
 
@@ -78,6 +80,8 @@ class Preparer
 	}
 
 	/**
+	 * @param array{min: int, max: int, steps: int} $dropDownSettings
+	 * @return list<array<string,mixed>>
 	 * @throws ModuleException
 	 */
 	public function prepareDropdown(array $dropDownSettings): array

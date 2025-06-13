@@ -23,6 +23,7 @@ namespace App\Framework\Utils\Html;
 
 abstract class AbstractInputFieldRenderer
 {
+	/** @var array<string,mixed> */
 	protected array $attributes = [];
 	protected FieldInterface $field;
 

@@ -22,5 +22,8 @@ namespace App\Framework\TemplateEngine;
 
 interface AdapterInterface
 {
+	/**
+	 * @param array<string,mixed>
+	 */
 	public function render(string $template, array $data = []): string;
 }

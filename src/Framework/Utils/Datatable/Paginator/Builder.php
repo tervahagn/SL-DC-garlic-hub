@@ -20,9 +20,6 @@
 
 namespace App\Framework\Utils\Datatable\Paginator;
 
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
-use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
-
 class Builder
 {
 	private int $currentPage;
@@ -30,10 +27,9 @@ class Builder
 	private int $totalItems;
 	private bool $usePager;
 	private bool $shortened;
+	/** @var list<array{name: string, page: int}>  */
 	private array $pagerLinks;
-	/**
-	 * @var array|int[]
-	 */
+	/** @var array{min: int, max: int, steps: int} */
 	private array $dropDownSettings;
 
 	public function configure(int $currentPage, int $itemsPerPage, int $totalItems, bool $usePager, bool $shortened): static
@@ -47,11 +43,17 @@ class Builder
 		return $this;
 	}
 
+	/**
+	 * @return list<array{name: string, page: int}>
+	 */
 	public function getPagerLinks(): array
 	{
 		return $this->pagerLinks;
 	}
 
+	/**
+	 * @return array{min: int, max: int, steps: int}
+	 */
 	public function getDropDownSettings(): array
 	{
 		return $this->dropDownSettings;

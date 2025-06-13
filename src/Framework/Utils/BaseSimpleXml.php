@@ -41,6 +41,7 @@ use SimpleXMLElement;
  */
 abstract class BaseSimpleXml
 {
+	/** @var LibXMLError[] */
 	protected array $xml_errors;
 
 	protected SimpleXMLElement $xml_obj;
@@ -57,11 +58,17 @@ abstract class BaseSimpleXml
 		$this->xml_obj = $xml_obj;
 	}
 
+	/**
+	 * @return LibXMLError[]
+	 */
 	protected function getXmlErrors(): array
 	{
 		return $this->xml_errors;
 	}
 
+	/**
+	 * @param list<LibXMLError> $xml_errors
+	 */
 	protected function setXmlErrors(array $xml_errors): void
 	{
 		$this->xml_errors = $xml_errors;
@@ -108,12 +115,14 @@ abstract class BaseSimpleXml
 		return $this;
 	}
 
+	/**
+	 * @return LibXMLError[]
+	 */
 	public function getXmlErrorArray(): array
 	{
 		$this->buildXmlErrors();
 		return $this->getXmlErrors();
 	}
-
 
 	public function getXmlErrorsAsString(): string
 	{
