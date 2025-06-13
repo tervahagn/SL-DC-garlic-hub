@@ -66,7 +66,7 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineRamStats();
 
-		$expected = ['total' => '8000', 'used' => '6000', 'free' => '2000'];
+		$expected = ['total' => 8000, 'used' => 6000, 'free' => 2000];
 		$this->assertSame($expected, $this->systemStats->getRamStats());
 	}
 
@@ -87,7 +87,7 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineRamStats();
 
-		$expected = ['total' => null, 'used' => null, 'free' => null];
+		$expected = ['total' => 0, 'used' => 0, 'free' => 0];
 		$this->assertSame($expected, $this->systemStats->getRamStats());
 	}
 
@@ -135,7 +135,12 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineDiskUsage();
 
-		$expected = [];
+		$expected = [
+			'size' => '',
+			'used' => '',
+			'available' => '',
+			'percent' => '',
+		];
 		$this->assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
@@ -150,9 +155,21 @@ class SystemStatsTest extends TestCase
 		$this->shellExecutorMock->expects($this->never())->method('setCommand');
 		$this->systemStats->determineSystemStats();
 
-		$this->assertSame([], $this->systemStats->getRamStats());
-		$this->assertSame([], $this->systemStats->getDiscInfo());
-		$this->assertSame([], $this->systemStats->getLoadData());
+		$expected = ['total' => 0, 'used' => 0, 'free' => 0];
+		$this->assertSame($expected, $this->systemStats->getRamStats());
+		$expected = [
+			'size' => '',
+			'used' => '',
+			'available' => '',
+			'percent' => '',
+		];
+		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+		$expected = [
+			'1_min' => '',
+			'5_min' => '',
+			'15_min' => '',
+		];
+		$this->assertSame($expected, $this->systemStats->getLoadData());
 	}
 
 	/**

@@ -27,6 +27,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class OAuth2Controller
 {
@@ -72,7 +73,7 @@ class OAuth2Controller
 				return $response->withHeader('Location', '/login')->withStatus(302);
 			}
 
-			//
+			/** @var array{UID: int} $user */
 			$user = $session->get('user');
 			$authRequest->setUser($this->authService->getCurrentUser($user['UID'])); // an instance of UserEntityInterface
 
@@ -90,7 +91,10 @@ class OAuth2Controller
 		}
 		catch (\Exception $e)
 		{
-			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+			$json = json_encode(['error' => $e->getMessage()]);
+			if ($json !== false)
+				$response->getBody()->write($json);
+
 			return $response->withStatus(500);
 		}
 	}
@@ -106,9 +110,12 @@ class OAuth2Controller
 		{
 			return $e->generateHttpResponse($response);
 		}
-		catch (\Exception $e)
+		catch (Throwable $e)
 		{
-			$response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+			$json = json_encode(['error' => $e->getMessage()]);
+			if ($json !== false)
+				$response->getBody()->write($json);
+
 			return $response->withStatus(500);
 		}
 	}
@@ -132,6 +139,9 @@ class OAuth2Controller
 
 	private function validateRedirectUri(?string $redirectUri): string
 	{
+		if ($redirectUri === null)
+			throw new InvalidArgumentException('Invalid redirect_uri');
+
 		if (!filter_var($redirectUri, FILTER_VALIDATE_URL))
 			throw new InvalidArgumentException('Invalid redirect_uri');
 

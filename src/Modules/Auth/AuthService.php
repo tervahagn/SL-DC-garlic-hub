@@ -100,8 +100,9 @@ class AuthService
 			return null;
 		}
 
+		/** @var array{UID: int, sid: string } $cookie_payload */
 		$cookie_payload = $this->cookie->getHashedCookie(self::COOKIE_NAME_AUTO_LOGIN);
-		$UID = (int) $cookie_payload['UID'];
+		$UID =  (int) $cookie_payload['UID'];
 		if ($UID < 1)
 		{
 			$this->logger->error('No valid UID found after cookie login.');
@@ -133,11 +134,12 @@ class AuthService
 	 */
 	public function createAutologinCookie(int $UID, string $sessionId): void
 	{
-		$payload = ['UID' => $UID, 'sid' => $sessionId];
+		$payload = ['UID' => (string) $UID, 'sid' => $sessionId];
 		$this->cookie->createHashedCookie(self::COOKIE_NAME_AUTO_LOGIN, $payload, new DateTime(self::AUTOLOGIN_EXPIRE));
 	}
 
 	/**
+	 * @param array<string,mixed> $user
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */

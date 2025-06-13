@@ -49,7 +49,7 @@ class FormBuilder
 		/** @var FieldInterface $element */
 		foreach ($formFields as $element)
 		{
-			if ($element->getType() === FieldType::HIDDEN->value || $element->getType() === FieldType::CSRF->value)
+			if ($element->getType() === FieldType::HIDDEN || $element->getType() === FieldType::CSRF)
 			{
 				$hidden[] = [
 					'HIDDEN_HTML_ELEMENT'        => $this->renderField($element)

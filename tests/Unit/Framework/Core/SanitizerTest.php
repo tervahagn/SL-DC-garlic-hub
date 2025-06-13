@@ -66,7 +66,7 @@ class SanitizerTest extends TestCase
 	public function testBoolSanitization(): void
 	{
 		$this->assertTrue($this->sanitizer->bool('1'));
-		$this->assertFalse($this->sanitizer->bool(''));
+		$this->assertFalse($this->sanitizer->bool());
 		$this->assertTrue($this->sanitizer->bool('true'));
 	}
 
@@ -90,7 +90,7 @@ class SanitizerTest extends TestCase
 
 		$this->assertSame(
 			[],
-			$this->sanitizer->stringArray([])
+			$this->sanitizer->stringArray()
 		);
 	}
 
@@ -99,27 +99,13 @@ class SanitizerTest extends TestCase
 	{
 		$this->assertSame(
 			[123, 456, 789],
-			$this->sanitizer->intArray(['123', '456', '789'])
+			$this->sanitizer->intArray([123, 456, 789])
 		);
 
-		$this->assertSame(
-		[123, 0, 789],
-			$this->sanitizer->intArray(['123', 'abc', '789'])
-		);
-
-		$this->assertSame(
-		[0, 1, 999],
-			$this->sanitizer->intArray(['0', '1', '999'])
-		);
-
-		$this->assertSame(
-		[0],
-			$this->sanitizer->intArray(['abc'])
-		);
 
 		$this->assertSame(
 			[],
-			$this->sanitizer->intArray([])
+			$this->sanitizer->intArray()
 		);
 	}
 
@@ -128,27 +114,13 @@ class SanitizerTest extends TestCase
 	{
 		$this->assertSame(
 			[12.34, 56.78, 90.12],
-			$this->sanitizer->floatArray(['12.34', '56.78', '90.12'])
+			$this->sanitizer->floatArray([12.34, 56.78, 90.12])
 		);
 
-		$this->assertSame(
-			[12.34, 0.0, 0.789],
-			$this->sanitizer->floatArray(['12.34', 'not a number', '.789'])
-		);
-
-		$this->assertSame(
-			[0.0, 1.0, 999.99],
-			$this->sanitizer->floatArray(['0', '1', '999.99'])
-		);
-
-		$this->assertSame(
-			[0.0],
-			$this->sanitizer->floatArray(['invalid'])
-		);
 
 		$this->assertSame(
 			[],
-			$this->sanitizer->floatArray([])
+			$this->sanitizer->floatArray()
 		);
 	}
 

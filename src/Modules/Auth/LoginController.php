@@ -99,14 +99,25 @@ class LoginController
 		$session->set('locale', $main_data['locale']);
 
 		if (array_key_exists('autologin', $params))
-			$this->authService->createAutologinCookie($main_data['UID'], Session::id());
+		{
+			$sessionId = Session::id();
+			if ($sessionId === false)
+			{
+				$flash->addMessage('error', 'Bo session id found');
+				return $this->redirect($response, '/login');
+			}
+			$this->authService->createAutologinCookie($main_data['UID'], $sessionId);
+		}
 
 		if (!$session->exists('oauth_redirect_params'))
 			return $this->redirect($response);
 
 		$oauthParams = $session->get('oauth_redirect_params');
-		$session->delete('oauth_redirect_params');
+		
+		if (!is_array($oauthParams))
+			return $this->redirect($response);
 
+		$session->delete('oauth_redirect_params');
 		return $this->redirect($response, '/api/authorize?' . http_build_query($oauthParams));
 	}
 
@@ -120,7 +131,9 @@ class LoginController
 		/** @var Session $session */
 		$session = $request->getAttribute('session');
 		$user    = $session->get('user');
-		$this->authService->logout($user);
+		if (is_array($user))
+			$this->authService->logout($user);
+
 		$session->clear();
 		$session->regenerateID();
 
