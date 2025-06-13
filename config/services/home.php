@@ -19,11 +19,9 @@
 */
 
 use App\Controller\HomeController;
-use App\Framework\Core\Config\Config;
 use App\Framework\Dashboards\DashboardsAggregator;
 use App\Framework\Dashboards\SystemDashboard;
 use App\Modules\Player\Dashboard\PlayerDashboard;
-use App\Modules\Users\Services\AclValidator;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];

@@ -1,18 +1,22 @@
 <?php
-$start_time   = microtime(true);
-$start_memory = memory_get_usage();
-
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\IniConfigLoader;
 use DI\ContainerBuilder;
+use Psr\Container\ContainerInterface;
 use Slim\App;
 use Symfony\Component\Console\Application;
+
+$start_time   = microtime(true);
+$start_memory = memory_get_usage();
 
 /* @var App $app */
 $systemDir = realpath(__DIR__. '/../');
 
 try
 {
+	if (!is_string($systemDir) || !file_exists($systemDir))
+		throw new RuntimeException("Invalid or non-existent system directory provided: " . var_export($systemDir, true));
+
 	require $systemDir.'/vendor/autoload.php';
 	$dotenv = Dotenv\Dotenv::createImmutable($systemDir);
 	$dotenv->load();
@@ -59,15 +63,23 @@ foreach ($directoryIterator as $file)
 		$containerBuilder->addDefinitions($file->getPathname());
 	}
 }
-$container     = $containerBuilder->build();
+try
+{
+	$container = $containerBuilder->build();
+}
+catch (Exception $e)
+{
 
+}
 if (php_sapi_name() !== 'cli')
 {
 	$middlewareLoader = require $systemDir.'/config/middleware.php';
+	/** @var ContainerInterface $container  */
 	$app = $middlewareLoader($container, $start_time, $start_memory);
 }
 else
 {
+	/** @var ContainerInterface $container  */
 	$app              = $container->get(Application::class);
 	$config           = $container->get(Config::class);
 	$commandDirectory = $config->getPaths('commandDir');

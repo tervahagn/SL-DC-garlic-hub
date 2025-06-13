@@ -62,10 +62,10 @@ $myErrorHandler = function (
 			$exception instanceof DomainException => [400, 'Domain-specific error'],
 			default => [500, 'Internal Server Error'],
 		};
-		$response->getBody()->write(json_encode([
-			'error' => $error,
-			'message' => $displayErrorDetails ? $exception->getMessage() : 'An unexpected error occurred',
-		]));
+		$data = json_encode(['error' => $error, 'message' => $displayErrorDetails ? $exception->getMessage() : 'An unexpected error occurred.']);
+		if ($data !== false)
+			$response->getBody()->write($data);
+
 		return $response->withStatus($status);
 	}
 

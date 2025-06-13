@@ -92,7 +92,7 @@ $dependencies[UsersController::class] = DI\factory(function (ContainerInterface 
 $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowDatatableController(
-		$container->get(\App\Modules\Users\Helper\Datatable\ControllerFacade::class),
+		$container->get(ControllerFacade::class),
 		$container->get(DatatableTemplatePreparer::class)
 	);
 });

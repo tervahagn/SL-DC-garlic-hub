@@ -141,15 +141,33 @@ $dependencies[AdapterInterface::class] = DI\factory(function ()
 $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $container)
 {
 	$config = $container->get(Config::class);
-	$connectionParams = [
-		'path' => $config->getEnv('DB_MASTER_PATH'), // SQLite needs `path`
-		'dbname' => $config->getEnv('DB_MASTER_NAME'),
-		'user' => $config->getEnv('DB_MASTER_USER'),
-		'password' => $config->getEnv('DB_MASTER_PASSWORD'),
-		'host' => $config->getEnv('DB_MASTER_HOST'),
-		'port' => $config->getEnv('DB_MASTER_PORT'),
-		'driver' => strtolower($config->getEnv('DB_MASTER_DRIVER')), // e.g. 'pdo_mysql pdo_sqlite '
-	];
+	$driver = strtolower($config->getEnv('DB_MASTER_DRIVER'));
+	switch ($driver) {
+		case 'pdo_sqlite':
+		case 'sqlite3':
+			$connectionParams = [
+				'path' => $config->getEnv('DB_MASTER_PATH'), // Für SQLite: Dateipfad
+				'driver' => $driver,
+			];
+			break;
+		case 'pdo_mysql':
+		case 'mysqli':
+		case 'pdo_pgsql':
+		case 'pgsql':
+			$connectionParams = [
+				'dbname' => $config->getEnv('DB_MASTER_NAME'),
+				'user' => $config->getEnv('DB_MASTER_USER'),
+				'password' => $config->getEnv('DB_MASTER_PASSWORD'),
+				'host' => $config->getEnv('DB_MASTER_HOST'),
+				'port' => $config->getEnv('DB_MASTER_PORT'),
+				'driver' => $driver,
+			];
+			if ($driver === 'pdo_mysql' || $driver === 'mysqli')
+				$connectionParams['charset'] = 'utf8mb4';
+			break;
+		default:
+			throw new InvalidArgumentException("Unsupported DBAL driver: " . $driver);
+	}
 
 	$logger = new Logger('dbal');
 	$logger->pushHandler(new StreamHandler($config->getPaths('logDir') . '/dbal.log', $config->getLogLevel()));

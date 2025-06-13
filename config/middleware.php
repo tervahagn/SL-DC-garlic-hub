@@ -18,6 +18,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Psr\Container\ContainerInterface;
+use Slim\App;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Locales\Locales;
@@ -27,13 +29,11 @@ use App\Framework\Middleware\AuthMiddleware;
 use App\Framework\Middleware\EnvironmentMiddleware;
 use App\Framework\Middleware\SessionMiddleware;
 use App\Modules\Auth\AuthService;
-use Psr\Container\ContainerInterface;
-use Slim\App;
 use Slim\Flash\Messages;
 
 return function (ContainerInterface $container, $start_time, $start_memory): App
 {
-	/** @var App $app */
+	/** @var App<ContainerInterface> $app */
 	$app = $container->get(App::class);
 
 	require_once __DIR__ . '/route.php';
