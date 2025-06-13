@@ -6,6 +6,10 @@
 Garlic-Hub is a comprehensive Digital Signage Management solution that handles core CMS tasks alongside device management. From single-screen setups to distributed networks, it provides centralized control with flexibility for various signage environments.
 
 > **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback.
+> 
+> Current works:
+> - towards PHPStan Level 8 Compliance
+> - Simple User Management. Admin should create user tokenized to let them set their own passwords.
 
 ![Garlic-Hub Mediapool Screenshot](docs/media/showcase.gif)
 
