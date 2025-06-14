@@ -26,16 +26,19 @@ use App\Framework\Core\Session;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Controller\EditLocalesController;
 use App\Modules\Users\Controller\EditPasswordController;
 use App\Modules\Users\Controller\ShowDatatableController;
+use App\Modules\Users\Controller\ShowEditUserController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
 use App\Modules\Users\Helper\Datatable\Parameters;
+use App\Modules\Users\Helper\Settings\Facade;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
@@ -127,6 +130,14 @@ $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerIn
 	return new ShowDatatableController(
 		$container->get(ControllerFacade::class),
 		$container->get(DatatableTemplatePreparer::class)
+	);
+});
+
+$dependencies[ShowEditUserController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ShowEditUserController(
+		$container->get(Facade::class),
+		$container->get(FormTemplatePreparer::class)
 	);
 });
 

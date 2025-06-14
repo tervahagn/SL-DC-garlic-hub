@@ -79,7 +79,10 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 	$group->get('/set-locales/{locale}', createControllerCallable([EditLocalesController::class, 'setLocales'], $container));
 
 	$group->get('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'show'], $container));
-	$group->get('/users/edit', createControllerCallable([EditPasswordController::class, 'showForm'], $container));
+	$group->get('/users/edit', createControllerCallable([ShowEditUserController::class, 'newUserForm'], $container));
+	$group->get('/users/edit/{UID:\d+}', createControllerCallable([ShowEditUserController::class, 'editUserForm'], $container));
+
+	$group->get('/users/edit/password/{UID:\d+}', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
 	$group->post('/users/edit/password', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
 
 	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));

@@ -76,12 +76,12 @@ abstract class AbstractDatatablePreparer
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function prepareAdd(string $iconClass = 'folder-plus'): array
+	public function prepareAdd(string $iconClass = 'folder-plus', string $addLink = '#'): array
 	{
 		return [
 			'ADD_BI_ICON' => $iconClass,
 			'LANG_ELEMENTS_ADD_LINK' =>	$this->translator->translate('add', $this->moduleName),
-			'ELEMENTS_ADD_LINK' => '#'
+			'ELEMENTS_ADD_LINK' => $addLink
 		];
 	}
 

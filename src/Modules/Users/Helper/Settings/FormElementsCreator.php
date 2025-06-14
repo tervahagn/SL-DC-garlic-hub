@@ -64,8 +64,8 @@ readonly class FormElementsCreator
 			'type' => FieldType::TEXT,
 			'id' => 'username',
 			'name' => 'username',
-			'title' => $this->translator->translate('username', 'users'),
-			'label' => $this->translator->translate('username', 'users'),
+			'title' => $this->translator->translate('username', 'main'),
+			'label' => $this->translator->translate('username', 'main'),
 			'value' => $value,
 			'rules' => ['required' => true, 'minlength' => 2],
 			'default_value' => ''

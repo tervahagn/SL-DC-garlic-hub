@@ -1,4 +1,4 @@
-.form-elements {display:flex;gap:1rem;margin:1rem 0;}
+.form-elements {display:flex;gap:1rem;}
 .form-elements .field-wrapper input {width:100%;}
 
 .form-elements .field-wrapper:first-child{width:30%; min-width:200px;}

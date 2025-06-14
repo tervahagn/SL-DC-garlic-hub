@@ -58,7 +58,7 @@ class Builder
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function configNewParameter(string $playlistMode): void
+	public function configNewParameter(): void
 	{
 		if (!$this->aclValidator->isSimpleAdmin($this->UID))
 			return;
@@ -94,7 +94,8 @@ class Builder
 			$user[Parameters::PARAMETER_USER_EMAIL] ?? ''
 		);
 
-		$form['UID'] = $this->formElementsCreator->createHiddenUIDField($user[Parameters::PARAMETER_USER_ID]);
+		if (isset($user[Parameters::PARAMETER_USER_ID]))
+			$form['UID'] = $this->formElementsCreator->createHiddenUIDField($user[Parameters::PARAMETER_USER_ID]);
 
 		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
 

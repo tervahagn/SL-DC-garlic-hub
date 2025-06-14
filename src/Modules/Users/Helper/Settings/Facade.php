@@ -25,7 +25,6 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -59,13 +58,12 @@ class Facade
 	/**
 	 * @return array<string,int|string>
 	 */
-	public function loadPlaylistForEdit(int $UID): array
+	public function loadUserForEdit(int $UID): array
 	{
 		$this->oldUser = $this->usersService->loadForEdit($UID);
 
 		return $this->oldUser;
 	}
-
 
 	/**
 	 * @param array<string,mixed> $post
@@ -79,14 +77,14 @@ class Facade
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
+		if ($post['UID'] > 0)
 		{
-			$this->loadPlaylistForEdit($post['playlist_id']);
+			$this->loadUserForEdit($post['UID']);
 			$this->settingsFormBuilder->configEditParameter($this->oldUser);
 		}
 		else
 		{
-			$this->settingsFormBuilder->configNewParameter($post['playlist_mode']);
+			$this->settingsFormBuilder->configNewParameter();
 		}
 
 		return $this->settingsFormBuilder->handleUserInput($post);
@@ -107,8 +105,13 @@ class Facade
 		return $id;
 	}
 
+	public function buildCreateNewParameter(): void
+	{
+		$this->settingsFormBuilder->configNewParameter();
+	}
+
 	/**
-	 * @param array<string,string> $user
+	 * @param array<string,int|string> $user
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
@@ -130,13 +133,19 @@ class Facade
 	 */
 	public function prepareUITemplate(array $post): array
 	{
-		$title = $this->translator->translate('core_data', 'users'). ' - ' .$this->oldUser['username'];
+		if (isset($this->oldUser['username']))
+			$name = $this->oldUser['username'];
+		else
+			$name = $this->translator->translate('add', 'users');
+
+
+		$title = $this->translator->translate('core_data', 'users'). ': ' .$name;
 		$dataSections                      = $this->settingsFormBuilder->buildForm($post);
 		$dataSections['title']             = $title;
 		$dataSections['additional_css']    = ['/css/users/settings.css'];
 		$dataSections['footer_modules']    = ['/js/users/settings/init.js'];
 		$dataSections['template_name']     = 'users/edit';
-		$dataSections['form_action']       = '/users/settings';
+		$dataSections['form_action']       = '/users/edit';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
 
 		return $dataSections;
