@@ -40,15 +40,14 @@ class Validator extends BaseValidator
 	}
 
 	/**
-	 * @param array<string, mixed> $post
-	 * @return array<array<string, mixed>>
+	 * @return string[]
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function validateUserInput(array $post): array
+	public function validateUserInput(): array
 	{
 		$this->inputEditParameters->checkCsrfToken();
 
@@ -56,7 +55,9 @@ class Validator extends BaseValidator
 		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_NAME)))
 			$errors[] = $this->translator->translate('no_username', 'users');
 
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL)))
+		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL)) ||
+			!$this->isEmail($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL))
+		)
 			$errors[] = $this->translator->translate('no_email', 'users');
 
 		return $errors;

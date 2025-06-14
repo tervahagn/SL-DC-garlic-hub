@@ -80,6 +80,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 
 	$group->get('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'show'], $container));
 	$group->get('/users/edit', createControllerCallable([ShowEditUserController::class, 'newUserForm'], $container));
+	$group->post('/users/edit', createControllerCallable([ShowEditUserController::class, 'store'], $container));
 	$group->get('/users/edit/{UID:\d+}', createControllerCallable([ShowEditUserController::class, 'editUserForm'], $container));
 
 	$group->get('/users/edit/password/{UID:\d+}', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
