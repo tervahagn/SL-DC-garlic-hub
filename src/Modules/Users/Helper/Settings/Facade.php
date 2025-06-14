@@ -91,6 +91,9 @@ class Facade
 		return $this->settingsFormBuilder->handleUserInput($post);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function storeUser(int $UID): int
 	{
 		$saveData  = array_combine(
@@ -103,14 +106,22 @@ class Facade
 		else
 			$id = $this->usersService->inserNewUser($saveData);
 
-		if ($id === 0)
-
 		return $id;
 	}
 
-	public function getUserServiceErrors()
+	/**
+	 * @return string[]
+	 */
+	public function getUserServiceErrors(): array
 	{
-		return $this->usersService->getErrorMessages();
+		$errors     = $this->usersService->getErrorMessages();
+		$translated =[];
+		foreach ($errors as $error)
+		{
+			$translated[] = $this->translator->translate($error, 'users');
+		}
+		return $translated;
+
 	}
 
 	public function buildCreateNewParameter(): void
