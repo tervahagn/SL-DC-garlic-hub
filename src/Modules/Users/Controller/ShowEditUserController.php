@@ -98,6 +98,47 @@ class ShowEditUserController
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		/** @var array<string,mixed> $post */
+		$post = $request->getParsedBody();
+
+		$this->initFacade($request);
+		$errors = $this->facade->configureUserFormParameter($post);
+		foreach ($errors as $errorText)
+		{
+			$this->flash->addMessageNow('error', $errorText);
+		}
+
+		if (!empty($errors))
+			return $this->outputRenderedForm($response, $post);
+
+		$id = $this->facade->storeUser($post['UID'] ?? 0);
+		if ($id > 0)
+		{
+			$this->flash->addMessage('success', 'User “'.$post['username'].'“ successfully stored.');
+			return $response->withHeader('Location', '/users')->withStatus(302);
+		}
+		else
+		{
+			$errors = $this->facade->getUserServiceErrors();
+			foreach ($errors as $errorText)
+			{
+				$this->flash->addMessageNow('error', $errorText);
+			}
+		}
+
+		return $this->outputRenderedForm($response, $post);
+	}
+
+	/**
 	 * @param array<string,mixed> $userInput
 	 * @throws ModuleException
 	 * @throws CoreException

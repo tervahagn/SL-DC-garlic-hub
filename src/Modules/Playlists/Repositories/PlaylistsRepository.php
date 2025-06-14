@@ -76,7 +76,7 @@ class PlaylistsRepository extends FilterBase
 	}
 
 	/**
-	 * @return string[]
+	 * @return array<string,string>
 	 */
 	protected function prepareJoin(): array
 	{

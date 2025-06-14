@@ -116,7 +116,7 @@ class Builder
 		$this->parameters->setUserInputs($post)
 			->parseInputAllParameters();
 
-		return $this->validator->validateUserInput($post);
+		return $this->validator->validateUserInput();
 	}
 
 }

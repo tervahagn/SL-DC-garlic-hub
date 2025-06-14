@@ -44,16 +44,17 @@ class UsersService extends AbstractBaseService
 	const int USER_STATUS_LOCKED        = 1;
 	const int USER_STATUS_REGISTERED    = 2;
 	const int USER_STATUS_REGULAR       = 3;
-	const int USER_STATUS_PREMIUM_A     = 4;
+/*	const int USER_STATUS_PREMIUM_A     = 4;
 	const int USER_STATUS_PREMIUM_B     = 5;
 	const int USER_STATUS_PREMIUM_C     = 6;
 	const int USER_STATUS_PREMIUM_D     = 7;
 	const int USER_STATUS_PREMIUM_E     = 8;
 	const int USER_STATUS_ADMIN         = 9;
-
+*/
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
 	private Psr16Adapter $cache;
+	/** @var array<string,FilterBase>  */
 	private array $userRepositories;
 
 	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, Psr16Adapter
@@ -76,30 +77,55 @@ class UsersService extends AbstractBaseService
 
 	/**
 	 * @return array<string,string>
+	 * @throws Exception
 	 */
 	public function loadForEdit(int $UID): array
 	{
 		return $this->getUserRepositories()['main']->findById($UID);
 	}
 
-	public function updatePassword(int $UID, $password): int
+	/**
+	 * @throws Exception
+	 */
+	public function updatePassword(int $UID, string $password): int
 	{
 		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 
 		return $this->updateUser($UID, $data);
 	}
 
-	public function inserNewUser(array $data): int
+	/**
+	 * @param array<string,string> $post
+	 * @throws Exception
+	 */
+	public function inserNewUser(array $post): int
 	{
-		return $this->getUserRepositories()['main']->insert($data);
+		if (!$this->isUnique(0, $post['username'], $post['email']))
+			return 0;
+
+		$saveData = $this->collectCommonData($post, []);
+
+		return (int) $this->getUserRepositories()['main']->insert($saveData);
 	}
 
-	public function updateUser(int $UID, array $data): int
+	/**
+	 * @param array<string,string> $post
+	 * @throws Exception
+	 */
+	public function updateUser(int $UID, array $post): int
 	{
-		return $this->getUserRepositories()['main']->update($UID, $data);
+		if (!$this->isUnique($UID, $post['username'], $post['email']))
+			return 0;
+
+		$saveData = $this->collectCommonData($post, []);
+
+		return $this->getUserRepositories()['main']->update($UID, $saveData);
 	}
 
-	public function updateUserStats(int $UID, $sessionId): int
+	/**
+	 * @throws Exception
+	 */
+	public function updateUserStats(int $UID, string $sessionId): int
 	{
 		$data = [
 			'login_time' => date('Y-m-d H:i:s'),
@@ -111,9 +137,10 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
-	public function findUser($identifier): array
+	public function findUser(string $identifier): array
 	{
 		/** @var UserMainRepository $usrMainRepository */
 		$usrMainRepository = $this->getUserRepositories()['main'];
@@ -155,11 +182,58 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $postData
+	 * @param array<string,mixed> $saveData
+	 * @return array<string,mixed>
+	 */
+	private function collectCommonData(array $postData, array $saveData): array
+	{
+		if (isset($postData['username']))
+			$saveData['username'] = $postData['username'];
+
+		if (isset($postData['email']))
+			$saveData['email'] = $postData['email'];
+
+		return $saveData;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function isUnique(int $UID, string $username, string $email): bool
+	{
+		$where = [
+			'username' => $this->getUserRepositories()['main']->generateWhereClause($username, '=', 'OR'),
+			'email' => $this->getUserRepositories()['main']->generateWhereClause($email, '=', 'OR')
+		];
+		$result =  $this->getUserRepositories()['main']->findAllByWithFields(['UID', 'username', 'email'], $where);
+
+		if (empty($result))
+			return true;
+
+		foreach ($result as $existing)
+		{
+			if ($existing['username'] === $username && (int) $existing['UID'] !== $UID)
+				$this->addErrorMessage('username_exists');
+
+			if ($existing['email'] === $email && (int) $existing['UID'] !== $UID)
+				$this->addErrorMessage('email_exists');
+		}
+
+		return false;
+		
+
+	}
+
+
+	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	private function collectUserData(int $UID): array
 	{
 		$userData = [];
+		/** @var FilterBase $repository */
 		foreach ($this->userRepositories as $key => $repository)
 		{
 			$userData[$key] = $repository->findById($UID);

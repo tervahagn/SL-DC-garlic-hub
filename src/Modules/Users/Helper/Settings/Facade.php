@@ -77,9 +77,10 @@ class Facade
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		if ($post['UID'] > 0)
+		$UID = $post['UID'] ?? 0;
+		if ($UID > 0)
 		{
-			$this->loadUserForEdit($post['UID']);
+			$this->loadUserForEdit($UID);
 			$this->settingsFormBuilder->configEditParameter($this->oldUser);
 		}
 		else
@@ -102,7 +103,14 @@ class Facade
 		else
 			$id = $this->usersService->inserNewUser($saveData);
 
+		if ($id === 0)
+
 		return $id;
+	}
+
+	public function getUserServiceErrors()
+	{
+		return $this->usersService->getErrorMessages();
 	}
 
 	public function buildCreateNewParameter(): void

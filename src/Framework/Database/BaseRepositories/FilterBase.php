@@ -145,12 +145,12 @@ abstract class FilterBase extends SqlBase
 	abstract protected function prepareJoin(): array;
 
 	/**
-	 * @return array<string, string>
+	 * @return string[]
 	 */
 	abstract protected function prepareSelectFiltered(): array;
 
 	/**
-	 * @return array<string, string>
+	 * @return string[]
 	 */
 	abstract protected function prepareSelectFilteredForUser(): array;
 
@@ -187,7 +187,7 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
-	 * @param array<string, array<string, string>> $filterFields
+	 * @param array<string, mixed> $filterFields
 	 * @return array<string,string>
 	 */
 	abstract protected function prepareWhereForFiltering(array $filterFields): array;
