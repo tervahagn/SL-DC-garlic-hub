@@ -23,7 +23,6 @@ namespace App\Modules\Playlists\Services\InsertItems;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
@@ -34,7 +33,6 @@ use Psr\Log\LoggerInterface;
 
 class Playlist extends AbstractInsertItem
 {
-
 	public function __construct(ItemsRepository $itemsRepository, PlaylistsService $playlistsService, PlaylistMetricsCalculator $playlistMetricsCalculator, LoggerInterface $logger)
 	{
 		$this->itemsRepository  = $itemsRepository;
@@ -45,6 +43,7 @@ class Playlist extends AbstractInsertItem
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function insert(int $playlistId, string|int $insertId, int $position): array
@@ -98,6 +97,9 @@ class Playlist extends AbstractInsertItem
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function checkForRecursiveInserts(int $targetId, int $insertId): bool
 	{
 		if ($targetId == $insertId)

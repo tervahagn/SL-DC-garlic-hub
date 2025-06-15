@@ -28,14 +28,14 @@ use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\WidgetsService;
 use Psr\Log\LoggerInterface;
 
-class InsertItemFactory
+readonly class InsertItemFactory
 {
-	private readonly MediaService $mediaService;
-	protected readonly ItemsRepository $itemsRepository;
-	protected readonly PlaylistsService $playlistsService;
-	protected readonly PlaylistMetricsCalculator $playlistMetricsCalculator;
-	protected readonly WidgetsService $widgetsService;
-	protected readonly LoggerInterface $logger;
+	private MediaService $mediaService;
+	protected ItemsRepository $itemsRepository;
+	protected PlaylistsService $playlistsService;
+	protected PlaylistMetricsCalculator $playlistMetricsCalculator;
+	protected WidgetsService $widgetsService;
+	protected LoggerInterface $logger;
 
 
 	public function __construct(MediaService $mediaService,
@@ -55,13 +55,12 @@ class InsertItemFactory
 
 	public function create(string $source): ?AbstractInsertItem
 	{
-		$item = match ($source)
+		return match ($source)
 		{
 			'mediapool' => new Media($this->itemsRepository, $this->mediaService, $this->playlistsService, $this->playlistMetricsCalculator, $this->widgetsService, $this->logger),
 			'playlist' => new Playlist($this->itemsRepository, $this->playlistsService, $this->playlistMetricsCalculator, $this->logger),
 			default => null,
 		};
-		return $item;
 	}
 
 }

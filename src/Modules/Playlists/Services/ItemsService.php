@@ -91,6 +91,7 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -193,6 +194,9 @@ class ItemsService extends AbstractBaseService
 		return $this->itemsRepository->update($itemId, $saveData);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function updateItemOrder(mixed $playlistId, array $itemsOrder): bool
 	{
 		try
@@ -314,6 +318,7 @@ class ItemsService extends AbstractBaseService
 
 		return $playlistData;
 	}
+
 
 	private function sanitize(string $value): array
 	{

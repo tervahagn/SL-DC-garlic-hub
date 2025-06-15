@@ -83,6 +83,9 @@ class PlaylistMetricsCalculator
 		return $this;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMetricsForFrontend(): array
 	{
 		return [
@@ -94,6 +97,9 @@ class PlaylistMetricsCalculator
 		];
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMetricsForPlaylistTable(): array
 	{
 		return [
@@ -116,6 +122,8 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @param array<string,mixed> $items
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -144,8 +152,7 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
-	 * @param array $playlist
-	 * @return $this
+	 * @param array<string,mixed> $playlist
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -175,11 +182,13 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @param array<string,mixed> $media
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception|ModuleException
 	 */
-	public function calculateRemainingMediaDuration(array $playlist, array $media = [])
+	public function calculateRemainingMediaDuration(array $playlist, array $media = []): int
 	{
 		// only videos / audio have a duration > 0. Using the constant for other media.
 		// this is only used, when inserting new items
@@ -200,6 +209,7 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
@@ -216,6 +226,7 @@ class PlaylistMetricsCalculator
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

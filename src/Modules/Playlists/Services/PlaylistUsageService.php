@@ -8,10 +8,10 @@ use Doctrine\DBAL\Exception;
 
 // use App\Modules\Playlists\Repositories\ChannelRepository;
 
-class PlaylistUsageService
+readonly class PlaylistUsageService
 {
-    private readonly PlayerRepository $playerRepository;
-    private readonly ItemsRepository $itemsRepository;
+    private PlayerRepository $playerRepository;
+    private ItemsRepository $itemsRepository;
     // private readonly ChannelRepository $channelRepository;
 
     public function __construct(PlayerRepository $playerRepository, ItemsRepository $itemsRepository /*ChannelRepository $channelRepository*/)
@@ -22,6 +22,8 @@ class PlaylistUsageService
     }
 
 	/**
+	 * @param int[] $playlistIds
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function determinePlaylistsInUse(array $playlistIds): array

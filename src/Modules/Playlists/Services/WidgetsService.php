@@ -49,6 +49,10 @@ class WidgetsService extends AbstractBaseService
 		return $this->errorText;
 	}
 
+
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function fetchWidgetByItemId(int $itemId): array
 	{
 		try
@@ -78,6 +82,9 @@ class WidgetsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @param array<string,mixed> $requestData
+	 */
 	public function saveWidget(int $itemId, array $requestData): bool
 	{
 		try
@@ -96,6 +103,7 @@ class WidgetsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $requestData
 	 * @throws ModuleException
 	 * @throws FrameworkException
 	 */
@@ -106,6 +114,7 @@ class WidgetsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

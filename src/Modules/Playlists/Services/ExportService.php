@@ -101,6 +101,8 @@ class ExportService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FilesystemException

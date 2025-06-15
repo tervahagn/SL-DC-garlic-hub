@@ -22,7 +22,6 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AclHelper;
-use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
@@ -37,6 +36,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
+	 * @param  array<string,mixed> $playlist
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception|ModuleException
@@ -53,6 +53,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

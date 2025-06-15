@@ -67,7 +67,7 @@ class Media extends AbstractInsertItem
 			$this->mediaService->setUID($this->UID);
 			$playlistData = $this->checkPlaylistAcl($playlistId);
 
-			$media = $this->mediaService->fetchMedia($insertId); // checks rights, too
+			$media = $this->mediaService->fetchMedia((string) $insertId); // checks rights, too
 			if (empty($media))
 				throw new ModuleException('items', 'Media is not accessible');
 

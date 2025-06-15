@@ -43,17 +43,19 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $postData
 	 * @throws Exception
 	 */
-	public function createNew($postData): int
+	public function createNew(array $postData): int
 	{
 		$saveData = $this->collectDataForInsert($postData);
 		// No acl checks required as every logged user can create playlists
-		return $this->playlistsRepository->insert($saveData);
+		return (int) $this->playlistsRepository->insert($saveData);
 	}
 
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -77,6 +79,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -93,6 +96,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $postData
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -110,6 +114,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $saveData
 	 * @throws Exception
 	 */
 	public function update(int $playlistId, array $saveData): int
@@ -117,9 +122,13 @@ class PlaylistsService extends AbstractBaseService
 		return $this->playlistsRepository->update($playlistId, $saveData);
 	}
 
+	/**
+	 * @param array<string,mixed> $saveData
+	 * @throws Exception
+	 */
 	public function updateExport(int $playlistId, array $saveData): int
 	{
-		return $this->playlistsRepository->updateExport($playlistId, $saveData);
+		return (int) $this->playlistsRepository->updateExport($playlistId, $saveData);
 	}
 
 	/**
@@ -141,6 +150,9 @@ class PlaylistsService extends AbstractBaseService
 		return $this->playlistsRepository->delete($playlistId);
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function loadPlaylistForMultizone(int $playlistId): array
 	{
 		try
@@ -166,6 +178,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -182,6 +195,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws Exception
 	 */
@@ -195,6 +209,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -212,6 +227,9 @@ class PlaylistsService extends AbstractBaseService
 		return $playlist;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function loadNameById(int $playlistId): array
 	{
 		try
@@ -228,7 +246,10 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
-	public function saveZones(int $playlistId, $zones): int
+	/**
+	 * @param list<array<string,mixed>> $zones
+	 */
+	public function saveZones(int $playlistId, array $zones): int
 	{
 		try
 		{
@@ -248,6 +269,9 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
 		try
@@ -262,6 +286,10 @@ class PlaylistsService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @param array<string,mixed> $postData
+	 * @return array<string,mixed>
+	 */
 	private function collectDataForInsert(array $postData): array
 	{
 		if (array_key_exists('UID', $postData))
@@ -274,6 +302,10 @@ class PlaylistsService extends AbstractBaseService
 		return $this->collectCommon($postData, $saveData);
 	}
 
+	/**
+	 * @param array<string,mixed> $postData
+	 * @return array<string,mixed>
+	 */
 	private function collectDataForUpdate(array $postData): array
 	{
 		$saveData = [];
@@ -284,6 +316,11 @@ class PlaylistsService extends AbstractBaseService
 		return $this->collectCommon($postData, $saveData);
 	}
 
+	/**
+	 * @param array<string,mixed> $postData
+	 * @param array<string,mixed> $saveData
+	 * @return array<string,mixed>
+	 */
 	private function collectCommon(array $postData, array $saveData): array
 	{
 		if (isset($postData['playlist_name']))

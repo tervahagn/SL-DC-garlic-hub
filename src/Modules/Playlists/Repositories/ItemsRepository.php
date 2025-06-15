@@ -33,10 +33,10 @@ class ItemsRepository extends SqlBase
 {
 	use CrudTraits, FindOperationsTrait;
 
-	CONST int FLAG_DISABLED = 1;
+/*	later CONST int FLAG_DISABLED = 1;
 	CONST  int FLAG_LOCKED   = 2;
 	CONST  int FLAG_LOGGABLE  = 4;
-
+*/
 	use TransactionsTrait;
 	use FindOperationsTrait;
 
@@ -122,10 +122,10 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
-	 * @return array<string,mixed>|false
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
-	public function sumAndCountMetricsByPlaylistIdAndOwner(int $playlistId, int $owner): array|false
+	public function sumAndCountMetricsByPlaylistIdAndOwner(int $playlistId, int $owner): array
 	{
 		$qb = $this->connection->createQueryBuilder();
 		$qb->select(
@@ -140,13 +140,17 @@ class ItemsRepository extends SqlBase
 			/*	->andWhere('flags & '.self::FLAG_DISABLED.' <> 0')*/
 		   ->setParameter('playlist_id', $playlistId);
 
-		return $qb->executeQuery()->fetchAssociative();
+		$result = $qb->executeQuery()->fetchAssociative();
+		if ($result === false)
+			return [];
+
+		return $result;
 	}
 
 	/**
 	 *  This method finds all playlists which has nested the playlistId
 	 *
-	 * @return array<string, mixed>
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllPlaylistsContainingPlaylist(int $playlistId): array
