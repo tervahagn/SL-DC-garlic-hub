@@ -101,7 +101,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 
 						[
 							'LANG_ACTION' => $this->translator->translate('edit_settings', 'users'),
-							'LINK_ACTION' => 'users/edit/' . $currentUID,
+							'LINK_ACTION' => 'users/edit/' .  $user['UID'],
 							'ACTION_NAME' => 'edit',
 							'ACTION_ICON_CLASS' => 'pencil'
 						]

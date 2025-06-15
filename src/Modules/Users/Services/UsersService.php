@@ -194,6 +194,9 @@ class UsersService extends AbstractBaseService
 		if (isset($postData['email']))
 			$saveData['email'] = $postData['email'];
 
+		if (isset($postData['status']))
+			$saveData['status'] = $postData['status'];
+
 		return $saveData;
 	}
 
@@ -219,6 +222,9 @@ class UsersService extends AbstractBaseService
 			if ($existing['email'] === $email && (int) $existing['UID'] !== $UID)
 				$this->addErrorMessage('email_exists');
 		}
+
+		if (!$this->hasErrorMessages())
+			return true;
 
 		return false;
 		

@@ -30,20 +30,34 @@ class Parameters extends BaseEditParameters
 	const string PARAMETER_USER_NAME  = 'username';
 	const string PARAMETER_USER_EMAIL  = 'email';
 	const string PARAMETER_USER_ID  = 'UID'; // the UID of the edited user
+	const string PARAMETER_USER_STATUS  = 'status'; // the UID of the edited user
 
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>
 	 */
 	protected array $moduleParameters = [
 		self::PARAMETER_USER_ID  => ['scalar_type' => ScalarType::INT, 'default_value' => 0, 'parsed' => false],
-		self::PARAMETER_USER_NAME  => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
-		self::PARAMETER_USER_EMAIL => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false]
 	];
 
 	public function __construct(Sanitizer $sanitizer, Session $session)
 	{
 		parent::__construct('users', $sanitizer, $session);
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
+	}
+
+	public function addUserName(): void
+	{
+		$this->addParameter(self::PARAMETER_USER_NAME, ScalarType::STRING, '');
+	}
+
+	public function addUserEmail(): void
+	{
+		$this->addParameter(self::PARAMETER_USER_EMAIL, ScalarType::STRING, '');
+	}
+
+	public function addUserStatus(): void
+	{
+		$this->addParameter(self::PARAMETER_USER_STATUS, ScalarType::INT, 0);
 	}
 
 

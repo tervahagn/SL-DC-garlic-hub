@@ -105,6 +105,26 @@ class ShowEditUserController
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
+	public function editYourself(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$user      = $request->getAttribute('session')->get('user');
+		$UID       = $user['UID'];
+		$this->initFacade($request);
+// Todo
+		$user = $this->facade->loadUserForEdit($UID);
+		$this->facade->buildEditParameter($user);
+
+		return $this->outputRenderedForm($response, $user);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,mixed> $post */

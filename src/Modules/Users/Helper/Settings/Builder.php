@@ -24,6 +24,7 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Modules\Users\Services\AclValidator;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -62,6 +63,10 @@ class Builder
 	{
 		if (!$this->aclValidator->isSimpleAdmin($this->UID))
 			return;
+
+		$this->parameters->addUserName();
+		$this->parameters->addUserEmail();
+		$this->parameters->addUserStatus();
 	}
 
 	/**
@@ -74,6 +79,10 @@ class Builder
 	{
 		if (!$this->aclValidator->isAdmin($this->UID, $user))
 			return;
+
+		$this->parameters->addUserName();
+		$this->parameters->addUserEmail();
+		$this->parameters->addUserStatus();
 	}
 
 	/**
@@ -87,12 +96,24 @@ class Builder
 	public function buildForm(array $user): array
 	{
 		$form       = [];
-		$form['username'] = $this->formElementsCreator->createUserNameField(
-			$user[Parameters::PARAMETER_USER_NAME] ?? ''
-		);
-		$form['email'] = $this->formElementsCreator->createEmailField(
-			$user[Parameters::PARAMETER_USER_EMAIL] ?? ''
-		);
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_NAME))
+		{
+			$form['username'] = $this->formElementsCreator->createUserNameField(
+				$user[Parameters::PARAMETER_USER_NAME] ?? ''
+			);
+		}
+
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_EMAIL))
+		{
+			$form['email'] = $this->formElementsCreator->createEmailField(
+				$user[Parameters::PARAMETER_USER_EMAIL] ?? ''
+			);
+		}
+
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_STATUS))
+		{
+			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
+		}
 
 		if (isset($user[Parameters::PARAMETER_USER_ID]))
 			$form['UID'] = $this->formElementsCreator->createHiddenUIDField($user[Parameters::PARAMETER_USER_ID]);
