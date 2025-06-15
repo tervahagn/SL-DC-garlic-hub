@@ -21,7 +21,7 @@ class PlayerDetector
 		return $this->modelId;
 	}
 
-	public function detectModelId($modelName): static
+	public function detectModelId(string $modelName): static
 	{
 		$this->modelId = match ($modelName)
 		{

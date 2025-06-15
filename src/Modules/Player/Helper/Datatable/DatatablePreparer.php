@@ -22,14 +22,14 @@ namespace App\Modules\Player\Helper\Datatable;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Services\AclValidator;
+use DateMalformedStringException;
 use DateTime;
-use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -49,14 +49,17 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering
 	 *
+	 * @param list<array<string,mixed>> $currentFilterResults
+	 * @param list<HeaderField> $fields
+	 * @param int $currentUID
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
-	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws ModuleException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DateMalformedStringException
 	 */
-	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
+	public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array
 	{
 		$body = [];
 		foreach($currentFilterResults as $player)
@@ -162,9 +165,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @return list<array<string,mixed>>
 	 */
 	public function formatPlayerContextMenu(): array
 	{

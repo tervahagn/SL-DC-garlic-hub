@@ -219,6 +219,9 @@ class PlayerEntity
 		return $this->remoteAdministration;
 	}
 
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	public function getScreenTimes(): array
 	{
 		return $this->screenTimes;

@@ -26,6 +26,7 @@ use App\Modules\Player\Enums\IndexSections;
 use App\Modules\Player\Enums\TemplateIndexFiles;
 use App\Modules\Player\IndexCreation\Builder\Preparers\PreparerFactory;
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
+use Exception;
 
 class TemplatePreparer
 {
@@ -33,12 +34,17 @@ class TemplatePreparer
 	private PlaylistStructureInterface $playlistStructure;
 	private readonly PreparerFactory $preparerFactory;
 
+	/** @var list<array<string,mixed>> */
 	private array $meta = [];
+	/** @var list<array<string,mixed>> */
 	private array $subscriptions = [];
+	/** @var list<array<string,mixed>> */
 	private array $layout = [];
+	/** @var list<array<string,mixed>> */
 	private array $standby_times = [];
+	/** @var list<array<string,mixed>> */
 	private array $playlist = [];
-
+	/** @var array<string, mixed>  */
 	private array $templateData;
 
 	public function __construct(PreparerFactory $preparerFactory)
@@ -58,11 +64,17 @@ class TemplatePreparer
 		return $this;
 	}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function getTemplateData(): array
 	{
 		return $this->templateData;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function prepare(TemplateIndexFiles $indexFile): static
 	{
 		switch ($indexFile)
@@ -80,6 +92,9 @@ class TemplatePreparer
 		return $this;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function prepareForGarlic(): void
 	{
 		$this->prepareStandards();
@@ -92,11 +107,17 @@ class TemplatePreparer
 		$this->setTemplateData();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function prepareForIAdea(): void
 	{
 		$this->prepareForGarlic();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function prepareForSimple(): void
 	{
 		$this->prepareStandards();
@@ -107,6 +128,9 @@ class TemplatePreparer
 		$this->setTemplateDataSimple();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function prepareStandards(): void
 	{
 		$this->meta   = $this->preparerFactory->create(IndexSections::META, $this->playerEntity)->prepare();

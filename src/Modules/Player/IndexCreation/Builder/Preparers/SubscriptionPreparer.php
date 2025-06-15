@@ -24,7 +24,7 @@ namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 {
 	/**
-	 * @return array<int, array<string, string>>
+	 * @return list<array<string, string>>
 	 */
 	public function prepare(): array
 	{

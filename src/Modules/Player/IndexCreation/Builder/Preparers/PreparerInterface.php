@@ -23,5 +23,8 @@ namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
 interface PreparerInterface
 {
-	public function prepare(): array|string;
+	/**
+	 * @return list<array<string,mixed>>
+	 */
+	public function prepare(): array;
 }

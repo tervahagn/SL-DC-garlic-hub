@@ -56,6 +56,7 @@ class IndexCreator
 	 * @throws ModuleException
 	 * @throws FilesystemException
 	 * @throws CoreException
+	 * @throws \Exception
 	 */
 	public function createForReleasedPlayer(PlayerEntity $playerEntity, Config $config): void
 	{

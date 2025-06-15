@@ -116,6 +116,9 @@ class PlayerDataAssembler
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	private function buildInsertArray(int $ownerId = 1): array
 	{
 		return [

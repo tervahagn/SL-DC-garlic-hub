@@ -21,7 +21,7 @@
 
 namespace App\Modules\Player\Helper\Index;
 
-use App\Modules\Player\Services\PlayerIndexService;
+use App\Framework\Exceptions\ModuleException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -65,7 +65,10 @@ class IndexResponseHandler
 	}
 
 
-
+	/**
+	 * @param array<string,mixed> $server
+	 * @throws ModuleException
+	 */
 	public function init(array $server, string $filePath): void
 	{
 		$this->filePath               = $filePath;
@@ -79,7 +82,7 @@ class IndexResponseHandler
 	}
 
 /*
-	 only for debugging and should be replace by some better concept
+	 only for debugging and should be replaced by some better concept
 	public function debugServer(): void
 	{
 		$logFilePath = '../var/logs/server-variable.log';
@@ -130,6 +133,7 @@ class IndexResponseHandler
 	 *
 	 * /+
 	 * otherwise 304 status will be sent
+	 * @throws ModuleException
 	 */
 	public function doGET(ResponseInterface $response): ResponseInterface
 	{

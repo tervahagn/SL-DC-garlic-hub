@@ -29,7 +29,7 @@ class PlaylistPreparer extends AbstractPreparer implements PreparerInterface
 	private PlaylistStructureInterface $playlistStructure;
 	private bool $isSimple = true;
 
-	public function setPlaylistStructure(PlaylistStructureInterface $playlistStructure): PlaylistPreparer
+	public function setPlaylistStructure(PlaylistStructureInterface $playlistStructure): static
 	{
 		$this->playlistStructure = $playlistStructure;
 		return $this;
@@ -41,6 +41,9 @@ class PlaylistPreparer extends AbstractPreparer implements PreparerInterface
 		return $this;
 	}
 
+	/**
+	 * @return array<array<string,int|string>>
+	 */
 	public function prepare(): array
 	{
 		if (!$this->isSimple)

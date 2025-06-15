@@ -33,8 +33,11 @@ class Parameters extends BaseFilterParameters
 	const string PARAMETER_UUID = 'uuid';
 	const string PARAMETER_MODEL = 'model';
 	const string PARAMETER_PLAYER_ID = 'player_id';
-	const string PARAMETER_PLAYLIST_ID = 'playlist_id';
+//	const string PARAMETER_PLAYLIST_ID = 'playlist_id';
 
+	/**
+	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
+	 */
 	protected array $moduleParameters = array(
 		self::PARAMETER_ACTIVITY => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_PLAYER_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),

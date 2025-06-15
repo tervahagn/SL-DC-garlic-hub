@@ -33,6 +33,10 @@ class PlayerRepository extends FilterBase
 		parent::__construct($connection,'player', 'player_id');
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 * @throws Exception
+	 */
 	public function findAllForDashboard(): array
 	{
 		$platform   = $this->connection->getDatabasePlatform();
@@ -68,6 +72,8 @@ class PlayerRepository extends FilterBase
 
 
 	/**
+	 * @param int[] $playlistIds
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findPlaylistIdsByPlaylistIds(array $playlistIds): array

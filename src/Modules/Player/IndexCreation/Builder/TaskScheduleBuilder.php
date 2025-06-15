@@ -24,6 +24,7 @@ namespace App\Modules\Player\IndexCreation\Builder;
 class TaskScheduleBuilder
 {
 	private bool $isReplacedSomething = false;
+	/** @var array<string, mixed>  */
 	private array $template = [];
 
 	public function isReplacedSomething(): bool
@@ -31,6 +32,9 @@ class TaskScheduleBuilder
 		return $this->isReplacedSomething;
 	}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function getTemplate(): array
 	{
 		return $this->template;
@@ -67,14 +71,16 @@ class TaskScheduleBuilder
 	 * for the  Taskfile https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
+	 *
+	 * @param array<string,string> $response
 	 */
-	public function replaceUpdatesUrlsListBlock(array $ar_response): static
+	public function replaceUpdatesUrlsListBlock(array $response): static
 	{
 		$this->template['urls_list'][] = [
 			'URLS_LIST_TASK_ID' => $this->generateTaskId(),
-			'URLS_LIST_FILE_URI' => $ar_response['file_url'],
-			'URLS_LIST_FILE_LENGHT' => $ar_response['file_size'],
-			'URLS_LIST_FILE_CHECKSUM' => $ar_response['md5_file']
+			'URLS_LIST_FILE_URI' => $response['file_url'],
+			'URLS_LIST_FILE_LENGHT' => $response['file_size'],
+			'URLS_LIST_FILE_CHECKSUM' => $response['md5_file']
 		];
 
 		return $this;
@@ -85,27 +91,32 @@ class TaskScheduleBuilder
 	 * for the  Taskfile https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
+	 *
+	 * @param array<string,string> $response
 	 */
-	public function replaceConfigurationBlock(array $ar_response): static
+	public function replaceConfigurationBlock(array $response): static
 	{
 		$this->template['configuration'][] = [
 			'CONFIGURATION_TASK_ID' => $this->generateTaskId(),
-			'CONFIGURATION_FILE_URI' => $ar_response['file_url'],
-			'CONFIGURATION_FILE_LENGHT' => $ar_response['file_size'],
-			'CONFIGURATION_FILE_CHECKSUM' => $ar_response['md5_file']
+			'CONFIGURATION_FILE_URI' => $response['file_url'],
+			'CONFIGURATION_FILE_LENGHT' => $response['file_size'],
+			'CONFIGURATION_FILE_CHECKSUM' => $response['md5_file']
 		];
 
 		return $this;
 	}
 
-	public function replaceFirmwareBlock(array $ar_response): static
+	/**
+	 * @param array<string,string> $response
+	 */
+	public function replaceFirmwareBlock(array $response): static
 	{
 		$this->template['firmware'][] = [
 			'FIRMWARE_TASK_ID' => $this->generateTaskId(),
-			'FIRMWARE_FILE_URI' => $ar_response['file_url'],
+			'FIRMWARE_FILE_URI' => $response['file_url'],
 			'FIRMWARE_TARGET_VERSION' => '1.0.0',
-			'FIRMWARE_FILE_LENGHT' => $ar_response['file_size'],
-			'FIRMWARE_FILE_CHECKSUM' => $ar_response['md5_file']
+			'FIRMWARE_FILE_LENGHT' => $response['file_size'],
+			'FIRMWARE_FILE_CHECKSUM' => $response['md5_file']
 		];
 		
 		return $this;
@@ -114,7 +125,8 @@ class TaskScheduleBuilder
 	protected function generateTaskId(): string
 	{
 		$this->isReplacedSomething = true;
-		return uniqid(rand());
+		$rand = (string) rand(1000000000, 9999999999);
+		return uniqid($rand);
 	}
 
 }

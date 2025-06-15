@@ -25,6 +25,9 @@ use App\Modules\Playlists\Helper\PlaylistMode;
 
 class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 {
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	public function prepare(): array
 	{
 		$properties = $this->playerEntity->getProperties();
@@ -36,11 +39,14 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 		}
 		else
 		{
-			$layout['regions'][] = $this->replaceRegion('', 0, 0, $properties['width'], $properties['height'], 0);
+			$layout['regions'][] = $this->replaceRegion('', '0', '0', $properties['width'], $properties['height'], 0);
 		}
 		return [$layout];
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	private function replaceRootLayout(string $width, string $height): array
 	{
 		return [
@@ -49,6 +55,9 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 		];
 	}
 
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	private function replaceMultizoneRegions(): array
 	{
 		$zones = $this->playerEntity->getZones();
@@ -73,10 +82,13 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 		return $regions;
 	}
 
-	private function replaceRegion($screen_id, $top, $left, $width, $height, $zIndex, $bgColor = 'transparent'): array
+	/**
+	 * @return array<string,string|int>
+	 */
+	private function replaceRegion(string $screenId, string $top, string $left, string $width, string $height, int $zIndex, string $bgColor = 'transparent'): array
 	{
 		return [
-			'SCREEN_ID' => $screen_id,
+			'SCREEN_ID' => $screenId,
 			'REGION_TOP' => $top,
 			'REGION_LEFT' => $left,
 			'REGION_WIDTH' => $width,

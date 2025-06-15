@@ -52,7 +52,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	 */
 	public function configure(Translator $translator, Session $session): void
 	{
-		$this->UID = $session->get('user')['UID'];
+		/** @var array{UID: string} $user */
+		$user = $session->get('user');
+		$this->UID = (int) $user['UID'];
 		$this->playerService->setUID($this->UID);
 		$this->datatableBuilder->configureParameters($this->UID);
 		$this->datatablePreparer->setTranslator($translator);
@@ -60,7 +62,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function processSubmittedUserInput(): void
 	{
@@ -129,6 +133,7 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
+	 *
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FrameworkException

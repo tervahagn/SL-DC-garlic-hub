@@ -22,7 +22,6 @@ namespace App\Modules\Player\Services;
 
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AclHelper;
-use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use Doctrine\DBAL\Exception;
@@ -37,7 +36,8 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @throws CoreException
+	 * @param array<string,mixed> $player
+     * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception|ModuleException
 	 */
@@ -53,6 +53,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
+	 * @param array<string,mixed> $player
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

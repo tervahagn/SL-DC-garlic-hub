@@ -23,25 +23,23 @@ namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Enums\IndexSections;
+use Exception;
 
 class PreparerFactory
 {
+	/**
+	 * @throws Exception
+	 */
 	public function create(IndexSections $indexSections, PlayerEntity $playerEntity): PreparerInterface
 	{
-		switch ($indexSections)
+		return match ($indexSections)
 		{
-			case IndexSections::META:
-				return new MetaPreparer($playerEntity);
-			case IndexSections::SUBSCRIPTIONS:
-				return new SubscriptionPreparer($playerEntity);
-			case IndexSections::LAYOUT:
-				return new LayoutPreparer($playerEntity);
-			case IndexSections::STANDBY_TIMES:
-				return new ScreenTimesPreparer($playerEntity);
-			case IndexSections::PLAYLIST:
-				return new PlaylistPreparer($playerEntity);
-			default:
-				throw new \Exception('Unknown index section');
-		}
+			IndexSections::META => new MetaPreparer($playerEntity),
+			IndexSections::SUBSCRIPTIONS => new SubscriptionPreparer($playerEntity),
+			IndexSections::LAYOUT => new LayoutPreparer($playerEntity),
+			IndexSections::STANDBY_TIMES => new ScreenTimesPreparer($playerEntity),
+			IndexSections::PLAYLIST => new PlaylistPreparer($playerEntity),
+			default => throw new Exception('Unknown index section'),
+		};
 	}
 }

@@ -21,27 +21,56 @@
 
 namespace App\Modules\Player\Helper\Index;
 
+use App\Framework\Exceptions\ModuleException;
 use Slim\Psr7\Stream;
 
 class FileUtils
 {
+	/**
+	 * @throws ModuleException
+	 */
 	public function getFileMTime(string $filepath): int
 	{
-		return filemTime($filepath);
+		$time = filemTime($filepath);
+		if ($time === false)
+			throw new ModuleException('player_index', 'FileMTime error with:'.$filepath);
+
+		return $time;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function getETag(string $filepath): string
 	{
-		return md5(file_get_contents($filepath));
+		$content = file_get_contents($filepath);
+		if ($content === false)
+			throw new ModuleException('player_index', 'File get content error with:'.$filepath);
+
+		return md5($content);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function getFileSize(string $filepath): int
 	{
-		return filesize($filepath);
+		$size = filesize($filepath);
+		if ($size === false)
+			throw new ModuleException('player_index', 'Filesize error with:'.$filepath);
+
+		return $size;
 	}
 
-	public function createStream(string $filePath): Stream
+	/**
+	 * @throws ModuleException
+	 */
+	public function createStream(string $filepath): Stream
 	{
-		return new Stream(fopen($filePath, 'rb'));
+		$resource = fopen($filepath, 'rb');
+		if ($resource === false)
+			throw new ModuleException('player_index', 'Stream  open error with:'.$filepath);
+
+		return new Stream($resource);
 	}
 }

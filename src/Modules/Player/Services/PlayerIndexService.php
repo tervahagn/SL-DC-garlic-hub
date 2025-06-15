@@ -31,7 +31,6 @@ use App\Modules\Player\IndexCreation\PlayerDataAssembler;
 use Doctrine\DBAL\Exception;
 use League\Flysystem\FilesystemException;
 use Psr\Log\LoggerInterface;
-use Slim\Psr7\Stream;
 use Throwable;
 /*
 1. parse User Agent
@@ -99,7 +98,7 @@ class PlayerIndexService extends AbstractBaseService
 		{
 			case PlayerStatus::UNREGISTERED->value:
 				$this->playerEntity = $this->playerDataAssembler->insertNewPlayer($this->UID);
-				$this->indexProvider->handleNew($this->playerEntity);
+				$this->indexProvider->handleNew();
 				break;
 			case PlayerStatus::UNRELEASED->value:
 				$this->indexProvider->handleUnreleased();

@@ -41,13 +41,14 @@ class PlayerIndexRepository extends SqlBase
 	}
 
 	/**
+	 * @param array<string,mixed> $saveData
 	 * @throws Exception
 	 */
 	public function insertPlayer(array $saveData): int
 	{
 		$saveData = $this->implodeSaveData($saveData);
 
-		return $this->insert($saveData);
+		return (int) $this->insert($saveData);
 	}
 
 	/**
@@ -61,9 +62,10 @@ class PlayerIndexRepository extends SqlBase
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
-	public function findPlayerById(string $Id): array
+	public function findPlayerById(int $Id): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$this->buildQueryForIndex($queryBuilder);
@@ -77,6 +79,7 @@ class PlayerIndexRepository extends SqlBase
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function findPlayerByUuid(string $uuid): array
@@ -101,6 +104,10 @@ class PlayerIndexRepository extends SqlBase
 		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id = ' . $this->table . '.playlist_id');
 	}
 
+	/**
+	 * @param array<string,mixed> $result
+	 * @return array<string,mixed>
+	 */
 	private function expandResult(array $result): array
 	{
 		$result['commands']              = $this->secureExplode($result['commands']);
@@ -115,6 +122,10 @@ class PlayerIndexRepository extends SqlBase
 		return $result;
 	}
 
+	/**
+	 * @param array<string,mixed> $result
+	 * @return array<string,mixed>
+	 */
 	private function implodeSaveData(array $result): array
 	{
 		$result['commands']              = $this->secureImplode($result['commands']);

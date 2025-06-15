@@ -29,11 +29,15 @@ use Exception;
 class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 {
 	private string $current_date = 'now';
+	/** @var string[]  */
 	private array $begin         = [];
+	/** @var string[]  */
 	private array $end           = [];
+	/** @var list<array<string,mixed>>  */
 	private array $screenTimes   = [];
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function prepare(): array
@@ -70,21 +74,23 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	}
 
 	/**
+	 * @param list<array<string,mixed>> $screenTimes
 	 * @throws DateMalformedStringException
 	 */
 	private function determineStandByTimes(array $screenTimes): void
 	{
 		if (!$this->isScreenTimeValid($screenTimes))
-		{
 			return;
-		}
 
 		$wallclock = $this->simplifyWallclockDatePart();
 
+		/** @var array{day:string, periods:array{start:string, end:string}} $weekdays */
 		foreach($this->screenTimes as $weekdays)
 		{
-			$w             = (((int) $weekdays['day'])+1);
+			$w             = (((int) $weekdays['day']) + 1);
 			$day           = '+w'.$w.'T';
+
+			/** @var array{start:string, end:string} $value */
 			foreach ($weekdays['periods'] as $value)
 			{
 				$this->end[] = $wallclock.$day.$value['start'].':00/P1W)';
@@ -106,6 +112,9 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 		return 'wallclock(R/'.$date->format('Y-m-d');
 	}
 
+	/**
+	 * @param list<array<string,mixed>> $screenTimes
+	 */
 	private function isScreenTimeValid(array $screenTimes): bool
 	{
 		if (empty($screenTimes))

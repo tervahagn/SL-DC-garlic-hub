@@ -18,11 +18,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
 class MetaPreparer extends AbstractPreparer implements PreparerInterface
 {
+	/**
+	 * @return array<array<string,int|string>>
+	 */
 	public function prepare(): array
 	{
 		return [[

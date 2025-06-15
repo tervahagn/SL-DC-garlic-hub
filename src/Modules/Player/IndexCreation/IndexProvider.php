@@ -25,7 +25,6 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
-use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use League\Flysystem\FilesystemException;
 
 class IndexProvider
@@ -52,9 +51,9 @@ class IndexProvider
 	/**
 	 * @throws CoreException
 	 */
-	public function handleNew(PlayerEntity $playerEntity): void
+	public function handleNew(): void
 	{
-		// ToDo Transferhandler create transfer code and send SMIL with code or unreleased
+		// ToDo TransferHandler create transfer code and send SMIL with code or unreleased
 		$this->filePath = $this->config->getConfigValue('defaults', 'player', 'SmilDirectories').'/unreleased.smil';
 	}
 
