@@ -117,7 +117,7 @@ abstract class AbstractMediaHandler
 
 	abstract public function checkFileBeforeUpload(int $size): void;
 	abstract public function checkFileAfterUpload(string $filePath): void;
-	abstract public function createThumbnail(string $filePath);
+	abstract public function createThumbnail(string $filePath): void;
 
 	public function uploadFromLocal(UploadedFileInterface $uploadedFile): string
 	{

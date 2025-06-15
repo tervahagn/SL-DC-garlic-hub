@@ -40,6 +40,7 @@ class NodesController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -52,7 +53,10 @@ class NodesController
 		$result = $this->nodesService->getNodes($parent_id);
 
 		// because of Wunderbau needed to return a direct response
-		$response->getBody()->write(json_encode($result));
+		$json = json_encode($result);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
@@ -66,7 +70,7 @@ class NodesController
 		try
 		{
 			$bodyParams = $request->getParsedBody();
-			if (!isset($bodyParams['name']))
+			if (!is_array($bodyParams) || !isset($bodyParams['name']))
 				throw new ModuleException('mediapool','node name is missing');
 
 			$node_id = $bodyParams['node_id'] ?? 0;
@@ -89,7 +93,7 @@ class NodesController
 		try
 		{
 			$bodyParams = $request->getParsedBody();
-			if (!isset($bodyParams['name']) || !isset($bodyParams['node_id']))
+			if (!is_array($bodyParams) || !isset($bodyParams['name']) || !isset($bodyParams['node_id']))
 				throw new ModuleException('mediapool', 'node name or id is missing');
 
 			$visibility = $bodyParams['visibility'] ?? null;
@@ -122,7 +126,7 @@ class NodesController
 		try
 		{
 			$bodyParams = $request->getParsedBody();
-			if (!isset($bodyParams['src_node_id']) || !isset($bodyParams['target_node_id']) || !isset($bodyParams['target_region']))
+			if (!is_array($bodyParams) || !isset($bodyParams['src_node_id']) || !isset($bodyParams['target_node_id']) || !isset($bodyParams['target_region']))
 				throw new ModuleException('mediapool','Source node, target node, or target region is missing');
 
 			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -145,10 +149,12 @@ class NodesController
 		try
 		{
 			$bodyParams = $request->getParsedBody();
-			if (!isset($bodyParams['node_id']))
+			if (!is_array($bodyParams) || !isset($bodyParams['node_id']))
 				throw new ModuleException('mediapool', 'NodeId is missing');
 
-			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
+			/** @var array{UID: int} $user */
+			$user = $request->getAttribute('session')->get('user');
+			$this->nodesService->setUID((int)$user['UID']);
 			$count = $this->nodesService->deleteNode($bodyParams['node_id']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
@@ -158,9 +164,15 @@ class NodesController
 		}
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

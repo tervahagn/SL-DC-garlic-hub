@@ -83,6 +83,8 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	 *
 	 * media_id is a UUID to make it more difficult to guess
 	 *
+	 * @param array<string,string> $metadata
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function uploadMediaFiles(int $nodeId, int $UID, UploadedFile $uploadedFile, array $metadata): array
@@ -91,12 +93,18 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		try
 		{
 			$preMimeType      = $uploadedFile->getClientMediaType();
+			if ($preMimeType === null)
+				throw new ModuleException('mediapool', 'Not able to detect mime type.');
 			if ($uploadedFile->getError() !== UPLOAD_ERR_OK)
 				throw new ModuleException('mediapool', $this->codeToMessage($uploadedFile->getError()));
 
 			$mediaHandler = $this->mediaHandlerFactory->createHandler($preMimeType);
 			$mediaHandler->setMetadata($metadata);
-			$mediaHandler->checkFileBeforeUpload($uploadedFile->getSize());
+			$size = $uploadedFile->getSize();
+			if ($size === null)
+				throw new ModuleException('mediapool', 'Not able to detect size.');
+
+			$mediaHandler->checkFileBeforeUpload($size);
 			$uploadPath   = $mediaHandler->uploadFromLocal($uploadedFile);
 
 			$ret[] = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID);
@@ -109,20 +117,24 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		return $ret;
 	}
 
+	/**
+	 * @param array<string,string> $extMetadata
+	 * @return array<string,bool|mixed>
+	 */
 	public function uploadExternalMedia(int $nodeId, int $UID, string $externalLink, array $extMetadata): array
 	{
 		try
 		{
 			$response      = $this->client->head($externalLink);
 			$preMimeType   = $response->getHeaderLine('Content-Type');
-			// workaround if no content-type sended
+			// workaround if no content-type sent
 			if ($preMimeType === '' && (str_contains($externalLink, "mp4") ||
 					str_contains($externalLink, "webm") || str_contains($externalLink, "video")))
 				$preMimeType = 'video/mp4';
 
 			$contentLength = $response->getHeaderLine('Content-Length');
 			$mediaHandler  = $this->mediaHandlerFactory->createHandler($preMimeType);
-			$mediaHandler->checkFileBeforeUpload($contentLength);
+			$mediaHandler->checkFileBeforeUpload((int) $contentLength);
 			$uploadPath    = $mediaHandler->uploadFromExternal($this->client, $externalLink);
 
 			$ret = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID, $extMetadata);
@@ -137,13 +149,14 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	}
 
 	/**
+	 * @param array<string,string> $extMetadata
+	 * @return array<string,bool|string>
 	 * @throws ModuleException
 	 * @throws FilesystemException
 	 * @throws Exception
 	 */
 	private function insertDataset(AbstractMediaHandler $mediaHandler, string $uploadedPath, int $nodeId, int $UID,
-								   array $extMetadata = []):
-	array
+								   array $extMetadata = []): array
 	{
 		$fileHash = $mediaHandler->determineNewFilename($uploadedPath);
 		$dataSet  = $this->mediaRepository->findFirstBy(['checksum' => ['value' => $fileHash, 'operator' => '=']]);
@@ -152,7 +165,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		if (empty($dataSet))
 		{
 			$mimetype    = $this->mimeTypeDetector->detectFromFile($mediaHandler->getAbsolutePath($uploadedPath));
-			// extensions can be wrong we get the from mimetype
+			// extensions can be wrong we get from mimetype
 			$ext         = $this->mimeTypeDetector->determineExtensionByType($mimetype);
 			$newFilePath = $mediaHandler->determineNewFilePath($uploadedPath, $fileHash, $ext);
 			$mediaHandler->rename($uploadedPath, $newFilePath);
@@ -214,13 +227,15 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	}
 
 	/**
-	 * We need this bullshit because webapi mediarecoder do not include durations.
+	 * We need this bullshit because webapi media recorder do not include durations.
 	 * To workaround, we use duration from metadata for ffmpeg lib
 	 *
 	 * Because we have different of metadata e.g. from stock pools / file uploads etc
 	 *  we must combine them and prevent the double handling of duration
 	 *
 	 * Todo: Fix this when we have a better solution
+	 * @param array<string,string> $extMetadata
+	 * @return array<string,string>
 	 */
 	private function combineMetaData(AbstractMediaHandler$mediaHandler, array $extMetadata): array
 	{

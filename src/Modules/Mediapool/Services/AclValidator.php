@@ -19,6 +19,8 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
+	 * @param array<string,mixed> $directory
+	 * @return array<string,bool|string>
 	 * @throws CoreException
 	 * @throws ModuleException
 	 * @throws Exception
@@ -49,7 +51,10 @@ class AclValidator extends AbstractAclValidator
 			$permissions['read'] = true;
 
 		// Only moduleadmin can edit root directories
-		if ($directory['parent_id'] == 0 && !$this->isModuleAdmin($UID))
+		// nno need to check on Moduleadmin, as this happens above with:
+		// if ($this->isModuleAdmin($UID) || $directory['UID'] == $UID)
+		// module admin will never reach this line
+		if ($directory['parent_id'] === 0)
 			$permissions['edit'] = false;
 
 		return $permissions;

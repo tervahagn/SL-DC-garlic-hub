@@ -73,6 +73,9 @@ class MediaService
 		return $this->pathOriginals;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function listMedia(int $nodeId): array
 	{
 		try
@@ -103,6 +106,9 @@ class MediaService
 		}
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function fetchMedia(string $mediaId): array
 	{
 		try
@@ -128,7 +134,10 @@ class MediaService
 		}
 	}
 
-	public function fetchMediaByChecksum($checksum): array
+	/**
+	 * @return array<string,mixed>
+	 */
+	public function fetchMediaByChecksum(string $checksum): array
 	{
 		$media = $this->mediaRepository->findAllWithOwnerByCheckSum($checksum);
 		$media['metadata'] = json_decode($media['metadata'], true);
@@ -205,6 +214,9 @@ class MediaService
 		}
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function cloneMedia(string $mediaId): array
 	{
 		try

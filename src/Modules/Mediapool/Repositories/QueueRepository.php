@@ -21,7 +21,6 @@
 
 namespace App\Modules\Mediapool\Repositories;
 
-use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use Doctrine\DBAL\Connection;
 

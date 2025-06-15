@@ -30,15 +30,13 @@ class NodesRepository extends NestedSet
 {
 	use FindOperationsTrait;
 
-	const int VISIBILITY_USER = 0;
-	const int VISIBILITY_PUBLIC = 1;
-
 	public function __construct(Connection $connection, NestedSetHelper $helper, LoggerInterface $logger)
 	{
 		parent::__construct($connection, $helper, $logger,'mediapool_nodes', 'node_id');
 	}
 
 	/**
+	 * @return array<string, mixed>
 	 * @throws Exception
 	 */
 	public function getNode(int $nodeId): array
@@ -47,7 +45,7 @@ class NodesRepository extends NestedSet
 		$where = ['node_id' => $this->generateWhereClause($nodeId)];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
 
-		return  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join, [], 1));
+		return  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
 }

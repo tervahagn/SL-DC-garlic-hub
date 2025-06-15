@@ -41,6 +41,9 @@ class UploadController
 	public function searchStockImages(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
+		if (!is_array($bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No body parameter.']);
+
 		if (!isset($bodyParams['api_url']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'api_url missing']);
 
@@ -59,6 +62,9 @@ class UploadController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files to upload.']);
 
 		$bodyParams = $request->getParsedBody();
+		if (!is_array($bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files parameter.']);
+
 		$node_id    = (int)($bodyParams['node_id'] ?? 0);
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
@@ -67,16 +73,21 @@ class UploadController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'no files']);
 
 		$metadata = json_decode($bodyParams['metadata'] ?? '[]', true) ?? [];
+
 		$UID      = $request->getAttribute('session')->get('user')['UID'];
 		$succeed  = $this->uploadService->uploadMediaFiles($node_id, $UID, $uploadedFile['file'], $metadata);
 
-		return $this->jsonResponse($response, $succeed);
+		// ToDo, fix this shit
+		return $this->jsonResponse($response, $succeed[0]);
 	}
 
 	public function uploadFromUrl(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		$node_id    = (int)($bodyParams['node_id'] ?? 0);
+		if (!is_array($bodyParams))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files to upload.']);
+
+		$node_id  = $bodyParams['node_id'] ?? 0;
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
@@ -93,9 +104,14 @@ class UploadController
 		return $this->jsonResponse($response, $succeed);
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
+		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
+		if ($json !== false)
+			$response->getBody()->write($json);
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

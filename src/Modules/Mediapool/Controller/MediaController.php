@@ -36,6 +36,7 @@ class MediaController
 	}
 
 	/**
+	 * @param array<string,mixed> $args
 	 * @throws Exception
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
@@ -49,6 +50,9 @@ class MediaController
 		return $this->jsonResponse($response, ['success' => true, 'media_list' => $media_list]);
 	}
 
+	/**
+	 * @param array<string,mixed> $args
+	 */
 	public function getInfo(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface
 	{
@@ -61,10 +65,10 @@ class MediaController
 		return $this->jsonResponse($response, ['success' => true, 'media' => $media]);
 	}
 
-	public function edit(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		if (!array_key_exists('media_id', $bodyParams))
+		if (!is_array($bodyParams) || !array_key_exists('media_id', $bodyParams))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		if (!array_key_exists('filename', $bodyParams))
@@ -85,7 +89,7 @@ class MediaController
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		if (!isset($bodyParams['media_id']))
+		if (!is_array($bodyParams) || !isset($bodyParams['media_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -99,7 +103,7 @@ class MediaController
 	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		if (!isset($bodyParams['media_id']) || !isset($bodyParams['node_id']))
+		if (!is_array($bodyParams) || !isset($bodyParams['media_id']) || !isset($bodyParams['node_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id or node is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -113,7 +117,7 @@ class MediaController
 	public function clone(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$bodyParams = $request->getParsedBody();
-		if (!isset($bodyParams['media_id']))
+		if (!is_array($bodyParams) || !isset($bodyParams['media_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -121,9 +125,14 @@ class MediaController
 		return $this->jsonResponse($response, ['success' => true, 'new_media' => $new_media]);
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
+		if ($json !== false)
+			$response->getBody()->write($json);
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

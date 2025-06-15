@@ -21,7 +21,6 @@
 
 namespace App\Modules\Mediapool\Repositories;
 
-use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
@@ -52,6 +51,10 @@ class FilesRepository extends SqlBase
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 * @throws Exception
+	 */
 	public function findAllWithOwnerByCheckSum(string $checksum): array
 	{
 		$select     = ['user_main.username', 'company_id', 'media_id', $this->table.'.UID', 'node_id', 'upload_time', 'checksum', 'mimetype', 'metadata', 'tags', 'filename', 'extension', 'thumb_extension', 'media_description', 'config_data'];
@@ -64,6 +67,7 @@ class FilesRepository extends SqlBase
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllByNodeId(int $nodeId): array

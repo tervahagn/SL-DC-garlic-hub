@@ -23,7 +23,6 @@ namespace App\Modules\Mediapool\Services;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Exception;
@@ -57,6 +56,7 @@ class NodesService
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
@@ -122,7 +122,6 @@ class NodesService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 */
 	public function moveNode(int $movedNodeId, int $targetNodeId, string $region): int
 	{
@@ -154,15 +153,15 @@ class NodesService
 	 * @throws DatabaseException
 	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
-	public function deleteNode($node_id): int
+	public function deleteNode(int $nodeId): int
 	{
-		$node = $this->nodesRepository->getNode($node_id);
+		$node = $this->nodesRepository->getNode($nodeId);
 		if (empty($node) )
-			throw new ModuleException('mediapool', 'Can not find a node for node_id ' . $node_id);
+			throw new ModuleException('mediapool', 'Can not find a node for node_id ' . $nodeId);
 
 		$rights = $this->determineRights($node);
 		if (!$rights['delete'])
-			throw new ModuleException('mediapool', 'No rights to delete node ' . $node_id);
+			throw new ModuleException('mediapool', 'No rights to delete node ' . $nodeId);
 
 		// get all node_id of the partial tree
 		$deleted_nodes = $this->nodesRepository->findAllSubNodeIdsByRootIdsAndPosition($node['root_id'], $node['rgt'], $node['lft']);
@@ -175,6 +174,11 @@ class NodesService
 		return count($deleted_nodes);
 	}
 
+	/**
+	 * @param array<string,string> $node
+	 * @param array<string,bool|string> $rights
+	 * @return array<string,mixed>
+	 */
 	private function prepareForWunderbaum(array $node, array $rights): array
 	{
 		return array(
@@ -195,7 +199,7 @@ class NodesService
 	 * @throws DatabaseException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	private function addRootNode($name): int
+	private function addRootNode(string $name): int
 	{
 		if (!$this->aclValidator->isModuleAdmin($this->UID))
 			throw new ModuleException('mediapool','No rights to add root node.');
@@ -223,6 +227,8 @@ class NodesService
 	}
 
 	/**
+	 * @param array<string,mixed> $node
+	 * @return array<string,bool|string>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
