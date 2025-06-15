@@ -24,7 +24,6 @@ use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Framework\Utils\FormParameters\BaseParameters;
 use App\Modules\Users\Services\AclValidator;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -73,7 +72,7 @@ class Builder
 	 * @param array<string,mixed> $user
 	 * @throws CoreException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws PhpfastcacheSimpleCacheException|ModuleException
 	 */
 	public function configEditParameter(array $user): void
 	{

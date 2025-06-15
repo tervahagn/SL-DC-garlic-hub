@@ -57,6 +57,7 @@ class Facade
 
 	/**
 	 * @return array<string,int|string>
+	 * @throws Exception
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
@@ -111,6 +112,10 @@ class Facade
 
 	/**
 	 * @return string[]
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function getUserServiceErrors(): array
 	{
@@ -124,6 +129,11 @@ class Facade
 
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function buildCreateNewParameter(): void
 	{
 		$this->settingsFormBuilder->configNewParameter();
@@ -134,6 +144,7 @@ class Facade
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function buildEditParameter(array $user): void
 	{
@@ -144,7 +155,6 @@ class Facade
 	 * @param array<string,string> $post
 	 * @return array<string,mixed>
 	 *
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -152,11 +162,7 @@ class Facade
 	 */
 	public function prepareUITemplate(array $post): array
 	{
-		if (isset($this->oldUser['username']))
-			$name = $this->oldUser['username'];
-		else
-			$name = $this->translator->translate('add', 'users');
-
+		$name = $this->oldUser['username'] ?? $this->translator->translate('add', 'users');
 
 		$title = $this->translator->translate('core_data', 'users'). ': ' .$name;
 		$dataSections                      = $this->settingsFormBuilder->buildForm($post);

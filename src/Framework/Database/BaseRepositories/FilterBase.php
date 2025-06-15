@@ -144,6 +144,9 @@ abstract class FilterBase extends SqlBase
 	 * @return array<string, string>
 	 */
 	abstract protected function prepareJoin(): array;
+	/**
+	 * @return array<string, string>
+	 */
 	abstract protected function prepareUserJoin(): array;
 
 	/**

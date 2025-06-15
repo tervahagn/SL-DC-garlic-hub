@@ -20,13 +20,9 @@
 
 namespace App\Modules\Users\Services;
 
-use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Services\AbstractBaseService;
 use App\Framework\Services\AbstractDatatableService;
-use App\Framework\Services\SearchFilterParamsTrait;
 use App\Framework\Utils\FormParameters\BaseParameters;
-use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

@@ -21,15 +21,12 @@
 namespace App\Modules\Users\Helper\Datatable;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
-use App\Framework\Utils\FormParameters\BaseFilterParameters;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Modules\Users\Services\AclValidator;
-use DateTime;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -47,14 +44,16 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering
 	 *
+	 * @param list<array<string,mixed>> $currentFilterResults
+	 * @param list<HeaderField> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws ModuleException
 	 * @throws InvalidArgumentException
 	 */
-	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
+	public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array
 	{
 		$body = [];
 		foreach($currentFilterResults as $user)

@@ -44,6 +44,9 @@ class UserRepositoryFactory
 		$this->connection = $connection;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function create(): array
 	{
 		return match ($this->config->getEdition())

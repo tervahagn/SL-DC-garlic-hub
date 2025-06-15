@@ -74,11 +74,17 @@ class UserMainRepository extends FilterBase
 		return $this->fetchAssociative($queryBuilder);
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function prepareJoin(): array
 	{
 		return [];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	protected function prepareUserJoin(): array
 	{
 		return [];

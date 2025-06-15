@@ -79,6 +79,9 @@ trait SearchFilterParamsTrait
 		return $this;
 	}
 
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	public function getCurrentFilterResults(): array
 	{
 		return $this->currentFilterResults;

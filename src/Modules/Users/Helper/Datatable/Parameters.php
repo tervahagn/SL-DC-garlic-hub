@@ -37,8 +37,11 @@ class Parameters extends BaseFilterParameters
 
 	// because we need also a db operation that includes the higher user statuses
 	const string PARAMETER_FROM_STATUS  = 'from_status';
-	const string PARAMETER_ONLINE       = 'is_online';
+// later	const string PARAMETER_ONLINE       = 'is_online';
 
+	/**
+	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>
+	 */
 	protected array $moduleParameters = array(
 		self::PARAMETER_USERNAME   => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_EMAIL      => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),

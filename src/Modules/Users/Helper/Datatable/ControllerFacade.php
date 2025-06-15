@@ -26,7 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
-use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Modules\Users\Services\UsersDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -53,7 +53,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	 */
 	public function configure(Translator $translator, Session $session): void
 	{
-		$this->UID = $session->get('user')['UID'];
+		/** @var array{UID: int} $user */
+		$user = $session->get('user');
+		$this->UID = (int) $user['UID'];
 		$this->usersService->setUID($this->UID);
 		$this->datatableBuilder->configureParameters($this->UID);
 		$this->datatableFormatter->setTranslator($translator);
@@ -120,7 +122,8 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param list<HeaderField> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
