@@ -53,6 +53,8 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return;
 
+		$this->parameters->addActivity();
+
 		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
 		{
 			$this->parameters->addOwner();
@@ -88,16 +90,18 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	{
 		$form       = [];
 
-		$form[Parameters::PARAMETER_ACTIVITY] = $this->buildService->buildFormField([
-			'type' => FieldType::DROPDOWN,
-			'id' => Parameters::PARAMETER_ACTIVITY,
-			'name' => Parameters::PARAMETER_ACTIVITY,
-			'title' => $this->translator->translate(Parameters::PARAMETER_ACTIVITY, 'player'),
-			'label' => $this->translator->translate(Parameters::PARAMETER_ACTIVITY, 'player'),
-			'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_ACTIVITY),
-			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_ACTIVITY.'_selects', 'player')
-		]);
-
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_ACTIVITY))
+		{
+			$form[Parameters::PARAMETER_ACTIVITY] = $this->buildService->buildFormField([
+				'type' => FieldType::DROPDOWN,
+				'id' => Parameters::PARAMETER_ACTIVITY,
+				'name' => Parameters::PARAMETER_ACTIVITY,
+				'title' => $this->translator->translate(Parameters::PARAMETER_ACTIVITY, 'player'),
+				'label' => $this->translator->translate(Parameters::PARAMETER_ACTIVITY, 'player'),
+				'value' => $this->parameters->getValueOfParameter(Parameters::PARAMETER_ACTIVITY),
+				'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_ACTIVITY . '_selects', 'player')
+			]);
+		}
 		$form[Parameters::PARAMETER_PLAYER_NAME] = $this->buildService->buildFormField([
 			'type' => FieldType::TEXT,
 			'id' => Parameters::PARAMETER_PLAYER_NAME,

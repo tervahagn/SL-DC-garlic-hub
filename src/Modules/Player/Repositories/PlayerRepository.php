@@ -125,9 +125,9 @@ class PlayerRepository extends FilterBase
 						break;
 
 				if ($parameter['value'] === PlayerActivity::ACTIVE->value)
-					$where[$key] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) < refresh * 2';
+					$where['player.last_access'] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(player.last_access)) < refresh * 2';
 				else
-					$where[$key] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) > refresh * 2';
+					$where['player.last_access'] = '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(player.last_access)) > refresh * 2';
 					break;
 
 				case 'playlist_id':

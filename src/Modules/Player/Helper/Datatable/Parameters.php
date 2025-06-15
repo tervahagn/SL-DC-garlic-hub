@@ -39,7 +39,6 @@ class Parameters extends BaseFilterParameters
 	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
 	 */
 	protected array $moduleParameters = array(
-		self::PARAMETER_ACTIVITY => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_PLAYER_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
 		self::PARAMETER_MODEL => array('scalar_type' => ScalarType::INT, 'default_value' => 0, 'parsed' => false),
 		self::PARAMETER_UUID => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
@@ -54,5 +53,10 @@ class Parameters extends BaseFilterParameters
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
 
 		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_PLAYER_ID);
+	}
+
+	public function addActivity()
+	{
+		$this->addParameter(self::PARAMETER_ACTIVITY, ScalarType::STRING, '');
 	}
 }
