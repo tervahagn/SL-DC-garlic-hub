@@ -22,20 +22,24 @@
 namespace App\Modules\Mediapool\Utils;
 
 use finfo;
+use RuntimeException;
 
 class FileInfoWrapper
 {
-	private ?finfo $fileInfo;
+	private finfo $fileInfo;
 
 	public function __construct()
 	{
-		$this->fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		if (!$finfo)
+			throw new RuntimeException('Could not create finfo instance');
+
+		$this->fileInfo = $finfo;
 	}
 
 	public function __destruct()
 	{
-		if (isset($this->fileInfo)) // needed because of tests
-			finfo_close($this->fileInfo);
+		finfo_close($this->fileInfo);
 	}
 
 	public function fileExists(string $path): bool
@@ -53,12 +57,12 @@ class FileInfoWrapper
 		return finfo_buffer($this->fileInfo, $streamContent);
 	}
 
-	public function isStream($stream): bool
+	public function isStream(mixed $stream): bool
 	{
 		return (get_resource_type($stream) === 'stream');
 	}
 
-	public function getStreamContent($stream): bool|string
+	public function getStreamContent(mixed $stream): bool|string
 	{
 		return stream_get_contents($stream, -1, 0);
 	}

@@ -27,7 +27,7 @@ abstract class Media extends Base
 {
 	protected string $link = '';
 
-	public function setLink($link):static
+	public function setLink(string $link):static
 	{
 		// ltrim required because the media path has a training slash
 		$this->link = ltrim($link, '/');

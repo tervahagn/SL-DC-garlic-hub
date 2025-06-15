@@ -123,7 +123,7 @@ class PlaylistMetricsCalculator
 
 	/**
 	 * @param array<string,mixed> $playlist
-	 * @param array<string,mixed> $items
+	 * @param list<array<string,mixed>> $items
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException

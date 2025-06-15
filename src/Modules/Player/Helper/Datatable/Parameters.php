@@ -55,7 +55,7 @@ class Parameters extends BaseFilterParameters
 		$this->setDefaultForParameter(self::PARAMETER_SORT_COLUMN, self::PARAMETER_PLAYER_ID);
 	}
 
-	public function addActivity()
+	public function addActivity(): void
 	{
 		$this->addParameter(self::PARAMETER_ACTIVITY, ScalarType::STRING, '');
 	}

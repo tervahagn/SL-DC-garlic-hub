@@ -36,6 +36,9 @@ class UserAgentHandler
 		$this->playerDetector = $playerDetector;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getInfo(): array
 	{
 		return [
@@ -93,26 +96,12 @@ class UserAgentHandler
 		}
 		else
 		{
-			$this->parseUserAgentFallback($userAgent);
+			$this->uuid     =  '';
+			$this->firmware = '';
+			$this->name     = '';
+			$this->model    = PlayerModel::UNKNOWN;
 		}
 		return $this;
 	}
 
-	public function parseUserAgentFallback(string $userAgent): static
-	{
-		$tmp  = mb_strstr($userAgent, 'UUID:');
-		$uuid = mb_substr($tmp, 5, mb_strpos($tmp, ';') - 5);
-		$tmp  = mb_strstr($userAgent, 'NAME:');
-		$name = mb_substr($tmp, 5, mb_strpos($tmp, ')') - 5);
-		$tmp  = mb_strstr($userAgent, ') ');
-		$firmware = mb_substr($tmp, 2, mb_strpos($tmp, ' (') - 2);
-		$tmp = mb_strstr($userAgent, 'MODEL:');
-
-		$this->uuid     = $uuid;
-		$this->firmware = $firmware;
-		$this->name     = urldecode($name);
-		$this->model    = $this->playerDetector->detectModelId(mb_substr($tmp, 6, mb_strpos($tmp, ')') - 6))->getModelId();
-
-		return $this;
-	}
 }

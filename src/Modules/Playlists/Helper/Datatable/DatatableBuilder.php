@@ -61,6 +61,9 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		}
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function determineParameters(): void
 	{
 		$this->parameters->setUserInputs($_GET);
@@ -123,11 +126,6 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		$this->datatableStructure['form'] = $form;
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
 	public function createTableFields(): static
 	{
 		$this->buildService->createDatatableField('playlist_name', true);

@@ -53,7 +53,7 @@ class Playlist extends AbstractInsertItem
 			$this->itemsRepository->beginTransaction();
 
 			$playlistTargetData = $this->checkPlaylistAcl($playlistId);
-			$playlistInsertData = $this->checkPlaylistAcl($insertId);
+			$playlistInsertData = $this->checkPlaylistAcl((int) $insertId);
 
 			if ($this->checkForRecursiveInserts($playlistTargetData['playlist_id'], $playlistInsertData['playlist_id']))
 				throw new ModuleException('items', 'Playlist recursion alert.');

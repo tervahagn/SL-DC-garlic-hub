@@ -53,7 +53,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 	}
 
 	/**
-	 * @return array<string, string|int>
+	 * @return array<string, mixed>
 	 */
 	private function replaceTaskSchedule(): array
 	{

@@ -30,10 +30,13 @@ class Properties
 	private string $fit;
 	private string $mediaAlign;
 	private string $volume;
+	/** @var string[] */
 	private array $mediaAligns = ['topLeft', 'topMid', 'topRight', 'midLeft', 'center', 'midRight', 'bottomLeft', 'bottomMid', 'bottomRight'];
+	/** @var string[] */
 	private array $fits = ['fill', 'meet', 'meetBest', 'slice', 'scroll'];
 
 	/**
+	 * @param array<string,mixed> $properties
 	 * @throws CoreException
 	 */
 	public function __construct(Config $config, array $properties)

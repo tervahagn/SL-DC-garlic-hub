@@ -48,6 +48,7 @@ class PlayerService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function findAllForDashboard(): array
@@ -60,6 +61,9 @@ class PlayerService extends AbstractBaseService
 	}
 
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function replaceMasterPlaylist(int $playerId, int $playlistId): array
 	{
 		try
@@ -89,6 +93,7 @@ class PlayerService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException|ModuleException

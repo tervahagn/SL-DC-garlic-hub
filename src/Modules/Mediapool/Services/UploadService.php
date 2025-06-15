@@ -61,14 +61,16 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		$this->logger              = $logger;
 	}
 
-	/**
+	/**+
+	 * @param array<string, string> $headers
+	 * @return array<string,mixed>
 	 * @throws GuzzleException
 	 */
-	public function requestApi(string $apiUrl, $headers = []): array
+	public function requestApi(string $apiUrl, array $headers = []): array
 	{
 		$options = [];
 		if (!empty($headers))
-			$options['headers'] =  $headers;
+			$options['headers'] = $headers;
 
 		$response = $this->client->request('GET', $apiUrl, $options);
 

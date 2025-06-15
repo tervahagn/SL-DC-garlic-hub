@@ -23,6 +23,7 @@ namespace App\Modules\Playlists\Helper\ExportSmil\Utils;
 
 class Trigger
 {
+	/** @var array<string,string>  */
 	const array SUPPORTED_TRIGGER = [
 		'wallclocks' => 'parseWallClocks',
 		'accesskeys' => 'parseAccesskeys',
@@ -30,8 +31,12 @@ class Trigger
 		'notifies'   => 'parseNotifies',
 	];
 
+	/** @var list<array<string,mixed>>  */
 	private array $triggers;
 
+	/**
+	 * @param list<array<string,mixed>> $triggers
+	 */
 	public function __construct(array $triggers)
 	{
 		$this->triggers = $triggers;
@@ -45,9 +50,10 @@ class Trigger
 	public function determineTrigger(): string
 	{
 		$existingTriggers = array_intersect_key(self::SUPPORTED_TRIGGER, $this->triggers);
-		$ar = array_reduce(array_keys($existingTriggers),
-			function (array $carry, string $key): array
+
+		$ar = array_reduce(array_keys($existingTriggers), function (array $carry, string $key): array
 			{
+
 				return array_merge($carry, $this->{self::SUPPORTED_TRIGGER[$key]}($this->triggers[$key]));
 			},[]
 		);
@@ -55,6 +61,10 @@ class Trigger
 		return implode(';', $ar);
 	}
 
+	/**
+	 * @param list<array<string,string>> $wallclocks
+	 * @return string[]
+	 */
 	private function parseWallClocks(array $wallclocks): array
 	{
 		$determined = [];
@@ -66,6 +76,10 @@ class Trigger
 		return $determined;
 	}
 
+	/**
+	 * @param list<array{accesskey:string}> $accessKeys
+	 * @return string[]
+	 */
 	private function parseAccesskeys(array $accessKeys): array
 	{
 		$determined = array();
@@ -77,6 +91,10 @@ class Trigger
 		return $determined;
 	}
 
+	/**
+	 * @param list<array{touch_item_id:string}> $touches
+	 * @return string[]
+	 */
 	private function parseTouches(array $touches): array
 	{
 		$determined = array();
@@ -88,9 +106,13 @@ class Trigger
 		return $determined;
 	}
 
-	private function parseNotifies($notifies): array
+	/**
+	 * @param list<array{notify:string}> $notifies
+	 * @return string[]
+	 */
+	private function parseNotifies(array $notifies): array
 	{
-		$determined = array();
+		$determined = [];
 		foreach ($notifies as $notify)
 		{
 			$determined[] = 'notify('.$notify['notify'].')';
@@ -99,9 +121,12 @@ class Trigger
 		return $determined;
 	}
 
+	/**
+	 * @param array<string,mixed> $wallclock
+	 */
 	private function determineOneWallClock(array $wallclock): string
 	{
-		$repeats = $intervals = $weekday ='';
+		$repeats = $intervals = '';
 		if ($wallclock['repeat_counts'] != -1)
 		{
 			if ($wallclock['repeat_counts'] == 0)

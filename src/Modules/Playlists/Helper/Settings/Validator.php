@@ -46,7 +46,7 @@ class Validator extends BaseValidator
 
 	/**
 	 * @param array<string, mixed> $post
-	 * @return array<array<string, mixed>>
+	 * @return string[]
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws FrameworkException
@@ -71,6 +71,9 @@ class Validator extends BaseValidator
 		return $errors;
 	}
 
+	/**
+	 * @param array<string,mixed> $userInputs
+	 */
 	private function checkPlaylistMode(array $userInputs): bool
 	{
 		return in_array($userInputs[Parameters::PARAMETER_PLAYLIST_MODE], array_column(PlaylistMode::cases(), 'value'), true);

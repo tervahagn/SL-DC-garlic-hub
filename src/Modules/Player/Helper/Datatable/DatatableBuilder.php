@@ -62,6 +62,9 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		}
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function determineParameters(): void
 	{
 		$this->parameters->setUserInputs($_GET);
@@ -138,9 +141,6 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
 	 */
 	public function createTableFields(): static
 	{

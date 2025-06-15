@@ -39,7 +39,7 @@ trait FindOperationsTrait
 	 * Finds a record by ID.
 	 *
 	 * @param int|string $id Record ID
-	 * @return list<array<string,mixed>
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findById(int|string $id): array
@@ -100,11 +100,11 @@ trait FindOperationsTrait
 	 * Finds records with specific fields and a custom WHERE clause.
  	 * @param string[] $fields
 	 * @param array<string,mixed> $conditions
-	 * @param list<array<string,mixed>> $joins
+	 * @param array<string,string> $joins
 	 * @param array<string,int> $limit
 	 * @param string $groupBy
 	 * @param list<array<string,mixed>> $orderBy
-	 * @return list<array<string,string>>
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllByWithFields(array $fields, array $conditions = [], array $joins = [], array $limit = [], string $groupBy = '', array $orderBy = []): array
@@ -146,13 +146,17 @@ trait FindOperationsTrait
 		return $queryBuilder->fetchOne() ?? '';
 	}
 
-	public function getFirstDataSet(array $set)
+	/**
+	 * @param list<array<string,mixed>> $result
+	 * @return array<string, mixed>
+	 */
+	public function getFirstDataSet(array $result): array
 	{
-		if (!empty($set) && array_key_exists(0, $set))
+		if (!empty($result) && array_key_exists(0, $result))
 		{
-			return $set[0];
+			return $result[0];
 		}
-		return array();
+		return [];
 	}
 
 	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', array $orderBy = []):

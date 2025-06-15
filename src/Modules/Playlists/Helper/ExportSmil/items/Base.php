@@ -31,7 +31,7 @@ abstract class Base implements ItemInterface
 	const string TABSTOPS_TAG       = "\t\t\t\t\t\t\t";
 	const string TABSTOPS_PARAMETER = "\t\t\t\t\t\t\t\t";
 	const string TABSTOPS_PRIORITY  = "\t\t\t\t";
-
+	/** @var array<string,mixed>  */
 	protected array $item = [];
 	protected readonly Config $config;
 	protected readonly Trigger $begin;
@@ -42,6 +42,9 @@ abstract class Base implements ItemInterface
 	protected string $trigger = '';
 	protected Properties $properties;
 
+	/**
+	 * @param array<string,mixed> $item
+	 */
 	public function __construct(Config $config, array $item, Properties $properties, Trigger $begin, Trigger $end, Conditional $conditional)
 	{
 		$this->config     = $config;

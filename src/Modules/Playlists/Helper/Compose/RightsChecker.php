@@ -24,7 +24,6 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -54,6 +53,7 @@ class RightsChecker
 	}
 
 	/**
+	 * @return array<string,string>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -70,6 +70,7 @@ class RightsChecker
 	}
 
 	/**
+	 * @return array<string,string>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -85,6 +86,13 @@ class RightsChecker
 		];
 	}
 
+	/**
+	 * @return array<string,string>
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function checkInsertExternalPlaylist(int $timeLimit): array
 	{
 		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE || $timeLimit > 0)
@@ -96,6 +104,7 @@ class RightsChecker
 	}
 
 	/**
+	 * @return array<string,string>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -112,6 +121,13 @@ class RightsChecker
 
 	}
 
+	/**
+	 * @return array<string,string>
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function checkInsertChannels():array
 	{
 		if ($this->getEdition() === Config::PLATFORM_EDITION_EDGE)
@@ -124,12 +140,13 @@ class RightsChecker
 	}
 
 	/**
+	 * @return array<string,string>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function checkTimeLimit(int $timeLimit)
+	public function checkTimeLimit(int $timeLimit): array
 	{
 		if ($timeLimit === 0)
 			return [];

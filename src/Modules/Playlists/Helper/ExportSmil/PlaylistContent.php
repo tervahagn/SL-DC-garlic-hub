@@ -13,7 +13,6 @@ use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Helper\PlaylistMode;
-use App\Modules\Playlists\Services\InsertItems\Playlist;
 
 class PlaylistContent
 {
@@ -23,8 +22,10 @@ class PlaylistContent
 	private string $contentPrefetch;
 	private string $contentExclusive;
 	private int $countEnabled = 0;
+	/** @var array<string,mixed>  */
 	private array $playlist  = [];
-	private array $items     = [];
+	/** @var list<array<string,mixed>>  */
+	private array $items = [];
 
 	public function __construct(ItemsFactory $itemsFactory, Config $config)
 	{
@@ -32,6 +33,11 @@ class PlaylistContent
 		$this->config           = $config;
 	}
 
+	/**
+	 * @param array<string,mixed> $playlist
+	 * @param list<array<string,mixed>> $items
+	 * @return $this
+	 */
 	public function init(array $playlist, array $items): static
 	{
 		$this->playlist     = $playlist;
@@ -104,6 +110,7 @@ class PlaylistContent
 	}
 
 	/**
+	 * @param array<string,mixed> $itemData
 	 * @throws CoreException
 	 * @throws ModuleException
 	 */
@@ -123,6 +130,7 @@ class PlaylistContent
 	}
 
 	/**
+	 * @param array<string,mixed> $itemData
 	 * @throws CoreException|ModuleException
 	 */
 	private function buildMediaExternal(array $itemData): void
@@ -136,6 +144,7 @@ class PlaylistContent
 	}
 
 	/**
+	 * @param array<string,mixed> $itemData
 	 * @throws CoreException|ModuleException
 	 */
 	private function buildPlaylist(array $itemData): void
@@ -194,6 +203,8 @@ class PlaylistContent
 	 * and sometimes not.
 	 * see comments, where the cases are explained
 	 * The default is: add prefetch if item is disabled, add all other parts, if not disabled
+	 *
+	 * @param array<string,mixed> $item
 	 */
 	private function addContentParts(array $item, string $element, string $prefetch, string $exclusive): void
 	{

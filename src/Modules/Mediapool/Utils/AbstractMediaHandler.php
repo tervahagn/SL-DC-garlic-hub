@@ -43,13 +43,15 @@ abstract class AbstractMediaHandler
 	protected string $originalPath;
 	protected string $iconsPath;
 	protected string $previewPath;
+	/** @var array<string,mixed>  */
 	protected array $dimensions = [];
 	protected int $fileSize = 0;
 	protected string $thumbExtension = 'jpg';
 	protected float $duration = 0.0;
 	protected string $configData = '';
-
+	/** @var array<string,mixed>  */
 	protected array $metadata = [];
+
 	/**
 	 * @param Config $config
 	 * @param Filesystem $filesystem
@@ -72,11 +74,17 @@ abstract class AbstractMediaHandler
 		$this->iconsPath    = $this->config->getConfigValue('icons', 'mediapool', 'directories');
 	}
 
+	/**
+	 * @param array<string,mixed> $metadata
+	 */
 	public function setMetadata(array $metadata): void
 	{
 		$this->metadata = $metadata;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMetadata(): array
 	{
 		return $this->metadata;
@@ -87,6 +95,9 @@ abstract class AbstractMediaHandler
 		return $this->configData;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getDimensions(): array
 	{
 		return $this->dimensions;
@@ -132,7 +143,10 @@ abstract class AbstractMediaHandler
 	 */
 	public function uploadFromExternal(Client $client, string $fileURI): string
 	{
+		/** @var array{path: string} $parsedUrl */
 		$parsedUrl  = parse_url($fileURI);
+
+		/** @var array{basename: string} $pathInfo */
 		$pathInfo   = pathinfo($parsedUrl['path']);
 		$targetPath = strtolower('/'. $this->originalPath .'/'. $pathInfo['basename']);
 
@@ -151,10 +165,12 @@ abstract class AbstractMediaHandler
 			throw new ModuleException('mediapool', 'Filesize: '.$filePath.' not exists');
 
 		$stream = $this->filesystem->readStream($filePath);
-		if (!$stream)
-			throw new ModuleException('mediapool', 'Filesize: '.$filePath.' not readable');
 
-		$hash = hash('sha256', stream_get_contents($stream));
+		$contents = stream_get_contents($stream);
+		if (!$contents)
+			throw new ModuleException('mediapool', 'Stream from '.$filePath.' not readable');
+
+		$hash = hash('sha256', $contents);
 		fclose($stream);
 
 		return $hash;
@@ -162,6 +178,7 @@ abstract class AbstractMediaHandler
 
 	public function determineNewFilePath(string $oldFilePath, string $filehash, string $ext): string
 	{
+		/** @var array{dirname:string} $fileInfo */
 		$fileInfo    = pathinfo($oldFilePath);
 		return $fileInfo['dirname']. '/'.$filehash.'.'.$ext;
 	}

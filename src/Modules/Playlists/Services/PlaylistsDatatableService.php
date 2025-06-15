@@ -77,6 +77,8 @@ class PlaylistsDatatableService extends AbstractDatatableService
 	}
 
 	/**
+	 * @param int[] $playlistIds
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function getPlaylistsInUse(array $playlistIds): array

@@ -26,6 +26,7 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -52,7 +53,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	 */
 	public function configure(Translator $translator, Session $session): void
 	{
-		$this->UID = $session->get('user')['UID'];
+		/** @var array{UID:int} $user */
+		$user = $session->get('user');
+		$this->UID = (int) $user['UID'];
 		$this->playlistsService->setUID($this->UID);
 		$this->datatableBuilder->configureParameters($this->UID);
 		$this->datatablePreparer->setTranslator($translator);
@@ -60,7 +63,9 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function processSubmittedUserInput(): void
 	{
@@ -88,9 +93,7 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws CoreException
+	 * @return list<array<string,mixed>>
 	 */
 	public function prepareContextMenu(): array
 	{
@@ -129,8 +132,8 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @param array $fields
-	 * @return array
+	 * @param list<HeaderField> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FrameworkException

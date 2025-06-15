@@ -144,7 +144,10 @@ class PlaylistsController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$this->setServiceUID($request);
-		$count = $this->playlistsService->saveZones($playlistId, $request->getParsedBody());
+		/** @var array<string,mixed> $parsedBody */
+		$parsedBody = $request->getParsedBody();
+
+		$count = $this->playlistsService->saveZones($playlistId, $parsedBody);
 		if ($count === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Multizone could not be saved']);
 

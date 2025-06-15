@@ -21,17 +21,19 @@
 namespace App\Framework\Utils\Datatable;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
 
 abstract class AbstractDatatableBuilder
 {
 	protected Translator $translator;
 	protected BuildService $buildService;
-	protected BaseFilterParametersInterface $parameters;
+	protected BaseFilterParameters $parameters;
 	/** @var array<string,mixed> */
 	protected array $datatableStructure = [];
 
-	public function __construct(BuildService $buildService, BaseFilterParametersInterface $parameters)
+	public function __construct(BuildService $buildService, BaseFilterParameters $parameters)
 	{
 		$this->buildService  = $buildService;
 		$this->parameters    = $parameters;
@@ -61,6 +63,9 @@ abstract class AbstractDatatableBuilder
 
 	abstract public function createTableFields(): static;
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function createPagination(int $resultCount, bool $usePager = true, bool $isShortened = true): void
 	{
 		$pager = $this->buildService->buildPaginationLinks(

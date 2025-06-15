@@ -56,7 +56,7 @@ class Facade
 	}
 
 	/**
-	 * @return array<string,int|string>
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function loadUserForEdit(int $UID): array

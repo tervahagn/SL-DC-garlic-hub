@@ -76,12 +76,13 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function loadForEdit(int $UID): array
 	{
-		return $this->getUserRepositories()['main']->findById($UID);
+		$result = $this->getUserRepositories()['main']->findById($UID);
+		return $this->getUserRepositories()['main']->getFirstDataSet($result);
 	}
 
 	/**

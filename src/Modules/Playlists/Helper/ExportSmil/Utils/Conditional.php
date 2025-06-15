@@ -23,8 +23,12 @@ namespace App\Modules\Playlists\Helper\ExportSmil\Utils;
 
 class Conditional
 {
+	/** @var array<string,mixed>  */
 	private array $conditional;
 
+	/**
+	 * @param array<string,mixed> $conditional
+	 */
 	public function __construct(array $conditional)
 	{
 		$this->conditional = $conditional;
@@ -61,7 +65,6 @@ class Conditional
 		}
 
 		$time_until = $this->conditional['time_until'] == '00:00:00' ? '23:59:59' : $this->conditional['time_until'];
-
 		if ($this->conditional['time_until'] != '00:00:00')
 		{
 			if ($expr != '')

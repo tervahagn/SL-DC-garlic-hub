@@ -62,6 +62,8 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
@@ -112,10 +114,7 @@ class ItemsService extends AbstractBaseService
 					throw new ModuleException('items', 'Item not found');
 				$item['config_data'] = $media['config_data'];
 				if (str_starts_with($item['mimetype'], 'video/'))
-				{
-
 					$item['default_duration'] = $media['metadata']['duration'];
-				}
 				else
 					$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
 				break;
@@ -131,6 +130,7 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -152,7 +152,13 @@ class ItemsService extends AbstractBaseService
 					$thumbnailPath = $this->mediaService->getPathThumbnails();
 					$tmp = $value;
 					if (str_starts_with($value['mimetype'], 'image/'))
-						$ext = str_replace('jpeg', 'jpg', substr(strrchr($value['mimetype'], '/'), 1));
+					{
+						$s = strrchr($value['mimetype'], '/');
+						if ($s !== false)
+							$ext = str_replace('jpeg', 'jpg', substr($s, 1));
+						else
+							$ext = 'jpg';
+					}
 					else
 						$ext = 'jpg';
 
@@ -189,15 +195,16 @@ class ItemsService extends AbstractBaseService
 		$item = $this->itemsRepository->findFirstById($itemId);
 		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
 
-		$saveData = [strip_tags($fieldName) => strip_tags($fieldValue)];
+		$saveData = [strip_tags($fieldName) => strip_tags((string)$fieldValue)];
 
 		return $this->itemsRepository->update($itemId, $saveData);
 	}
 
 	/**
+	 * @param array<int,int> $itemsOrder
 	 * @throws Exception
 	 */
-	public function updateItemOrder(mixed $playlistId, array $itemsOrder): bool
+	public function updateItemOrder(int $playlistId, array $itemsOrder): bool
 	{
 		try
 		{
@@ -222,6 +229,7 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function delete(int $playlistId, int $itemId): array
@@ -307,6 +315,7 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 */
 	private function checkPlaylistAcl(int $playlistId): array
@@ -320,6 +329,9 @@ class ItemsService extends AbstractBaseService
 	}
 
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	private function sanitize(string $value): array
 	{
 		if ($value === '')

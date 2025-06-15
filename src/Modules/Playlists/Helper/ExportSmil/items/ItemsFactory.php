@@ -46,9 +46,10 @@ class ItemsFactory
 	}
 
 	/**
+	 * @param array<string,mixed> $item
 	 * @throws CoreException|ModuleException
 	 */
-	public function createItem($item): ItemInterface
+	public function createItem(array $item): ItemInterface
 	{
 		return match ($item['item_type'])
 		{
@@ -66,9 +67,10 @@ class ItemsFactory
 	}
 
 	/**
+	 * @param array<string,mixed> $item
 	 * @throws CoreException|ModuleException
 	 */
-	private function createMedia($item): Media
+	private function createMedia(array $item): Media
 	{
 		$mediaType = explode('/', $item['mimetype'], 2)[0];
 

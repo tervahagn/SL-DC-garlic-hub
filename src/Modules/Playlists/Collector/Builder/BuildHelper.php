@@ -62,7 +62,7 @@ class BuildHelper
 					else
 					{
 						// get Playlist url from value after #
-						$url          = $subPlaylistId;
+						$url          = (string) $subPlaylistId;
 						$externalData = $this->externalContentReader->init($url)->loadPlaylistItems();
 						$items        = str_replace('{ITEMS_0#'.$url.'}', $externalData, $items);
 					}
@@ -82,13 +82,13 @@ class BuildHelper
 		try
 		{
 			$prefetches = $this->contentReader->init($playlistId)->loadPlaylistPrefetch();
-			$countMatch = preg_match_all('/{PREFETCH_.*?}/', $prefetches, $placeholders); // check if there are any nested container with change greedines when more than one PREFETCH in one line happens
+			$countMatch = preg_match_all('/{PREFETCH_.*?}/', $prefetches, $placeholders); // check if there are any nested container with change greediness when more than one PREFETCH in one line happens
 			if ($countMatch > 0)
 			{
 				foreach ($placeholders[0] as $placeholder)
 				{
 					$subPlaylistId = $this->parsePlaylistPlaceholder($placeholder);
-					$recurse = $this->collectPrefetches($subPlaylistId);
+					$recurse = $this->collectPrefetches((int) $subPlaylistId);
 					$prefetches = str_replace('{PREFETCH_' . $subPlaylistId . '}', $recurse, $prefetches);
 				}
 			}
@@ -101,7 +101,7 @@ class BuildHelper
 		return $prefetches;
 	}
 
-	public function collectExclusives(int $playlistId, $exclusive = ''): string
+	public function collectExclusives(int $playlistId, string $exclusive = ''): string
 	{
 		try
 		{
@@ -112,8 +112,8 @@ class BuildHelper
 				foreach ($placeholders[0] as $placeholder)
 				{
 					$subPlaylistId = $this->parsePlaylistPlaceholder($placeholder);
-					$exclusive     = str_replace('{ITEMS_' . $subPlaylistId . '}', $this->contentReader->init($subPlaylistId)->loadPlaylistItems(), $exclusive);
-					$exclusive     = $this->collectExclusives($subPlaylistId, $exclusive); // check if there is something nested
+					$exclusive     = str_replace('{ITEMS_' . $subPlaylistId . '}', $this->contentReader->init((int) $subPlaylistId)->loadPlaylistItems(), $exclusive);
+					$exclusive     = $this->collectExclusives((int) $subPlaylistId, $exclusive); // check if there is something nested
 				}
 			}
 		}

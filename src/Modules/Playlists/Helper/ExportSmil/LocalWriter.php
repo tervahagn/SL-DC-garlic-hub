@@ -44,7 +44,7 @@ class LocalWriter
 		$this->playlistBasePath = $this->config->getConfigValue('path_playlists', 'playlists');
 	}
 
-	public function initExport($playlistId): void
+	public function initExport(int $playlistId): void
 	{
 		$this->playlistId = $playlistId;
 	}

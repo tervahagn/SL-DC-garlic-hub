@@ -32,9 +32,6 @@ readonly class UiTemplatesPreparer
 	private Translator $translator;
 	private RightsChecker $rightsChecker;
 
-	/**
-	 * @param Translator $translator
-	 */
 	public function __construct(Translator $translator, RightsChecker $rightsChecker)
 	{
 		$this->translator = $translator;
@@ -42,6 +39,8 @@ readonly class UiTemplatesPreparer
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -72,6 +71,8 @@ readonly class UiTemplatesPreparer
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -133,6 +134,8 @@ readonly class UiTemplatesPreparer
 	}
 
 	/**
+	 * @param array<string,mixed> $playlist
+	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException

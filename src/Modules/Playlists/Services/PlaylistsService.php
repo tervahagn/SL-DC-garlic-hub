@@ -247,7 +247,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @param list<array<string,mixed>> $zones
+	 * @param array<string,mixed> $zones
 	 */
 	public function saveZones(int $playlistId, array $zones): int
 	{

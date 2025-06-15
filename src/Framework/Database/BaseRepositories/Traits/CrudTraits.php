@@ -148,7 +148,7 @@ trait CrudTraits
 	/**
 	 * Secure that return value will be an array
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	protected function fetchAssociative(QueryBuilder $queryBuilder): array
