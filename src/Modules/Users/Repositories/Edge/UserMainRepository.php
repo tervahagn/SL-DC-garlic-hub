@@ -39,7 +39,7 @@ class UserMainRepository extends FilterBase
 	 * We do not want to use * as this will transfer user sensitive data
 	 * like passwords, tokens etc.
 	 *
-	 * @return array<string, mixed>
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findById(int|string $id): array
@@ -50,7 +50,7 @@ class UserMainRepository extends FilterBase
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id);
 
-		return $this->fetchAssociative($queryBuilder);
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**

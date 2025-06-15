@@ -76,7 +76,7 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,string>
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function loadForEdit(int $UID): array

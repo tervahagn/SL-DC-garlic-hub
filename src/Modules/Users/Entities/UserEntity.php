@@ -24,17 +24,31 @@ use League\OAuth2\Server\Entities\UserEntityInterface;
 
 /**
  * As we use the same entity with OAuth2, we need to implement the UserEntityInterface
- * from PhpLeage-Oauth2-Server
+ * from PhpLeague-Oauth2-Server
  */
 class UserEntity implements UserEntityInterface
 {
+	/** @var array<string,mixed>  */
 	private array $main;
+	/** @var array<string,mixed>  */
 	private array $contact;
+	/** @var array<string,mixed>  */
 	private array $stats;
+	/** @var array<string,mixed>  */
 	private array $security;
+	/** @var array<string,mixed>  */
 	private array $acl;
+	/** @var array<string,mixed>  */
 	private array $vip;
 
+	/**
+	 * @param array<string,mixed> $main
+	 * @param array<string,mixed> $contact
+	 * @param array<string,mixed> $stats
+	 * @param array<string,mixed> $security
+	 * @param array<string,mixed> $acl
+	 * @param array<string,mixed> $vip
+	 */
 	public function __construct(array $main, array $contact, array $stats, array $security, array $acl, array $vip)
 	{
 		$this->main     = $main;
@@ -45,31 +59,49 @@ class UserEntity implements UserEntityInterface
 		$this->vip      = $vip;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMain(): array
 	{
 		return $this->main;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getContact(): array
 	{
 		return $this->contact;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getStats(): array
 	{
 		return $this->stats;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getSecurity(): array
 	{
 		return $this->security;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getAcl(): array
 	{
 		return $this->acl;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getVip(): array
 	{
 		return $this->vip;
