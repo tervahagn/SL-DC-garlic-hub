@@ -28,9 +28,6 @@ class HomeController
 {
 	private DashboardsAggregator $dashboardAggregator;
 
-	/**
-	 * @param DashboardsAggregator $dashboardAggregator
-	 */
 	public function __construct(DashboardsAggregator $dashboardAggregator)
 	{
 		$this->dashboardAggregator = $dashboardAggregator;

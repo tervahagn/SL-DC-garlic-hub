@@ -115,12 +115,13 @@ abstract class FilterBase extends SqlBase
 		$where   = $this->prepareWhereForFiltering($fields);
 		$where[$this->table.'.UID'] = $this->generateWhereClause($UID);
 		$orderBy = [$this->prepareOrderBy($fields)];
+		$join    = $this->prepareUserJoin();
 		$limit    = $this->determineLimit(
 			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE]['value'],
 			$fields[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE]['value']
 		);
 
-		return $this->findAllByWithFields($selects, $where, [], $limit, '', $orderBy);
+		return $this->findAllByWithFields($selects, $where, $join, $limit, '', $orderBy);
 	}
 
 	/**
@@ -143,6 +144,7 @@ abstract class FilterBase extends SqlBase
 	 * @return array<string, string>
 	 */
 	abstract protected function prepareJoin(): array;
+	abstract protected function prepareUserJoin(): array;
 
 	/**
 	 * @return string[]

@@ -83,6 +83,12 @@ class PlaylistsRepository extends FilterBase
 		return ['user_main' => 'user_main.UID=' . $this->table . '.UID'];
 	}
 
+	protected function prepareUserJoin(): array
+	{
+		return [];
+	}
+
+
 	/**
 	 * @return string[]
 	 */

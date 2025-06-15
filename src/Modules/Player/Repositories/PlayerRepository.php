@@ -95,6 +95,12 @@ class PlayerRepository extends FilterBase
 		];
 	}
 
+	protected function prepareUserJoin(): array
+	{
+		return ['playlists' => 'playlists.playlist_id = ' . $this->table . '.playlist_id'];
+	}
+
+
 
 	protected function prepareSelectFiltered(): array
 	{
@@ -147,5 +153,4 @@ class PlayerRepository extends FilterBase
 		}
 		return $where;
 	}
-
 }

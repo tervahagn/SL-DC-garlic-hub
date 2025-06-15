@@ -79,6 +79,11 @@ class UserMainRepository extends FilterBase
 		return [];
 	}
 
+	protected function prepareUserJoin(): array
+	{
+		return [];
+	}
+
 	/**
 	 * @return string[]
 	 */
