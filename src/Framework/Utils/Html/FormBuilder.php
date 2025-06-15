@@ -38,7 +38,7 @@ class FormBuilder
 	}
 
 	/**
-	 * @param list<array<string,FieldInterface>> $formFields
+	 * @param array<string,FieldInterface> $formFields
 	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 */
 	public function prepareForm(array $formFields): array
@@ -46,7 +46,6 @@ class FormBuilder
 		$hidden = [];
 		$visible = [];
 
-		/** @var FieldInterface $element */
 		foreach ($formFields as $element)
 		{
 			if ($element->getType() === FieldType::HIDDEN || $element->getType() === FieldType::CSRF)

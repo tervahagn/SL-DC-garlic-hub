@@ -20,11 +20,14 @@
 
 namespace App\Modules\Users\Controller;
 
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\ScalarType;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\UserStatus;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -40,10 +43,11 @@ class UsersController
 	}
 
 	/**
+	 * @param array<string,string> $args
 	 * @throws ModuleException
-	 * @throws \App\Framework\Exceptions\CoreException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function findByName(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -62,7 +66,10 @@ class UsersController
 			$results[] = ['id' => $value['UID'], 'name' => $value['username']];
 		}
 
-		$response->getBody()->write(json_encode($results));
+		$json = json_encode($results);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

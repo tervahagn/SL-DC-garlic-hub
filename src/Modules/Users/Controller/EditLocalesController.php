@@ -24,6 +24,7 @@ namespace App\Modules\Users\Controller;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Users\Services\UsersService;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,6 +37,10 @@ class EditLocalesController
 		$this->userService = $userService;
 	}
 
+	/**
+	 * @param array<string,string> $args
+	 * @throws Exception
+	 */
 	public function setLocales(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface
 	{
@@ -48,6 +53,7 @@ class EditLocalesController
 
 		if ($session->exists('user'))
 		{
+			/** @var array<string,mixed> $user */
 			$user = $session->get('user');
 			$user['locale'] = $locale;
 			$session->set('user', $user);

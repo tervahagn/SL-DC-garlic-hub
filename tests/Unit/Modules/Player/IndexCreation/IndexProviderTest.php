@@ -61,7 +61,7 @@ class IndexProviderTest extends TestCase
 	#[Group('units')]
 	public function testHandleNew(): void
 	{
-		$this->indexProvider->handleNew($this->playerEntityMock);
+		$this->indexProvider->handleNew();
 
 		$expectedPath = '/var/www/defaults/unreleased.smil';
 		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());

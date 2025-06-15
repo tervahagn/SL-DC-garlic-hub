@@ -44,8 +44,8 @@ readonly class FormElementsCreator
 	}
 
 	/**
-	 * @param array<string, mixed> $form
-	 * @return array<string, mixed>
+	 * @param  list<array<string,FieldInterface>> $form
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 */
 	public function prepareForm(array $form): array
 	{

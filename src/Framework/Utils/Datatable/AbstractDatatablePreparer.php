@@ -24,8 +24,10 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use App\Framework\Utils\Html\FieldInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -50,12 +52,18 @@ abstract class AbstractDatatablePreparer
 		return $this;
 	}
 
+	/**
+	 * @param list<array<string,FieldInterface>> $dataGridBuild
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
+	 */
 	public function prepareFilterForm(array $dataGridBuild): array
 	{
 		return $this->prepareService->prepareForm($dataGridBuild);
 	}
 
 	/**
+	 * @param list<array{name: string, page: int, active: ?bool}> $paginationLinks
+	 * @param array{min: int, max: int, steps: int} $dropDownSettings
 	 * @return array{links: mixed, dropdown: mixed}
 	 * @throws ModuleException
 	 */
@@ -64,6 +72,16 @@ abstract class AbstractDatatablePreparer
 		return $this->prepareService->preparePagination($paginationLinks, $dropDownSettings);
 	}
 
+	/**
+	 * @param list<HeaderField> $fields
+	 * @param string[] $langModules
+	 * @return list<array<string,mixed>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	public function prepareTableHeader(array $fields, array $langModules): array
 	{
 		return $this->prepareService->prepareDatatableHeader($fields, $langModules);
@@ -109,12 +127,11 @@ abstract class AbstractDatatablePreparer
 		];
 	}
 
-
 	/**
-	 * @param array<string,mixed> $currentFilterResults
-	 * @param array<string,mixed> $fields
-	 * @return array<string,mixed>
+	 * @param list<array<string,mixed>> $currentFilterResults
+	 * @param list<HeaderField> $fields
+	 * @return list<array<string,mixed>>
 	 */
-	abstract public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array;
+	abstract public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array;
 
 }

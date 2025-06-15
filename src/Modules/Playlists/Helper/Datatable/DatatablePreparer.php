@@ -26,6 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\AclValidator;
 use DateTime;
@@ -35,6 +36,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparer extends AbstractDatatablePreparer
 {
+	/** @var int[] */
 	private array $usedPlaylists;
 
 	private AclValidator $aclValidator;
@@ -45,6 +47,9 @@ class DatatablePreparer extends AbstractDatatablePreparer
 		parent::__construct('playlists', $prepareService, $parameters);
 	}
 
+	/**
+	 * @param int[] $usedPlaylists
+	 */
 	public function setUsedPlaylists(array $usedPlaylists): static
 	{
 		$this->usedPlaylists = $usedPlaylists;
@@ -54,14 +59,17 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering
 	 *
+	 * @param list<array<string,mixed>> $currentFilterResults
+	 * @param list<HeaderField> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
-	 * @throws ModuleException
 	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array
+	public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array
 	{
 		$body = [];
 		foreach($currentFilterResults as $playlist)
@@ -144,9 +152,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @return list<array<string,mixed>>
 	 */
 	public function formatPlaylistContextMenu(): array
 	{

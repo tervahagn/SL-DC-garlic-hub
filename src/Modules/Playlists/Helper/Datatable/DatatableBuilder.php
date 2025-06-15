@@ -144,9 +144,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws InvalidArgumentException
+	 * @return array<string,string>
 	 */
 	public function determineAllowedPlaylistModes(): array
 	{

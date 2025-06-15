@@ -72,6 +72,20 @@ readonly class FormElementsCreator
 		]);
 	}
 
+	public function createUserStatusField(string $value): FieldInterface
+	{
+		return  $this->formBuilder->createField([
+			'type' => FieldType::DROPDOWN,
+			'id' => 'status',
+			'name' => 'status',
+			'title' => $this->translator->translate('status', 'main'),
+			'label' => $this->translator->translate('username', 'main'),
+			'value' => $value,
+			'rules' => ['required' => true, 'minlength' => 2],
+			'default_value' => ''
+		]);
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

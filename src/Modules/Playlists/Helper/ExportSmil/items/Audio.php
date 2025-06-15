@@ -23,7 +23,6 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
 class Audio extends Video
 {
-
 	public function getSmilElementTag(): string
 	{
 		$ret  = self::TABSTOPS_TAG.'<audio '.$this->collectVideoAttributes().'>'."\n";

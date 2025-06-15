@@ -62,7 +62,6 @@ class UrlBuilder
 		return $this;
 	}
 
-
 	public function buildFilterUrl(): string
 	{
 		$params = array(

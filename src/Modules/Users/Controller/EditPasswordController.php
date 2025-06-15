@@ -21,8 +21,10 @@
 
 namespace App\Modules\Users\Controller;
 
+use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\UserException;
+use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Users\Services\UsersService;
@@ -64,7 +66,7 @@ class EditPasswordController
 
 	/**
 	 * @throws Exception
-	 * @throws InvalidArgumentException|\Doctrine\DBAL\Exception
+	 * @throws InvalidArgumentException
 	 */
 	public function showForm(Request $request, Response $response): Response
 	{
@@ -105,10 +107,16 @@ class EditPasswordController
 	 */
 	private function postActions(Request $request): void
 	{
+		/** @var Session $session */
 		$session  = $request->getAttribute('session');
+		/** @var array<string,string> $postData */
 		$postData = $request->getParsedBody();
 
-		if ($postData['csrf_token'] !== $session->get('csrf_token'))
+		$token = $session->get('csrf_token');
+		if (!is_string($token))
+			throw new UserException('CSRF Token not in session');
+
+		if ($postData['csrf_token'] !== $token)
 			throw new UserException('CSRF Token mismatch');
 
 		if (strlen($postData['edit_password']) < 8)
@@ -117,15 +125,18 @@ class EditPasswordController
 		if ($postData['edit_password'] !== $postData['repeat_password'])
 			throw new UserException('Password not same');
 
-		if ($this->userService->updatePassword($session->get('user')['UID'], $postData['edit_password']) !== 1)
+		/** @var  array{UID: int} $user */
+		$user = $session->get('user');
+
+		if ($this->userService->updatePassword($user['UID'], $postData['edit_password']) !== 1)
 			throw new UserException('User data could not be changed');
 
 	}
 
 	/**
+	 * @return array<string,FieldInterface>
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	private function createForm(): array
 	{
