@@ -21,13 +21,32 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\FieldInterface;
+use App\Framework\Utils\Html\FieldRenderInterface;
 use App\Framework\Utils\Html\FieldsRenderFactory;
+use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\TextField;
 use App\Framework\Utils\Html\TextRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+
+
+class NonImplementingRenderer
+{
+	public function someMethod(): string
+	{
+		return 'I do not implement FieldRenderInterface!';
+	}
+}
+
+class FieldsRenderFactoryInherited extends FieldsRenderFactory
+{
+	public function callGetCachedRenderer(string $rendererClass): FieldRenderInterface
+	{
+		return $this->getCachedRenderer($rendererClass);
+	}
+}
 
 class FieldsRenderFactoryTest extends TestCase
 {
@@ -66,4 +85,22 @@ class FieldsRenderFactoryTest extends TestCase
 		$this->assertSame($renderedText,  $this->fieldsRenderFactory->getRenderer($textFieldMock));
 	}
 
+	#[Group('units')]
+	public function testGetCachedRendererThrowsExceptionIfRendererDoesNotImplementInterface(): void
+	{
+
+		$testFactory = new FieldsRenderFactoryInherited();
+		$this->expectException(InvalidArgumentException::class);
+
+
+/*		$this->expectExceptionMessage(sprintf(
+			'Renderer class "NonImplementingRenderer" must implement "render()".',
+			$invalidRendererClass,
+			FieldRenderInterface::class
+		));
+*/
+		$invalidRendererClass = NonImplementingRenderer::class;
+		$testFactory->callGetCachedRenderer($invalidRendererClass);
+
+	}
 }

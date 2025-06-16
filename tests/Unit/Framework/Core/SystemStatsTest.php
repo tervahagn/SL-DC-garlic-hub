@@ -7,6 +7,7 @@ use App\Framework\Core\SystemStats;
 use App\Framework\Exceptions\CoreException;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,7 @@ class SystemStatsTest extends TestCase
 		$this->assertTrue($this->systemStats->isLinux());
 	}
 
-	#[Group('units')]
+	#[RunInSeparateProcess] #[Group('units')]
 	public function testDetermineSystemLoadSetsLoadDataCorrectly(): void
 	{
 		$getLoadAvg = $this->getFunctionMock('App\Framework\Core', 'sys_getloadavg');

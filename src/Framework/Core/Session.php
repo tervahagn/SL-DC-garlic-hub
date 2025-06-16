@@ -101,6 +101,14 @@ class Session
 			unset($_SESSION[$key]);
 	}
 
+	/**
+	 * @return array<mixed>
+	 */
+	public function getSession(): array
+	{
+		return $_SESSION;
+	}
+
 	public function clear(): void
 	{
 		$_SESSION = [];

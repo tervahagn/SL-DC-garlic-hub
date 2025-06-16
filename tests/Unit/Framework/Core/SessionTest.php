@@ -23,11 +23,14 @@ namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 class SessionTest extends TestCase
 {
+	use PHPMock;
 	private Session $session;
 
 	protected function setUp(): void
@@ -67,6 +70,71 @@ class SessionTest extends TestCase
 		$this->session->regenerateID();
 	}
 
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testRegenerateIDSessionNameFails(): void
+	{
+		$session_status = $this->getFunctionMock('App\Framework\Core', 'session_status');
+		$session_status->expects($this->once())->willReturn(PHP_SESSION_ACTIVE);
+
+		$session_regenerate_id = $this->getFunctionMock('App\Framework\Core', 'session_regenerate_id');
+		$session_regenerate_id->expects($this->once())->willReturn(true);
+
+		$session_name = $this->getFunctionMock('App\Framework\Core', 'session_name');
+		$session_name->expects($this->once())->willReturn(false);
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Session name failed for regenerating.');
+
+		$this->session->regenerateID();
+	}
+
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testRegenerateIDSessionIdFails(): void
+	{
+		$session_status = $this->getFunctionMock('App\Framework\Core', 'session_status');
+		$session_status->expects($this->once())->willReturn(PHP_SESSION_ACTIVE);
+
+		$session_regenerate_id = $this->getFunctionMock('App\Framework\Core', 'session_regenerate_id');
+		$session_regenerate_id->expects($this->once())->willReturn(true);
+
+		$session_name = $this->getFunctionMock('App\Framework\Core', 'session_name');
+		$session_name->expects($this->once())->willReturn('sessionName');
+
+		$session_id = $this->getFunctionMock('App\Framework\Core', 'session_id');
+		$session_id->expects($this->once())->willReturn(false);
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Session Id failed for regenerating.');
+
+		$this->session->regenerateID();
+	}
+
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testRegenerateIDCookieLifeTimeFails(): void
+	{
+		$session_status = $this->getFunctionMock('App\Framework\Core', 'session_status');
+		$session_status->expects($this->once())->willReturn(PHP_SESSION_ACTIVE);
+
+		$session_regenerate_id = $this->getFunctionMock('App\Framework\Core', 'session_regenerate_id');
+		$session_regenerate_id->expects($this->once())->willReturn(true);
+
+		$session_name = $this->getFunctionMock('App\Framework\Core', 'session_name');
+		$session_name->expects($this->once())->willReturn('sessionName');
+
+		$session_id = $this->getFunctionMock('App\Framework\Core', 'session_id');
+		$session_id->expects($this->once())->willReturn('an_id');
+
+		$ini_get = $this->getFunctionMock('App\Framework\Core', 'ini_get');
+		$ini_get->expects($this->once())->willReturn(false);
+
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Cookie lifetime failed for regenerating.');
+
+		$this->session->regenerateID();
+	}
+
+
 	#[Group('units')]
 	public function testGet(): void
 	{
@@ -102,7 +170,7 @@ class SessionTest extends TestCase
 		$_SESSION['test_key'] = 'test_value';
 		$_SESSION['another_key'] = 'another_value';
 		$this->session->clear();
-		$this->assertEmpty($_SESSION);
+		$this->assertEmpty($this->session->getSession());
 	}
 
 	#[Group('units')]

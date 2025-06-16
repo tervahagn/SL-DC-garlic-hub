@@ -144,6 +144,24 @@ class BaseFilterParametersTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
+	public function testParseInputFilterAllUsersUsesStoredSessionParametersFails(): void
+	{
+		$this->baseFilterParameters->setUserInputs([]);
+		$sessionStored = 'tralala';
+
+		$this->sessionMock->method('exists')->with('testKeyStore')->willReturn(true);
+		$this->sessionMock->method('get')->with('testKeyStore')->willReturn($sessionStored);
+
+		$this->baseFilterParameters->parseInputFilterAllUsers();
+
+		$this->assertEmpty($this->baseFilterParameters->getCurrentParameters());
+	}
+
+
+	/**
+	 * @throws ModuleException
+	 */
+	#[Group('units')]
 	public function testParseInputFilterAllUsersParsesAllParameters(): void
 	{
 		$this->baseFilterParameters->setUserInputs([]);

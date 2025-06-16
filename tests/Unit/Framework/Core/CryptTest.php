@@ -38,7 +38,7 @@ class CryptTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testGenerateRandomString()
+	public function testGenerateRandomString(): void
 	{
 		$length = 32;
 		$randomString = $this->crypt->generateRandomString($length);
@@ -46,6 +46,17 @@ class CryptTest extends TestCase
 		$this->assertIsString($randomString);
 		$this->assertEquals($length, strlen($randomString));
 	}
+
+	#[Group('units')]
+	public function testGenerateRandomStringWithZeroLength(): void
+	{
+		$length = 32;
+		$randomString = $this->crypt->generateRandomString(0);
+
+		$this->assertIsString($randomString);
+		$this->assertEquals($length, strlen($randomString));
+	}
+
 
 	/**
 	 * @throws Exception

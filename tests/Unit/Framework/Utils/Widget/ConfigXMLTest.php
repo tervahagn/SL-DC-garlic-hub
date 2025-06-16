@@ -91,6 +91,27 @@ class ConfigXMLTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
+	public function testParseBasicsNoXML(): void
+	{
+		$TestClass = new ConfigXML();
+
+		$TestClass->parseBasic();
+
+		$this->assertEquals('', $TestClass->getId());
+		$this->assertEquals('', $TestClass->getNameByLanguage());
+		$this->assertEquals('icon.png', $TestClass->getIcon());
+		$this->assertEquals('index.html', $TestClass->getContent());
+		$this->assertEquals('en', $TestClass->getDefaultLanguage());
+		$this->assertEquals('ltr', $TestClass->getDefaultDirection());
+		$this->assertEquals('', $TestClass->getVersion());
+	}
+
+
+	/**
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 */
+	#[Group('units')]
 	public function testParseBasicsStandard(): void
 	{
 		$TestClass = new ConfigXML();
@@ -178,7 +199,6 @@ class ConfigXMLTest extends TestCase
 		$TestClass->parsePreferences();
 		$expect_preference = array('url' => array());
 		$this->assertEquals($expect_preference, $TestClass->getPreferences());
-
 	}
 
 	/**
@@ -330,18 +350,37 @@ class ConfigXMLTest extends TestCase
 		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
+	#[Group('units')]
+	public function testHasNoPreferences(): void
+	{
+		$xml_string = $this->getBasicStandard();
+		$TestClass = new ConfigXML();
+
+		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
+	}
+
+	#[Group('units')]
+	public function testHasEditablePreferencesFalseXMLNull(): void
+	{
+		$TestClass = new ConfigXML();
+
+		$this->assertFalse($TestClass->hasEditablePreferences());
+	}
+
+
 	/**
 	 * @throws FrameworkException
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testHasEditablePreferencesWithNoPreference(): void
+	public function testHasEditablePreferencesWithNoReadOnlyPreference(): void
 	{
-		$xml_string = $this->getNoDefaultLanguage();
+		$xml_string = $this->getNoReadOnly();
 		$TestClass = new ConfigXML();
 
-		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
+		$this->assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
 	}
+
 
 
 // ======================== helper functions =======================
@@ -353,6 +392,15 @@ class ConfigXMLTest extends TestCase
 			 <preference name="noTransform" value="true" readonly="true"/>
         </widget>';
 	}
+
+	private function getNoReadOnly(): string
+	{
+		return '<widget xmlns = "http://www.w3.org/ns/widgets">
+			 <preference name="count" value="255" ia:types="integer" />
+			 <preference name="noTransform" value="true"/>
+        </widget>';
+	}
+
 
 	private function getNoDefaultLanguage(): string
 	{

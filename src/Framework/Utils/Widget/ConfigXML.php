@@ -161,6 +161,9 @@ class ConfigXML extends BaseSimpleXml
 
 	public function parseBasic(): static
 	{
+		if ($this->MyXML === null)
+			return $this;
+
 		$this->parseDefaultLanguage()
 			 ->parseDefaultDirection()
 			 ->parseId()
@@ -231,19 +234,16 @@ class ConfigXML extends BaseSimpleXml
 		return ($countPreferences - $countReadonly > 0);
 	}
 
-	protected function parseDefaultLanguage(): static
+	private function parseDefaultLanguage(): static
 	{
-		if ($this->MyXML === null)
-			return $this;
-
 		$attr =  $this->MyXML->attributes('xml', true);
-		if (isset($attr['lang']))
+		if ($attr !== null && isset($attr['lang']))
 			$this->default_language = strtolower(substr($attr['lang'], 0, 2));
 
 		return $this;
 	}
 
-	protected function parseDefaultDirection(): static
+	private function parseDefaultDirection(): static
 	{
 		if (isset($this->MyXML['dir']))
 			$this->default_language = $this->MyXML['dir'];
@@ -273,13 +273,14 @@ class ConfigXML extends BaseSimpleXml
 		return $this;
 	}
 
-	protected function parseAuthor(): static
+	private function parseAuthor(): void
 	{
-		if ($this->MyXML === null)
-			return $this;
-
 		if (!isset($this->MyXML->author))
+		{
 			$this->author = [];
+			return;
+		}
+
 		if (isset($this->MyXML->author['href']))
 			$this->author['href'] = $this->MyXML->author['href'];
 		if (isset($this->MyXML->author['email']))
@@ -287,7 +288,6 @@ class ConfigXML extends BaseSimpleXml
 
 		$this->author['data'] = (string) $this->MyXML->author;
 		// Can have children but that is YAGNI
-		return $this;
 	}
 
 	/**
@@ -295,7 +295,7 @@ class ConfigXML extends BaseSimpleXml
 	 */
 	protected function parseName(): array
 	{
-		if ($this->MyXML === null || !isset($this->MyXML->name))
+		if (!isset($this->MyXML->name))
 			return [];
 
 		return $this->parseLanguages($this->MyXML->name);
@@ -306,7 +306,7 @@ class ConfigXML extends BaseSimpleXml
 	 */
 	protected function parseDescription(): array
 	{
-		if ($this->MyXML === null || !isset($this->MyXML->description))
+		if (!isset($this->MyXML->description))
 			return [];
 
 		return $this->parseLanguages($this->MyXML->description);
@@ -347,7 +347,7 @@ class ConfigXML extends BaseSimpleXml
 	}
 
 	/**
-	 * @return array<string,string>
+	 * @return array<string,mixed>
 	 */
 	protected function parsePreference(SimpleXMLElement $pref): array
 	{

@@ -26,6 +26,7 @@ use App\Framework\Exceptions\FrameworkException;
 use DateTime;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -89,7 +90,7 @@ class CookieTest extends TestCase
 		$this->assertEmpty($this->cookie->getHashedCookie('test_cookie'));
 	}
 
-	#[Group('units')]
+	#[RunInSeparateProcess] #[Group('units')]
 	public function testCreateCookieFalse(): void
 	{
 		$setcookie = $this->getFunctionMock('App\Framework\Core', 'setcookie');

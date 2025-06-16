@@ -64,7 +64,6 @@ class Cookie
 		$this->createCookie($name, $content, $expire);
 	}
 
-
 	/**
 	 * @throws FrameworkException
 	 */

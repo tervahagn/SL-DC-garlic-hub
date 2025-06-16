@@ -43,7 +43,7 @@ class FieldsRenderFactory
 		};
 	}
 
-	private function getCachedRenderer(string $rendererClass): FieldRenderInterface
+	protected function getCachedRenderer(string $rendererClass): FieldRenderInterface
 	{
 		if (!is_a($rendererClass, FieldRenderInterface::class, true))
 			throw new InvalidArgumentException(sprintf(
