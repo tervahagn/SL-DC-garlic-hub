@@ -123,6 +123,12 @@ class UsersService extends AbstractBaseService
 		return $this->getUserRepositories()['main']->update($UID, $saveData);
 	}
 
+	public function updateLocale(int $UID, string $locale): int
+	{
+		return $this->getUserRepositories()['main']->update($UID, ['locale' => $locale]);
+	}
+
+
 	/**
 	 * @throws Exception
 	 */
@@ -194,6 +200,9 @@ class UsersService extends AbstractBaseService
 
 		if (isset($postData['email']))
 			$saveData['email'] = $postData['email'];
+
+		if (isset($postData['locale']))
+			$saveData['locale'] = $postData['locale'];
 
 		if (isset($postData['status']))
 			$saveData['status'] = $postData['status'];

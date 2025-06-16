@@ -57,7 +57,7 @@ class EditLocalesController
 			$user = $session->get('user');
 			$user['locale'] = $locale;
 			$session->set('user', $user);
-			$this->userService->updateUser($user['UID'], ['locale' => $locale]);
+			$this->userService->updateLocale($user['UID'], $locale);
 		}
 
 		// determine current locale secure because it checks a whitelist
