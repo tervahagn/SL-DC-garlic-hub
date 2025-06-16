@@ -61,6 +61,11 @@ class ConcreteFilterBase extends FilterBase
 		}
 		return $where;
 	}
+
+	protected function prepareUserJoin(): array
+	{
+		// TODO: Implement prepareUserJoin() method.
+	}
 }
 class FilterBaseTest extends TestCase
 {
