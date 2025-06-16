@@ -1,5 +1,5 @@
-[![docker-hub image](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/sagiadinos/garlic-hub/actions/workflows/docker-image.yml)
-[![garlic-hub coverage](https://github.com/sagiadinos/garlic-hub/blob/main/misc/coverage.svg)](https://github.com/sagiadinos/garlic-hub/blob/main/misc/coverage.svg)
+[![docker-hub image](https://github.com/garlic-signage/garlic-hub/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/garlic-signage/garlic-hub/actions/workflows/docker-image.yml)
+[![garlic-hub coverage](https://github.com/garlic-signage/garlic-hub/blob/main/misc/coverage.svg)](https://github.com/sagiadinos/garlic-hub/blob/main/misc/coverage.svg)
 
 # Garlic-Hub: Smart Digital Signage Management
 
