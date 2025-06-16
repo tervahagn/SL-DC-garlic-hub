@@ -96,7 +96,7 @@ class UploadControllerTest extends TestCase
 
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
 		$this->mockSession();
-		$this->uploadServiceMock->method('uploadMediaFiles')->willReturn(['success' => true]);
+		$this->uploadServiceMock->method('uploadMediaFiles')->willReturn([['success' => true]]);
 
 		$this->mockResponse(['success' => true]);
 		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadLocalFile($this->requestMock, $this->responseMock));

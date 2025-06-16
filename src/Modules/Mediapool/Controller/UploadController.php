@@ -77,8 +77,7 @@ class UploadController
 		$UID      = $request->getAttribute('session')->get('user')['UID'];
 		$succeed  = $this->uploadService->uploadMediaFiles($node_id, $UID, $uploadedFile['file'], $metadata);
 
-		// ToDo, fix this shit
-		return $this->jsonResponse($response, $succeed);
+		return $this->jsonResponse($response, $succeed[0]);
 	}
 
 	public function uploadFromUrl(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
