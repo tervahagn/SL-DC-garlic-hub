@@ -89,6 +89,7 @@ trait FindOperationsTrait
 	/**
 	 * Finds records with a custom WHERE clause.
 	 *
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllBy(array $conditions = [], array $joins = [], array $limit = [], string $groupBy = '', array $orderBy = []): array

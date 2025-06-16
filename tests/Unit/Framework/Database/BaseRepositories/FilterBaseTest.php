@@ -64,7 +64,7 @@ class ConcreteFilterBase extends FilterBase
 
 	protected function prepareUserJoin(): array
 	{
-		// TODO: Implement prepareUserJoin() method.
+		return [];
 	}
 }
 class FilterBaseTest extends TestCase

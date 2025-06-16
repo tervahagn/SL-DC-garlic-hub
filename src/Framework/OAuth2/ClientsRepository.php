@@ -57,6 +57,10 @@ class ClientsRepository extends SqlBase implements ClientRepositoryInterface
 	 */
 	public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType = 'authorization_code'): bool
 	{
+		if ($clientSecret === null || $grantType === null)
+			return false;
+
+		/** @var array<string,mixed> $client */
 		$client = $this->getFirstDataSet($this->findAllBy(['client_id' => $clientIdentifier]));
 
 		if (empty($client))

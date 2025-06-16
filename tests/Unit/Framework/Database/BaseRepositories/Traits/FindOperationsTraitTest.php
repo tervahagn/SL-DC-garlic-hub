@@ -446,8 +446,8 @@ class FindOperationsTraitTest extends TestCase
 		$this->assertEmpty($this->repository->getFirstDataSet([]));
 
 		//with data
-		$data = ['first', 'second', 'third'];
-		$this->assertEquals('first', $this->repository->getFirstDataSet($data));
+		$data = [['first' => 1], ['second' => 2],['third' => []]];
+		$this->assertEquals(['first' => 1], $this->repository->getFirstDataSet($data));
 
 	}
 }

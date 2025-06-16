@@ -74,7 +74,7 @@ class ClientsRepositoryTest extends TestCase
 	public function testGetClientEntityReturnsNullIfClientNotFound(): void
 	{
 		$this->repository->method('findAllBy')->willReturn([]);
-		$this->repository->method('getFirstDataSet')->willReturn(null);
+		$this->repository->method('getFirstDataSet')->willReturn([]);
 
 		$this->expectException(FrameworkException::class);
 		$this->expectExceptionMessage('Client not found');
@@ -111,7 +111,7 @@ class ClientsRepositoryTest extends TestCase
 	public function testValidateClientReturnsFalseWhenClientNotFound(): void
 	{
 		$this->repository->method('findAllBy')->willReturn([]);
-		$this->repository->method('getFirstDataSet')->willReturn(null);
+		$this->repository->method('getFirstDataSet')->willReturn([]);
 
 		$isValid = $this->repository->validateClient('non-existent-client-id', 'client-secret');
 
