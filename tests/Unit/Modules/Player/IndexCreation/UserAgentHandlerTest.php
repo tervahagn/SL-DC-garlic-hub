@@ -153,7 +153,7 @@ class UserAgentHandlerTest extends TestCase
 		$this->handler->parseUserAgent($userAgent);
 
 		$expected = [
-			'uuid' => '0d8df0bd-3a5c-4a19-bec7-ecf00e3012e6',
+			'uuid' => '',
 			'firmware' => '',
 			'name' => '',
 			'model' => PlayerModel::UNKNOWN

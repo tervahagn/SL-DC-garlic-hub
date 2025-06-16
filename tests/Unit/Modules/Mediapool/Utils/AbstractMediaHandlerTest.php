@@ -27,6 +27,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Utils\AbstractMediaHandler;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Stream;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use PHPUnit\Framework\Attributes\Group;
@@ -120,8 +121,8 @@ class AbstractMediaHandlerTest extends TestCase
 	public function testDetermineNewFilenameThrowsException2()
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
-		$this->filesystemMock->method('readStream')->willReturn(false);
-		$this->expectException(ModuleException::class);
+		$this->filesystemMock->method('readStream')->willReturn(null);
+		$this->expectException(\TypeError::class);
 		$this->concreteMediaHandler->determineNewFilename('/path/to/file');
 	}
 

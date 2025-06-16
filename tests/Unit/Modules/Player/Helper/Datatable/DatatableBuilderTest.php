@@ -172,6 +172,7 @@ class DatatableBuilderTest extends TestCase
 
 		$this->parametersMock->method('hasParameter')
 			->willReturnMap([
+				[Parameters::PARAMETER_ACTIVITY, true],
 				[BaseParameters::PARAMETER_UID, true]
 			]);
 
@@ -210,7 +211,6 @@ class DatatableBuilderTest extends TestCase
 
 		]);
 
-
 		$this->builder->collectFormElements();
 
 		$form = $this->builder->getDatatableStructure()['form'];
@@ -241,35 +241,30 @@ class DatatableBuilderTest extends TestCase
 
 		$this->parametersMock->method('hasParameter')
 			->willReturnMap([
+				[Parameters::PARAMETER_ACTIVITY, false],
 				[BaseParameters::PARAMETER_UID, false]
 			]);
 
 		$this->parametersMock->method('getValueOfParameter')
 			->willReturnMap([
-				[Parameters::PARAMETER_ACTIVITY, ''],
 				[Parameters::PARAMETER_PLAYER_NAME, 'player_name'],
 				[Parameters::PARAMETER_MODEL, '']
 			]);
 
 		$translator->method('translateArrayForOptions')
 			->willReturnMap([
-				[Parameters::PARAMETER_ACTIVITY.'_selects', 'player', []],
 				[Parameters::PARAMETER_MODEL.'_selects', 'player', []]
 			]);
 
 		$translator->method('translate')->willReturnMap([
-			[Parameters::PARAMETER_ACTIVITY, 'player', [], 'Activity'],
 			[Parameters::PARAMETER_PLAYER_NAME, 'player', [], 'Player name'],
 			[Parameters::PARAMETER_MODEL, 'player', 'Player model']
 		]);
 
-
-		$activityFieldMock   = $this->createMock(DropdownField::class);
 		$playerNameFieldMock = $this->createMock(TextField::class);
 		$playerModeFieldMock = $this->createMock(DropdownField::class);
 
 		$this->buildServiceMock->method('buildFormField')->willReturnMap([
-			[['type' => FieldType::DROPDOWN, 'id' => Parameters::PARAMETER_ACTIVITY, 'name' => Parameters::PARAMETER_ACTIVITY, 'title' => 'Activity', 'label' => 'Activity', 'value' => '','options' => []], $activityFieldMock],
 			[['type' => FieldType::TEXT, 'id' => Parameters::PARAMETER_PLAYER_NAME, 'name' => Parameters::PARAMETER_PLAYER_NAME, 'title' => 'Player name', 'label' => 'Player name', 'value' => 'player_name'], $playerNameFieldMock],
 			[['type' => FieldType::DROPDOWN, 'id' => Parameters::PARAMETER_MODEL, 'name' => Parameters::PARAMETER_MODEL, 'title' => 'Player model', 'label' => 'Player model', 'value' => '','options' => []], $playerModeFieldMock]
 		]);
@@ -279,7 +274,6 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $form);
 		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
 		$this->assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
 

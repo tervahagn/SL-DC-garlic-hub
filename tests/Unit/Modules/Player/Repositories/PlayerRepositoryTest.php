@@ -138,13 +138,13 @@ class PlayerRepositoryTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->exactly(3))->method('andWhere')
 			->willReturnMap([
-					['activity = :activity', $this->queryBuilderMock],
+					['player.last_access = :playerlast_access', $this->queryBuilderMock],
 					['playlist_id = :playlist_id', $this->queryBuilderMock],
 					['player.player_name LIKE :playerplayer_name', $this->queryBuilderMock],
 				]);
 		$this->queryBuilderMock->expects($this->exactly(3))->method('setParameter')
 			->willReturnMap([
-					['activity', '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) < refresh * 2', ParameterType::STRING, $this->queryBuilderMock],
+					['playerlast_access', '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(player.last_access)) < refresh * 2', ParameterType::STRING, $this->queryBuilderMock],
 					['playlist_id', 12, ParameterType::STRING, $this->queryBuilderMock],
 					['playerplayer_name', '%name%', ParameterType::STRING, $this->queryBuilderMock],
 				]
@@ -181,10 +181,10 @@ class PlayerRepositoryTest extends TestCase
 			]);
 
 		$this->queryBuilderMock->expects($this->once())->method('andWhere')
-			->with('activity = :activity');
+			->with('player.last_access = :playerlast_access');
 
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')
-			->with('activity', '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_access)) > refresh * 2');
+			->with('playerlast_access', '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(player.last_access)) > refresh * 2');
 
 		$expected = ['some_result'];
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);

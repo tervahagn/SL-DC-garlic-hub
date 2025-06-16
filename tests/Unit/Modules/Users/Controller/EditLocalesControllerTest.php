@@ -78,8 +78,8 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withStatus')
 						   ->with(302)->willReturn($this->responseMock);
 
-		$this->userServiceMock->expects($this->once())->method('updateUser')
-			 ->with(1, ['locale' => 'de_DE']);
+		$this->userServiceMock->expects($this->once())->method('updateLocale')
+			 ->with(1, 'de_DE');
 
 
 		$controller = new EditLocalesController($this->userServiceMock);

@@ -59,7 +59,7 @@ class UploadControllerTest extends TestCase
 	#[Group('units')]
 	public function testSearchStockImages(): void
 	{
-		$bodyParams = ['api_url' => 'https://example.com'];
+		$bodyParams = ['api_url' => 'https://example.com', 'headers' => []];
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
 		$this->uploadServiceMock->method('requestApi')->with($bodyParams['api_url'])->willReturn(['response_body']);
 

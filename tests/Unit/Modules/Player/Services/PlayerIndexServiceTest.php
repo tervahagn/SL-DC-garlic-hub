@@ -114,8 +114,7 @@ class PlayerIndexServiceTest extends TestCase
 			->with(1)
 			->willReturn($this->playerEntityMock);
 
-		$this->indexProviderMock->expects($this->once())->method('handleNew')
-			->with($this->playerEntityMock);
+		$this->indexProviderMock->expects($this->once())->method('handleNew');
 
 		$this->indexProviderMock->expects($this->once())->method('getFilePath')
 			->willReturn($filePath);

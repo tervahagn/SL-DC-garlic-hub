@@ -32,7 +32,7 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testConstructor()
 	{
-		$this->assertCount(8, $this->parameters->getCurrentParameters());
+		$this->assertCount(7, $this->parameters->getCurrentParameters());
 		$this->assertSame('player', $this->parameters->getModuleName());
 		$this->assertInstanceOf(Parameters::class, $this->parameters);
 	}
