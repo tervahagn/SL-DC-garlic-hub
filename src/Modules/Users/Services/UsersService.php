@@ -92,7 +92,7 @@ class UsersService extends AbstractBaseService
 	{
 		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 
-		return $this->updateUser($UID, $data);
+		return $this->getUserRepositories()['main']->update($UID, $data);
 	}
 
 	/**
