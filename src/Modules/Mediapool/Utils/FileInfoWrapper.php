@@ -39,7 +39,8 @@ class FileInfoWrapper
 
 	public function __destruct()
 	{
-		finfo_close($this->fileInfo);
+		if (isset($this->fileInfo))
+			finfo_close($this->fileInfo);
 	}
 
 	public function fileExists(string $path): bool

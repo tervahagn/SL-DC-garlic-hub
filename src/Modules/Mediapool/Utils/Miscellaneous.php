@@ -63,7 +63,7 @@ class Miscellaneous extends AbstractMediaHandler
 	/**
 	 * @throws FilesystemException
 	 */
-	public function createThumbnail(string $filePath)
+	public function createThumbnail(string $filePath): void
 	{
 		$fileInfo  = pathinfo($filePath);
 
