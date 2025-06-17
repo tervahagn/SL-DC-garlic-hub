@@ -59,8 +59,6 @@ class ShowControllerTest extends TestCase
 		$this->sessionMock      = $this->createMock(Session::class);
 		$this->translatorMock   = $this->createMock(Translator::class);
 		$this->configMock       = $this->createMock(Config::class);
-
-
 	}
 
 	/**
@@ -92,7 +90,7 @@ class ShowControllerTest extends TestCase
 
 		$this->mockResponse();
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->show($this->requestMock, $this->responseMock));
+		$this->controller->show($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -124,7 +122,7 @@ class ShowControllerTest extends TestCase
 
 		$this->mockResponse();
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->show($this->requestMock, $this->responseMock));
+		$this->controller->show($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -156,7 +154,7 @@ class ShowControllerTest extends TestCase
 
 		$this->mockResponse();
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->show($this->requestMock, $this->responseMock));
+		$this->controller->show($this->requestMock, $this->responseMock);
 	}
 
 

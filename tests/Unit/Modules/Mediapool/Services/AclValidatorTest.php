@@ -52,7 +52,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsFailsNoUID()
+	public function testCheckDirectoryPermissionsFailsNoUID(): void
 	{
 		$UID       = 1;
 		$directory = [];
@@ -70,7 +70,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsOwnerIsSame()
+	public function testCheckDirectoryPermissionsOwnerIsSame(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => $UID, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
@@ -88,7 +88,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsModuleAdmin()
+	public function testCheckDirectoryPermissionsIsModuleAdmin(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
@@ -110,7 +110,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsSubAdminWrongAccess()
+	public function testCheckDirectoryPermissionsIsSubAdminWrongAccess(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 1, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
@@ -136,7 +136,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsSubAdminSucceedRootDir()
+	public function testCheckDirectoryPermissionsIsSubAdminSucceedRootDir(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 0];
@@ -162,7 +162,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsEditorWrongAccess()
+	public function testCheckDirectoryPermissionsIsEditorWrongAccess(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
@@ -188,7 +188,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsSubAdminSucceedNormalDir()
+	public function testCheckDirectoryPermissionsIsSubAdminSucceedNormalDir(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
@@ -214,7 +214,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsEditorSucceed()
+	public function testCheckDirectoryPermissionsIsEditorSucceed(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
@@ -240,7 +240,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsViewerWrongNode()
+	public function testCheckDirectoryPermissionsIsViewerWrongNode(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
@@ -266,7 +266,7 @@ class AclValidatorTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsViewerSucceed()
+	public function testCheckDirectoryPermissionsIsViewerSucceed(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => 0, 'parent_id' => 12];
@@ -291,7 +291,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testCheckDirectoryPermissionsIsPublic()
+	public function testCheckDirectoryPermissionsIsPublic(): void
 	{
 		$UID = 1;
 		$directory = ['UID' => 2, 'company_id' => 4, 'node_id' => 1, 'visibility' => AclValidator::VISIBILITY_PUBLIC, 'parent_id' => 0];
@@ -300,6 +300,4 @@ class AclValidatorTest extends TestCase
 
 		$this->assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
 	}
-
-
 }

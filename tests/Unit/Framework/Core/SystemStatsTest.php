@@ -68,7 +68,6 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
-
 	#[RunInSeparateProcess] #[Group('units')]
 	public function testDetermineSystemLoadFalse(): void
 	{

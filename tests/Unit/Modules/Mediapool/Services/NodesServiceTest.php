@@ -23,7 +23,6 @@ namespace Tests\Unit\Modules\Mediapool\Services;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use App\Modules\Mediapool\Services\NodesService;
@@ -395,7 +394,7 @@ class NodesServiceTest extends TestCase
 	/**
 	 * @throws ModuleException
 	 * @throws DatabaseException
-	 * @throws \Doctrine\DBAL\Exception|FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testMoveNodeSucceed(): void
@@ -420,7 +419,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -441,7 +439,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -468,7 +465,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -495,7 +491,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -522,7 +517,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws DatabaseException
-	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */

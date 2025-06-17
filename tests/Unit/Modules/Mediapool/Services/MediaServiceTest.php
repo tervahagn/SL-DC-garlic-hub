@@ -161,7 +161,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testUpdateMediaNoEditPermissions()
+	public function testUpdateMediaNoEditPermissions(): void
 	{
 		$mediaId = 'media-1';
 		$filename = 'new-filename';
@@ -178,7 +178,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDeleteMediaDeletesMedia()
+	public function testDeleteMediaDeletesMedia(): void
 	{
 		$mediaId = 'media-1';
 		$media = ['id' => $mediaId, 'node_id' => 1];
@@ -193,7 +193,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDeleteMediaNoEditPermissionsThrowsException()
+	public function testDeleteMediaNoEditPermissionsThrowsException(): void
 	{
 		$mediaId = 'media-1';
 		$media = ['id' => $mediaId, 'node_id' => 1];
@@ -208,7 +208,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testMoveMediaMovesMedia()
+	public function testMoveMediaMovesMedia(): void
 	{
 		$mediaId = 'media-1';
 		$nodeId = 2;
@@ -227,7 +227,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testMoveMediaNoReadPermissions()
+	public function testMoveMediaNoReadPermissions(): void
 	{
 		$mediaId = 'media-1';
 		$nodeId = 2;
@@ -243,7 +243,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testMoveMediaNoEditPermissions()
+	public function testMoveMediaNoEditPermissions(): void
 	{
 		$mediaId = 'media-1';
 		$nodeId = 2;
@@ -263,7 +263,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCloneMediaClonesMedia()
+	public function testCloneMediaClonesMedia(): void
 	{
 		$mediaId = 'media-1';
 		$media = ['id' => $mediaId, 'node_id' => 1];
@@ -282,7 +282,7 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCloneMediaNoPermissions()
+	public function testCloneMediaNoPermissions(): void
 	{
 		$mediaId = 'media-1';
 		$media = ['id' => $mediaId, 'node_id' => 1];
@@ -296,6 +296,9 @@ class MediaServiceTest extends TestCase
 		$this->mediaService->cloneMedia($mediaId);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFetchMediaByChecksumReturnsMedia(): void
 	{

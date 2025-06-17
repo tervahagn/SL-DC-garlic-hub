@@ -63,7 +63,7 @@ class UploadController
 
 		$bodyParams = $request->getParsedBody();
 		if (!is_array($bodyParams))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files parameter.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No body parameter.']);
 
 		$node_id    = (int)($bodyParams['node_id'] ?? 0);
 		if ($node_id === 0)

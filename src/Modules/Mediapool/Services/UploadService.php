@@ -61,8 +61,8 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		$this->logger              = $logger;
 	}
 
-	/**+
-	 * @param array<string, string> $headers
+	/**
+	 * @param array<string, mixed> $headers
 	 * @return array<string,mixed>
 	 * @throws GuzzleException
 	 */
@@ -74,7 +74,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 
 		$response = $this->client->request('GET', $apiUrl, $options);
 
-		return json_decode($response->getBody(), true);
+		return (array) json_decode($response->getBody(), true);
 	}
 
 	/**
@@ -85,7 +85,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	 *
 	 * media_id is a UUID to make it more difficult to guess
 	 *
-	 * @param array<string,string> $metadata
+	 * @param array<string,int|string> $metadata
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */

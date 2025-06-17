@@ -65,7 +65,23 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['response_body']]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->searchStockImages($this->requestMock, $this->responseMock));
+		$this->controller->searchStockImages($this->requestMock, $this->responseMock);
+	}
+
+	/**
+	 * @throws GuzzleException
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testSearchStockImagesBodyParamsNull(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn(null);
+		$this->uploadServiceMock->expects($this->never())->method('requestApi');
+
+		$this->mockResponse(['success' => false, 'error_message' => 'No body parameter.']);
+
+		$this->controller->searchStockImages($this->requestMock, $this->responseMock);
+
 	}
 
 	/**
@@ -80,7 +96,7 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'api_url missing']);
 
-		$this->assertInstanceOf(ResponseInterface::class,$this->controller->searchStockImages($this->requestMock, $this->responseMock));
+		$this->controller->searchStockImages($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -99,7 +115,7 @@ class UploadControllerTest extends TestCase
 		$this->uploadServiceMock->method('uploadMediaFiles')->willReturn([['success' => true]]);
 
 		$this->mockResponse(['success' => true]);
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadLocalFile($this->requestMock, $this->responseMock));
+		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -117,9 +133,27 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'No files to upload.']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadLocalFile($this->requestMock, $this->responseMock));
+		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUploadNoUploadFileBodyParamsNull(): void
+	{
+		$uploadedFile = ['file' => $this->createMock(UploadedFile::class)];
+		$this->requestMock->method('getUploadedFiles')->willReturn($uploadedFile);
+
+		$this->requestMock->method('getParsedBody')->willReturn(null);
+
+		$this->uploadServiceMock->expects($this->never())->method('uploadMediaFiles');
+
+		$this->mockResponse(['success' => false, 'error_message' => 'No body parameter.']);
+
+		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
+	}
 	/**
 	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
@@ -136,7 +170,7 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node is missing']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadLocalFile($this->requestMock, $this->responseMock));
+		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -156,7 +190,7 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'no files']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadLocalFile($this->requestMock, $this->responseMock));
+		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -172,7 +206,7 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadFromUrl($this->requestMock, $this->responseMock));
+		$this->controller->uploadFromUrl($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -187,8 +221,23 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node is missing']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadFromUrl($this->requestMock, $this->responseMock));
+		$this->controller->uploadFromUrl($this->requestMock, $this->responseMock);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testUploadFromUrlBodyParamNull(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn(null);
+
+		$this->mockResponse(['success' => false, 'error_message' => 'No files to upload.']);
+		$this->uploadServiceMock->expects($this->never())->method('uploadExternalMedia');
+
+		$this->controller->uploadFromUrl($this->requestMock, $this->responseMock);
+	}
+
 
 	/**
 	 * @throws Exception
@@ -202,7 +251,7 @@ class UploadControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'No external link submitted.']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->uploadFromUrl($this->requestMock, $this->responseMock));
+		$this->controller->uploadFromUrl($this->requestMock, $this->responseMock);
 	}
 
 
@@ -221,9 +270,10 @@ class UploadControllerTest extends TestCase
 	}
 
 	/**
+	 * @param array<string,mixed> $data
 	 * @throws Exception
 	 */
-	private function mockResponse($data): void
+	private function mockResponse(array $data): void
 	{
 		$streamInterfaceMock = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())

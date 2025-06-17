@@ -74,7 +74,7 @@ class MediaService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return list<array<string,mixed>>
 	 */
 	public function listMedia(int $nodeId): array
 	{
@@ -135,7 +135,9 @@ class MediaService
 	}
 
 	/**
+	 * @param string $checksum
 	 * @return array<string,mixed>
+	 * @throws Exception
 	 */
 	public function fetchMediaByChecksum(string $checksum): array
 	{

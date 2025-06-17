@@ -84,7 +84,12 @@ class UploadServiceTest extends TestCase
 			->willReturn($responseMock);
 
 		$resource = fopen('php://temp', 'r+');
-		fwrite($resource, json_encode($expectedData));
+		$this->assertNotFalse($resource, 'Failed to resource for testing.');
+		$str = json_encode($expectedData);
+		$this->assertNotFalse($str, 'Failed to json for testing.');
+		$i = fwrite($resource, $str);
+		$this->assertNotFalse($i, 'Failed to resource for testing.');
+
 		rewind($resource);
 
 		$stream = new Stream($resource);
@@ -104,20 +109,25 @@ class UploadServiceTest extends TestCase
 		$expectedData = ['key' => 'value'];
 		$responseMock = $this->createMock(ResponseInterface::class);
 
-		$options = ['headers' => ['Authorization: Bearer']];
+		$options = ['headers' => ['Auth' => 'Authorization: Bearer']];
 		$this->clientMock
 			->method('request')
 			->with('GET', 'https://api.example.com', $options)
 			->willReturn($responseMock);
 
 		$resource = fopen('php://temp', 'r+');
-		fwrite($resource, json_encode($expectedData));
+		$this->assertNotFalse($resource, 'Failed to resource for testing.');
+
+		$str = json_encode($expectedData);
+		$this->assertNotFalse($str, 'Failed to json for testing.');
+		$i = fwrite($resource, $str);
+		$this->assertNotFalse($i, 'Failed to resource for testing.');
 		rewind($resource);
 
 		$stream = new Stream($resource);
 		$responseMock->method('getBody')->willReturn($stream);
 
-		$result = $this->uploadService->requestApi('https://api.example.com', ['Authorization: Bearer']);
+		$result = $this->uploadService->requestApi('https://api.example.com', ['Auth' => 'Authorization: Bearer']);
 		$this->assertEquals($expectedData, $result);
 	}
 
@@ -221,6 +231,21 @@ class UploadServiceTest extends TestCase
 		$result = $this->uploadService->uploadMediaFiles($nodeId, $uid, $uploadedFileMock, $extMetadata);
 
 		$this->assertTrue($result[0]['success']);
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUploadMediaFilesWithErrorNull(): void
+	{
+		$uploadedFile = $this->createMock(UploadedFile::class);
+		$uploadedFile->method('getClientMediaType')->willReturn(null);
+		$this->loggerMock->expects($this->once())->method('error');
+		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
+
+		$this->assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -338,6 +363,35 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUploadMediaFilesWithErrorGetSizeNull(): void
+	{
+		$uploadedFileMock = $this->createMock(UploadedFile::class);
+		$uploadedFileMock->method('getClientMediaType')->willReturn('video/mp4');
+		$uploadedFileMock->method('getError')->willReturn(UPLOAD_ERR_OK);
+
+		$mediaHandlerMock = $this->createMock(AbstractMediaHandler::class);
+		$this->mediaHandlerFactoryMock
+			->expects($this->once())
+			->method('createHandler')
+			->with('video/mp4')
+			->willReturn($mediaHandlerMock);
+
+		$uploadedFileMock->method('getSize')->willReturn(null);
+		$this->loggerMock->expects($this->once())->method('error')
+			->with('UploadService Error: Not able to detect size.');
+
+		$expected = ['success' => false, 'error_message' => 'Not able to detect size.'];
+		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFileMock, []);
+
+		$this->assertSame($expected, $result[0]);
+	}
+
+
+	/**
+	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testUploadExternalMediaSuccess(): void
@@ -374,7 +428,7 @@ class UploadServiceTest extends TestCase
 		$nodeId = 1;
 		$uid = 1;
 		$externalLink = 'https://example.com/image.jpg';
-		$extMetadata = ['title' => 'uiuiu', 'description' => 'Test file'];
+		$extMetadata = ['title' => 'a title', 'description' => 'Test file'];
 
 		$responseMock = $this->createMock(ResponseInterface::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);

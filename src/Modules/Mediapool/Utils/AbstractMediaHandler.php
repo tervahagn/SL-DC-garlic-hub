@@ -167,7 +167,7 @@ abstract class AbstractMediaHandler
 		$stream = $this->filesystem->readStream($filePath);
 
 		$contents = stream_get_contents($stream);
-		if (!$contents)
+		if ($contents === false)
 			throw new ModuleException('mediapool', 'Stream from '.$filePath.' not readable');
 
 		$hash = hash('sha256', $contents);
