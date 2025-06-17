@@ -326,7 +326,6 @@ class ItemsServiceTest extends TestCase
 		$this->assertEquals(100, $result['default_duration']);
 	}
 
-
 	/**
 	 * @throws ModuleException
 	 * @throws CoreException

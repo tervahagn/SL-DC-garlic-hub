@@ -237,7 +237,6 @@ class PlayerRepositoryTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
-
 	/**
 	 * @throws \Doctrine\DBAL\Exception
 	 */

@@ -153,11 +153,9 @@ class ItemsService extends AbstractBaseService
 					$tmp = $value;
 					if (str_starts_with($value['mimetype'], 'image/'))
 					{
+						/** @var string $s */
 						$s = strrchr($value['mimetype'], '/');
-						if ($s !== false)
-							$ext = str_replace('jpeg', 'jpg', substr($s, 1));
-						else
-							$ext = 'jpg';
+						$ext = str_replace('jpeg', 'jpg', substr($s, 1));
 					}
 					else
 						$ext = 'jpg';

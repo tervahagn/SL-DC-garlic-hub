@@ -136,6 +136,36 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->assertSame($expectedCount, $result);
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFindByUIDPlaylistModeEmpty(): void
+	{
+		$fields = [
+			'elements_page' => ['value' => 1],
+			'elements_per_page' => ['value' => 10],
+			'playlist_mode' => ['value' => '']
+		];
+
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('playlists.*')->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('from')
+			->with('playlists')->willReturnSelf();
+
+		$this->queryBuilderMock->expects($this->never())->method('leftJoin');
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+
+		$expected = [['some_result' => 'result']];
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
+
+		$result = $this->repository->findAllFilteredByUID($fields, 1);
+		$this->assertSame($expected, $result);
+	}
+
+
 
 	/**
 	 * @throws Exception

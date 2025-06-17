@@ -277,7 +277,7 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testSumAndCountMetricsByPlaylistIdAndOwnerEmptyResult(): void
+	public function testSumAndCountMetricsByPlaylistIdAndOwnerRetrunNull(): void
 	{
 		$playlistId = 101;
 		$ownerId = 500;
@@ -308,10 +308,12 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->resultMock->expects($this->once())
 			->method('fetchAssociative')
-			->willReturn([]);
+			->willReturn(false);
 
 		$this->assertEquals([], $this->repository->sumAndCountMetricsByPlaylistIdAndOwner($playlistId, $ownerId));
 	}
+
+
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
