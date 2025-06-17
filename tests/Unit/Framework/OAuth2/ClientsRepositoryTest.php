@@ -159,4 +159,34 @@ class ClientsRepositoryTest extends TestCase
 
 		$this->assertFalse($isValid);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testValidateClientSecretNull(): void
+	{
+
+		$this->repository->expects($this->never())->method('findAllBy');
+		$this->repository->expects($this->never())->method('getFirstDataSet');
+
+		$isValid = $this->repository->validateClient('test-client-id', null);
+
+		$this->assertFalse($isValid);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testValidateGrantTypeNull(): void
+	{
+
+		$this->repository->expects($this->never())->method('findAllBy');
+		$this->repository->expects($this->never())->method('getFirstDataSet');
+
+		$isValid = $this->repository->validateClient('test-client-id', 'client-secret', null);
+
+		$this->assertFalse($isValid);
+	}
 }

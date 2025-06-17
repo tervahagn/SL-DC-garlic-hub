@@ -57,12 +57,12 @@ class UsersDatatableServiceTest extends TestCase
 
 		$this->repositoryMock->expects($this->once())->method('findAllFiltered')
 			->with(['empty'])
-			->willReturn(['result']);
+			->willReturn([['result' => 1]]);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -88,11 +88,11 @@ class UsersDatatableServiceTest extends TestCase
 
 		$this->repositoryMock->expects($this->once())->method('findAllFilteredByUID')
 			->with(['empty'], 789)
-			->willReturn(['result']);
+			->willReturn([['result' => 1]]);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
 	}
 }

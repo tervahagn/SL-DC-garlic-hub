@@ -51,6 +51,42 @@ class SystemStatsTest extends TestCase
 		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testDetermineSystemLoadReturnWrong(): void
+	{
+		$getLoadAvg = $this->getFunctionMock('App\Framework\Core', 'sys_getloadavg');
+		$getLoadAvg->expects($this->once())->willReturn([1.23, 0.56]);
+
+		$expectedFormatted = [
+			'1_min' => '',
+			'5_min' => '',
+			'15_min' => '',
+		];
+
+		$this->systemStats->determineSystemLoad();
+
+		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
+	}
+
+
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testDetermineSystemLoadFalse(): void
+	{
+		$getLoadAvg = $this->getFunctionMock('App\Framework\Core', 'sys_getloadavg');
+		$getLoadAvg->expects($this->once())->willReturn(false);
+
+		$expectedFormatted = [
+			'1_min' => '',
+			'5_min' => '',
+			'15_min' => '',
+		];
+
+		$this->systemStats->determineSystemLoad();
+
+		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
+	}
+
+
 	/**
 	 * @throws CoreException
 	 */
@@ -144,6 +180,35 @@ class SystemStatsTest extends TestCase
 		];
 		$this->assertSame($expected, $this->systemStats->getDiscInfo());
 	}
+
+	/**
+	 * @throws CoreException
+	 */
+	#[Group('units')]
+	public function testDetermineDiskUsageHandlesInvalidPregsOutput(): void
+	{
+		$mockOutput = "Filesystem      Size  Used Avail Use% Mounted on\n"
+			. "total           100G   75G";
+
+
+		$this->shellExecutorMock->method('setCommand')
+			->with('df -h --total')
+			->willReturnSelf();
+
+		$this->shellExecutorMock->method('executeSimple')
+			->willReturn($mockOutput);
+
+		$this->systemStats->determineDiskUsage();
+
+		$expected = [
+			'size' => '',
+			'used' => '',
+			'available' => '',
+			'percent' => '',
+		];
+		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+	}
+
 
 	/**
 	 * @throws CoreException

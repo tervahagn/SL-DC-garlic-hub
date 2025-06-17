@@ -23,11 +23,14 @@ namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Exceptions\CoreException;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 class ShellExecutorTest extends TestCase
 {
+	use PHPMock;
 	private ShellExecutor $executor;
 
 	protected function setUp(): void
@@ -76,4 +79,19 @@ class ShellExecutorTest extends TestCase
 
 		$this->assertEquals("Hello, World!\n", $result);
 	}
+
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testExecuteSimpleFails(): void
+	{
+		$shell_exec = $this->getFunctionMock('App\Framework\Core', 'shell_exec');
+		$shell_exec->expects($this->once())->willReturn(null);
+
+		$this->expectException(CoreException::class);
+		$this->expectExceptionMessage('Command failed: prfft');
+
+		$this->executor->setCommand('prfft');
+		$this->executor->executeSimple();
+
+	}
+
 }

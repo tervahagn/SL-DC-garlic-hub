@@ -142,8 +142,6 @@ class MediaProperties
 	{
 		foreach ($metadata->streams as $stream)
 		{
-			if (!is_object($stream))
-				continue;
 			if (!isset($stream->codec_type) || !is_string($stream->codec_type) || !isset($stream->codec_name) || !is_string($stream->codec_name))
 				continue;
 

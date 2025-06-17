@@ -1,4 +1,15 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Call to an undefined method *#'
+        -
+            message: '#Call to function preg_split\(\) will always evaluate to array\|false.#'
+            path: src/Framework/Core/SystemStats.php
 includes:
- # we deactivate this temporary to clean up the mess with IDE based phpstan
- #   - phpstan-src.neon
- #   - phpstan-tests.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon

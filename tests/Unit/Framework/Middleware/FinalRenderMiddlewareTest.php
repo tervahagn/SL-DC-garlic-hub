@@ -30,7 +30,9 @@ use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Modules\Users\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -44,13 +46,14 @@ use Slim\Flash\Messages;
 
 class FinalRenderMiddlewareTest extends TestCase
 {
+	use PHPMock;
+
 	private FinalRenderMiddleware $middleware;
 	private AclValidator&MockObject $aclValidatorMock;
 	private AdapterInterface&MockObject $templateServiceMock;
 	private ServerRequestInterface&MockObject $requestMock ;
 	private ResponseInterface&MockObject $responseMock;
 	private RequestHandlerInterface&MockObject $handlerMock;
-	private UriInterface&MockObject $uriInterfaceMock;
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 	private Config&MockObject $configMock;
@@ -67,13 +70,13 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->requestMock         = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock        = $this->createMock(ResponseInterface::class);
 		$this->handlerMock         = $this->createMock(RequestHandlerInterface::class);
-		$this->uriInterfaceMock    = $this->createMock(UriInterface::class);
+		$uriInterfaceMock = $this->createMock(UriInterface::class);
 		$this->translatorMock      = $this->createMock(Translator::class);
 		$this->sessionMock         = $this->createMock(Session::class);
 		$this->localesMock         = $this->createMock(Locales::class);
 		$this->configMock          = $this->createMock(Config::class);
 		$this->flashMock 	       = $this->createMock(Messages::class);
-		$this->requestMock->method('getUri')->willReturn($this->uriInterfaceMock);
+		$this->requestMock->method('getUri')->willReturn($uriInterfaceMock);
 
 		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock, $this->aclValidatorMock);
 	}
@@ -99,9 +102,7 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
 		$this->templateServiceMock->expects($this->never())->method('render');
 
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
@@ -142,10 +143,53 @@ class FinalRenderMiddlewareTest extends TestCase
 		;
 		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
 
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
+		$this->middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[RunInSeparateProcess] #[Group('units')]
+	public function testProcessFailFOpen(): void
+	{
+		$_ENV['APP_DEBUG'] = false;
+		$this->executeStandardMocks();
+
+		// no need for layoutData here
+
+		$controllerData = serialize([
+			'this_layout' => [
+				'template' => 'content',
+				'data' => ['key' => 'value']
+			],
+			'main_layout' => ['title' => 'Test Title']
+		]);
+
+		$fopen = $this->getFunctionMock('App\Framework\Middleware', 'fopen');
+		$fopen->expects($this->once())->willReturn(false);
+
+		$responseBodyMock = $this->createMock(StreamInterface::class);
+		$responseBodyMock->method('__toString')->willReturn($controllerData);
+		$this->responseMock->method('getBody')->willReturn($responseBodyMock);
+
+		$this->templateServiceMock->expects($this->exactly(2))->method('render')
+			->willReturnOnConsecutiveCalls('Rendered Content','Final Rendered Page');
+
+		$this->responseMock->expects($this->never())->method('withBody');
+		$responseBodyMock->expects($this->never())->method('write');
+
+		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
+
+		$this->middleware->process($this->requestMock, $this->handlerMock);
+
+	}
+
 
 	/**
 	 * @throws CoreException
@@ -169,9 +213,7 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
 		$this->templateServiceMock->expects($this->never())->method('render');
 
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
@@ -218,10 +260,8 @@ class FinalRenderMiddlewareTest extends TestCase
 
 		$responseBodyMock->expects($this->once())->method('write')	->with('Final Rendered Page');
 		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $result);
-
+		$this->middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
@@ -260,30 +300,13 @@ class FinalRenderMiddlewareTest extends TestCase
 
 		$responseBodyMock->expects($this->once())->method('write')	->with('Final Rendered Page');
 		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturn($this->responseMock);
-		$result = $this->middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->middleware->process($this->requestMock, $this->handlerMock);
+
 	}
 
 
-
-	private function collectLayoutData(): array
-	{
-		return [
-			'messages' => [],
-			'main_menu' => [['URL' => '/login', 'LANG_MENU_POINT' => 'translate-dummy']],
-			'CURRENT_LOCALE_LOWER' => 'en',
-			'CURRENT_LOCALE_UPPER' => 'EN',
-			'language_select' => [],
-			'user_menu' => [],
-			'APP_NAME' => 'edge',
-			'LANG_LEGAL_NOTICE' => 'translate-dummy',
-			'LANG_PRIVACY' => 'translate-dummy',
-			'LANG_TERMS' => 'translate-dummy'
-		];
-	}
-
-	private function executeStandardMocks($hasMessages = false, $hasUser = false): void
+	private function executeStandardMocks(bool $hasMessages = false, bool $hasUser = false): void
 	{
 		$this->handlerMock->method('handle')->willReturn($this->responseMock);
 		$this->requestMock

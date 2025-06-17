@@ -125,4 +125,30 @@ class MediaPropertiesTest extends TestCase
 		$this->assertEquals(0, $this->mediaProperties->getFilesize());
 		$this->assertEquals('', $this->mediaProperties->getContainer());
 	}
+
+	#[Group('units')]
+	public function testWithoutCodecName(): void
+	{
+		// Populate the MediaProperties object with sample values
+		$json = '{"format": {"filename": "sample.mp4", "size": 50000, "format_name": "avi", "duration": 300.5, "start_time": 0.1}, "streams": [{"codec_type": "video", "width": 1024, "height": 768}, {"codec_type": "audio"}]}';
+
+		$stdClass = json_decode($json);
+		$this->mediaProperties->fromStdClass($stdClass);
+
+		// Reset the object
+		$this->mediaProperties->reset();
+
+		// Verify that all properties have been reset to defaults
+		$this->assertEquals(0, $this->mediaProperties->getWidth());
+		$this->assertEquals(0, $this->mediaProperties->getHeight());
+		$this->assertEquals('', $this->mediaProperties->getVideoCodec());
+		$this->assertEquals('', $this->mediaProperties->getAudioCodec());
+		$this->assertEquals('', $this->mediaProperties->getAspectRatio());
+		$this->assertEquals('', $this->mediaProperties->getStartTime());
+		$this->assertEquals(0.0, $this->mediaProperties->getDuration());
+		$this->assertEquals('', $this->mediaProperties->getFilename());
+		$this->assertEquals(0, $this->mediaProperties->getFilesize());
+		$this->assertEquals('', $this->mediaProperties->getContainer());
+	}
+
 }

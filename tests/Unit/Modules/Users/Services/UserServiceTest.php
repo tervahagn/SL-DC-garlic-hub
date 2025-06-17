@@ -63,6 +63,9 @@ class UserServiceTest extends TestCase
 		);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdatePassword(): void
 	{
@@ -72,6 +75,9 @@ class UserServiceTest extends TestCase
 
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateUserStatsSuccess(): void
 	{
@@ -93,6 +99,9 @@ class UserServiceTest extends TestCase
 		$this->assertEquals(1, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateUserStatsFailure(): void
 	{
