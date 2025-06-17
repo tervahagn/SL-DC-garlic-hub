@@ -33,7 +33,7 @@ class FileUtils
 	{
 		$time = filemTime($filepath);
 		if ($time === false)
-			throw new ModuleException('player_index', 'FileMTime error with:'.$filepath);
+			throw new ModuleException('player_index', 'FileMTime error with: '.$filepath);
 
 		return $time;
 	}
@@ -45,7 +45,7 @@ class FileUtils
 	{
 		$content = file_get_contents($filepath);
 		if ($content === false)
-			throw new ModuleException('player_index', 'File get content error with:'.$filepath);
+			throw new ModuleException('player_index', 'File get content error with: '.$filepath);
 
 		return md5($content);
 	}
@@ -57,7 +57,7 @@ class FileUtils
 	{
 		$size = filesize($filepath);
 		if ($size === false)
-			throw new ModuleException('player_index', 'Filesize error with:'.$filepath);
+			throw new ModuleException('player_index', 'Filesize error with: '.$filepath);
 
 		return $size;
 	}
@@ -69,7 +69,7 @@ class FileUtils
 	{
 		$resource = fopen($filepath, 'rb');
 		if ($resource === false)
-			throw new ModuleException('player_index', 'Stream  open error with:'.$filepath);
+			throw new ModuleException('player_index', 'Stream  open error with: '.$filepath);
 
 		return new Stream($resource);
 	}

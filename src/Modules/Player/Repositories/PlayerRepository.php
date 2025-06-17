@@ -67,9 +67,7 @@ class PlayerRepository extends FilterBase
 			return [];
 
 		return $result;
-
 	}
-
 
 	/**
 	 * @param int[] $playlistIds

@@ -30,7 +30,7 @@ abstract class FilterBase extends SqlBase
 	use CrudTraits, FindOperationsTrait;
 
 	/**
-	 * @param array<string, array<string, string>> $fields
+	 * @param array<string, array<string, mixed>> $fields
 	 * @return int
 	 * @throws Exception
 	 */
@@ -42,8 +42,8 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
-	 * @param array<string, array<string, string>> $fields
-	 * @return array<string,string>
+	 * @param array<string, array<string, mixed>> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllFiltered(array $fields): array
@@ -62,7 +62,7 @@ abstract class FilterBase extends SqlBase
 
 	/**
 	 * @param int[] $companyIds
-	 * @param array<string, array<string, string>> $fields
+	 * @param array<string, array<string, mixed>> $fields
 	 * @throws Exception
 	 */
 	public function countAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, int $UID): int
@@ -74,8 +74,8 @@ abstract class FilterBase extends SqlBase
 
 	/**
 	 * @param int[] $companyIds
-	 * @param array<string, array<string, string>> $fields
-	 * @return array<string, mixed>
+	 * @param array<string, array<string, mixed>> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllFilteredByUIDCompanyReseller(array $companyIds, array $fields, int $UID): array
@@ -93,7 +93,7 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
-	 * @param array<string, array<string, string>> $fields
+	 * @param array<string, array<string, mixed>> $fields
 	 * @throws Exception
 	 */
 	public function countAllFilteredByUID(array $fields, int $UID): int
@@ -105,8 +105,8 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
-	 * @param array<string, array<string, string>> $fields
-	 * @return array<string, mixed>
+	 * @param array<string, array<string, mixed>> $fields
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllFilteredByUID(array $fields, int $UID): array
@@ -126,7 +126,7 @@ abstract class FilterBase extends SqlBase
 
 	/**
 	 * @param int[] $companyIds
-	 * @param array<string, array<string, string>> $searchFields
+	 * @param array<string, array<string, mixed>> $searchFields
 	 * @return array<string,mixed>
 	 */
 	private function buildRestrictedWhereForCountAndFindSearch(array $companyIds, array $searchFields, int $UID): array
@@ -160,7 +160,7 @@ abstract class FilterBase extends SqlBase
 	abstract protected function prepareSelectFilteredForUser(): array;
 
 	/**
-	 * @param array<string,mixed> $fields
+	 * @param array<string, array<string, mixed>> $fields
 	 * @param bool $useUserMain
 	 * @return array<string,mixed>
 	 */
@@ -192,7 +192,7 @@ abstract class FilterBase extends SqlBase
 	}
 
 	/**
-	 * @param array<string, mixed> $filterFields
+	 * @param array<string, array<string, mixed>> $filterFields
 	 * @return array<string,string>
 	 */
 	abstract protected function prepareWhereForFiltering(array $filterFields): array;

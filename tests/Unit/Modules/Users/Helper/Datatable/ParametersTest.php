@@ -27,7 +27,6 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
@@ -47,11 +46,9 @@ class ParametersTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testConstructor()
+	public function testConstructor(): void
 	{
 		$this->assertCount(7, $this->parameters->getCurrentParameters());
 		$this->assertSame('users', $this->parameters->getModuleName());
-		$this->assertInstanceOf(Parameters::class, $this->parameters);
 	}
-
 }

@@ -37,6 +37,9 @@ class PlayerRepositoryTest extends TestCase
 		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllForDashboardSqlite(): void
 	{
@@ -64,6 +67,9 @@ class PlayerRepositoryTest extends TestCase
 		$this->assertEquals(5, $result['inactive']);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllForDashboardMariaDB(): void
 	{
@@ -90,6 +96,10 @@ class PlayerRepositoryTest extends TestCase
 		$this->assertEquals(7, $result['pending']);
 		$this->assertEquals(8, $result['inactive']);
 	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllForDashboardEmpty(): void
 	{
@@ -107,7 +117,6 @@ class PlayerRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testConstructorInitializesConnection(): void
 	{
-		$this->assertInstanceOf(PlayerRepository::class, $this->repository);
 		$this->assertSame('player', $this->repository->getTable());
 		$this->assertSame('player_id', $this->repository->getIdField());
 	}
@@ -150,7 +159,7 @@ class PlayerRepositoryTest extends TestCase
 				]
 			);
 
-		$expected = ['some_result'];
+		$expected = [['some_result' => 'result']];
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
@@ -186,7 +195,7 @@ class PlayerRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')
 			->with('playerlast_access', '(UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(player.last_access)) > refresh * 2');
 
-		$expected = ['some_result'];
+		$expected = [['some_result' => 'result']];
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
@@ -220,13 +229,47 @@ class PlayerRepositoryTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->never())->method('setParameter');
 
-		$expected = ['some_result'];
+		$expected = [['some_result' => 'result']];
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFiltered($fields);
 		$this->assertSame($expected, $result);
 	}
+
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindAllFilteredByUID(): void
+	{
+		$fields = [
+			'elements_page' => ['value' => 1],
+			'elements_per_page' => ['value' => 10],
+			'activity' => ['value' => '']
+		];
+
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('player_id, player.playlist_id, playlist_name, firmware, player.status, model, commands, reports, player.last_access, refresh, player_name, player.UID')->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('player');
+
+		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
+			->willReturnMap([
+				['player', 'playlists', 'playlists', 'playlists.playlist_id = player.playlist_id', $this->queryBuilderMock]
+			]);
+
+		$this->queryBuilderMock->expects($this->once())->method('andWhere');
+		$this->queryBuilderMock->expects($this->once())->method('setParameter');
+
+		$expected = [['some_result' => 'result']];
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
+
+		$result = $this->repository->findAllFilteredByUID($fields, 1);
+		$this->assertSame($expected, $result);
+	}
+
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
