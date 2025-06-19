@@ -22,7 +22,7 @@ namespace Tests\Unit\Modules\Users\Controller;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
-use App\Modules\Users\Controller\EditLocalesController;
+use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;

@@ -20,7 +20,7 @@
 
 namespace Tests\Unit\Modules\Users\Entities;
 
-use App\Modules\Users\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntity;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

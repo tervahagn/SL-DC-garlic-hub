@@ -5,7 +5,7 @@ namespace Tests\Unit\Framework\Core\Acl;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Modules\Users\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;

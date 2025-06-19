@@ -21,8 +21,8 @@
 namespace Tests\Unit\Modules\Users\Entities;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Profile\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntityFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;

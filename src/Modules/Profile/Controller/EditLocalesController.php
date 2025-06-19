@@ -19,20 +19,20 @@
 */
 
 
-namespace App\Modules\Users\Controller;
+namespace App\Modules\Profile\Controller;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
-use App\Modules\Users\Services\UsersService;
+use App\Modules\Profile\Services\UserService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EditLocalesController
 {
-	private UsersService $userService;
+	private UserService $userService;
 
-	public function __construct(UsersService $userService)
+	public function __construct(UserService $userService)
 	{
 		$this->userService = $userService;
 	}

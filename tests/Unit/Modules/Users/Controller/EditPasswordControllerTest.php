@@ -26,7 +26,7 @@ use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Html\PasswordField;
-use App\Modules\Users\Controller\EditPasswordController;
+use App\Modules\Profile\Controller\EditPasswordController;
 use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;

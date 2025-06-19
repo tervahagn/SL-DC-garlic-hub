@@ -19,7 +19,7 @@
 */
 
 
-namespace App\Modules\Users\Controller;
+namespace App\Modules\Profile\Controller;
 
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;

@@ -22,8 +22,8 @@ namespace App\Modules\Users\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractBaseService;
-use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Profile\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Exception;
@@ -121,12 +121,6 @@ class UsersService extends AbstractBaseService
 
 		return $this->getUserRepositories()['main']->update($UID, $saveData);
 	}
-
-	public function updateLocale(int $UID, string $locale): int
-	{
-		return $this->getUserRepositories()['main']->update($UID, ['locale' => $locale]);
-	}
-
 
 	/**
 	 * @throws Exception

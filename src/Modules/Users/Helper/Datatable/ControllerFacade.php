@@ -107,7 +107,7 @@ class ControllerFacade implements DatatableFacadeInterface
 			'filter_elements'     => $this->datatableFormatter->prepareFilterForm($datatableStructure['form']),
 			'pagination_dropdown' => $pagination['dropdown'],
 			'pagination_links'    => $pagination['links'],
-			'has_add'			  => $this->datatableFormatter->prepareAdd('person-add', 'users/edit'),
+			'has_add'			  => $this->datatableFormatter->prepareAdd('person-add', 'users/new'),
 			'results_header'      => $this->datatableFormatter->prepareTableHeader($datatableStructure['header'],  ['users', 'main']),
 			'results_list'        => $this->formatList($datatableStructure['header']),
 			'results_count'       => $this->usersService->getCurrentTotalResult(),

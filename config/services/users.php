@@ -27,13 +27,10 @@ use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
-use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Users\Controller\EditLocalesController;
-use App\Modules\Users\Controller\EditPasswordController;
+use App\Modules\Profile\Entities\UserEntityFactory;
+use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Controller\ShowDatatableController;
-use App\Modules\Users\Controller\ShowEditUserController;
 use App\Modules\Users\Controller\UsersController;
-use App\Modules\Users\Entities\UserEntityFactory;
 use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
@@ -48,14 +45,20 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
+$dependencies[UserRepositoryFactory::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection'));
+});
+
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new AclValidator($container->get(AclHelper::class));
 });
+
 $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UsersService(
-		new UserRepositoryFactory($container->get(Config::class), $container->get('SqlConnection')),
+		$container->get(UserRepositoryFactory::class),
 		new UserEntityFactory($container->get(Config::class)),
 		$container->get(Psr16Adapter::class),
 		$container->get('ModuleLogger')
@@ -69,17 +72,6 @@ $dependencies[UsersDatatableService::class] = DI\factory(function (ContainerInte
 		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
-});
-$dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new EditPasswordController(
-		$container->get(FormBuilder::class),
-		$container->get(UsersService::class)
-	);
-});
-$dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new EditLocalesController($container->get(UsersService::class));
 });
 $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -124,7 +116,6 @@ $dependencies[ControllerFacade::class] = DI\factory(function (ContainerInterface
 		$container->get(UsersDatatableService::class)
 	);
 });
-
 $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowDatatableController(
@@ -132,10 +123,9 @@ $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerIn
 		$container->get(DatatableTemplatePreparer::class)
 	);
 });
-
-$dependencies[ShowEditUserController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[ShowAdminController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ShowEditUserController(
+	return new ShowAdminController(
 		$container->get(Facade::class),
 		$container->get(FormTemplatePreparer::class)
 	);

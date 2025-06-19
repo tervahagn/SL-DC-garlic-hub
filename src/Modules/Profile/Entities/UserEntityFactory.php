@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Users\Entities;
+namespace App\Modules\Profile\Entities;
 
 use App\Framework\Core\Config\Config;
 

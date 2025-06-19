@@ -27,7 +27,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\AuthService;
 use App\Modules\Auth\LoginController;
-use App\Modules\Users\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntity;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;

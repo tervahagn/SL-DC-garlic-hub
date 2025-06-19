@@ -76,7 +76,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 							$resultElements['is_link'] = $this->prepareService->getBodyPreparer()->formatLink(
 								$user['username'],
 								$this->translator->translate('edit', 'main'),
-								'users/profile' . $user['UID'],
+								'user/' . $user['UID'],
 								'username_' . $user['UID']
 							);
 

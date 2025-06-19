@@ -35,9 +35,9 @@ use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\WidgetsController;
-use App\Modules\Users\Controller\EditLocalesController;
-use App\Modules\Users\Controller\EditPasswordController;
-use App\Modules\Users\Controller\ShowEditUserController;
+use App\Modules\Profile\Controller\EditLocalesController;
+use App\Modules\Profile\Controller\EditPasswordController;
+use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Controller\UsersController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -79,11 +79,14 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 	$group->get('/set-locales/{locale}', createControllerCallable([EditLocalesController::class, 'setLocales'], $container));
 
 	$group->get('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'show'], $container));
-	$group->post('/users/edit', createControllerCallable([ShowEditUserController::class, 'store'], $container));
-	$group->get('/users/edit/new', createControllerCallable([ShowEditUserController::class, 'newUserForm'], $container));
-	$group->get('/users/edit/{UID:\d+}', createControllerCallable([ShowEditUserController::class, 'editUserForm'], $container));
-	$group->get('/users/profile', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
-	$group->post('/users/edit/password', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
+	$group->post('/users/edit', createControllerCallable([ShowAdminController::class, 'store'], $container));
+	$group->get('/users/new', createControllerCallable([ShowAdminController::class, 'newUserForm'], $container));
+	$group->get('/users/edit/{UID:\d+}', createControllerCallable([ShowAdminController::class, 'editUserForm'], $container));
+
+	// for later profile call
+//	$group->get('/user/{UID:\d}', createControllerCallable([xxxx::class, 'profile'], $container));
+	$group->get('/user/settings', createControllerCallable([EditPasswordController::class, 'showForm'], $container));
+	$group->post('/user/settings', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
 
 	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));
 

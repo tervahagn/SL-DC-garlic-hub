@@ -33,7 +33,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
-class ShowEditUserController
+class ShowAdminController
 {
 	private readonly Facade $facade;
 	private readonly FormTemplatePreparer $formElementPreparer;
@@ -50,11 +50,14 @@ class ShowEditUserController
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function newUserForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -139,12 +142,13 @@ class ShowEditUserController
 	}
 
 	/**
+	 * @param ResponseInterface $response
 	 * @param array<string,mixed> $userInput
-	 * @throws ModuleException
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
 	{

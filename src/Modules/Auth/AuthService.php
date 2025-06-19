@@ -22,7 +22,7 @@ namespace App\Modules\Auth;
 
 use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
-use App\Modules\Users\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use DateTime;
 use Doctrine\DBAL\Exception;

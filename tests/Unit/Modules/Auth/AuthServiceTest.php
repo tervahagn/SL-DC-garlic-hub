@@ -23,7 +23,7 @@ namespace Tests\Unit\Modules\Auth;
 use App\Framework\Core\Cookie;
 use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Auth\AuthService;
-use App\Modules\Users\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;

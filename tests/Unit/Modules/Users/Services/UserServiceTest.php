@@ -20,8 +20,8 @@
 
 namespace Tests\Unit\Modules\Users\Services;
 
-use App\Modules\Users\Entities\UserEntity;
-use App\Modules\Users\Entities\UserEntityFactory;
+use App\Modules\Profile\Entities\UserEntity;
+use App\Modules\Profile\Entities\UserEntityFactory;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\UsersService;
