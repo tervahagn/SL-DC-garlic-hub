@@ -21,6 +21,7 @@
 namespace App\Modules\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Modules\Users\Repositories\Core\UserContactRepository;
 use App\Modules\Users\Repositories\Core\UserStatsRepository;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
@@ -31,8 +32,10 @@ use Doctrine\DBAL\Connection;
 
 class UserRepositoryFactory
 {
-	private Config $config;
+	private readonly Config $config;
 	private Connection $connection;
+	/** @var array<string,SqlBase> */
+	private ?array $repositories = null;
 
 	/**
 	 * @param Config     $config
@@ -45,11 +48,14 @@ class UserRepositoryFactory
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,SqlBase>
 	 */
 	public function create(): array
 	{
-		return match ($this->config->getEdition())
+		if ($this->repositories !== null)
+			return $this->repositories;
+
+		$this->repositories = match ($this->config->getEdition())
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => [
 				'main'     => new UserMainRepository($this->connection),
@@ -70,5 +76,6 @@ class UserRepositoryFactory
 				'acl'  => new UserAclRepository($this->connection)
 			],
 		};
+		return $this->repositories;
 	}
 }
