@@ -54,6 +54,21 @@ class UserMainRepository extends FilterBase
 	}
 
 	/**
+	 * @return array<string,mixed>
+	 * @throws Exception
+	 */
+	public function findUserById(int $UID): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('UID, company_id, status, locale, email, username')
+			->from($this->table)
+			->where($this->idField . ' = :uid')
+			->setParameter('uid', $UID);
+
+		return $this->fetchAssociative($queryBuilder);
+	}
+
+	/**
 	 * @param string $identifier
 	 *
 	 * @return array<string,mixed>

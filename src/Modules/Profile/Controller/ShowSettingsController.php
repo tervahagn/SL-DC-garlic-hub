@@ -21,7 +21,17 @@
 
 namespace App\Modules\Profile\Controller;
 
-interface ShowUserController
+use App\Framework\Core\Config\Config;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class ShowSettingsController
 {
 
+	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		// In the edge Version user can only edit his password
+		// For later versions there will be more settings like company, contact data, MFA select, etc
+		return $response->withHeader('Location', '/profile/password')->withStatus(302);
+	}
 }

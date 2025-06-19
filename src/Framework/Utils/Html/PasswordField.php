@@ -23,5 +23,10 @@ namespace App\Framework\Utils\Html;
 
 class PasswordField extends AbstractInputField
 {
-
+	public function setPattern(int $minChars = 8): static
+	{
+		$this->setAttribute('pattern',
+			'(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{'.$minChars.',}');
+		return $this;
+	}
 }

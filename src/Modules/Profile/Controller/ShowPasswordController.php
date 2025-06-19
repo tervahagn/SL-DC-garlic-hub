@@ -19,21 +19,19 @@
 */
 
 
-namespace App\Modules\Users\Controller;
+namespace App\Modules\Profile\Controller;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
-use App\Modules\Users\Helper\Settings\Facade;
-use Doctrine\DBAL\Exception;
+use App\Modules\Profile\Helper\Password\Facade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
-class ShowAdminController
+class ShowPasswordController
 {
 	private readonly Facade $facade;
 	private readonly FormTemplatePreparer $formElementPreparer;
@@ -45,65 +43,12 @@ class ShowAdminController
 		$this->formElementPreparer = $formElementPreparer;
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @return ResponseInterface
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function newUserForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function showForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->initFacade($request);
-		$this->facade->buildCreateNewParameter();
-
-		return $this->outputRenderedForm($response, []);
+		return $this->outputRenderedForm($response);
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array<string,mixed> $args
-	 * @return ResponseInterface
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws ModuleException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function editUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
-	{
-		$UID = $args['UID'] ?? 0;
-		$this->initFacade($request);
-		if ($UID === 0)
-		{
-			$this->flash->addMessage('error', 'UID not valid.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
-		}
-
-		$user = $this->facade->loadUserForEdit($UID);
-		if (empty($user))
-		{
-			$this->flash->addMessage('error', 'User not found.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
-		}
-		$this->facade->buildEditParameter($user);
-
-		return $this->outputRenderedForm($response, $user);
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws Exception
-	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,mixed> $post */
@@ -119,11 +64,11 @@ class ShowAdminController
 		if (!empty($errors))
 			return $this->outputRenderedForm($response, $post);
 
-		$id = $this->facade->storeUser($post['UID'] ?? 0);
+		$id = $this->facade->storePassword();
 		if ($id > 0)
 		{
-			$this->flash->addMessage('success', 'User “'.$post['username'].'“ successfully stored.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
+			$this->flash->addMessage('success', 'New password successfully stored.');
+			return $response->withHeader('Location', '/')->withStatus(302);
 		}
 		else
 		{
@@ -138,22 +83,20 @@ class ShowAdminController
 	}
 
 	/**
-	 * @param ResponseInterface $response
-	 * @param array<string,mixed> $userInput
-	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
 	 */
-	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response): ResponseInterface
 	{
-		$dataSections = $this->facade->prepareUITemplate($userInput);
+		$dataSections = $this->facade->prepareUITemplate();
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));
 		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
+
 
 	private function initFacade(ServerRequestInterface $request): void
 	{

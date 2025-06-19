@@ -37,6 +37,7 @@ use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Profile\Controller\EditPasswordController;
+use App\Modules\Profile\Controller\ShowPasswordController;
 use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Controller\UsersController;
 use Psr\Container\ContainerInterface;
@@ -85,8 +86,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 
 	// for later profile call
 //	$group->get('/user/{UID:\d}', createControllerCallable([xxxx::class, 'profile'], $container));
-	$group->get('/user/settings', createControllerCallable([EditPasswordController::class, 'showForm'], $container));
-	$group->post('/user/settings', createControllerCallable([EditPasswordController::class, 'editPassword'], $container));
+	$group->get('/profile/settings', createControllerCallable([\App\Modules\Profile\Controller\ShowSettingsController::class, 'show'], $container));
+	$group->get('/profile/password', createControllerCallable([ShowPasswordController::class, 'showForm'], $container));
 
 	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));
 

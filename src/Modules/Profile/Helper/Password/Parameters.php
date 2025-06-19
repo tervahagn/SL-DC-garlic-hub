@@ -18,14 +18,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace App\Modules\Profile\Helper;
+namespace App\Modules\Profile\Helper\Password;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\FormParameters\ScalarType;
 
-class PasswordParameters extends BaseEditParameters
+class Parameters extends BaseEditParameters
 {
 	const PARAMETER_PASSWORD           = 'password';
 	const PARAMETER_PASSWORD_CONFIRM   = 'password_confirm';

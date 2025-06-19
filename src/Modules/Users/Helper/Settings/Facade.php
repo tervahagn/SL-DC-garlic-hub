@@ -126,7 +126,6 @@ class Facade
 			$translated[] = $this->translator->translate($error, 'users');
 		}
 		return $translated;
-
 	}
 
 	/**

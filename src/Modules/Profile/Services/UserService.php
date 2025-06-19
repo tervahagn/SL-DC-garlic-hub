@@ -23,6 +23,7 @@ namespace App\Modules\Profile\Services;
 
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
 class UserService extends AbstractBaseService
@@ -38,5 +39,13 @@ class UserService extends AbstractBaseService
 	{
 		return $this->repository->update($UID, ['locale' => $locale]);
 	}
+
+	public function updatePassword(string $password): int
+	{
+		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
+
+		return $this->repository->update($this->UID, $data);
+	}
+
 
 }
