@@ -73,7 +73,7 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	 */
 	public function buildTitle(): void
 	{
-		$this->datatableStructure['title'] = $this->translator->translate('overview', 'users');
+		$this->datatableStructure['title'] = $this->translator->translate('management', 'users');
 	}
 
 	/**

@@ -196,7 +196,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 				'LANG_LOGIN_AS'       => $this->translator->translate('logged_in_as', 'menu'),
 				'USERNAME'            => $username,
 				'has_user_access'     => $this->createAdminMenuPoints(),
-				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('manage_account', 'menu'),
+				'LANG_MANAGE_ACCOUNT' => $this->translator->translate('my_account', 'menu'),
 				'LANG_LOGOUT'         => $this->translator->translate('logout', 'menu')
 			]
 		];
@@ -220,7 +220,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		{
 			$adminMenuPoints[] = [
 				'LINK_USER_ACCESS' => '/users',
-				'LANG_USER_ACCESS' => $this->translator->translate('users_overview', 'main')
+				'LANG_USER_ACCESS' => $this->translator->translate('management', 'users')
 			];
 		}
 		return $adminMenuPoints;
