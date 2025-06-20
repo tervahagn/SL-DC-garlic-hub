@@ -108,6 +108,7 @@ class Facade
 		$title = $this->translator->translate('edit_password', 'profile');
 		$dataSections                      = $this->passwordFormBuilder->buildForm();
 		$dataSections['title']             = $title;
+		$dataSections['explanations']      = $this->translator->translate('password_explanation', 'profile');
 		$dataSections['additional_css']    = ['/css/profile/edit.css'];
 		$dataSections['footer_modules']    = [];
 		$dataSections['template_name']     = 'profile/edit';

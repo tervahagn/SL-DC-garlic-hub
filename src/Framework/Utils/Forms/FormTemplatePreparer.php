@@ -43,6 +43,7 @@ class FormTemplatePreparer
 				'data' => [
 					'LANG_PAGE_HEADER' => $dataSections['title'],
 					'FORM_ACTION' => $dataSections['form_action'],
+					'LANG_FORM_EXPLAINATION' => $dataSections['explanations'] ?? '',
 					'element_hidden' => $dataSections['hidden'],
 					'form_element' => $dataSections['visible'],
 					'form_button' => [
