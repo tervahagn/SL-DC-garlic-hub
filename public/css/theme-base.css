@@ -64,7 +64,7 @@ body{background-color: #F7FAFC;}
 	.menu ul a:hover{ color: #fff; background-color: #000; }
 	nav .menu ul, nav .menu li:hover .menu ul, nav .menu ul li:hover .menu ul{display: none;}
 	nav .menu li:hover ul, nav .menu ul li:hover ul, nav .menu ul ul li:hover ul {display: block;}
-	.menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;}
+	.menu ul li a {display:flex;align-items: center;gap:0.5rem;padding:0.5em 1rem;white-space:nowrap;}
 
 a{text-decoration: none;color: var(--gh-link-text-color);}
 h1{font-size: 1.3rem; font-family: var(--gh-font-bold); margin-top:0;}

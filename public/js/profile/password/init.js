@@ -1,8 +1,7 @@
-<?php
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or  modify
@@ -17,17 +16,20 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+import {PasswordToggler} from "./PasswordToggler.js";
 
-
-namespace App\Framework\Utils\Html;
-
-class PasswordRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
+document.addEventListener('DOMContentLoaded', function()
 {
-	public function render(FieldInterface $field): string
-	{
-		$this->field = $field;
-		$id = $this->field->getId();
+	const password = new PasswordToggler(
+		document.getElementById('password'),
+		document.getElementById('toggle_password')
+	)
+	password.createEventListeners();
 
-		return '<div class="password-container"><input type="password" '.$this->buildAttributes().' aria-describedby="error_'.$id.'"><span class="toggle-password bi bi-eye-fill" id="toggle_'.$id.'"></span></div>';
-	}
-}
+	const passwordConfirm = new PasswordToggler(
+		document.getElementById('password_confirm'),
+		document.getElementById('toggle_password_confirm')
+	)
+	passwordConfirm.createEventListeners();
+
+});

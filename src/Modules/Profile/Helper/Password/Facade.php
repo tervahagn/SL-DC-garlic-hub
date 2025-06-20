@@ -114,8 +114,8 @@ class Facade
 		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern);
 		$dataSections['title']             = $title;
 		$dataSections['explanations']      = $this->translator->translate('password_explanation', 'profile');
-		$dataSections['additional_css']    = ['/css/profile/edit.css'];
-		$dataSections['footer_modules']    = [];
+		$dataSections['additional_css']    = ['/css/profile/password.css'];
+		$dataSections['footer_modules']    = ['/js/profile/password/init.js'];
 		$dataSections['template_name']     = 'profile/edit';
 		$dataSections['form_action']       = '/profile/password';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
