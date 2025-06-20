@@ -39,13 +39,13 @@ export class PasswordToggler
 
 			if (type === 'password')
 			{
-				this.#passwordField.classList.remove('bi-eye-slash-fill');
-				this.#passwordField.classList.add('bi-eye-fill');
+				this.#togglePassword.classList.remove('bi-eye-slash-fill');
+				this.#togglePassword.classList.add('bi-eye-fill');
 			}
 			else
 			{
-				this.#passwordField.classList.remove('bi-eye-fill');
-				this.#passwordField.classList.add('bi-eye-slash-fill');
+				this.#togglePassword.classList.remove('bi-eye-fill');
+				this.#togglePassword.classList.add('bi-eye-slash-fill');
 			}
 		});
 
