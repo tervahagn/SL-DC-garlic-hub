@@ -20,6 +20,7 @@
 
 namespace App\Modules\Profile\Helper\Password;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
@@ -36,11 +37,13 @@ class Facade
 	private readonly UserService $userService;
 	private readonly Parameters $passwordParameters;
 	private Translator $translator;
-	public function __construct(Builder $settingsFormBuilder, UserService $userService, Parameters $passwordParameters)
+	private Config $config;
+	public function __construct(Builder $settingsFormBuilder, UserService $userService, Parameters $passwordParameters, Config $config)
 	{
 		$this->passwordFormBuilder = $settingsFormBuilder;
 		$this->userService         = $userService;
 		$this->passwordParameters  = $passwordParameters;
+		$this->config = $config;
 	}
 
 	public function init(Translator $translator, Session $session): void
@@ -104,9 +107,9 @@ class Facade
 	 */
 	public function prepareUITemplate(): array
 	{
-
+		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
 		$title = $this->translator->translate('edit_password', 'profile');
-		$dataSections                      = $this->passwordFormBuilder->buildForm();
+		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern);
 		$dataSections['title']             = $title;
 		$dataSections['explanations']      = $this->translator->translate('password_explanation', 'profile');
 		$dataSections['additional_css']    = ['/css/profile/edit.css'];

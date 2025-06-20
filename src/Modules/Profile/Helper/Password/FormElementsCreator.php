@@ -59,7 +59,7 @@ readonly class FormElementsCreator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function createPasswordField(string $value): FieldInterface
+	public function createPasswordField(string $value, string $pattern): FieldInterface
 	{
 		/** @var PasswordField $field */
 		$field = $this->formBuilder->createField([
@@ -72,8 +72,8 @@ readonly class FormElementsCreator
 			'rules' => ['required' => true, 'minlength' => 8],
 			'default_value' => ''
 		]);
+		$field->setPattern($pattern);
 
-		$field->setPattern();
 		return $field;
 	}
 
@@ -97,7 +97,6 @@ readonly class FormElementsCreator
 			'default_value' => ''
 		]);
 
-		$field->setPattern();
 		return $field;
 	}
 

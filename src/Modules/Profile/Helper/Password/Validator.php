@@ -66,5 +66,16 @@ class Validator extends BaseValidator
 		return $errors;
 	}
 
+	public function validatePassword(string $password, string $pattern): bool
+	{
+		$pattern = '/^'.$pattern.'$/';
+
+		if (preg_match($pattern, $password))
+			return true;
+
+		return false;
+	}
+
+
 
 }

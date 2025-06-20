@@ -46,6 +46,4 @@ class UserService extends AbstractBaseService
 
 		return $this->repository->update($this->UID, $data);
 	}
-
-
 }

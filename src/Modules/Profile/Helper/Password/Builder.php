@@ -45,11 +45,10 @@ class Builder
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function buildForm(): array
+	public function buildForm(string $pattern): array
 	{
 		$form       = [];
-
-		$form['password'] = $this->formElementsCreator->createPasswordField('');
+		$form['password'] = $this->formElementsCreator->createPasswordField('', $pattern);
 		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
 		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
 
