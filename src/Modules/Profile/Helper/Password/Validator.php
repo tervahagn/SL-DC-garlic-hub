@@ -47,21 +47,25 @@ class Validator extends BaseValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function validateUserInput(): array
+	public function validateUserInput(string $passwordPattern): array
 	{
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
 		$password = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 		if (empty($password))
-			$errors[] = $this->translator->translate('no_password', 'users');
+			$errors[] = $this->translator->translate('no_password', 'profile');
 
 		$passwordConfirm = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD_CONFIRM);
 		if (empty($passwordConfirm))
-			$errors[] = $this->translator->translate('no_password_confirm', 'users');
+			$errors[] = $this->translator->translate('no_password_confirm', 'profile');
 
 		if ($password !== $passwordConfirm)
-			$errors[] = $this->translator->translate('no_passwords_match', 'users');
+			$errors[] = $this->translator->translate('no_passwords_match', 'profile');
+
+		if (!$this->validatePassword($password, $passwordPattern))
+			$errors[] = $this->translator->translate('password_explanation', 'profile');
+
 
 		return $errors;
 	}

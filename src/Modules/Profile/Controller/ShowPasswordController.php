@@ -21,6 +21,7 @@
 
 namespace App\Modules\Profile\Controller;
 
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
@@ -36,6 +37,7 @@ class ShowPasswordController
 	private readonly Facade $facade;
 	private readonly FormTemplatePreparer $formElementPreparer;
 	private Messages $flash;
+	private Translator $translator;
 
 	public function __construct(Facade $facade, FormTemplatePreparer $formElementPreparer)
 	{
@@ -67,7 +69,10 @@ class ShowPasswordController
 		$id = $this->facade->storePassword();
 		if ($id > 0)
 		{
-			$this->flash->addMessage('success', 'New password successfully stored.');
+			$this->flash->addMessage(
+				'success',
+				$this->translator->translate('password_changed', 'profile')
+			);
 			return $response->withHeader('Location', '/')->withStatus(302);
 		}
 		else
@@ -79,7 +84,7 @@ class ShowPasswordController
 			}
 		}
 
-		return $this->outputRenderedForm($response, $post);
+		return $this->outputRenderedForm($response);
 	}
 
 	/**
@@ -101,7 +106,8 @@ class ShowPasswordController
 	private function initFacade(ServerRequestInterface $request): void
 	{
 		$this->flash      = $request->getAttribute('flash');
-		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->translator = $request->getAttribute('translator');
+		$this->facade->init($this->translator, $request->getAttribute('session'));
 	}
 
 }

@@ -64,12 +64,12 @@ class Builder
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function handleUserInput(array $post): array
+	public function handleUserInput(array $post, string $passwordPattern): array
 	{
 		$this->parameters->setUserInputs($post)
 			->parseInputAllParameters();
 
-		return $this->validator->validateUserInput();
+		return $this->validator->validateUserInput($passwordPattern);
 	}
 
 }

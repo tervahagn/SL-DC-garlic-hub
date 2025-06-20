@@ -65,7 +65,9 @@ class Facade
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		return $this->passwordFormBuilder->handleUserInput($post);
+		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
+
+		return $this->passwordFormBuilder->handleUserInput($post, $passwordPattern);
 	}
 
 	/**

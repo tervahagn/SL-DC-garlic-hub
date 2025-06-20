@@ -88,6 +88,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 //	$group->get('/user/{UID:\d}', createControllerCallable([xxxx::class, 'profile'], $container));
 	$group->get('/profile/settings', createControllerCallable([\App\Modules\Profile\Controller\ShowSettingsController::class, 'show'], $container));
 	$group->get('/profile/password', createControllerCallable([ShowPasswordController::class, 'showForm'], $container));
+	$group->post('/profile/password', createControllerCallable([ShowPasswordController::class, 'store'], $container));
 
 	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));
 

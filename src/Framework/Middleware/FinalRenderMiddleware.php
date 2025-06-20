@@ -141,6 +141,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$flash    = $request->getAttribute('flash');
 		$messages = [];
 		// errors have a close button, successes close after 5s (set in css)
+
 		foreach (['error' => true, 'success' => false] as $type => $hasCloseButton)
 		{
 			if ($flash->hasMessage($type))

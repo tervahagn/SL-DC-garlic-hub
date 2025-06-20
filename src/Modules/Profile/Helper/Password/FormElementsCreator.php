@@ -72,7 +72,7 @@ readonly class FormElementsCreator
 			'rules' => ['required' => true, 'minlength' => 8],
 			'default_value' => ''
 		]);
-		$field->setPattern($pattern);
+		//$field->setPattern($pattern);
 
 		return $field;
 	}
