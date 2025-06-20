@@ -21,6 +21,7 @@
 namespace App\Modules\Users\Repositories\Edge;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use App\Modules\Users\Helper\Datatable\Parameters;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -30,6 +31,8 @@ use Doctrine\DBAL\Exception;
  */
 class UserMainRepository extends FilterBase
 {
+	use TransactionsTrait;
+
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'user_main', 'UID');

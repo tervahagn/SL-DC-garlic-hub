@@ -105,7 +105,7 @@ class Facade
 		if ($UID > 0)
 			$id = $this->usersService->updateUser($UID, $saveData);
 		else
-			$id = $this->usersService->inserNewUser($saveData);
+			$id = $this->usersService->insertNewUser($saveData);
 
 		return $id;
 	}

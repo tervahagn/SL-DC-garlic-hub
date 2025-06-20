@@ -67,18 +67,6 @@ class UserServiceTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testUpdatePassword(): void
-	{
-		$this->userMainRepositoryMock->method('update')->with($this->isInt(), $this->isArray())->willReturn(12);
-
-		$this->assertEquals(12, $this->usersService->updatePassword(1, 'hurz'));
-
-	}
-
-	/**
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
 	public function testUpdateUserStatsSuccess(): void
 	{
 		$UID = 123;

@@ -18,12 +18,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use App\Framework\Core\Config\Config;
+use App\Framework\Core\Sanitizer;
+use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Profile\Controller\EditLocalesController;
-use App\Modules\Profile\Controller\EditPasswordController;
+use App\Modules\Profile\Controller\ShowPasswordController;
+use App\Modules\Profile\Helper\Password\Builder;
+use App\Modules\Profile\Helper\Password\Facade;
+use App\Modules\Profile\Helper\Password\FormElementsCreator;
+use App\Modules\Profile\Helper\Password\Parameters;
+use App\Modules\Profile\Helper\Password\Validator;
 use App\Modules\Profile\Services\UserService;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
-use App\Modules\Users\Services\UsersService;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -35,19 +44,38 @@ $dependencies[UserService::class] = DI\factory(function (ContainerInterface $con
 
 	return new UserService(
 		$repositories['main'],
+		$repositories['tokens'],
 		$container->get('ModuleLogger')
-	);
-});
-$dependencies[EditPasswordController::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new EditPasswordController(
-		$container->get(FormBuilder::class),
-		$container->get(UsersService::class)
 	);
 });
 $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new EditLocalesController($container->get(UserService::class));
 });
+$dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Parameters(
+		$container->get(Sanitizer::class),
+		$container->get(Session::class)
+	);
+});
+$dependencies[ShowPasswordController::class] = DI\factory(function (ContainerInterface $container)
+{
+	$validator = new Validator($container->get(Translator::class), $container->get(Parameters::class));
+	$creator   = new FormElementsCreator($container->get(FormBuilder::class), $container->get(Translator::class));
+	$builder   = new Builder($container->get(Parameters::class),$validator, $creator);
+	$facade    = new Facade(
+		$builder,
+		$container->get(UserService::class),
+		$container->get(Parameters::class),
+		$container->get(Config::class)
+	);
+
+	return new ShowPasswordController(
+		$facade,
+		$container->get(FormTemplatePreparer::class)
+	);
+});
+
 
 return $dependencies;

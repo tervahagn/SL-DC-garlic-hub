@@ -26,6 +26,7 @@ use App\Modules\Users\Repositories\Core\UserContactRepository;
 use App\Modules\Users\Repositories\Core\UserStatsRepository;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use App\Modules\Users\Repositories\Enterprise\UserSecurityRepository;
 use App\Modules\Users\Repositories\Enterprise\UserVipRepository;
 use Doctrine\DBAL\Connection;
@@ -59,6 +60,7 @@ class UserRepositoryFactory
 		{
 			Config::PLATFORM_EDITION_ENTERPRISE => [
 				'main'     => new UserMainRepository($this->connection),
+				'tokens'   => new UserTokensRepository($this->connection),
 				'acl'      => new UserAclRepository($this->connection),
 				'contact'  => new UserContactRepository($this->connection),
 				'stats'    => new UserStatsRepository($this->connection),
@@ -67,12 +69,14 @@ class UserRepositoryFactory
 			],
 			Config::PLATFORM_EDITION_CORE => [
 				'main'    => new UserMainRepository($this->connection),
+				'tokens'  => new UserTokensRepository($this->connection),
 				'acl'     => new UserAclRepository($this->connection),
 				'contact' => new UserContactRepository($this->connection),
 				'stats'   => new UserStatsRepository($this->connection)
 			],
 			default => [
 				'main' => new UserMainRepository($this->connection),
+				'tokens' => new UserTokensRepository($this->connection),
 				'acl'  => new UserAclRepository($this->connection)
 			],
 		};

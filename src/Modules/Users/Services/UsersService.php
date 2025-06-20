@@ -21,10 +21,14 @@
 namespace App\Modules\Users\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
+use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
+use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -54,7 +58,11 @@ class UsersService extends AbstractBaseService
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
 	private Psr16Adapter $cache;
-	/** @var array<string,FilterBase>  */
+	/** @var array{
+	 *     main: UserMainRepository,
+	 *     tokens: UserTokensRepository,
+	 *     acl: UserAclRepository
+	 *	 }  */
 	private array $userRepositories;
 
 	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, Psr16Adapter
@@ -68,44 +76,50 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,FilterBase>
-	 */
-	public function getUserRepositories(): array
-	{
-		return $this->userRepositories;
-	}
-
-	/**
 	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function loadForEdit(int $UID): array
 	{
-		return $this->getUserRepositories()['main']->findById($UID);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function updatePassword(int $UID, string $password): int
-	{
-		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
-
-		return $this->getUserRepositories()['main']->update($UID, $data);
+		return $this->userRepositories['main']->findById($UID);
 	}
 
 	/**
 	 * @param array<string,string> $post
 	 * @throws Exception
 	 */
-	public function inserNewUser(array $post): int
+	public function insertNewUser(array $post): int
 	{
-		if (!$this->isUnique(0, $post['username'], $post['email']))
+		try
+		{
+			$this->userRepositories['main']->beginTransaction();
+			if (!$this->isUnique(0, $post['username'], $post['email']))
+				throw new ModuleException('users', 'Values are not unique');
+
+			$saveData = $this->collectCommonData($post, []);
+
+			$UID = (int) $this->userRepositories['main']->insert($saveData);
+			if ($UID === 0)
+				throw new ModuleException('users', 'insert failed.');
+
+			$token = [
+				'UID' => $UID,
+				'purpose' => TokenPurposes::INITIAL_PASSWORD->value,
+				'token' => random_bytes(32),
+				'expires_at' => date('Y-m-d H:i:s', strtotime('+12 hour'))
+			];
+			$this->userRepositories['tokens']->insert($token);
+
+			$this->userRepositories['main']->commitTransaction();
+
+			return $UID;
+		}
+		catch (\Throwable $e)
+		{
+			$this->logger->error($e->getMessage());
+			$this->userRepositories['main']->rollBackTransaction();
 			return 0;
-
-		$saveData = $this->collectCommonData($post, []);
-
-		return (int) $this->getUserRepositories()['main']->insert($saveData);
+		}
 	}
 
 	/**
@@ -119,7 +133,7 @@ class UsersService extends AbstractBaseService
 
 		$saveData = $this->collectCommonData($post, []);
 
-		return $this->getUserRepositories()['main']->update($UID, $saveData);
+		return $this->userRepositories['main']->update($UID, $saveData);
 	}
 
 	/**
@@ -133,7 +147,7 @@ class UsersService extends AbstractBaseService
 			'session_id' => $sessionId,
 		];
 
-		return $this->getUserRepositories()['main']->update($UID, $data);
+		return $this->userRepositories['main']->update($UID, $data);
 	}
 
 	/**
@@ -142,8 +156,7 @@ class UsersService extends AbstractBaseService
 	 */
 	public function findUser(string $identifier): array
 	{
-		/** @var UserMainRepository $usrMainRepository */
-		$usrMainRepository = $this->getUserRepositories()['main'];
+		$usrMainRepository = $this->userRepositories['main'];
 
 		return $usrMainRepository->findByIdentifier($identifier);
 	}
@@ -209,10 +222,10 @@ class UsersService extends AbstractBaseService
 	private function isUnique(int $UID, string $username, string $email): bool
 	{
 		$where = [
-			'username' => $this->getUserRepositories()['main']->generateWhereClause($username, '=', 'OR'),
-			'email' => $this->getUserRepositories()['main']->generateWhereClause($email, '=', 'OR')
+			'username' => $this->userRepositories['main']->generateWhereClause($username, '=', 'OR'),
+			'email' => $this->userRepositories['main']->generateWhereClause($email, '=', 'OR')
 		];
-		$result =  $this->getUserRepositories()['main']->findAllByWithFields(['UID', 'username', 'email'], $where);
+		$result =  $this->userRepositories['main']->findAllByWithFields(['UID', 'username', 'email'], $where);
 
 		if (empty($result))
 			return true;
@@ -230,10 +243,7 @@ class UsersService extends AbstractBaseService
 			return true;
 
 		return false;
-		
-
 	}
-
 
 	/**
 	 * @return array<string,mixed>
