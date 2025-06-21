@@ -67,6 +67,7 @@ export class LocalFilesUploader extends BaseUploader
 					formData.append("file", file);
 					formData.append("node_id", this.directoryView.getActiveNodeId());
 					formData.append("metadata", JSON.stringify(this.#filePreviews.metaDataList[id]));
+					formData.append("csrf_token", this.detectCsrfTokenInMetaTag());
 
 					const options  = {method: "POST", body: formData};
 
@@ -110,4 +111,6 @@ export class LocalFilesUploader extends BaseUploader
 
 		})();
 	}
+
+
 }

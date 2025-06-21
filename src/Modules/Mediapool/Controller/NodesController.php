@@ -20,6 +20,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
@@ -30,13 +31,15 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class NodesController
+readonly class NodesController
 {
 	private NodesService $nodesService;
+	private CsrfToken $csrfToken;
 
-	public function __construct(NodesService $nodesService)
+	public function __construct(NodesService $nodesService, CsrfToken $csrfToken)
 	{
 		$this->nodesService = $nodesService;
+		$this->csrfToken    = $csrfToken;
 	}
 
 	/**
@@ -69,8 +72,13 @@ class NodesController
 	{
 		try
 		{
+			/** @var array<string,mixed> $bodyParams */
 			$bodyParams = $request->getParsedBody();
-			if (!is_array($bodyParams) || !isset($bodyParams['name']))
+
+			if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+			if (isset($bodyParams['name']))
 				throw new ModuleException('mediapool','node name is missing');
 
 			$node_id = $bodyParams['node_id'] ?? 0;
@@ -92,8 +100,13 @@ class NodesController
 	{
 		try
 		{
+			/** @var array<string,mixed> $bodyParams */
 			$bodyParams = $request->getParsedBody();
-			if (!is_array($bodyParams) || !isset($bodyParams['name']) || !isset($bodyParams['node_id']))
+
+			if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+			if (!isset($bodyParams['name']) || !isset($bodyParams['node_id']))
 				throw new ModuleException('mediapool', 'node name or id is missing');
 
 			$visibility = $bodyParams['visibility'] ?? null;
@@ -125,8 +138,13 @@ class NodesController
 	{
 		try
 		{
+			/** @var array<string,mixed> $bodyParams */
 			$bodyParams = $request->getParsedBody();
-			if (!is_array($bodyParams) || !isset($bodyParams['src_node_id']) || !isset($bodyParams['target_node_id']) || !isset($bodyParams['target_region']))
+
+			if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+			if (!isset($bodyParams['src_node_id']) || !isset($bodyParams['target_node_id']) || !isset($bodyParams['target_region']))
 				throw new ModuleException('mediapool','Source node, target node, or target region is missing');
 
 			$this->nodesService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -148,8 +166,13 @@ class NodesController
 	{
 		try
 		{
+			/** @var array<string,mixed> $bodyParams */
 			$bodyParams = $request->getParsedBody();
-			if (!is_array($bodyParams) || !isset($bodyParams['node_id']))
+
+			if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+			if (!isset($bodyParams['node_id']))
 				throw new ModuleException('mediapool', 'NodeId is missing');
 
 			/** @var array{UID: int} $user */

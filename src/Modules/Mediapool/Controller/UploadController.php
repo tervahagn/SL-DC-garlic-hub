@@ -20,6 +20,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Modules\Mediapool\Services\UploadService;
 use Doctrine\DBAL\Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -30,7 +31,7 @@ class UploadController
 {
 	private UploadService $uploadService;
 
-	public function __construct(UploadService $uploadService)
+	public function __construct(UploadService $uploadService, private readonly CsrfToken $csrfToken)
 	{
 		$this->uploadService = $uploadService;
 	}
@@ -40,9 +41,11 @@ class UploadController
 	 */
 	public function searchStockImages(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No body parameter.']);
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		if (!isset($bodyParams['api_url']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'api_url missing']);
@@ -61,9 +64,11 @@ class UploadController
 		if (empty($uploadedFile))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files to upload.']);
 
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No body parameter.']);
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		$node_id    = (int)($bodyParams['node_id'] ?? 0);
 		if ($node_id === 0)
@@ -82,9 +87,11 @@ class UploadController
 
 	public function uploadFromUrl(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No files to upload.']);
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		$node_id  = $bodyParams['node_id'] ?? 0;
 		if ($node_id === 0)
@@ -111,6 +118,7 @@ class UploadController
 		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
 		if ($json !== false)
 			$response->getBody()->write($json);
+		
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

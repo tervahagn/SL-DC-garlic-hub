@@ -20,6 +20,7 @@
 
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\ShellExecutor;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Media\Ffmpeg;
@@ -65,14 +66,12 @@ $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $co
 });
 $dependencies[NodesController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new NodesController($container->get(NodesService::class));
+	return new NodesController($container->get(NodesService::class), $container->get(CsrfToken::class));
 });
-
 $dependencies[ShowController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowController($container->get(NodesService::class));
 });
-
 $dependencies[MediaHandlerFactory::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new MediaHandlerFactory(
@@ -101,7 +100,7 @@ $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $c
 
 $dependencies[UploadController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new UploadController($container->get(UploadService::class));
+	return new UploadController($container->get(UploadService::class), $container->get(CsrfToken::class));
 });
 
 $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $container)
@@ -115,7 +114,7 @@ $dependencies[MediaService::class] = DI\factory(function (ContainerInterface $co
 });
 $dependencies[MediaController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new MediaController($container->get(MediaService::class));
+	return new MediaController($container->get(MediaService::class), $container->get(CsrfToken::class));
 });
 
 return $dependencies;

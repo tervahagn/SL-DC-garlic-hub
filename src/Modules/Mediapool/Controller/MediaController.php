@@ -21,18 +21,21 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Modules\Mediapool\Services\MediaService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class MediaController
+readonly class MediaController
 {
 	private MediaService $mediaService;
+	private CsrfToken $csrfToken;
 
-	public function __construct(MediaService $mediaService)
+	public function __construct(MediaService $mediaService, CsrfToken $csrfToken)
 	{
 		$this->mediaService = $mediaService;
+		$this->csrfToken    = $csrfToken;
 	}
 
 	/**
@@ -67,8 +70,13 @@ class MediaController
 
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams) || !array_key_exists('media_id', $bodyParams))
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+		if (!array_key_exists('media_id', $bodyParams))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		if (!array_key_exists('filename', $bodyParams))
@@ -88,8 +96,13 @@ class MediaController
 	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams) || !isset($bodyParams['media_id']))
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+		if (!isset($bodyParams['media_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -102,8 +115,13 @@ class MediaController
 	 */
 	public function move(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams) || !isset($bodyParams['media_id']) || !isset($bodyParams['node_id']))
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+		if (!isset($bodyParams['media_id']) || !isset($bodyParams['node_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id or node is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -116,8 +134,13 @@ class MediaController
 	 */
 	public function clone(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
-		if (!is_array($bodyParams) || !isset($bodyParams['media_id']))
+
+		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
+		if (!isset($bodyParams['media_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
@@ -133,6 +156,7 @@ class MediaController
 		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
 		if ($json !== false)
 			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 

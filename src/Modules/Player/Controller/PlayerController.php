@@ -21,23 +21,31 @@
 
 namespace App\Modules\Player\Controller;
 
-use App\Framework\Core\Sanitizer;
+use App\Framework\Core\CsrfToken;
 use App\Modules\Player\Services\PlayerService;
+use PHPUnit\Util\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PlayerController
 {
 	private readonly PlayerService $playerService;
+	private readonly CsrfToken $csrfToken;
 
-	public function __construct(PlayerService $indexService)
+	public function __construct(PlayerService $indexService, CsrfToken $csrfToken)
 	{
 		$this->playerService  = $indexService;
+		$this->csrfToken = $csrfToken;
 	}
 
 	public function replacePlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,string> $post */
 		$post       = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+
 		$playerId = isset($post['player_id']) ? (int) $post['player_id'] : 0;
 		if ($playerId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player ID not valid.']);
@@ -57,7 +65,10 @@ class PlayerController
 
 	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
 	{
-		$response->getBody()->write(json_encode($data));
+		$json = json_encode($data);
+		if ($json !== false)
+			$response->getBody()->write($json);
+
 		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

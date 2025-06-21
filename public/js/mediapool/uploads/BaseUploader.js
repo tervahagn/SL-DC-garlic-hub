@@ -50,6 +50,7 @@ export class BaseUploader
 			const formData = new FormData();
 			formData.append("node_id", String(this.directoryView.getActiveNodeId()));
 			formData.append("external_link", filePath);
+			formData.append("csrf_token", this.detectCsrfTokenInMetaTag());
 			if (metadata !== null)
 				formData.append("metadata", JSON.stringify(metadata));
 
@@ -128,4 +129,12 @@ export class BaseUploader
 		document.getElementById("linkTab").disabled = false;
 	}
 
+	detectCsrfTokenInMetaTag()
+	{
+		const metaTag = document.querySelector('meta[name="csrf-token"]');
+		if (metaTag && metaTag.hasAttribute('content'))
+			return metaTag.getAttribute('content');
+
+		throw new Error("No CSRF token found in meta tag");
+	}
 }
