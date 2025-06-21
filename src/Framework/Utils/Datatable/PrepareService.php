@@ -33,9 +33,6 @@ use App\Framework\Utils\Html\FormBuilder;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-/**
- * The `PrepareServiceLocator` class implements the Service Locator pattern, which acts as a central registry for preparing data grids in the application.
- */
 class PrepareService
 {
 	private HeaderPreparer $headerPreparer;
