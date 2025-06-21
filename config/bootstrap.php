@@ -69,7 +69,6 @@ try
 	$container = $containerBuilder->build();
 
 	$csrfToken = $container->get(CsrfToken::class);
-	$csrfToken->generateToken();
 }
 catch (Exception $e)
 {

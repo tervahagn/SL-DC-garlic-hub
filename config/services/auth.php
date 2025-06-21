@@ -20,6 +20,7 @@
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
+use App\Framework\Core\CsrfToken;
 use App\Framework\OAuth2\ClientsRepository;
 use App\Framework\OAuth2\ScopeRepository;
 use App\Framework\OAuth2\TokensRepository;
@@ -45,7 +46,7 @@ $dependencies[AuthService::class] = DI\factory(function (ContainerInterface $con
 });
 $dependencies[LoginController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new LoginController($container->get(AuthService::class));
+	return new LoginController($container->get(AuthService::class), $container->get(CsrfToken::class));
 });
 
 $dependencies['AuthorizationServer'] = DI\factory(function (ContainerInterface $container) {

@@ -35,10 +35,16 @@ class CsrfToken
 	{
 		$this->crypt = $crypt;
 		$this->session = $session;
+
+		$sessionToken = $this->session->get(self::CSRF_TOKEN_SESSION_KEY);
+		$this->token = is_string($sessionToken) ? $sessionToken : '';
 	}
 
 	public function getToken(): string
 	{
+		if ($this->token === '')
+			$this->generateToken();
+
 		return $this->token;
 	}
 
@@ -57,9 +63,6 @@ class CsrfToken
 	 */
 	public function generateToken(): void
 	{
-		if ($this->token !== '')
-			return;
-
 		$this->token = $this->crypt->generateRandomString(self::CSRF_TOKEN_LENGTH);
 		$this->session->set(self::CSRF_TOKEN_SESSION_KEY, $this->token);
 	}
