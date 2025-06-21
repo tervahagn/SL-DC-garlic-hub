@@ -20,7 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
-use App\Framework\Core\Session;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\FrameworkException;
 use Exception;
 
@@ -28,13 +28,13 @@ class FormBuilder
 {
 	private FieldsFactory $fieldsFactory;
 	private FieldsRenderFactory $fieldsRenderFactory;
-	private Session $session;
+	private CsrfToken $csrfToken;
 
-	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory, Session $session)
+	public function __construct(FieldsFactory $fieldsFactory, FieldsRenderFactory $fieldsRenderFactory, CsrfToken $csrfToken)
 	{
 		$this->fieldsFactory       = $fieldsFactory;
 		$this->fieldsRenderFactory = $fieldsRenderFactory;
-		$this->session             = $session;
+		$this->csrfToken            = $csrfToken;
 	}
 
 	/**
@@ -83,7 +83,7 @@ class FormBuilder
 			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($attributes),
 			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($attributes),
 			FieldType::HIDDEN       => $this->fieldsFactory->createHiddenField($attributes),
-			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($attributes, $this->session),
+			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($attributes, $this->csrfToken),
 			default => throw new FrameworkException('Invalid field type'),
 		};
 	}

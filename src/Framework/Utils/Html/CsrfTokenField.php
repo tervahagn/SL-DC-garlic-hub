@@ -22,33 +22,19 @@
 namespace App\Framework\Utils\Html;
 
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use Exception;
 
 class CsrfTokenField extends AbstractInputField
 {
-	const string CSRF_TOKEN_COOKIE_NAME = 'csrf_token';
-	// later const string CSRF_TOKEN_COOKIE_EXPIRE = '+1 hours';
-	private Session $session;
-
 	/**
 	 * @throws Exception
 	 */
-	public function __construct(array $attributes, Session $session)
+	public function __construct(array $attributes, CsrfToken $csrfToken)
 	{
 		parent::__construct($attributes);
-		$this->session = $session;
-		$this->setValue($this->generateToken());
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	private function generateToken(): string
-	{
-		$token = bin2hex(random_bytes(32));
-		$this->session->set(self::CSRF_TOKEN_COOKIE_NAME, $token);
-		return $token;
+		$this->setValue($csrfToken->getToken());
 	}
 
 }

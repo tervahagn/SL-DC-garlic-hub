@@ -6,17 +6,15 @@ use Exception;
 
 class Crypt
 {
-
 	/**
 	 * @throws Exception
 	 */
 	public function generateRandomString(int $length = 32): string
 	{
-		$bytesToGenerate = intdiv($length, 2);
-		if ($bytesToGenerate < 1)
-			$bytesToGenerate = 16;
+		if ($length < 1)
+			$length = 32;
 
-		return bin2hex(random_bytes($bytesToGenerate));
+		return bin2hex(random_bytes($length));
 	}
 
 	/**

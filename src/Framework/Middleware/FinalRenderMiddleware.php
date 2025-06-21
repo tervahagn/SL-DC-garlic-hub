@@ -21,6 +21,7 @@
 namespace App\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -35,6 +36,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Random\RandomException;
 use Slim\Flash\Messages;
 use Slim\Psr7\Stream;
 
@@ -49,17 +51,15 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	private Config $config;
 	private Locales $locales;
 	private Session $session;
-	private AclValidator $userAclValidator;
-	private AdapterInterface $templateService;
+	private readonly AclValidator $userAclValidator;
+	private readonly AdapterInterface $templateService;
+	private readonly CsrfToken $csrfToken;
 
-	/**
-	 * @param AdapterInterface $templateService
-	 * @param AclValidator $userAclValidator
-	 */
-	public function __construct(AdapterInterface $templateService, AclValidator $userAclValidator)
+	public function __construct(AdapterInterface $templateService, AclValidator $userAclValidator, CsrfToken $csrfToken)
 	{
 		$this->templateService = $templateService;
 		$this->userAclValidator = $userAclValidator;
+		$this->csrfToken        = $csrfToken;
 	}
 
 	/**
@@ -72,6 +72,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws RandomException
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
@@ -90,6 +91,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		$layoutData = [
 			'messages' => $this->outputFlashMessages($request),
 			'main_menu' => $this->createMainMenu(),
+			'CSRF_TOKEN' => $this->csrfToken->getToken(),
 			'CURRENT_LOCALE_LOWER' => strtolower($locale),
 			'CURRENT_LOCALE_UPPER' => strtoupper($locale),
 			'language_select' => $this->createLanguageSelect(),
@@ -245,4 +247,6 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		}
 		return $ret;
 	}
+
+
 }

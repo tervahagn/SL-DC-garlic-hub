@@ -23,6 +23,7 @@ use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Locales\SessionLocaleExtractor;
 use App\Framework\Core\Sanitizer;
@@ -95,7 +96,11 @@ $dependencies['AppLogger'] = DI\factory(function (ContainerInterface $container)
 });
 $dependencies[FinalRenderMiddleware::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new FinalRenderMiddleware($container->get(AdapterInterface::class), $container->get(AclValidator::class));
+	return new FinalRenderMiddleware(
+		$container->get(AdapterInterface::class),
+		$container->get(AclValidator::class),
+		$container->get(CsrfToken::class)
+	);
 });
 $dependencies[App::class] = Di\factory([AppFactory::class, 'createFromContainer']); // Slim App
 $dependencies[Application::class] = DI\factory(function (){ return new Application();}); // symfony console app
@@ -207,7 +212,7 @@ $dependencies[FormBuilder::class] = DI\factory(function (ContainerInterface $con
 	return new FormBuilder(
 		new FieldsFactory(),
 		new FieldsRenderFactory(),
-		$container->get(Session::class)
+		$container->get(CsrfToken::class)
 	);
 });
 $dependencies[Sanitizer::class] = DI\factory(function (ContainerInterface $container)
@@ -270,5 +275,13 @@ $dependencies[SystemDashboard::class] = DI\factory(function (ContainerInterface 
 		$container->get(Translator::class),
 	);
 });
+$dependencies[CsrfToken::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new CsrfToken(
+		$container->get(Crypt::class),
+		$container->get(Session::class),
+	);
+});
+
 
 return $dependencies;

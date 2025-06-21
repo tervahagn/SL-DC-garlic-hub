@@ -1,6 +1,7 @@
 <?php
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Config\IniConfigLoader;
+use App\Framework\Core\CsrfToken;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Slim\App;
@@ -66,6 +67,9 @@ foreach ($directoryIterator as $file)
 try
 {
 	$container = $containerBuilder->build();
+
+	$csrfToken = $container->get(CsrfToken::class);
+	$csrfToken->generateToken();
 }
 catch (Exception $e)
 {

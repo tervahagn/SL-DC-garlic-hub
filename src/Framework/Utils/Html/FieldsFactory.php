@@ -20,6 +20,7 @@
 
 namespace App\Framework\Utils\Html;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use Exception;
 
@@ -78,9 +79,9 @@ class FieldsFactory
 	 * @param array<string,mixed> $attributes
 	 * @throws Exception
 	 */
-	public function createCsrfTokenField(array $attributes, Session $session): CsrfTokenField
+	public function createCsrfTokenField(array $attributes, CsrfToken $csrfToken): CsrfTokenField
 	{
-		return new CsrfTokenField($attributes, $session);
+		return new CsrfTokenField($attributes, $csrfToken);
 	}
 
 	/**
