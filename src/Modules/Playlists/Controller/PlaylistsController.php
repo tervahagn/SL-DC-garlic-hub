@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -36,18 +37,16 @@ class PlaylistsController
 	private readonly PlaylistsService $playlistsService;
 	private readonly PlaylistsDatatableService $playlistsDatatableService;
 	private readonly Parameters $parameters;
+	private readonly CsrfToken $csrfToken;
 	private Session $session;
 
-	/**
-	 * @param PlaylistsService $playlistsService
-	 * @param PlaylistsDatatableService $playlistsDatatableService
-	 * @param Parameters $parameters
-	 */
-	public function __construct(PlaylistsService $playlistsService, PlaylistsDatatableService $playlistsDatatableService, Parameters $parameters)
+
+	public function __construct(PlaylistsService $playlistsService, PlaylistsDatatableService $playlistsDatatableService, Parameters $parameters, CsrfToken $csrfToken)
 	{
 		$this->playlistsService          = $playlistsService;
 		$this->playlistsDatatableService = $playlistsDatatableService;
 		$this->parameters                = $parameters;
+		$this->csrfToken                 = $csrfToken;
 	}
 
 	/**
@@ -60,6 +59,10 @@ class PlaylistsController
 	{
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		$playlistId = $post['playlist_id'] ?? 0;
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -81,6 +84,9 @@ class PlaylistsController
 	{
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -102,6 +108,10 @@ class PlaylistsController
 	{
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -123,6 +133,7 @@ class PlaylistsController
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$playlistId = $args['playlist_id'] ?? 0;
+
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -146,6 +157,8 @@ class PlaylistsController
 		$this->setServiceUID($request);
 		/** @var array<string,mixed> $parsedBody */
 		$parsedBody = $request->getParsedBody();
+		if (!$this->csrfToken->validateToken($parsedBody['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
 		$count = $this->playlistsService->saveZones($playlistId, $parsedBody);
 		if ($count === 0)

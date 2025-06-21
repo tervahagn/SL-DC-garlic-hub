@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
@@ -33,11 +34,13 @@ readonly class ItemsController
 {
 	private ItemsService $itemsService;
 	private InsertItemFactory $insertItemFactory;
+	private CsrfToken $csrfToken;
 
-	public function __construct(ItemsService $itemsService, InsertItemFactory $insertItemFactory)
+	public function __construct(ItemsService $itemsService, InsertItemFactory $insertItemFactory, CsrfToken $csrfToken)
 	{
 		$this->itemsService = $itemsService;
 		$this->insertItemFactory = $insertItemFactory;
+		$this->csrfToken = $csrfToken;
 	}
 
 	/**
@@ -63,6 +66,10 @@ readonly class ItemsController
 	{
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -98,6 +105,10 @@ readonly class ItemsController
 	{
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -153,6 +164,9 @@ readonly class ItemsController
 	{
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
+		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -172,6 +186,10 @@ readonly class ItemsController
 	{
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 

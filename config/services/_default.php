@@ -53,6 +53,7 @@ use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldsRenderFactory;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Auth\UserSession;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Configuration;
@@ -281,6 +282,10 @@ $dependencies[CsrfToken::class] = DI\factory(function (ContainerInterface $conta
 		$container->get(Crypt::class),
 		$container->get(Session::class),
 	);
+});
+$dependencies[UserSession::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new UserSession($container->get(Session::class));
 });
 
 

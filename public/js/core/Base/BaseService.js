@@ -30,12 +30,16 @@ export class BaseService
 	 */
 	async _sendRequest(url, method, data)
 	{
-		let options = {};
+		let options;
 
 		if (method === "GET")
 			options = {method, headers: { 'Content-Type': 'application/json' }};
 		else
+		{
+			data.csrf_token = this.#detectCsrfTokenInMetaTag();
+
 			options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
+		}
 
 		const result  = await this.#fetchClient.fetchData(url, options).catch(error => {
 			throw new Error(error.message);
@@ -45,5 +49,14 @@ export class BaseService
 			throw new Error(result.error_message);
 
 		return result;
+	}
+
+	#detectCsrfTokenInMetaTag()
+	{
+		const metaTag = document.querySelector('meta[name="csrf-token"]');
+		if (metaTag && metaTag.hasAttribute('content'))
+			return metaTag.getAttribute('content');
+
+		throw new Error("No CSRF token found in meta tag");
 	}
 }

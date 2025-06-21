@@ -210,6 +210,7 @@ export class ZonesModel
 		try
 		{
 			const Properties = this.#createJsonForSave();
+			Properties.csrf_token = this.#detectCsrfTokenInMetaTag();
 
 			let url = "/async/playlists/multizone/"+ this.#playlist_id;
 			fetch(url, {
@@ -334,5 +335,12 @@ export class ZonesModel
 			this.#export_unit = ZonesModel.UNIT_PIXEL;
 	}
 
+	#detectCsrfTokenInMetaTag()
+	{
+		const metaTag = document.querySelector('meta[name="csrf-token"]');
+		if (metaTag && metaTag.hasAttribute('content'))
+			return metaTag.getAttribute('content');
 
+		throw new Error("No CSRF token found in meta tag");
+	}
 }

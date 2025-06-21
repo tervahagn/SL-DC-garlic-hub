@@ -20,6 +20,7 @@
 
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -29,6 +30,7 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Widget\ConfigXML;
+use App\Modules\Auth\UserSession;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Playlists\Collector\Builder\BuildHelper;
@@ -201,7 +203,8 @@ $dependencies[PlaylistsController::class] = DI\factory(function (ContainerInterf
 	return new PlaylistsController(
 		$container->get(PlaylistsService::class),
 		$container->get(PlaylistsDatatableService::class),
-		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class)
+		$container->get(\App\Modules\Playlists\Helper\Datatable\Parameters::class),
+		$container->get(CsrfToken::class)
 	);
 });
 
@@ -219,7 +222,11 @@ $dependencies[InsertItemFactory::class] = DI\factory(function (ContainerInterfac
 });
 $dependencies[ItemsController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ItemsController($container->get(ItemsService::class), $container->get(InsertItemFactory::class));
+	return new ItemsController(
+		$container->get(ItemsService::class),
+		$container->get(InsertItemFactory::class),
+		$container->get(CsrfToken::class)
+	);
 });
 $dependencies[PlaylistMetricsCalculator::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -252,7 +259,11 @@ $dependencies[ExportService::class] = DI\factory(function (ContainerInterface $c
 });
 $dependencies[ExportController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new ExportController($container->get(ExportService::class));
+	return new ExportController(
+		$container->get(ExportService::class),
+		$container->get(UserSession::class),
+		$container->get(CsrfToken::class)
+	);
 });
 
 $dependencies[BuildHelper::class] = DI\factory(function (ContainerInterface $container)
@@ -289,7 +300,9 @@ $dependencies[WidgetsService::class] = DI\factory(function (ContainerInterface $
 $dependencies[WidgetsController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new WidgetsController(
-		$container->get(WidgetsService::class));
+		$container->get(WidgetsService::class),
+		$container->get(CsrfToken::class),
+	);
 });
 
 return $dependencies;

@@ -21,17 +21,21 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Modules\Playlists\Services\WidgetsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class WidgetsController
 {
-	private WidgetsService $widgetsService;
+	private readonly WidgetsService $widgetsService;
+	private readonly CsrfToken $csrfToken;
 
-	public function __construct(WidgetsService $itemsService)
+
+	public function __construct(WidgetsService $itemsService, CsrfToken $csrfToken)
 	{
 		$this->widgetsService = $itemsService;
+		$this->csrfToken = $csrfToken;
 	}
 
 	/**
@@ -55,6 +59,10 @@ class WidgetsController
 	{
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+
 		$itemId = $requestData['item_id'] ?? 0;
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);

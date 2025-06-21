@@ -21,6 +21,8 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
+use App\Modules\Auth\UserSession;
 use App\Modules\Playlists\Services\ExportService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -29,10 +31,14 @@ use Psr\Http\Message\ServerRequestInterface;
 readonly class ExportController
 {
 	private ExportService $exportService;
+	private UserSession $userSession;
+	private CsrfToken $csrfToken;
 
-	public function __construct(ExportService $exportService)
+	public function __construct(ExportService $exportService, UserSession $userSession, CsrfToken $csrfToken)
 	{
 		$this->exportService = $exportService;
+		$this->userSession = $userSession;
+		$this->csrfToken = $csrfToken;
 	}
 
 	/**
@@ -40,14 +46,17 @@ readonly class ExportController
 	 */
 	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
 		if (!isset($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$session = $request->getAttribute('session');
-		$this->exportService->setUID($session->get('user')['UID']);
+		$this->exportService->setUID($this->userSession->getUID());
 
 		if ($this->exportService->exportToSmil($post['playlist_id']) === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);

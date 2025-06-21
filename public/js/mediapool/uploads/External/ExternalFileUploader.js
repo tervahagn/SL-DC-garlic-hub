@@ -21,7 +21,6 @@ import { BaseUploader } from "../BaseUploader.js";
 
 export class ExternalFileUploader extends BaseUploader
 {
-
 	constructor(domElements, directoryView, uploaderDialog, fetchClient)
     {
 		super(domElements, directoryView, uploaderDialog, fetchClient);
@@ -38,7 +37,6 @@ export class ExternalFileUploader extends BaseUploader
 		this.domElements.externalLinkField.value = "";
 
 	}
-
 
 	#handleUploadButton()
 	{
