@@ -18,13 +18,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Modules\Users\Controller;
+namespace Tests\Unit\Modules\Profile;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Profile\Services\UserService;
-use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
