@@ -123,6 +123,20 @@ class Builder
 	}
 
 	/**
+	 * @return list<array<string,string>>
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function addButtons(): array
+	{
+		return [
+				$this->formElementsCreator->addResetPasswordButton()
+		];
+	}
+
+	/**
 	 * @param array<string,mixed> $post
 	 * @return array<string,mixed>
 	 * @throws CoreException

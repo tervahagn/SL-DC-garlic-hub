@@ -42,6 +42,12 @@ class UsersController
 		$this->parameters = $parameters;
 	}
 
+	public function resetPassword(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+
+	}
+
+
 	/**
 	 * @param array<string,string> $args
 	 * @throws ModuleException

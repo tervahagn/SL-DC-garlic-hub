@@ -171,6 +171,7 @@ class Facade
 		$dataSections['template_name']     = 'users/edit';
 		$dataSections['form_action']       = '/users/edit';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
+		$dataSections['additional_buttons'] = $this->settingsFormBuilder->addButtons();
 
 		return $dataSections;
 	}

@@ -52,7 +52,8 @@ class FormTemplatePreparer
 							'ELEMENT_BUTTON_NAME' => 'submit',
 							'LANG_ELEMENT_BUTTON' => $dataSections['save_button_label'],
 						]
-					]
+					],
+					'additional_buttons' => $dataSections['additional_buttons'] ?? []
 				]
 			]
 		];

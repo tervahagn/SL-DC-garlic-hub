@@ -125,6 +125,21 @@ readonly class FormElementsCreator
 		]);
 	}
 
+	/**
+	 * @return array<string,string>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function addResetPasswordButton(): array
+	{
+		return [
+			'ADDITIONAL_BUTTON_NAME' => 'resetPassword',
+			'LANG_ADDITIONAL_BUTTON' => $this->translator->translate('password_reset', 'profile')
+		];
+	}
+
 
 	/**
 	 * @throws FrameworkException
