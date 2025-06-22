@@ -11,11 +11,20 @@ class Crypt
 	 */
 	public function generateRandomString(int $length = 32): string
 	{
+		return bin2hex($this->generateRandomBytes($length));
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function generateRandomBytes(int $length = 32): string
+	{
 		if ($length < 1)
 			$length = 32;
 
 		return bin2hex(random_bytes($length));
 	}
+
 
 	/**
 	 * @throws Exception
