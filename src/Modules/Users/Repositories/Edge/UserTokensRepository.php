@@ -24,7 +24,9 @@ namespace App\Modules\Users\Repositories\Edge;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
+use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class UserTokensRepository extends SqlBase
 {
@@ -37,10 +39,14 @@ class UserTokensRepository extends SqlBase
 
 	/**
 	 * @return array<string,mixed>
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws Exception|DatabaseException
 	 */
 	public function findFirstByToken(string $token): array
 	{
+		$token = hex2bin($token);
+		if ($token === false)
+			throw new DatabaseException('Invalid token');
+
 		return $this->getFirstDataSet($this->findById($token));
 	}
 }

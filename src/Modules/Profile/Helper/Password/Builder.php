@@ -55,6 +55,17 @@ class Builder
 		return $this->formElementsCreator->prepareForm($form);
 	}
 
+	public function buildForcedForm(string $pattern): array
+	{
+		$form       = [];
+		$form['password'] = $this->formElementsCreator->createPasswordField('', $pattern);
+		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
+		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
+
+		return $this->formElementsCreator->prepareForm($form);
+	}
+
+
 	/**
 	 * @param array<string,mixed> $post
 	 * @return array<string,mixed>

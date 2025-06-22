@@ -55,6 +55,7 @@ class AuthMiddleware implements MiddlewareInterface
 		'smil-index',
 		'register',
 		'reset-password',
+		'force-password',
 		'legals',
 		'privacy',
 		'terms',

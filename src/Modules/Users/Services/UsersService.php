@@ -36,6 +36,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * User service handles and caches the userEntity. This is a central point for authentication and checking
@@ -78,7 +79,7 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function loadForEdit(int $UID): array
@@ -104,13 +105,13 @@ class UsersService extends AbstractBaseService
 			if ($UID === 0)
 				throw new ModuleException('users', 'insert failed.');
 
-			$this->userService->insertTokens($UID, TokenPurposes::INITIAL_PASSWORD);
+			$this->userService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
 
 			$this->userRepositories['main']->commitTransaction();
 
 			return $UID;
 		}
-		catch (\Throwable $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->userRepositories['main']->rollBackTransaction();

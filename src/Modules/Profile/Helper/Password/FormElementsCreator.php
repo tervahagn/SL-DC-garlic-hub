@@ -103,6 +103,19 @@ readonly class FormElementsCreator
 	/**
 	 * @throws FrameworkException
 	 */
+	public function createPasswordTokenField(): FieldInterface
+	{
+		return $this->formBuilder->createField([
+			'type' => FieldType::HIDDEN,
+			'id'   => Parameters::PARAMETER_PASSWORD_TOKEN,
+			'name' => Parameters::PARAMETER_PASSWORD_TOKEN,
+		]);
+	}
+
+
+	/**
+	 * @throws FrameworkException
+	 */
 	public function createCSRFTokenField(): FieldInterface
 	{
 		return $this->formBuilder->createField([

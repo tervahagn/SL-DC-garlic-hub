@@ -21,7 +21,6 @@
 namespace App\Modules\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Modules\Users\Repositories\Core\UserContactRepository;
 use App\Modules\Users\Repositories\Core\UserStatsRepository;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
@@ -35,7 +34,13 @@ class UserRepositoryFactory
 {
 	private readonly Config $config;
 	private Connection $connection;
-	/** @var array<string,SqlBase> */
+	/**
+	 * @var array{
+	 *     main: UserMainRepository,
+	 *     tokens: UserTokensRepository,
+	 *     acl: UserAclRepository
+	 *	 }|null
+	 */
 	private ?array $repositories = null;
 
 	/**
@@ -49,7 +54,11 @@ class UserRepositoryFactory
 	}
 
 	/**
-	 * @return array<string,SqlBase>
+	 * @return array{
+	 *     main: UserMainRepository,
+	 *     tokens: UserTokensRepository,
+	 *     acl: UserAclRepository
+	 *	 }
 	 */
 	public function create(): array
 	{

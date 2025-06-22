@@ -24,8 +24,10 @@ namespace App\Modules\Profile\Controller;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Profile\Helper\Password\Facade;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,11 +47,95 @@ class ShowPasswordController
 		$this->formElementPreparer = $formElementPreparer;
 	}
 
-	public function showForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function showPasswordForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->initFacade($request);
 		return $this->outputRenderedForm($response);
 	}
+
+	/**
+	 * @param array<string,string> $args
+	 * @throws Exception
+	 */
+	public function showForcedPasswordForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$queryParams = $request->getQueryParams();
+		$token = $queryParams['token'] ?? '';
+		$this->flash      = $request->getAttribute('flash');
+		$this->translator = $request->getAttribute('translator');
+		if ($token === '')
+		{
+			$this->flash->addMessageNow('error', $this->translator->translate('no_token', 'profile'));
+			return $response->withHeader('Location', '/login')->withStatus(302);
+		}
+		$UID = $this->facade->determineUIDByToken($token);
+		if ($UID === 0)
+		{
+			$this->flash->addMessageNow('error', $this->translator->translate('token_error', 'profile'));
+			return $response->withHeader('Location', '/login')->withStatus(302);
+		}
+
+		return $this->outputRenderedForm($response, true);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	public function storeForcedPassword(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		/** @var array<string,mixed> $post */
+		$post = $request->getParsedBody();
+		$this->flash      = $request->getAttribute('flash');
+		$this->translator = $request->getAttribute('translator');
+		$token = $post['token'] ?? '';
+		if ($token === '')
+		{
+			$this->flash->addMessageNow('error', $this->translator->translate('no_token', 'profile'));
+			return $response->withHeader('Location', '/login')->withStatus(302);
+		}
+		$UID = $this->facade->determineUIDByToken($token);
+		if ($UID === 0)
+		{
+			$this->flash->addMessageNow('error', $this->translator->translate('token_error', 'profile'));
+			return $response->withHeader('Location', '/login')->withStatus(302);
+		}
+
+		$errors = $this->facade->configureUserFormParameter($post);
+		foreach ($errors as $errorText)
+		{
+			$this->flash->addMessageNow('error', $errorText);
+		}
+
+		if (!empty($errors))
+			return $this->outputRenderedForm($response, true);
+
+		$id = $this->facade->storePassword();
+		if ($id > 0)
+		{
+			$this->flash->addMessage(
+				'success',
+				$this->translator->translate('forced_password_changed', 'profile')
+			);
+//			$this->facade->cleanUpAfterForced($UID);
+			return $response->withHeader('Location', '/login')->withStatus(302);
+		}
+		else
+		{
+			$errors = $this->facade->getUserServiceErrors();
+			foreach ($errors as $errorText)
+			{
+				$this->flash->addMessageNow('error', $errorText);
+			}
+		}
+
+		return $this->outputRenderedForm($response);
+	}
+
 
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -64,7 +150,7 @@ class ShowPasswordController
 		}
 
 		if (!empty($errors))
-			return $this->outputRenderedForm($response, $post);
+			return $this->outputRenderedForm($response);
 
 		$id = $this->facade->storePassword();
 		if ($id > 0)
@@ -93,9 +179,9 @@ class ShowPasswordController
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	private function outputRenderedForm(ResponseInterface $response): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, bool $forced = false): ResponseInterface
 	{
-		$dataSections = $this->facade->prepareUITemplate();
+		$dataSections = $this->facade->prepareUITemplate($forced);
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));

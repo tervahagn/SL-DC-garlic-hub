@@ -29,6 +29,7 @@ class Parameters extends BaseEditParameters
 {
 	const string PARAMETER_PASSWORD           = 'password';
 	const string PARAMETER_PASSWORD_CONFIRM   = 'password_confirm';
+	const string PARAMETER_PASSWORD_TOKEN     = 'token';
 
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>
@@ -42,5 +43,10 @@ class Parameters extends BaseEditParameters
 	{
 		parent::__construct('user', $sanitizer, $session);
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
+	}
+
+	public function addToken(): void
+	{
+		$this->addParameter(self::PARAMETER_PASSWORD_TOKEN, ScalarType::STRING, '');
 	}
 }

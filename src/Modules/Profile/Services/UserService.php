@@ -87,7 +87,7 @@ class UserService extends AbstractBaseService
 		$token = [
 			'UID' => $UID,
 			'purpose' => $purpose->value,
-			'token' => $this->crypt->generateRandomString(),
+			'token' => $this->crypt->generateRandomBytes(),
 			'expires_at' => date('Y-m-d H:i:s', strtotime('+12 hour'))
 		];
 		return (string) $this->userTokensRepository->insert($token);

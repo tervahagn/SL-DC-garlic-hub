@@ -30,7 +30,7 @@ trait CrudTraits
 	 * Inserts a new record into the database and returns the new insert id.
 	 *
 	 * creates internally a prepared statement
-	 *
+	 * @param array<string, mixed> $fields
 	 * @throws Exception
 	 */
 	public function insert(array $fields): int|string

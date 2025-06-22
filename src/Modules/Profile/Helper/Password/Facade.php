@@ -26,7 +26,9 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Profile\Services\UserService;
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -44,6 +46,24 @@ class Facade
 		$this->userService         = $userService;
 		$this->passwordParameters  = $passwordParameters;
 		$this->config = $config;
+	}
+
+	/**
+	 * @throws DateMalformedStringException
+	 * @throws Exception
+	 */
+	public function determineUIDByToken(string $token): int
+	{
+		/** @var array{UID: int, purpose:string}|array<empty,empty> $result */
+		$result = $this->userService->findByToken($token);
+		if (!isset($result['purpose']))
+			return 0;
+
+		if ($result['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
+				$result['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
+			return 0;
+
+		return (int) $result['UID'];
 	}
 
 	public function init(Translator $translator, Session $session): void
@@ -72,6 +92,7 @@ class Facade
 
 	/**
 	 * @throws ModuleException
+	 * @throws Exception
 	 */
 	public function storePassword(): int
 	{
@@ -107,8 +128,14 @@ class Facade
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function prepareUITemplate(): array
+	public function prepareUITemplate(bool $forced): array
 	{
+		if ($forced)
+		{
+			$this->passwordParameters->addToken();
+			$formAction = '/force-password';
+		}
+
 		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
 		$title = $this->translator->translate('edit_password', 'profile');
 		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern);
@@ -117,7 +144,7 @@ class Facade
 		$dataSections['additional_css']    = ['/css/profile/password.css'];
 		$dataSections['footer_modules']    = ['/js/profile/password/init.js'];
 		$dataSections['template_name']     = 'profile/edit';
-		$dataSections['form_action']       = '/profile/password';
+		$dataSections['form_action']       = $formAction ?? '/profile/password';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
 
 		return $dataSections;
