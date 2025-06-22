@@ -21,9 +21,13 @@
 
 namespace App\Modules\Profile\Services;
 
+use App\Framework\Core\Crypt;
 use App\Framework\Services\AbstractBaseService;
+use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
@@ -31,12 +35,29 @@ class UserService extends AbstractBaseService
 {
 	private readonly UserMainRepository $userMainRepository;
 	private readonly UserTokensRepository $userTokensRepository;
+	private readonly Crypt $crypt;
 
-	public function __construct(UserMainRepository $userMainRepository, UserTokensRepository $userTokensRepository, LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, UserTokensRepository $userTokensRepository, Crypt $crypt, LoggerInterface $logger)
 	{
 		$this->userMainRepository   = $userMainRepository;
 		$this->userTokensRepository = $userTokensRepository;
+		$this->crypt                = $crypt;
 		parent::__construct($logger);
+	}
+
+	/**
+	 * @return array{UID:int, purpose:string}|array<empty,empty>
+	 * @throws DateMalformedStringException
+	 * @throws Exception
+	 */
+	public function findByToken(string $token): array
+	{
+		$result = $this->userTokensRepository->findFirstByToken($token);
+		$now = new DateTime();
+		if ($result['used_at'] !== null || new DateTime($result['expires_at']) < $now)
+			return [];
+
+		return ['UID' => (int) $result['UID'], 'purpose' => $result['purpose']];
 	}
 
 	/**
@@ -55,6 +76,21 @@ class UserService extends AbstractBaseService
 		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 
 		return $this->userMainRepository->update($this->UID, $data);
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws \Exception
+	 */
+	public function insertToken(int $UID, TokenPurposes $purpose): string
+	{
+		$token = [
+			'UID' => $UID,
+			'purpose' => $purpose->value,
+			'token' => $this->crypt->generateRandomString(),
+			'expires_at' => date('Y-m-d H:i:s', strtotime('+12 hour'))
+		];
+		return (string) $this->userTokensRepository->insert($token);
 	}
 
 	/**

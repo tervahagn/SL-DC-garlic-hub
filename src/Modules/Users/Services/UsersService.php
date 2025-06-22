@@ -26,6 +26,7 @@ use App\Framework\Services\AbstractBaseService;
 use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
+use App\Modules\Profile\Services\UserService;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;
@@ -57,6 +58,7 @@ class UsersService extends AbstractBaseService
 */
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
+	private UserService $userService;
 	private Psr16Adapter $cache;
 	/** @var array{
 	 *     main: UserMainRepository,
@@ -65,13 +67,13 @@ class UsersService extends AbstractBaseService
 	 *	 }  */
 	private array $userRepositories;
 
-	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, Psr16Adapter
-	$cache, LoggerInterface $logger)
+	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, UserService $userService, Psr16Adapter $cache, LoggerInterface $logger)
 	{
 		$this->userRepositoryFactory = $userRepositoryFactory;
 		$this->userEntityFactory     = $userEntityFactory;
 		$this->cache                 = $cache;
 		$this->userRepositories      = $this->userRepositoryFactory->create();
+		$this->userService           = $userService;
 		parent::__construct($logger);
 	}
 
@@ -102,13 +104,7 @@ class UsersService extends AbstractBaseService
 			if ($UID === 0)
 				throw new ModuleException('users', 'insert failed.');
 
-			$token = [
-				'UID' => $UID,
-				'purpose' => TokenPurposes::INITIAL_PASSWORD->value,
-				'token' => random_bytes(32),
-				'expires_at' => date('Y-m-d H:i:s', strtotime('+12 hour'))
-			];
-			$this->userRepositories['tokens']->insert($token);
+			$this->userService->insertTokens($UID, TokenPurposes::INITIAL_PASSWORD);
 
 			$this->userRepositories['main']->commitTransaction();
 

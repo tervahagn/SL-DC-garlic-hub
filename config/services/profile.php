@@ -19,6 +19,7 @@
 */
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Crypt;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -45,6 +46,7 @@ $dependencies[UserService::class] = DI\factory(function (ContainerInterface $con
 	return new UserService(
 		$repositories['main'],
 		$repositories['tokens'],
+		$container->get(Crypt::class),
 		$container->get('ModuleLogger')
 	);
 });

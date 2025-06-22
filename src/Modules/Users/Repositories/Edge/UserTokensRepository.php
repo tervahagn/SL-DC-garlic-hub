@@ -35,4 +35,12 @@ class UserTokensRepository extends SqlBase
 		parent::__construct($connection,'user_tokens', 'UID');
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	public function findFirstByToken(string $token): array
+	{
+		return $this->getFirstDataSet($this->findById($token));
+	}
 }
