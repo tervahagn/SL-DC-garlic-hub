@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
@@ -41,6 +42,7 @@ class NodesControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
 	private NodesService&MockObject $nodesServiceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private NodesController $controller;
 
 	/**
@@ -51,7 +53,8 @@ class NodesControllerTest extends TestCase
 		$this->requestMock      = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock     = $this->createMock(ResponseInterface::class);
 		$this->nodesServiceMock = $this->createMock(NodesService::class);
-		$this->controller       = new NodesController($this->nodesServiceMock);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
+		$this->controller       = new NodesController($this->nodesServiceMock, $this->csrfTokenMock);
 	}
 
 	/**
@@ -91,6 +94,7 @@ class NodesControllerTest extends TestCase
 		$this->mockSession();
 		$this->requestMock->method('getParsedBody')
 			->willReturn(['name' => 'New Node']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
 			->method('setUID')
@@ -113,9 +117,30 @@ class NodesControllerTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
+	public function testAddFailToken(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method('addNode');
+
+		$this->mockResponse(['success' => false, 'error_message' => 'Csrf token mismatch.']);
+		$this->assertInstanceOf(ResponseInterface::class, $this->controller->add($this->requestMock, $this->responseMock));
+	}
+
+
+	/**
+	 * @throws CoreException
+	 * @throws DatabaseException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	#[Group('units')]
 	public function testAddFailNoName(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->never())->method('setUID');
 		$this->nodesServiceMock->expects($this->never())->method('addNode');
@@ -133,6 +158,7 @@ class NodesControllerTest extends TestCase
 		$this->mockSession();
 		$this->requestMock->method('getParsedBody')
 			->willReturn(['name' => 'Updated Node', 'node_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
 			->method('setUID')
@@ -155,6 +181,7 @@ class NodesControllerTest extends TestCase
 	public function testEditFailsNoParams(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->never())->method('setUID');
 		$this->nodesServiceMock->expects($this->never())->method('editNode');
@@ -173,6 +200,7 @@ class NodesControllerTest extends TestCase
 		$this->mockSession();
 		$this->requestMock->method('getParsedBody')
 			->willReturn(['name' => 'Updated Node', 'node_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
 			->method('setUID')
@@ -197,6 +225,7 @@ class NodesControllerTest extends TestCase
 		$this->mockSession();
 		$this->requestMock->method('getParsedBody')
 			->willReturn(['src_node_id' => 1, 'target_node_id' => 2, 'target_region' => 'region']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
 			->method('setUID')
@@ -220,6 +249,7 @@ class NodesControllerTest extends TestCase
 	public function testMoveFailParams(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->never())->method('setUID');
 		$this->nodesServiceMock->expects($this->never())->method('moveNode');
@@ -241,6 +271,7 @@ class NodesControllerTest extends TestCase
 		$this->mockSession();
 		$this->requestMock->method('getParsedBody')
 			->willReturn(['node_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
 			->method('setUID')
@@ -266,6 +297,7 @@ class NodesControllerTest extends TestCase
 	public function testDeleteFailsNodeId(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->never())->method('setUID');
 		$this->nodesServiceMock->expects($this->never())->method('deleteNode');

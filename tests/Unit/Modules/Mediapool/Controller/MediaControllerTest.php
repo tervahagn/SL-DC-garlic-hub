@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Services\MediaService;
@@ -37,6 +38,7 @@ class MediaControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
 	private MediaService&MockObject $mediaServiceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private MediaController $controller;
 
 	/**
@@ -47,7 +49,8 @@ class MediaControllerTest extends TestCase
 		$this->requestMock      = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock     = $this->createMock(ResponseInterface::class);
 		$this->mediaServiceMock = $this->createMock(MediaService::class);
-		$this->controller       = new MediaController($this->mediaServiceMock);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
+		$this->controller       = new MediaController($this->mediaServiceMock, $this->csrfTokenMock);
 
 	}
 
@@ -128,15 +131,33 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testEditNoMediaId(): void
+	public function testEditNoCsrfToken(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['filename' => 'test.jpg', 'description' => 'Test description']);
 
-		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
+		$this->mockResponse(['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
+	}
+
+
+	/**
+	 * @return void
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testEditNoMediaId(): void
+	{
+		$this->requestMock->expects($this->once())
+			->method('getParsedBody')
+			->willReturn(['csrf_token' => 'token', 'filename' => 'test.jpg', 'description' => 'Test description']);
+
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->with('token')->willReturn(true);
+		$this->mockResponse(['success' => false, 'error_message' => 'Media id is missing']);
+
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -149,6 +170,7 @@ class MediaControllerTest extends TestCase
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1, 'description' => 'Test description']);
 
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockResponse(['success' => false, 'error_message' => 'Filename is missing']);
 
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
@@ -164,6 +186,7 @@ class MediaControllerTest extends TestCase
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1, 'filename' => 'test.jpg']);
 
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockResponse(['success' => false, 'error_message' => 'Description is missing']);
 
 		$this->controller->edit($this->requestMock, $this->responseMock, []);
@@ -178,6 +201,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1, 'filename' => 'test.jpg', 'description' => 'Test description']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
 
@@ -203,6 +227,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
 
@@ -220,6 +245,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mediaServiceMock->expects($this->once())
 			->method('setUID')
@@ -247,6 +273,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id or node is missing']);
 
@@ -263,6 +290,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1, 'node_id' => 2]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
 		$this->mediaServiceMock->expects($this->once())
@@ -289,6 +317,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockResponse(['success' => false, 'error_message' => 'media id is missing']);
 
@@ -306,6 +335,7 @@ class MediaControllerTest extends TestCase
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
 		$this->mediaServiceMock->expects($this->once())

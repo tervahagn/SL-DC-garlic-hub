@@ -77,7 +77,7 @@ readonly class MediaController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		if (!array_key_exists('media_id', $bodyParams))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id is missing']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Media id is missing']);
 
 		if (!array_key_exists('filename', $bodyParams))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Filename is missing']);

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Playlists\Services\WidgetsService;
@@ -20,6 +21,7 @@ class WidgetsControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private Session&MockObject $sessionMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private WidgetsController $controller;
 
 	/**
@@ -32,8 +34,9 @@ class WidgetsControllerTest extends TestCase
 		$this->streamInterfaceMock   = $this->createMock(StreamInterface::class);
 		$this->widgetsServiceMock    = $this->createMock(WidgetsService::class);
 		$this->sessionMock           = $this->createMock(Session::class);
+		$this->csrfTokenMock         = $this->createMock(CsrfToken::class);
 
-		$this->controller = new WidgetsController($this->widgetsServiceMock);
+		$this->controller = new WidgetsController($this->widgetsServiceMock, $this->csrfTokenMock);
 	}
 
 	/**
@@ -91,6 +94,7 @@ class WidgetsControllerTest extends TestCase
 		$this->widgetsServiceMock->expects($this->never())->method('saveWidget');
 
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -108,6 +112,8 @@ class WidgetsControllerTest extends TestCase
 		$this->setServiceUIDMocks();
 
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->widgetsServiceMock->method('saveWidget')->with(123, $requestData)->willReturn(false);
 		$this->widgetsServiceMock->method('getErrorText')->willReturn($errorMessage);
 
@@ -126,6 +132,8 @@ class WidgetsControllerTest extends TestCase
 		$this->setServiceUIDMocks();
 
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->widgetsServiceMock->method('saveWidget')->with(123, $requestData)->willReturn(true);
 
 		$this->mockJsonResponse(['success' => true]);

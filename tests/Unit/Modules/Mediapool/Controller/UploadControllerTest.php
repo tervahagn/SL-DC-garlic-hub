@@ -21,6 +21,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Mediapool\Services\UploadService;
@@ -39,6 +40,7 @@ class UploadControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
 	private UploadService&MockObject $uploadServiceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private UploadController $controller;
 
 	/**
@@ -49,7 +51,8 @@ class UploadControllerTest extends TestCase
 		$this->requestMock      = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock     = $this->createMock(ResponseInterface::class);
 		$this->uploadServiceMock = $this->createMock(UploadService::class);
-		$this->controller       = new UploadController($this->uploadServiceMock);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
+		$this->controller       = new UploadController($this->uploadServiceMock, $this->csrfTokenMock);
 	}
 
 	/**
@@ -61,6 +64,7 @@ class UploadControllerTest extends TestCase
 	{
 		$bodyParams = ['api_url' => 'https://example.com', 'headers' => []];
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->uploadServiceMock->method('requestApi')->with($bodyParams['api_url'])->willReturn(['response_body']);
 
 		$this->mockResponse(['success' => true, 'data' => ['response_body']]);
@@ -73,25 +77,10 @@ class UploadControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testSearchStockImagesBodyParamsNull(): void
-	{
-		$this->requestMock->method('getParsedBody')->willReturn(null);
-		$this->uploadServiceMock->expects($this->never())->method('requestApi');
-
-		$this->mockResponse(['success' => false, 'error_message' => 'No body parameter.']);
-
-		$this->controller->searchStockImages($this->requestMock, $this->responseMock);
-
-	}
-
-	/**
-	 * @throws GuzzleException
-	 * @throws Exception
-	 */
-	#[Group('units')]
 	public function testSearchStockImagesFails(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->uploadServiceMock->expects($this->never())->method('requestApi');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'api_url missing']);
@@ -108,6 +97,7 @@ class UploadControllerTest extends TestCase
 	{
 		$uploadedFile = ['file' => $this->createMock(UploadedFile::class)];
 		$bodyParams   = ['node_id' => 1, 'metadata' => json_encode([])];
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->requestMock->method('getUploadedFiles')->willReturn($uploadedFile);
 
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
@@ -141,30 +131,13 @@ class UploadControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testUploadNoUploadFileBodyParamsNull(): void
-	{
-		$uploadedFile = ['file' => $this->createMock(UploadedFile::class)];
-		$this->requestMock->method('getUploadedFiles')->willReturn($uploadedFile);
-
-		$this->requestMock->method('getParsedBody')->willReturn(null);
-
-		$this->uploadServiceMock->expects($this->never())->method('uploadMediaFiles');
-
-		$this->mockResponse(['success' => false, 'error_message' => 'No body parameter.']);
-
-		$this->controller->uploadLocalFile($this->requestMock, $this->responseMock);
-	}
-	/**
-	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
 	public function testUploadNoNodeId(): void
 	{
 		$uploadedFile = ['file' => $this->createMock(UploadedFile::class)];
 		$this->requestMock->method('getUploadedFiles')->willReturn($uploadedFile);
 
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->uploadServiceMock->expects($this->never())->method('uploadMediaFiles');
 
@@ -185,6 +158,7 @@ class UploadControllerTest extends TestCase
 		$this->requestMock->method('getUploadedFiles')->willReturn($uploadedFile);
 
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->uploadServiceMock->expects($this->never())->method('uploadMediaFiles');
 
@@ -201,6 +175,7 @@ class UploadControllerTest extends TestCase
 	{
 		$bodyParams = ['node_id' => 1, 'external_link' => 'https://example.com/file', 'metadata' => json_encode(['duration' => 16])];
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockSession();
 		$this->uploadServiceMock->method('uploadExternalMedia')->willReturn(['success' => true]);
 
@@ -217,6 +192,7 @@ class UploadControllerTest extends TestCase
 	{
 		$bodyParams = ['external_link' => 'https://example.com/file'];
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->uploadServiceMock->expects($this->never())->method('uploadExternalMedia');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node is missing']);
@@ -228,25 +204,11 @@ class UploadControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testUploadFromUrlBodyParamNull(): void
-	{
-		$this->requestMock->method('getParsedBody')->willReturn(null);
-
-		$this->mockResponse(['success' => false, 'error_message' => 'No files to upload.']);
-		$this->uploadServiceMock->expects($this->never())->method('uploadExternalMedia');
-
-		$this->controller->uploadFromUrl($this->requestMock, $this->responseMock);
-	}
-
-
-	/**
-	 * @throws Exception
-	 */
-	#[Group('units')]
 	public function testUploadFromUrlFailsNoExternalLink(): void
 	{
 		$bodyParams = ['node_id' => 1];
 		$this->requestMock->method('getParsedBody')->willReturn($bodyParams);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->uploadServiceMock->expects($this->never())->method('uploadExternalMedia');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'No external link submitted.']);

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Player\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Modules\Player\Controller\PlayerController;
 use App\Modules\Player\Services\PlayerService;
@@ -20,6 +21,7 @@ class PlayerControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private Session&MockObject $sessionMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private PlayerController $playerController;
 
 	/**
@@ -31,15 +33,17 @@ class PlayerControllerTest extends TestCase
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
 		$this->sessionMock  = $this->createMock(Session::class);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
 		$this->streamInterfaceMock = $this->createMock(StreamInterface::class);
 
-		$this->playerController = new PlayerController($this->playerServiceMock);
+		$this->playerController = new PlayerController($this->playerServiceMock, $this->csrfTokenMock);
 	}
 
 	#[Group('units')]
 	public function testReplacePlaylistWithInvalidPlayerId(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' =>  'Player ID not valid.']);
 
 		$response = $this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
@@ -50,6 +54,7 @@ class PlayerControllerTest extends TestCase
 	public function testReplacePlaylistWithInvalidPlaylistId(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn(['player_id' => 1, 'playlist_id' => null]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 123]);
@@ -72,6 +77,7 @@ class PlayerControllerTest extends TestCase
 	public function testReplacePlaylistSuccessfully(): void
 	{
 		$this->requestMock->method('getParsedBody')->willReturn(['player_id' => 3, 'playlist_id' => 5]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 789]);

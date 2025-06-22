@@ -78,7 +78,7 @@ readonly class NodesController
 			if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
 				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
-			if (isset($bodyParams['name']))
+			if (!isset($bodyParams['name']))
 				throw new ModuleException('mediapool','node name is missing');
 
 			$node_id = $bodyParams['node_id'] ?? 0;

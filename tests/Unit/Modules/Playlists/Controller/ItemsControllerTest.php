@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -26,6 +27,7 @@ class ItemsControllerTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private ServerRequestInterface&MockObject $requestMock;
 	private Session&MockObject $sessionMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 
 	/**
@@ -39,10 +41,11 @@ class ItemsControllerTest extends TestCase
 		$this->responseMock          = $this->createMock(ResponseInterface::class);
 		$this->streamInterfaceMock   = $this->createMock(StreamInterface::class);
 		$this->sessionMock           = $this->createMock(Session::class);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
 
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
 
-		$this->itemsController = new ItemsController($this->itemsServiceMock, $this->insertItemFactoryMock);
+		$this->itemsController = new ItemsController($this->itemsServiceMock, $this->insertItemFactoryMock, $this->csrfTokenMock);
 	}
 
 
@@ -97,6 +100,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1, 'id' => 'item1', 'source' => 'video', 'position' => 5];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$insertItemMock = $this->createMock(AbstractInsertItem::class);
 		$insertItemMock->expects($this->once())->method('insert')
@@ -116,6 +120,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = [];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
@@ -129,6 +134,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Content ID not valid.']);
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
@@ -143,6 +149,7 @@ class ItemsControllerTest extends TestCase
 		$requestData = ['playlist_id' => 1, 'id' => 'item1'];
 
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Source not valid.']);
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
@@ -157,6 +164,7 @@ class ItemsControllerTest extends TestCase
 		$requestData = ['playlist_id' => 1, 'id' => 'item1', 'source' => 'video'];
 
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Position not valid.']);
 
 		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
@@ -171,6 +179,7 @@ class ItemsControllerTest extends TestCase
 		$this->insertItemFactoryMock->method('create')->with('video')->willReturn(null);
 
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Error inserting item.']);
 
 		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
@@ -188,6 +197,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'name' => 'item_name', 'value' => 'New Name'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
@@ -212,6 +222,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'name' => 'item_duration', 'value' => '300'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
@@ -236,6 +247,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'name' => 'item_duration', 'value' => '300'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
@@ -260,6 +272,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['name' => 'item_name', 'value' => 'New Name'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -278,6 +291,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'value' => 'New Name'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No parameter name.']);
 
@@ -296,6 +310,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'name' => 'item_name'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No parameter value.']);
 
@@ -314,6 +329,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123, 'name' => 'invalid_field', 'value' => 'Some Value'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 
@@ -399,6 +415,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1, 'items_positions' => [['id' => 1, 'position' => 2], ['id' => 2, 'position' => 1]]];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
@@ -423,6 +440,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['items_positions' => [['id' => 1, 'position' => 2], ['id' => 2, 'position' => 1]]];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -443,6 +461,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Items Position array is not valid.']);
 
@@ -460,6 +479,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1, 'item_id' => 123];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 
@@ -483,6 +503,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['item_id' => 123];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -500,6 +521,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -517,6 +539,7 @@ class ItemsControllerTest extends TestCase
 	{
 		$requestData = ['playlist_id' => 1, 'item_id' => 123];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 

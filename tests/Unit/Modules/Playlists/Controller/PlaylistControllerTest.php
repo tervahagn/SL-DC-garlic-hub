@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Playlists\Controller;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -28,6 +29,8 @@ class PlaylistControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 	private Session&MockObject $sessionMock;
+	private CsrfToken&MockObject $csrfTokenMock;
+
 	/**
 	 * @throws Exception
 	 */
@@ -40,8 +43,9 @@ class PlaylistControllerTest extends TestCase
 		$this->responseMock         = $this->createMock(ResponseInterface::class);
 		$this->streamInterfaceMock  = $this->createMock(StreamInterface::class);
 		$this->sessionMock          = $this->createMock(Session::class);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
 
-		$this->controller = new PlaylistsController($this->playlistsServiceMock, $this->playlistsDatatableServiceMock, $this->parametersMock);
+		$this->controller = new PlaylistsController($this->playlistsServiceMock, $this->playlistsDatatableServiceMock, $this->parametersMock, $this->csrfTokenMock);
 	}
 
 	/**
@@ -55,6 +59,7 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  ['playlist_id' => 789];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -77,6 +82,7 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  [];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->playlistsServiceMock->method('setUID')->with(456);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -97,6 +103,8 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  ['playlist_id' => 12];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -119,6 +127,8 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  ['playlist_id' => 12];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -143,6 +153,7 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  [];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->playlistsServiceMock->method('setUID')->with(456);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -164,6 +175,8 @@ class PlaylistControllerTest extends TestCase
 		$post =  ['playlist_id' => 12];
 
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -189,6 +202,8 @@ class PlaylistControllerTest extends TestCase
 		$post =  ['playlist_id' => 11, 'shuffle_picking' => 4];
 
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -213,6 +228,7 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  ['playlist_id' => 11];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->playlistsServiceMock->expects($this->never())->method('shufflePicking');
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No picking value found.']);
@@ -232,6 +248,7 @@ class PlaylistControllerTest extends TestCase
 	{
 		$post =  ['shuffle_picking' => 4];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->playlistsServiceMock->expects($this->never())->method('shufflePicking');
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -252,6 +269,8 @@ class PlaylistControllerTest extends TestCase
 		$post =  ['playlist_id' => 11, 'shuffle_picking' => 4];
 
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->playlistsServiceMock->method('setUID')->with(456);
@@ -324,6 +343,8 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
 
 		$this->requestMock->method('getParsedBody')->willReturn(['save_zone_stuff']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
 		$this->playlistsServiceMock->expects($this->once())->method('saveZones')
 			->with(14, ['save_zone_stuff'])->willReturn(1);
 
@@ -357,6 +378,7 @@ class PlaylistControllerTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
 
 		$this->requestMock->method('getParsedBody')->willReturn(['save_zone_stuff']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->playlistsServiceMock->expects($this->once())->method('saveZones')
 			->with(14, ['save_zone_stuff'])->willReturn(0);
 

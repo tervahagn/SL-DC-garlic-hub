@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Modules\Playlists\Controller;
 
-use App\Framework\Core\Session;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Core\CsrfToken;
+use App\Modules\Auth\UserSession;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Services\ExportService;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,7 +20,8 @@ class ExportControllerTest extends TestCase
 	private ExportService&MockObject $exportServiceMock;
 	private ResponseInterface&MockObject $responseMock;
 	private ServerRequestInterface&MockObject $requestMock;
-	private Session&MockObject $sessionMock;
+	private UserSession&MockObject $userSessionMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 
 	/**
@@ -31,68 +32,70 @@ class ExportControllerTest extends TestCase
 		$this->exportServiceMock = $this->createMock(ExportService::class);
 		$this->requestMock = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
-		$this->sessionMock = $this->createMock(Session::class);
+		$this->userSessionMock = $this->createMock(UserSession::class);
 		$this->streamInterfaceMock = $this->createMock(StreamInterface::class);
+		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
 
-		$this->exportController = new ExportController($this->exportServiceMock);
+		$this->exportController = new ExportController($this->exportServiceMock, $this->userSessionMock, $this->csrfTokenMock);
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testExport(): void
 	{
 		$post = ['playlist_id' => 69];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
-		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
+
+		$this->userSessionMock->method('getUID')->willReturn(456);
 		$this->exportServiceMock->method('setUID')->with(456);
 
 		$this->exportServiceMock->method('exportToSmil')->with(69)->willReturn(1);
 		$this->mockJsonResponse(['success' => true]);
 
-		$response = $this->exportController->export($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->exportController->export($this->requestMock, $this->responseMock);
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testExportWithInvalidPlaylistId(): void
 	{
 		$post = [];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
-		$this->requestMock->expects($this->never())->method('getAttribute');
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->exportServiceMock->expects($this->never())->method('exportToSmil');
 		$this->mockJsonResponse(['success' => false, 'error_message' =>  'Playlist ID not valid.']);
 
-		$response = $this->exportController->export($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->exportController->export($this->requestMock, $this->responseMock);
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testExportWhenPlaylistNotFound(): void
 	{
 		$post = ['playlist_id' => 69];
 		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
-		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
-		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+		$this->userSessionMock->method('getUID')->willReturn(456);
 		$this->exportServiceMock->method('setUID')->with(456);
 
 		$this->exportServiceMock->method('exportToSmil')->with(69)->willReturn(0);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist not found.']);
 
-		$response = $this->exportController->export($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->exportController->export($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function mockJsonResponse(array $data): void
 	{
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);

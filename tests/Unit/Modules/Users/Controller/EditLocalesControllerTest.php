@@ -23,6 +23,7 @@ namespace Tests\Unit\Modules\Users\Controller;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Profile\Controller\EditLocalesController;
+use App\Modules\Profile\Services\UserService;
 use App\Modules\Users\Services\UsersService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -37,7 +38,7 @@ class EditLocalesControllerTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private Session&MockObject $sessionMock;
 	private Locales&MockObject $localesMock;
-	private UsersService&MockObject $userServiceMock;
+	private UserService&MockObject $userServiceMock;
 
 	/**
 	 * @throws Exception
@@ -48,7 +49,7 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock    = $this->createMock(ResponseInterface::class);
 		$this->sessionMock     = $this->createMock(Session::class);
 		$this->localesMock     = $this->createMock(Locales::class);
-		$this->userServiceMock = $this->createMock(UsersService::class);
+		$this->userServiceMock = $this->createMock(UserService::class);
 	}
 
 	#[Group('units')]
@@ -109,7 +110,7 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', $previousUrl)
 						   ->willReturn($this->responseMock);
 
-		$this->userServiceMock->expects($this->never())->method('updateUser');
+		$this->userServiceMock->expects($this->never())->method('updateLocale');
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturn($this->responseMock);
 
 		$controller = new EditLocalesController($this->userServiceMock);

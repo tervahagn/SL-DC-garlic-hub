@@ -21,6 +21,7 @@
 namespace Tests\Unit\Modules\Auth;
 
 use App\Framework\Core\Cookie;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\FrameworkException;
@@ -47,6 +48,7 @@ class LoginControllerTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private Session&MockObject $sessionMock;
 	private AuthService&MockObject $authServiceMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private LoggerInterface&MockObject $loggerMock;
 
 	/**
@@ -60,6 +62,7 @@ class LoginControllerTest extends TestCase
 		$this->sessionMock     = $this->createMock(Session::class);
 		$this->authServiceMock = $this->createMock(AuthService::class);
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);
+		$this->csrfTokenMock   = $this->createMock(CsrfToken::class);
 	}
 
 	/**
@@ -87,7 +90,7 @@ class LoginControllerTest extends TestCase
 		$body->expects($this->once())->method('write');
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -128,7 +131,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -173,7 +176,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -224,7 +227,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/api/authorize?some=stuff')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -258,7 +261,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -286,7 +289,7 @@ class LoginControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
@@ -323,7 +326,7 @@ class LoginControllerTest extends TestCase
 		$cookieMock->method('deleteCookie')->with(AuthService::COOKIE_NAME_AUTO_LOGIN);
 		$this->sessionMock->expects($this->once())->method('regenerateID');
 
-		$controller = new LoginController($this->authServiceMock);
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->logout($this->requestMock, $this->responseMock);
 
 		$this->assertSame($this->responseMock, $result);
