@@ -21,6 +21,7 @@
 namespace Tests\Unit\Framework\Middleware;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -59,6 +60,7 @@ class FinalRenderMiddlewareTest extends TestCase
 	private Config&MockObject $configMock;
 	private Locales&MockObject $localesMock;
 	private Messages&MockObject $flashMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 
 	/**
 	 * @throws \Exception|Exception
@@ -77,8 +79,8 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->configMock          = $this->createMock(Config::class);
 		$this->flashMock 	       = $this->createMock(Messages::class);
 		$this->requestMock->method('getUri')->willReturn($uriInterfaceMock);
-
-		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock, $this->aclValidatorMock);
+		$this->csrfTokenMock       = $this->createMock(CsrfToken::class);
+		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock, $this->aclValidatorMock, $this->csrfTokenMock);
 	}
 
 	/**

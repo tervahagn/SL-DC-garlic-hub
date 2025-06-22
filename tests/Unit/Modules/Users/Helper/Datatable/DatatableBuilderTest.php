@@ -168,7 +168,7 @@ class DatatableBuilderTest extends TestCase
 		$this->builder->setTranslator($translator);
 
 		$translator->method('translate')
-			->with('overview', 'users')
+			->with('management', 'users')
 			->willReturn($expectedTitle);
 
 		$this->builder->buildTitle();

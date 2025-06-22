@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\FieldType;
@@ -31,14 +32,14 @@ use PHPUnit\Framework\TestCase;
 class CsrfTokenFieldTest extends TestCase
 {
 
-	private Session&MockObject $sessionMock;
+	private CsrfToken&MockObject $csrfTokeMock;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->sessionMock = $this->createMock(Session::class);
+		$this->csrfTokeMock = $this->createMock(CsrfToken::class);
 	}
 
 	/**
@@ -53,41 +54,15 @@ class CsrfTokenFieldTest extends TestCase
 			'name' => 'csrf_token_name'
 		];
 
-		$this->sessionMock->expects($this->once())->method('set')
-			->with('csrf_token', $this->callback(function ($token)
-			{
-				return (is_string($token) && strlen($token) === 64);
-			})
-		);
+		$token = 'token';
+		$this->csrfTokeMock->expects($this->once())->method('getToken')
+			->willReturn($token);
 
-		$csrfTokenField = new CsrfTokenField($attributes, $this->sessionMock);
+		$csrfTokenField = new CsrfTokenField($attributes, $this->csrfTokeMock);
 
 		$this->assertSame('csrf_token', $csrfTokenField->getId());
 		$this->assertSame('csrf_token_name', $csrfTokenField->getName());
 		$this->assertNotEmpty($csrfTokenField->getValue());
-		$this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $csrfTokenField->getValue());
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	#[Group('units')]
-	public function testTokenIsGeneratedOnEachInstance(): void
-	{
-		$csrfTokenField1 = new CsrfTokenField(['id' => 'csrf1', 'type' => FieldType::CSRF], $this->sessionMock);
-		$csrfTokenField2 = new CsrfTokenField(['id' => 'csrf2', 'type' => FieldType::CSRF], $this->sessionMock);
-
-		$this->assertNotSame($csrfTokenField1->getValue(), $csrfTokenField2->getValue());
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	#[Group('units')]
-	public function testTokenHasCorrectLength(): void
-	{
-		$csrfTokenField = new CsrfTokenField(['id' => 'csrf', 'type' => FieldType::CSRF], $this->sessionMock);
-
-		$this->assertSame(64, strlen($csrfTokenField->getValue()));
-	}
 }

@@ -57,6 +57,7 @@ class FormTemplatePreparerTest extends TestCase
 				'data' => [
 					'LANG_PAGE_HEADER' => 'Sample Title',
 					'FORM_ACTION' => '/submit-form',
+					'LANG_FORM_EXPLAINATION' => '',
 					'element_hidden' => ['hidden_field' => 'value'],
 					'form_element' => ['field1' => 'value1', 'field2' => 'value2'],
 					'form_button' => [
@@ -106,6 +107,7 @@ class FormTemplatePreparerTest extends TestCase
 				'data' => [
 					'LANG_PAGE_HEADER' => '',
 					'FORM_ACTION' => '',
+					'LANG_FORM_EXPLAINATION' => '',
 					'element_hidden' => [],
 					'form_element' => [],
 					'form_button' => [

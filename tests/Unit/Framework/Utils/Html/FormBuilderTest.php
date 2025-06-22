@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Html\CsrfTokenField;
@@ -50,11 +51,11 @@ class FormBuilderTest extends TestCase
 	{
 		$this->fieldsFactoryMock       = $this->createMock(FieldsFactory::class);
 		$this->fieldsRenderFactoryMock = $this->createMock(FieldsRenderFactory::class);
-		$sessionMock = $this->createMock(Session::class);
+		$csrfTokenMock = $this->createMock(CsrfToken::class);
 		$this->formBuilder             = new FormBuilder(
 			$this->fieldsFactoryMock,
 			$this->fieldsRenderFactoryMock,
-			$sessionMock
+			$csrfTokenMock
 		);
 	}
 

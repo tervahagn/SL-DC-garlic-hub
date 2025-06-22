@@ -20,6 +20,7 @@
 
 namespace Tests\Unit\Framework\Utils\Html;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Utils\Html\AutocompleteField;
 use App\Framework\Utils\Html\CsrfTokenField;
@@ -126,12 +127,12 @@ class FieldsFactoryTest extends TestCase
 	{
 		$attributes = ['id' => 'csrf_token', 'type' => FieldType::CSRF, 'name' => 'csrf_token_name'];
 
-		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(Session::class));
+		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(CsrfToken::class));
 
 		$this->assertInstanceOf(CsrfTokenField::class, $field);
 		$this->assertSame('csrf_token', $field->getId());
 		$this->assertSame('csrf_token_name', $field->getName());
-		$this->assertNotEmpty($field->getValue());
+		$this->assertEmpty($field->getValue());
 	}
 
 	#[Group('units')]
