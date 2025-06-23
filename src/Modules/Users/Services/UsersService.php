@@ -270,7 +270,7 @@ class UsersService extends AbstractBaseService
 				/** @var UserMainRepository $repository */
 				$userData[$key] = $repository->findByIdSecured($UID);
 			}
-			if ($key === 'acl')
+			elseif ($key === 'acl')
 			{
 				/** @var UserAclRepository $repository */
 				$userData[$key] = $repository->findById($UID);
