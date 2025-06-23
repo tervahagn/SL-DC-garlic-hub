@@ -58,7 +58,8 @@ class FormBuilder
 
 			$visible[] = [
 				'HTML_ELEMENT_ID'    => $element->getId(),
-				'LANG_ELEMENT_NAME'  => $element->getLabel(),
+				'LANG_ELEMENT_LABEL' => $element->getLabel(),
+				'LANG_ELEMENT_NAME'  => $element->getName(),
 				'ELEMENT_MUST_FIELD' => '', //$element->getAttribute('required') ? '*' : '',
 				'HTML_ELEMENT'       => $this->renderField($element)
 			];

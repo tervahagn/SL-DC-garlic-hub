@@ -119,21 +119,40 @@ class ShowAdminController
 		if (!empty($errors))
 			return $this->outputRenderedForm($response, $post);
 
-		$id = $this->facade->storeUser($post['UID'] ?? 0);
-		if ($id > 0)
+		if (isset($post['standardSubmit']))
 		{
-			$this->flash->addMessage('success', 'User “'.$post['username'].'“ successfully stored.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
-		}
-		else
-		{
-			$errors = $this->facade->getUserServiceErrors();
-			foreach ($errors as $errorText)
+			$id = $this->facade->storeUser($post['UID'] ?? 0);
+			if ($id > 0)
 			{
-				$this->flash->addMessageNow('error', $errorText);
+				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ successfully stored.');
+				return $response->withHeader('Location', '/users')->withStatus(302);
+			}
+			else
+			{
+				$errors = $this->facade->getUserServiceErrors();
+				foreach ($errors as $errorText)
+				{
+					$this->flash->addMessageNow('error', $errorText);
+				}
 			}
 		}
-
+		elseif (isset($post['resetPassword']))
+		{
+			$token = $this->facade->createPasswordResetToken($post['UID']);
+			if ($token !== '')
+			{
+				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ Password successful resetted.');
+				return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
+			}
+			else
+			{
+				$errors = $this->facade->getUserServiceErrors();
+				foreach ($errors as $errorText)
+				{
+					$this->flash->addMessageNow('error', $errorText);
+				}
+			}
+		}
 		return $this->outputRenderedForm($response, $post);
 	}
 

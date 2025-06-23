@@ -49,7 +49,7 @@ class FormTemplatePreparer
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
+							'ELEMENT_BUTTON_NAME' => 'standardSubmit',
 							'LANG_ELEMENT_BUTTON' => $dataSections['save_button_label'],
 						]
 					],

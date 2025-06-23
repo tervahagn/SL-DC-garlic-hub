@@ -87,8 +87,8 @@ readonly class FormElementsCreator
 			'type' => FieldType::DROPDOWN,
 			'id' => 'status',
 			'name' => 'status',
-			'title' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'main'),
-			'label' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'main'),
+			'title' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'users'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'users'),
 			'value' => $value,
 			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_USER_STATUS.'_selects', 'users')
 		]);
@@ -100,16 +100,24 @@ readonly class FormElementsCreator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function createClipboardTextField(string $value, string $purpose): FieldInterface
+	public function createClipboardTextField(string $value, string $purpose, string $expiresAt): FieldInterface
 	{
-		$object = $this->formBuilder->createField([
-			'type' => FieldType::CLIPBOARD_TEXT,
-			'id' => 'verification_link',
-			'title' => $this->translator->translate('copy_to_clipboard', 'main'),
-			'value' => $value
-		]);
+		$http = isset($_SERVER['HTTPS']) ? 'https://': 'http://';
 
 		$purposeStr = $this->translator->translateArrayForOptions('purposes_selects', 'profile')[$purpose];
+		$label = sprintf($this->translator->translate('verification_link', 'profile'),
+			$purposeStr,
+			$expiresAt
+		);
+		
+		$object = $this->formBuilder->createField([
+			'type' => FieldType::CLIPBOARD_TEXT,
+			'id' => 'link_'.$value,
+			'label' => $label,
+			'title' => $this->translator->translate('copy_to_clipboard', 'main'),
+			'value' => $http.$_SERVER['HTTP_HOST'].'/force-password/?token='.$value
+		]);
+
 		$object->setPurpose($purposeStr);
 		$object->setRemoveTitle($this->translator->translate('remove', 'main'));
 		$object->setRefreshTitle($this->translator->translate('refresh', 'main'));
@@ -162,7 +170,7 @@ readonly class FormElementsCreator
 	public function addResetPasswordButton(): array
 	{
 		return [
-			'ADDITIONAL_BUTTON_TYPE' => 'button',
+			'ADDITIONAL_BUTTON_TYPE' => 'submit',
 			'ADDITIONAL_BUTTON_NAME' => 'resetPassword',
 			'LANG_ADDITIONAL_BUTTON' => $this->translator->translate('password_reset', 'profile')
 		];

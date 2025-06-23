@@ -111,6 +111,14 @@ class Facade
 	}
 
 	/**
+	 * @throws Exception
+	 */
+	public function createPasswordResetToken(int $UID): string
+	{
+		return $this->usersService->createPasswordResetToken($UID);
+	}
+
+	/**
 	 * @return string[]
 	 * @throws CoreException
 	 * @throws FrameworkException

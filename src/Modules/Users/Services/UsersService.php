@@ -126,6 +126,14 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
+	 * @throws Exception
+	 */
+	public function createPasswordResetToken(int $UID): string
+	{
+		return $this->userService->insertToken($UID, TokenPurposes::PASSWORD_RESET);
+	}
+
+	/**
 	 * @param array<string,string> $post
 	 * @throws Exception
 	 */

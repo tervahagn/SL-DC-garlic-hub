@@ -117,10 +117,10 @@ class Builder
 		foreach($user['tokens'] as $token)
 		{
 			$tokenObj = $this->formElementsCreator->createClipboardTextField(
-				$_SERVER['HTTP_HOST'].'/force-password/&token='.$token['token'],
-				$token['purpose']
+				$token['token'],
+				$token['purpose'],
+				$token['expires_at']
 			);
-
 
 			$form['token_'.$token['token']] = $tokenObj;
 		}
