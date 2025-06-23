@@ -31,5 +31,6 @@ enum FieldType: string
 	case PASSWORD = 'password';
 	case EMAIL    = 'email';
 	case CSRF     = 'csrf';
+	case CLIPBOARD_TEXT = 'clipboard_text';
 	case HIDDEN   = 'hidden';
 }

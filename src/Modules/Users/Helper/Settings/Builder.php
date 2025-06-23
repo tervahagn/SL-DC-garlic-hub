@@ -114,6 +114,17 @@ class Builder
 			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
 		}
 
+		foreach($user['tokens'] as $token)
+		{
+			$tokenObj = $this->formElementsCreator->createClipboardTextField(
+				$_SERVER['HTTP_HOST'].'/force-password/&token='.$token['token'],
+				$token['purpose']
+			);
+
+
+			$form['token_'.$token['token']] = $tokenObj;
+		}
+
 		if (isset($user[Parameters::PARAMETER_USER_ID]))
 			$form['UID'] = $this->formElementsCreator->createHiddenUIDField($user[Parameters::PARAMETER_USER_ID]);
 

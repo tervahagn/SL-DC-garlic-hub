@@ -155,7 +155,7 @@ class UserServiceTest extends TestCase
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn($cachedData);
 
-		$this->userMainRepositoryMock->expects($this->never())->method('findById');
+		$this->userMainRepositoryMock->expects($this->never())->method('findByIdSecured');
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
 		$this->entityFactoryMock->method('create')
@@ -180,7 +180,7 @@ class UserServiceTest extends TestCase
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn(null);
 
-		$this->userMainRepositoryMock->expects($this->once())->method('findById')->with($UID)
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with($UID)
 			->willReturn($userData);
 
 		$mockUserEntity = $this->createMock(UserEntity::class);

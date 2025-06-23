@@ -61,6 +61,16 @@ class UserService extends AbstractBaseService
 	}
 
 	/**
+	 * @return list<array<string,mixed>>
+	 * @throws Exception
+	 */
+	public function findTokenByUID(int $UID): array
+	{
+		return $this->userTokensRepository->findValidByUID($UID);
+	}
+
+
+	/**
 	 * @throws Exception
 	 */
 	public function updateLocale(int $UID, string $locale): int

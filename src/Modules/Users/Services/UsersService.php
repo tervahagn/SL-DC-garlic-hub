@@ -79,12 +79,18 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return array<string,mixed>
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
-	public function loadForEdit(int $UID): array
+	public function loadForAdminEdit(int $UID): array
 	{
-		return $this->userRepositories['main']->findById($UID);
+		$user = $this->userRepositories['main']->findByIdSecured($UID);
+		if (empty($user))
+			throw new ModuleException('users', 'User not found');
+
+		$user['tokens'] = $this->userService->findTokenByUID($UID);
+		return $user;
 	}
 
 	/**

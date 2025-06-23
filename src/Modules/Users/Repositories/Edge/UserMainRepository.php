@@ -53,22 +53,16 @@ class UserMainRepository extends FilterBase
 			->where($this->idField . ' = :id')
 			->setParameter('id', $id);
 
-		return $queryBuilder->executeQuery()->fetchAssociative();
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
 	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
-	public function findUserById(int $UID): array
+	public function findByIdSecured(int $id): array
 	{
-		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('UID, company_id, status, locale, email, username')
-			->from($this->table)
-			->where($this->idField . ' = :uid')
-			->setParameter('uid', $UID);
-
-		return $this->fetchAssociative($queryBuilder);
+		return $this->getFirstDataSet($this->findById($id));
 	}
 
 	/**

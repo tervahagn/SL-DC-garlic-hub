@@ -147,7 +147,7 @@ class UserMainRepositoryTest extends TestCase
 			->willReturn($userData);
 
 
-		$result = $this->userMain->findById($UID);
+		$result = $this->userMain->findByIdSecured($UID);
 		$this->assertEquals($userData, $result);
 	}
 

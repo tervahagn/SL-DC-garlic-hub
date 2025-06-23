@@ -73,17 +73,18 @@ class FormBuilder
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function createField(array $attributes = []): FieldInterface
+	public function createField(array $attributes = []): FieldInterface|ClipboardTextField
 	{
 		return match ($attributes['type']) {
-			FieldType::TEXT         => $this->fieldsFactory->createTextField($attributes),
-			FieldType::NUMBER       => $this->fieldsFactory->createNumberField($attributes),
-			FieldType::DROPDOWN     => $this->fieldsFactory->createDropdownField($attributes),
-			FieldType::AUTOCOMPLETE => $this->fieldsFactory->createAutocompleteField($attributes),
-			FieldType::PASSWORD     => $this->fieldsFactory->createPasswordField($attributes),
-			FieldType::EMAIL        => $this->fieldsFactory->createEmailField($attributes),
-			FieldType::HIDDEN       => $this->fieldsFactory->createHiddenField($attributes),
-			FieldType::CSRF         => $this->fieldsFactory->createCsrfTokenField($attributes, $this->csrfToken),
+			FieldType::TEXT           => $this->fieldsFactory->createTextField($attributes),
+			FieldType::NUMBER         => $this->fieldsFactory->createNumberField($attributes),
+			FieldType::DROPDOWN       => $this->fieldsFactory->createDropdownField($attributes),
+			FieldType::AUTOCOMPLETE   => $this->fieldsFactory->createAutocompleteField($attributes),
+			FieldType::PASSWORD       => $this->fieldsFactory->createPasswordField($attributes),
+			FieldType::EMAIL          => $this->fieldsFactory->createEmailField($attributes),
+			FieldType::HIDDEN         => $this->fieldsFactory->createHiddenField($attributes),
+			FieldType::CLIPBOARD_TEXT => $this->fieldsFactory->createClipboardTextField($attributes),
+			FieldType::CSRF           => $this->fieldsFactory->createCsrfTokenField($attributes, $this->csrfToken),
 			default => throw new FrameworkException('Invalid field type'),
 		};
 	}

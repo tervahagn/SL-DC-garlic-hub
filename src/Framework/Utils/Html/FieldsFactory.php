@@ -21,7 +21,6 @@
 namespace App\Framework\Utils\Html;
 
 use App\Framework\Core\CsrfToken;
-use App\Framework\Core\Session;
 use Exception;
 
 class FieldsFactory
@@ -87,9 +86,9 @@ class FieldsFactory
 	/**
 	 * @param array<string,mixed> $attributes
 	 */
-	public function createClipboardTextField(array $attributes, string $buttonTitle): ClipboardTextField
+	public function createClipboardTextField(array $attributes): ClipboardTextField
 	{
-		return new ClipboardTextField($attributes, $buttonTitle);
+		return new ClipboardTextField($attributes);
 	}
 
 

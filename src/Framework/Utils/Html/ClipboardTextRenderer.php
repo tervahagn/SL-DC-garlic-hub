@@ -27,9 +27,10 @@ class ClipboardTextRenderer extends AbstractInputFieldRenderer implements FieldR
 		$this->field = $field;
 		$id = $this->field->getId();
 
-		return '<input type="text" id="'.$id.'" aria-describedby="error_'.$id.'" title="'.$this->field->getTitle().'">
-<button class="btn" type="button" id="btn_'.$id.'" title="'.$this->field->getButtonTitle().'.">
-    <i class="bi bi-clipboard"></i>
-  </button>		';
+		return '<input type="text" id="'.$id.'" title="'.$this->field->getTitle().'" readonly>
+<button type="button" id="copy_'.$id.'" title="'.$this->field->getTitle().'."><i class="bi bi-clipboard"></i></button>
+<button type="button" id="remove_'.$id.'" title="'.$this->field->getDeleteTitle().'."><i class="bi bi-trash"></i></button>
+<span>'.$this->field->getPurpose().'</span>
+';
 	}
 }

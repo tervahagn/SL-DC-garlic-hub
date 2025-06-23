@@ -22,17 +22,30 @@ namespace App\Framework\Utils\Html;
 
 class ClipboardTextField extends AbstractInputField
 {
+	private string $purpose = '';
+	private string $deleteTitle = '';
 
-	private string $buttonTitle;
-
-	public function __construct(array $attributes, string $buttonTitle)
+	public function setPurpose(string $purpose): ClipboardTextField
 	{
-		parent::__construct($attributes);
-		$this->buttonTitle = $buttonTitle;
+		$this->purpose = $purpose;
+		return $this;
 	}
 
-	public function getButtonTitle(): string
+	public function getPurpose(): string
 	{
-		return $this->buttonTitle;
+		return $this->purpose;
 	}
+
+	public function setDeleteTitle(string $deleteTitle): ClipboardTextField
+	{
+		$this->deleteTitle = $deleteTitle;
+		return $this;
+	}
+
+	public function getDeleteTitle(): string
+	{
+		return $this->deleteTitle;
+	}
+
+
 }

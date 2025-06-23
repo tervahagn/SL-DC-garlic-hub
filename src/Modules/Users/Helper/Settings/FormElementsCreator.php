@@ -24,10 +24,13 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
+use App\Framework\Utils\Html\ClipboardTextField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Profile\Entities\TokenPurposes;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use PhpParser\Token;
 use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class FormElementsCreator
@@ -90,6 +93,29 @@ readonly class FormElementsCreator
 			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_USER_STATUS.'_selects', 'users')
 		]);
 	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function createClipboardTextField(string $value, string $purpose): FieldInterface
+	{
+		$object = $this->formBuilder->createField([
+			'type' => FieldType::CLIPBOARD_TEXT,
+			'id' => 'verification_link',
+			'title' => $this->translator->translate('copy_to_clipboard', 'main'),
+			'value' => $value
+		]);
+
+		$purposeStr = $this->translator->translateArrayForOptions('purposes_selects', 'profile')[$purpose];
+		$object->setPurpose($purposeStr);
+		$object->setDeleteTitle($this->translator->translate('remove', 'main'));
+
+		return $object;
+	}
+
 
 	/**
 	 * @throws CoreException

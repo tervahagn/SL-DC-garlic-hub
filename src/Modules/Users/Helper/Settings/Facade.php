@@ -61,7 +61,7 @@ class Facade
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
-		$this->oldUser = $this->usersService->loadForEdit($UID);
+		$this->oldUser = $this->usersService->loadForAdminEdit($UID);
 
 		return $this->oldUser;
 	}
