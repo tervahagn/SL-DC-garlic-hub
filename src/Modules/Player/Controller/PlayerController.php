@@ -21,13 +21,13 @@
 
 namespace App\Modules\Player\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Modules\Player\Services\PlayerService;
-use PHPUnit\Util\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlayerController
+class PlayerController extends AbstractAsyncController
 {
 	private readonly PlayerService $playerService;
 	private readonly CsrfToken $csrfToken;
@@ -63,12 +63,4 @@ class PlayerController
 		return $this->jsonResponse($response, ['success' => true, 'playlist_name' => $data['playlist_name']]);
 	}
 
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
-	{
-		$json = json_encode($data);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-	}
 }

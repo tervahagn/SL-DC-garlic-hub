@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
@@ -32,7 +33,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PlaylistsController
+class PlaylistsController extends AbstractAsyncController
 {
 	private readonly PlaylistsService $playlistsService;
 	private readonly PlaylistsDatatableService $playlistsDatatableService;
@@ -228,14 +229,4 @@ class PlaylistsController
 		$user = $this->session->get('user');
 		$this->playlistsService->setUID($user['UID']);
 	}
-
-	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
-	{
-		$json = json_encode($data);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-	}
-
 }

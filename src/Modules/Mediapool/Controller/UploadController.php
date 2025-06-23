@@ -20,6 +20,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Modules\Mediapool\Services\UploadService;
 use Doctrine\DBAL\Exception;
@@ -27,9 +28,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class UploadController
+class UploadController extends AbstractAsyncController
 {
-	private UploadService $uploadService;
+	private readonly UploadService $uploadService;
 
 	public function __construct(UploadService $uploadService, private readonly CsrfToken $csrfToken)
 	{
@@ -110,15 +111,4 @@ class UploadController
 		return $this->jsonResponse($response, $succeed);
 	}
 
-	/**
-	 * @param array<string,mixed> $data
-	 */
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
-	{
-		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
-		if ($json !== false)
-			$response->getBody()->write($json);
-		
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-	}
 }

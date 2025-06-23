@@ -20,6 +20,7 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
@@ -31,10 +32,10 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-readonly class NodesController
+class NodesController extends AbstractAsyncController
 {
-	private NodesService $nodesService;
-	private CsrfToken $csrfToken;
+	private readonly NodesService $nodesService;
+	private readonly CsrfToken $csrfToken;
 
 	public function __construct(NodesService $nodesService, CsrfToken $csrfToken)
 	{
@@ -185,17 +186,5 @@ readonly class NodesController
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
-	}
-
-	/**
-	 * @param array<string,mixed> $data
-	 */
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
-	{
-		$json = json_encode($data);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 }

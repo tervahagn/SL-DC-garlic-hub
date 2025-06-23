@@ -21,16 +21,17 @@
 
 namespace App\Modules\Mediapool\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Modules\Mediapool\Services\MediaService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-readonly class MediaController
+class MediaController extends AbstractAsyncController
 {
-	private MediaService $mediaService;
-	private CsrfToken $csrfToken;
+	private readonly MediaService $mediaService;
+	private readonly CsrfToken $csrfToken;
 
 	public function __construct(MediaService $mediaService, CsrfToken $csrfToken)
 	{
@@ -147,17 +148,4 @@ readonly class MediaController
 		$new_media = $this->mediaService->cloneMedia($bodyParams['media_id']);
 		return $this->jsonResponse($response, ['success' => true, 'new_media' => $new_media]);
 	}
-
-	/**
-	 * @param array<string,mixed> $data
-	 */
-	private function jsonResponse(ResponseInterface $response, array $data): ResponseInterface
-	{
-		$json = json_encode($data, JSON_UNESCAPED_UNICODE);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-	}
-
 }

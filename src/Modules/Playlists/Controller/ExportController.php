@@ -21,18 +21,18 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Modules\Auth\UserSession;
 use App\Modules\Playlists\Services\ExportService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
-readonly class ExportController
+class ExportController extends AbstractAsyncController
 {
-	private ExportService $exportService;
-	private UserSession $userSession;
-	private CsrfToken $csrfToken;
+	private readonly ExportService $exportService;
+	private readonly UserSession $userSession;
+	private readonly CsrfToken $csrfToken;
 
 	public function __construct(ExportService $exportService, UserSession $userSession, CsrfToken $csrfToken)
 	{

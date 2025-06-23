@@ -20,6 +20,7 @@
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -30,11 +31,11 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-readonly class ItemsController
+class ItemsController extends AbstractAsyncController
 {
-	private ItemsService $itemsService;
-	private InsertItemFactory $insertItemFactory;
-	private CsrfToken $csrfToken;
+	private readonly ItemsService $itemsService;
+	private readonly InsertItemFactory $insertItemFactory;
+	private readonly CsrfToken $csrfToken;
 
 	public function __construct(ItemsService $itemsService, InsertItemFactory $insertItemFactory, CsrfToken $csrfToken)
 	{
@@ -214,15 +215,6 @@ readonly class ItemsController
 		$this->itemsService->setUID($UID);
 
 		return $UID;
-	}
-
-	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
-	{
-		$json = json_encode($data);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 	}
 
 }
