@@ -111,7 +111,8 @@ readonly class FormElementsCreator
 
 		$purposeStr = $this->translator->translateArrayForOptions('purposes_selects', 'profile')[$purpose];
 		$object->setPurpose($purposeStr);
-		$object->setDeleteTitle($this->translator->translate('remove', 'main'));
+		$object->setRemoveTitle($this->translator->translate('remove', 'main'));
+		$object->setRefreshTitle($this->translator->translate('refresh', 'main'));
 
 		return $object;
 	}
@@ -161,11 +162,11 @@ readonly class FormElementsCreator
 	public function addResetPasswordButton(): array
 	{
 		return [
+			'ADDITIONAL_BUTTON_TYPE' => 'button',
 			'ADDITIONAL_BUTTON_NAME' => 'resetPassword',
 			'LANG_ADDITIONAL_BUTTON' => $this->translator->translate('password_reset', 'profile')
 		];
 	}
-
 
 	/**
 	 * @throws FrameworkException

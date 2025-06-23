@@ -23,7 +23,8 @@ namespace App\Framework\Utils\Html;
 class ClipboardTextField extends AbstractInputField
 {
 	private string $purpose = '';
-	private string $deleteTitle = '';
+	private string $removeTitle = '';
+	private string $refreshTitle = '';
 
 	public function setPurpose(string $purpose): ClipboardTextField
 	{
@@ -36,16 +37,25 @@ class ClipboardTextField extends AbstractInputField
 		return $this->purpose;
 	}
 
-	public function setDeleteTitle(string $deleteTitle): ClipboardTextField
+	public function setRemoveTitle(string $removeTitle): static
 	{
-		$this->deleteTitle = $deleteTitle;
+		$this->removeTitle = $removeTitle;
 		return $this;
 	}
 
-	public function getDeleteTitle(): string
+	public function getRemoveTitle(): string
 	{
-		return $this->deleteTitle;
+		return $this->removeTitle;
 	}
 
+	public function setRefreshTitle(string $refreshTitle): static
+	{
+		$this->refreshTitle = $refreshTitle;
+		return $this;
+	}
 
+	public function getRefreshTitle(): string
+	{
+		return $this->refreshTitle;
+	}
 }
