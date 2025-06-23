@@ -31,14 +31,15 @@ class FieldsRenderFactory
 	{
 		return match (true)
 		{
-			$field instanceof TextField         => $this->getCachedRenderer(TextRenderer::class)->render($field),
-			$field instanceof NumberField       => $this->getCachedRenderer(NumberRenderer::class)->render($field),
-			$field instanceof DropdownField     => $this->getCachedRenderer(DropdownRenderer::class)->render($field),
-			$field instanceof AutocompleteField => $this->getCachedRenderer(AutocompleteRenderer::class)->render($field),
-			$field instanceof EmailField        => $this->getCachedRenderer(EmailRenderer::class)->render($field),
-			$field instanceof PasswordField     => $this->getCachedRenderer(PasswordRenderer::class)->render($field),
-			$field instanceof HiddenField       => $this->getCachedRenderer(HiddenRenderer::class)->render($field),
-			$field instanceof CsrfTokenField    => $this->getCachedRenderer(CsrfTokenRenderer::class)->render($field),
+			$field instanceof TextField          => $this->getCachedRenderer(TextRenderer::class)->render($field),
+			$field instanceof NumberField        => $this->getCachedRenderer(NumberRenderer::class)->render($field),
+			$field instanceof DropdownField      => $this->getCachedRenderer(DropdownRenderer::class)->render($field),
+			$field instanceof AutocompleteField  => $this->getCachedRenderer(AutocompleteRenderer::class)->render($field),
+			$field instanceof EmailField         => $this->getCachedRenderer(EmailRenderer::class)->render($field),
+			$field instanceof PasswordField      => $this->getCachedRenderer(PasswordRenderer::class)->render($field),
+			$field instanceof HiddenField        => $this->getCachedRenderer(HiddenRenderer::class)->render($field),
+			$field instanceof ClipboardTextField => $this->getCachedRenderer(ClipboardTextRenderer::class)->render($field),
+			$field instanceof CsrfTokenField     => $this->getCachedRenderer(CsrfTokenRenderer::class)->render($field),
 			default => throw new InvalidArgumentException('Unsupported field type: ' . get_class($field)),
 		};
 	}

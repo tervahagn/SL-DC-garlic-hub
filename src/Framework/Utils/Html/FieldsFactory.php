@@ -85,11 +85,20 @@ class FieldsFactory
 	}
 
 	/**
-	 * @param array<string,mixed> $options
+	 * @param array<string,mixed> $attributes
 	 */
-	public function createHiddenField(array $options): HiddenField
+	public function createClipboardTextField(array $attributes, string $buttonTitle): ClipboardTextField
 	{
-		return new HiddenField($options);
+		return new ClipboardTextField($attributes, $buttonTitle);
+	}
+
+
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
+	public function createHiddenField(array $attributes): HiddenField
+	{
+		return new HiddenField($attributes);
 	}
 
 }
