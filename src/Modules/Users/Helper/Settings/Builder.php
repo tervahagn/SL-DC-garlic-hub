@@ -117,7 +117,7 @@ class Builder
 		foreach($user['tokens'] as $token)
 		{
 			$tokenObj = $this->formElementsCreator->createClipboardTextField(
-				$token['token'],
+				bin2hex($token['token']),
 				$token['purpose'],
 				$token['expires_at']
 			);

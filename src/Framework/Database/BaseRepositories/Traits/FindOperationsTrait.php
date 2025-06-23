@@ -154,9 +154,8 @@ trait FindOperationsTrait
 	public function getFirstDataSet(array $result): array
 	{
 		if (!empty($result) && array_key_exists(0, $result))
-		{
 			return $result[0];
-		}
+
 		return [];
 	}
 

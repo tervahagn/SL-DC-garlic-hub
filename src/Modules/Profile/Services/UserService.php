@@ -22,6 +22,7 @@
 namespace App\Modules\Profile\Services;
 
 use App\Framework\Core\Crypt;
+use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
@@ -46,18 +47,24 @@ class UserService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array{UID:int, purpose:string}|array<empty,empty>
+	 * @return array{UID:int, username:string, status:int, purpose:string}|array<empty,empty>
 	 * @throws DateMalformedStringException
 	 * @throws Exception
+	 * @throws DatabaseException
 	 */
 	public function findByToken(string $token): array
 	{
 		$result = $this->userTokensRepository->findFirstByToken($token);
 		$now = new DateTime();
-		if ($result['used_at'] !== null || new DateTime($result['expires_at']) < $now)
+		if (isset($result['used_at']) && new DateTime($result['expires_at']) < $now)
 			return [];
 
-		return ['UID' => (int) $result['UID'], 'purpose' => $result['purpose']];
+		return [
+			'UID' => (int) $result['UID'],
+			'username' => $result['username'],
+			'status' => $result['status'],
+			'purpose' => $result['purpose']
+		];
 	}
 
 	/**
@@ -106,7 +113,7 @@ class UserService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function updateTokens(int $UID, string $purpose): int
+	public function updateToken(int $UID, string $purpose): int
 	{
 		$fields     = ['used_at' => date('Y-m-d H:i:s')];
 		$conditions = ['UID' => $UID, 'purpose' => $purpose];

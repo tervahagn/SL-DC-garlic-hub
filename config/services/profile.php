@@ -69,6 +69,7 @@ $dependencies[ShowPasswordController::class] = DI\factory(function (ContainerInt
 	$facade    = new Facade(
 		$builder,
 		$container->get(UserService::class),
+		$container->get(Translator::class),
 		$container->get(Parameters::class),
 		$container->get(Config::class)
 	);

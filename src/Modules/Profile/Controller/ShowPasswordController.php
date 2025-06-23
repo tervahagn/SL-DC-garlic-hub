@@ -192,8 +192,7 @@ class ShowPasswordController
 	private function initFacade(ServerRequestInterface $request): void
 	{
 		$this->flash      = $request->getAttribute('flash');
-		$this->translator = $request->getAttribute('translator');
-		$this->facade->init($this->translator, $request->getAttribute('session'));
+		$this->facade->init($request->getAttribute('session'));
 	}
 
 }

@@ -34,7 +34,7 @@ class UserTokensRepository extends SqlBase
 
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'user_tokens', 'UID');
+		parent::__construct($connection,'user_tokens', 'token');
 	}
 
 	/**
@@ -47,7 +47,14 @@ class UserTokensRepository extends SqlBase
 		if ($token === false)
 			throw new DatabaseException('Invalid token');
 
-		return $this->getFirstDataSet($this->findById($token));
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('user_tokens.*, username, status')
+			->from($this->table)
+			->leftJoin('user_tokens', 'user_main', '', 'user_main.UID = user_tokens.UID')
+			->where('token = :token')
+			->setParameter('token', $token);
+
+		return $this->fetchAssociative($queryBuilder);
 	}
 
 	/**

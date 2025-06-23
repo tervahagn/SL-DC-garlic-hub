@@ -24,6 +24,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Profile\Entities\TokenPurposes;
@@ -40,35 +41,36 @@ class Facade
 	private readonly Parameters $passwordParameters;
 	private Translator $translator;
 	private Config $config;
-	public function __construct(Builder $settingsFormBuilder, UserService $userService, Parameters $passwordParameters, Config $config)
+	/** @var array{UID:int, username:string, status:int, purpose:string}|array<empty,empty>  */
+	private array $user = [];
+	public function __construct(Builder $settingsFormBuilder, UserService $userService, Translator $translator, Parameters $passwordParameters, Config $config)
 	{
 		$this->passwordFormBuilder = $settingsFormBuilder;
 		$this->userService         = $userService;
+		$this->translator          = $translator;
 		$this->passwordParameters  = $passwordParameters;
 		$this->config = $config;
 	}
 
 	/**
 	 * @throws DateMalformedStringException
-	 * @throws Exception
+	 * @throws Exception|DatabaseException
 	 */
 	public function determineUIDByToken(string $token): int
 	{
-		/** @var array{UID: int, purpose:string}|array<empty,empty> $result */
-		$result = $this->userService->findByToken($token);
-		if (!isset($result['purpose']))
+		$this->user = $this->userService->findByToken($token);
+		if (!isset($this->user['purpose']))
 			return 0;
 
-		if ($result['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
-				$result['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
+		if ($this->user['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
+			$this->user['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
 			return 0;
 
-		return (int) $result['UID'];
+		return (int) $this->user['UID'];
 	}
 
-	public function init(Translator $translator, Session $session): void
+	public function init(Session $session): void
 	{
-		$this->translator = $translator;
 		/** @var array{UID: int} $user */
 		$user = $session->get('user');
 		$this->userService->setUID($user['UID']);
@@ -134,10 +136,12 @@ class Facade
 		{
 			$this->passwordParameters->addToken();
 			$formAction = '/force-password';
+			$title = sprintf($this->translator->translate('edit_password_for', 'profile'), $this->user['username']);
 		}
+		else
+			$title = $this->translator->translate('edit_password', 'profile');
 
 		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
-		$title = $this->translator->translate('edit_password', 'profile');
 		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern);
 		$dataSections['title']             = $title;
 		$dataSections['explanations']      = $this->translator->translate('password_explanation', 'profile');

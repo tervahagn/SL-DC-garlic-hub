@@ -115,7 +115,7 @@ readonly class FormElementsCreator
 			'id' => $value,
 			'label' => $label,
 			'title' => $this->translator->translate('copy_to_clipboard', 'main'),
-			'value' => $http.$_SERVER['HTTP_HOST'].'/force-password/?token='.$value
+			'value' => $http.$_SERVER['HTTP_HOST'].'/force-password?token='.$value
 		]);
 
 		$object->setRemoveTitle($this->translator->translate('remove', 'main'));

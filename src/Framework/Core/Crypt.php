@@ -22,9 +22,8 @@ class Crypt
 		if ($length < 1)
 			$length = 32;
 
-		return bin2hex(random_bytes($length));
+		return random_bytes($length);
 	}
-
 
 	/**
 	 * @throws Exception
