@@ -120,9 +120,7 @@ class UserMainRepositoryTest extends TestCase
 	public function testFindByIdReturnsResults(): void
 	{
 		$UID = 123;
-		$userData = [
-			['UID' => 123, 'company_id' => 1, 'status' => 'active', 'locale' => 'en_US'],
-		];
+		$userData =	['UID' => 123, 'company_id' => 1, 'status' => 'active', 'locale' => 'en_US'];
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -143,8 +141,8 @@ class UserMainRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
 			->willReturn($this->resultMock);
 
-		$this->resultMock->expects($this->once())->method('fetchAssociative')
-			->willReturn($userData);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([$userData]);
 
 
 		$result = $this->userMain->findByIdSecured($UID);

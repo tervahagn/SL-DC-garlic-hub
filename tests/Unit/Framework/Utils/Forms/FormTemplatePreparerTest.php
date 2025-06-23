@@ -63,10 +63,11 @@ class FormTemplatePreparerTest extends TestCase
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
+							'ELEMENT_BUTTON_NAME' => 'standardSubmit',
 							'LANG_ELEMENT_BUTTON' => 'Save Changes',
 						],
 					],
+					'additional_buttons' => []
 				],
 			],
 		];
@@ -113,10 +114,11 @@ class FormTemplatePreparerTest extends TestCase
 					'form_button' => [
 						[
 							'ELEMENT_BUTTON_TYPE' => 'submit',
-							'ELEMENT_BUTTON_NAME' => 'submit',
+							'ELEMENT_BUTTON_NAME' => 'standardSubmit',
 							'LANG_ELEMENT_BUTTON' => '',
 						],
 					],
+					'additional_buttons' => []
 				],
 			],
 		];

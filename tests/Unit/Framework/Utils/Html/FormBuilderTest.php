@@ -86,7 +86,8 @@ class FormBuilderTest extends TestCase
 		$this->assertSame(
 			[
 				'HTML_ELEMENT_ID' => 'text_field_1',
-				'LANG_ELEMENT_NAME' => 'Text Field',
+				'LANG_ELEMENT_LABEL' => 'Text Field',
+				'LANG_ELEMENT_NAME' => '',
 				'ELEMENT_MUST_FIELD' => '',
 				'HTML_ELEMENT' => '<input type="text" id="text_field_1" />',
 			],
@@ -155,7 +156,8 @@ class FormBuilderTest extends TestCase
 		$this->assertSame(
 			[
 				'HTML_ELEMENT_ID' => 'visible_field_1',
-				'LANG_ELEMENT_NAME' => 'Visible Field',
+				'LANG_ELEMENT_LABEL' => 'Visible Field',
+				'LANG_ELEMENT_NAME' => '',
 				'ELEMENT_MUST_FIELD' => '',
 				'HTML_ELEMENT' => '<input type="text" id="visible_field_1" />',
 			],
