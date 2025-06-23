@@ -112,13 +112,12 @@ readonly class FormElementsCreator
 		
 		$object = $this->formBuilder->createField([
 			'type' => FieldType::CLIPBOARD_TEXT,
-			'id' => 'link_'.$value,
+			'id' => $value,
 			'label' => $label,
 			'title' => $this->translator->translate('copy_to_clipboard', 'main'),
 			'value' => $http.$_SERVER['HTTP_HOST'].'/force-password/?token='.$value
 		]);
 
-		$object->setPurpose($purposeStr);
 		$object->setRemoveTitle($this->translator->translate('remove', 'main'));
 		$object->setRefreshTitle($this->translator->translate('refresh', 'main'));
 

@@ -175,7 +175,7 @@ class Facade
 		$dataSections                      = $this->settingsFormBuilder->buildForm($post);
 		$dataSections['title']             = $title;
 		$dataSections['additional_css']    = ['/css/users/edit.css'];
-		$dataSections['footer_modules']    = [];
+		$dataSections['footer_modules']    = ['/js/users/edit/init.js'];
 		$dataSections['template_name']     = 'users/edit';
 		$dataSections['form_action']       = '/users/edit';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');

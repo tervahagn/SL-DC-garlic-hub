@@ -22,20 +22,8 @@ namespace App\Framework\Utils\Html;
 
 class ClipboardTextField extends AbstractInputField
 {
-	private string $purpose = '';
 	private string $removeTitle = '';
 	private string $refreshTitle = '';
-
-	public function setPurpose(string $purpose): ClipboardTextField
-	{
-		$this->purpose = $purpose;
-		return $this;
-	}
-
-	public function getPurpose(): string
-	{
-		return $this->purpose;
-	}
 
 	public function setRemoveTitle(string $removeTitle): static
 	{
