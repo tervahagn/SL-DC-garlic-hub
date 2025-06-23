@@ -134,7 +134,7 @@ class AclHelper
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	private function hasGlobalAcl(int $UID, string $aclName, $moduleName): bool
+	private function hasGlobalAcl(int $UID, string $aclName, string $moduleName): bool
 	{
 		$userEntity = $this->userService->getUserById($UID);
 		$acls       = $userEntity->getAcl();

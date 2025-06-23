@@ -263,10 +263,23 @@ class UsersService extends AbstractBaseService
 	private function collectUserData(int $UID): array
 	{
 		$userData = [];
-		/** @var FilterBase $repository */
 		foreach ($this->userRepositories as $key => $repository)
 		{
-			$userData[$key] = $repository->findById($UID);
+			if ($key === 'main')
+			{
+				/** @var UserMainRepository $repository */
+				$userData[$key] = $repository->findByIdSecured($UID);
+			}
+			if ($key === 'acl')
+			{
+				/** @var UserAclRepository $repository */
+				$userData[$key] = $repository->findById($UID);
+			}
+			else
+			{
+				/** @var FilterBase $repository */
+				$userData[$key] = $repository->findFirstById($UID);
+			}
 		}
 
 		return $userData;

@@ -56,15 +56,16 @@ class Facade
 	 * @throws DateMalformedStringException
 	 * @throws Exception|DatabaseException
 	 */
-	public function determineUIDByToken(string $token): int
+	public function determineUIDByToken(string $passwordToken): int
 	{
-		$this->user = $this->userService->findByToken($token);
+		$this->user = $this->userService->findByToken($passwordToken);
 		if (!isset($this->user['purpose']))
 			return 0;
 
 		if ($this->user['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
 			$this->user['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
 			return 0;
+		$this->userService->setUID($this->user['UID']);
 
 		return (int) $this->user['UID'];
 	}
@@ -130,9 +131,9 @@ class Facade
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function prepareUITemplate(bool $forced): array
+	public function prepareUITemplate(string $passwordToken): array
 	{
-		if ($forced)
+		if (!empty($passwordToken))
 		{
 			$this->passwordParameters->addToken();
 			$formAction = '/force-password';
@@ -142,7 +143,7 @@ class Facade
 			$title = $this->translator->translate('edit_password', 'profile');
 
 		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
-		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern);
+		$dataSections                      = $this->passwordFormBuilder->buildForm($passwordPattern, $passwordToken);
 		$dataSections['title']             = $title;
 		$dataSections['explanations']      = $this->translator->translate('password_explanation', 'profile');
 		$dataSections['additional_css']    = ['/css/profile/password.css'];

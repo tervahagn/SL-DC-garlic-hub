@@ -103,12 +103,13 @@ readonly class FormElementsCreator
 	/**
 	 * @throws FrameworkException
 	 */
-	public function createPasswordTokenField(): FieldInterface
+	public function createPasswordTokenField(string $value): FieldInterface
 	{
 		return $this->formBuilder->createField([
 			'type' => FieldType::HIDDEN,
 			'id'   => Parameters::PARAMETER_PASSWORD_TOKEN,
 			'name' => Parameters::PARAMETER_PASSWORD_TOKEN,
+			'value' => $value,
 		]);
 	}
 

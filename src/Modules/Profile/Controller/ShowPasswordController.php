@@ -60,22 +60,22 @@ class ShowPasswordController
 	public function showForcedPasswordForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$queryParams = $request->getQueryParams();
-		$token = $queryParams['token'] ?? '';
+		$passwordToken = $queryParams['token'] ?? '';
 		$this->flash      = $request->getAttribute('flash');
 		$this->translator = $request->getAttribute('translator');
-		if ($token === '')
+		if ($passwordToken === '')
 		{
 			$this->flash->addMessageNow('error', $this->translator->translate('no_token', 'profile'));
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
-		$UID = $this->facade->determineUIDByToken($token);
+		$UID = $this->facade->determineUIDByToken($passwordToken);
 		if ($UID === 0)
 		{
 			$this->flash->addMessageNow('error', $this->translator->translate('token_error', 'profile'));
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
 
-		return $this->outputRenderedForm($response, true);
+		return $this->outputRenderedForm($response, $passwordToken);
 	}
 
 	/**
@@ -92,13 +92,13 @@ class ShowPasswordController
 		$post = $request->getParsedBody();
 		$this->flash      = $request->getAttribute('flash');
 		$this->translator = $request->getAttribute('translator');
-		$token = $post['token'] ?? '';
-		if ($token === '')
+		$passwordToken = $post['token'] ?? '';
+		if ($passwordToken === '')
 		{
 			$this->flash->addMessageNow('error', $this->translator->translate('no_token', 'profile'));
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
-		$UID = $this->facade->determineUIDByToken($token);
+		$UID = $this->facade->determineUIDByToken($passwordToken);
 		if ($UID === 0)
 		{
 			$this->flash->addMessageNow('error', $this->translator->translate('token_error', 'profile'));
@@ -112,7 +112,7 @@ class ShowPasswordController
 		}
 
 		if (!empty($errors))
-			return $this->outputRenderedForm($response, true);
+			return $this->outputRenderedForm($response, $passwordToken);
 
 		$id = $this->facade->storePassword();
 		if ($id > 0)
@@ -133,7 +133,7 @@ class ShowPasswordController
 			}
 		}
 
-		return $this->outputRenderedForm($response);
+		return $this->outputRenderedForm($response, $passwordToken);
 	}
 
 
@@ -179,9 +179,9 @@ class ShowPasswordController
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	private function outputRenderedForm(ResponseInterface $response, bool $forced = false): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, string $passwordToken = ''): ResponseInterface
 	{
-		$dataSections = $this->facade->prepareUITemplate($forced);
+		$dataSections = $this->facade->prepareUITemplate($passwordToken);
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));

@@ -90,6 +90,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 	$group->get('/profile/password', createControllerCallable([ShowPasswordController::class, 'showPasswordForm'], $container));
 	$group->post('/profile/password', createControllerCallable([ShowPasswordController::class, 'store'], $container));
 	$group->get('/force-password', createControllerCallable([ShowPasswordController::class, 'showForcedPasswordForm'], $container));
+	$group->post('/force-password', createControllerCallable([ShowPasswordController::class, 'storeForcedPassword'], $container));
 
 	$group->get('/mediapool', createControllerCallable([ShowController::class, 'show'], $container));
 
