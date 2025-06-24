@@ -63,13 +63,4 @@ class ExportController extends AbstractAsyncController
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-
-	private function jsonResponse(ResponseInterface $response, mixed $data): ResponseInterface
-	{
-		$json = json_encode($data);
-		if ($json !== false)
-			$response->getBody()->write($json);
-
-		return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-	}
 }
