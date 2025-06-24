@@ -32,27 +32,40 @@ use App\Modules\Profile\Helper\Password\Facade;
 use App\Modules\Profile\Helper\Password\FormElementsCreator;
 use App\Modules\Profile\Helper\Password\Parameters;
 use App\Modules\Profile\Helper\Password\Validator;
-use App\Modules\Profile\Services\UserService;
+use App\Modules\Profile\Services\ProfileService;
+use App\Modules\Profile\Services\UserTokenService;
+use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
 
-$dependencies[UserService::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[UserTokenService::class] = DI\factory(function (ContainerInterface $container)
 {
 	$factory      = $container->get(UserRepositoryFactory::class);
 	$repositories = $factory->create();
 
-	return new UserService(
+	return new UserTokenService(
 		$repositories['main'],
 		$repositories['tokens'],
 		$container->get(Crypt::class),
 		$container->get('ModuleLogger')
 	);
 });
+
+$dependencies[ProfileService::class] = DI\factory(function (ContainerInterface $container)
+{
+	$factory      = $container->get(UserRepositoryFactory::class);
+	$repositories = $factory->create();
+
+	return new ProfileService(
+		$repositories['main'],
+		$container->get('ModuleLogger')
+	);
+});
 $dependencies[EditLocalesController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new EditLocalesController($container->get(UserService::class));
+	return new EditLocalesController($container->get(ProfileService::class));
 });
 $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -68,7 +81,8 @@ $dependencies[ShowPasswordController::class] = DI\factory(function (ContainerInt
 	$builder   = new Builder($container->get(Parameters::class),$validator, $creator);
 	$facade    = new Facade(
 		$builder,
-		$container->get(UserService::class),
+		$container->get(ProfileService::class),
+		$container->get(UserTokenService::class),
 		$container->get(Translator::class),
 		$container->get(Parameters::class),
 		$container->get(Config::class)

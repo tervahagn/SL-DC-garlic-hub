@@ -48,7 +48,7 @@ class UserTokensRepository extends SqlBase
 			throw new DatabaseException('Invalid token');
 
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('user_tokens.*, username, status')
+		$queryBuilder->select('user_tokens.*, username, status, company_id')
 			->from($this->table)
 			->leftJoin('user_tokens', 'user_main', '', 'user_main.UID = user_tokens.UID')
 			->where('token = :token')

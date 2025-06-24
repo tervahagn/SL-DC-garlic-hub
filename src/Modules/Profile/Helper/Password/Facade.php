@@ -28,7 +28,8 @@ use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Profile\Entities\TokenPurposes;
-use App\Modules\Profile\Services\UserService;
+use App\Modules\Profile\Services\ProfileService;
+use App\Modules\Profile\Services\UserTokenService;
 use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,17 +38,19 @@ use Psr\SimpleCache\InvalidArgumentException;
 class Facade
 {
 	private readonly Builder $passwordFormBuilder;
-	private readonly UserService $userService;
+	private readonly ProfileService $profileService;
+	private readonly UserTokenService $userTokensService;
 	private readonly Parameters $passwordParameters;
 	private Translator $translator;
 	private Config $config;
 	/** @var array{UID:int, username:string, status:int, purpose:string}|array<empty,empty>  */
 	private array $user = [];
-	public function __construct(Builder $settingsFormBuilder, UserService $userService, Translator $translator, Parameters $passwordParameters, Config $config)
+	public function __construct(Builder $settingsFormBuilder, ProfileService $profileService, UserTokenService $userTokensService, Translator $translator, Parameters $passwordParameters, Config $config)
 	{
 		$this->passwordFormBuilder = $settingsFormBuilder;
-		$this->userService         = $userService;
+		$this->profileService      = $profileService;
 		$this->translator          = $translator;
+		$this->userTokensService   = $userTokensService;
 		$this->passwordParameters  = $passwordParameters;
 		$this->config = $config;
 	}
@@ -58,14 +61,14 @@ class Facade
 	 */
 	public function determineUIDByToken(string $passwordToken): int
 	{
-		$this->user = $this->userService->findByToken($passwordToken);
+		$this->user = $this->userTokensService->findByToken($passwordToken);
 		if (!isset($this->user['purpose']))
 			return 0;
 
 		if ($this->user['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
 			$this->user['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
 			return 0;
-		$this->userService->setUID($this->user['UID']);
+		$this->profileService->setUID($this->user['UID']);
 
 		return (int) $this->user['UID'];
 	}
@@ -74,7 +77,7 @@ class Facade
 	{
 		/** @var array{UID: int} $user */
 		$user = $session->get('user');
-		$this->userService->setUID($user['UID']);
+		$this->profileService->setUID($user['UID']);
 	}
 
 	/**
@@ -101,7 +104,7 @@ class Facade
 	{
 		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 
-		return $this->userService->updatePassword($password);
+		return $this->profileService->updatePassword($password);
 	}
 
 	/**
@@ -113,7 +116,7 @@ class Facade
 	 */
 	public function getUserServiceErrors(): array
 	{
-		$errors     = $this->userService->getErrorMessages();
+		$errors     = $this->profileService->getErrorMessages();
 		$translated =[];
 		foreach ($errors as $error)
 		{

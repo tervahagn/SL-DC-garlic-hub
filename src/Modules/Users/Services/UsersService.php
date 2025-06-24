@@ -26,7 +26,7 @@ use App\Framework\Services\AbstractBaseService;
 use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
-use App\Modules\Profile\Services\UserService;
+use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;
@@ -59,7 +59,7 @@ class UsersService extends AbstractBaseService
 */
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
-	private UserService $userService;
+	private UserTokenService $userTokenService;
 	private Psr16Adapter $cache;
 	/** @var array{
 	 *     main: UserMainRepository,
@@ -68,13 +68,13 @@ class UsersService extends AbstractBaseService
 	 *	 }  */
 	private array $userRepositories;
 
-	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, UserService $userService, Psr16Adapter $cache, LoggerInterface $logger)
+	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, UserTokenService $userTokenService, Psr16Adapter $cache, LoggerInterface $logger)
 	{
 		$this->userRepositoryFactory = $userRepositoryFactory;
 		$this->userEntityFactory     = $userEntityFactory;
 		$this->cache                 = $cache;
 		$this->userRepositories      = $this->userRepositoryFactory->create();
-		$this->userService           = $userService;
+		$this->userTokenService      = $userTokenService;
 		parent::__construct($logger);
 	}
 
@@ -89,7 +89,7 @@ class UsersService extends AbstractBaseService
 		if (empty($user))
 			throw new ModuleException('users', 'User not found');
 
-		$user['tokens'] = $this->userService->findTokenByUID($UID);
+		$user['tokens'] = $this->userTokenService->findTokenByUID($UID);
 		return $user;
 	}
 
@@ -111,7 +111,7 @@ class UsersService extends AbstractBaseService
 			if ($UID === 0)
 				throw new ModuleException('users', 'insert failed.');
 
-			$this->userService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
+			$this->userTokenService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
 
 			$this->userRepositories['main']->commitTransaction();
 
@@ -130,7 +130,7 @@ class UsersService extends AbstractBaseService
 	 */
 	public function createPasswordResetToken(int $UID): string
 	{
-		return $this->userService->insertToken($UID, TokenPurposes::PASSWORD_RESET);
+		return $this->userTokenService->insertToken($UID, TokenPurposes::PASSWORD_RESET);
 	}
 
 	/**

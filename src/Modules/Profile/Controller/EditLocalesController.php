@@ -23,18 +23,19 @@ namespace App\Modules\Profile\Controller;
 
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
-use App\Modules\Profile\Services\UserService;
+use App\Modules\Profile\Services\ProfileService;
+use App\Modules\Profile\Services\UserTokenssService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EditLocalesController
 {
-	private UserService $userService;
+	private ProfileService $profileService;
 
-	public function __construct(UserService $userService)
+	public function __construct(ProfileService $profileService)
 	{
-		$this->userService = $userService;
+		$this->profileService = $profileService;
 	}
 
 	/**
@@ -57,7 +58,7 @@ class EditLocalesController
 			$user = $session->get('user');
 			$user['locale'] = $locale;
 			$session->set('user', $user);
-			$this->userService->updateLocale($user['UID'], $locale);
+			$this->profileService->updateLocale($user['UID'], $locale);
 		}
 
 		// determine current locale secure because it checks a whitelist

@@ -28,7 +28,7 @@ use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Profile\Entities\UserEntityFactory;
-use App\Modules\Profile\Services\UserService;
+use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Controller\ShowDatatableController;
 use App\Modules\Users\Controller\UsersController;
@@ -61,7 +61,7 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 	return new UsersService(
 		$container->get(UserRepositoryFactory::class),
 		new UserEntityFactory($container->get(Config::class)),
-		$container->get(UserService::class),
+		$container->get(UserTokenService::class),
 		$container->get(Psr16Adapter::class),
 		$container->get('ModuleLogger')
 	);

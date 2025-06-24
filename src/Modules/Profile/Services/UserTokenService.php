@@ -32,7 +32,7 @@ use DateTime;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
-class UserService extends AbstractBaseService
+class UserTokenService extends AbstractBaseService
 {
 	private readonly UserMainRepository $userMainRepository;
 	private readonly UserTokensRepository $userTokensRepository;
@@ -62,6 +62,7 @@ class UserService extends AbstractBaseService
 		return [
 			'UID' => (int) $result['UID'],
 			'username' => $result['username'],
+			'company_id' => $result['company_id'],
 			'status' => $result['status'],
 			'purpose' => $result['purpose']
 		];
@@ -76,24 +77,6 @@ class UserService extends AbstractBaseService
 		return $this->userTokensRepository->findValidByUID($UID);
 	}
 
-
-	/**
-	 * @throws Exception
-	 */
-	public function updateLocale(int $UID, string $locale): int
-	{
-		return $this->userMainRepository->update($UID, ['locale' => $locale]);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function updatePassword(string $password): int
-	{
-		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
-
-		return $this->userMainRepository->update($this->UID, $data);
-	}
 
 	/**
 	 * @throws Exception
@@ -118,6 +101,19 @@ class UserService extends AbstractBaseService
 		$fields     = ['used_at' => date('Y-m-d H:i:s')];
 		$conditions = ['UID' => $UID, 'purpose' => $purpose];
 		return $this->userTokensRepository->updateWithWhere($fields, $conditions);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function deleteToken(string $token): int
+	{
+		return $this->userTokensRepository->delete($token);
+	}
+
+	public function refreshToken(mixed $token)
+	{
+		return $this->userTokensRepository->refresh($token);
 	}
 
 }
