@@ -53,19 +53,22 @@ class UserTokensRepository extends SqlBase
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
 	 * @throws Exception
 	 */
 	public function findValidByUID(int $UID): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('token, UID, purpose, expires_at')
+		$queryBuilder->select('token, UID, purpose, expires_at, used_at')
 			->from($this->table)
 			->where('UID = :uid')
 			->andWhere('used_at IS NULL')
 			->setParameter('uid', $UID);
 
-		return $queryBuilder->executeQuery()->fetchAllAssociative();
+		/** @var list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}> $result */
+		$result =  $queryBuilder->executeQuery()->fetchAllAssociative();
+
+		return $result;
 	}
 
 	/**

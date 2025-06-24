@@ -46,7 +46,7 @@ class UserTokenService extends AbstractBaseService
 
 	/**
 	 * @return array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|null
-	 * @throws DateMalformedStringException
+	 * @throws DateMalformedStringException|Exception
 	 */
 	public function findByToken(string $token): ?array
 	{
@@ -69,7 +69,7 @@ class UserTokenService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
 	 * @throws Exception
 	 */
 	public function findTokenByUID(int $UID): array

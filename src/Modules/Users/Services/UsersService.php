@@ -31,6 +31,7 @@ use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
+use DateTime;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
@@ -89,8 +90,17 @@ class UsersService extends AbstractBaseService
 		if (empty($user))
 			throw new ModuleException('users', 'User not found');
 
-		$user['tokens'] = $this->userTokenService->findTokenByUID($UID);
+		$user['tokens'] = $this->loadUserTokensForAdminEdit($UID);
 		return $user;
+	}
+
+	/**
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
+	 * @throws Exception
+	 */
+	public function loadUserTokensForAdminEdit(int $UID): array
+	{
+		return $this->userTokenService->findTokenByUID($UID);
 	}
 
 	/**
@@ -130,7 +140,33 @@ class UsersService extends AbstractBaseService
 	 */
 	public function createPasswordResetToken(int $UID): string
 	{
-		return $this->userTokenService->insertToken($UID, TokenPurposes::PASSWORD_RESET);
+		// check first if there is another valid token
+		$tokens = $this->userTokenService->findTokenByUID($UID);
+		if (!empty($tokens))
+		{
+			$this->addErrorMessage('tokens_exists');
+			return '';
+		}
+		try
+		{
+			$this->userRepositories['main']->beginTransaction();
+			if($this->userRepositories['main']->update($UID, ['password' => '']) === 0)
+				throw new ModuleException('users', 'Password reset failed.');
+
+			$id = $this->userTokenService->insertToken($UID, TokenPurposes::PASSWORD_RESET);
+			if($id === '')
+				throw new ModuleException('users', 'Password reset failed.');
+
+			$this->userRepositories['main']->commitTransaction();
+		}
+		catch (Throwable $e)
+		{
+			$this->logger->error($e->getMessage());
+			$this->userRepositories['main']->rollBackTransaction();
+			$this->addErrorMessage('password_reset_failed');
+			return '';
+		}
+		return $id;
 	}
 
 	/**
@@ -140,7 +176,9 @@ class UsersService extends AbstractBaseService
 	public function updateUser(int $UID, array $post): int
 	{
 		if (!$this->isUnique($UID, $post['username'], $post['email']))
+		{
 			return 0;
+		}
 
 		$saveData = $this->collectCommonData($post, []);
 

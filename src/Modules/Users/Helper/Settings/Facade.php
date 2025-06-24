@@ -67,6 +67,15 @@ class Facade
 	}
 
 	/**
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
+	 * @throws Exception
+	 */
+	public function loadUserTokensForAdminEdit(int $UID): array
+	{
+		return $this->usersService->loadUserTokensForAdminEdit($UID);
+	}
+
+	/**
 	 * @param array<string,mixed> $post
 	 * @return array<string,mixed>
 	 * @throws ModuleException

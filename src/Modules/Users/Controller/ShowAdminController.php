@@ -153,6 +153,7 @@ class ShowAdminController
 				}
 			}
 		}
+		$post['tokens'] = $this->facade->loadUserTokensForAdminEdit($post['UID']);
 		return $this->outputRenderedForm($response, $post);
 	}
 

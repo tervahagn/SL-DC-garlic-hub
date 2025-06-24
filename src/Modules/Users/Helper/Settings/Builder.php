@@ -114,7 +114,7 @@ class Builder
 			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
 		}
 
-		foreach($user['tokens'] as $token)
+		foreach ($user['tokens'] as $token)
 		{
 			$tokenObj = $this->formElementsCreator->createClipboardTextField(
 				bin2hex($token['token']),
@@ -122,7 +122,7 @@ class Builder
 				$token['expires_at']
 			);
 
-			$form['token_'.$token['token']] = $tokenObj;
+			$form['token_' . $token['token']] = $tokenObj;
 		}
 
 		if (isset($user[Parameters::PARAMETER_USER_ID]))
