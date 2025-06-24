@@ -23,6 +23,7 @@ namespace App\Modules\Users\Helper\Datatable;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatableBuilder;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
@@ -59,6 +60,9 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		}
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function determineParameters(): void
 	{
 		$this->parameters->setUserInputs($_GET);
@@ -79,8 +83,9 @@ class DatatableBuilder extends AbstractDatatableBuilder
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function collectFormElements(): void
 	{

@@ -74,10 +74,12 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
+	 * @return ControllerFacade
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function prepareDataGrid(): static
 	{

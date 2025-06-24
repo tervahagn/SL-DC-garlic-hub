@@ -24,13 +24,10 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
-use App\Framework\Utils\Html\ClipboardTextField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
-use App\Modules\Profile\Entities\TokenPurposes;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use PhpParser\Token;
 use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class FormElementsCreator

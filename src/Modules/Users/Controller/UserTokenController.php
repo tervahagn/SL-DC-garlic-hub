@@ -24,7 +24,6 @@ namespace App\Modules\Users\Controller;
 use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\UserSession;
@@ -48,13 +47,15 @@ class UserTokenController extends AbstractAsyncController
 	}
 
 	/**
-	 * @throws DatabaseException
-	 * @throws UserException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws UserException
 	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -62,13 +63,15 @@ class UserTokenController extends AbstractAsyncController
 	}
 
 	/**
-	 * @throws DatabaseException
-	 * @throws UserException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws UserException
 	 */
 	public function refresh(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -76,13 +79,16 @@ class UserTokenController extends AbstractAsyncController
 	}
 
 	/**
-	 * @throws DatabaseException
-	 * @throws UserException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param string $action
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws UserException
 	 */
 	private function processTokenAction(ServerRequestInterface $request, ResponseInterface $response, string $action): ResponseInterface
 	{
