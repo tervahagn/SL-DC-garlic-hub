@@ -24,7 +24,6 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Profile\Entities\TokenPurposes;
@@ -43,7 +42,7 @@ class Facade
 	private readonly Parameters $passwordParameters;
 	private Translator $translator;
 	private Config $config;
-	/** @var array{UID:int, username:string, status:int, purpose:string}|array<empty,empty>  */
+	/** @var array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|array{}  */
 	private array $user = [];
 	public function __construct(Builder $settingsFormBuilder, ProfileService $profileService, UserTokenService $userTokensService, Translator $translator, Parameters $passwordParameters, Config $config)
 	{
@@ -57,13 +56,15 @@ class Facade
 
 	/**
 	 * @throws DateMalformedStringException
-	 * @throws Exception|DatabaseException
+	 * @throws Exception
 	 */
 	public function determineUIDByToken(string $passwordToken): int
 	{
-		$this->user = $this->userTokensService->findByToken($passwordToken);
-		if (!isset($this->user['purpose']))
+		$user = $this->userTokensService->findByToken($passwordToken);
+		if ($user === null)
 			return 0;
+
+		$this->user = $user;
 
 		if ($this->user['purpose'] !== TokenPurposes::PASSWORD_RESET->value &&
 			$this->user['purpose'] !== TokenPurposes::INITIAL_PASSWORD->value)
@@ -125,7 +126,6 @@ class Facade
 		return $translated;
 	}
 
-
 	/**
 	 * @return array<string,mixed>
 	 *
@@ -136,7 +136,7 @@ class Facade
 	 */
 	public function prepareUITemplate(string $passwordToken): array
 	{
-		if (!empty($passwordToken))
+		if (!empty($passwordToken) && !empty($this->user))
 		{
 			$this->passwordParameters->addToken();
 			$formAction = '/force-password';

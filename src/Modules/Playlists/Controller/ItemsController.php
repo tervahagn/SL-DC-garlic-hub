@@ -161,6 +161,9 @@ class ItemsController extends AbstractAsyncController
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,mixed> $requestData */

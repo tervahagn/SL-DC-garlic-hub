@@ -24,7 +24,6 @@ namespace App\Modules\Profile\Controller;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Profile\Services\ProfileService;
-use App\Modules\Profile\Services\UserTokenssService;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -21,10 +21,8 @@
 
 namespace App\Modules\Profile\Services;
 
-use App\Framework\Core\Crypt;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
-use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 

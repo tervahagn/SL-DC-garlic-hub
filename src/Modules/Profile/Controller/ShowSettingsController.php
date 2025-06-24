@@ -21,7 +21,6 @@
 
 namespace App\Modules\Profile\Controller;
 
-use App\Framework\Core\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

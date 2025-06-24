@@ -45,8 +45,8 @@ readonly class FormElementsCreator
 	}
 
 	/**
-	 * @param array<string, mixed> $form
-	 * @return array<string, mixed>
+	 * @param array<string,FieldInterface> $form
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 */
 	public function prepareForm(array $form): array
 	{
@@ -72,7 +72,7 @@ readonly class FormElementsCreator
 			'rules' => ['required' => true, 'minlength' => 8],
 			'default_value' => ''
 		]);
-		//$field->setPattern($pattern);
+		$field->setPattern($pattern);
 
 		return $field;
 	}

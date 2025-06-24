@@ -23,10 +23,12 @@ namespace App\Modules\Profile\Controller;
 
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Profile\Helper\Password\Facade;
+use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -47,6 +49,12 @@ class ShowPasswordController
 		$this->formElementPreparer = $formElementPreparer;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function showPasswordForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$this->initFacade($request);
@@ -54,10 +62,18 @@ class ShowPasswordController
 	}
 
 	/**
-	 * @param array<string,string> $args
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DatabaseException
+	 * @throws DateMalformedStringException
 	 */
-	public function showForcedPasswordForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function showForcedPasswordForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$queryParams = $request->getQueryParams();
 		$passwordToken = $queryParams['token'] ?? '';
@@ -79,12 +95,17 @@ class ShowPasswordController
 	}
 
 	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws FrameworkException
+	 * @throws DatabaseException
+	 * @throws DateMalformedStringException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 */
 	public function storeForcedPassword(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -137,6 +158,14 @@ class ShowPasswordController
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,mixed> $post */
@@ -187,7 +216,6 @@ class ShowPasswordController
 		$response->getBody()->write(serialize($templateData));
 		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
-
 
 	private function initFacade(ServerRequestInterface $request): void
 	{

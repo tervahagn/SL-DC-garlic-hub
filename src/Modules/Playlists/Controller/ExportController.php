@@ -23,6 +23,7 @@ namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\UserSession;
 use App\Modules\Playlists\Services\ExportService;
 use Doctrine\DBAL\Exception;
@@ -43,6 +44,7 @@ class ExportController extends AbstractAsyncController
 
 	/**
 	 * @throws Exception
+	 * @throws UserException
 	 */
 	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

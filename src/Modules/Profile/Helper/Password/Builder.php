@@ -26,11 +26,11 @@ use App\Framework\Exceptions\ModuleException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Builder
+readonly class Builder
 {
-	private readonly FormElementsCreator $formElementsCreator;
-	private readonly Validator $validator;
-	private readonly Parameters $parameters;
+	private FormElementsCreator $formElementsCreator;
+	private Validator $validator;
+	private Parameters $parameters;
 	public function __construct(Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
 		$this->parameters           = $parameters;
@@ -58,6 +58,13 @@ class Builder
 		return $this->formElementsCreator->prepareForm($form);
 	}
 
+	/**
+	 * @return array
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	public function buildForcedForm(string $pattern): array
 	{
 		$form       = [];
