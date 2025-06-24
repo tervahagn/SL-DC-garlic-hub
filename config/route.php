@@ -40,6 +40,7 @@ use App\Modules\Profile\Controller\ShowPasswordController;
 use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Controller\ShowPasswordResetController;
 use App\Modules\Users\Controller\UsersController;
+use App\Modules\Users\Controller\UserTokenController;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -151,5 +152,7 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 
 	$group->patch('/player/playlist', createControllerCallable([PlayerController::class, 'replacePlaylist'], $container));
 
+	$group->post('/profile/tokens', createControllerCallable([UserTokenController::class, 'refresh'], $container));
+	$group->delete('/profile/tokens', createControllerCallable([UserTokenController::class, 'delete'], $container));
 
 })->add(function ($request, $handler) {return $handler->handle($request)->withHeader('Content-Type', 'text/html');});

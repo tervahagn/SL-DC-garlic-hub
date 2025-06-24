@@ -118,7 +118,7 @@ readonly class FormElementsCreator
 			'value' => $http.$_SERVER['HTTP_HOST'].'/force-password?token='.$value
 		]);
 
-		$object->setRemoveTitle($this->translator->translate('remove', 'main'));
+		$object->setDeleteTitle($this->translator->translate('remove', 'main'));
 		$object->setRefreshTitle($this->translator->translate('refresh', 'main'));
 
 		return $object;

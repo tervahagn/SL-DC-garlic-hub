@@ -29,7 +29,7 @@ class ClipboardTextRenderer extends AbstractInputFieldRenderer implements FieldR
 
 		return '<input type="text" id="'.$id.'" class="verification-link" title="'.$this->field->getTitle().'" value="'.$this->field->getValue().'" readonly>
 <button type="button" data-id="'.$id.'" class="copy-verification-link" title="'.$this->field->getTitle().'."><i class="bi bi-clipboard"></i></button>
-<button type="button" data-id="'.$id.'" class="remove-verification-link" title="'.$this->field->getRemoveTitle().'."><i class="bi bi-trash"></i></button>
+<button type="button" data-id="'.$id.'" class="delete-verification-link" title="'.$this->field->getDeleteTitle().'."><i class="bi bi-trash"></i></button>
 <button type="button" data-id="'.$id.'" class="refresh-verification-link" title="'.$this->field->getRefreshTitle().'."><i class="bi bi-arrow-clockwise"></i></button>
 ';
 	}

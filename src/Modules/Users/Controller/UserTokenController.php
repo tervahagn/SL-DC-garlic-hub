@@ -25,10 +25,10 @@ use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\UserSession;
-use App\Modules\Profile\Services\UserTokenssService;
+use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Services\AclValidator;
 use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
@@ -38,32 +38,57 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class UserTokenController extends AbstractAsyncController
 {
-	private readonly UserSession $userSession;
-	private readonly UserTokenssService $userService;
-	private readonly CsrfToken $csrfToken;
-	private readonly AclValidator $aclValidator;
 
-	public function __construct(UserSession $userSession, UserTokenssService $userService, CsrfToken $csrfToken, AclValidator $aclValidator)
-	{
-		$this->userSession = $userSession;
-		$this->userService = $userService;
-		$this->csrfToken = $csrfToken;
-		$this->aclValidator = $aclValidator;
+	public function __construct(
+		private readonly UserSession $userSession,
+		private readonly UserTokenService $userService,
+		private readonly CsrfToken $csrfToken,
+		private readonly AclValidator $aclValidator
+	) {
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws DatabaseException
 	 * @throws UserException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws DateMalformedStringException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
-	public function deleteToken(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		return $this->processTokenAction($request, $response, 'deleteToken');
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws UserException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DateMalformedStringException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	public function refresh(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		return $this->processTokenAction($request, $response, 'refreshToken');
+	}
+
+	/**
+	 * @throws DatabaseException
+	 * @throws UserException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DateMalformedStringException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
+	private function processTokenAction(ServerRequestInterface $request, ResponseInterface $response, string $action): ResponseInterface
 	{
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
+
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
@@ -72,40 +97,21 @@ class UserTokenController extends AbstractAsyncController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not transmitted.']);
 
 		$userToken = $this->userService->findByToken($token);
-		if (empty($userToken))
+		if ($userToken === null)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not exists.']);
 
 		if (!$this->aclValidator->isAdmin($this->userSession->getUID(), $userToken))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No rights to delete token.']);
 
-		if ($this->userService->deleteToken($token) == 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not deletable.']);
+		$errorMessage = 'Token not editable.';
+		if ($action === 'refreshToken')
+			$result = $this->userService->refreshToken($token, $userToken['purpose']);
+		 else
+			$result = $this->userService->deleteToken($token);
+
+		if ($result === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => $errorMessage]);
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-
-	public function refreshToken(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-	{
-		/** @var array<string,mixed> $post */
-		$post = $request->getParsedBody();
-		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
-
-		$token = $post['token'] ?? '';
-		if ($token === '')
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not transmitted.']);
-
-		$userToken = $this->userService->findByToken($token);
-		if (empty($userToken))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not exists.']);
-
-		if (!$this->aclValidator->isAdmin($this->userSession->getUID(), $userToken))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No rights to delete token.']);
-
-		if ($this->userService->refreshToken($token) == 0)
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not deletable.']);
-
-		return $this->jsonResponse($response, ['success' => true]);
-	}
-
 }

@@ -22,18 +22,18 @@ namespace App\Framework\Utils\Html;
 
 class ClipboardTextField extends AbstractInputField
 {
-	private string $removeTitle = '';
+	private string $deleteTitle = '';
 	private string $refreshTitle = '';
 
-	public function setRemoveTitle(string $removeTitle): static
+	public function setDeleteTitle(string $deleteTitle): static
 	{
-		$this->removeTitle = $removeTitle;
+		$this->deleteTitle = $deleteTitle;
 		return $this;
 	}
 
-	public function getRemoveTitle(): string
+	public function getDeleteTitle(): string
 	{
-		return $this->removeTitle;
+		return $this->deleteTitle;
 	}
 
 	public function setRefreshTitle(string $refreshTitle): static

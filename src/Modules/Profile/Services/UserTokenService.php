@@ -22,10 +22,8 @@
 namespace App\Modules\Profile\Services;
 
 use App\Framework\Core\Crypt;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Profile\Entities\TokenPurposes;
-use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use DateMalformedStringException;
 use DateTime;
@@ -34,37 +32,39 @@ use Psr\Log\LoggerInterface;
 
 class UserTokenService extends AbstractBaseService
 {
-	private readonly UserMainRepository $userMainRepository;
+	const string TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL = '24';
+	const string TOKEN_EXPIRATION_HOURS = '2';
 	private readonly UserTokensRepository $userTokensRepository;
 	private readonly Crypt $crypt;
 
-	public function __construct(UserMainRepository $userMainRepository, UserTokensRepository $userTokensRepository, Crypt $crypt, LoggerInterface $logger)
+	public function __construct(UserTokensRepository $userTokensRepository, Crypt $crypt, LoggerInterface $logger)
 	{
-		$this->userMainRepository   = $userMainRepository;
 		$this->userTokensRepository = $userTokensRepository;
 		$this->crypt                = $crypt;
 		parent::__construct($logger);
 	}
 
 	/**
-	 * @return array{UID:int, username:string, status:int, purpose:string}|array<empty,empty>
+	 * @return array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|null
 	 * @throws DateMalformedStringException
-	 * @throws Exception
-	 * @throws DatabaseException
 	 */
-	public function findByToken(string $token): array
+	public function findByToken(string $token): ?array
 	{
+		$token = hex2bin($token);
+		if ($token === false)
+			return null;
+
 		$result = $this->userTokensRepository->findFirstByToken($token);
 		$now = new DateTime();
 		if (isset($result['used_at']) && new DateTime($result['expires_at']) < $now)
-			return [];
+			return null;
 
 		return [
-			'UID' => (int) $result['UID'],
-			'username' => $result['username'],
-			'company_id' => $result['company_id'],
-			'status' => $result['status'],
-			'purpose' => $result['purpose']
+			'UID'        => (int) $result['UID'],
+			'company_id' => (int) $result['company_id'],
+			'username'   => $result['username'],
+			'status'     => (int)$result['status'],
+			'purpose'    => $result['purpose']
 		];
 	}
 
@@ -84,11 +84,17 @@ class UserTokenService extends AbstractBaseService
 	 */
 	public function insertToken(int $UID, TokenPurposes $purpose): string
 	{
+		if ($purpose === TokenPurposes::INITIAL_PASSWORD)
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
+		else
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
+
+
 		$token = [
 			'UID' => $UID,
 			'purpose' => $purpose->value,
 			'token' => $this->crypt->generateRandomBytes(),
-			'expires_at' => date('Y-m-d H:i:s', strtotime('+12 hour'))
+			'expires_at' => $expiresAt
 		];
 		return (string) $this->userTokensRepository->insert($token);
 	}
@@ -96,24 +102,30 @@ class UserTokenService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	public function updateToken(int $UID, string $purpose): int
+	public function deleteToken(string $token): int
 	{
-		$fields     = ['used_at' => date('Y-m-d H:i:s')];
-		$conditions = ['UID' => $UID, 'purpose' => $purpose];
-		return $this->userTokensRepository->updateWithWhere($fields, $conditions);
+		$token = hex2bin($token);
+		if ($token === false)
+			return 0;
+
+		return $this->userTokensRepository->delete($token);
 	}
 
 	/**
 	 * @throws Exception
 	 */
-	public function deleteToken(string $token): int
+	public function refreshToken(string $token, string $purpose): int
 	{
-		return $this->userTokensRepository->delete($token);
-	}
+		$token = hex2bin($token);
+		if ($token === false)
+			return 0;
 
-	public function refreshToken(mixed $token)
-	{
-		return $this->userTokensRepository->refresh($token);
+		if ($purpose === TokenPurposes::INITIAL_PASSWORD->value)
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
+		else
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
+
+		return $this->userTokensRepository->refresh($token, $expiresAt);
 	}
 
 }

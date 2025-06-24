@@ -22,7 +22,7 @@ namespace App\Framework\Core\Acl;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -67,11 +67,11 @@ abstract class AbstractAclValidator
 	}
 
 	/**
-	 * @param array<string,mixed> $unitData
+	 * @param array{"UID": int, "company_id": int, ...} $unitData
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
-	 * @throws ModuleException
+	 * @throws FrameworkException
 	 */
 	public function isAdmin(int $UID, array $unitData): bool
 	{
@@ -83,7 +83,7 @@ abstract class AbstractAclValidator
 			return false;
 
 		if (!array_key_exists('company_id', $unitData) || !array_key_exists('UID', $unitData))
-			throw new ModuleException('player', 'Missing company id or UID in unit data.');
+			throw new FrameworkException('Missing company id or UID in unit data.');
 
 		if ($this->isSubadminWithAccessOnCompany($UID, $unitData['company_id']))
 			return true;

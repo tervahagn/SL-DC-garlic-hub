@@ -46,7 +46,6 @@ $dependencies[UserTokenService::class] = DI\factory(function (ContainerInterface
 	$repositories = $factory->create();
 
 	return new UserTokenService(
-		$repositories['main'],
 		$repositories['tokens'],
 		$container->get(Crypt::class),
 		$container->get('ModuleLogger')

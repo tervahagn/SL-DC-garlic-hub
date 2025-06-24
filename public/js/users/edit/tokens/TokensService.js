@@ -16,17 +16,28 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
-import {TokensActions} from "./tokens/TokensActions.js";
-import {TokensView}    from "./tokens/TokensView.js";
-import {TokensService} from "./tokens/TokensService.js";
-import {FetchClient}   from "../../core/FetchClient.js";
+import {BaseService}    from "../../../core/Base/BaseService.js";
+import {UsersApiConfig} from "../../UsersApiConfig.js";
 
-document.addEventListener("DOMContentLoaded", function()
+export class TokensService extends BaseService
 {
-	const tokens = new TokensActions(
-		new TokensView(),
-		new TokensService(new FetchClient())
-	);
-	tokens.initActions();
-});
+
+	async delete(token)
+	{
+		const url = UsersApiConfig.USER_TOKENS_BASE_URI;
+		const data = {
+			token: token
+		};
+		return await this._sendRequest(url, "DELETE", data);
+	}
+
+	async refresh(token)
+	{
+		const url = UsersApiConfig.USER_TOKENS_BASE_URI;
+		const data = {
+			token: token
+		};
+		return await this._sendRequest(url, "POST", data);
+	}
+
+}

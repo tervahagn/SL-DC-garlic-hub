@@ -24,7 +24,6 @@ namespace App\Modules\Users\Repositories\Edge;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
-use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -39,14 +38,10 @@ class UserTokensRepository extends SqlBase
 
 	/**
 	 * @return array<string,mixed>
-	 * @throws Exception|DatabaseException
+	 * @throws Exception
 	 */
 	public function findFirstByToken(string $token): array
 	{
-		$token = hex2bin($token);
-		if ($token === false)
-			throw new DatabaseException('Invalid token');
-
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->select('user_tokens.*, username, status, company_id')
 			->from($this->table)
@@ -71,6 +66,16 @@ class UserTokensRepository extends SqlBase
 			->setParameter('uid', $UID);
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function refresh(string $token, string $expiresAt): int
+	{
+		$fields = ['expires_at' => $expiresAt];
+
+		return $this->updateWithWhere($fields, ['token' => $token]);
 	}
 
 }

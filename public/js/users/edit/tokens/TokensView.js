@@ -16,17 +16,24 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-"use strict";
-import {TokensActions} from "./tokens/TokensActions.js";
-import {TokensView}    from "./tokens/TokensView.js";
-import {TokensService} from "./tokens/TokensService.js";
-import {FetchClient}   from "../../core/FetchClient.js";
-
-document.addEventListener("DOMContentLoaded", function()
+export class TokensView
 {
-	const tokens = new TokensActions(
-		new TokensView(),
-		new TokensService(new FetchClient())
-	);
-	tokens.initActions();
-});
+	#copyVerificationLink = document.getElementsByClassName("copy-verification-link");
+	#deleteToken          = document.getElementsByClassName("delete-verification-link");
+	#refreshToken         = document.getElementsByClassName("refresh-verification-link");
+
+	get copyVerificationLink()
+	{
+		return this.#copyVerificationLink;
+	}
+
+	get deleteToken()
+	{
+		return this.#deleteToken;
+	}
+
+	get refreshToken()
+	{
+		return this.#refreshToken;
+	}
+}
