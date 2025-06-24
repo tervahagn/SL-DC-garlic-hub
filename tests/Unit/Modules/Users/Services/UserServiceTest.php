@@ -22,7 +22,7 @@ namespace Tests\Unit\Modules\Users\Services;
 
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
-use App\Modules\Profile\Services\UserTokenssService;
+use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\UsersService;
@@ -39,7 +39,7 @@ class UserServiceTest extends TestCase
 {
 	private UserEntityFactory&MockObject $entityFactoryMock;
 	private Psr16Adapter&MockObject $cacheMock;
-	private UserTokenssService&MockObject $userServiceMock;
+	private UserTokenService&MockObject $userTokenServiceMock;
 	private UserMainRepository&MockObject $userMainRepositoryMock;
 	private LoggerInterface&MockObject $loggerMock;
 	private UsersService $usersService;
@@ -52,7 +52,7 @@ class UserServiceTest extends TestCase
 		$repositoryFactoryMock        = $this->createMock(UserRepositoryFactory::class);
 		$this->entityFactoryMock      = $this->createMock(UserEntityFactory::class);
 		$this->cacheMock              = $this->createMock(Psr16Adapter::class);
-		$this->userServiceMock        = $this->createMock(UserTokenssService::class);
+		$this->userTokenServiceMock    = $this->createMock(UserTokenService::class);
 		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
 		$this->loggerMock             = $this->createMock(LoggerInterface::class);
 		$repositoryFactoryMock->method('create')
@@ -61,7 +61,7 @@ class UserServiceTest extends TestCase
 		$this->usersService = new UsersService(
 			$repositoryFactoryMock,
 			$this->entityFactoryMock,
-			$this->userServiceMock,
+			$this->userTokenServiceMock,
 			$this->cacheMock,
 			$this->loggerMock
 		);

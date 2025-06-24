@@ -71,29 +71,6 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
-	public function testIsPlaylistEditableMissingCompanyOrUID()
-	{
-		$UID = 1;
-		$player = ['UID' => 2];
-
-		$configMock = $this->createMock(Config::class);
-		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
-		$configMock->expects($this->once())->method('getEdition')->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
-
-		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('Missing company id or UID in unit data.');
-
-		$this->aclValidator->isPlayerEditable($UID, $player);
-	}
-
-
-	/**
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

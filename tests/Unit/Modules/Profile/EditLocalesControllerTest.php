@@ -23,7 +23,7 @@ namespace Tests\Unit\Modules\Profile;
 use App\Framework\Core\Locales\Locales;
 use App\Framework\Core\Session;
 use App\Modules\Profile\Controller\EditLocalesController;
-use App\Modules\Profile\Services\UserTokenssService;
+use App\Modules\Profile\Services\ProfileService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,18 +37,18 @@ class EditLocalesControllerTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private Session&MockObject $sessionMock;
 	private Locales&MockObject $localesMock;
-	private UserTokenssService&MockObject $userServiceMock;
+	private ProfileService&MockObject $profileServiceMock;
 
 	/**
 	 * @throws Exception
 	 */
 	protected function setUp(): void
 	{
-		$this->requestMock     = $this->createMock(ServerRequestInterface::class);
-		$this->responseMock    = $this->createMock(ResponseInterface::class);
-		$this->sessionMock     = $this->createMock(Session::class);
-		$this->localesMock     = $this->createMock(Locales::class);
-		$this->userServiceMock = $this->createMock(UserTokenssService::class);
+		$this->requestMock        = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock       = $this->createMock(ResponseInterface::class);
+		$this->sessionMock        = $this->createMock(Session::class);
+		$this->localesMock        = $this->createMock(Locales::class);
+		$this->profileServiceMock = $this->createMock(ProfileService::class);
 	}
 
 	#[Group('units')]
@@ -78,11 +78,11 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withStatus')
 						   ->with(302)->willReturn($this->responseMock);
 
-		$this->userServiceMock->expects($this->once())->method('updateLocale')
+		$this->profileServiceMock->expects($this->once())->method('updateLocale')
 			 ->with(1, 'de_DE');
 
 
-		$controller = new EditLocalesController($this->userServiceMock);
+		$controller = new EditLocalesController($this->profileServiceMock);
 		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
 		$this->assertSame($this->responseMock, $result);
 	}
@@ -109,10 +109,10 @@ class EditLocalesControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', $previousUrl)
 						   ->willReturn($this->responseMock);
 
-		$this->userServiceMock->expects($this->never())->method('updateLocale');
+		$this->profileServiceMock->expects($this->never())->method('updateLocale');
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturn($this->responseMock);
 
-		$controller = new EditLocalesController($this->userServiceMock);
+		$controller = new EditLocalesController($this->profileServiceMock);
 		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
 		$this->assertSame($this->responseMock, $result);
 	}
