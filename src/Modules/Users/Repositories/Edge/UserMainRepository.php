@@ -57,7 +57,7 @@ class UserMainRepository extends FilterBase
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array{UID: int, company_id: int, status: int, locale: string, email:string, username:string}|array{}
 	 * @throws Exception
 	 */
 	public function findByIdSecured(int $id): array
