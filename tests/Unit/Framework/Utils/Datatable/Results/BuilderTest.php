@@ -22,7 +22,6 @@
 namespace Tests\Unit\Framework\Utils\Datatable\Results;
 
 use App\Framework\Utils\Datatable\Results\Builder;
-use App\Framework\Utils\Datatable\Results\HeaderField;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -48,7 +47,6 @@ class BuilderTest extends TestCase
 
 		$fields = $this->builder->getHeaderFields();
 		$this->assertCount(1, $fields);
-		$this->assertInstanceOf(HeaderField::class, $fields[0]);
 		$this->assertSame('test_field', $fields[0]->getName());
 		$this->assertTrue($fields[0]->isSortable());
 	}

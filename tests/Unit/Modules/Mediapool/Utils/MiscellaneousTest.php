@@ -66,14 +66,14 @@ class MiscellaneousTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testCheckFileBeforeUpload_ValidSize_DoesNotThrowException()
+	public function testCheckFileBeforeUpload_ValidSize_DoesNotThrowException(): void
 	{
 		$this->expectNotToPerformAssertions();
 		$this->misc->checkFileBeforeUpload(1073741824);
 	}
 
 	#[Group('units')]
-	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileBeforeUploadExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 
@@ -85,7 +85,7 @@ class MiscellaneousTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadFileExistsDoesNotThrowException()
+	public function testCheckFileAfterUploadFileExistsDoesNotThrowException(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
@@ -98,7 +98,7 @@ class MiscellaneousTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUploadFileNotExistsThrowsModuleException()
+	public function testCheckFileAfterUploadFileNotExistsThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 
@@ -110,7 +110,7 @@ class MiscellaneousTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCheckFileAfterUpload_ExceedsMaxSizeThrowsModuleException()
+	public function testCheckFileAfterUpload_ExceedsMaxSizeThrowsModuleException(): void
 	{
 		$this->expectException(ModuleException::class);
 
@@ -123,7 +123,7 @@ class MiscellaneousTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnailCsvFileCreatesDatabaseIcon()
+	public function testCreateThumbnailCsvFileCreatesDatabaseIcon(): void
 	{
 		$this->filesystemMock->method('copy');
 
@@ -135,7 +135,7 @@ class MiscellaneousTest extends TestCase
 	 * @throws FilesystemException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnail()
+	public function testCreateThumbnail(): void
 	{
 		$this->filesystemMock->method('copy');
 

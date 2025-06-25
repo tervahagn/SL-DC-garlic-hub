@@ -96,6 +96,7 @@ class WidgetTest extends TestCase
 	public function testCheckFileBeforeUploadDoesNotThrowExceptionWhenFileSizeIsWithinLimit(): void
 	{
 		$this->widget->checkFileBeforeUpload(1073741824);
+		// @phpstan-ignore-next-line
 		$this->assertTrue(true); // If no exception is thrown, the test passes
 	}
 
@@ -138,8 +139,8 @@ class WidgetTest extends TestCase
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('fileSize')->willReturn(1073741824);
 
-
 		$this->widget->checkFileAfterUpload('/path/to/file');
+		// @phpstan-ignore-next-line
 		$this->assertTrue(true); // If no exception is thrown, the test passes
 	}
 
@@ -151,7 +152,7 @@ class WidgetTest extends TestCase
 	 * @throws ImagickException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnailFromIcon()
+	public function testCreateThumbnailFromIcon(): void
 	{
 		$zipFilesystemMock = $this->createMock(Filesystem::class);
 		$zipFilesystemMock->method('fileExists')->willReturnMap([
@@ -183,7 +184,7 @@ class WidgetTest extends TestCase
 	 * @throws ImagickException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnailWhenIconNotFound()
+	public function testCreateThumbnailWhenIconNotFound(): void
 	{
 		$zipFilesystemMock = $this->createMock(Filesystem::class);
 		$zipFilesystemMock->method('fileExists')->willReturnMap([

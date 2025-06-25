@@ -48,6 +48,7 @@ class FileInfoWrapperTest extends TestCase
 			->getMock();
 
 		$fileInfoWrapperMock->__construct(); // Ensures `finfo_open` is called.
+		// @phpstan-ignore-next-line
 		$this->assertNotNull($fileInfoWrapperMock);
 
 		// Expect finfo_close to be called during destruction

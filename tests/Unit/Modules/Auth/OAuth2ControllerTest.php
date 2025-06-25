@@ -76,9 +76,7 @@ class OAuth2ControllerTest extends TestCase
 		$this->responseMock->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->method('withStatus')->with(302)->willReturnSelf();
 
-		$response = $this->controller->authorize($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -94,8 +92,7 @@ class OAuth2ControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withStatus')->with(400);
 		$this->responseMock->expects($this->once())->method('withHeader')->willReturnSelf();
 
-		$response = $this->controller->authorize($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -141,11 +138,7 @@ class OAuth2ControllerTest extends TestCase
 		$mockAuthRequest->expects($this->once())->method('setUser');
 		$mockAuthRequest->expects($this->once())->method('setAuthorizationApproved')->with(true);
 
-		$response = $this->controller->authorize($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -155,6 +148,7 @@ class OAuth2ControllerTest extends TestCase
 
 		$response = $this->controller->token($this->requestMock, $this->responseMock);
 
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 

@@ -51,7 +51,7 @@ class FilesRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllWithOwnerById()
+	public function testFindAllWithOwnerById(): void
 	{
 		$result = $this->createMock(Result::class);
 
@@ -105,7 +105,7 @@ class FilesRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllByNodeId()
+	public function testFindAllByNodeId(): void
 	{
 		$resultMock = $this->createMock(Result::class);
 
@@ -166,9 +166,10 @@ class FilesRepositoryTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllWithOwnerByCheckSum()
+	public function testFindAllWithOwnerByCheckSum(): void
 	{
 		$resultMock = $this->createMock(Result::class);
 

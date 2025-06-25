@@ -2,16 +2,21 @@
 
 namespace Tests\Unit\Framework\Utils\Datatable\Results;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\Results\HeaderPreparer;
 use App\Framework\Utils\Datatable\Results\TranslatorManager;
 use App\Framework\Utils\Datatable\UrlBuilder;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class HeaderPreparerTest extends TestCase
 {
@@ -38,18 +43,12 @@ class HeaderPreparerTest extends TestCase
 		$site = 'test-site';
 		$languageModules = [];
 
-		$this->urlBuilderMock
-			->expects($this->once())
-			->method('setSite')
+		$this->urlBuilderMock->expects($this->once())->method('setSite')
 			->with($site);
 
-		$this->translatorManagerMock
-			->expects($this->never())
-			->method('addLanguageModule');
+		$this->translatorManagerMock->expects($this->never())->method('addLanguageModule');
 
 		$this->headerPreparer->configure($this->filterParametersMock, $site, $languageModules);
-
-		$this->assertNotNull($this->headerPreparer);
 	}
 
 	#[Group('units')]
@@ -60,11 +59,17 @@ class HeaderPreparerTest extends TestCase
 
 		$this->headerPreparer->configure($this->filterParametersMock, $site, $languageModules);
 
+		// @phpstan-ignore-next-line
 		$this->assertNotNull($this->headerPreparer);
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableField(): void
@@ -114,7 +119,12 @@ class HeaderPreparerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableFieldDESC(): void
@@ -165,6 +175,11 @@ class HeaderPreparerTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForSortableFieldNotEqual(): void
@@ -215,7 +230,12 @@ class HeaderPreparerTest extends TestCase
 
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderReturnsCorrectHeaderForNonSortableField(): void
@@ -241,6 +261,13 @@ class HeaderPreparerTest extends TestCase
 		$this->assertEquals($expectedResult, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	#[Group('units')]
 	public function testPrepareTableHeaderHandlesEmptyInput(): void
 	{

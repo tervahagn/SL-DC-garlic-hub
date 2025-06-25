@@ -30,6 +30,10 @@ class PlayerEntityTest extends TestCase
 	#[Group('units')]
 	public function testConstructorWithValidData(): void
 	{
+		$screenTimes = [
+			0 => ['screen1' => ['monday' => 'some time']],
+			1 => ['screen2' => []]
+		];
 		$data = [
 			'player_id' => 10,
 			'playlist_id' => 20,
@@ -50,7 +54,7 @@ class PlayerEntityTest extends TestCase
 			'categories' => ['category1', 'category2'],
 			'properties' => ['width' => 1920, 'height' => 1080],
 			'remote_administration' => ['enabled' => true],
-			'screen_times' => ['screen1', 'screen2']
+			'screen_times' => $screenTimes
 		];
 
 		$this->userAgentHandlerMock->method('getModel')->willReturn(PlayerModel::COMPATIBLE);
@@ -85,7 +89,7 @@ class PlayerEntityTest extends TestCase
 		$this->assertSame(['category1', 'category2'], $this->playerEntity->getCategories());
 		$this->assertSame(['width' => 1920, 'height' => 1080], $this->playerEntity->getProperties());
 		$this->assertSame(['enabled' => true], $this->playerEntity->getRemoteAdministration());
-		$this->assertSame(['screen1', 'screen2'], $this->playerEntity->getScreenTimes());
+		$this->assertSame($screenTimes, $this->playerEntity->getScreenTimes());
 		$this->configMock->expects($this->exactly(2))->method('getConfigValue')
 			->willReturnMap([
 				['report_server', 'player', 'https://reports.lan'],

@@ -5,6 +5,7 @@ namespace Tests\Unit\Framework\Utils\Datatable;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\Paginator\Builder;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FormBuilder;
 use PHPUnit\Framework\Attributes\Group;
@@ -108,12 +109,15 @@ class BuildServiceTest extends TestCase
 		$this->buildService->createDatatableField($fieldName, false);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testGetDatatableFieldsReturnsExpectedFields(): void
 	{
 		$expectedFields = [
-			['name' => 'id', 'sortable' => true],
-			['name' => 'email', 'sortable' => false],
+			$this->createMock(HeaderField::class),
+			$this->createMock(HeaderField::class)
 		];
 
 		$this->resultsBuilderMock
@@ -143,19 +147,11 @@ class BuildServiceTest extends TestCase
 		$this->paginatorBuilderMock
 			->expects($this->once())
 			->method('getDropDownSettings')
-			->willReturn([
-				['value' => 5, 'label' => '5'],
-				['value' => 10, 'label' => '10'],
-				['value' => 15, 'label' => '15']
-			]);
+			->willReturn(['min' => 15, 'max' => 50, 'steps' => 5]);
 
 		$result = $this->buildService->buildPaginationDropDown($min, $max, $steps);
 
-		$this->assertSame([
-			['value' => 5, 'label' => '5'],
-			['value' => 10, 'label' => '10'],
-			['value' => 15, 'label' => '15']
-		], $result);
+		$this->assertSame(['min' => 15, 'max' => 50, 'steps' => 5], $result);
 	}
 
 	#[Group('units')]
@@ -170,17 +166,11 @@ class BuildServiceTest extends TestCase
 		$this->paginatorBuilderMock
 			->expects($this->once())
 			->method('getDropDownSettings')
-			->willReturn([
-				['value' => 10, 'label' => '10'],
-				['value' => 20, 'label' => '20']
-			]);
+			->willReturn(['min' => 10, 'max' => 100, 'steps' => 10]);
 
 		$result = $this->buildService->buildPaginationDropDown();
 
-		$this->assertSame([
-			['value' => 10, 'label' => '10'],
-			['value' => 20, 'label' => '20']
-		], $result);
+		$this->assertSame(['min' => 10, 'max' => 100, 'steps' => 10],$result);
 	}
 
 	#[Group('units')]
@@ -190,9 +180,9 @@ class BuildServiceTest extends TestCase
 		$itemsPerPage = 10;
 		$totalItems = 100;
 		$expectedLinks = [
-			['page' => 1, 'label' => '1'],
-			['page' => 2, 'label' => '2'],
-			['page' => 3, 'label' => '3']
+			['name' => '1', 'page' => 1],
+			['name' => '2', 'page' => 2],
+			['name' => '3', 'page' => 3]
 		];
 
 		$this->paginatorBuilderMock
@@ -223,8 +213,9 @@ class BuildServiceTest extends TestCase
 		$itemsPerPage = 20;
 		$totalItems = 200;
 		$expectedLinks = [
-			['page' => 1, 'label' => '1'],
-			['page' => 2, 'label' => '2']
+			['name' => '1', 'page' => 1],
+			['name' => '2', 'page' => 2],
+			['name' => '3', 'page' => 3]
 		];
 
 		$this->paginatorBuilderMock
@@ -255,9 +246,9 @@ class BuildServiceTest extends TestCase
 		$itemsPerPage = 5;
 		$totalItems = 50;
 		$expectedLinks = [
-			['page' => 1, 'label' => '1'],
-			['page' => 2, 'label' => '2'],
-			['page' => 3, 'label' => '3']
+			['name' => '1', 'page' => 1],
+			['name' => '2', 'page' => 2],
+			['name' => '3', 'page' => 3]
 		];
 
 		$this->paginatorBuilderMock

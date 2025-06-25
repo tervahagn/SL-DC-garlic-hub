@@ -21,7 +21,6 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Core\CsrfToken;
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\EmailField;
@@ -80,6 +79,7 @@ class FormBuilderTest extends TestCase
 				[$csrfFieldMock, '<input type="hidden" name="csrf_token" />']
 			]);
 
+		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$textFieldMock, $csrfFieldMock]);
 
 		$this->assertCount(1, $result['visible']);
@@ -125,6 +125,7 @@ class FormBuilderTest extends TestCase
 			->with($hiddenFieldMock)
 			->willReturn('<input type="hidden" id="hidden_field_1" />');
 
+		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$hiddenFieldMock]);
 
 		$this->assertEmpty($result['visible']);
@@ -137,6 +138,9 @@ class FormBuilderTest extends TestCase
 		);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareFormWithOnlyVisibleFields(): void
 	{
@@ -149,6 +153,7 @@ class FormBuilderTest extends TestCase
 			->with($visibleFieldMock)
 			->willReturn('<input type="text" id="visible_field_1" />');
 
+		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$visibleFieldMock]);
 
 		$this->assertEmpty($result['hidden']);

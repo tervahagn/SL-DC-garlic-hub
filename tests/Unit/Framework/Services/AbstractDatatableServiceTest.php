@@ -78,14 +78,15 @@ class AbstractDatatableServiceTest extends TestCase
 			->with(['empty'])
 			->willReturn(12);
 
-		$this->repositoryMock->expects($this->once())->method('findAllFiltered')
-			->with(['empty'])
-			->willReturn(['result']);
+		$result = [['key' => 'value']];
+			$this->repositoryMock->expects($this->once())->method('findAllFiltered')
+				->with(['empty'])
+				->willReturn($result);
 
 		$this->service->fetchForModuleAdmin($this->repositoryMock, $this->parametersMock);
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -103,15 +104,15 @@ class AbstractDatatableServiceTest extends TestCase
 			->with(['empty'], 123)
 			->willReturn(12);
 
-
+		$result = [['key' => 'value']];
 		$this->repositoryMock->expects($this->once())->method('findAllFilteredByUID')
 			->with(['empty'], 123)
-			->willReturn(['result']);
+			->willReturn($result);
 
 		$this->service->fetchForUser($this->repositoryMock, $this->parametersMock);
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 }

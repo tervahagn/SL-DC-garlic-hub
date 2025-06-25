@@ -53,7 +53,7 @@ abstract class AbstractDatatablePreparer
 	}
 
 	/**
-	 * @param list<array<string,FieldInterface>> $dataGridBuild
+	 * @param array<string,FieldInterface> $dataGridBuild
 	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 */
 	public function prepareFilterForm(array $dataGridBuild): array

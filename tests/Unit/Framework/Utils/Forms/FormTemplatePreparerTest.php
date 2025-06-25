@@ -2,36 +2,19 @@
 
 namespace Tests\Unit\Framework\Utils\Forms;
 
-use App\Framework\Core\Translate\Translator;
-use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class FormTemplatePreparerTest extends TestCase
 {
 	private FormTemplatePreparer $formTemplatePreparer;
-	private Translator $translatorMock;
 
-	/**
-	 * @throws Exception
-	 */
 	protected function setUp(): void
 	{
-		$this->translatorMock = $this->createMock(Translator::class);
-		$this->formTemplatePreparer = new FormTemplatePreparer($this->translatorMock);
+		$this->formTemplatePreparer = new FormTemplatePreparer();
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
 	#[Group('units')]
 	public function testPrepareUITemplateReturnsCorrectStructure(): void
 	{
@@ -57,7 +40,7 @@ class FormTemplatePreparerTest extends TestCase
 				'data' => [
 					'LANG_PAGE_HEADER' => 'Sample Title',
 					'FORM_ACTION' => '/submit-form',
-					'LANG_FORM_EXPLAINATION' => '',
+					'LANG_FORM_EXPLANATION' => '',
 					'element_hidden' => ['hidden_field' => 'value'],
 					'form_element' => ['field1' => 'value1', 'field2' => 'value2'],
 					'form_button' => [
@@ -77,12 +60,6 @@ class FormTemplatePreparerTest extends TestCase
 		$this->assertSame($expected, $result);
 	}
 
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
 	#[Group('units')]
 	public function testPrepareUITemplateHandlesEmptyData(): void
 	{
@@ -108,7 +85,7 @@ class FormTemplatePreparerTest extends TestCase
 				'data' => [
 					'LANG_PAGE_HEADER' => '',
 					'FORM_ACTION' => '',
-					'LANG_FORM_EXPLAINATION' => '',
+					'LANG_FORM_EXPLANATION' => '',
 					'element_hidden' => [],
 					'form_element' => [],
 					'form_button' => [

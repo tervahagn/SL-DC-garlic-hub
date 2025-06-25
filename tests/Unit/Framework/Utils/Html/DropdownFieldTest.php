@@ -17,7 +17,7 @@ class DropdownFieldTest extends TestCase
 			'id' => 'dropdown1',
 			'type' => FieldType::DROPDOWN,
 			'name' => 'dropdown_field',
-			'options' => ['Option1', 'Option2', 'Option3']
+			'options' => ['Option1' => [], 'Option2' => [], 'Option3' => []]
 		];
 
 		$this->dropdownField = new DropdownField($attributes);
@@ -26,6 +26,6 @@ class DropdownFieldTest extends TestCase
 	#[Group('units')]
 	public function testGetOptionsReturnsCorrectOptions(): void
 	{
-		$this->assertSame(['Option1', 'Option2', 'Option3'], $this->dropdownField->getOptions());
+		$this->assertSame(['Option1' => [], 'Option2' => [], 'Option3' => []], $this->dropdownField->getOptions());
 	}
 }

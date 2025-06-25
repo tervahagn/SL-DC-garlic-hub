@@ -58,7 +58,7 @@ class PrepareService
 	}
 
 	/**
-	 * @param list<array<string,FieldInterface>> $datatableForm
+	 * @param array<string,FieldInterface> $datatableForm
 	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 */
 	public function prepareForm(array $datatableForm): array

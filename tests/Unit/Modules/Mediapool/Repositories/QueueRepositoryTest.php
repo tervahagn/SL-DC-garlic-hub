@@ -38,6 +38,7 @@ class QueueRepositoryTest extends TestCase
 		$connectionMock = $this->createMock(Connection::class);
 		$repository = new QueueRepository($connectionMock);
 
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(QueueRepository::class, $repository);
 	}
 }

@@ -87,8 +87,6 @@ class ConfigXMLTest extends TestCase
 	}
 
 	/**
-	 * @throws FrameworkException
-	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testParseBasicsNoXML(): void
@@ -167,6 +165,9 @@ class ConfigXMLTest extends TestCase
 	public function testAnalyzeFullStandard(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/standard_config.xml');
+		if ($xml_string === false)
+			$this->markTestSkipped('Could not read file');
+
 		$TestClass = new ConfigXML();
 		$TestClass->load($xml_string)->parseBasic();
 
@@ -209,6 +210,9 @@ class ConfigXMLTest extends TestCase
 	public function testAnalyzeFullIAdea(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
+		if ($xml_string === false)
+			$this->markTestSkipped('Could not read file');
+
 		$TestClass = new ConfigXML();
 		$TestClass->load($xml_string)->parseBasic();
 
@@ -332,6 +336,11 @@ class ConfigXMLTest extends TestCase
 	public function testHasEditablePreferencesTrue(): void
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
+		if ($xml_string === false)
+		{
+			$this->markTestSkipped('Could not read file');
+		}
+
 		$TestClass = new ConfigXML();
 
 		$this->assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
@@ -350,6 +359,10 @@ class ConfigXMLTest extends TestCase
 		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
+	/**
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testHasNoPreferences(): void
 	{

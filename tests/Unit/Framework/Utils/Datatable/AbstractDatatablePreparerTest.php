@@ -8,8 +8,10 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
+use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\FormParameters\BaseFilterParameters;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
+use App\Framework\Utils\Html\FieldInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -19,7 +21,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ConcreteDatatablePreparer extends AbstractDatatablePreparer
 {
-	public function prepareTableBody(array $currentFilterResults, array $fields, $currentUID): array {return [];}
+	public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array {return [];}
 }
 class AbstractDatatablePreparerTest extends TestCase
 {
@@ -37,10 +39,15 @@ class AbstractDatatablePreparerTest extends TestCase
 		$this->datatablePreparer = new ConcreteDatatablePreparer('TestModule', $this->prepareServiceMock, $this->parametersMock);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
-	public function testPrepareFilterForm()
+	public function testPrepareFilterForm(): void
 	{
-		$params = ['test' => 'test'];
+		$params = [
+			'test' => $this->createMock(FieldInterface::class)
+		];
 		$this->prepareServiceMock->expects($this->once())->method('prepareForm')->with($params);
 
 		$this->datatablePreparer->prepareFilterForm($params);
@@ -50,19 +57,30 @@ class AbstractDatatablePreparerTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testPreparePagination()
+	public function testPreparePagination(): void
 	{
-		$params1 = ['test1' => 'test1'];
-		$params2 = ['test2' => 'test2'];
+		$params1 = [['name' => 'test1', 'page' => 1, 'active' => null]];
+		$params2 = ['min' => 1, 'max' => 10, 'steps' => 5];
 		$this->prepareServiceMock->expects($this->once())->method('preparePagination')->with($params1, $params2);
 
 		$this->datatablePreparer->preparePagination($params1, $params2);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
 	#[Group('units')]
-	public function testPrepareTableHeader()
+	public function testPrepareTableHeader(): void
 	{
-		$params1 = ['test1' => 'test1', 'test2' => 'test2'];
+		$params1 = [
+			$this->createMock(HeaderField::class),
+			$this->createMock(HeaderField::class)
+		];
 		$params2 = ['lang1', 'lang22'];
 		$this->prepareServiceMock->expects($this->once())->method('prepareDatatableHeader')->with($params1, $params2);
 
@@ -77,7 +95,7 @@ class AbstractDatatablePreparerTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testPrepareAddWithoutParams()
+	public function testPrepareAddWithoutParams(): void
 	{
 		$translatorMock = $this->createMock(Translator::class);
 		$this->datatablePreparer->setTranslator($translatorMock);
@@ -104,7 +122,7 @@ class AbstractDatatablePreparerTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testPrepareAddWithParam()
+	public function testPrepareAddWithParam(): void
 	{
 		$translatorMock = $this->createMock(Translator::class);
 		$this->datatablePreparer->setTranslator($translatorMock);
@@ -127,7 +145,7 @@ class AbstractDatatablePreparerTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testPrepareSort()
+	public function testPrepareSort(): void
 	{
 
 		$this->parametersMock
@@ -152,21 +170,17 @@ class AbstractDatatablePreparerTest extends TestCase
 	 * @throws ModuleException
 	 */
 	#[Group('units')]
-	public function testPreparePage()
+	public function testPreparePage(): void
 	{
 		$this->parametersMock
 			->method('getValueOfParameter')
 			->willReturnMap([
-				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, 'current_page'],
+				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, 1],
 				[BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, 100]
 			]);
 
-		$expected = [
-			'current' => 'current_page',
-			'num_elements' => 100,
-		];
-
-		$result = $this->datatablePreparer->preparePage();
+		$expected = ['current' => 1, 'num_elements' => 100,];
+		$result   = $this->datatablePreparer->preparePage();
 
 		$this->assertSame($expected, $result);
 	}

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Player\Helper\Index;
 
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Helper\Index\FileUtils;
 use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use PHPUnit\Framework\Attributes\Group;
@@ -28,6 +29,9 @@ class IndexResponseHandlerTest extends TestCase
 		$this->handler = new IndexResponseHandler($this->fileUtilsMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith304(): void
 	{
@@ -61,10 +65,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(304);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith200EmptyServerData(): void
 	{
@@ -99,10 +105,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(200);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith200AndETag(): void
 	{
@@ -137,10 +145,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(200);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith304AndETagPlusLastModified(): void
 	{
@@ -173,10 +183,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(304);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith304AndLastModifiedOnly(): void
 	{
@@ -209,10 +221,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(304);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	#[Group('units')]
 	public function testDoHeadWith200AndLastModifiedOnly(): void
 	{
@@ -246,12 +260,12 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(200);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doHEAD($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doHEAD($this->responseMock);
 	}
 
 	/**
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testDoGETWith200EmptyServerdata(): void
@@ -300,12 +314,11 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(200);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doGET($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doGET($this->responseMock);
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testDoGETWith304(): void
@@ -341,8 +354,7 @@ class IndexResponseHandlerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(304);
 
 		$this->handler->init($server, $filePath);
-		$response = $this->handler->doGET($this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->handler->doGET($this->responseMock);
 	}
 
 

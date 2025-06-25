@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 
 class PlayerEntityFactoryTest extends TestCase
 {
-	private Config&MockObject $configMock;
 	private UserAgentHandler&MockObject $userAgentHandlerMock;
 	private PlayerEntityFactory $factory;
 
@@ -23,10 +22,10 @@ class PlayerEntityFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->configMock = $this->createMock(Config::class);
+		$configMock = $this->createMock(Config::class);
 		$this->userAgentHandlerMock = $this->createMock(UserAgentHandler::class);
 
-		$this->factory = new PlayerEntityFactory($this->configMock);
+		$this->factory = new PlayerEntityFactory($configMock);
 	}
 
 	#[Group('units')]
@@ -40,6 +39,7 @@ class PlayerEntityFactoryTest extends TestCase
 		$this->userAgentHandlerMock->method('getName')->willReturn('name');
 
 		$playerEntity = $this->factory->create($data, $this->userAgentHandlerMock);
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(PlayerEntity::class, $playerEntity);
 
 		$this->assertSame(1,$playerEntity->getPlayerId());

@@ -147,7 +147,7 @@ class BaseParametersTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testRemoveParameters()
+	public function testRemoveParameters(): void
 	{
 		$current_filter_count = 0;
 

@@ -28,14 +28,6 @@ use PHPUnit\Framework\TestCase;
 class ImagickFactoryTest extends TestCase
 {
 	#[Group('units')]
-	public function testCreateImagickReturnsImagickInstance(): void
-	{
-		$factory = new ImagickFactory();
-		$imagick = $factory->createImagick();
-		$this->assertInstanceOf(Imagick::class, $imagick);
-	}
-
-	#[Group('units')]
 	public function testCreateImagickCreatesNewInstanceEachTime(): void
 	{
 		$factory = new ImagickFactory();

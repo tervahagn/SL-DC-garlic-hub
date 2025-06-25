@@ -51,8 +51,11 @@ class EditLocalesControllerTest extends TestCase
 		$this->profileServiceMock = $this->createMock(ProfileService::class);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
-	public function testSetLocales()
+	public function testSetLocales(): void
 	{
 		$this->requestMock->method('getAttribute')
 						  ->willReturnCallback(function ($attribute) {
@@ -87,8 +90,11 @@ class EditLocalesControllerTest extends TestCase
 		$this->assertSame($this->responseMock, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
-	public function testSetLocalesWithBrokenUserArray()
+	public function testSetLocalesWithBrokenUserArray(): void
 	{
 		$this->requestMock->method('getAttribute')
 						  ->willReturnCallback(function ($attribute) {

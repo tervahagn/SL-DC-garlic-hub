@@ -46,8 +46,7 @@ class PlayerControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' =>  'Player ID not valid.']);
 
-		$response = $this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -69,8 +68,7 @@ class PlayerControllerTest extends TestCase
 		$this->mockJsonResponse(['success' => false, 'error_message' =>  ['Error message']]);
 
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
-		$response = $this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -89,11 +87,12 @@ class PlayerControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true, 'playlist_name' => 'Playlist Name']);
 
-
-		$response = $this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerController->replacePlaylist($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function mockJsonResponse(array $data): void
 	{
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);

@@ -43,7 +43,6 @@ class ConcreteBaseSimpleXml extends BaseSimpleXml
 		$this->setXmlErrors([]);
 	}
 
-
 	/**
 	 * @throws ModuleException
 	 */
@@ -87,6 +86,7 @@ class BaseSimpleXmlTest extends TestCase
 	{
 		$xmlString = $this->getValidTestXml();
 		$this->concreteSimpleXml->loadXmlFromStringPublic($xmlString);
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
 	}
 
@@ -106,6 +106,7 @@ class BaseSimpleXmlTest extends TestCase
 		$filePath = __DIR__ . '/test.xml';
 		file_put_contents($filePath, '<root><child>value</child></root>');
 		$this->concreteSimpleXml->loadXmlFromFilePublic($filePath);
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
 		unlink($filePath);
 	}
@@ -147,7 +148,6 @@ class BaseSimpleXmlTest extends TestCase
 		$this->assertGreaterThanOrEqual(4, $xml_errors_array);
 		foreach($xml_errors_array as $error)
 		{
-			$this->assertInstanceOf('\LibXMLError', $error);
 			$this->assertEquals(LIBXML_ERR_FATAL, $error->level);
 		}
 
@@ -181,9 +181,6 @@ class BaseSimpleXmlTest extends TestCase
 		$this->assertCount(2, $xml_errors_array);
 
 		list($first_error, $second_error) = $xml_errors_array;
-
-		$this->assertInstanceOf('\LibXMLError', $first_error);
-		$this->assertInstanceOf('\LibXMLError', $second_error);
 
 		$this->assertEquals(LIBXML_ERR_FATAL, $first_error->level);
 		$this->assertEquals(LIBXML_ERR_FATAL, $second_error->level);

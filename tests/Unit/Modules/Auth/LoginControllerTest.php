@@ -49,6 +49,7 @@ class LoginControllerTest extends TestCase
 	private Session&MockObject $sessionMock;
 	private AuthService&MockObject $authServiceMock;
 	private CsrfToken&MockObject $csrfTokenMock;
+	// @phpstan-ignore-next-line
 	private LoggerInterface&MockObject $loggerMock;
 
 	/**

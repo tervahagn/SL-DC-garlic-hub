@@ -126,7 +126,7 @@ class PdfTest extends TestCase
 	 * @throws ImagickException
 	 */
 	#[Group('units')]
-	public function testCreateThumbnail()
+	public function testCreateThumbnail(): void
 	{
 		$this->imagickMock->expects($this->once())->method('setResolution')->with(150, 150);
 		$this->imagickMock->expects($this->once())->method('readImage')->with($this->stringContains('[0]'));

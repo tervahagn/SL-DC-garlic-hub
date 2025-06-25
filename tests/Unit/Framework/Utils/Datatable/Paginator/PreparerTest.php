@@ -19,7 +19,7 @@
 */
 
 
-namespace Tests\Unit\Framework\Utils\FilteredList\Paginator;
+namespace Tests\Unit\Framework\Utils\Datatable\Paginator;
 
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\Paginator\Preparer;
@@ -55,7 +55,7 @@ class PreparerTest extends TestCase
 	{
 		// Arrange
 		$pageLinks = [
-			['page' => 1, 'name' => 'Page 1'],
+			['page' => 1, 'name' => 'Page 1', 'active' => null],
 			['page' => 2, 'name' => 'Page 2', 'active' => true]
 		];
 

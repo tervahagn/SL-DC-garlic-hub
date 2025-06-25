@@ -32,11 +32,17 @@ class ConcreteTraitService extends AbstractBaseService
 {
 	use SearchFilterParamsTrait;
 
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	public function getCurrentFilterParameter(): array
 	{
 		return $this->currentFilterParams;
 	}
 
+	/**
+	 * @param list<array<string,mixed>> $results
+	 */
 	public function setPublicAllResultData(int $total, array $results): static
 	{
 		return $this->setAllResultData($total, $results);

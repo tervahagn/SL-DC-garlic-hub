@@ -93,9 +93,6 @@ class DatatableTemplatePreparerTest extends TestCase
 
 		$result = $this->preparer->preparerUITemplate($datalistSections);
 
-		$this->assertArrayHasKey('main_layout', $result);
-		$this->assertArrayHasKey('this_layout', $result);
-
 		$this->assertEquals('Test Title', $result['main_layout']['LANG_PAGE_TITLE']);
 		$this->assertEquals(['styles.css'], $result['main_layout']['additional_css']);
 		$this->assertEquals(['footer1', 'footer2'], $result['main_layout']['footer_modules']);

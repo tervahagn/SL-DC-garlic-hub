@@ -21,17 +21,8 @@
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Core\CsrfToken;
-use App\Framework\Core\Session;
-use App\Framework\Utils\Html\AutocompleteField;
-use App\Framework\Utils\Html\CsrfTokenField;
-use App\Framework\Utils\Html\DropdownField;
-use App\Framework\Utils\Html\EmailField;
 use App\Framework\Utils\Html\FieldsFactory;
 use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\HiddenField;
-use App\Framework\Utils\Html\NumberField;
-use App\Framework\Utils\Html\PasswordField;
-use App\Framework\Utils\Html\TextField;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +43,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createTextField($attributes);
 
-		$this->assertInstanceOf(TextField::class, $field);
 		$this->assertSame('username', $field->getId());
 		$this->assertSame('user_name', $field->getName());
 	}
@@ -64,7 +54,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createNumberField($attributes);
 
-		$this->assertInstanceOf(NumberField::class, $field);
 		$this->assertSame('status', $field->getId());
 		$this->assertSame('user_status', $field->getName());
 	}
@@ -76,7 +65,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createAutocompleteField($attributes);
 
-		$this->assertInstanceOf(AutocompleteField::class, $field);
 		$this->assertSame('UID', $field->getId());
 		$this->assertSame('username', $field->getName());
 	}
@@ -88,7 +76,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createDropdownField($attributes);
 
-		$this->assertInstanceOf(DropdownField::class, $field);
 		$this->assertSame('countries', $field->getId());
 		$this->assertSame('countries_names', $field->getName());
 	}
@@ -101,7 +88,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createEmailField($attributes);
 
-		$this->assertInstanceOf(EmailField::class, $field);
 		$this->assertSame('email', $field->getId());
 		$this->assertSame('email_address', $field->getName());
 	}
@@ -113,7 +99,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createPasswordField($attributes);
 
-		$this->assertInstanceOf(PasswordField::class, $field);
 		$this->assertSame('password', $field->getId());
 		$this->assertSame('user_password', $field->getName());
 	}
@@ -129,7 +114,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(CsrfToken::class));
 
-		$this->assertInstanceOf(CsrfTokenField::class, $field);
 		$this->assertSame('csrf_token', $field->getId());
 		$this->assertSame('csrf_token_name', $field->getName());
 		$this->assertEmpty($field->getValue());
@@ -142,7 +126,6 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createHiddenField($attributes);
 
-		$this->assertInstanceOf(HiddenField::class, $field);
 		$this->assertSame('username', $field->getId());
 		$this->assertSame('user_name', $field->getName());
 	}

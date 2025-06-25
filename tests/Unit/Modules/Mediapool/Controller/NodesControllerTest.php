@@ -75,10 +75,10 @@ class NodesControllerTest extends TestCase
 		$this->nodesServiceMock->expects($this->once())
 			->method('getNodes')
 			->with(0)
-			->willReturn(['node1', 'node2']);
+			->willReturn(['node1' => [], 'node2' => []]);
 
-		$this->mockResponse(['node1', 'node2']);
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->list($this->requestMock, $this->responseMock, []));
+		$this->mockResponse(['node1' => [], 'node2' => []]);
+		$this->controller->list($this->requestMock, $this->responseMock, []);
 	}
 
 
@@ -107,7 +107,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['id' => 123, 'new_name' => 'New Node']]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->add($this->requestMock, $this->responseMock));
+		$this->controller->add($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class NodesControllerTest extends TestCase
 		$this->nodesServiceMock->expects($this->never())->method('addNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Csrf token mismatch.']);
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->add($this->requestMock, $this->responseMock));
+		$this->controller->add($this->requestMock, $this->responseMock);
 	}
 
 
@@ -146,7 +146,7 @@ class NodesControllerTest extends TestCase
 		$this->nodesServiceMock->expects($this->never())->method('addNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node name is missing']);
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->add($this->requestMock, $this->responseMock));
+		$this->controller->add($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -171,7 +171,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['id' => 1, 'new_name' => 'Updated Node', 'visibility' => null]]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->edit($this->requestMock, $this->responseMock));
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class NodesControllerTest extends TestCase
 		$this->nodesServiceMock->expects($this->never())->method('editNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node name or id is missing']);
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->edit($this->requestMock, $this->responseMock));
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 
@@ -212,7 +212,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Edit node failed']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->edit($this->requestMock, $this->responseMock));
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -238,7 +238,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['count_deleted_nodes' => 1]]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->move($this->requestMock, $this->responseMock));
+		$this->controller->move($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -256,7 +256,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Source node, target node, or target region is missing']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->move($this->requestMock, $this->responseMock));
+		$this->controller->move($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -284,7 +284,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true, 'data' => ['count_deleted_nodes' => 1]]);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->delete($this->requestMock, $this->responseMock));
+		$this->controller->delete($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -304,7 +304,7 @@ class NodesControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'NodeId is missing']);
 
-		$this->assertInstanceOf(ResponseInterface::class, $this->controller->delete($this->requestMock, $this->responseMock));
+		$this->controller->delete($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -322,9 +322,10 @@ class NodesControllerTest extends TestCase
 	}
 
 	/**
+	 * @param array<string,mixed> $data
 	 * @throws Exception
 	 */
-	private function mockResponse($data): void
+	private function mockResponse(array $data): void
 	{
 		$streamInterfaceMock = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())

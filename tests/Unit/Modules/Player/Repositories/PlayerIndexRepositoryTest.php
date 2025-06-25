@@ -90,7 +90,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->resultMock->method('fetchAssociative')
 			->willReturn(false);
 
-		$result = $this->repository->findPlayerById('123');
+		$result = $this->repository->findPlayerById(123);
 		$this->assertEmpty($result);
 	}
 
@@ -131,7 +131,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->resultMock->method('fetchAssociative')
 			->willReturn($rawData);
 
-		$result = $this->repository->findPlayerById('123');
+		$result = $this->repository->findPlayerById(123);
 		$this->assertSame($expandedData, $result);
 	}
 

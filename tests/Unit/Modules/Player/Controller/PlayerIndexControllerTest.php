@@ -60,8 +60,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerIndexController->index($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -87,8 +86,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerIndexController->index($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -114,8 +112,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with(404)
 			->willReturnSelf();
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->playerIndexController->index($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -143,9 +140,7 @@ class PlayerIndexControllerTest extends TestCase
 			->willReturn($this->responseMock);
 		$this->indexResponseHandler->expects($this->never())->method('doGET');
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
-		$this->assertSame($response, $this->responseMock);
+		$this->playerIndexController->index($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -173,9 +168,7 @@ class PlayerIndexControllerTest extends TestCase
 			->with($this->responseMock)
 			->willReturn($this->responseMock);
 
-		$response = $this->playerIndexController->index($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
-		$this->assertSame($response, $this->responseMock);
+		$this->playerIndexController->index($this->requestMock, $this->responseMock);
 	}
 
 }

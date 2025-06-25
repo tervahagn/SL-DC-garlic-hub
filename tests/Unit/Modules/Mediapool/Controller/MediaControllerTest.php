@@ -139,7 +139,7 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
-		$this->controller->edit($this->requestMock, $this->responseMock, []);
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 
@@ -173,14 +173,14 @@ class MediaControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockResponse(['success' => false, 'error_message' => 'Filename is missing']);
 
-		$this->controller->edit($this->requestMock, $this->responseMock, []);
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testEditNoDescription()
+	public function testEditNoDescription(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
@@ -189,7 +189,7 @@ class MediaControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockResponse(['success' => false, 'error_message' => 'Description is missing']);
 
-		$this->controller->edit($this->requestMock, $this->responseMock, []);
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -215,14 +215,14 @@ class MediaControllerTest extends TestCase
 
 		$this->mockResponse(['success' => true]);
 
-		$this->controller->edit($this->requestMock, $this->responseMock, []);
+		$this->controller->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception|Exception
 	 */
 	#[Group('units')]
-	public function testDeleteNoMediaId()
+	public function testDeleteNoMediaId(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
@@ -239,9 +239,8 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testDeleteSucceed()
+	public function testDeleteSucceed(): void
 	{
-
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
 			->willReturn(['media_id' => 1]);
@@ -268,7 +267,7 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testMoveFails()
+	public function testMoveFails(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
@@ -285,7 +284,7 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testMoveSucceed()
+	public function testMoveSucceed(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
@@ -312,7 +311,7 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCloneNoMediaId()
+	public function testCloneNoMediaId(): void
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
@@ -329,7 +328,7 @@ class MediaControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCloneSucceed()
+	public function testCloneSucceed(): void
 	{
 
 		$this->requestMock->expects($this->once())
@@ -367,9 +366,10 @@ class MediaControllerTest extends TestCase
 	}
 
 	/**
+	 * @param array<string,mixed> $data
 	 * @throws Exception
 	 */
-	private function mockResponse($data): void
+	private function mockResponse(array $data): void
 	{
 		$streamInterfaceMock = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())

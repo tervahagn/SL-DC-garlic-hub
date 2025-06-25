@@ -73,9 +73,13 @@ trait SearchFilterParamsTrait
 		return $this->allowedCompanyIds;
 	}
 
-	public function setCurrentFilterResults(array $ar_result): static
+	/**
+	 * @param list<array<string,mixed>> $results
+	 * @return $this
+	 */
+	public function setCurrentFilterResults(array $results): static
 	{
-		$this->currentFilterResults = $ar_result;
+		$this->currentFilterResults = $results;
 		return $this;
 	}
 
@@ -144,6 +148,11 @@ trait SearchFilterParamsTrait
 		return array('-') + array_combine($domain_ids, $allowed_companies);
 	}
 
+	/**
+	 * @param int $total
+	 * @param array $results
+	 * @return $this
+	 */
 	protected function setAllResultData(int $total, array $results): static
 	{
 		return $this->setCurrentTotalResult($total)

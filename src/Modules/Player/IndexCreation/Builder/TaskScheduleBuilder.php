@@ -72,7 +72,7 @@ class TaskScheduleBuilder
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
 	 *
-	 * @param array<string,string> $response
+	 * @param array<string,string|int> $response
 	 */
 	public function replaceUpdatesUrlsListBlock(array $response): static
 	{
@@ -92,7 +92,7 @@ class TaskScheduleBuilder
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
 	 *
-	 * @param array<string,string> $response
+	 * @param array<string,string|int> $response
 	 */
 	public function replaceConfigurationBlock(array $response): static
 	{
@@ -107,7 +107,7 @@ class TaskScheduleBuilder
 	}
 
 	/**
-	 * @param array<string,string> $response
+	 * @param array<string,string|int> $response
 	 */
 	public function replaceFirmwareBlock(array $response): static
 	{
