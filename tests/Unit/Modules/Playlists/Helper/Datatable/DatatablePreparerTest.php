@@ -79,7 +79,6 @@ class DatatablePreparerTest extends TestCase
 	{
 		$result = $this->datatablePreparer->prepareTableBody([], [], 123);
 
-		$this->assertIsArray($result);
 		$this->assertEmpty($result);
 	}
 
@@ -129,7 +128,6 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
@@ -283,9 +281,6 @@ class DatatablePreparerTest extends TestCase
 	}
 
 	/**
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
 	 */
 	#[Group('units')]
 	public function testFormatPlaylistContextMenu(): void
@@ -298,7 +293,6 @@ class DatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->formatPlaylistContextMenu();
 
-		$this->assertIsArray($result);
 		$this->assertCount(2, $result);
 		$this->assertEquals(
 			[
@@ -309,6 +303,9 @@ class DatatablePreparerTest extends TestCase
 		);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testFormatPlaylistContextMenuEdgeForbidden(): void
 	{
@@ -323,7 +320,6 @@ class DatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->formatPlaylistContextMenu();
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertEquals(
 			[

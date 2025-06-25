@@ -108,7 +108,7 @@ class TriggerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetermineWallClocksEnlessEvery90min(): void
+	public function testDetermineWallClocksEvery90min(): void
 	{
 		$wallclocks = [
 			[
@@ -150,7 +150,7 @@ class TriggerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetermineTriggerFirstWednesdayAfterDateime(): void
+	public function testDetermineTriggerFirstWednesdayAfterDatetime(): void
 	{
 		$wallclocks = [
 			[
@@ -171,7 +171,7 @@ class TriggerTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDetermineTriggerFirstTuesdayBeforeDateime(): void
+	public function testDetermineTriggerFirstTuesdayBeforeDatetime(): void
 	{
 		$wallclocks = [
 			[

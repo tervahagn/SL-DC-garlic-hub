@@ -81,9 +81,8 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-		$result = $this->controller->newPlaylistForm($this->requestMock, $this->responseMock, $args);
+		$this->controller->newPlaylistForm($this->requestMock, $this->responseMock, $args);
 
-		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
 	/**
@@ -121,9 +120,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-		$result = $this->controller->newPlaylistForm($this->requestMock, $this->responseMock, $args);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->newPlaylistForm($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -137,8 +134,6 @@ class ShowSettingsControllerTest extends TestCase
 	#[Group('units')]
 	public function testEditPlaylistFormWithInvalidPlaylistId(): void
 	{
-		$args = ['playlist_id' => 0];
-
 		$this->setStandardMocks();
 
 		$this->flashMock->expects($this->once())->method('addMessage')
@@ -152,9 +147,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with(302)
 			->willReturnSelf();
 
-		$result = $this->controller->editPlaylistForm($this->requestMock, $this->responseMock, $args);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->editPlaylistForm($this->requestMock, $this->responseMock, []);
 	}
 
 	/**
@@ -169,7 +162,7 @@ class ShowSettingsControllerTest extends TestCase
 	#[Group('units')]
 	public function testEditPlaylistFormWithNonExistentPlaylist(): void
 	{
-		$args = ['playlist_id' => 1];
+		$args = ['playlist_id' => '1'];
 
 		$this->setStandardMocks();
 
@@ -188,9 +181,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with(302)
 			->willReturnSelf();
 
-		$result = $this->controller->editPlaylistForm($this->requestMock, $this->responseMock, $args);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->editPlaylistForm($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -205,7 +196,7 @@ class ShowSettingsControllerTest extends TestCase
 	#[Group('units')]
 	public function testEditPlaylistFormWithValidPlaylistId(): void
 	{
-		$args = ['playlist_id' => 1];
+		$args = ['playlist_id' => '1'];
 		$playlist = ['id' => 1, 'name' => 'Sample Playlist'];
 
 		$this->setStandardMocks();
@@ -228,9 +219,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-		$result = $this->controller->editPlaylistForm($this->requestMock, $this->responseMock, $args);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->editPlaylistForm($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -268,9 +257,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with(302)
 			->willReturnSelf();
 
-		$result = $this->controller->store($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -310,9 +297,7 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-		$result = $this->controller->store($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -348,9 +333,8 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-		$result = $this->controller->store($this->requestMock, $this->responseMock);
+		$this->controller->store($this->requestMock, $this->responseMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $result);
 	}
 
 	/**
@@ -389,9 +373,7 @@ class ShowSettingsControllerTest extends TestCase
 			->willReturnSelf();
 
 
-		$result = $this->controller->store($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $result);
+		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
 

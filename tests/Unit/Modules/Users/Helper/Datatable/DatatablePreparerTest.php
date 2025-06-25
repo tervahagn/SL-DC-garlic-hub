@@ -94,17 +94,15 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -112,7 +110,6 @@ class DatatablePreparerTest extends TestCase
 	{
 		$result = $this->datatablePreparer->prepareTableBody([], [], 123);
 
-		$this->assertIsArray($result);
 		$this->assertEmpty($result);
 	}
 

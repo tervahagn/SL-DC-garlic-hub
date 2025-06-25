@@ -56,14 +56,20 @@ class PlayerDatatableServiceTest extends TestCase
 			->with(['empty'])
 			->willReturn(12);
 
+		$result = [
+			['id' => 1, 'name' => 'John Doe', 'age' => 29],
+			['id' => 2, 'name' => 'Jane Smith', 'age' => 34],
+			['id' => 3, 'name' => 'Alice Brown', 'age' => 25],
+		];
+
 		$this->repositoryMock->expects($this->once())->method('findAllFiltered')
 			->with(['empty'])
-			->willReturn(['result']);
+			->willReturn($result);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -86,15 +92,20 @@ class PlayerDatatableServiceTest extends TestCase
 			->with(['empty'], 789)
 			->willReturn(12);
 
+		$result = [
+			['id' => 1, 'name' => 'John Doe', 'age' => 29],
+			['id' => 2, 'name' => 'Jane Smith', 'age' => 34],
+			['id' => 3, 'name' => 'Alice Brown', 'age' => 25],
+		];
 
 		$this->repositoryMock->expects($this->once())->method('findAllFilteredByUID')
 			->with(['empty'], 789)
-			->willReturn(['result']);
+			->willReturn($result);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 }

@@ -68,7 +68,7 @@ class TaskScheduleBuilder
 
 	/**
 	 * Creates the configuration part https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/#configuration
-	 * for the  Taskfile https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
+	 * for the  task file https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
 	 *
@@ -79,7 +79,7 @@ class TaskScheduleBuilder
 		$this->template['urls_list'][] = [
 			'URLS_LIST_TASK_ID' => $this->generateTaskId(),
 			'URLS_LIST_FILE_URI' => $response['file_url'],
-			'URLS_LIST_FILE_LENGHT' => $response['file_size'],
+			'URLS_LIST_FILE_LENGTH' => $response['file_size'],
 			'URLS_LIST_FILE_CHECKSUM' => $response['md5_file']
 		];
 
@@ -88,7 +88,7 @@ class TaskScheduleBuilder
 
 	/**
 	 * Creates the configuration part https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/#configuration
-	 * for the  Taskfile https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
+	 * for the  Task file https://garlic-player.com/garlic-player/docs/essentials/maintenance-tasks/
 	 *
 	 * The configuration XML-file itself is created in ConfigurationController.php
 	 *
@@ -99,7 +99,7 @@ class TaskScheduleBuilder
 		$this->template['configuration'][] = [
 			'CONFIGURATION_TASK_ID' => $this->generateTaskId(),
 			'CONFIGURATION_FILE_URI' => $response['file_url'],
-			'CONFIGURATION_FILE_LENGHT' => $response['file_size'],
+			'CONFIGURATION_FILE_LENGTH' => $response['file_size'],
 			'CONFIGURATION_FILE_CHECKSUM' => $response['md5_file']
 		];
 
@@ -115,7 +115,7 @@ class TaskScheduleBuilder
 			'FIRMWARE_TASK_ID' => $this->generateTaskId(),
 			'FIRMWARE_FILE_URI' => $response['file_url'],
 			'FIRMWARE_TARGET_VERSION' => '1.0.0',
-			'FIRMWARE_FILE_LENGHT' => $response['file_size'],
+			'FIRMWARE_FILE_LENGTH' => $response['file_size'],
 			'FIRMWARE_FILE_CHECKSUM' => $response['md5_file']
 		];
 		

@@ -26,7 +26,7 @@ class PropertiesTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testDefaultValues()
+	public function testDefaultValues(): void
 	{
 		$this->configMock->expects($this->exactly(3))->method('getConfigValue')
 			->willReturnMap([
@@ -46,7 +46,7 @@ class PropertiesTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testParameterValues()
+	public function testParameterValues(): void
 	{
 		$properties = new Properties($this->configMock, ['fit' => 'slice', 'media_align' => 'midRight', 'volume' => '56']);
 
@@ -59,7 +59,7 @@ class PropertiesTest extends TestCase
 	 * @throws CoreException
 	 */
 	#[Group('units')]
-	public function testNonsenseValues()
+	public function testNonsenseValues(): void
 	{
 		$this->configMock->expects($this->once())->method('getConfigValue')
 			->with('volume', 'playlists', 'Defaults')

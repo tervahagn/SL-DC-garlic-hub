@@ -76,10 +76,8 @@ class StandardPlaylistBuilderTest extends TestCase
 			->with($formattedItems, $prefetch, $exclusive)
 			->willReturn($this->createMock(PlaylistStructureInterface::class));
 
-		$this->assertInstanceOf(
-			PlaylistStructureInterface::class,
-			$this->builder->buildPlaylist()
-		);
+
+			$this->builder->buildPlaylist();
 	}
 
 	/**
@@ -118,10 +116,8 @@ class StandardPlaylistBuilderTest extends TestCase
 			->with($formattedItems, '', '')
 			->willReturn($this->createMock(PlaylistStructureInterface::class));
 
-		$this->assertInstanceOf(
-			PlaylistStructureInterface::class,
-			$this->builder->buildPlaylist()
-		);
+
+			$this->builder->buildPlaylist();
 	}
 
 }

@@ -35,7 +35,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableModuleAdmin()
+	public function testIsPlaylistEditableModuleAdmin(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];
@@ -56,7 +56,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableEdgeEdition()
+	public function testIsPlaylistEditableEdgeEdition(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];
@@ -77,7 +77,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableSubAdminAccessFailed()
+	public function testIsPlaylistEditableSubAdminAccessFailed(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];
@@ -102,7 +102,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableSubAdminAccessSucceed()
+	public function testIsPlaylistEditableSubAdminAccessSucceed(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];
@@ -127,7 +127,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableEditorAccess()
+	public function testIsPlaylistEditableEditorAccess(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];
@@ -152,7 +152,7 @@ class AclValidatorTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testIsPlaylistEditableNoAccess()
+	public function testIsPlaylistEditableNoAccess(): void
 	{
 		$UID = 1;
 		$player = ['UID' => 2, 'company_id' => 4, 'player_id' => 12];

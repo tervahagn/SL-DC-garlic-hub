@@ -18,9 +18,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Database\BaseRepositories;
+namespace Tests\Unit\Framework\Database\BaseRepositories\Traits;
 
-use App\Framework\Database\BaseRepositories\Sql;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
@@ -55,8 +54,11 @@ class FindOperationsTraitTest extends TestCase
 		$this->repository = new ConcreteTrait($this->connectionMock, 'test_table', 'test_id');
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
-	public function testFindFirstById()
+	public function testFindFirstById(): void
 	{
 		$id = '65';
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
@@ -83,7 +85,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testGetFirstByWithEmpty()
+	public function testGetFirstByWithEmpty(): void
 	{
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -105,14 +107,14 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([]);
 
-		$this->assertEquals([], $this->repository->findFirstBy([]));
+		$this->assertEquals([], $this->repository->findFirstBy());
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindById()
+	public function testFindById(): void
 	{
 		$id = '888';
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
@@ -139,7 +141,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCountAll()
+	public function testCountAll(): void
 	{
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -162,7 +164,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCountAllBy()
+	public function testCountAllBy(): void
 	{
 		$conditions = ['test_id' => 888];
 		$joins = [
@@ -217,7 +219,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testCountAllByRestrict()
+	public function testCountAllByRestrict(): void
 	{
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
@@ -244,7 +246,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindAllBy()
+	public function testFindAllBy(): void
 	{
 		$conditions = [
 			'test_id' => 4711,
@@ -308,17 +310,17 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn($this->resultMock);
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
-			->willReturn(['hurz', 'wurz']);
+			->willReturn(['hurz', 'wurz', 'murks']);
 
 		$limit = ['first' => $limitStart, 'max' => $limitShow];
-		$this->assertEquals(['hurz', 'wurz'], $this->repository->findAllBy($conditions, $joins, $limit, $groupBy, [$orderBy]));
+		$this->assertEquals(['hurz', 'wurz', 'murks'], $this->repository->findAllBy($conditions, $joins, $limit, $groupBy, [$orderBy]));
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindAllByWithFields()
+	public function testFindAllByWithFields(): void
 	{
 		$fields = ['test_id', 'test_username', 'test_email'];
 
@@ -350,7 +352,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindAllByWithLimits()
+	public function testFindAllByWithLimits(): void
 	{
 		$limitStart = 1;
 		$limitShow = 20;
@@ -386,7 +388,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindOneValueBy()
+	public function testFindOneValueBy(): void
 	{
 		$field = 'sinatra_songs';
 
@@ -415,7 +417,7 @@ class FindOperationsTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindOneValueByRetrunsNull()
+	public function testFindOneValueByReturnsNull(): void
 	{
 
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
@@ -440,7 +442,7 @@ class FindOperationsTraitTest extends TestCase
 
 
 	#[Group('units')]
-	public function testGetFirstDataset()
+	public function testGetFirstDataset(): void
 	{
 		// if empty
 		$this->assertEmpty($this->repository->getFirstDataSet([]));

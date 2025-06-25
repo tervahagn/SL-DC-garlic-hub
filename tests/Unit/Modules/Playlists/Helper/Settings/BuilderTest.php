@@ -52,7 +52,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -75,7 +74,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -96,7 +94,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -117,7 +114,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -133,7 +129,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -152,7 +147,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -172,7 +166,6 @@ class BuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -222,14 +215,15 @@ class BuilderTest extends TestCase
 			->method('createCSRFTokenField')
 			->willReturn($fieldInterfaceMock);
 
+		$preparedFormWithAllFields = ['key1' => 'value1', 'key2' => 123, 'key3' => true];
 		$this->collectorMock->expects($this->once())
 			->method('prepareForm')
 			->with($form)
-			->willReturn(['preparedForm']);
+			->willReturn($preparedFormWithAllFields);
 
 		$result = $this->builder->buildForm([]);
 
-		$this->assertSame(['preparedForm'], $result);
+		$this->assertSame($preparedFormWithAllFields, $result);
 	}
 
 	/**
@@ -291,6 +285,7 @@ class BuilderTest extends TestCase
 		$this->collectorMock->method('createCSRFTokenField')
 			->willReturn($fieldInterfaceMock);
 
+		$preparedFormWithAllFields = ['key1' => 'value1', 'key2' => 123, 'key3' => true];
 
 		$this->collectorMock->expects($this->once())
 			->method('prepareForm')
@@ -302,11 +297,11 @@ class BuilderTest extends TestCase
 				'playlist_mode' => $fieldInterfaceMock,
 				'csrf_token' => $fieldInterfaceMock,
 			])
-			->willReturn(['preparedFormWithAllFields']);
+			->willReturn($preparedFormWithAllFields);
 
 		$result = $this->builder->buildForm($playlist);
 
-		$this->assertSame(['preparedFormWithAllFields'], $result);
+		$this->assertSame($preparedFormWithAllFields, $result);
 	}
 
 
@@ -320,7 +315,7 @@ class BuilderTest extends TestCase
 	#[Group('units')]
 	public function testHandleUserInput(): void
 	{
-		$userInput = [''];
+		$userInput = ['key1' => 'value1', 'key2' => 123, 'key3' => true];
 		$this->parametersMock->expects($this->once())->method('setUserInputs')
 			->with($userInput)
 			->willReturnSelf();

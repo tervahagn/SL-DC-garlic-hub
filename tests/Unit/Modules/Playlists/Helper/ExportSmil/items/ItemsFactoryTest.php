@@ -15,12 +15,10 @@ use App\Modules\Playlists\Helper\ExportSmil\items\Widget;
 use App\Modules\Playlists\Helper\ItemType;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ItemsFactoryTest extends TestCase
 {
-	private Config&MockObject $configMock;
 	private ItemsFactory $itemsFactory;
 
 	/**
@@ -28,14 +26,14 @@ class ItemsFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->configMock = $this->createMock(Config::class);
-		$this->configMock->expects($this->any())->method('getConfigValue')
+		$configMock = $this->createMock(Config::class);
+		$configMock->expects($this->any())->method('getConfigValue')
 			->willReturnMap([
 				['fit', 'playlists', 'Defaults', 'meetBest'],
 				['media_align', 'playlists', 'Defaults', 'center'],
 				['volume', 'playlists', 'Defaults', '100']
 			]);
-		$this->itemsFactory = new ItemsFactory($this->configMock);
+		$this->itemsFactory = new ItemsFactory($configMock);
 	}
 
 	/**
@@ -67,7 +65,7 @@ class ItemsFactoryTest extends TestCase
 	{
 		$item = [
 			'item_type' => ItemType::MEDIAPOOL->value,
-			'mimetype' => 'video/xxxx',
+			'mimetype' => 'video/xlsx',
 			'properties' => [],
 			'begin_trigger' => [],
 			'end_trigger' => [],
@@ -171,6 +169,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(ItemInterface::class, $result);
 	}
 

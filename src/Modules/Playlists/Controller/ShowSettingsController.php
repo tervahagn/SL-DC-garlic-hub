@@ -74,7 +74,7 @@ class ShowSettingsController
 	 */
 	public function editPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = $args['playlist_id'] ?? 0;
+		$playlistId = (int) $args['playlist_id'];
 
 		$this->initFacade($request);
 
@@ -84,7 +84,7 @@ class ShowSettingsController
 			return $response->withHeader('Location', '/playlists')->withStatus(302);
 		}
 
-		$playlist = $this->facade->loadPlaylistForEdit((int) $playlistId);
+		$playlist = $this->facade->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
 		{
 			$this->flash->addMessage('error', 'Playlist not found.');

@@ -34,11 +34,26 @@ class FormElementsCreatorTest extends TestCase
 		$this->collector = new FormElementsCreator($this->formBuilderMock, $this->translatorMock);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testPrepareForm(): void
 	{
-		$formData = ['field1' => 'value1', 'field2' => 'value2'];
-		$preparedForm = ['preparedField1', 'preparedField2'];
+		$fieldInterfaceMock1 = $this->createMock(FieldInterface::class);
+		$fieldInterfaceMock2 = $this->createMock(FieldInterface::class);
+
+		$formData = ['field1' => $fieldInterfaceMock1, 'field2' => $fieldInterfaceMock2];
+		$preparedForm = [
+			'hidden' => [
+				['type' => 'hidden', 'id' => 'field1', 'name' => 'field1'],
+				['type' => 'hidden', 'id' => 'field2', 'name' => 'field2']
+			],
+			'visible' => [
+				['type' => 'text', 'id' => 'field3', 'name' => 'field3'],
+				['type' => 'number', 'id' => 'field4', 'name' => 'field4']
+			]
+		];
 
 		$this->formBuilderMock
 			->expects($this->once())

@@ -90,14 +90,11 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($playerData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
-		$result = $this->assembler->handleLocalPlayer();
-		$this->assertInstanceOf(PlayerEntity::class, $result);
+		$this->assembler->handleLocalPlayer();
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testHandleLocalPlayerInsertsNewPlayer(): void
@@ -145,7 +142,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($result, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
-		$this->assertInstanceOf(PlayerEntity::class, $this->assembler->handleLocalPlayer());
+		$this->assembler->handleLocalPlayer();
 	}
 
 	/**
@@ -264,8 +261,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($saveData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
-		$result = $this->assembler->insertNewPlayer($ownerId);
-		$this->assertInstanceOf(PlayerEntity::class, $result);
+		$this->assembler->insertNewPlayer($ownerId);
 	}
 
 	/**
@@ -354,8 +350,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($saveData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
-		$result = $this->assembler->insertNewPlayer($ownerId);
-		$this->assertInstanceOf(PlayerEntity::class, $result);
+		$this->assembler->insertNewPlayer($ownerId);
 	}
 
 	/**
@@ -376,8 +371,6 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($playerData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
-		$result = $this->assembler->fetchDatabase();
-
-		$this->assertInstanceOf(PlayerEntity::class, $result);
+		$this->assembler->fetchDatabase();
 	}
 }

@@ -49,9 +49,7 @@ class WidgetsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$response = $this->controller->fetch($this->requestMock, $this->responseMock, []);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->fetch($this->requestMock, $this->responseMock, []);
 	}
 
 	#[Group('units')]
@@ -64,10 +62,7 @@ class WidgetsControllerTest extends TestCase
 		$this->widgetsServiceMock->expects($this->once())->method('fetchWidgetByItemId')
 			->willReturn([]);
 
-		$response = $this->controller->fetch($this->requestMock, $this->responseMock, $args);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
-
+		$this->controller->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
 	#[Group('units')]
@@ -82,8 +77,7 @@ class WidgetsControllerTest extends TestCase
 			->willReturn($data);
 
 		$this->mockJsonResponse(['success' => true, 'data' => $data]);
-		$response = $this->controller->fetch($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
 
@@ -98,9 +92,7 @@ class WidgetsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$response = $this->controller->save($this->requestMock, $this->responseMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->save($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -119,9 +111,8 @@ class WidgetsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => $errorMessage]);
 
-		$response = $this->controller->save($this->requestMock, $this->responseMock);
+		$this->controller->save($this->requestMock, $this->responseMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	#[Group('units')]
@@ -138,9 +129,8 @@ class WidgetsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true]);
 
-		$response = $this->controller->save($this->requestMock, $this->responseMock);
+		$this->controller->save($this->requestMock, $this->responseMock);
 
-		$this->assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	private function setServiceUIDMocks(): void
@@ -149,6 +139,10 @@ class WidgetsControllerTest extends TestCase
 		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
 		$this->widgetsServiceMock->expects($this->once())->method('setUID')->with(456);
 	}
+
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function mockJsonResponse(array $data): void
 	{
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);

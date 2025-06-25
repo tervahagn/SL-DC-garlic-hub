@@ -86,10 +86,10 @@ class TaskScheduleBuilderTest extends TestCase
 		$this->assertArrayHasKey(0, $template['urls_list']);
 		$this->assertArrayHasKey('URLS_LIST_TASK_ID', $template['urls_list'][0]);
 		$this->assertArrayHasKey('URLS_LIST_FILE_URI', $template['urls_list'][0]);
-		$this->assertArrayHasKey('URLS_LIST_FILE_LENGHT', $template['urls_list'][0]);
+		$this->assertArrayHasKey('URLS_LIST_FILE_LENGTH', $template['urls_list'][0]);
 		$this->assertArrayHasKey('URLS_LIST_FILE_CHECKSUM', $template['urls_list'][0]);
 		$this->assertEquals('https://example.com/file/url', $template['urls_list'][0]['URLS_LIST_FILE_URI']);
-		$this->assertEquals(123456, $template['urls_list'][0]['URLS_LIST_FILE_LENGHT']);
+		$this->assertEquals(123456, $template['urls_list'][0]['URLS_LIST_FILE_LENGTH']);
 		$this->assertEquals('d41d8cd98f00b204e9800998ecf8427e', $template['urls_list'][0]['URLS_LIST_FILE_CHECKSUM']);
 	}
 
@@ -114,10 +114,10 @@ class TaskScheduleBuilderTest extends TestCase
 		$this->assertArrayHasKey(0, $template['configuration']);
 		$this->assertArrayHasKey('CONFIGURATION_TASK_ID', $template['configuration'][0]);
 		$this->assertArrayHasKey('CONFIGURATION_FILE_URI', $template['configuration'][0]);
-		$this->assertArrayHasKey('CONFIGURATION_FILE_LENGHT', $template['configuration'][0]);
+		$this->assertArrayHasKey('CONFIGURATION_FILE_LENGTH', $template['configuration'][0]);
 		$this->assertArrayHasKey('CONFIGURATION_FILE_CHECKSUM', $template['configuration'][0]);
 		$this->assertEquals('https://example.com/config/file', $template['configuration'][0]['CONFIGURATION_FILE_URI']);
-		$this->assertEquals(78910, $template['configuration'][0]['CONFIGURATION_FILE_LENGHT']);
+		$this->assertEquals(78910, $template['configuration'][0]['CONFIGURATION_FILE_LENGTH']);
 		$this->assertEquals('e99a18c428cb38d5f260853678922e03', $template['configuration'][0]['CONFIGURATION_FILE_CHECKSUM']);
 	}
 
@@ -143,10 +143,10 @@ class TaskScheduleBuilderTest extends TestCase
 		$this->assertArrayHasKey('FIRMWARE_TASK_ID', $template['firmware'][0]);
 		$this->assertArrayHasKey('FIRMWARE_FILE_URI', $template['firmware'][0]);
 		$this->assertArrayHasKey('FIRMWARE_TARGET_VERSION', $template['firmware'][0]);
-		$this->assertArrayHasKey('FIRMWARE_FILE_LENGHT', $template['firmware'][0]);
+		$this->assertArrayHasKey('FIRMWARE_FILE_LENGTH', $template['firmware'][0]);
 		$this->assertArrayHasKey('FIRMWARE_FILE_CHECKSUM', $template['firmware'][0]);
 		$this->assertEquals('https://example.com/firmware/file', $template['firmware'][0]['FIRMWARE_FILE_URI']);
-		$this->assertEquals(654321, $template['firmware'][0]['FIRMWARE_FILE_LENGHT']);
+		$this->assertEquals(654321, $template['firmware'][0]['FIRMWARE_FILE_LENGTH']);
 		$this->assertEquals('a15f8cd98f00b204e9800998ecf8527e', $template['firmware'][0]['FIRMWARE_FILE_CHECKSUM']);
 	}
 

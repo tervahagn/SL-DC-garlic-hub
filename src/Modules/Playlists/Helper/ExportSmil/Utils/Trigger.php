@@ -31,11 +31,11 @@ class Trigger
 		'notifies'   => 'parseNotifies',
 	];
 
-	/** @var list<array<string,mixed>>  */
+	/** @var array<string,mixed>  */
 	private array $triggers;
 
 	/**
-	 * @param list<array<string,mixed>> $triggers
+	 * @param array<string,mixed> $triggers
 	 */
 	public function __construct(array $triggers)
 	{

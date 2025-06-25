@@ -21,7 +21,6 @@
 namespace Tests\Unit\Modules\Users\Entities;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -60,7 +59,6 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertInstanceOf(UserEntity::class, $result);
 		$this->assertEquals($userData['main'], $result->getMain());
 		$this->assertEquals($userData['contact'], $result->getContact());
 		$this->assertEquals($userData['stats'], $result->getStats());
@@ -87,7 +85,6 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertInstanceOf(UserEntity::class, $result);
 		$this->assertEquals($userData['main'], $result->getMain());
 		$this->assertEquals($userData['contact'], $result->getContact());
 		$this->assertEquals($userData['stats'], $result->getStats());
@@ -114,7 +111,6 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertInstanceOf(UserEntity::class, $result);
 		$this->assertEquals($userData['main'], $result->getMain());
 		$this->assertEmpty($result->getContact());
 		$this->assertEmpty($result->getStats());

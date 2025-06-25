@@ -4,7 +4,6 @@ namespace Tests\Unit\Modules\Playlists\Helper\Settings;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
-use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
@@ -30,11 +29,9 @@ class ParametersTest extends TestCase
 	{
 		$this->assertCount(2, $this->parameters->getCurrentParameters());
 		$this->assertSame('playlists', $this->parameters->getModuleName());
-		$this->assertInstanceOf(Parameters::class, $this->parameters);
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testAddPlaylistMode(): void
@@ -46,7 +43,6 @@ class ParametersTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testAddPlaylistId(): void
@@ -58,7 +54,6 @@ class ParametersTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testAddTimeLimit(): void

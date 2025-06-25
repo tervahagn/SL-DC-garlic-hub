@@ -335,6 +335,9 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->updateSecure($postData);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testUpdateExport(): void
 	{
@@ -600,7 +603,11 @@ class PlaylistsServiceTest extends TestCase
 	{
 		$this->service->setUID(1);
 		$playlistId = 123;
-		$zones = ['zone1', 'zone2'];
+		$zones = [
+			'zone1' => ['zone_playlist_id' => 2, 'name' => 'Schulz'],
+			'zone2' => ['zone_playlist_id' => 3],
+			'zone3' => []
+		];
 		$playlist = ['playlist_id' => $playlistId, 'multizone' => serialize($zones)];
 
 		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')
@@ -625,7 +632,11 @@ class PlaylistsServiceTest extends TestCase
 	{
 		$this->service->setUID(1);
 		$playlistId = 123;
-		$zones = ['zone1', 'zone2'];
+		$zones = [
+			'zone1' => ['zone_playlist_id' => 2, 'name' => 'Schulz'],
+			'zone2' => ['zone_playlist_id' => 3],
+			'zone3' => []
+		];
 
 		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')
 			->with($playlistId)
@@ -644,7 +655,11 @@ class PlaylistsServiceTest extends TestCase
 	{
 		$this->service->setUID(1);
 		$playlistId = 123;
-		$zones = ['zone1', 'zone2'];
+		$zones = [
+			'zone1' => ['zone_playlist_id' => 2, 'name' => 'Schulz'],
+			'zone2' => ['zone_playlist_id' => 3],
+			'zone3' => []
+		];
 		$playlist = ['playlist_id' => $playlistId];
 
 		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')
@@ -668,7 +683,11 @@ class PlaylistsServiceTest extends TestCase
 	{
 		$this->service->setUID(1);
 		$playlistId = 123;
-		$zones = ['zone1', 'zone2'];
+		$zones = [
+			'zone1' => ['zone_playlist_id' => 2, 'name' => 'Schulz'],
+			'zone2' => ['zone_playlist_id' => 3],
+			'zone3' => []
+		];
 		$playlist = ['playlist_id' => $playlistId];
 
 		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')

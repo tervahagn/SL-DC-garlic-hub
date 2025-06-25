@@ -69,8 +69,7 @@ class ItemsControllerTest extends TestCase
 			->willReturn($list);
 		$this->mockJsonResponse(['success' => true, 'data' =>  $list]);
 
-		$response = $this->itemsController->loadItems($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->loadItems($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -88,8 +87,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		$response = $this->itemsController->loadItems($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->loadItems($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -111,8 +109,7 @@ class ItemsControllerTest extends TestCase
 		$this->setServiceUIDMocks();
 		$this->mockJsonResponse(['success' => true, 'data' => ['inserted_item_data']]);
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -125,8 +122,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -139,8 +135,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -154,8 +149,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->insertItemFactoryMock->expects($this->never())->method('create');
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -167,8 +161,7 @@ class ItemsControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Position not valid.']);
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	#[Group('units')]
@@ -182,8 +175,7 @@ class ItemsControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Error inserting item.']);
 
-		$response = $this->itemsController->insert($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -207,8 +199,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true]);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -232,8 +223,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true]);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -257,8 +247,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Error updating item field: '.$requestData['name']. '.']);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -276,8 +265,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -295,8 +283,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No parameter name.']);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -314,8 +301,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No parameter value.']);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -335,8 +321,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'No valid parametername.']);
 
-		$response = $this->itemsController->edit($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -359,8 +344,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true, 'item' => $item]);
 
-		$response = $this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -377,8 +361,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item ID not valid.']);
 
-		$response = $this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
@@ -400,14 +383,10 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Item not found.']);
 
-		$response = $this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -425,14 +404,10 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true]);
 
-		$response = $this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -446,14 +421,10 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsServiceMock->expects($this->never())->method('updateItemOrder');
 
-		$response = $this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -467,8 +438,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsServiceMock->expects($this->never())->method('updateItemOrder');
 
-		$response = $this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -491,8 +461,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->mockJsonResponse(['success' => true, 'data' => $item]);
 
-		$response = $this->itemsController->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->delete($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -509,8 +478,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsServiceMock->expects($this->never())->method('delete');
 
-		$response = $this->itemsController->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->delete($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -527,8 +495,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsServiceMock->expects($this->never())->method('delete');
 
-		$response = $this->itemsController->delete($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->itemsController->delete($this->requestMock, $this->responseMock);
 	}
 
 	/**
@@ -560,6 +527,9 @@ class ItemsControllerTest extends TestCase
 		$this->itemsServiceMock->expects($this->once())->method('setUID')->with(456);
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	private function mockJsonResponse(array $data): void
 	{
 		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);

@@ -27,12 +27,10 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private Sanitizer&MockObject $sanitizerMock;
 	private Parameters $parameters;
 
 	/**
@@ -41,10 +39,10 @@ class ParametersTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->sanitizerMock = $this->createMock(Sanitizer::class);
+		$sanitizerMock = $this->createMock(Sanitizer::class);
 		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($this->sanitizerMock, $sessionMock);
+		$this->parameters    = new Parameters($sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]
@@ -52,7 +50,6 @@ class ParametersTest extends TestCase
 	{
 		$this->assertCount(6, $this->parameters->getCurrentParameters());
 		$this->assertSame('playlists', $this->parameters->getModuleName());
-		$this->assertInstanceOf(Parameters::class, $this->parameters);
 	}
 
 }
