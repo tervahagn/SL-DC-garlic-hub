@@ -59,14 +59,18 @@ class PlaylistsDatatableServiceTest extends TestCase
 			->with(['empty'])
 			->willReturn(12);
 
+		$result =	[
+			0 => ['result1' => 'result1'],
+			1 => ['result2' => 1]
+		];
 		$this->repositoryMock->expects($this->once())->method('findAllFiltered')
 			->with(['empty'])
-			->willReturn(['result']);
+			->willReturn($result);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -89,15 +93,18 @@ class PlaylistsDatatableServiceTest extends TestCase
 			->with(['empty'], 789)
 			->willReturn(12);
 
-
+		$result =	[
+			0 => ['result1' => 'result1'],
+			1 => ['result2' => 1]
+		];
 		$this->repositoryMock->expects($this->once())->method('findAllFilteredByUID')
 			->with(['empty'], 789)
-			->willReturn(['result']);
+			->willReturn($result);
 
 		$this->service->loadDatatable();
 
 		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame(['result'], $this->service->getCurrentFilterResults());
+		$this->assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**

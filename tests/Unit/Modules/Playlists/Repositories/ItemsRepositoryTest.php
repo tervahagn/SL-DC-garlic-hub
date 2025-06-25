@@ -44,7 +44,7 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllByPlaylistsId()
+	public function testFindAllByPlaylistsId(): void
 	{
 		$playlistId = 67;
 
@@ -189,7 +189,7 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllPlaylistItemsByPlaylistId()
+	public function testFindAllPlaylistItemsByPlaylistId(): void
 	{
 		$playlistId = 96;
 
@@ -277,7 +277,7 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testSumAndCountMetricsByPlaylistIdAndOwnerRetrunNull(): void
+	public function testSumAndCountMetricsByPlaylistIdAndOwnerReturnNull(): void
 	{
 		$playlistId = 101;
 		$ownerId = 500;
@@ -319,7 +319,7 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testFindAllPlaylistContainingPlaylist()
+	public function testFindAllPlaylistContainingPlaylist(): void
 	{
 		$playlistId = 96;
 

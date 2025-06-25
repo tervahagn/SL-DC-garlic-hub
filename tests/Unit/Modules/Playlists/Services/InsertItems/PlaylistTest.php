@@ -243,6 +243,11 @@ class PlaylistTest extends TestCase
 		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
+	/**
+	 * @param array<string,mixed> $playlistTargetData
+	 * @param array<string,mixed> $playlistInsertData
+	 * @return void
+	 */
 	private function checkAclMockSuccessful(array $playlistTargetData, array $playlistInsertData): void
 	{
 		$this->playlistsServiceMock->expects($this->exactly(2))->method('setUID')

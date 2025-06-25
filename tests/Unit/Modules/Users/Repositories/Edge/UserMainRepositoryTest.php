@@ -54,7 +54,7 @@ class UserMainRepositoryTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFindByIdentifierForValidEmail()
+	public function testFindByIdentifierForValidEmail(): void
 	{
 		$identifier = 'test@example.com';
 		$userData = [
@@ -85,7 +85,7 @@ class UserMainRepositoryTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testLoadUserByIdentifierForValidUsername()
+	public function testLoadUserByIdentifierForValidUsername(): void
 	{
 		$identifier = 'testuser';
 		$userData = [

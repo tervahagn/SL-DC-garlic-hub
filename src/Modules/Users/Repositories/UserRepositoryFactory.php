@@ -57,7 +57,11 @@ class UserRepositoryFactory
 	 * @return array{
 	 *     main: UserMainRepository,
 	 *     tokens: UserTokensRepository,
-	 *     acl: UserAclRepository
+	 *     acl: UserAclRepository,
+	 *     contact?: UserContactRepository,
+	 *     stats?: UserStatsRepository,
+	 * 	   vip?: UserVipRepository,
+	 *     security?: UserSecurityRepository
 	 *	 }
 	 */
 	public function create(): array

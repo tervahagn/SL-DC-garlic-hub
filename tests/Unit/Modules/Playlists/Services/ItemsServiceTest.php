@@ -561,6 +561,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateItemOrderSuccess(): void
 	{
@@ -586,6 +589,9 @@ class ItemsServiceTest extends TestCase
 		$this->assertTrue($this->itemsService->updateItemOrder($playlistId, $itemsOrder));
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateItemOrderThrowsExceptionForInvalidPlaylist(): void
 	{
@@ -836,7 +842,6 @@ class ItemsServiceTest extends TestCase
 			->method('update');
 
 		$this->itemsService->updateMetricsRecursively($playlistId);
-		$this->assertTrue(true); // No exceptions thrown
 	}
 
 	/**
@@ -860,6 +865,5 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->never())->method('update');
 
 		$this->itemsService->updateMetricsRecursively($playlistId);
-		$this->assertTrue(true); // No exceptions thrown
 	}
 }

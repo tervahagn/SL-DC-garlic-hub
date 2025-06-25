@@ -23,7 +23,7 @@ readonly class PlaylistUsageService
 
 	/**
 	 * @param int[] $playlistIds
-	 * @return array<string,mixed>
+	 * @return array<int,bool>
 	 * @throws Exception
 	 */
 	public function determinePlaylistsInUse(array $playlistIds): array

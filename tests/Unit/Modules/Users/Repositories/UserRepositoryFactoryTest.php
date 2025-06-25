@@ -21,12 +21,6 @@
 namespace Tests\Unit\Modules\Users\Repositories;
 
 use App\Framework\Core\Config\Config;
-use App\Modules\Users\Repositories\Core\UserContactRepository;
-use App\Modules\Users\Repositories\Core\UserStatsRepository;
-use App\Modules\Users\Repositories\Edge\UserAclRepository;
-use App\Modules\Users\Repositories\Edge\UserMainRepository;
-use App\Modules\Users\Repositories\Enterprise\UserSecurityRepository;
-use App\Modules\Users\Repositories\Enterprise\UserVipRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
@@ -56,23 +50,13 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$result = $this->factory->create();
 
-		$this->assertArrayHasKey('main', $result);
-		$this->assertInstanceOf(UserMainRepository::class, $result['main']);
-
-		$this->assertArrayHasKey('acl', $result);
-		$this->assertInstanceOf(UserAclRepository::class, $result['acl']);
-
 		$this->assertArrayHasKey('contact', $result);
-		$this->assertInstanceOf(UserContactRepository::class, $result['contact']);
 
 		$this->assertArrayHasKey('stats', $result);
-		$this->assertInstanceOf(UserStatsRepository::class, $result['stats']);
 
 		$this->assertArrayHasKey('vip', $result);
-		$this->assertInstanceOf(UserVipRepository::class, $result['vip']);
 
 		$this->assertArrayHasKey('security', $result);
-		$this->assertInstanceOf(UserSecurityRepository::class, $result['security']);
 	}
 
 	#[Group('units')]
@@ -82,18 +66,8 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$result = $this->factory->create();
 
-		$this->assertArrayHasKey('main', $result);
-		$this->assertInstanceOf(UserMainRepository::class, $result['main']);
-
-		$this->assertArrayHasKey('acl', $result);
-		$this->assertInstanceOf(UserAclRepository::class, $result['acl']);
-
 		$this->assertArrayHasKey('contact', $result);
-		$this->assertInstanceOf(UserContactRepository::class, $result['contact']);
-
 		$this->assertArrayHasKey('stats', $result);
-		$this->assertInstanceOf(UserStatsRepository::class, $result['stats']);
-
 		$this->assertArrayNotHasKey('vip', $result);
 		$this->assertArrayNotHasKey('security', $result);
 	}
@@ -104,11 +78,6 @@ class UserRepositoryFactoryTest extends TestCase
 		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
 
 		$result = $this->factory->create();
-
-		$this->assertArrayHasKey('main', $result);
-		$this->assertInstanceOf(UserMainRepository::class, $result['main']);
-		$this->assertArrayHasKey('acl', $result);
-		$this->assertInstanceOf(UserAclRepository::class, $result['acl']);
 
 		$this->assertArrayNotHasKey('contact', $result);
 		$this->assertArrayNotHasKey('stats', $result);

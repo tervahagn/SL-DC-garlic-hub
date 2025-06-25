@@ -15,6 +15,7 @@ use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
 use App\Modules\Player\Helper\Datatable\Parameters;
 use App\Modules\Player\Services\AclValidator;
+use DateMalformedStringException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -25,7 +26,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 class DatatablePreparerTest extends TestCase
 {
 	private PrepareService&MockObject $prepareServiceMock;
-	private AclValidator&MockObject $aclValidatorMock;
 	private BodyPreparer&MockObject $bodyPreparerMock;
 	private Translator&MockObject $translatorMock;
 	private TimeUnitsCalculator&MockObject $timeUnitsCalculatorMock;
@@ -38,7 +38,7 @@ class DatatablePreparerTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->prepareServiceMock = $this->createMock(PrepareService::class);
-		$this->aclValidatorMock   = $this->createMock(AclValidator::class);
+		$aclValidatorMock = $this->createMock(AclValidator::class);
 		$parametersMock           = $this->createMock(Parameters::class);
 		$this->translatorMock     = $this->createMock(Translator::class);
 		$this->bodyPreparerMock = $this->createMock(BodyPreparer::class);
@@ -46,26 +46,24 @@ class DatatablePreparerTest extends TestCase
 
 		$this->datatablePreparer = new DatatablePreparer(
 			$this->prepareServiceMock,
-			$this->aclValidatorMock,
+			$aclValidatorMock,
 			$parametersMock,
 			$this->timeUnitsCalculatorMock
 		);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws DateMalformedStringException
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithEmptyData(): void
 	{
 		$result = $this->datatablePreparer->prepareTableBody([], [], 123);
 
-		$this->assertIsArray($result);
 		$this->assertEmpty($result);
 	}
 
@@ -77,6 +75,7 @@ class DatatablePreparerTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws DateMalformedStringException
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerActive(): void
@@ -135,7 +134,6 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
@@ -148,6 +146,7 @@ class DatatablePreparerTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws DateMalformedStringException
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerPending(): void
@@ -206,7 +205,6 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
@@ -219,6 +217,7 @@ class DatatablePreparerTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws DateMalformedStringException
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithLastAccessPlayerInactive(): void
@@ -277,19 +276,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithPlayerNameReleased(): void
@@ -334,19 +331,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithUsername(): void
@@ -377,19 +372,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatusUnreleased(): void
@@ -422,19 +415,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatusReleased(): void
@@ -469,19 +460,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithStatusDebug(): void
@@ -516,19 +505,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithModel(): void
@@ -563,19 +550,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithPlaylistIdReleased(): void
@@ -621,19 +606,17 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareTableBodyWithPlaylistIdUnReleased(): void
@@ -671,16 +654,12 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertIsArray($result);
 		$this->assertCount(1, $result);
 		$this->assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testFormatPlaylistContextMenu(): void
@@ -695,7 +674,6 @@ class DatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->formatPlayerContextMenu();
 
-		$this->assertIsArray($result);
 		$this->assertCount(2, $result);
 		$this->assertEquals(
 			[
