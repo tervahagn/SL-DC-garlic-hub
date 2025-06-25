@@ -79,22 +79,29 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array{UID: int,
+	 * company_id: int,
+	 * status: int,
+	 * locale: string,
+	 * email:string,
+	 * username:string,
+	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 *}|array{}
+	 *
 	 * @throws Exception
-	 * @throws ModuleException
 	 */
 	public function loadForAdminEdit(int $UID): array
 	{
 		$user = $this->userRepositories['main']->findByIdSecured($UID);
 		if (empty($user))
-			throw new ModuleException('users', 'User not found');
+			return [];
 
 		$user['tokens'] = $this->loadUserTokensForAdminEdit($UID);
 		return $user;
 	}
 
 	/**
-	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
 	 * @throws Exception
 	 */
 	public function loadUserTokensForAdminEdit(int $UID): array
@@ -103,18 +110,18 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @param array<string,string> $post
+	 * @param array{username:string, email:string, status?: int} $postData
 	 * @throws Exception
 	 */
-	public function insertNewUser(array $post): int
+	public function insertNewUser(array $postData): int
 	{
 		try
 		{
 			$this->userRepositories['main']->beginTransaction();
-			if (!$this->isUnique(0, $post['username'], $post['email']))
+			if (!$this->isUnique(0, $postData['username'], $postData['email']))
 				throw new ModuleException('users', 'Values are not unique');
 
-			$saveData = $this->collectCommonData($post, []);
+			$saveData = $this->collectCommonData($postData);
 
 			$UID = (int) $this->userRepositories['main']->insert($saveData);
 			if ($UID === 0)
@@ -169,17 +176,15 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @param array<string,string> $post
+	 * @param array{username:string, email:string, locale?: string, status?: int} $postData
 	 * @throws Exception
 	 */
-	public function updateUser(int $UID, array $post): int
+	public function updateUser(int $UID, array $postData): int
 	{
-		if (!$this->isUnique($UID, $post['username'], $post['email']))
-		{
+		if (!$this->isUnique($UID, $postData['username'], $postData['email']))
 			return 0;
-		}
 
-		$saveData = $this->collectCommonData($post, []);
+		$saveData = $this->collectCommonData($postData);
 
 		return $this->userRepositories['main']->update($UID, $saveData);
 	}
@@ -243,12 +248,12 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @param array<string,mixed> $postData
-	 * @param array<string,mixed> $saveData
-	 * @return array<string,mixed>
+	 * @param array{username?:string, email?:string, locale?: string, status?: int} $postData
+	 * @return array{username?:string, email?:string, locale?: string, status?: int}
 	 */
-	private function collectCommonData(array $postData, array $saveData): array
+	private function collectCommonData(array $postData): array
 	{
+		$saveData = [];
 		if (isset($postData['username']))
 			$saveData['username'] = $postData['username'];
 

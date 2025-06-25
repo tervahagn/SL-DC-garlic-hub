@@ -25,7 +25,6 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -36,21 +35,25 @@ class Facade
 	private readonly Builder $settingsFormBuilder;
 	private readonly UsersService $usersService;
 	private readonly Parameters $settingsParameters;
-	/** @var array<string, mixed> */
+	/** @var array{UID: int,
+	 * company_id: int,
+	 * status: int,
+	 * locale: string,
+	 * email:string,
+	 * username:string,
+	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * }
+	 */
 	private array $oldUser;
 	private Translator $translator;
 
-	public function __construct(Builder $settingsFormBuilder, UsersService $usersService, Parameters $settingsParameters)
+	 public function __construct(Builder $settingsFormBuilder, UsersService $usersService, Parameters $settingsParameters)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->usersService    = $usersService;
 		$this->settingsParameters  = $settingsParameters;
 	}
 
-	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
 	public function init(Translator $translator, Session $session): void
 	{
 		$this->translator = $translator;
@@ -62,29 +65,29 @@ class Facade
 
 	/**
 	 * @param int $UID
-	 * @return array<string,mixed>
+	 * @return array{UID: int,
+	 *  company_id: int,
+	 *  status: int,
+	 *  locale: string,
+	 *  email:string,
+	 *  username:string,
+	 *  tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * }|array{}
 	 * @throws Exception
-	 * @throws ModuleException
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
-		$this->oldUser = $this->usersService->loadForAdminEdit($UID);
+		$user = $this->usersService->loadForAdminEdit($UID);
+		if (empty($user))
+			return [];
 
-		return $this->oldUser;
-	}
-
-	/**
-	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
-	 * @throws Exception
-	 */
-	public function loadUserTokensForAdminEdit(int $UID): array
-	{
-		return $this->usersService->loadUserTokensForAdminEdit($UID);
+		$this->oldUser = $user;
+		return $user;
 	}
 
 	/**
 	 * @param array<string,mixed> $post
-	 * @return array<string,mixed>
+	 * @return string[]
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -97,7 +100,10 @@ class Facade
 		$UID = $post['UID'] ?? 0;
 		if ($UID > 0)
 		{
-			$this->oldUser = $this->usersService->loadForAdminEdit($UID);
+			$user = $this->usersService->loadForAdminEdit($UID);
+			if (empty($user))
+				return [$this->translator->translate('user_not_found', 'users')];
+			$this->oldUser =  $user;
 			$this->settingsFormBuilder->configEditParameter($this->oldUser);
 		}
 		else
@@ -114,6 +120,7 @@ class Facade
 	 */
 	public function storeUser(int $UID): int
 	{
+		/** @var array{username:string, email:string, locale?: string, status?: int} $saveData */
 		$saveData  = array_combine(
 			$this->settingsParameters->getInputParametersKeys(),
 			$this->settingsParameters->getInputValuesArray()
@@ -164,15 +171,14 @@ class Facade
 	}
 
 	/**
-	 * @param array<string,int|string> $user
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
-	 * @throws ModuleException
+	 * @throws FrameworkException
 	 */
-	public function buildEditParameter(array $user): void
+	public function buildEditParameter(): void
 	{
-		$this->settingsFormBuilder->configEditParameter($user);
+		$this->settingsFormBuilder->configEditParameter($this->oldUser);
 	}
 
 	/**

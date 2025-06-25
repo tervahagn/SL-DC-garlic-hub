@@ -82,6 +82,7 @@ abstract class AbstractAclValidator
 		if ($this->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return false;
 
+		// @phpstan-ignore-next-line  // put array shapes everywhere before eliminate next line
 		if (!array_key_exists('company_id', $unitData) || !array_key_exists('UID', $unitData))
 			throw new FrameworkException('Missing company id or UID in unit data.');
 

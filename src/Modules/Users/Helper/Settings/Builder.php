@@ -75,9 +75,9 @@ class Builder
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function configEditParameter(array $adminUser): void
+	public function configEditParameter(array $user): void
 	{
-		if (!$this->aclValidator->isAdmin($this->UID, $adminUser))
+		if (!$this->aclValidator->isAdmin($this->UID, $user))
 			return;
 
 		$this->parameters->addUserName();

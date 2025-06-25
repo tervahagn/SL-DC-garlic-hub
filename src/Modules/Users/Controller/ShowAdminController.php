@@ -72,7 +72,6 @@ class ShowAdminController
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function editUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
@@ -91,7 +90,7 @@ class ShowAdminController
 			$this->flash->addMessage('error', 'User not found.');
 			return $response->withHeader('Location', '/users')->withStatus(302);
 		}
-		$this->facade->buildEditParameter($user);
+		$this->facade->buildEditParameter();
 
 		return $this->outputRenderedForm($response, $user);
 	}
@@ -132,7 +131,7 @@ class ShowAdminController
 				$errors = $this->facade->getUserServiceErrors();
 				foreach ($errors as $errorText)
 				{
-					$this->flash->addMessageNow('error', $errorText);
+					$this->flash->addMessage('error', $errorText);
 				}
 			}
 		}
@@ -141,8 +140,7 @@ class ShowAdminController
 			$token = $this->facade->createPasswordResetToken($post['UID']);
 			if ($token !== '')
 			{
-				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ Password successful resetted.');
-				return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
+				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ Password reset was successfully.');
 			}
 			else
 			{
@@ -151,11 +149,9 @@ class ShowAdminController
 				{
 					$this->flash->addMessage('error', $errorText);
 				}
-				return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
 			}
 		}
-		$post['tokens'] = $this->facade->loadUserTokensForAdminEdit($post['UID']);
-		return $this->outputRenderedForm($response, $post);
+		return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
 	}
 
 	/**
