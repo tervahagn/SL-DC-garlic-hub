@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Users\Services\UsersService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -46,6 +47,10 @@ class Facade
 		$this->settingsParameters  = $settingsParameters;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
 	public function init(Translator $translator, Session $session): void
 	{
 		$this->translator = $translator;
@@ -56,8 +61,10 @@ class Facade
 	}
 
 	/**
+	 * @param int $UID
 	 * @return array<string,mixed>
 	 * @throws Exception
+	 * @throws ModuleException
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
@@ -90,7 +97,7 @@ class Facade
 		$UID = $post['UID'] ?? 0;
 		if ($UID > 0)
 		{
-			$this->loadUserForEdit($UID);
+			$this->oldUser = $this->usersService->loadForAdminEdit($UID);
 			$this->settingsFormBuilder->configEditParameter($this->oldUser);
 		}
 		else
@@ -100,6 +107,7 @@ class Facade
 
 		return $this->settingsFormBuilder->handleUserInput($post);
 	}
+
 
 	/**
 	 * @throws Exception

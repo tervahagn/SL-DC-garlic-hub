@@ -69,14 +69,15 @@ class Builder
 	}
 
 	/**
-	 * @param array<string,mixed> $user
+	 * @param array{"UID": int, "company_id": int, ...} $user
 	 * @throws CoreException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException|ModuleException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function configEditParameter(array $user): void
+	public function configEditParameter(array $adminUser): void
 	{
-		if (!$this->aclValidator->isAdmin($this->UID, $user))
+		if (!$this->aclValidator->isAdmin($this->UID, $adminUser))
 			return;
 
 		$this->parameters->addUserName();

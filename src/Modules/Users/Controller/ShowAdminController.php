@@ -149,8 +149,9 @@ class ShowAdminController
 				$errors = $this->facade->getUserServiceErrors();
 				foreach ($errors as $errorText)
 				{
-					$this->flash->addMessageNow('error', $errorText);
+					$this->flash->addMessage('error', $errorText);
 				}
+				return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
 			}
 		}
 		$post['tokens'] = $this->facade->loadUserTokensForAdminEdit($post['UID']);
