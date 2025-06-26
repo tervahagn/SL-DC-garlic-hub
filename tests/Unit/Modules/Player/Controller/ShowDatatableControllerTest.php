@@ -86,8 +86,7 @@ class ShowDatatableControllerTest extends TestCase
 		$this->responseMock->expects($this->once())->method('withStatus')
 			->with(200);
 
-		$response = $this->controller->show($this->requestMock, $this->responseMock);
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$this->controller->show($this->requestMock, $this->responseMock);
 	}
 
 }

@@ -59,7 +59,7 @@ readonly class Builder
 	}
 
 	/**
-	 * @return array
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
@@ -67,10 +67,10 @@ readonly class Builder
 	 */
 	public function buildForcedForm(string $pattern): array
 	{
-		$form       = [];
-		$form['password'] = $this->formElementsCreator->createPasswordField('', $pattern);
+		$form                     = [];
+		$form['password']         = $this->formElementsCreator->createPasswordField('', $pattern);
 		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
-		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
+		$form['csrf_token']       = $this->formElementsCreator->createCSRFTokenField();
 
 		return $this->formElementsCreator->prepareForm($form);
 	}

@@ -46,7 +46,6 @@ class MessageFormatterFactoryTest extends TestCase
 
         $formatter = $this->factory->create($locale, $pattern);
 
-        $this->assertInstanceOf(MessageFormatter::class, $formatter);
         $this->assertEquals('5 items', $formatter->format(['count' => 5]));
     }
 

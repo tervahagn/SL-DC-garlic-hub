@@ -31,6 +31,7 @@ class AuthCodeEntityTest extends TestCase
 	public function testImplementsAuthCodeEntityInterface(): void
 	{
 		$authCodeEntity = new AuthCodeEntity();
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(AuthCodeEntityInterface::class, $authCodeEntity);
 	}
 

@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Modules\Playlists\Services\InsertItems;
 
-use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Helper\ItemType;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Services\InsertItems\Playlist;
@@ -20,7 +19,7 @@ class PlaylistTest extends TestCase
 	private PlaylistsService&MockObject $playlistsServiceMock;
 	private PlaylistMetricsCalculator&MockObject $playlistMetricsCalculatorMock;
 	private LoggerInterface&MockObject $loggerMock;
-	private MediaService&MockObject $mediaServiceMock;
+
 	private Playlist $playlist;
 
 	/**
@@ -28,7 +27,6 @@ class PlaylistTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->mediaServiceMock = $this->createMock(MediaService::class);
 		$this->itemsRepositoryMock = $this->createMock(ItemsRepository::class);
 		$this->playlistsServiceMock = $this->createMock(PlaylistsService::class);
 		$this->playlistMetricsCalculatorMock = $this->createMock(PlaylistMetricsCalculator::class);

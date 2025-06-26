@@ -43,17 +43,18 @@ class CryptTest extends TestCase
 		$length = 64;
 		$randomString = $this->crypt->generateRandomString($length / 2);
 
-		$this->assertIsString($randomString);
 		$this->assertEquals($length, strlen($randomString));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testGenerateRandomStringWithZeroLength(): void
 	{
 		$length = 64;
 		$randomString = $this->crypt->generateRandomString(0);
 
-		$this->assertIsString($randomString);
 		$this->assertEquals($length, strlen($randomString));
 	}
 
@@ -62,12 +63,11 @@ class CryptTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testGeneratePassword()
+	public function testGeneratePassword(): void
 	{
 		$length = 8;
 		$password = $this->crypt->generatePassword($length);
 
-		$this->assertIsString($password);
 		$this->assertEquals($length, strlen($password));
 	}
 
@@ -75,54 +75,49 @@ class CryptTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testGenerateRandomNumber()
+	public function testGenerateRandomNumber(): void
 	{
 		$places = 5;
 		$randomNumber = $this->crypt->generateRandomNumber($places);
 
-		$this->assertIsInt($randomNumber);
 		$this->assertGreaterThanOrEqual(10000, $randomNumber);
 		$this->assertLessThanOrEqual(99999, $randomNumber);
 	}
 
 	#[Group('units')]
-	public function testCreatePasswordHashAndCheckPassword()
+	public function testCreatePasswordHashAndCheckPassword(): void
 	{
 		$password = 'securePassword123!';
 		$hash = $this->crypt->createPasswordHash($password);
 
-		$this->assertIsString($hash);
 		$this->assertTrue($this->crypt->checkPassword($password, $hash));
 		$this->assertFalse($this->crypt->checkPassword('wrongPassword', $hash));
 	}
 
 	#[Group('units')]
-	public function testCreateSha256Hash()
+	public function testCreateSha256Hash(): void
 	{
 		$input = 'test';
 		$hash = $this->crypt->createSha256Hash($input);
 
-		$this->assertIsString($hash);
 		$this->assertEquals(64, strlen($hash)); // SHA-256 creates 64 chars
 	}
 
 	#[Group('units')]
-	public function testCreateMd5Hash()
+	public function testCreateMd5Hash(): void
 	{
 		$input = 'test';
 		$hash = $this->crypt->createMd5Hash($input);
 
-		$this->assertIsString($hash);
 		$this->assertEquals(32, strlen($hash)); // md5 creates 32 chars
 	}
 
 	#[Group('units')]
-	public function testCreateCrc32vHash()
+	public function testCreateCrc32vHash(): void
 	{
 		$input = 'test';
 		$hash = $this->crypt->createCrc32bHash($input);
 
-		$this->assertIsString($hash);
 		$this->assertGreaterThan(0, strlen($hash));
 	}
 }

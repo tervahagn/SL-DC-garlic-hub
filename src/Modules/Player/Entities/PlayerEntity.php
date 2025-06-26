@@ -22,6 +22,7 @@
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use DateTime;
@@ -56,6 +57,9 @@ class PlayerEntity
 	private array $remoteAdministration;
 	private array $screenTimes;
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
 	{
 		$format = 'Y-m-d H:i:s';
@@ -65,6 +69,7 @@ class PlayerEntity
 		$this->playerId             = $data['player_id'] ?? 1;
 		$this->playlistId           = $data['playlist_id'] ?? 0;
 		$this->UID                  = $data['UID'] ?? 1;
+
 		$this->lastAccess           = DateTime::createFromFormat($format,$data['last_access'] ?? $default);
 		$this->lastUpdate           = DateTime::createFromFormat($format,$data['last_update'] ?? $default);
 		$this->lastUpdatePlaylist   = DateTime::createFromFormat($format,$data['last_update_playlist'] ?? $default);
@@ -164,16 +169,25 @@ class PlayerEntity
 		return $this->playlistMode;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getZones(): array
 	{
 		return $this->zones;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getCommands(): array
 	{
 		return $this->commands;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getReports(): array
 	{
 		return $this->reports;
@@ -189,6 +203,9 @@ class PlayerEntity
 		return $this->playerName;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getLocationData(): array
 	{
 		return $this->locationData;
@@ -204,35 +221,50 @@ class PlayerEntity
 		return $this->locationLatitude;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getCategories(): array
 	{
 		return $this->categories;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getProperties(): array
 	{
 		return $this->properties;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getRemoteAdministration(): array
 	{
 		return $this->remoteAdministration;
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return array<string,mixed>
 	 */
 	public function getScreenTimes(): array
 	{
 		return $this->screenTimes;
 	}
 
-	public function getReportServer()
+	/**
+	 * @throws CoreException
+	 */
+	public function getReportServer(): string
 	{
 		return $this->config->getConfigValue('report_server', 'player');
 	}
 
-	public function getIndexPath()
+	/**
+	 * @throws CoreException
+	 */
+	public function getIndexPath(): string
 	{
 		return $this->config->getConfigValue('index_server_url', 'player').'/'.$this->getUuid();
 

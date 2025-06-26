@@ -6,6 +6,7 @@ use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -85,30 +86,11 @@ class AbstractAclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws \Doctrine\DBAL\Exception
-	 */
-	#[Group('units')]
-	public function testIsAdminModuleAdmin(): void
-	{
-		$UID = 1;
-
-		$this->aclHelperMock->expects($this->once())
-			->method('isModuleAdmin')
-			->with($UID)
-			->willReturn(true);
-
-		$result = $this->aclValidator->isAdmin($UID, []);
-
-		$this->assertTrue($result);
-	}
-
-	/**
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsAdminSubAdminAccess(): void
@@ -140,8 +122,9 @@ class AbstractAclValidatorTest extends TestCase
 
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

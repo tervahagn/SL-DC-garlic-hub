@@ -46,6 +46,7 @@ class ScopeRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testImplementsScopeRepositoryInterface(): void
 	{
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(ScopeRepositoryInterface::class, $this->repository);
 	}
 

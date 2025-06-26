@@ -46,7 +46,7 @@ class TransactionsTraitTest extends TestCase
 			{
 			}
 
-			public function __get($name): string
+			public function __get(string $name): string
 			{
 				return $this->$name;
 			}

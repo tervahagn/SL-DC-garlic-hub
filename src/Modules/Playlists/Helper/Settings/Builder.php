@@ -79,10 +79,11 @@ class Builder
 	}
 
 	/**
-	 * @param array<string,mixed> $playlist
+	 * @param array{"UID": int, "company_id": int, playlist_id: int,...} $playlist
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function configEditParameter(array $playlist): void
 	{

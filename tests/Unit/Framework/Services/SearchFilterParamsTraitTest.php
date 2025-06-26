@@ -33,7 +33,7 @@ class ConcreteTraitService extends AbstractBaseService
 	use SearchFilterParamsTrait;
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return array<string,mixed>
 	 */
 	public function getCurrentFilterParameter(): array
 	{
@@ -66,7 +66,7 @@ class SearchFilterParamsTraitTest extends TestCase
 	{
 		$filterParams = ['keyword' => 'test', 'category' => 'example'];
 		$this->searchFilterService->setCurrentFilterParams($filterParams);
-
+		// @phpstan-ignore-next-line
 		$this->assertSame($filterParams, $this->searchFilterService->getCurrentFilterParameter());
 	}
 

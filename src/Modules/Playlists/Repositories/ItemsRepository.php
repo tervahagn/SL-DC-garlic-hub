@@ -46,7 +46,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
-	 * @return array<string, mixed>
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllByPlaylistId(int $playlistId): array
@@ -109,7 +109,7 @@ class ItemsRepository extends SqlBase
 
 	/**
 	 * This method finds all nested playlists, in a playlist
-	 * @return array<string, mixed>
+	 * @return list<array<string, mixed>>
 	 * @throws Exception
 	 */
 	public function findAllPlaylistItemsByPlaylistId(int $playlistId): array

@@ -66,6 +66,7 @@ class ControllerFacade implements DatatableFacadeInterface
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
 	 */
 	public function processSubmittedUserInput(): void
 	{
@@ -74,7 +75,6 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @return ControllerFacade
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException

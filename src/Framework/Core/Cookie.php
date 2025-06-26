@@ -55,7 +55,7 @@ class Cookie
 	}
 
 	/**
-	 * @param array<string,string> $contents
+	 * @param array<string,int|string> $contents
 	 * @throws FrameworkException
 	 */
 	public function createHashedCookie(string $name, array $contents, DateTime $expire): void

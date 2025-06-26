@@ -161,6 +161,9 @@ trait CrudTraits
 		return $result;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	protected function secureExplode(string $data): array
 	{
 		if (empty($data))
@@ -169,6 +172,9 @@ trait CrudTraits
 		return explode(',', $data);
 	}
 
+	/**
+	 * @return array<string,mixed>|list<array<string,mixed>>
+	 */
 	protected function secureUnserialize(?string $data): array
 	{
 		if (empty($data))

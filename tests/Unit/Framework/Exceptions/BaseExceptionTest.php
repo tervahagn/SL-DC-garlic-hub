@@ -43,13 +43,6 @@ class BaseExceptionTest extends TestCase
 
 		$details = $exception->getDetails();
 
-		$this->assertArrayHasKey('module_name', $details);
-		$this->assertArrayHasKey('message', $details);
-		$this->assertArrayHasKey('code', $details);
-		$this->assertArrayHasKey('file', $details);
-		$this->assertArrayHasKey('line', $details);
-		$this->assertArrayHasKey('trace', $details);
-
 		$this->assertSame('TestModule', $details['module_name']);
 		$this->assertSame('Test Exception', $details['message']);
 		$this->assertSame(123, $details['code']);

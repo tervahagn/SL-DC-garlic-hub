@@ -18,7 +18,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Tests\Unit\Framework\Database\BaseRepositories;
+namespace Tests\Unit\Framework\Database\BaseRepositories\Traits;
 
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
@@ -34,6 +34,7 @@ class SqlConcrete extends SqlBase
 {
 	use CrudTraits;
 	/**
+	 * @return array<string,mixed>
 	 * @throws Exception
 	 */
 	public function testFetchAssociative(QueryBuilder $queryBuilder): array
@@ -41,11 +42,17 @@ class SqlConcrete extends SqlBase
 		return $this->fetchAssociative($queryBuilder);
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function testSecureExplode(string $data): array
 	{
 		return $this->secureExplode($data);
 	}
 
+	/**
+	 * @return array<string,mixed>|list<array<string,mixed>>
+	 */
 	public function testSecureUnserialize(string $data): array
 	{
 		return $this->secureUnserialize($data);
@@ -72,7 +79,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testInsert()
+	public function testInsert(): void
 	{
 		$fields = [
 			'field1' => 'field 1 value',
@@ -91,7 +98,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testUpdate()
+	public function testUpdate(): void
 	{
 		$fields = [
 			'field1' => 'field 1 value',
@@ -108,7 +115,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testUpdateWithWhere()
+	public function testUpdateWithWhere(): void
 	{
 		$fields = [
 			'field1' => 'field 1 value',
@@ -164,7 +171,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testDelete()
+	public function testDelete(): void
 	{
 		$this->connectionMock->expects($this->once())->method('delete')
 			->with('table', ['id' => 36])
@@ -177,7 +184,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testDeleteByField()
+	public function testDeleteByField(): void
 	{
 		$this->connectionMock->expects($this->once())->method('delete')
 			->with('table', ['field' => 'value'])
@@ -190,7 +197,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testDeleteBy()
+	public function testDeleteBy(): void
 	{
 		$conditions = [
 			'condition1' => 'condition1_value',
@@ -232,7 +239,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFetchAssociativeFails()
+	public function testFetchAssociativeFails(): void
 	{
 		$resultMock = $this->createMock(Result::class);
 		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
@@ -246,7 +253,7 @@ class CrudTraitTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
-	public function testFetchAssociativeSucceed()
+	public function testFetchAssociativeSucceed(): void
 	{
 		$resultMock = $this->createMock(Result::class);
 		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
@@ -257,13 +264,13 @@ class CrudTraitTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testSecureExplodeEmpty()
+	public function testSecureExplodeEmpty(): void
 	{
 		$this->assertEmpty($this->repository->testSecureExplode(''));
 	}
 
 	#[Group('units')]
-	public function testSecureExplode()
+	public function testSecureExplode(): void
 	{
 		$expected = ['some'];
 		$this->assertSame($expected, $this->repository->testSecureExplode('some'));
@@ -273,19 +280,19 @@ class CrudTraitTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testSecureUnserializeEmpty()
+	public function testSecureUnserializeEmpty(): void
 	{
 		$this->assertEmpty($this->repository->testSecureUnserialize(''));
 	}
 
 	#[Group('units')]
-	public function testSecureUnserializeError()
+	public function testSecureUnserializeError(): void
 	{
 		$this->assertEmpty($this->repository->testSecureUnserialize('mbmb'));
 	}
 
 	#[Group('units')]
-	public function testSecureUnserialize()
+	public function testSecureUnserialize(): void
 	{
 		$expected = ['some', 'array', 'result'];
 		$result = $this->repository->testSecureUnserialize(serialize($expected));

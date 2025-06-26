@@ -23,7 +23,7 @@ namespace App\Modules\Playlists\Services;
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -36,10 +36,13 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param  array<string,mixed> $playlist
+	 * @param int $UID
+	 * @param array{"UID": int, "company_id": int, "playlist_id": int, ...} $playlist
+	 * @return bool
 	 * @throws CoreException
+	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception|ModuleException
+	 * @throws FrameworkException
 	 */
 	public function isPlaylistEditable(int $UID, array $playlist): bool
 	{
@@ -53,11 +56,13 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array<string,mixed> $playlist
-	 * @throws ModuleException
+	 * @param int $UID
+	 * @param array{"UID": int, "company_id": int, "playlist_id": int, ...} $playlist
+	 * @return bool
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function isAllowedToDeletePlaylist(int $UID, array $playlist): bool
 	{

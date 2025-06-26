@@ -87,7 +87,7 @@ class Sanitizer
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|list<array<string,mixed>>
 	 */
 	public function jsonArray(string $jsonString): array
 	{

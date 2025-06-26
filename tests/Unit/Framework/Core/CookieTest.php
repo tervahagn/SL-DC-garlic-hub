@@ -64,8 +64,6 @@ class CookieTest extends TestCase
 		$this->expectOutputRegex('/.*/'); // Prevent PHP warnings from setcookie()
 
 		$this->cookie->createHashedCookie('test_cookie', $contents, $expire);
-
-		$this->assertTrue(true); // If no exception is thrown, the test passes.
 	}
 
 	#[Group('units')]
@@ -130,6 +128,7 @@ class CookieTest extends TestCase
 	{
 		$result = $this->cookie->getHashedCookie('nonexistent_cookie');
 
+		// @phpstan-ignore-next-line
 		$this->assertNull($result);
 	}
 
@@ -140,6 +139,7 @@ class CookieTest extends TestCase
 
 		$this->cookie->deleteCookie('test_cookie');
 
+		// @phpstan-ignore-next-line
 		$this->assertTrue(true); // If no exception is thrown, the test passes.
 	}
 

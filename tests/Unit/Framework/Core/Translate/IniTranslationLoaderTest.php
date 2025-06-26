@@ -42,12 +42,11 @@ class IniTranslationLoaderTest extends TestCase
     {
         $loader = new IniTranslationLoader($this->baseDirectory);
         $result = $loader->load('en', 'valid');
-        $this->assertIsArray($result);
         $this->assertArrayHasKey('username', $result);
     }
 
     #[Group('units')]
-    public function testLoadThrowsExceptionForNonExistentFile()
+    public function testLoadThrowsExceptionForNonExistentFile(): void
     {
         $this->expectException(CoreException::class);
         $this->expectExceptionMessage('Translation file not found');
@@ -56,7 +55,7 @@ class IniTranslationLoaderTest extends TestCase
     }
 
     #[Group('units')]
-    public function testLoadThrowsExceptionForInvalidIniFile()
+    public function testLoadThrowsExceptionForInvalidIniFile(): void
     {
         $this->expectException(CoreException::class);
         $this->expectExceptionMessage('Invalid INI file format');

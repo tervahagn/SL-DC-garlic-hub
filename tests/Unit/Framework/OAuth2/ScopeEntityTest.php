@@ -40,6 +40,7 @@ class ScopeEntityTest extends TestCase
 	#[Group('units')]
 	public function testImplementsScopeEntityInterface(): void
 	{
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(ScopeEntityInterface::class, $this->scopeEntity);
 	}
 

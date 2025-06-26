@@ -37,6 +37,7 @@ class ClientEntityTest extends TestCase
 		];
 
 		$clientEntity = new ClientEntity($client);
+		// @phpstan-ignore-next-line
 		$this->assertInstanceOf(ClientEntityInterface::class, $clientEntity);
 	}
 
