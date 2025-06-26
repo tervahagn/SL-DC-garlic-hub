@@ -35,7 +35,7 @@ class Facade
 	private readonly Builder $settingsFormBuilder;
 	private readonly PlaylistsService $playlistsService;
 	private readonly Parameters $settingsParameters;
-	/** @var array<string, mixed> */
+	/** @var array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty, empty> */
 	private array $oldPlaylist;
 	private Translator $translator;
 
@@ -56,7 +56,7 @@ class Facade
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty, empty>
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
@@ -67,7 +67,7 @@ class Facade
 
 
 	/**
-	 * @param array<string,mixed> $post
+	 * @param array{"UID": int, playlist_id?: int, playlist_mode: string,...}  $post
 	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
@@ -80,7 +80,11 @@ class Facade
 	{
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
 		{
-			$this->loadPlaylistForEdit($post['playlist_id']);
+			$this->oldPlaylist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
+			if (empty($this->oldPlaylist))
+				throw new ModuleException('No playlist found for editing');
+
+			// @phpstan-ignore-next-line // stop phpstan bullshitting about not empty array
 			$this->settingsFormBuilder->configEditParameter($this->oldPlaylist);
 		}
 		else
@@ -97,6 +101,7 @@ class Facade
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function storePlaylist(array $post): int
 	{
@@ -123,10 +128,11 @@ class Facade
 	}
 
 	/**
-	 * @param array<string,mixed> $playlist
+	 * @param array{"UID": int, "company_id": int, playlist_mode: string,...}  $playlist
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function buildEditParameter(array $playlist): void
 	{

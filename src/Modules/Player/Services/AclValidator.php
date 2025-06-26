@@ -53,7 +53,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array<string,mixed> $player
+	 * @param array{"UID": int, "company_id": int, ...}$player
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

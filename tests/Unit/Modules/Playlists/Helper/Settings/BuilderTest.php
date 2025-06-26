@@ -115,6 +115,7 @@ class BuilderTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -125,13 +126,14 @@ class BuilderTest extends TestCase
 		$this->parametersMock->expects($this->once())->method('addPlaylistId');
 		$this->aclValidatorMock->method('isAdmin')->willReturn(true);
 
-		$this->builder->configEditParameter(['company_id' => 1, 'playlist_mode' => '']);
+		$this->builder->configEditParameter(['UID' => 1, 'company_id' => 1, 'playlist_mode' => '']);
 	}
 
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testConfigEditParameterAddsOwnerIfAdmin(): void
@@ -143,13 +145,14 @@ class BuilderTest extends TestCase
 
 		$this->parametersMock->expects($this->once())->method('addOwner');
 
-		$this->builder->configEditParameter(['company_id' => 123, 'playlist_mode' => '']);
+		$this->builder->configEditParameter(['UID' => 1, 'company_id' => 123, 'playlist_mode' => '']);
 	}
 
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testConfigEditParameterAddsTimeLimitIfTimeLimitPlaylist(): void
@@ -162,13 +165,14 @@ class BuilderTest extends TestCase
 
 		$this->parametersMock->expects($this->once())->method('addTimeLimit');
 
-		$this->builder->configEditParameter(['company_id' => 123, 'playlist_mode' => 'internal']);
+		$this->builder->configEditParameter(['UID' => 1, 'company_id' => 123, 'playlist_mode' => 'internal']);
 	}
 
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testConfigEditParameterReturnsIfNotAdmin(): void
@@ -181,7 +185,7 @@ class BuilderTest extends TestCase
 		$this->parametersMock->expects($this->never())->method('addOwner');
 		$this->parametersMock->expects($this->never())->method('addTimeLimit');
 
-		$this->builder->configEditParameter(['company_id' => 456, 'playlist_mode' => 'internal']);
+		$this->builder->configEditParameter(['UID' => 1, 'company_id' => 456, 'playlist_mode' => 'internal']);
 	}
 
 	/**

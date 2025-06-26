@@ -23,7 +23,6 @@ namespace App\Modules\Playlists\Helper\Datatable;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\AbstractDatatablePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Results\HeaderField;
@@ -59,14 +58,13 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	/**
 	 * This method is cringe, but I do not have a better idea without starting over engineering
 	 *
-	 * @param list<array<string,mixed>> $currentFilterResults
+	 * @param list<array{"UID": int, "company_id": int, playlist_id:int, playlist_name:string, username:string, duration:int, playlist_mode: string,...}> $currentFilterResults
 	 * @param list<HeaderField> $fields
 	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function prepareTableBody(array $currentFilterResults, array $fields, int $currentUID): array
@@ -96,14 +94,14 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_UID'] = $this->prepareService->getBodyPreparer()->formatUID($playlist['UID'], $playlist['username']);
 						break;
 					case 'duration':
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->convertSeconds($playlist['duration']));
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($this->convertSeconds((string) $playlist['duration']));
 						break;
 					case 'playlist_mode':
 						$selectableModes = $this->translator->translateArrayForOptions('playlist_mode_selects', 'playlists');
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($selectableModes[$playlist['playlist_mode']]);
 						break;
 					default:
-						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($playlist[$innerKey]);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText((string) $playlist[$innerKey]);
 						break;
 				}
 				$list['elements_result_element'][] = $resultElements;
@@ -118,7 +116,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$this->prepareService->getBodyPreparer()->formatAction(
 							$this->translator->translate('edit_settings', 'playlists'),
 							'playlists/settings/'.$playlist['playlist_id'],
-							'edit', $playlist['playlist_id'], 'pencil')
+							'edit', (string) $playlist['playlist_id'], 'pencil')
 					];
 					if (!array_key_exists($playlist['playlist_id'], $this->usedPlaylists) &&
 						$this->aclValidator->isAllowedToDeletePlaylist($currentUID, $playlist))
@@ -127,7 +125,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$list['has_delete'] = $this->prepareService->getBodyPreparer()->formatActionDelete(
 							$this->translator->translate('delete', 'main'),
 							sprintf($deleteText, $playlist['playlist_name']),
-							$playlist['playlist_id'],
+							(string) $playlist['playlist_id'],
 							'delete-playlist'
 						);
 					}

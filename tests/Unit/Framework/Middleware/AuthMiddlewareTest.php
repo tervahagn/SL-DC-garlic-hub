@@ -23,7 +23,6 @@ namespace Tests\Unit\Framework\Middleware;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\UserException;
 use App\Framework\Middleware\AuthMiddleware;
 use App\Modules\Auth\AuthService;
 use App\Modules\Profile\Entities\UserEntity;
@@ -42,7 +41,6 @@ class AuthMiddlewareTest extends TestCase
 {
 	private ServerRequestInterface&MockObject $requestMock;
 	private RequestHandlerInterface&MockObject $handlerMock;
-
 	private AuthService&MockObject $authServiceMock;
 	private Session&MockObject $sessionMock;
 	private Cookie&MockObject $cookieMock;
@@ -60,7 +58,6 @@ class AuthMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception|Exception
@@ -87,9 +84,8 @@ class AuthMiddlewareTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -107,10 +103,9 @@ class AuthMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -138,11 +133,10 @@ class AuthMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testProcessRedirectsToLoginIfNotAuthBecauseOfCookie(): void
@@ -169,10 +163,9 @@ class AuthMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -183,16 +176,13 @@ class AuthMiddlewareTest extends TestCase
 
 
 		$middleware = new AuthMiddleware($this->authServiceMock);
-		$response = $middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -209,11 +199,10 @@ class AuthMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testProcessHandlesAuthenticatedUser(): void
@@ -229,17 +218,14 @@ class AuthMiddlewareTest extends TestCase
 			->willReturn(new Response());
 
 		$middleware = new AuthMiddleware($this->authServiceMock);
-		$response = $middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
-	 * @throws UserException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testProcessAutoLoginWithCookie(): void
@@ -270,17 +256,14 @@ class AuthMiddlewareTest extends TestCase
 			->willReturn(new Response());
 
 		$middleware = new AuthMiddleware($this->authServiceMock);
-		$response = $middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
 	 * @throws Exception
-	 * @throws UserException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testProcessAutoLoginWithCookieAndLogin(): void

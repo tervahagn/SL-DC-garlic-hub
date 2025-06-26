@@ -79,7 +79,7 @@ class Builder
 	}
 
 	/**
-	 * @param array{"UID": int, "company_id": int, playlist_id: int,...} $playlist
+	 * @param array{"UID": int, "company_id": int, playlist_mode: string,...} $playlist
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException

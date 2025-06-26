@@ -21,12 +21,14 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class PlaylistsService extends AbstractBaseService
 {
@@ -60,6 +62,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function toggleShuffle(int $playlistId): array
 	{
@@ -84,6 +87,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function shufflePicking(int $playlistId, int $shufflePicking): array
 	{
@@ -101,6 +105,7 @@ class PlaylistsService extends AbstractBaseService
 	 * @throws Exception
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function updateSecure(array $postData): int
 	{
@@ -132,14 +137,20 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param int $playlistId
+	 * @return int
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function delete(int $playlistId): int
 	{
+		/** @var array{UID: int, company_id: int, playlist_name:string, playlist_id: int, ...}|array{} $playlist */
 		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
+		if (empty($playlist))
+			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 		{
@@ -157,6 +168,7 @@ class PlaylistsService extends AbstractBaseService
 	{
 		try
 		{
+			/** @var array{UID: int, company_id: int, multizone:mixed, playlist_id: int, ...}|array{} $playlist */
 			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 			if (empty($playlist))
 				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
@@ -178,15 +190,20 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param int $playlistId
 	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function loadPureById(int $playlistId): array
 	{
+		/** @var array{UID: int, company_id: int, playlist_id: int, ...}|array{} $playlist */
 		$playlist = $this->fetchById($playlistId);
+		if (empty($playlist))
+			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
@@ -209,14 +226,16 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array{UID: int, company_id: int, playlist_id: int, ...}
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function loadWithUserById(int $playlistId): array
 	{
+		/** @var array{UID: int, company_id: int, playlist_id: int, ...}|array{} $playlist */
 		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
 		if (empty($playlist))
 			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
@@ -270,7 +289,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty, empty>
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
@@ -278,7 +297,7 @@ class PlaylistsService extends AbstractBaseService
 		{
 			return $this->loadWithUserById($playlistId);
 		}
-		catch(\Exception | Exception $e)
+		catch(Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->addErrorMessage($e->getMessage());
