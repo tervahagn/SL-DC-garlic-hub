@@ -46,6 +46,25 @@ class UserTokenService extends AbstractBaseService
 
 	/**
 	 * @return array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|null
+	 * @throws Exception
+	 */
+	public function findByTokenForAction(string $token): ?array
+	{
+		$token = hex2bin($token);
+		if ($token === false)
+			return null;
+
+		$token =  $this->userTokensRepository->findFirstByToken($token);
+		if (empty($token))
+			return null;
+
+		/** @var array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string} $token */
+		return $token;
+	}
+
+
+		/**
+	 * @return array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|null
 	 * @throws DateMalformedStringException|Exception
 	 */
 	public function findByToken(string $token): ?array
@@ -56,7 +75,7 @@ class UserTokenService extends AbstractBaseService
 
 		$result = $this->userTokensRepository->findFirstByToken($token);
 		$now = new DateTime();
-		if (isset($result['used_at']) && new DateTime($result['expires_at']) < $now)
+		if (isset($result['used_at']) || new DateTime($result['expires_at']) < $now)
 			return null;
 
 		return [
@@ -126,6 +145,20 @@ class UserTokenService extends AbstractBaseService
 			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
 
 		return $this->userTokensRepository->refresh($token, $expiresAt);
+	}
+
+	public function useToken(string $token): int
+	{
+		$token = hex2bin($token);
+		if ($token === false)
+			return 0;
+
+		if ($purpose === TokenPurposes::INITIAL_PASSWORD->value)
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
+		else
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
+
+		return $this->userTokensRepository->update($token, ['used_at' => date('Y-m-d H:i:s')]);
 	}
 
 }

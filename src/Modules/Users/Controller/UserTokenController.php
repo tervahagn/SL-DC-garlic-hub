@@ -29,7 +29,6 @@ use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\UserSession;
 use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Services\AclValidator;
-use DateMalformedStringException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -51,7 +50,6 @@ class UserTokenController extends AbstractAsyncController
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -67,7 +65,6 @@ class UserTokenController extends AbstractAsyncController
 	 * @param ResponseInterface $response
 	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -84,7 +81,6 @@ class UserTokenController extends AbstractAsyncController
 	 * @param string $action
 	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws DateMalformedStringException
 	 * @throws Exception
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -102,7 +98,7 @@ class UserTokenController extends AbstractAsyncController
 		if ($token === '')
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not transmitted.']);
 
-		$userToken = $this->userService->findByToken($token);
+		$userToken = $this->userService->findByTokenForAction($token);
 		if ($userToken === null)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not exists.']);
 

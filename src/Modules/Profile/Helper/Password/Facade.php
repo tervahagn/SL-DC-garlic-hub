@@ -44,6 +44,7 @@ class Facade
 	private Config $config;
 	/** @var array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|array{}  */
 	private array $user = [];
+	private int $myUID;
 	public function __construct(Builder $settingsFormBuilder, ProfileService $profileService, UserTokenService $userTokensService, Translator $translator, Parameters $passwordParameters, Config $config)
 	{
 		$this->passwordFormBuilder = $settingsFormBuilder;
@@ -78,6 +79,7 @@ class Facade
 	{
 		/** @var array{UID: int} $user */
 		$user = $session->get('user');
+		$this->MyUID = $user['UID'];
 		$this->profileService->setUID($user['UID']);
 	}
 
@@ -105,7 +107,7 @@ class Facade
 	{
 		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 
-		return $this->profileService->updatePassword($password);
+		return $this->profileService->updatePassword($this->MyUID, $password);
 	}
 
 	/**
@@ -156,6 +158,16 @@ class Facade
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
 
 		return $dataSections;
+	}
+
+	/**
+	 * @throws ModuleException
+	 */
+	public function storeForcedPassword(int $UID, string $password, string $passwordToken)
+	{
+		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
+
+		$this->profileService->cleanupPasswordTokens($UID, $passwordToken, $password);
 	}
 
 }

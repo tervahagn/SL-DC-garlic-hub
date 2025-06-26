@@ -70,7 +70,6 @@ class ShowPasswordController
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws DatabaseException
 	 * @throws DateMalformedStringException
 	 */
 	public function showForcedPasswordForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -87,7 +86,7 @@ class ShowPasswordController
 		$UID = $this->facade->determineUIDByToken($passwordToken);
 		if ($UID === 0)
 		{
-			$this->flash->addMessageNow('error', $this->translator->translate('token_error', 'profile'));
+			$this->flash->addMessage('error', $this->translator->translate('token_error', 'profile'));
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
 
@@ -135,14 +134,13 @@ class ShowPasswordController
 		if (!empty($errors))
 			return $this->outputRenderedForm($response, $passwordToken);
 
-		$id = $this->facade->storePassword();
+		$id = $this->facade->storeForcedPassword($UID, $passwordToken);
 		if ($id > 0)
 		{
 			$this->flash->addMessage(
 				'success',
 				$this->translator->translate('forced_password_changed', 'profile')
 			);
-//			$this->facade->cleanUpAfterForced($UID);
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
 		else
