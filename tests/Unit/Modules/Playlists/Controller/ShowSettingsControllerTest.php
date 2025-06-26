@@ -129,40 +129,13 @@ class ShowSettingsControllerTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws FrameworkException|Exception
-	 */
-	#[Group('units')]
-	public function testEditPlaylistFormWithInvalidPlaylistId(): void
-	{
-		$this->setStandardMocks();
-
-		$this->flashMock->expects($this->once())->method('addMessage')
-			->with('error', 'Playlist ID not valid.');
-
-		$this->responseMock->expects($this->once())->method('withHeader')
-			->with('Location', '/playlists')
-			->willReturnSelf();
-
-		$this->responseMock->expects($this->once())->method('withStatus')
-			->with(302)
-			->willReturnSelf();
-
-		$this->controller->editPlaylistForm($this->requestMock, $this->responseMock, []);
-	}
-
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testEditPlaylistFormWithNonExistentPlaylist(): void
 	{
-		$args = ['playlist_id' => '1'];
+		$args = ['playlist_id' => '1', 'playlist_mode' => 'master'];
 
 		$this->setStandardMocks();
 

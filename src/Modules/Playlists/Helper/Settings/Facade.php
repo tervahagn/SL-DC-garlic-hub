@@ -67,7 +67,7 @@ class Facade
 
 
 	/**
-	 * @param array{"UID": int, playlist_id?: int, playlist_mode: string,...}  $post
+	 * @param array{playlist_id?: int, playlist_mode: string,...}  $post
 	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
