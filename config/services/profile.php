@@ -59,6 +59,7 @@ $dependencies[ProfileService::class] = DI\factory(function (ContainerInterface $
 
 	return new ProfileService(
 		$repositories['main'],
+		$container->get(UserTokenService::class),
 		$container->get('ModuleLogger')
 	);
 });
