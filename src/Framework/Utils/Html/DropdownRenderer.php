@@ -29,7 +29,9 @@ class DropdownRenderer extends AbstractInputFieldRenderer implements FieldRender
 
 		$id = $this->field->getId();
 		$html = '<select id="'.$id.'" name= "' . $this->field->getName(). '" aria-describedby="error_' . $id. '">';
-		$html .= '<option value="">-</option>';
+		if ($this->field->isOptionsZero())
+			$html .= '<option value="">-</option>';
+
 		foreach ($this->field->getOptions() as $key => $value)
 		{
 			$selected = $key == $this->field->getValue() ? ' selected' : '';

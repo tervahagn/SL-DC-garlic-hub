@@ -24,11 +24,13 @@ class DropdownField extends AbstractInputField
 {
 	/** @var array<string,mixed> */
 	private array $options;
+	private bool $optionsZero = true;
 
 	public function __construct(array $attributes)
 	{
 		parent::__construct($attributes);
 		$this->options = $attributes['options'];
+		$this->optionsZero = $attributes['options_zero'] ?? true;
 	}
 
 	/**
@@ -38,5 +40,13 @@ class DropdownField extends AbstractInputField
 	{
 		return $this->options;
 	}
+
+	public function isOptionsZero(): bool
+	{
+		return $this->optionsZero;
+	}
+
+
+
 
 }

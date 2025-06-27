@@ -86,7 +86,8 @@ readonly class FormElementsCreator
 			'title' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'users'),
 			'label' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'users'),
 			'value' => $value,
-			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_USER_STATUS.'_selects', 'users')
+			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_USER_STATUS.'_selects', 'users'),
+			'options_zero' => false
 		]);
 	}
 
@@ -105,7 +106,8 @@ readonly class FormElementsCreator
 			'title' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
 			'label' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
 			'value' => $value,
-			'options' => $this->translator->translateArrayForOptions('languages', 'menu')
+			'options' => $this->translator->translateArrayForOptions('languages', 'menu'),
+			'options_zero' => false
 		]);
 	}
 
