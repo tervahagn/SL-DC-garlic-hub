@@ -153,11 +153,6 @@ class UserTokenService extends AbstractBaseService
 		if ($token === false)
 			return 0;
 
-		if ($purpose === TokenPurposes::INITIAL_PASSWORD->value)
-			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
-		else
-			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
-
 		return $this->userTokensRepository->update($token, ['used_at' => date('Y-m-d H:i:s')]);
 	}
 

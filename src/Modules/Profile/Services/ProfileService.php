@@ -41,7 +41,7 @@ class ProfileService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function cleanupPasswordTokens(int $UID, string $passwordToken, string $password): int
+	public function storeNewForcedPassword(int $UID, string $passwordToken, string $password): int
 	{
 		try
 		{

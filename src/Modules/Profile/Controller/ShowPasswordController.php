@@ -137,10 +137,7 @@ class ShowPasswordController
 		$id = $this->facade->storeForcedPassword($UID, $passwordToken);
 		if ($id > 0)
 		{
-			$this->flash->addMessage(
-				'success',
-				$this->translator->translate('forced_password_changed', 'profile')
-			);
+			$this->flash->addMessage('success', $this->translator->translate('forced_password_changed', 'profile'));
 			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
 		else
@@ -182,10 +179,7 @@ class ShowPasswordController
 		$id = $this->facade->storePassword();
 		if ($id > 0)
 		{
-			$this->flash->addMessage(
-				'success',
-				$this->translator->translate('password_changed', 'profile')
-			);
+			$this->flash->addMessage('success', $this->translator->translate('password_changed', 'profile'));
 			return $response->withHeader('Location', '/')->withStatus(302);
 		}
 		else

@@ -167,7 +167,7 @@ class Facade
 	{
 		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 
-		return $this->profileService->cleanupPasswordTokens($UID, $passwordToken, $password);
+		return $this->profileService->storeNewForcedPassword($UID, $passwordToken, $password);
 	}
 
 	/**
