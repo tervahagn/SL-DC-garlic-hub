@@ -31,6 +31,7 @@ class Parameters extends BaseEditParameters
 	const string PARAMETER_USER_EMAIL  = 'email';
 	const string PARAMETER_USER_ID  = 'UID'; // the UID of the edited user
 	const string PARAMETER_USER_STATUS  = 'status'; // the UID of the edited user
+	const string PARAMETER_USER_LOCALE  = 'locale'; // the locale of the edited user
 
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>
@@ -58,6 +59,11 @@ class Parameters extends BaseEditParameters
 	public function addUserStatus(): void
 	{
 		$this->addParameter(self::PARAMETER_USER_STATUS, ScalarType::INT, 0);
+	}
+
+	public function addUserLocale(): void
+	{
+		$this->addParameter(self::PARAMETER_USER_LOCALE, ScalarType::STRING, 'en_US');
 	}
 
 

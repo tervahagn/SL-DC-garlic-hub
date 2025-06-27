@@ -36,7 +36,6 @@ readonly class FormElementsCreator
 
 	private Translator $translator;
 
-
 	public function __construct(FormBuilder $formBuilder, Translator $translator)
 	{
 		$this->formBuilder = $formBuilder;
@@ -88,6 +87,25 @@ readonly class FormElementsCreator
 			'label' => $this->translator->translate(Parameters::PARAMETER_USER_STATUS, 'users'),
 			'value' => $value,
 			'options' => $this->translator->translateArrayForOptions(Parameters::PARAMETER_USER_STATUS.'_selects', 'users')
+		]);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function createUserLocaleField(string $value): FieldInterface
+	{
+		return  $this->formBuilder->createField([
+			'type' => FieldType::DROPDOWN,
+			'id' => 'locale',
+			'name' => 'locale',
+			'title' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
+			'value' => $value,
+			'options' => $this->translator->translateArrayForOptions('languages', 'menu')
 		]);
 	}
 

@@ -66,6 +66,7 @@ class Builder
 		$this->parameters->addUserName();
 		$this->parameters->addUserEmail();
 		$this->parameters->addUserStatus();
+		$this->parameters->addUserLocale();
 	}
 
 	/**
@@ -83,6 +84,7 @@ class Builder
 		$this->parameters->addUserName();
 		$this->parameters->addUserEmail();
 		$this->parameters->addUserStatus();
+		$this->parameters->addUserLocale();
 	}
 
 	/**
@@ -111,9 +113,11 @@ class Builder
 		}
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_STATUS))
-		{
 			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
-		}
+
+		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_LOCALE))
+			$form['locale'] = $this->formElementsCreator->createUserLocaleField($user[Parameters::PARAMETER_USER_LOCALE] ?? 'en_US');
+
 
 		$tokens = $user['tokens'] ?? [];
 		foreach ($tokens as $token)
