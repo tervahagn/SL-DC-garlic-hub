@@ -133,6 +133,7 @@ class ShowAdminController
 				{
 					$this->flash->addMessage('error', $errorText);
 				}
+				return $this->outputRenderedForm($response, $post);
 			}
 		}
 		elseif (isset($post['resetPassword']))

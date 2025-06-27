@@ -115,7 +115,8 @@ class Builder
 			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
 		}
 
-		foreach ($user['tokens'] as $token)
+		$tokens = $user['tokens'] ?? [];
+		foreach ($tokens as $token)
 		{
 			$tokenObj = $this->formElementsCreator->createClipboardTextField(
 				bin2hex($token['token']),
