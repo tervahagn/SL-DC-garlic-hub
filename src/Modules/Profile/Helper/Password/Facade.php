@@ -79,8 +79,8 @@ class Facade
 	{
 		/** @var array{UID: int} $user */
 		$user = $session->get('user');
-		$this->MyUID = $user['UID'];
-		$this->profileService->setUID($user['UID']);
+		$this->myUID = $user['UID'];
+		$this->profileService->setUID($this->myUID);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class Facade
 	{
 		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 
-		return $this->profileService->updatePassword($this->MyUID, $password);
+		return $this->profileService->updatePassword($this->myUID, $password);
 	}
 
 	/**
@@ -142,7 +142,7 @@ class Facade
 		{
 			$this->passwordParameters->addToken();
 			$formAction = '/force-password';
-			$title = sprintf($this->translator->translate('edit_password_for', 'profile'), $this->user['username']);
+			$title = $this->determineTitleWhenForced();
 		}
 		else
 			$title = $this->translator->translate('edit_password', 'profile');
@@ -163,11 +163,27 @@ class Facade
 	/**
 	 * @throws ModuleException
 	 */
-	public function storeForcedPassword(int $UID, string $password, string $passwordToken)
+	public function storeForcedPassword(int $UID, string $passwordToken): int
 	{
 		$password = $this->passwordParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
 
-		$this->profileService->cleanupPasswordTokens($UID, $passwordToken, $password);
+		return $this->profileService->cleanupPasswordTokens($UID, $passwordToken, $password);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	private function determineTitleWhenForced(): string
+	{
+		// @phpstan-ignore-next-line // $this->>user at this point cannot be empty as checked by method @see prepareUITemplate
+		if ($this->user['purpose'] === TokenPurposes::INITIAL_PASSWORD->value)
+			$title = sprintf($this->translator->translate('initial_password_for', 'profile'), $this->user['username']);
+		else
+			$title = sprintf($this->translator->translate('edit_password_for', 'profile'), $this->user['username']);
+
+		return $title;
+	}
 }
