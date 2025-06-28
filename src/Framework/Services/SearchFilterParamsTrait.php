@@ -25,12 +25,28 @@ namespace App\Framework\Services;
  */
 trait SearchFilterParamsTrait
 {
+	/**
+	 * @var array<string,mixed>
+	 */
 	protected array $currentFilterParams = [];
 	protected int $currentTotalResult = 0;
+
+	/**
+	 * @var int[]
+	 */
 	protected array $allowedCompanyIds = [];
+	/**
+	 * @var list<array<string,mixed>>
+	 */
 	protected array $currentFilterResults = [];
+	/**
+	 * @var list<array<string,mixed>>
+	 */
 	protected array $companies = [];
 
+	/**
+	 * @param array<string,mixed> $ar_search
+	 */
 	public function setCurrentFilterParams(array $ar_search): static
 	{
 		$this->currentFilterParams = $ar_search;
@@ -48,19 +64,25 @@ trait SearchFilterParamsTrait
 		return $this->currentTotalResult;
 	}
 
+	/**
+	 * @param list<array<string,mixed>> $ar_companies
+	 */
 	public function setCompanyArray(array $ar_companies): static
 	{
 		$this->companies = $ar_companies;
 		return $this;
 	}
 
+	/**
+	 * @return list<array<string,mixed>>
+	 */
 	public function getCompanyArray(): array
 	{
 		return $this->companies;
 	}
 
 	/**
-	 * expects array in form of array(1, 2, 3, 4, 5...x)
+	 * @param int[] $ar_company_ids
 	 */
 	public function setAllowedCompanyIds(array $ar_company_ids): static
 	{
@@ -68,6 +90,9 @@ trait SearchFilterParamsTrait
 		return $this;
 	}
 
+	/**
+	 * @return int[]
+	 */
 	public function getAllowedCompanyIds(): array
 	{
 		return $this->allowedCompanyIds;
