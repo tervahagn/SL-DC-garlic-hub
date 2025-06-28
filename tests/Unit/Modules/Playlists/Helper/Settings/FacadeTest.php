@@ -7,6 +7,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Helper\Settings\Builder;
 use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\Parameters;
@@ -67,7 +68,6 @@ class FacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testLoadPlaylistForEdit(): void
@@ -96,7 +96,7 @@ class FacadeTest extends TestCase
 	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithPlaylistId(): void
 	{
-		$post = ['playlist_id' => 42, 'other_key' => 'value'];
+		$post = ['playlist_id' => 42, 'playlist_mode' => PlaylistMode::MASTER->value, 'other_key' => 'value'];
 		$expectedPlaylist = ['id' => 42, 'name' => 'My Playlist'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
@@ -148,8 +148,9 @@ class FacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -180,8 +181,9 @@ class FacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -212,7 +214,6 @@ class FacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
@@ -230,15 +231,15 @@ class FacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testBuildEditParameter(): void
 	{
-		$playlist = ['id' => 123, 'name' => 'Test Playlist'];
+		$playlist = ['UID' => 123, 'company_id' => 1, 'playlist_id' => 12, 'playlist_mode' => PlaylistMode::MASTER->value, 'playlist_name' => 'Test Playlist'];
 
 		$this->settingsFormBuilderMock->expects($this->once())
 			->method('configEditParameter')
