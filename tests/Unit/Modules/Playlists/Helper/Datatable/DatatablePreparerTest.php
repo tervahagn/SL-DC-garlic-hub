@@ -67,11 +67,10 @@ class DatatablePreparerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -123,7 +122,13 @@ class DatatablePreparerTest extends TestCase
 			->with('Playlist Name', 'edit', 'playlists/compose/1', 'playlist_name_1');
 
 		$result = $this->datatablePreparer->prepareTableBody(
-			[['playlist_id' => 1, 'UID' => 13, 'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
+			[
+				['playlist_id' => 1,
+					'UID' => 13,
+					'company_id' => 1,
+					'username' => 'Heidi',
+					'duration' => 12,
+					'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
 			$fields,
 			123
 		);
@@ -161,7 +166,13 @@ class DatatablePreparerTest extends TestCase
 		$this->aclValidatorMock->method('isSimpleAdmin')->willReturn(true);
 
 		$result = $this->datatablePreparer->prepareTableBody(
-			[['playlist_id' => 1, 'UID' => 13, 'username' => 'Horst', 'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
+			[
+				['playlist_id' => 1,
+					'UID' => 13,
+					'company_id' => 1,
+					'username' => 'Willi',
+					'duration' => 12,
+					'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
 			$fields,
 			123
 		);
@@ -198,7 +209,15 @@ class DatatablePreparerTest extends TestCase
 		$this->aclValidatorMock->method('isSimpleAdmin')->willReturn(true);
 
 		$result = $this->datatablePreparer->prepareTableBody(
-			[['playlist_id' => 1, 'UID' => 13, 'duration' => 12, 'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
+			[
+				[
+					'playlist_id' => 1,
+					'UID' => 13,
+					'company_id' => 1,
+					'username' => 'Günther',
+					'duration' => 12,
+					'playlist_name' => 'Playlist Name',
+					'playlist_mode' => 'master']],
 			$fields,
 			123
 		);
@@ -238,7 +257,17 @@ class DatatablePreparerTest extends TestCase
 		$this->aclValidatorMock->method('isSimpleAdmin')->willReturn(true);
 
 		$result = $this->datatablePreparer->prepareTableBody(
-			[['playlist_id' => 1, 'UID' => 13, 'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
+			[
+				[
+					'playlist_id' => 1,
+					'UID' => 13,
+					'company_id' => 1,
+					'username' => 'Horst',
+					'duration' => 14,
+					'playlist_name' => 'Playlist Name',
+					'playlist_mode' => 'master'
+				]
+			],
 			$fields,
 			123
 		);
@@ -272,7 +301,13 @@ class DatatablePreparerTest extends TestCase
 		$this->prepareServiceMock->method('getBodyPreparer')->willReturn($bodyPreparerMock);
 
 		$result = $this->datatablePreparer->prepareTableBody(
-			[['playlist_id' => 1, 'UID' => 13, 'unknown_param' => 'some_value', 'playlist_name' => 'Playlist Name', 'playlist_mode' => 'master']],
+			[
+				['playlist_id' => 1,
+					'UID' => 13,
+					'company_id' => 1,
+					'playlist_name' => 'Playlist Name',
+					'playlist_mode' => 'master', 'username' => 'MorkFromOrk', 'duration' => 12]
+			],
 			$fields,
 			123
 		);
