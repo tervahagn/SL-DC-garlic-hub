@@ -44,7 +44,7 @@ class PlaylistsRepository extends FilterBase
 	}
 
 	/**
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findFirstWithUserName(int $playlistId): array

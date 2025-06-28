@@ -44,6 +44,7 @@ trait CrudTraits
 	 * Updates a record in the database by ID and returns the affected rows.
 	 * creates internally a prepared statement
 	 *
+	 * @param array<string,mixed> $fields
 	 * @throws Exception
 	 */
 	public function update(int|string $id, array $fields): int
@@ -54,8 +55,8 @@ trait CrudTraits
 	/**
 	 * Updates records in the database with a custom WHERE clause.
 	 *
-	 * @param array $fields Fields to update
-	 * @param array $conditions Conditions to match for where clause
+	 * @param array<string,mixed> $fields
+	 * @param array<string,mixed> $conditions
 	 * @return int Number of affected rows
 	 * @throws Exception
 	 */
@@ -102,6 +103,7 @@ trait CrudTraits
 
 	/**
 	 * Deletes records from the database with a custom WHERE clause.
+	 * @param array<string,mixed> $conditions
 	 * @throws Exception
 	 */
 	public function deleteBy(array $conditions): int
@@ -114,6 +116,9 @@ trait CrudTraits
 		return (int) $queryBuilder->executeStatement();
 	}
 
+	/**
+	 * @param array<string,mixed> $conditions
+	 */
 	protected function determineConditions(QueryBuilder $queryBuilder, array $conditions): void
 	{
 		foreach ($conditions as $field => $parameter)

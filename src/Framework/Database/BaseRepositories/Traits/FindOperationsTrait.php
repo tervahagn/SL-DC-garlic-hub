@@ -28,6 +28,7 @@ trait FindOperationsTrait
 {
 
 	/**
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findFirstById(int|string $id): array
@@ -54,6 +55,7 @@ trait FindOperationsTrait
 	}
 
 	/**
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findFirstBy(array $conditions = []): array
@@ -77,6 +79,8 @@ trait FindOperationsTrait
 
 	/**
 	 * Counts records in the table with a custom WHERE clause.
+	 * @param array<string,mixed> $conditions
+	 *
 	 * @throws Exception
 	 */
 	public function countAllBy(array $conditions = [], array $joins = [], string $groupBy = ''): int
@@ -149,7 +153,7 @@ trait FindOperationsTrait
 
 	/**
 	 * @param list<array<string,mixed>> $result
-	 * @return array<string, mixed>
+	 * @return array<string, mixed>|array<empty,empty>
 	 */
 	public function getFirstDataSet(array $result): array
 	{
@@ -159,6 +163,11 @@ trait FindOperationsTrait
 		return [];
 	}
 
+	/**
+	 * @param array<string,mixed> $conditions
+	 * @param array<string,mixed> $joins
+	 * @param list<array<string,mixed>> $orderBy
+	 */
 	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', array $orderBy = []):
 	QueryBuilder
 	{
@@ -180,11 +189,17 @@ trait FindOperationsTrait
 		return $queryBuilder;
 	}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function generateWhereClause(int|string $value, string $compare = '=', string $logic = 'AND', ArrayParameterType $type = ArrayParameterType::INTEGER): array
 	{
 		return ['value' => $value, 'compare' => $compare, 'logic' => $logic, 'type' => $type];
 	}
 
+	/**
+	 * @param array<string,mixed> $joins
+	 */
 	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
 	{
 		foreach ($joins as $table => $onCondition)
@@ -193,7 +208,7 @@ trait FindOperationsTrait
 		}
 	}
 
-	public function determineLimit($first = 0, $max = 0): array
+	public function determineLimit(int $first = 0, int $max = 0): array
 	{
 		if ($first == 0)
 			$first = 1;

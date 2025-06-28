@@ -60,7 +60,7 @@ class ClientsRepository extends SqlBase implements ClientRepositoryInterface
 		if ($clientSecret === null || $grantType === null)
 			return false;
 
-		/** @var array<string,mixed> $client */
+		/** @var array<string,mixed>|array<empty,empty> $client */
 		$client = $this->getFirstDataSet($this->findAllBy(['client_id' => $clientIdentifier]));
 
 		if (empty($client))

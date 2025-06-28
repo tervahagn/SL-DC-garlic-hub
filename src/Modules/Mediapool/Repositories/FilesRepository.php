@@ -37,6 +37,7 @@ class FilesRepository extends SqlBase
 	}
 
 	/**
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findAllWithOwnerById(string $mediaId): array
@@ -52,7 +53,7 @@ class FilesRepository extends SqlBase
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findAllWithOwnerByCheckSum(string $checksum): array
