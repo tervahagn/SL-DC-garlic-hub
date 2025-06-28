@@ -89,11 +89,14 @@ class Image extends AbstractMediaHandler
 	}
 
 	/**
-	 * @throws ImagickException|FilesystemException
+	 * @throws FilesystemException
+	 * @throws ImagickException
 	 */
 	public function createThumbnail(string $filePath): void
 	{
+		/** @var array{dirname:string, basename:string, extension: string, filename: string} $fileInfo */
 		$fileInfo  = pathinfo($filePath);
+
 		switch ($fileInfo['extension'])
 		{
 			case 'gif':
@@ -108,6 +111,7 @@ class Image extends AbstractMediaHandler
 	}
 
 	/**
+	 * @param array{dirname:string, basename:string, extension: string, filename: string} $fileInfo
 	 * @throws ImagickException
 	 */
 	private function createGifThumbnail(array $fileInfo): void
@@ -119,6 +123,7 @@ class Image extends AbstractMediaHandler
 	}
 
 	/**
+	 * @param array{dirname:string, basename:string, extension: string, filename: string} $fileInfo
 	 * @throws FilesystemException
 	 */
 	private function createSvgThumbnail(array $fileInfo): void
@@ -132,6 +137,7 @@ class Image extends AbstractMediaHandler
 	}
 
 	/**
+	 * @param array{dirname:string, basename:string, extension: string, filename: string} $fileInfo
 	 * @throws ImagickException
 	 */
 	private function createStandardThumbnail(array $fileInfo): void
