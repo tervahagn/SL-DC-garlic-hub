@@ -160,7 +160,7 @@ class DatatablePreparerTest extends TestCase
 		$this->prepareServiceMock->method('getBodyPreparer')
 			->willReturn($this->bodyPreparerMock);
 		$this->bodyPreparerMock->expects($this->once())->method('formatUID')
-			->with('13', 'Horst');
+			->with('13', 'Willi');
 
 		$this->aclValidatorMock->method('isModuleAdmin')->willReturn(true);
 		$this->aclValidatorMock->method('isSimpleAdmin')->willReturn(true);
@@ -305,6 +305,7 @@ class DatatablePreparerTest extends TestCase
 				['playlist_id' => 1,
 					'UID' => 13,
 					'company_id' => 1,
+					'unknown_param' => 'some_value',
 					'playlist_name' => 'Playlist Name',
 					'playlist_mode' => 'master', 'username' => 'MorkFromOrk', 'duration' => 12]
 			],

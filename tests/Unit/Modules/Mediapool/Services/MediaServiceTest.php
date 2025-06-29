@@ -271,6 +271,7 @@ class MediaServiceTest extends TestCase
 
 		$this->mediaRepositoryMock->method('findAllWithOwnerById')->willReturn($media);
 		$this->aclValidatorMock->method('checkDirectoryPermissions')->willReturn(['read' => true, 'edit' => true]);
+		$this->mediaRepositoryMock->method('findById')->willReturn([$dataSet]);
 		$this->mediaRepositoryMock->method('getFirstDataSet')->willReturn($dataSet);
 		$this->mediaRepositoryMock->method('insert')->willReturn('new-media-id');
 		$this->loggerMock->expects($this->never())->method('error');

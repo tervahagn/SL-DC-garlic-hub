@@ -229,7 +229,7 @@ class MediaService
 				throw new ModuleException('mediapool', 'No permissions on this directory: '. $media['node_id']);
 
 			$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
-			if (!empty($dataSet))
+			if (empty($dataSet))
 				throw new ModuleException('mediapool', 'No media: '. $media['node_id']);
 
 			$dataSet['media_id'] = Uuid::uuid4()->toString();
