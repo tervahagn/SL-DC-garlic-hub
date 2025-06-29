@@ -5,7 +5,7 @@
  Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
- This program is free software: you can redistribute it and/or  modify
+ This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License, version 3,
  as published by the Free Software Foundation.
 
@@ -81,7 +81,7 @@ class SearchFilterParamsTraitTest extends TestCase
 	#[Group('units')]
 	public function testSetAndGetCompanyArray(): void
 	{
-		$companies = [1 => 'Company A', 2 => 'Company B'];
+		$companies = [1 => 'Company A', 2 => 'Company B', 3 => []];
 		$this->searchFilterService->setCompanyArray($companies);
 		$this->assertEquals($companies, $this->searchFilterService->getCompanyArray());
 	}

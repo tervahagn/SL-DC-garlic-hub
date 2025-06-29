@@ -5,7 +5,7 @@
  Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
- This program is free software: you can redistribute it and/or  modify
+ This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License, version 3,
  as published by the Free Software Foundation.
 
@@ -40,7 +40,7 @@ trait SearchFilterParamsTrait
 	 */
 	protected array $currentFilterResults = [];
 	/**
-	 * @var list<array<string,mixed>>
+	 * @var array<int,mixed>
 	 */
 	protected array $companies = [];
 
@@ -65,11 +65,11 @@ trait SearchFilterParamsTrait
 	}
 
 	/**
-	 * @param list<array<string,mixed>> $ar_companies
+	 * @param array<int,mixed> $companies
 	 */
-	public function setCompanyArray(array $ar_companies): static
+	public function setCompanyArray(array $companies): static
 	{
-		$this->companies = $ar_companies;
+		$this->companies = $companies;
 		return $this;
 	}
 

@@ -5,7 +5,7 @@
  Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
- This program is free software: you can redistribute it and/or  modify
+ This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License, version 3,
  as published by the Free Software Foundation.
 
@@ -218,7 +218,8 @@ class PlaylistsService extends AbstractBaseService
 	 */
 	public function fetchById(int $playlistId): array
 	{
-		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' =>$playlistId]);
+		/** @var array<string,mixed> $playlist */
+		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' => $playlistId]);
 		if (empty($playlist))
 			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 

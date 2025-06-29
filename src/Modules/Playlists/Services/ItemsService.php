@@ -5,7 +5,7 @@
  Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
- This program is free software: you can redistribute it and/or  modify
+ This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License, version 3,
  as published by the Free Software Foundation.
 
@@ -21,6 +21,7 @@
 namespace App\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Mediapool\Services\MediaService;
@@ -98,12 +99,13 @@ class ItemsService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function fetchItemById(int $itemId): array
 	{
 		$item = $this->itemsRepository->findFirstById($itemId);
 		$this->playlistsService->setUID($this->UID);
-		$this->playlistsService->loadPureById($item['playlist_id']); // checks rights
+		$this->playlistsService->loadPureById($item['playlist_id']); // check rights
 
 		switch ($item['item_type'])
 		{
@@ -119,7 +121,7 @@ class ItemsService extends AbstractBaseService
 					$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
 				break;
 			case ItemType::PLAYLIST->value:
-				$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // checks rights
+				$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // check rights
 				$item['default_duration'] = $playlist['duration'];
 				break;
 			default:
@@ -135,6 +137,7 @@ class ItemsService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function loadItemsByPlaylistIdForComposer(int $playlistId): array
 	{
@@ -186,6 +189,7 @@ class ItemsService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function updateField(mixed $itemId, string $fieldName, string|int $fieldValue): int
 	{
@@ -199,8 +203,11 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @param int $playlistId
 	 * @param array<int,int> $itemsOrder
+	 * @return bool
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function updateItemOrder(int $playlistId, array $itemsOrder): bool
 	{
@@ -279,11 +286,11 @@ class ItemsService extends AbstractBaseService
 	/**
 	 *
 	 * 1. Save metrics in exported playlist (did in export-class)
-	 * 2. Save metrics in all items wich represent this playlist. (did in export-class)
-	 * 3. find all playlists which have the exported playlist nested (here we go)
+	 * 2. Save metrics in all items that represent this playlist. (did in export-class)
+	 * 3. find all playlists that have the exported playlist nested (here we go)
 	 * 4. calculate metrics for the new playlists
 	 * 5. save metrics in new playlists
-	 * 6. save metrics in all items which represent the new playlist
+	 * 6. save metrics in all items that represent the new playlist
 	 * 7. recurse to 3.
 	 *
 	 * @throws CoreException
@@ -319,6 +326,7 @@ class ItemsService extends AbstractBaseService
 	private function checkPlaylistAcl(int $playlistId): array
 	{
 		$this->playlistsService->setUID($this->UID);
+		/** @var array<string,mixed> $playlistData */
 		$playlistData = $this->playlistsService->loadPlaylistForEdit($playlistId); // also checks rights
 		if (empty($playlistData))
 			throw new ModuleException('items', 'Playlist is not accessible');

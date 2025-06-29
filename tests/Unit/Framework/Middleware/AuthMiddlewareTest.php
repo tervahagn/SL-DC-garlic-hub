@@ -5,7 +5,7 @@
  Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
- This program is free software: you can redistribute it and/or  modify
+ This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License, version 3,
  as published by the Free Software Foundation.
 
@@ -31,7 +31,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -77,9 +76,7 @@ class AuthMiddlewareTest extends TestCase
 			->willReturn(new Response());
 
 		$middleware = new AuthMiddleware($this->authServiceMock);
-		$response = $middleware->process($this->requestMock, $this->handlerMock);
-
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		$middleware->process($this->requestMock, $this->handlerMock);
 	}
 
 	/**
