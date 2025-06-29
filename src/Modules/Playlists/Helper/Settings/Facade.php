@@ -56,7 +56,7 @@ class Facade
 	}
 
 	/**
-	 * @return array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty, empty>
+	 * @return array{"UID": int, "company_id": int, playlist_mode: string, playlist_name:string, ...}|array<empty,empty>
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{
@@ -67,7 +67,7 @@ class Facade
 
 
 	/**
-	 * @param array{playlist_id?: int, playlist_mode: string,...}  $post
+	 * @param array{playlist_id?: int, playlist_mode: string, playlist_name:string, ...}  $post
 	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
@@ -84,7 +84,7 @@ class Facade
 			if (empty($this->oldPlaylist))
 				throw new ModuleException('No playlist found for editing');
 
-			// @phpstan-ignore-next-line // stop phpstan bullshitting about not empty array
+			// @phpstan-ignore-next-line // stop phpstan bullshitting about a not empty array
 			$this->settingsFormBuilder->configEditParameter($this->oldPlaylist);
 		}
 		else
@@ -128,7 +128,7 @@ class Facade
 	}
 
 	/**
-	 * @param array{"UID": int, "company_id": int, playlist_mode: string,...}  $playlist
+	 * @param array{"UID": int, "company_id": int, playlist_mode: string, playlist_name:string, ...} $playlist
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception

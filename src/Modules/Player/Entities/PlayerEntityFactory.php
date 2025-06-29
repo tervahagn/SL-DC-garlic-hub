@@ -36,6 +36,9 @@ readonly class PlayerEntityFactory
 		$this->config = $config;
 	}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
 	{
 		return new PlayerEntity($this->config, $userAgentHandler, $data);

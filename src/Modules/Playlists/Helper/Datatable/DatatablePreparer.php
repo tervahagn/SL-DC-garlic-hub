@@ -47,7 +47,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	}
 
 	/**
-	 * @param int[] $usedPlaylists
+	 * @param array<int,bool> $usedPlaylists
 	 */
 	public function setUsedPlaylists(array $usedPlaylists): static
 	{

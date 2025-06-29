@@ -84,14 +84,17 @@ class ShowSettingsController
 			return $response->withHeader('Location', '/playlists')->withStatus(302);
 		}
 
+		/** @var array{"UID": int, "company_id": int, playlist_mode: string, playlist_name:string, ...}|array<empty,empty> $playlist */
 		$playlist = $this->facade->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
 		{
 			$this->flash->addMessage('error', 'Playlist not found.');
 			return $response->withHeader('Location', '/playlists')->withStatus(302);
 		}
+		/** @var array{"UID": int, "company_id": int, playlist_mode: string, playlist_name:string, ...} $playlist */
 		$this->facade->buildEditParameter($playlist);
 
+		/** @var array<string,mixed> $playlist */
 		return $this->outputRenderedForm($response, $playlist);
 	}
 
@@ -105,7 +108,7 @@ class ShowSettingsController
 	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-		/** @var array<string,mixed> $post */
+		/** @var array{playlist_id?: int, playlist_mode: string, playlist_name:string, ...}  $post */
 		$post = $request->getParsedBody();
 
 		$this->initFacade($request);

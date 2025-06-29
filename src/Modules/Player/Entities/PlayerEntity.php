@@ -41,20 +41,44 @@ class PlayerEntity
 	private int $licenceId;
 	private PlayerModel $model;
 	private string $uuid;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $commands;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $reports;
 	private string $firmwareVersion;
 	private string $playerName;
 	private string $playlistName;
 	private int $duration;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $locationData;
 	private string $locationLongitude;
 	private string $locationLatitude;
 	private string $playlistMode;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $zones;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $categories;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $properties;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $remoteAdministration;
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $screenTimes;
 
 	/**
@@ -63,16 +87,22 @@ class PlayerEntity
 	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
 	{
 		$format = 'Y-m-d H:i:s';
-		$default = '2001-01-01 00:00:00';
+		$default = '2025-01-01 00:00:00';
 
 		$this->config = $config;
 		$this->playerId             = $data['player_id'] ?? 1;
 		$this->playlistId           = $data['playlist_id'] ?? 0;
 		$this->UID                  = $data['UID'] ?? 1;
 
-		$this->lastAccess           = DateTime::createFromFormat($format,$data['last_access'] ?? $default);
-		$this->lastUpdate           = DateTime::createFromFormat($format,$data['last_update'] ?? $default);
-		$this->lastUpdatePlaylist   = DateTime::createFromFormat($format,$data['last_update_playlist'] ?? $default);
+		$check = DateTime::createFromFormat($format,$data['last_access'] ?? $default);
+		if ($check !== false)
+			$this->lastAccess           = $check;
+		$check = DateTime::createFromFormat($format,$data['last_update'] ?? $default);
+		if ($check !== false)
+			$this->lastUpdate           = $check;
+		$check = DateTime::createFromFormat($format,$data['last_update_playlist'] ?? $default);
+		if ($check !== false)
+			$this->lastUpdatePlaylist   = $check;
 		$this->duration             = $data['duration'] ?? 0;
 		$this->status               = $data['status'] ?? 0;
 		$this->refresh              = $data['refresh'] ?? 900;

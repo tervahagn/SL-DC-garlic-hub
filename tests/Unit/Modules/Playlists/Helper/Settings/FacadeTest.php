@@ -96,7 +96,7 @@ class FacadeTest extends TestCase
 	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithPlaylistId(): void
 	{
-		$post = ['playlist_id' => 42, 'playlist_mode' => PlaylistMode::MASTER->value, 'other_key' => 'value'];
+		$post = ['playlist_id' => 42, 'playlist_name' => 'hurz', 'playlist_mode' => PlaylistMode::MASTER->value, 'other_key' => 'value'];
 		$expectedPlaylist = ['id' => 42, 'name' => 'My Playlist'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
@@ -130,7 +130,7 @@ class FacadeTest extends TestCase
 	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithoutPlaylistId(): void
 	{
-		$post = ['playlist_mode' => 'new_mode', 'other_key' => 'value'];
+		$post = ['playlist_mode' => 'new_mode', 'playlist_name' => 'Name', 'other_key' => 'value'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
 		$this->settingsFormBuilderMock->expects($this->once())

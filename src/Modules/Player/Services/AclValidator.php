@@ -23,7 +23,7 @@ namespace App\Modules\Player\Services;
 use App\Framework\Core\Acl\AbstractAclValidator;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\ModuleException;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
@@ -36,10 +36,13 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array<string,mixed> $player
-     * @throws CoreException
+	 * @param int $UID
+	 * @param array{UID: int, company_id: int, player_id: int ...} $player
+	 * @return bool
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception|ModuleException
 	 */
 	public function isPlayerEditable(int $UID, array $player): bool
 	{
@@ -53,11 +56,11 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array{"UID": int, "company_id": int, ...}$player
-	 * @throws ModuleException
+	 * @param array{"UID": int, "company_id": int, ...} $player
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function isAllowedToDeletePlayer(int $UID, array $player): bool
 	{

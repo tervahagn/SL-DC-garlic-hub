@@ -75,7 +75,6 @@ class ControllerFacade implements DatatableFacadeInterface
 	}
 
 	/**
-	 * @return ControllerFacade
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
@@ -143,14 +142,14 @@ class ControllerFacade implements DatatableFacadeInterface
 	 */
 	private function prepareList(array $fields): array
 	{
-		$showedIds = array_column($this->playlistsService->getCurrentFilterResults(), 'playlist_id');
-		$this->datatablePreparer->setUsedPlaylists($this->playlistsService->getPlaylistsInUse($showedIds));
+		/** @var list<array{"UID": int, "company_id": int, playlist_id:int, playlist_name:string, username:string, duration:int, playlist_mode: string,...}> $currentResults */
+		$currentResults = $this->playlistsService->getCurrentFilterResults();
+		$showedIds = array_column($currentResults, 'playlist_id');
 
-		return $this->datatablePreparer->prepareTableBody(
-			$this->playlistsService->getCurrentFilterResults(),
-			$fields,
-			$this->UID
-		);
+		$used = $this->playlistsService->getPlaylistsInUse($showedIds);
+		$this->datatablePreparer->setUsedPlaylists($used);
+
+		return $this->datatablePreparer->prepareTableBody($currentResults, $fields, $this->UID);
 	}
 
 }

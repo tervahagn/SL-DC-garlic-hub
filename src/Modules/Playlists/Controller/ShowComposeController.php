@@ -34,7 +34,6 @@ use Slim\Flash\Messages;
 class ShowComposeController
 {
 	private readonly PlaylistsService $playlistsService;
-
 	private readonly UiTemplatesPreparer $uiTemplatesPreparer;
 	private Messages $flash;
 
@@ -58,6 +57,7 @@ class ShowComposeController
 		if ($playlistId === 0)
 			return $this->redirectWithErrors($response, 'Playlist ID not valid.');
 
+		/** @var array<string,mixed>|array<empty,empty> $playlist */
 		$playlist = $this->playlistsService->loadPlaylistForEdit($playlistId);
 		if (empty($playlist))
 			return $this->redirectWithErrors($response, 'Playlist not found.');

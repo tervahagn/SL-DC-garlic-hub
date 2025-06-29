@@ -22,6 +22,7 @@
 namespace App\Modules\Player\Services;
 
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Player\Repositories\PlayerRepository;
@@ -97,10 +98,15 @@ class PlayerService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws PhpfastcacheSimpleCacheException|ModuleException
+	 * @throws FrameworkException
 	 */
 	public function fetchPlayer(int $playerId): array
 	{
 		$player = $this->playerRepository->findFirstById($playerId);
+		if (empty($player))
+			throw new ModuleException('player', 'Error loading player: Is not editable');
+
+		/** @var array{UID: int, company_id: int, ...} $player */
 		if (!$this->playerValidator->isPlayerEditable($this->UID, $player))
 			throw new ModuleException('player', 'Error loading player: Is not editable');
 
