@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 # Install required packages  at os level
 RUN apt-get update && apt-get install -y --no-install-recommends \
