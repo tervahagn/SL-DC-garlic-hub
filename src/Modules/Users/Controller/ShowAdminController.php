@@ -131,7 +131,7 @@ class ShowAdminController
 				$errors = $this->facade->getUserServiceErrors();
 				foreach ($errors as $errorText)
 				{
-					$this->flash->addMessage('error', $errorText);
+					$this->flash->addMessageNow('error', $errorText);
 				}
 				return $this->outputRenderedForm($response, $post);
 			}
