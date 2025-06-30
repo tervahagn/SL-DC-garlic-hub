@@ -167,6 +167,17 @@ class MediaService
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	public function markDeleteMediaByNodeId(int $nodeId): void
+	{
+		$fields = ['deleted' => 1];
+		$condition = ['node_id' => $nodeId];
+
+		$this->mediaRepository->updateWithWhere($fields, $condition);
+	}
+
 	public function deleteMedia(string $mediaId): int
 	{
 		try

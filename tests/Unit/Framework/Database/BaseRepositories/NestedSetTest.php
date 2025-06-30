@@ -393,7 +393,7 @@ class NestedSetTest extends TestCase
 
 		$this->connectionMock->expects($this->once())->method('commit');
 
-		$actualNewNodeId = $this->repository->addRootNode($uid, $name);
+		$actualNewNodeId = $this->repository->addRootNodeSecured($uid, $name);
 		$this->assertEquals($expectedNewNodeId, $actualNewNodeId);
 	}
 
@@ -416,7 +416,7 @@ class NestedSetTest extends TestCase
 		$this->expectException(DatabaseException::class);
 		$this->expectExceptionMessage('Add root node failed because of: Insert new node failed');
 
-		$this->repository->addRootNode($uid, $name);
+		$this->repository->addRootNodeSecured($uid, $name);
 	}
 
 	/**
@@ -443,7 +443,7 @@ class NestedSetTest extends TestCase
 		$this->expectException(\Exception::class); // Or DatabaseException, depending on your exception hierarchy
 		$this->expectExceptionMessage('Update root node failed');
 
-		$this->repository->addRootNode($uid, $name);
+		$this->repository->addRootNodeSecured($uid, $name);
 	}
 
 	/**

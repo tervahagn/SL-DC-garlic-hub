@@ -195,41 +195,53 @@ class NestedSet extends SqlBase
 	 * @throws DatabaseException
 	 * @throws Exception
 	 */
-	public function addRootNode(int $UID, string $name): int
+	public function addRootNodeSecured(int $UID, string $name): int
 	{
 		try
 		{
-			$nodeData = [
-				'name'              => $name,
-				'parent_id'         => 0,
-				'root_order'        => 0,
-				'visibility'	    => 0,
-				'lft'               => 1,
-				'rgt'               => 2,
-				'UID'               => $UID,
-				'level'             => 1
-			];
-
 			$this->beginTransaction();
-			$newNodeId = (int) $this->insert($nodeData);
 
-			if ($newNodeId == 0)
-				throw new DatabaseException('Insert new node failed');
-
-			$update_fields = ['root_id' => $newNodeId, 'root_order' => $newNodeId];
-
-			if ($this->update($newNodeId, $update_fields) === 0)
-				throw new \Exception('Update root node failed');
+			$newNodeId = $this->addRootNode($UID, $name);
 
 			$this->commitTransaction();
 
 			return $newNodeId;
 		}
-		catch (\Exception | Exception | DatabaseException $e)
+		catch (\Exception | Exception $e)
 		{
 			$this->rollbackTransaction();
 			throw new DatabaseException('Add root node failed because of: '.$e->getMessage());
 		}
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws DatabaseException
+	 */
+	public function addRootNode(int $UID, string $name, $isUserFolder = false): int
+	{
+		$nodeData = [
+			'name'              => $name,
+			'parent_id'         => 0,
+			'root_order'        => 0,
+			'visibility'	    => 0,
+			'is_user_folder'    => (!$isUserFolder) ? 0 : 1,
+			'lft'               => 1,
+			'rgt'               => 2,
+			'UID'               => $UID,
+			'level'             => 1
+		];
+
+		$newNodeId = (int) $this->insert($nodeData);
+		if ($newNodeId == 0)
+			throw new DatabaseException('Insert new node failed');
+
+		$update_fields = ['root_id' => $newNodeId, 'root_order' => $newNodeId];
+
+		if ($this->update($newNodeId, $update_fields) === 0)
+			throw new DatabaseException('Update root node failed');
+
+		return $newNodeId;
 	}
 
 	/**
@@ -314,7 +326,7 @@ class NestedSet extends SqlBase
 				throw new FrameworkException('not exists');
 
 			// remove other nodes to create some space
-			$move = floor(($node['rgt'] - $node['lft']) / 2);
+			$move = (int) floor(($node['rgt'] - $node['lft']) / 2);
 			$move = 2 * (1 + $move);
 
 			$this->helper->moveNodesToLeftForDeletion($node['root_id'], $node['rgt'], $move);
@@ -348,7 +360,7 @@ class NestedSet extends SqlBase
 			// https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
 			// enhanced for including multiple trees with different root_id's in datatable
 
-			// create some space in target
+			// create some space in a target
 			$this->helper->moveNodesToRightForInsert($targetNode['root_id'], $newLgtPos, $width);
 			$this->helper->moveNodesToLeftForInsert($targetNode['root_id'], $newLgtPos, $width);
 

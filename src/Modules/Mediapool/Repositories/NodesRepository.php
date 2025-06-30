@@ -48,4 +48,22 @@ class NodesRepository extends NestedSet
 		return  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
 	}
 
+	/**
+	 * @return array{UID:int, company_id:int, node_id:int, root_id:int}|array<empty,empty>
+	 * @throws Exception
+	 */
+	public function getUserRootNode(int $UID): array
+	{
+		$select = [$this->table.'.UID, company_id, node_id, root_id'];
+		$where = [
+			'UID' => $this->generateWhereClause($UID),
+			'parent_id' => $this->generateWhereClause(0),
+			'is_user_folder' => $this->generateWhereClause(1)
+		];
+		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
+
+		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+
+	}
+
 }

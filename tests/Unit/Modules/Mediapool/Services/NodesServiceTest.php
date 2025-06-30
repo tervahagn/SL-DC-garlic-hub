@@ -146,7 +146,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(true);
 
 		$this->nodesRepositoryMock->expects($this->once())
-			->method('addRootNode')
+			->method('addRootNodeSecured')
 			->with($uid, $name)
 			->willReturn(1);
 
@@ -173,7 +173,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(false);
 
 		$this->nodesRepositoryMock->expects($this->never())
-			->method('addRootNode');
+			->method('addRootNodeSecured');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('No rights to add root node.');

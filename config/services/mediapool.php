@@ -61,6 +61,7 @@ $dependencies[NodesService::class] = DI\factory(function (ContainerInterface $co
 {
 	return new NodesService(
 		$container->get(NodesRepository::class),
+		$container->get(MediaService::class),
 		$container->get(AclValidator::class)
 	);
 });

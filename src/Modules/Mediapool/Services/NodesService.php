@@ -31,12 +31,14 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 class NodesService
 {
 	private readonly NodesRepository $nodesRepository;
+	private readonly MediaService $mediaService;
 	private readonly AclValidator $aclValidator;
 	private int $UID;
 
-	public function __construct(NodesRepository $nodesRepository, AclValidator $aclValidator)
+	public function __construct(NodesRepository $nodesRepository, MediaService $mediaService, AclValidator $aclValidator)
 	{
 		$this->nodesRepository = $nodesRepository;
+		$this->mediaService    = $mediaService;
 		$this->aclValidator    = $aclValidator;
 	}
 
@@ -73,8 +75,7 @@ class NodesService
 		foreach ($nodes as $node)
 		{
 			$rights = $this->determineRights($node);
-			if (!empty($rights))
-				$tree[] = $this->prepareForWunderbaum($node, $rights);
+			$tree[] = $this->prepareForWunderbaum($node, $rights);
 		}
 
 		return $tree;
@@ -97,6 +98,41 @@ class NodesService
 	}
 
 	/**
+	 * @throws DatabaseException
+	 * @throws Exception
+	 */
+	public function addUserDirectory(int $UID, string $name): int
+	{
+		return $this->nodesRepository->addRootNode($UID, $name, true);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	public function deleteUserDirectory(int $UID): void
+	{
+		$node = $this->nodesRepository->getUserRootNode($UID);
+		if (count($node) === 0)
+			throw new ModuleException('mediapool', 'Get user directory failed.');
+
+		if (!$this->aclValidator->isModuleAdmin($this->UID))
+			throw new ModuleException('mediapool','No rights to delete user root node.');
+
+		$condition = ['root_id' => $this->nodesRepository->generateWhereClause('root_id')];
+		$result = $this->nodesRepository->findAllBy($condition);
+		foreach ($result as $node)
+		{
+			$this->mediaService->markDeleteMediaByNodeId($node['node_id']);
+		}
+
+		if ($this->nodesRepository->deleteBy($condition) == 0)
+			throw new ModuleException('mediapool','Delete nodes by root id failed.');
+	}
+
+	/**
 	 * @throws ModuleException
 	 * @throws Exception
 	 * @throws CoreException|PhpfastcacheSimpleCacheException
@@ -107,6 +143,7 @@ class NodesService
 		if ((empty($node)))
 			throw new ModuleException('mediapool', 'Parent node not found');
 
+		/** @var array<string,mixed> $node */
 		$rights = $this->determineRights($node);
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);
@@ -129,7 +166,9 @@ class NodesService
 		if (!in_array($region, $regions))
 			throw new ModuleException('mediapool', $region.' is not supported');
 
+		/** @var array<string,mixed> $movedNode */
 		$movedNode  = $this->nodesRepository->getNode($movedNodeId);
+		/** @var array<string,mixed> $targetNode */
 		$targetNode = $this->nodesRepository->getNode($targetNodeId);
 
 		// prevent root dir handling
@@ -156,9 +195,10 @@ class NodesService
 	public function deleteNode(int $nodeId): int
 	{
 		$node = $this->nodesRepository->getNode($nodeId);
-		if (empty($node) )
+		if (empty($node))
 			throw new ModuleException('mediapool', 'Can not find a node for node_id ' . $nodeId);
 
+		/** @var array<string,mixed> $node */
 		$rights = $this->determineRights($node);
 		if (!$rights['delete'])
 			throw new ModuleException('mediapool', 'No rights to delete node ' . $nodeId);
@@ -173,6 +213,7 @@ class NodesService
 
 		return count($deleted_nodes);
 	}
+
 
 	/**
 	 * @param array<string,string> $node
@@ -204,8 +245,10 @@ class NodesService
 		if (!$this->aclValidator->isModuleAdmin($this->UID))
 			throw new ModuleException('mediapool','No rights to add root node.');
 
-		return $this->nodesRepository->addRootNode($this->UID, $name);
+		return $this->nodesRepository->addRootNodeSecured($this->UID, $name);
 	}
+
+
 
 	/**
 	 * @throws ModuleException
@@ -213,12 +256,13 @@ class NodesService
 	 * @throws DatabaseException
 	 * @throws CoreException|PhpfastcacheSimpleCacheException
 	 */
-	private function addSubNode(int $parent_node_id, string $name): int
+	private function addSubNode(int $parentNodeId, string $name): int
 	{
-		$parentNode = $this->nodesRepository->getNode($parent_node_id);
-		if (empty($parentNode))
+		$parentNode = $this->nodesRepository->getNode($parentNodeId);
+		if (count($parentNode) === 0)
 			throw new ModuleException('mediapool', 'Parent node not found');
 
+		/** @var array<string,mixed> $parentNode */
 		$rights      = $this->determineRights($parentNode);
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to add node under: ' . $parentNode['name']);
@@ -228,7 +272,7 @@ class NodesService
 
 	/**
 	 * @param array<string,mixed> $node
-	 * @return array<string,bool|string>
+	 * @return array{create:bool, edit:bool, delete:bool, share:string}
 	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
