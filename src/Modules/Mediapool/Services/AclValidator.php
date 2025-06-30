@@ -20,7 +20,7 @@ class AclValidator extends AbstractAclValidator
 
 	/**
 	 * @param array<string,mixed> $directory
-	 * @return array<string,bool|string>
+	 * @return array{create:bool, read:bool, edit:bool, share:string}
 	 * @throws CoreException
 	 * @throws ModuleException
 	 * @throws Exception

@@ -25,7 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Users\Services\UsersService;
+use App\Modules\Users\Services\UsersAdminService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -33,7 +33,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 class Facade
 {
 	private readonly Builder $settingsFormBuilder;
-	private readonly UsersService $usersService;
+	private readonly UsersAdminService $usersAdminService;
 	private readonly Parameters $settingsParameters;
 	/** @var array{UID: int,
 	 * company_id: int,
@@ -47,10 +47,10 @@ class Facade
 	private array $oldUser;
 	private Translator $translator;
 
-	 public function __construct(Builder $settingsFormBuilder, UsersService $usersService, Parameters $settingsParameters)
+	 public function __construct(Builder $settingsFormBuilder, UsersAdminService $usersAdminService, Parameters $settingsParameters)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
-		$this->usersService    = $usersService;
+		$this->usersAdminService   = $usersAdminService;
 		$this->settingsParameters  = $settingsParameters;
 	}
 
@@ -60,7 +60,7 @@ class Facade
 		$this->settingsFormBuilder->init($session);
 		/** @var array{UID: int, username: string} $user */
 		$user = $session->get('user');
-		$this->usersService->setUID($user['UID']);
+		$this->usersAdminService->setUID($user['UID']);
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Facade
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
-		$user = $this->usersService->loadForAdminEdit($UID);
+		$user = $this->usersAdminService->loadForAdminEdit($UID);
 		if (empty($user))
 			return [];
 
@@ -100,7 +100,7 @@ class Facade
 		$UID = $post['UID'] ?? 0;
 		if ($UID > 0)
 		{
-			$user = $this->usersService->loadForAdminEdit($UID);
+			$user = $this->usersAdminService->loadForAdminEdit($UID);
 			if (empty($user))
 				return [$this->translator->translate('user_not_found', 'users')];
 			$this->oldUser =  $user;
@@ -127,9 +127,9 @@ class Facade
 		);
 
 		if ($UID > 0)
-			$id = $this->usersService->updateUser($UID, $saveData);
+			$id = $this->usersAdminService->updateUser($UID, $saveData);
 		else
-			$id = $this->usersService->insertNewUser($saveData);
+			$id = $this->usersAdminService->insertNewUser($saveData);
 
 		return $id;
 	}
@@ -139,7 +139,7 @@ class Facade
 	 */
 	public function createPasswordResetToken(int $UID): string
 	{
-		return $this->usersService->createPasswordResetToken($UID);
+		return $this->usersAdminService->createPasswordResetToken($UID);
 	}
 
 	/**
@@ -151,7 +151,7 @@ class Facade
 	 */
 	public function getUserServiceErrors(): array
 	{
-		$errors     = $this->usersService->getErrorMessages();
+		$errors     = $this->usersAdminService->getErrorMessages();
 		$translated =[];
 		foreach ($errors as $error)
 		{
