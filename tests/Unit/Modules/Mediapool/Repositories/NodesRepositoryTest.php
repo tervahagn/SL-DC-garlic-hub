@@ -21,7 +21,7 @@
 
 namespace Tests\Unit\Modules\Mediapool\Repositories;
 
-use App\Framework\Database\BaseRepositories\NestedSetHelper;
+use App\Framework\Exceptions\DatabaseException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -30,12 +30,12 @@ use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class NodesRepositoryTest extends TestCase
 {
 	private Connection&MockObject $connectionMock;
 	private QueryBuilder&MockObject $queryBuilderMock;
+	private Result&MockObject $resultMock;
 	private NodesRepository $nodesRepository;
 
 	/**
@@ -45,10 +45,9 @@ class NodesRepositoryTest extends TestCase
 	{
 		$this->connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock  = $this->createMock(QueryBuilder::class);
-		$helperMock = $this->createMock(NestedSetHelper::class);
-		$loggerMock = $this->createMock(LoggerInterface::class);
+		$this->resultMock = $this->createMock(Result::class);
 
-		$this->nodesRepository = new NodesRepository($this->connectionMock, $helperMock, $loggerMock);
+		$this->nodesRepository = new NodesRepository($this->connectionMock);
 	}
 
 	/**
@@ -91,13 +90,60 @@ class NodesRepositoryTest extends TestCase
 				return $this->queryBuilderMock;
 			});
 
-		$resultMock = $this->createMock(Result::class);
 
-		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
-		$resultMock->expects($this->once())->method('fetchAllAssociative')
+		$this->queryBuilderMock->method('executeQuery')->willReturn($this->resultMock);
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([]);
 
 		$this->assertEmpty($this->nodesRepository->getNode($node_id));
+	}
 
+	/**
+	 * @throws Exception|DatabaseException
+	 */
+	#[Group('units')]
+	public function testFindNodeOwner(): void
+	{
+		$nodeId = 2;
+		$expectedResult = ['UID' => 1, 'node_id' => 2, 'name' => 'Child Node 1', 'company_id' => 1];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		// ... (Mock query builder methods)
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
+			->willReturn($expectedResult);
+
+		$actualResult = $this->nodesRepository->findNodeOwner($nodeId);
+		$this->assertEquals($expectedResult, $actualResult);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFindNodeOwnerNotFound(): void
+	{
+		$nodeId = 999; // Non-existent node ID
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		// ... (Mock query builder methods)
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAssociative')
+			->willReturn(false); // Simulate no result
+
+		$this->expectException(DatabaseException::class);
+		$this->expectExceptionMessage('Node not found');
+
+		$this->nodesRepository->findNodeOwner($nodeId);
 	}
 }
