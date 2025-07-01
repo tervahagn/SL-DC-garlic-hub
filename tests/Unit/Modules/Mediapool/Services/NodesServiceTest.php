@@ -91,7 +91,7 @@ class NodesServiceTest extends TestCase
 			->willReturn($rights);
 
 
-		$this->nodesService->setUID(123);
+		$this->nodesService = 123;
 		$result = $this->nodesService->getNodes($parentId);
 		$this->assertCount(1, $result);
 		$this->assertEquals('Root Node', $result[0]['title']);
@@ -120,7 +120,7 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesService->setUID(123);
+		$this->nodesService = 123;
 		$result = $this->nodesService->getNodes($parentId);
 		$this->assertCount(1, $result);
 		$this->assertEquals('Sub Node', $result[0]['title']);
@@ -138,7 +138,7 @@ class NodesServiceTest extends TestCase
 	{
 		$uid = 123;
 		$name = 'New Root Node';
-		$this->nodesService->setUID($uid);
+		$this->nodesService = $uid;
 
 		$this->aclValidatorMock->expects($this->once())
 			->method('isModuleAdmin')
@@ -165,7 +165,7 @@ class NodesServiceTest extends TestCase
 	{
 		$uid = 123;
 		$name = 'New Root Node';
-		$this->nodesService->setUID($uid);
+		$this->nodesService = $uid;
 
 		$this->aclValidatorMock->expects($this->once())
 			->method('isModuleAdmin')
@@ -197,7 +197,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService->setUID($uid);
+		$this->nodesService = $uid;
 
 		$parentNode = ['node_id' => 1, 'name' => 'Parent Node', 'parent_id' => 1, 'children' => 0, 'UID' => 123, 'visibility' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -232,7 +232,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService->setUID($uid);
+		$this->nodesService = $uid;
 
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -264,7 +264,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService->setUID($uid);
+		$this->nodesService = $uid;
 
 		$parentNode = ['node_id' => 1, 'name' => 'Parent Node', 'parent_id' => 1, 'children' => 0, 'UID' => 123, 'visibility' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -298,7 +298,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService->setUID(12);
+		$this->nodesService = 12;
 		$visibility = 1;
 		$node = ['node_id' => 1, 'name' => 'Node to Edit', 'parent_id' => 0, 'children' => 0, 'UID' => 123, 'visibility' => 0];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -334,7 +334,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService->setUID(12);
+		$this->nodesService = 12;
 		$visibility = 1;
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -366,7 +366,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService->setUID(12);
+		$this->nodesService = 12;
 		$visibility = 1;
 		$node = ['node_id' => 1, 'name' => 'Node to Edit', 'children' => 0, 'UID' => 123, 'visibility' => 0];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -553,7 +553,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteOneNodeSucceed(): void
 	{
 		$nodeId = 1;
-		$this->nodesService->setUID(354);
+		$this->nodesService = 354;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 0,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -593,7 +593,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteFailsByNode(): void
 	{
 		$nodeId = 1;
-		$this->nodesService->setUID(34);
+		$this->nodesService = 34;
 
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -625,7 +625,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteFailsByRights(): void
 	{
 		$nodeId = 1;
-		$this->nodesService->setUID(34);
+		$this->nodesService = 34;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 0,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -662,7 +662,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteNodeTreeSucceed(): void
 	{
 		$nodeId = 1;
-		$this->nodesService->setUID(354);
+		$this->nodesService = 354;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 3,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())

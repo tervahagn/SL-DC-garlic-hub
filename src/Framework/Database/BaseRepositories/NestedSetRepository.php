@@ -30,7 +30,7 @@ use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class NestedSet extends SqlBase
+class NestedSetRepository extends SqlBase
 {
 	use CrudTraits, TransactionsTrait;
 

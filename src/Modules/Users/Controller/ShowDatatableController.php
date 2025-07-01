@@ -39,6 +39,11 @@ class ShowDatatableController
 		$this->templateFormatter = $templateFormatter;
 	}
 
+	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

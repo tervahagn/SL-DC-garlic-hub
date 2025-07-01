@@ -24,17 +24,6 @@ use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-/**
- * NestedSetBase class provides functionalities for managing hierarchical data
- * following the Nested Set Model in a relational database.
- *
- * This class includes several utility methods to manipulate tree structures,
- * such as moving nodes or entire subtrees, determining positional parameters
- * based on regions, and deleting parts or the entirety of a tree.
- *
- * Key constants define positional regions for node placement relative to
- * references within the hierarchical data structure.
- */
 class NestedSetHelper
 {
 	const string REGION_BEFORE = 'before';

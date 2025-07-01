@@ -44,6 +44,12 @@ class Service extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	public function initRepository(string $table, string $id): void
+	{
+		$this->repository->setTable($table);
+		$this->repository->setIdField($id);
+	}
+
 	/**
 	 * @return list<array<string, mixed>>
 	 * @throws Exception
@@ -270,9 +276,9 @@ class Service extends AbstractBaseService
 		{
 			$this->transactions->begin();
 
-			$diff_level = $this->calculator->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
-			$newLgtPos  = $this->calculator->determineLgtPositionByRegion($region, $targetNode);
-			$width      = $movedNode['rgt'] - $movedNode['lft'] + 1;
+			$diffLevel = $this->calculator->calculateDiffLevelByRegion($region, $movedNode['level'], $targetNode['level']);
+			$newLgtPos = $this->calculator->determineLgtPositionByRegion($region, $targetNode);
+			$width     = $movedNode['rgt'] - $movedNode['lft'] + 1;
 
 			// https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
 			// enhanced for including multiple trees with different root_id's in datatable
@@ -281,7 +287,8 @@ class Service extends AbstractBaseService
 			$this->repository->moveNodesToRightForInsert($targetNode['root_id'], $newLgtPos, $width);
 			$this->repository->moveNodesToLeftForInsert($targetNode['root_id'], $newLgtPos, $width);
 
-			$i = $this->repository->moveSubTree($movedNode, $targetNode, $newLgtPos, $width, $diff_level);
+			$calculated = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
+			$i = $this->repository->moveSubTree($movedNode, $targetNode, $calculated, $diffLevel);
 			if ($i === 0)
 				throw new FrameworkException($movedNode['name']. ' cannot be moved via '.$region.' of '. $targetNode['name']);
 

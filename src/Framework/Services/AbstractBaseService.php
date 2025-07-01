@@ -29,9 +29,6 @@ abstract class AbstractBaseService
 	/** @var string[]  */
 	protected array $errorMessages = [];
 
-	/**
-	 * @param LoggerInterface $logger
-	 */
 	public function __construct(LoggerInterface $logger)
 	{
 		$this->logger = $logger;

@@ -29,9 +29,9 @@ use Doctrine\DBAL\Connection;
  */
 abstract class SqlBase
 {
-	protected readonly string $table;
-	protected readonly string $idField;
-	protected Connection $connection;
+	protected string $table;
+	protected string $idField;
+	protected readonly Connection $connection;
 
 	public function __construct(Connection $connection, string $table, string $idField)
 	{
@@ -49,5 +49,19 @@ abstract class SqlBase
 	{
 		return $this->idField;
 	}
+
+	public function setTable(string $table): SqlBase
+	{
+		$this->table = $table;
+		return $this;
+	}
+
+	public function setIdField(string $idField): SqlBase
+	{
+		$this->idField = $idField;
+		return $this;
+	}
+
+
 
 }

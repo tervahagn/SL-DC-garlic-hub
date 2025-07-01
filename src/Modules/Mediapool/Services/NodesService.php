@@ -21,8 +21,8 @@
 namespace App\Modules\Mediapool\Services;
 
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
+use App\Framework\Database\NestedSets\Service;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
 use Doctrine\DBAL\Exception;
@@ -33,18 +33,18 @@ class NodesService
 	private readonly NodesRepository $nodesRepository;
 	private readonly MediaService $mediaService;
 	private readonly AclValidator $aclValidator;
-	private int $UID;
-
-	public function __construct(NodesRepository $nodesRepository, MediaService $mediaService, AclValidator $aclValidator)
-	{
-		$this->nodesRepository = $nodesRepository;
-		$this->mediaService    = $mediaService;
-		$this->aclValidator    = $aclValidator;
+	private readonly Service $nestedSetsService;
+	public int $UID {
+		set {$this->UID = $value;}
 	}
 
-	public function setUID(int $UID): void
+	public function __construct(NodesRepository $nodesRepository, Service $nestedSetsService, MediaService $mediaService, AclValidator $aclValidator)
 	{
-		$this->UID = $UID;
+		$this->nodesRepository = $nodesRepository;
+		$this->nestedSetsService = $nestedSetsService;
+		$this->nestedSetsService->initRepository('mediapool_nodes', 'node_id');
+		$this->mediaService    = $mediaService;
+		$this->aclValidator    = $aclValidator;
 	}
 
 	/**
@@ -67,9 +67,9 @@ class NodesService
 	public function getNodes(int $parent_id): array
 	{
 		if ($parent_id === 0)
-			$nodes = $this->nodesRepository->findAllRootNodes();
+			$nodes = $this->nestedSetsService->findAllRootNodes();
 		else
-			$nodes = $this->nodesRepository->findAllChildNodesByParentNode($parent_id);
+			$nodes = $this->nestedSetsService->findAllChildNodesByParentNode($parent_id);
 
 		$tree = [];
 		foreach ($nodes as $node)
@@ -82,10 +82,13 @@ class NodesService
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws Exception
+	 * @param int $parent_id
+	 * @param string $name
+	 * @return int
 	 * @throws CoreException
-	 * @throws DatabaseException|PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function addNode(int $parent_id, string $name): int
 	{
@@ -98,12 +101,14 @@ class NodesService
 	}
 
 	/**
-	 * @throws DatabaseException
+	 * @param int $UID
+	 * @param string $name
+	 * @return int
 	 * @throws Exception
 	 */
 	public function addUserDirectory(int $UID, string $name): int
 	{
-		return $this->nodesRepository->addRootNode($UID, $name, true);
+		return $this->nestedSetsService->addRootNode($UID, $name, true);
 	}
 
 	/**
@@ -156,9 +161,12 @@ class NodesService
 	}
 
 	/**
+	 * @param int $movedNodeId
+	 * @param int $targetNodeId
+	 * @param string $region
+	 * @return int
 	 * @throws Exception
 	 * @throws ModuleException
-	 * @throws DatabaseException
 	 */
 	public function moveNode(int $movedNodeId, int $targetNodeId, string $region): int
 	{
@@ -181,16 +189,18 @@ class NodesService
 			throw new ModuleException('mediapool', 'Create root node with a move is not allowed');
 
 
-		$this->nodesRepository->moveNode($movedNode, $targetNode, $region);
+		$this->nestedSetsService->moveNode($movedNode, $targetNode, $region);
 
 		return 1;
 	}
 
 	/**
+	 * @param int $nodeId
+	 * @return int
+	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
-	 * @throws DatabaseException
-	 * @throws CoreException|PhpfastcacheSimpleCacheException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function deleteNode(int $nodeId): int
 	{
@@ -204,16 +214,15 @@ class NodesService
 			throw new ModuleException('mediapool', 'No rights to delete node ' . $nodeId);
 
 		// get all node_id of the partial tree
-		$deleted_nodes = $this->nodesRepository->findAllSubNodeIdsByRootIdsAndPosition($node['root_id'], $node['rgt'], $node['lft']);
+		$deleted_nodes = $this->nestedSetsService->findAllSubNodeIdsByRootIdsAndPosition($node['root_id'], $node['rgt'], $node['lft']);
 
 		if ($node['children'] == 0)
-			$this->nodesRepository->deleteSingleNode($node);
+			$this->nestedSetsService->deleteSingleNode($node);
 		elseif ($node['children'] > 0)
-			$this->nodesRepository->deleteTree($node);
+			$this->nestedSetsService->deleteTree($node);
 
 		return count($deleted_nodes);
 	}
-
 
 	/**
 	 * @param array<string,string> $node
@@ -234,10 +243,11 @@ class NodesService
 	}
 
 	/**
+	 * @param string $name
+	 * @return int
+	 * @throws CoreException
 	 * @throws Exception
 	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws DatabaseException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function addRootNode(string $name): int
@@ -245,16 +255,18 @@ class NodesService
 		if (!$this->aclValidator->isModuleAdmin($this->UID))
 			throw new ModuleException('mediapool','No rights to add root node.');
 
-		return $this->nodesRepository->addRootNodeSecured($this->UID, $name);
+		return $this->nestedSetsService->addRootNode($this->UID, $name);
 	}
 
 
-
 	/**
-	 * @throws ModuleException
+	 * @param int $parentNodeId
+	 * @param string $name
+	 * @return int
+	 * @throws CoreException
 	 * @throws Exception
-	 * @throws DatabaseException
-	 * @throws CoreException|PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function addSubNode(int $parentNodeId, string $name): int
 	{
@@ -267,7 +279,7 @@ class NodesService
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to add node under: ' . $parentNode['name']);
 
-		return $this->nodesRepository->addSubNode($this->UID, $name, $parentNode);
+		return $this->nestedSetsService->addSubNode($this->UID, $name, $parentNode);
 	}
 
 	/**

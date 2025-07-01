@@ -98,7 +98,7 @@ class UsersAdminService extends AbstractBaseService
 
 			$this->userTokenService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
 
-			$this->nodesService->setUID($this->UID);
+			$this->nodesService = $this->UID;
 			$nodeId = $this->nodesService->addUserDirectory($UID, $saveData['username']);
 			if ($nodeId === 0)
 				throw new ModuleException('users', 'Create mediapool user directory failed.');
@@ -123,7 +123,7 @@ class UsersAdminService extends AbstractBaseService
 			if($this->userMainRepository->delete($UID) === 0)
 				throw new ModuleException('users', 'Remove the user from  db-table failed.');
 
-			$this->nodesService->setUID($this->UID);
+			$this->nodesService = $this->UID;
 			$this->nodesService->deleteUserDirectory($UID);
 
 			$this->userMainRepository->commitTransaction();

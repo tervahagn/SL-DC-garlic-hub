@@ -34,8 +34,11 @@ use App\Framework\Core\Translate\IniTranslationLoader;
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Dashboards\SystemDashboard;
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
+use App\Framework\Database\NestedSets\Calculator;
+use App\Framework\Database\NestedSets\Service;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
@@ -181,6 +184,19 @@ $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $contai
 	$dbalConfig->setMiddlewares([new Middleware($logger)]);
 
 	return DriverManager::getConnection($connectionParams, $dbalConfig);
+});
+$dependencies[Transactions::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Transactions($container->get('SqlConnection'));
+});
+$dependencies[Service::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Service(
+		new \App\Framework\Database\NestedSets\Repository($container->get('SqlConnection'), '', ''),
+		new Calculator(),
+		$container->get(Transactions::class),
+		$container->get('FrameworkLogger'),
+	);
 });
 $dependencies['LocalFileSystem'] = DI\factory(function (ContainerInterface $container)
 {

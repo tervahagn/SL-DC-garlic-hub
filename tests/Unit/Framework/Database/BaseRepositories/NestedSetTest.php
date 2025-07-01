@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Framework\Database\BaseRepositories;
 
-use App\Framework\Database\BaseRepositories\NestedSet;
+use App\Framework\Database\BaseRepositories\NestedSetRepository;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\FrameworkException;
@@ -22,7 +22,7 @@ class NestedSetTest extends TestCase
 	private Result&MockObject $resultMock;
 	private NestedSetHelper&MockObject $helperMock;
 	private LoggerInterface&MockObject $loggerMock;
-	private NestedSet $repository;
+	private NestedSetRepository $repository;
 
 	/**
 	 * @throws Exception
@@ -35,7 +35,7 @@ class NestedSetTest extends TestCase
 		$this->helperMock       = $this->createMock(NestedSetHelper::class);
 		$this->loggerMock       = $this->createMock(LoggerInterface::class);
 
-		$this->repository       = new NestedSet($this->connectionMock, $this->helperMock, $this->loggerMock, 'table', 'id');
+		$this->repository       = new NestedSetRepository($this->connectionMock, $this->helperMock, $this->loggerMock, 'table', 'id');
 	}
 
 	/**

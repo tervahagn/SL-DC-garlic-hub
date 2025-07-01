@@ -19,20 +19,22 @@
 */
 namespace App\Modules\Mediapool\Repositories;
 
-use App\Framework\Database\BaseRepositories\NestedSet;
+use App\Framework\Database\BaseRepositories\NestedSetRepository;
 use App\Framework\Database\BaseRepositories\NestedSetHelper;
+use App\Framework\Database\BaseRepositories\SqlBase;
+use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
-class NodesRepository extends NestedSet
+class NodesRepository  extends SqlBase
 {
-	use FindOperationsTrait;
+	use CrudTraits, FindOperationsTrait;
 
-	public function __construct(Connection $connection, NestedSetHelper $helper, LoggerInterface $logger)
+	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection, $helper, $logger,'mediapool_nodes', 'node_id');
+		parent::__construct($connection, 'mediapool_nodes', 'node_id');
 	}
 
 	/**

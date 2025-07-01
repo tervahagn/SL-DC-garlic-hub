@@ -155,6 +155,7 @@ class ShowAdminController
 		return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
 	}
 
+
 	/**
 	 * @param ResponseInterface $response
 	 * @param array<string,mixed> $userInput
