@@ -24,6 +24,7 @@ use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
+use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
@@ -65,7 +66,30 @@ class NodesRepository  extends SqlBase
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
 
 		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+	}
 
+	/**
+	 * @return array<string, mixed>
+	 * @throws Exception|DatabaseException
+	 */
+	public function findNodeOwner(int $nodeId): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('user_main.UID, node_id, name, company_id')
+			->from($this->table)
+			->leftJoin($this->table,
+				'user_main',
+				'user_main',
+				$this->table.'.UID = user_main.UID')
+			->where('node_id = :id')
+			->orderBy('lft', 'ASC')
+			->setParameter('id', $nodeId);
+
+		$ret = $queryBuilder->executeQuery()->fetchAssociative();
+		if ($ret === false)
+			throw new DatabaseException('Node not found');
+
+		return $ret;
 	}
 
 }
