@@ -133,4 +133,55 @@ class CalculatorTest extends TestCase
 		$this->assertSame(5, $this->calculator->determineParentIdByRegion($region, $node));
 	}
 
+	#[Group('units')]
+	public function testCalculateBeforeMoveSubTreeWithPositiveDistance(): void
+	{
+		$movedNode = ['lft' => 3, 'root_id' => 1];
+		$targetNode = ['lft' => 7, 'root_id' => 1];
+		$newLgtPos = 10;
+		$width = 4;
+
+		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
+
+		$this->assertSame(['distance' => 7, 'tmpPos' => 3, 'width' => 4], $result);
+	}
+
+	#[Group('units')]
+	public function testCalculateBeforeMoveSubTreeWithNegativeDistanceSameRoot(): void
+	{
+		$movedNode = ['lft' => 10, 'root_id' => 1];
+		$targetNode = ['lft' => 3, 'root_id' => 1];
+		$newLgtPos = 5;
+		$width = 4;
+
+		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
+
+		$this->assertSame(['distance' => -9, 'tmpPos' => 14, 'width' => 4], $result);
+	}
+
+	#[Group('units')]
+	public function testCalculateBeforeMoveSubTreeWithNegativeDistanceDifferentRoot(): void
+	{
+		$movedNode = ['lft' => 8, 'root_id' => 1];
+		$targetNode = ['lft' => 5, 'root_id' => 2];
+		$newLgtPos = 4;
+		$width = 5;
+
+		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
+
+		$this->assertSame(['distance' => -4, 'tmpPos' => 8, 'width' => 5], $result);
+	}
+
+	#[Group('units')]
+	public function testCalculateBeforeMoveSubTreeWithZeroDistance(): void
+	{
+		$movedNode = ['lft' => 3, 'root_id' => 1];
+		$targetNode = ['lft' => 3, 'root_id' => 1];
+		$newLgtPos = 3;
+		$width = 2;
+
+		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
+
+		$this->assertSame(['distance' => 0, 'tmpPos' => 3, 'width' => 2], $result);
+	}
 }

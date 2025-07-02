@@ -154,7 +154,7 @@ class Service extends AbstractBaseService
 		catch (Throwable $e)
 		{
 			$this->transactions->rollBack();
-			$this->logger->error($e->getMessage());
+			$this->logger->error('Add root node failed because of: '. $e->getMessage());
 			$this->addErrorMessage($e->getMessage());
 			return 0;
 		}
@@ -188,7 +188,7 @@ class Service extends AbstractBaseService
 			$newNodeId = (int)$this->repository->insert($fields);
 			if ($newNodeId == 0)
 			{
-				throw new FrameworkException('Insert new sub node failed');
+				throw new FrameworkException('Insert new sub node failed.');
 			}
 
 			$this->transactions->commit();
@@ -216,7 +216,7 @@ class Service extends AbstractBaseService
 			$this->transactions->begin();
 
 			if ($this->repository->delete($node['node_id']) === 0 )
-				throw new FrameworkException('not exists');
+				throw new FrameworkException('Node not exists.');
 
 			$this->repository->moveNodesToLeftForDeletion($node['root_id'], $node['rgt']);
 			$this->repository->moveNodesToRightForDeletion($node['root_id'], $node['rgt']);
@@ -244,7 +244,7 @@ class Service extends AbstractBaseService
 			$this->transactions->begin();
 
 			if ($this->repository->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']) === 0)
-				throw new FrameworkException('not exists');
+				throw new FrameworkException('Node not exists.');
 
 			// remove other nodes to create some space
 			$move = (int) floor(($node['rgt'] - $node['lft']) / 2);
@@ -292,8 +292,10 @@ class Service extends AbstractBaseService
 			if ($i === 0)
 				throw new FrameworkException($movedNode['name']. ' cannot be moved via '.$region.' of '. $targetNode['name']);
 
-			$this->repository->update($movedNode['node_id'], ['parent_id' => $this->calculator->determineParentIdByRegion($region,
-				$targetNode)]);
+			$this->repository->update(
+				$movedNode['node_id'],
+				['parent_id' => $this->calculator->determineParentIdByRegion($region, $targetNode)]
+			);
 
 			// close source space if not a root node
 			if ($movedNode['parent_id'] !== 0)
