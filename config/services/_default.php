@@ -66,6 +66,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Mustache\Engine;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Container\ContainerInterface;
 use Slim\App;
@@ -141,8 +142,8 @@ $dependencies[Translator::class] = DI\factory(function (ContainerInterface $cont
 });
 $dependencies[AdapterInterface::class] = DI\factory(function ()
 {
-	$mustacheEngine = new Mustache_Engine([
-		'loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates'),
+	$mustacheEngine = new Engine([
+		'loader' => new Mustache\Loader\FilesystemLoader(__DIR__ . '/../../templates'),
     	'partials_loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates/generic')
 	]);
 	return new MustacheAdapter($mustacheEngine);

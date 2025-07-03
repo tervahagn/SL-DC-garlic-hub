@@ -34,7 +34,6 @@ use App\Modules\Profile\Helper\Password\Parameters;
 use App\Modules\Profile\Helper\Password\Validator;
 use App\Modules\Profile\Services\ProfileService;
 use App\Modules\Profile\Services\UserTokenService;
-use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use Psr\Container\ContainerInterface;
 

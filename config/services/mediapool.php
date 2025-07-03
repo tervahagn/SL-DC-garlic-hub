@@ -22,7 +22,6 @@ use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\ShellExecutor;
-use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Database\NestedSets\Service;
 use App\Framework\Media\Ffmpeg;
 use App\Framework\Media\MediaProperties;
@@ -48,11 +47,7 @@ $dependencies = [];
 
 $dependencies[NodesRepository::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new NodesRepository(
-		$container->get('SqlConnection'),
-		new NestedSetHelper(),
-		$container->get('FrameworkLogger')
-	);
+	return new NodesRepository($container->get('SqlConnection'));
 });
 $dependencies[AclValidator::class] = DI\factory(function (ContainerInterface $container)
 {

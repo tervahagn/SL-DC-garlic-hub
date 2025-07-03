@@ -498,8 +498,6 @@ class ServiceTest extends TestCase
 		$this->service->moveNode($movedNode, $targetNode, $region);
 	}
 
-
-
 	/**
 	 * @throws DatabaseException
 	 * @throws \Doctrine\DBAL\Exception
