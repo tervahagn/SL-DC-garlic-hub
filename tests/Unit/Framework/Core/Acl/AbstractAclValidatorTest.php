@@ -120,6 +120,30 @@ class AbstractAclValidatorTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	#[Group('units')]
+	public function testIsAdminSubAdminAccessFailsOfNotExistingParams(): void
+	{
+		$UID = 1;
+		$unit = ['UID' => 1];
+
+		$configMock = $this->createMock(Config::class);
+		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
+		$configMock->expects($this->once())->method('getEdition')->willReturn(Config::PLATFORM_EDITION_ENTERPRISE);
+
+		$this->aclHelperMock->method('isModuleAdmin')
+			->with($UID)
+			->willReturn(false);
+
+		$this->aclHelperMock->expects($this->never())->method('isSubAdmin');
+
+		$this->expectException(FrameworkException::class);
+		$this->expectExceptionMessage('Missing company id or UID in unit data.');
+
+		$result = $this->aclValidator->isAdmin($UID, $unit);
+
+		$this->assertTrue($result);
+	}
+
 
 	/**
 	 * @throws CoreException
