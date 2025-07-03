@@ -59,7 +59,7 @@ class NodesRepository  extends SqlBase
 	{
 		$select = [$this->table.'.UID, company_id, node_id, root_id'];
 		$where = [
-			'UID' => $this->generateWhereClause($UID),
+			$this->table.'.UID' => $this->generateWhereClause($UID),
 			'parent_id' => $this->generateWhereClause(0),
 			'is_user_folder' => $this->generateWhereClause(1)
 		];

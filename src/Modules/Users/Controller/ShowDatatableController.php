@@ -20,28 +20,54 @@
 
 namespace App\Modules\Users\Controller;
 
+use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
-use App\Framework\Utils\Datatable\DatatableFacadeInterface;
+use App\Modules\Users\Helper\Datatable\ControllerFacade;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class ShowDatatableController
+class ShowDatatableController extends AbstractAsyncController
 {
-	private DatatableFacadeInterface $facade;
+	private ControllerFacade $facade;
 	private DatatableTemplatePreparer $templateFormatter;
-	public function __construct(DatatableFacadeInterface $facade, DatatableTemplatePreparer $templateFormatter)
+
+	public function __construct(ControllerFacade $facade, DatatableTemplatePreparer $templateFormatter)
 	{
 		$this->facade            = $facade;
 		$this->templateFormatter = $templateFormatter;
 	}
 
+	/**
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws CoreException
+	 * @throws Exception
+	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		/** @var array<string,mixed> $post */
+		$post       = $request->getParsedBody();
+		$flash      = $request->getAttribute('flash');
+		$translator = $request->getAttribute('translator');
+		$UID = (int) $post['UID'] ?? 0;
+		if ($UID === 0)
+		{
+			$flash->addMessage('error', $translator->translate('user_not_found', 'users'));
+			return $this->jsonResponse($response, ['success' => true]);
+		}
 
+		$this->facade->configure($translator, $request->getAttribute('session'));
+		if ($this->facade->deleteUser($UID))
+			$flash->addMessage('success', $translator->translate('user_deleted', 'users'));
+		else
+			$flash->addMessage('error', $translator->translate('user_delete_failed', 'users'));
+
+		return $this->jsonResponse($response, ['success' => true]);
 	}
 
 	/**
@@ -49,6 +75,7 @@ class ShowDatatableController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws Exception|ModuleException
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

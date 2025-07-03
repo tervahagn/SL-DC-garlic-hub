@@ -7,7 +7,7 @@
 				<input type="hidden" name="elements_per_page" id="elements_per_page" value="{{{ELEMENTS_PER_PAGE}}}">
 		{{#element_hidden}}
 			{{{HIDDEN_HTML_ELEMENT}}}
-		{{/element_hidden}}x
+		{{/element_hidden}}
 		<div class="form-filter">
 			{{#form_element}}
 				<div class="field-wrapper">
@@ -125,7 +125,7 @@
 						{{/has_action}}
 						{{#has_delete}}
                         <li>
-                            <a data-delete-id="{{{DELETE_ID}}}" data-confirm="{{{LANG_CONFIRM_DELETE}}}" title="{{{LANG_DELETE}}}" class="bi bi-trash {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
+                            <a data-delete-id="{{{DELETE_ID}}}" data-confirm="{{{LANG_CONFIRM_DELETE}}}" title="{{{LANG_DELETE}}}" class="delete-user bi bi-trash {{{ELEMENT_DELETE_CLASS}}}">&nbsp;&nbsp;</a>
                         </li>
 						{{/has_delete}}
                     </ul>

@@ -27,6 +27,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\Datatable\Results\HeaderField;
+use App\Modules\Users\Services\UsersAdminService;
 use App\Modules\Users\Services\UsersDatatableService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,13 +38,15 @@ class ControllerFacade implements DatatableFacadeInterface
 	private readonly DatatableBuilder $datatableBuilder;
 	private readonly DatatablePreparer $datatableFormatter;
 	private readonly UsersDatatableService $usersService;
+	private readonly UsersAdminService $usersAdminService;
 	private int $UID;
 
-	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, UsersDatatableService $usersService)
+	public function __construct(DatatableBuilder $datatableBuilder, DatatablePreparer $datatableFormatter, UsersDatatableService $usersService, UsersAdminService $usersAdminService)
 	{
-		$this->datatableBuilder = $datatableBuilder;
+		$this->datatableBuilder   = $datatableBuilder;
 		$this->datatableFormatter = $datatableFormatter;
-		$this->usersService = $usersService;
+		$this->usersService       = $usersService;
+		$this->usersAdminService  = $usersAdminService;
 	}
 
 	/**
@@ -57,9 +60,18 @@ class ControllerFacade implements DatatableFacadeInterface
 		$user = $session->get('user');
 		$this->UID = (int) $user['UID'];
 		$this->usersService->setUID($this->UID);
+		$this->usersAdminService->setUID($this->UID);
 		$this->datatableBuilder->configureParameters($this->UID);
 		$this->datatableFormatter->setTranslator($translator);
 		$this->datatableBuilder->setTranslator($translator);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function deleteUser(int $UID): bool
+	{
+		return $this->usersAdminService->deleteUser($UID);
 	}
 
 	/**
@@ -116,8 +128,8 @@ class ControllerFacade implements DatatableFacadeInterface
 			'title'               => $datatableStructure['title'],
 			'template_name'       => 'users/datatable',
 			'module_name'		  => 'users',
-			'additional_css'      => ['/css/users/overview.css'],
-			'footer_modules'      => ['/js/users/overview/init.js'],
+			'additional_css'      => ['/css/users/datatable.css'],
+			'footer_modules'      => ['/js/users/datatable/init.js'],
 			'sort'				  => $this->datatableFormatter->prepareSort(),
 			'page'      		  => $this->datatableFormatter->preparePage()
 		];

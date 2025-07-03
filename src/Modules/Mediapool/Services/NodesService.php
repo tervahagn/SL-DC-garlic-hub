@@ -120,13 +120,14 @@ class NodesService
 	public function deleteUserDirectory(int $UID): void
 	{
 		$node = $this->nodesRepository->getUserRootNode($UID);
+		// if directory not exist, nothing should happen.
 		if (count($node) === 0)
-			throw new ModuleException('mediapool', 'Get user directory failed.');
+			return;
 
 		if (!$this->aclValidator->isModuleAdmin($this->UID))
 			throw new ModuleException('mediapool','No rights to delete user root node.');
 
-		$condition = ['root_id' => $this->nodesRepository->generateWhereClause('root_id')];
+		$condition = ['root_id' => $this->nodesRepository->generateWhereClause($node['root_id'])];
 		$result = $this->nodesRepository->findAllBy($condition);
 		foreach ($result as $node)
 		{

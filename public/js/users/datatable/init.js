@@ -18,6 +18,25 @@
 */
 
 "use strict";
+import {UserService} from "../UserService.js";
+import {FetchClient} from "../../core/FetchClient.js";
+
 document.addEventListener("DOMContentLoaded", function()
 {
+	const deleteUsers = document.getElementsByClassName("delete-user");
+	const userService = new UserService(new FetchClient());
+	for (const deleteUser of deleteUsers)
+	{
+		deleteUser.addEventListener('click',  async function (e)
+		{
+			e.preventDefault();
+			if (confirm(e.target.dataset.confirm))
+			{
+				await userService.deleteUser(e.target.dataset.deleteId);
+				location.reload();
+			}
+		});
+	}
+
+
 });

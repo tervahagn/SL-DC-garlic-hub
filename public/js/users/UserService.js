@@ -16,8 +16,18 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-export const UsersApiConfig = {
-	USER_TOKENS_BASE_URI: "/async/profile/tokens",
-	USER_DELETE_FROM_UI: "/users"
 
+import {BaseService} from "../core/Base/BaseService.js";
+import {UsersApiConfig} from "./UsersApiConfig.js";
+
+export class UserService  extends BaseService
+{
+	async deleteUser(uid)
+	{
+		const url = UsersApiConfig.USER_DELETE_FROM_UI;
+		const data = {
+			UID: uid
+		};
+		return await this._sendRequest(url, "DELETE", data);
+	}
 }

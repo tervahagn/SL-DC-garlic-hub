@@ -34,7 +34,6 @@ class UsersDatatableService extends AbstractDatatableService
 	private readonly BaseParameters $parameters;
 	private readonly AclValidator $aclValidator;
 
-
 	public function __construct(UserMainRepository $userMainRepository, BaseParameters $parameters, AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
@@ -73,8 +72,5 @@ class UsersDatatableService extends AbstractDatatableService
 			$this->fetchForUser($this->userMainRepository, $this->parameters);
 		}
 	}
-
-
-
 
 }

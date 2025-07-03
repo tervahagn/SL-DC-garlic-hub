@@ -129,7 +129,8 @@ $dependencies[ControllerFacade::class] = DI\factory(function (ContainerInterface
 	return new ControllerFacade(
 		$container->get(DatatableBuilder::class),
 		$container->get(DatatablePreparer::class),
-		$container->get(UsersDatatableService::class)
+		$container->get(UsersDatatableService::class),
+		$container->get(UsersAdminService::class),
 	);
 });
 $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerInterface $container)
@@ -164,6 +165,7 @@ $dependencies[UsersAdminService::class] = DI\factory(function (ContainerInterfac
 		$repositories['main'],
 		$container->get(NodesService::class),
 		$container->get(UserTokenService::class),
+		$container->get(AclValidator::class),
 		$container->get('ModuleLogger')
 	);
 });

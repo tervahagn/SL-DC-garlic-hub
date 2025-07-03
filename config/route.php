@@ -38,7 +38,6 @@ use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Profile\Controller\ShowPasswordController;
 use App\Modules\Users\Controller\ShowAdminController;
-use App\Modules\Users\Controller\ShowPasswordResetController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\Controller\UserTokenController;
 use Psr\Container\ContainerInterface;
@@ -81,6 +80,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container)
 	$group->get('/set-locales/{locale}', createControllerCallable([EditLocalesController::class, 'setLocales'], $container));
 
 	$group->get('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'show'], $container));
+	$group->delete('/users', createControllerCallable([\App\Modules\Users\Controller\ShowDatatableController::class, 'delete'], $container));
 	$group->post('/users/edit', createControllerCallable([ShowAdminController::class, 'store'], $container));
 	$group->get('/users/new', createControllerCallable([ShowAdminController::class, 'newUserForm'], $container));
 	$group->get('/users/edit/{UID:\d+}', createControllerCallable([ShowAdminController::class, 'editUserForm'], $container));
@@ -113,7 +113,6 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container)
 
 $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 {
-	$group->get('/users/find/{username}', createControllerCallable([UsersController::class, 'findByName'], $container));
 
 	$group->get('/mediapool/node[/{parent_id:\d+}]', createControllerCallable([NodesController::class, 'list'], $container)); // parent_id is optional with []
 	$group->post('/mediapool/node', createControllerCallable([NodesController::class, 'add'], $container));
@@ -151,6 +150,8 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->patch('/playlists/widget/save', createControllerCallable([WidgetsController::class, 'save'], $container));
 
 	$group->patch('/player/playlist', createControllerCallable([PlayerController::class, 'replacePlaylist'], $container));
+
+	$group->get('/users/find/{username}', createControllerCallable([UsersController::class, 'findByName'], $container));
 
 	$group->post('/profile/tokens', createControllerCallable([UserTokenController::class, 'refresh'], $container));
 	$group->delete('/profile/tokens', createControllerCallable([UserTokenController::class, 'delete'], $container));
