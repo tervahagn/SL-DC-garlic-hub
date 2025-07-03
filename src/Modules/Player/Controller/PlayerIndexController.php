@@ -22,6 +22,7 @@
 namespace App\Modules\Player\Controller;
 
 use App\Framework\Core\Sanitizer;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Helper\Index\IndexResponseHandler;
 use App\Modules\Player\Services\PlayerIndexService;
 use Psr\Http\Message\ResponseInterface;
@@ -40,6 +41,9 @@ readonly class PlayerIndexController
 		$this->sanitizer            = $sanitizer;
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		$get        = $request->getQueryParams();
@@ -49,10 +53,7 @@ readonly class PlayerIndexController
 //		$this->indexResponseHandler->debugServer();
 
 		// because JavaScript player cannot send a User-Agent.
-		if (isset($server['HTTP_X_SIGNAGE_AGENT']))
-			$userAgent  = $server['HTTP_X_SIGNAGE_AGENT'];
-		else
-			$userAgent  = $server['HTTP_USER_AGENT'];
+		$userAgent = $server['HTTP_X_SIGNAGE_AGENT'] ?? $server['HTTP_USER_AGENT'];
 
 		$serverName = $server['SERVER_NAME'];
 
@@ -70,6 +71,10 @@ readonly class PlayerIndexController
 		return $this->sendSmilHeader($response, $server, $filePath);
 	}
 
+	/**
+	 * @param array<string,mixed> $server
+	 * @throws ModuleException
+	 */
 	private function sendSmilHeader(ResponseInterface $response, array $server, string $filePath): ResponseInterface
 	{
 		$this->indexResponseHandler->init($server, $filePath);

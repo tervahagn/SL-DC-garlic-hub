@@ -40,6 +40,9 @@ class Miscellaneous extends AbstractMediaHandler
 		$this->maxSize = $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
 	}
 
+	/**
+	 * @throws ModuleException
+	 */
 	public function checkFileBeforeUpload(int $size): void
 	{
 		if ($size > $this->maxSize)
@@ -69,7 +72,7 @@ class Miscellaneous extends AbstractMediaHandler
 
 		$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['filename'].'.svg';
 
-		if ($fileInfo['extension'] === 'csv' || $fileInfo['extension'] === 'json' || $fileInfo['extension'] === 'xml')
+		if (isset($fileInfo['extension']) && ($fileInfo['extension'] === 'csv' || $fileInfo['extension'] === 'json' || $fileInfo['extension'] === 'xml'))
 			$iconPath  = '/'.$this->iconsPath.'/database.svg';
 		else
 			$iconPath  = '/'.$this->iconsPath.'/file.svg';

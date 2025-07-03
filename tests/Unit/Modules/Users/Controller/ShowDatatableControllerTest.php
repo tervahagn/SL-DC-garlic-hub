@@ -6,9 +6,9 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Utils\Datatable\DatatableFacadeInterface;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Users\Controller\ShowDatatableController;
+use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -22,7 +22,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 class ShowDatatableControllerTest extends TestCase
 {
 	private ShowDatatableController $controller;
-	private DatatableFacadeInterface&MockObject $facadeMock;
+	private ControllerFacade&MockObject $facadeMock;
 	private DatatableTemplatePreparer&MockObject $templatePreparerMock;
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
@@ -36,7 +36,7 @@ class ShowDatatableControllerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->facadeMock           = $this->createMock(DatatableFacadeInterface::class);
+		$this->facadeMock           = $this->createMock(ControllerFacade::class);
 		$this->templatePreparerMock = $this->createMock(DatatableTemplatePreparer::class);
 		$this->requestMock          = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock         = $this->createMock(ResponseInterface::class);

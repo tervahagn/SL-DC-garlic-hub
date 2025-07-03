@@ -35,7 +35,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparer extends AbstractDatatablePreparer
 {
-	/** @var int[] */
+	/** @var array<int,bool> */
 	private array $usedPlaylists;
 
 	private AclValidator $aclValidator;

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
+use App\Framework\Exceptions\CoreException;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
@@ -27,12 +28,15 @@ class PlayerEntityTest extends TestCase
 		$this->userAgentHandlerMock = $this->createMock(UserAgentHandler::class);
 	}
 
+	/**
+	 * @throws CoreException
+	 */
 	#[Group('units')]
 	public function testConstructorWithValidData(): void
 	{
 		$screenTimes = [
-			0 => ['screen1' => ['monday' => 'some time']],
-			1 => ['screen2' => []]
+			'screen1' => ['monday' => 'some time'],
+			'screen2' => ['tuesday' => 'some time']
 		];
 		$data = [
 			'player_id' => 10,
@@ -47,11 +51,11 @@ class PlayerEntityTest extends TestCase
 			'licence_id' => 56789,
 			'playlist_name' => 'Example Playlist',
 			'playlist_mode' => 'loop',
-			'multizone' => ['zone1', 'zone2'],
+			'multizone' => ['zone1' => [], 'zone2' => []],
 			'location_data' => ['city' => 'New York'],
 			'location_longitude' => '-74.0060',
 			'location_latitude' => '40.7128',
-			'categories' => ['category1', 'category2'],
+			'categories' => ['category1' => [], 'category2' => []],
 			'properties' => ['width' => 1920, 'height' => 1080],
 			'remote_administration' => ['enabled' => true],
 			'screen_times' => $screenTimes
@@ -82,11 +86,11 @@ class PlayerEntityTest extends TestCase
 		$this->assertEmpty($this->playerEntity->getReports());
 		$this->assertSame('1.0.0', $this->playerEntity->getFirmwareVersion());
 		$this->assertSame('Player One', $this->playerEntity->getPlayerName());
-		$this->assertSame(['zone1', 'zone2'], $this->playerEntity->getZones());
+		$this->assertSame(['zone1' => [], 'zone2' => []], $this->playerEntity->getZones());
 		$this->assertSame(['city' => 'New York'], $this->playerEntity->getLocationData());
 		$this->assertSame('-74.0060', $this->playerEntity->getLocationLongitude());
 		$this->assertSame('40.7128', $this->playerEntity->getLocationLatitude());
-		$this->assertSame(['category1', 'category2'], $this->playerEntity->getCategories());
+		$this->assertSame(['category1' => [], 'category2' => []], $this->playerEntity->getCategories());
 		$this->assertSame(['width' => 1920, 'height' => 1080], $this->playerEntity->getProperties());
 		$this->assertSame(['enabled' => true], $this->playerEntity->getRemoteAdministration());
 		$this->assertSame($screenTimes, $this->playerEntity->getScreenTimes());

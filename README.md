@@ -9,8 +9,7 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 > 
 > Current works:
 > - towards PHPStan Level 8 Compliance
-> - refactor NestedSets classes
-> - Simple User Management. Admin should create user tokenized to let them set their own passwords.
+> - Simple User Management.
 
 ![Garlic-Hub Mediapool Screenshot](docs/media/showcase.gif)
 

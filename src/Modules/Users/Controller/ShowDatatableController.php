@@ -54,7 +54,7 @@ class ShowDatatableController extends AbstractAsyncController
 		$post       = $request->getParsedBody();
 		$flash      = $request->getAttribute('flash');
 		$translator = $request->getAttribute('translator');
-		$UID = (int) $post['UID'] ?? 0;
+		$UID = $post['UID'] ?? 0;
 		if ($UID === 0)
 		{
 			$flash->addMessage('error', $translator->translate('user_not_found', 'users'));
@@ -91,6 +91,4 @@ class ShowDatatableController extends AbstractAsyncController
 
 		return $response->withHeader('Content-Type', 'text/html');
 	}
-
-
 }

@@ -35,13 +35,15 @@ class UsersAdminService extends AbstractBaseService
 	private readonly UserMainRepository $userMainRepository;
 	private readonly NodesService $nodesService;
 	private readonly UserTokenService $userTokenService;
+	private readonly AclValidator $aclValidator;
 
 
-	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService, UserTokenService $userTokenService,LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService, UserTokenService $userTokenService,AclValidator $aclValidator, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->userTokenService   = $userTokenService;
 		$this->nodesService       = $nodesService;
+		$this->aclValidator       = $aclValidator;
 
 		parent::__construct($logger);
 	}
@@ -98,7 +100,7 @@ class UsersAdminService extends AbstractBaseService
 
 			$this->userTokenService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
 
-			$this->nodesService = $this->UID;
+			$this->nodesService->UID = $this->UID;
 			$nodeId = $this->nodesService->addUserDirectory($UID, $saveData['username']);
 			if ($nodeId === 0)
 				throw new ModuleException('users', 'Create mediapool user directory failed.');
@@ -115,15 +117,22 @@ class UsersAdminService extends AbstractBaseService
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function deleteUser(int $UID): bool
 	{
 		try
 		{
 			$this->userMainRepository->beginTransaction();
-			if($this->userMainRepository->delete($UID) === 0)
+
+			if (!$this->aclValidator->isModuleAdmin($this->UID))
+				throw new ModuleException('users', 'No rights to delete user');
+
+			if ($this->userMainRepository->delete($UID) === 0)
 				throw new ModuleException('users', 'Remove the user from  db-table failed.');
 
-			$this->nodesService = $this->UID;
+			$this->nodesService->UID = $this->UID;
 			$this->nodesService->deleteUserDirectory($UID);
 
 			$this->userMainRepository->commitTransaction();

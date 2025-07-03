@@ -36,7 +36,6 @@ class MediaService
 	private readonly FilesRepository $mediaRepository;
 	private readonly NodesRepository $nodesRepository;
 	private readonly AclValidator $aclValidator;
-
 	private readonly LoggerInterface $logger;
 	private int $UID;
 	private string $pathOriginals;
@@ -114,8 +113,10 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			if (empty($media))
+				throw new ModuleException('mediapool', 'No media found.');
 
-			// media has all the required fields (node_id, UID, company_id) for permissions check
+			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['read'])
 				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
@@ -152,8 +153,10 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			if (empty($media))
+				throw new ModuleException('mediapool', 'No media found.');
 
-			// media has all the required fields (node_id, UID, company_id) for permissions check
+			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['edit'])
 				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $media['node_id']);
@@ -183,8 +186,10 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			if (empty($media))
+				throw new ModuleException('mediapool', 'No media found.');
 
-			// media has all the required fields (node_id, UID, company_id) for permissions check
+			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['edit'])
 				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $media['node_id']);
@@ -206,6 +211,10 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			if (empty($media))
+				throw new ModuleException('mediapool', 'No media found.');
+
+			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['read'])
 				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
@@ -235,6 +244,10 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+			if (empty($media))
+				throw new ModuleException('mediapool', 'No media found.');
+
+			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
 			if (!$permissions['read'] || !$permissions['edit'])
 				throw new ModuleException('mediapool', 'No permissions on this directory: '. $media['node_id']);

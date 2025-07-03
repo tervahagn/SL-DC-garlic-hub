@@ -233,13 +233,17 @@ class RepositoryTest extends TestCase
 		$this->assertEquals($expectedResult, $actualResult);
 	}
 
+	/**
+	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testFindAllChildrenInTreeOfNodeIdFails(): void
 	{
 		$nodeId = 2;
 
 
-		$this->connectionMock->expects($this->once(1))->method('createQueryBuilder')
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock);
 
 		$this->queryBuilderMock->expects($this->once())->method('select')
@@ -252,7 +256,7 @@ class RepositoryTest extends TestCase
 			->willReturn([]);
 
 
-		// Second query (find children) will not reached
+		// The second query (find children) will not be reached
 		$queryBuilderMock2 = $this->createMock(QueryBuilder::class);
 		$queryBuilderMock2->expects($this->never())->method('select');
 
@@ -480,7 +484,6 @@ class RepositoryTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -515,7 +518,6 @@ class RepositoryTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

@@ -39,6 +39,7 @@ class FileInfoWrapper
 
 	public function __destruct()
 	{
+		// @phpstan-ignore-next-line // needed for testing
 		if (isset($this->fileInfo))
 			finfo_close($this->fileInfo);
 	}

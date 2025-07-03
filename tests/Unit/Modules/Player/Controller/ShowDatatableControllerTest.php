@@ -9,6 +9,7 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Player\Controller\ShowDatatableController;
+use App\Modules\Player\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -22,7 +23,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class ShowDatatableControllerTest extends TestCase
 {
-	private Facade&MockObject $facadeMock;
+	private ControllerFacade&MockObject $facadeMock;
 	private DatatableTemplatePreparer&MockObject $templatePreparerMock;
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
@@ -36,7 +37,7 @@ class ShowDatatableControllerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		$this->facadeMock           = $this->createMock(Facade::class);
+		$this->facadeMock           = $this->createMock(ControllerFacade::class);
 		$this->templatePreparerMock = $this->createMock(DatatableTemplatePreparer::class);
 		$this->requestMock          = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock         = $this->createMock(ResponseInterface::class);

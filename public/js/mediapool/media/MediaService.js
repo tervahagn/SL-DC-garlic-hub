@@ -27,7 +27,6 @@ import {BaseService}    from "../../core/Base/BaseService.js";
  */
 export class MediaService extends BaseService
 {
-
     async loadMediaByNodeId(nodeId)
     {
         const url    = MediaApiConfig.LIST_URI + "/" + nodeId;

@@ -29,6 +29,7 @@ use App\Framework\Exceptions\ModuleException;
 use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
+use App\Modules\Users\Services\UsersAdminService;
 use App\Modules\Users\Services\UsersDatatableService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
@@ -43,6 +44,7 @@ class ControllerFacadeTest extends TestCase
 	private DatatableBuilder&MockObject $datatableBuilderMock;
 	private DatatablePreparer&MockObject $datatablePreparerMock;
 	private UsersDatatableService&MockObject $usersServiceMock;
+	private UsersAdminService&MockObject $usersAdminServiceMock;
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 
@@ -54,13 +56,15 @@ class ControllerFacadeTest extends TestCase
 		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
 		$this->datatablePreparerMock = $this->createMock(DatatablePreparer::class);
 		$this->usersServiceMock = $this->createMock(UsersDatatableService::class);
+		$this->usersAdminServiceMock = $this->createMock(UsersAdminService::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->sessionMock = $this->createMock(Session::class);
 
 		$this->controllerFacade = new ControllerFacade(
 			$this->datatableBuilderMock,
 			$this->datatablePreparerMock,
-			$this->usersServiceMock
+			$this->usersServiceMock,
+			$this->usersAdminServiceMock
 		);
 
 		$this->usersServiceMock->method('getCurrentTotalResult')->willReturn(42);
@@ -233,8 +237,8 @@ class ControllerFacadeTest extends TestCase
 			'title' => 'Mock Title',
 			'template_name' => 'users/datatable',
 			'module_name' => 'users',
-			'additional_css' => ['/css/users/overview.css'],
-			'footer_modules' => ['/js/users/overview/init.js'],
+			'additional_css' => ['/css/users/datatable.css'],
+			'footer_modules' => ['/js/users/datatable/init.js'],
 			'sort' => ['prepared_sort'],
 			'page' => ['prepared_page']
 		], $result);

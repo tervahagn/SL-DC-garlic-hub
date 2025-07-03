@@ -37,7 +37,7 @@ class AclValidator extends AbstractAclValidator
 
 	/**
 	 * @param int $UID
-	 * @param array{UID: int, company_id: int, player_id: int ...} $player
+	 * @param array{UID: int, company_id: int, player_id: int, ...} $player
 	 * @return bool
 	 * @throws CoreException
 	 * @throws Exception
@@ -56,7 +56,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array{"UID": int, "company_id": int, ...} $player
+	 * @param array{UID: int, company_id: int, player_id:int, ...} $player
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception

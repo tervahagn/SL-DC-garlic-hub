@@ -21,9 +21,7 @@
 namespace App\Modules\Users\Services;
 
 use App\Framework\Database\BaseRepositories\FilterBase;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
-use App\Modules\Profile\Entities\TokenPurposes;
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
 use App\Modules\Profile\Services\UserTokenService;
@@ -36,13 +34,12 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Throwable;
 
 /**
  * User service handles and caches the userEntity. This is a central point for authentication and checking
  *  user access rights for different modules.
  *
- * The class is user agnostic and the methods needs user id to work and return a userEntity.
+ * The class is user agnostic and the methods need user id to work and return a userEntity.
  */
 class UsersService extends AbstractBaseService
 {

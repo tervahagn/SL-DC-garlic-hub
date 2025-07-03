@@ -25,6 +25,7 @@ use InvalidArgumentException;
 
 class MimeTypeDetector
 {
+	/** @var array<string,string>  */
 	private array $preferredMimeTypes = [
 		// Images
 		'image/jpeg'            => 'jpg',
@@ -92,7 +93,7 @@ class MimeTypeDetector
 			return 'application/widget';
 
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromFile($filePath);
-		if ($mimeType === false)
+		if (!is_string($mimeType))
 			throw new ModuleException('mediapool', "MIME-Type for '$filePath' could not be detected.");
 
 		return $mimeType;
@@ -101,17 +102,17 @@ class MimeTypeDetector
 	/**
 	 * @throws ModuleException
 	 */
-	public function detectFromStream($stream): string
+	public function detectFromStream(mixed $stream): string
 	{
 		if (!$this->fileInfoWrapper->isStream($stream))
 			throw new InvalidArgumentException('Invalid stream.');
 
 		$content = $this->fileInfoWrapper->getStreamContent($stream);
-		if ($content === false)
+		if (!is_string($content))
 			throw new ModuleException('mediapool','Stream was not readable.');
 
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent($content);
-		if ($mimeType === false)
+		if (!is_string($mimeType))
 			throw new ModuleException('mediapool', 'MIME-Type could not be detected from stream.');
 
 		return $mimeType;
