@@ -119,7 +119,7 @@ class CalculatorTest extends TestCase
 	public function testDetermineParentIdByRegionForAppendChild(): void
 	{
 		$node = ['node_id' => 10, 'parent_id' => 5];
-		$region = NestedSetHelper::REGION_APPENDCHILD;
+		$region = Calculator::REGION_APPENDCHILD;
 
 		$this->assertSame(10, $this->calculator->determineParentIdByRegion($region, $node));
 	}
@@ -128,7 +128,7 @@ class CalculatorTest extends TestCase
 	public function testDetermineParentIdByRegionForNonAppendChild(): void
 	{
 		$node = ['node_id' => 10, 'parent_id' => 5];
-		$region = NestedSetHelper::REGION_BEFORE;
+		$region = Calculator::REGION_BEFORE;
 
 		$this->assertSame(5, $this->calculator->determineParentIdByRegion($region, $node));
 	}

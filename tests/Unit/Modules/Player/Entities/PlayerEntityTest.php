@@ -112,9 +112,9 @@ class PlayerEntityTest extends TestCase
 		$this->assertSame(1, $this->playerEntity->getPlayerId());
 		$this->assertSame(0, $this->playerEntity->getPlaylistId());
 		$this->assertSame(1, $this->playerEntity->getUID());
-		$this->assertEquals(new DateTime('2001-01-01 00:00:00'), $this->playerEntity->getLastAccess());
-		$this->assertEquals(new DateTime('2001-01-01 00:00:00'), $this->playerEntity->getLastUpdate());
-		$this->assertEquals(new DateTime('2001-01-01 00:00:00'), $this->playerEntity->getLastUpdatePlaylist());
+		$this->assertEquals(new DateTime('2025-01-01 00:00:00'), $this->playerEntity->getLastAccess());
+		$this->assertEquals(new DateTime('2025-01-01 00:00:00'), $this->playerEntity->getLastUpdate());
+		$this->assertEquals(new DateTime('2025-01-01 00:00:00'), $this->playerEntity->getLastUpdatePlaylist());
 		$this->assertSame(0, $this->playerEntity->getDuration());
 		$this->assertSame(0, $this->playerEntity->getStatus());
 		$this->assertSame(900, $this->playerEntity->getRefresh());

@@ -20,11 +20,12 @@
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
-use App\Framework\Database\BaseRepositories\NestedSetHelper;
+use App\Framework\Database\NestedSets\Calculator;
+use App\Framework\Database\NestedSets\Service;
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\NodesRepository;
+use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -36,6 +37,8 @@ use PHPUnit\Framework\TestCase;
 class NodesServiceTest extends TestCase
 {
 	private NodesRepository&MockObject $nodesRepositoryMock;
+	private Service&MockObject $nestedSetServiceMock;
+	private MediaService&MockObject $mediaServiceMock;
 	private AclValidator&MockObject $aclValidatorMock;
 	private NodesService $nodesService;
 
@@ -46,7 +49,12 @@ class NodesServiceTest extends TestCase
 	{
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
-		$this->nodesService = new NodesService($this->nodesRepositoryMock, $this->aclValidatorMock);
+		$this->nestedSetServiceMock = $this->createMock(Service::class);
+		$this->mediaServiceMock = $this->createMock(MediaService::class);
+
+		$this->nodesService = new NodesService(
+			$this->nodesRepositoryMock, $this->nestedSetServiceMock, $this->mediaServiceMock,$this->aclValidatorMock
+		);
 	}
 
 	/**
@@ -78,11 +86,11 @@ class NodesServiceTest extends TestCase
 	{
 		$parentId = 0;
 		$nodes = [['node_id' => 1, 'name' => 'Root Node', 'children' => 0, 'parent_id' => 0, 'UID' => 123, 'visibility' => 1]];
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('findAllRootNodes')
 			->willReturn($nodes);
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('findAllChildNodesByParentNode');
 
 		$rights = ['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'];
@@ -91,7 +99,7 @@ class NodesServiceTest extends TestCase
 			->willReturn($rights);
 
 
-		$this->nodesService = 123;
+		$this->nodesService->UID = 123;
 		$result = $this->nodesService->getNodes($parentId);
 		$this->assertCount(1, $result);
 		$this->assertEquals('Root Node', $result[0]['title']);
@@ -108,10 +116,10 @@ class NodesServiceTest extends TestCase
 	{
 		$parentId = 21;
 		$nodes = [['node_id' => 1, 'name' => 'Sub Node', 'children' => 0, 'parent_id' => 0, 'UID' => 123, 'visibility' => 1]];
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('findAllRootNodes');
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('findAllChildNodesByParentNode')
 			->willReturn($nodes);
 
@@ -120,16 +128,15 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesService = 123;
+		$this->nodesService->UID = 123;
 		$result = $this->nodesService->getNodes($parentId);
 		$this->assertCount(1, $result);
 		$this->assertEquals('Sub Node', $result[0]['title']);
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -138,15 +145,15 @@ class NodesServiceTest extends TestCase
 	{
 		$uid = 123;
 		$name = 'New Root Node';
-		$this->nodesService = $uid;
+		$this->nodesService->UID = $uid;
 
 		$this->aclValidatorMock->expects($this->once())
 			->method('isModuleAdmin')
 			->with($uid)
 			->willReturn(true);
 
-		$this->nodesRepositoryMock->expects($this->once())
-			->method('addRootNodeSecured')
+		$this->nestedSetServiceMock->expects($this->once())
+			->method('addRootNode')
 			->with($uid, $name)
 			->willReturn(1);
 
@@ -155,8 +162,8 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -165,15 +172,15 @@ class NodesServiceTest extends TestCase
 	{
 		$uid = 123;
 		$name = 'New Root Node';
-		$this->nodesService = $uid;
+		$this->nodesService->UID = $uid;
 
 		$this->aclValidatorMock->expects($this->once())
 			->method('isModuleAdmin')
 			->with($uid)
 			->willReturn(false);
 
-		$this->nodesRepositoryMock->expects($this->never())
-			->method('addRootNodeSecured');
+		$this->nestedSetServiceMock->expects($this->never())
+			->method('addRootNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('No rights to add root node.');
@@ -184,9 +191,8 @@ class NodesServiceTest extends TestCase
 
 
 	/**
-	 * @throws ModuleException
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -197,7 +203,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService = $uid;
+		$this->nodesService->UID = $uid;
 
 		$parentNode = ['node_id' => 1, 'name' => 'Parent Node', 'parent_id' => 1, 'children' => 0, 'UID' => 123, 'visibility' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -210,7 +216,7 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('addSubNode')
 			->with($uid, $name, $parentNode)
 			->willReturn(2);
@@ -220,8 +226,8 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -232,7 +238,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService = $uid;
+		$this->nodesService->UID = $uid;
 
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -245,15 +251,15 @@ class NodesServiceTest extends TestCase
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Parent node not found');
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('addSubNode');
 
 		$this->nodesService->addNode($parentNodeId, $name);
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -264,7 +270,7 @@ class NodesServiceTest extends TestCase
 		$parentNodeId = 1;
 		$name = 'New Sub Node';
 
-		$this->nodesService = $uid;
+		$this->nodesService->UID = $uid;
 
 		$parentNode = ['node_id' => 1, 'name' => 'Parent Node', 'parent_id' => 1, 'children' => 0, 'UID' => 123, 'visibility' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -277,7 +283,7 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('addSubNode');
 
 		$this->expectException(ModuleException::class);
@@ -298,7 +304,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService = 12;
+		$this->nodesService->UID = 12;
 		$visibility = 1;
 		$node = ['node_id' => 1, 'name' => 'Node to Edit', 'parent_id' => 0, 'children' => 0, 'UID' => 123, 'visibility' => 0];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -334,7 +340,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService = 12;
+		$this->nodesService->UID = 12;
 		$visibility = 1;
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -366,7 +372,7 @@ class NodesServiceTest extends TestCase
 	{
 		$nodeId = 1;
 		$name = 'Updated Node Name';
-		$this->nodesService = 12;
+		$this->nodesService->UID = 12;
 		$visibility = 1;
 		$node = ['node_id' => 1, 'name' => 'Node to Edit', 'children' => 0, 'UID' => 123, 'visibility' => 0];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -393,7 +399,6 @@ class NodesServiceTest extends TestCase
 
 	/**
 	 * @throws ModuleException
-	 * @throws DatabaseException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -401,7 +406,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
-		$region = NestedSetHelper::REGION_APPENDCHILD;
+		$region = Calculator::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 2];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -409,7 +414,7 @@ class NodesServiceTest extends TestCase
 			->method('getNode')
 			->willReturnOnConsecutiveCalls($movedNode, $targetNode);
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('moveNode')
 			->with($movedNode, $targetNode, $region);
 
@@ -418,7 +423,6 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -430,7 +434,7 @@ class NodesServiceTest extends TestCase
 		$region       = 'Bäm';
 
 		$this->nodesRepositoryMock->expects($this->never())->method('getNode');
-		$this->nodesRepositoryMock->expects($this->never())->method('moveNode');
+		$this->nestedSetServiceMock->expects($this->never())->method('moveNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage($region.' is not supported');
@@ -438,7 +442,6 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -447,7 +450,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 2;
-		$region = NestedSetHelper::REGION_APPENDCHILD;
+		$region = Calculator::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -455,7 +458,7 @@ class NodesServiceTest extends TestCase
 			->method('getNode')
 			->willReturnOnConsecutiveCalls($movedNode, $targetNode);
 
-		$this->nodesRepositoryMock->expects($this->never())->method('moveNode');
+		$this->nestedSetServiceMock->expects($this->never())->method('moveNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Moving root node is not allowed');
@@ -464,7 +467,6 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -473,7 +475,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 0;
-		$region = NestedSetHelper::REGION_APPENDCHILD;
+		$region = Calculator::REGION_APPENDCHILD;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -481,7 +483,7 @@ class NodesServiceTest extends TestCase
 			->method('getNode')
 			->willReturnOnConsecutiveCalls($movedNode, $targetNode);
 
-		$this->nodesRepositoryMock->expects($this->never())->method('moveNode');
+		$this->nestedSetServiceMock->expects($this->never())->method('moveNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Create root node with a move is not allowed');
@@ -490,7 +492,6 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -499,7 +500,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
-		$region = NestedSetHelper::REGION_BEFORE;
+		$region = Calculator::REGION_BEFORE;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -507,7 +508,7 @@ class NodesServiceTest extends TestCase
 			->method('getNode')
 			->willReturnOnConsecutiveCalls($movedNode, $targetNode);
 
-		$this->nodesRepositoryMock->expects($this->never())->method('moveNode');
+		$this->nestedSetServiceMock->expects($this->never())->method('moveNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Create root node with a move is not allowed');
@@ -516,7 +517,6 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws ModuleException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -525,7 +525,7 @@ class NodesServiceTest extends TestCase
 	{
 		$movedNodeId = 1;
 		$targetNodeId = 4;
-		$region = NestedSetHelper::REGION_AFTER;
+		$region = Calculator::REGION_AFTER;
 		$movedNode = ['node_id' => 1, 'name' => 'Moved Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 12];
 		$targetNode = ['node_id' => 2, 'name' => 'Target Node', 'children' => 0, 'UID' => 123, 'visibility' => 1, 'parent_id' => 0];
 
@@ -533,7 +533,7 @@ class NodesServiceTest extends TestCase
 			->method('getNode')
 			->willReturnOnConsecutiveCalls($movedNode, $targetNode);
 
-		$this->nodesRepositoryMock->expects($this->never())->method('moveNode');
+		$this->nestedSetServiceMock->expects($this->never())->method('moveNode');
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Create root node with a move is not allowed');
@@ -543,9 +543,8 @@ class NodesServiceTest extends TestCase
 
 
 	/**
-	 * @throws ModuleException
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -553,7 +552,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteOneNodeSucceed(): void
 	{
 		$nodeId = 1;
-		$this->nodesService = 354;
+		$this->nodesService->UID = 354;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 0,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -566,17 +565,17 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('findAllSubNodeIdsByRootIdsAndPosition')
 			->with($node['root_id'], $node['rgt'], $node['lft'])
 			->willReturn([['hurz']]);
 
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('deleteSingleNode')
 			->with($node);
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteTree');
 
 		$result = $this->nodesService->deleteNode($nodeId);
@@ -584,8 +583,8 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -593,7 +592,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteFailsByNode(): void
 	{
 		$nodeId = 1;
-		$this->nodesService = 34;
+		$this->nodesService->UID = 34;
 
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
@@ -602,11 +601,11 @@ class NodesServiceTest extends TestCase
 
 		$this->aclValidatorMock->expects($this->never())
 			->method('checkDirectoryPermissions');
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('findAllSubNodeIdsByRootIdsAndPosition');
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteSingleNode');
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteTree');
 
 		$this->expectException(ModuleException::class);
@@ -616,8 +615,8 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -625,7 +624,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteFailsByRights(): void
 	{
 		$nodeId = 1;
-		$this->nodesService = 34;
+		$this->nodesService->UID = 34;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 0,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -638,11 +637,11 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('findAllSubNodeIdsByRootIdsAndPosition');
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteSingleNode');
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteTree');
 
 		$this->expectException(ModuleException::class);
@@ -652,9 +651,8 @@ class NodesServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws DatabaseException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -662,7 +660,7 @@ class NodesServiceTest extends TestCase
 	public function testDeleteNodeTreeSucceed(): void
 	{
 		$nodeId = 1;
-		$this->nodesService = 354;
+		$this->nodesService->UID = 354;
 		$node = ['node_id' => 1, 'name' => 'Node to Delete', 'parent_id' => 12, 'children' => 3,
 			'UID' => 123, 'visibility' => 1, 'root_id' => 1, 'rgt' => 2, 'lft' => 1];
 		$this->nodesRepositoryMock->expects($this->once())
@@ -675,15 +673,15 @@ class NodesServiceTest extends TestCase
 			->method('checkDirectoryPermissions')
 			->willReturn($rights);
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('findAllSubNodeIdsByRootIdsAndPosition')
 			->with($node['root_id'], $node['rgt'], $node['lft'])
 			->willReturn([['heidewitzka'], ['der'], ['Kapitän']]);
 
-		$this->nodesRepositoryMock->expects($this->never())
+		$this->nestedSetServiceMock->expects($this->never())
 			->method('deleteSingleNode');
 
-		$this->nodesRepositoryMock->expects($this->once())
+		$this->nestedSetServiceMock->expects($this->once())
 			->method('deleteTree')
 			->with($node);
 

@@ -507,8 +507,8 @@ class ServiceTest extends TestCase
 	#[Group('units')]
 	public function testMoveNodeFailsOnMoveSubTree(): void
 	{
-		$movedNode  = ['node_id' => 2, 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
-		$targetNode = ['node_id' => 3, 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$movedNode  = ['node_id' => 2, 'name' => 'moved', 'lft' => 3, 'rgt' => 6, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
+		$targetNode = ['node_id' => 3, 'name' => 'target', 'lft' => 7, 'rgt' => 8, 'root_id' => 1, 'parent_id' => 1, 'level' => 2];
 		$region     = 'before';
 		$width      = $movedNode['rgt'] - $movedNode['lft'] + 1;
 		$diffLevel  = 12;

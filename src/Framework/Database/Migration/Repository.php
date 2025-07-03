@@ -35,7 +35,6 @@ class Repository extends SqlBase
 
 	public function __construct(Connection $connection)
 	{
-		$this->connection   = $connection;
 		parent::__construct($connection, self::MIGRATION_TABLE_NAME, 'version');
 	}
 

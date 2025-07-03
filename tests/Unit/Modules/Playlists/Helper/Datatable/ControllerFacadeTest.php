@@ -147,40 +147,32 @@ class ControllerFacadeTest extends TestCase
 		$mockFormattedList = ['row_1', 'row_2'];
 		$currentTotalResult = 42;
 
-		$this->datatableBuilderMock->expects($this->once())
-			->method('getDatatableStructure')
+		$this->datatableBuilderMock->expects($this->once())->method('getDatatableStructure')
 			->willReturn($mockDatatableStructure);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('preparePagination')
+		$this->datatablePreparerMock->expects($this->once())->method('preparePagination')
 			->with($mockDatatableStructure['pager'], $mockDatatableStructure['dropdown'])
 			->willReturn($mockPagination);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('prepareFilterForm')
+		$this->datatablePreparerMock->expects($this->once())->method('prepareFilterForm')
 			->with($mockDatatableStructure['form'])
 			->willReturn(['prepared_filter_form']);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('prepareAdd')
+		$this->datatablePreparerMock->expects($this->once())->method('prepareAdd')
 			->with('folder-plus')
 			->willReturn(['prepared_add']);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('prepareTableHeader')
+		$this->datatablePreparerMock->expects($this->once())->method('prepareTableHeader')
 			->with($mockDatatableStructure['header'], ['playlists', 'main'])
 			->willReturn(['prepared_header']);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('prepareSort')
+		$this->datatablePreparerMock->expects($this->once())->method('prepareSort')
 			->willReturn(['prepared_sort']);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('preparePage')
+		$this->datatablePreparerMock->expects($this->once())->method('preparePage')
 			->willReturn(['prepared_page']);
 
-		$this->playlistsServiceMock->expects($this->once())
-			->method('getCurrentTotalResult')
+		$this->playlistsServiceMock->expects($this->once())->method('getCurrentTotalResult')
 			->willReturn($currentTotalResult);
 
 		$currentFilterResults = [
@@ -189,8 +181,7 @@ class ControllerFacadeTest extends TestCase
 			['playlist_id' => 3, 'playlist_name' => 'playlist3', 'description' => 'description3'],
 			['playlist_id' => 4, 'playlist_name' => 'playlist4', 'description' => 'description4'],
 		];
-		$this->playlistsServiceMock->expects($this->exactly(2))
-			->method('getCurrentFilterResults')
+		$this->playlistsServiceMock->expects($this->exactly(1))->method('getCurrentFilterResults')
 			->willReturn($currentFilterResults);
 
 		$showerIds = array_column($currentFilterResults, 'playlist_id');
@@ -200,8 +191,7 @@ class ControllerFacadeTest extends TestCase
 
 		$this->datatablePreparerMock->expects($this->once())->method('setUsedPlaylists')->with([]);
 
-		$this->datatablePreparerMock->expects($this->once())
-			->method('prepareTableBody')
+		$this->datatablePreparerMock->expects($this->once())->method('prepareTableBody')
 			->with($currentFilterResults, $mockDatatableStructure['header'], $this->anything())
 			->willReturn($mockFormattedList);
 

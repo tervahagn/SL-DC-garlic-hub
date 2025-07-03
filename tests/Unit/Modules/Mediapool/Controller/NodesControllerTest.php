@@ -32,6 +32,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -69,7 +70,7 @@ class NodesControllerTest extends TestCase
 	{
 		$this->mockSession();
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -97,7 +98,7 @@ class NodesControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -122,7 +123,7 @@ class NodesControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn([]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
 
-		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method(PropertyHook::set('UID'));
 		$this->nodesServiceMock->expects($this->never())->method('addNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Csrf token mismatch.']);
@@ -142,7 +143,7 @@ class NodesControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn([]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
-		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method(PropertyHook::set('UID'));
 		$this->nodesServiceMock->expects($this->never())->method('addNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node name is missing']);
@@ -161,7 +162,7 @@ class NodesControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -183,7 +184,7 @@ class NodesControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn([]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
-		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method(PropertyHook::set('UID'));
 		$this->nodesServiceMock->expects($this->never())->method('editNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'node name or id is missing']);
@@ -203,7 +204,7 @@ class NodesControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -228,7 +229,7 @@ class NodesControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -251,7 +252,7 @@ class NodesControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn([]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
-		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method(PropertyHook::set('UID'));
 		$this->nodesServiceMock->expects($this->never())->method('moveNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'Source node, target node, or target region is missing']);
@@ -274,7 +275,7 @@ class NodesControllerTest extends TestCase
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->nodesServiceMock->expects($this->once())
-			->method('setUID')
+			->method(PropertyHook::set('UID'))
 			->with(1);
 
 		$this->nodesServiceMock->expects($this->once())
@@ -299,7 +300,7 @@ class NodesControllerTest extends TestCase
 		$this->requestMock->method('getParsedBody')->willReturn([]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
-		$this->nodesServiceMock->expects($this->never())->method('setUID');
+		$this->nodesServiceMock->expects($this->never())->method(PropertyHook::set('UID'));
 		$this->nodesServiceMock->expects($this->never())->method('deleteNode');
 
 		$this->mockResponse(['success' => false, 'error_message' => 'NodeId is missing']);

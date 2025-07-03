@@ -20,7 +20,7 @@
 
 namespace App\Modules\Mediapool\Services;
 
-use App\Framework\Database\BaseRepositories\NestedSetHelper;
+use App\Framework\Database\NestedSets\Calculator;
 use App\Framework\Database\NestedSets\Service;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
@@ -183,8 +183,8 @@ class NodesService
 		if ($movedNode['parent_id'] === 0)
 			throw new ModuleException('mediapool', 'Moving root node is not allowed');
 
-		if (($region === NestedSetHelper::REGION_APPENDCHILD && $targetNodeId === 0) ||
-			(($region === NestedSetHelper::REGION_BEFORE || $region === NestedSetHelper::REGION_AFTER) &&
+		if (($region === Calculator::REGION_APPENDCHILD && $targetNodeId === 0) ||
+			(($region === Calculator::REGION_BEFORE || $region === Calculator::REGION_AFTER) &&
 				$targetNode['parent_id'] === 0))
 			throw new ModuleException('mediapool', 'Create root node with a move is not allowed');
 
