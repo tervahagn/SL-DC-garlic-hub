@@ -23,10 +23,13 @@ use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
+use App\Framework\Core\Translate\Translator;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
+use App\Framework\Utils\Html\FormBuilder;
+use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Profile\Entities\UserEntityFactory;
 use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Controller\ShowAdminController;
@@ -36,10 +39,14 @@ use App\Modules\Users\Helper\Datatable\ControllerFacade;
 use App\Modules\Users\Helper\Datatable\DatatableBuilder;
 use App\Modules\Users\Helper\Datatable\DatatablePreparer;
 use App\Modules\Users\Helper\Datatable\Parameters;
+use App\Modules\Users\Helper\Settings\Builder;
 use App\Modules\Users\Helper\Settings\Facade;
+use App\Modules\Users\Helper\Settings\FormElementsCreator;
+use App\Modules\Users\Helper\Settings\Validator;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
+use App\Modules\Users\Services\UsersAdminService;
 use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Helper\Psr16Adapter;
@@ -78,6 +85,13 @@ $dependencies[UsersDatatableService::class] = DI\factory(function (ContainerInte
 $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Parameters(
+		$container->get(Sanitizer::class),
+		$container->get(Session::class)
+	);
+});
+$dependencies[\App\Modules\Users\Helper\Settings\Parameters::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new \App\Modules\Users\Helper\Settings\Parameters(
 		$container->get(Sanitizer::class),
 		$container->get(Session::class)
 	);
@@ -125,6 +139,44 @@ $dependencies[ShowDatatableController::class] = DI\factory(function (ContainerIn
 		$container->get(DatatableTemplatePreparer::class)
 	);
 });
+
+$dependencies[Builder::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Builder(
+		$container->get(AclValidator::class),
+		$container->get(\App\Modules\Users\Helper\Settings\Parameters::class),
+		new Validator(
+			$container->get(Translator::class),
+			$container->get(\App\Modules\Users\Helper\Settings\Parameters::class)
+		),
+		new FormElementsCreator(
+			$container->get(FormBuilder::class),
+			$container->get(Translator::class)
+		)
+	);
+});
+$dependencies[UsersAdminService::class] = DI\factory(function (ContainerInterface $container)
+{
+	$factory      = $container->get(UserRepositoryFactory::class);
+	$repositories = $factory->create();
+
+	return new UsersAdminService(
+		$repositories['main'],
+		$container->get(NodesService::class),
+		$container->get(UserTokenService::class),
+		$container->get('ModuleLogger')
+	);
+});
+
+$dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Facade(
+		$container->get(Builder::class),
+		$container->get(UsersAdminService::class),
+		$container->get(\App\Modules\Users\Helper\Settings\Parameters::class)
+	);
+});
+
 $dependencies[ShowAdminController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowAdminController(
