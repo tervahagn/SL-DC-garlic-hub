@@ -72,7 +72,7 @@ class Miscellaneous extends AbstractMediaHandler
 
 		$thumbPath = '/'.$this->thumbPath.'/'.$fileInfo['filename'].'.svg';
 
-		if (isset($fileInfo['extension']) && ($fileInfo['extension'] === 'csv' || $fileInfo['extension'] === 'json' || $fileInfo['extension'] === 'xml'))
+		if (array_key_exists('extension', $fileInfo) && ($fileInfo['extension'] === 'csv' || $fileInfo['extension'] === 'json' || $fileInfo['extension'] === 'xml'))
 			$iconPath  = '/'.$this->iconsPath.'/database.svg';
 		else
 			$iconPath  = '/'.$this->iconsPath.'/file.svg';

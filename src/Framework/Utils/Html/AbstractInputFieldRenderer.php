@@ -23,7 +23,7 @@ namespace App\Framework\Utils\Html;
 
 abstract class AbstractInputFieldRenderer
 {
-	/** @var array<string,mixed> */
+	/** @var array<string,mixed>|array<empty,empty> */
 	protected array $attributes = [];
 	protected FieldInterface $field;
 
@@ -31,8 +31,7 @@ abstract class AbstractInputFieldRenderer
 
 	protected function buildAttributes(): string
 	{
-		$this->attributes = []; // init if used as cache;
-		$this->addBaseAttributes()->addCustomAttributes()->addValidationAttributes();
+		$this->initAttributes()->addBaseAttributes()->addCustomAttributes()->addValidationAttributes();
 
 		$parts = [];
 		foreach ($this->attributes as $key => $value)
@@ -56,6 +55,11 @@ abstract class AbstractInputFieldRenderer
 			$this->attributes['label'] = $this->field->getLabel();
 
 		return $this;
+	}
+
+	protected function initAttributes(): static
+	{
+		$this->attributes = [];
 	}
 
 	protected function addCustomAttributes(): static

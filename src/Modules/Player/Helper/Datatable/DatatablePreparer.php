@@ -35,12 +35,10 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class DatatablePreparer extends AbstractDatatablePreparer
 {
-	private AclValidator $aclValidator;
 	private TimeUnitsCalculator $timeUnitsCalculator;
 
-	public function __construct(PrepareService $prepareService, AclValidator $aclValidator, Parameters $parameters, TimeUnitsCalculator $timeUnitsCalculator)
+	public function __construct(PrepareService $prepareService, Parameters $parameters, TimeUnitsCalculator $timeUnitsCalculator)
 	{
-		$this->aclValidator        = $aclValidator;
 		$this->timeUnitsCalculator = $timeUnitsCalculator;
 
 		parent::__construct('player', $prepareService, $parameters);

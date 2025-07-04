@@ -56,7 +56,7 @@ class UsersService extends AbstractBaseService
 */
 	private UserEntityFactory $userEntityFactory;
 	private UserRepositoryFactory $userRepositoryFactory;
-	private UserTokenService $userTokenService;
+
 	private Psr16Adapter $cache;
 	/** @var array{
 	 *     main: UserMainRepository,
@@ -65,13 +65,12 @@ class UsersService extends AbstractBaseService
 	 *	 }  */
 	private array $userRepositories;
 
-	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, UserTokenService $userTokenService, Psr16Adapter $cache, LoggerInterface $logger)
+	public function __construct(UserRepositoryFactory $userRepositoryFactory, UserEntityFactory $userEntityFactory, Psr16Adapter $cache, LoggerInterface $logger)
 	{
 		$this->userRepositoryFactory = $userRepositoryFactory;
 		$this->userEntityFactory     = $userEntityFactory;
 		$this->cache                 = $cache;
 		$this->userRepositories      = $this->userRepositoryFactory->create();
-		$this->userTokenService      = $userTokenService;
 		parent::__construct($logger);
 	}
 

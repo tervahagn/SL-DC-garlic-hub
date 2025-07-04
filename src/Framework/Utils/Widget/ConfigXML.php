@@ -236,9 +236,16 @@ class ConfigXML extends BaseSimpleXml
 
 	private function parseDefaultLanguage(): static
 	{
+		if ($this->MyXML === null)
+			return $this;
+
 		$attr =  $this->MyXML->attributes('xml', true);
-		if ($attr !== null && isset($attr['lang']))
-			$this->default_language = strtolower(substr($attr['lang'], 0, 2));
+		if ($attr === null)
+			return $this;
+
+		$attributesAsArray = (array)$attr;
+		if (array_key_exists('lang', $attributesAsArray))
+			$this->default_language = strtolower(substr($attributesAsArray['lang'], 0, 2));
 
 		return $this;
 	}
@@ -368,23 +375,25 @@ class ConfigXML extends BaseSimpleXml
 			switch ($tag_name)
 			{
 				case 'note':
-					if (!empty($ret['notes']))
+					/** @var array<string,mixed> $ret */
+					if (array_key_exists('notes', $ret))
 						$ret['notes'] = array_merge($ret['notes'], $this->generateNotesArray($child));
 					else
 						$ret['notes'] = $this->generateNotesArray($child);
 					continue 2;
 
 				case 'options':
-					if ($ret['types'] == 'radio' || $ret['types'] == 'list')
+					/** @var array<string,mixed> $ret */
+					if ($ret['types'] === 'radio' || $ret['types'] === 'list')
 					{
-						if (!empty($ret['options']))
+						if (array_key_exists('options', $ret))
 							$ret['options'] = array_merge($ret['options'], $this->generateRadioOptionArray($child));
 						else
 							$ret['options'] = $this->generateRadioOptionArray($child);
 					}
 					else if ($ret['types'] == 'combo')
 					{
-						if (!empty($ret['options']))
+						if (array_key_exists('options', $ret))
 							$ret['options'] = array_merge($ret['options'], [(string) $child => (string) $child]);
 						else
 							$ret['options'] = [(string) $child => (string) $child];

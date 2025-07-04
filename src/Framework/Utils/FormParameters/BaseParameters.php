@@ -5,7 +5,7 @@ use App\Framework\Core\Sanitizer;
 use App\Framework\Exceptions\ModuleException;
 
 /**
- * The BaseParameters class provides functionality to manage parameters configuration,
+ * The BaseParameters class provides functionality to manage parameter configuration,
  * including adding, removing, validating, sanitizing and retrieving parameters and their values.
  * This class is designed to be extended and can include custom hooks for preprocessing and postprocessing
  * of parameter values.
@@ -30,7 +30,7 @@ abstract class BaseParameters
 
 	protected readonly string $moduleName;
 	protected readonly Sanitizer $sanitizer;
-	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
+	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}> */
 	protected array $currentParameters;
 	/** @var array<string,mixed>  */
 	protected array $userInputs;
@@ -104,9 +104,10 @@ abstract class BaseParameters
 	}
 
 	/**
+	 * @phpstan-param int|string|array<string,mixed> $value
 	 * @throws ModuleException
 	 */
-	public function setValueOfParameter($parameter_name, $value): static
+	public function setValueOfParameter(string $parameter_name, int|string|array $value): static
 	{
 		if (!$this->hasParameter($parameter_name))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameter_name . ' is not found.');
@@ -116,14 +117,15 @@ abstract class BaseParameters
 	}
 
 	/**
+	 * @phpstan-param int|string|array<string,mixed> $defaultValue
 	 * @throws ModuleException
 	 */
-	public function setDefaultForParameter(string $parameterName, $default_value): static
+	public function setDefaultForParameter(string $parameterName, int|string|array $defaultValue): static
 	{
 		if (!$this->hasParameter($parameterName))
 			throw new ModuleException($this->moduleName, 'A parameter with name: ' . $parameterName . ' is not found.');
 
-		$this->currentParameters[$parameterName]['default_value'] = $default_value;
+		$this->currentParameters[$parameterName]['default_value'] = $defaultValue;
 		return $this;
 	}
 
@@ -133,26 +135,35 @@ abstract class BaseParameters
 		return (array_key_exists($parameterName, $this->currentParameters));
 	}
 
+	/**
+	 * @return array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}>
+	 */
 	public function getInputParametersArray(): array
 	{
 		return $this->currentParameters;
 	}
 
+	/**
+	 * @return string[]|int[]|array<string,mixed>
+	 */
 	public function getInputValuesArray(): array
 	{
 		return array_column($this->currentParameters, 'value');
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getInputParametersKeys(): array
 	{
 		return array_keys($this->currentParameters);
 	}
 
 	/**
-	 * iterates over parameters and parse them
-	 * can be used by async calls directly, without using the session store
+	 * async calls can use iterating over parameters and parse them directly,
+	 * without using the session store
 	 *
-	 * if you want to use the session store, use method above
+	 * if you want to use the session store, use the method above
 	 * @see BaseFilterParameters::parseInputFilterAllUsers()
 	 *
 	 * @throws ModuleException
@@ -183,6 +194,9 @@ abstract class BaseParameters
 		return $this->moduleName;
 	}
 
+	/**
+	 * @return array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}>
+	 */
 	public function getCurrentParameters(): array
 	{
 		return $this->currentParameters;
@@ -236,6 +250,7 @@ abstract class BaseParameters
 	 * Hook that can be overwritten in your class.
 	 * Will be called after parsing
 	 */
+	// @phpstan-ignore-next-line
 	protected function afterParseHook(string $parameter_name, array $parameter): array
 	{
 		return $parameter;
@@ -245,6 +260,7 @@ abstract class BaseParameters
 	 * Hook that can be overwritten in your class
 	 * Will be called before parsing, but if the parameter has not already been parsed
 	 **/
+	// @phpstan-ignore-next-line
 	protected function beforeParseHook(string $parameterName, array $parameter): array
 	{
 		return $parameter;

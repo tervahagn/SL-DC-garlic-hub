@@ -147,10 +147,10 @@ class NodesService
 	public function editNode(int $id, string $name, ?int $visibility = null): int
 	{
 		$node = $this->nodesRepository->getNode($id);
-		if ((empty($node)))
+		if ($node === [])
 			throw new ModuleException('mediapool', 'Parent node not found');
 
-		/** @var array<string,mixed> $node */
+		/** @var array<string,mixed> $node */ // because phpstan acts idiotic
 		$rights = $this->determineRights($node);
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);

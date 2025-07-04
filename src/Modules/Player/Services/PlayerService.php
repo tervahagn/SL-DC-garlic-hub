@@ -106,7 +106,7 @@ class PlayerService extends AbstractBaseService
 		if (empty($player))
 			throw new ModuleException('player', 'Error loading player: Is not editable');
 
-		/** @var array{UID: int, company_id: int, ...} $player */
+		/** @var array{UID: int, company_id: int, player_id: int, ...} $player */
 		if (!$this->playerValidator->isPlayerEditable($this->UID, $player))
 			throw new ModuleException('player', 'Error loading player: Is not editable');
 

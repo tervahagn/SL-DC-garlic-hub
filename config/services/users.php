@@ -68,7 +68,6 @@ $dependencies[UsersService::class] = DI\factory(function (ContainerInterface $co
 	return new UsersService(
 		$container->get(UserRepositoryFactory::class),
 		new UserEntityFactory($container->get(Config::class)),
-		$container->get(UserTokenService::class),
 		$container->get(Psr16Adapter::class),
 		$container->get('ModuleLogger')
 	);

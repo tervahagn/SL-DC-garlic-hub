@@ -33,7 +33,7 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	private array $begin         = [];
 	/** @var string[]  */
 	private array $end           = [];
-	/** @var list<array<string,mixed>>  */
+	/** @var array<string,mixed>  */
 	private array $screenTimes   = [];
 
 	/**
@@ -74,7 +74,7 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	}
 
 	/**
-	 * @param list<array<string,mixed>> $screenTimes
+	 * @param array<string,mixed> $screenTimes
 	 * @throws DateMalformedStringException
 	 */
 	private function determineStandByTimes(array $screenTimes): void
@@ -113,11 +113,11 @@ class ScreenTimesPreparer extends AbstractPreparer implements PreparerInterface
 	}
 
 	/**
-	 * @param list<array<string,mixed>> $screenTimes
+	 * @param array<string,mixed> $screenTimes
 	 */
 	private function isScreenTimeValid(array $screenTimes): bool
 	{
-		if (empty($screenTimes))
+		if ($screenTimes == [])
 			return false;
 
 		$this->screenTimes = $screenTimes;

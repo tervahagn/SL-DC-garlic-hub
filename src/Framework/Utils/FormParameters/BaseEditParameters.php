@@ -29,7 +29,7 @@ abstract class BaseEditParameters extends BaseParameters
 	protected Session $session;
 	public const string PARAMETER_CSRF_TOKEN  = 'csrf_token';
 
-	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
+	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}> */
 	protected array $defaultParameters = array(
 		self::PARAMETER_CSRF_TOKEN  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
 	);
@@ -41,8 +41,8 @@ abstract class BaseEditParameters extends BaseParameters
 	}
 
 	/**
-	 * Remark: This violates SRP. If we have more security checks we
-	 * will create an own class.
+	 * Remark: This violates SRP. If we have more security checks, we
+	 * will create our own class.
 	 *
 	 * @throws ModuleException
 	 */
@@ -53,6 +53,9 @@ abstract class BaseEditParameters extends BaseParameters
 
 		if (!$this->session->exists(self::PARAMETER_CSRF_TOKEN))
 			throw new ModuleException($this->moduleName,'CSRF token not set in session');
+
+		if (!array_key_exists('value', $this->currentParameters[self::PARAMETER_CSRF_TOKEN]))
+			throw new ModuleException($this->moduleName,'CSRF token mismatch - No value set in parameters');
 
 		if ($this->session->get(self::PARAMETER_CSRF_TOKEN) !== $this->currentParameters[self::PARAMETER_CSRF_TOKEN]['value'])
 			throw new ModuleException($this->moduleName,'CSRF token mismatch');
