@@ -244,7 +244,7 @@ class ConfigXML extends BaseSimpleXml
 			return $this;
 
 		$attributesAsArray = (array)$attr;
-		if (array_key_exists('lang', $attributesAsArray['@attributes']))
+		if (array_key_exists('@attributes', $attributesAsArray) && array_key_exists('lang', $attributesAsArray['@attributes']))
 			$this->default_language = strtolower(substr($attributesAsArray['@attributes']['lang'], 0, 2));
 
 		return $this;
