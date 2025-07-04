@@ -67,7 +67,7 @@ abstract class AbstractAclValidator
 	}
 
 	/**
-	 * @param array{"UID": int, "company_id": int, ...} $unitData
+	 * @param array{"UID": int, "company_id?": int, ...} $unitData
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception

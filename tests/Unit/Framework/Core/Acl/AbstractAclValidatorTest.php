@@ -130,7 +130,7 @@ class AbstractAclValidatorTest extends TestCase
 	public function testIsAdminSubAdminAccessFailsOfNotExistingParams(): void
 	{
 		$UID = 1;
-		$unit = ['UID' => 1, 'company_id' => 1];
+		$unit = ['UID' => 1];
 
 		$configMock = $this->createMock(Config::class);
 		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
