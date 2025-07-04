@@ -14,7 +14,6 @@ use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\Enums\PlayerStatus;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
 use App\Modules\Player\Helper\Datatable\Parameters;
-use App\Modules\Player\Services\AclValidator;
 use DateMalformedStringException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -38,7 +37,6 @@ class DatatablePreparerTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->prepareServiceMock = $this->createMock(PrepareService::class);
-		$aclValidatorMock = $this->createMock(AclValidator::class);
 		$parametersMock           = $this->createMock(Parameters::class);
 		$this->translatorMock     = $this->createMock(Translator::class);
 		$this->bodyPreparerMock = $this->createMock(BodyPreparer::class);
@@ -46,7 +44,6 @@ class DatatablePreparerTest extends TestCase
 
 		$this->datatablePreparer = new DatatablePreparer(
 			$this->prepareServiceMock,
-			$aclValidatorMock,
 			$parametersMock,
 			$this->timeUnitsCalculatorMock
 		);

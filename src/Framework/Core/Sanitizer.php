@@ -98,4 +98,20 @@ class Sanitizer
 
 		return $data;
 	}
+
+	/**
+	 * @return array<string,mixed>|list<array<string,mixed>>
+	 */
+	public function jsonHTML(string $jsonString): array
+	{
+		$data = json_decode($jsonString, true);
+
+		if (json_last_error() !== JSON_ERROR_NONE || !is_array($data))
+			return [];
+
+		return array_map(function (string $s){
+			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+		}, $data);
+	}
+
 }

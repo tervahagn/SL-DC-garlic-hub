@@ -235,6 +235,7 @@ abstract class BaseParameters
 			ScalarType::STRING_ARRAY   => $this->sanitizer->stringArray($parameterValue),
 			ScalarType::HTML_STRING    => $this->sanitizer->html($parameterValue),
 			ScalarType::JSON           => $this->sanitizer->jsonArray($parameterValue),
+			ScalarType::JSON_HTML      => $this->sanitizer->jsonHTML($parameterValue),
 			ScalarType::MEDIAPOOL_FILE => $this->sanitizer->string('hidden_' . $parameterValue),
 			ScalarType::BOOLEAN        => $this->sanitizer->bool($parameterValue)
 		};
@@ -249,6 +250,9 @@ abstract class BaseParameters
 	/**
 	 * Hook that can be overwritten in your class.
 	 * Will be called after parsing
+	 *
+	 * @param array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed} $parameter
+	 * @return array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}
 	 */
 	// @phpstan-ignore-next-line
 	protected function afterParseHook(string $parameter_name, array $parameter): array
@@ -259,7 +263,10 @@ abstract class BaseParameters
 	/**
 	 * Hook that can be overwritten in your class
 	 * Will be called before parsing, but if the parameter has not already been parsed
-	 **/
+	 *
+	 * @param  array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed} $parameter
+	 * @return array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}
+	 */
 	// @phpstan-ignore-next-line
 	protected function beforeParseHook(string $parameterName, array $parameter): array
 	{

@@ -20,6 +20,7 @@
 
 namespace App\Framework\OAuth2;
 
+use InvalidArgumentException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
@@ -29,14 +30,17 @@ class ClientEntity implements ClientEntityInterface
 	use ClientTrait;
 	use EntityTrait;
 
-	private array $client;
-
 	/**
-	 * @param array $client
+	 * @param array<string,string> $client
 	 */
 	public function __construct(array $client)
 	{
-		$this->setIdentifier($client['client_id']);
+		$clientId = $client['client_id']; // Eine lokale Variable hilft der Lesbarkeit
+
+		if ($clientId === '')
+			throw new InvalidArgumentException('Client ID cannot be an empty string.');
+
+		$this->setIdentifier($clientId);
 		$this->redirectUri    = $client['redirect_uri'];
 		$this->name           = $client['client_name'];
 		$this->isConfidential = true;

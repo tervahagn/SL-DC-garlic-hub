@@ -53,8 +53,11 @@ class Ffmpeg
 	private string $probePath = '/usr/bin/ffprobe';
 	private string $executablePath = '/usr/bin/ffmpeg';
 	private string $scaleOptions = '';
+	// @phpstan-ignore-next-line // use later
 	private string $audioQuality = '';
+	// @phpstan-ignore-next-line // use later
 	private string $destinationFile = '';
+	// @phpstan-ignore-next-line // use later
 	private string $options = '';
 
 	private MediaProperties $mediaProperties;

@@ -39,7 +39,6 @@ trait FindOperationsTrait
 	/**
 	 * Finds a record by ID.
 	 *
-	 * @param int|string $id Record ID
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
@@ -55,6 +54,7 @@ trait FindOperationsTrait
 	}
 
 	/**
+	 * @param array<string,mixed> $conditions
 	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
@@ -80,6 +80,7 @@ trait FindOperationsTrait
 	/**
 	 * Counts records in the table with a custom WHERE clause.
 	 * @param array<string,mixed> $conditions
+	 * @param array<string,string> $joins
 	 *
 	 * @throws Exception
 	 */
@@ -93,6 +94,10 @@ trait FindOperationsTrait
 	/**
 	 * Finds records with a custom WHERE clause.
 	 *
+	 * @param array<string,mixed> $conditions
+	 * @param array<string,string> $joins
+	 * @param array<string,int> $limit
+	 * @param list<array<string,mixed>> $orderBy
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
@@ -107,7 +112,6 @@ trait FindOperationsTrait
 	 * @param array<string,mixed> $conditions
 	 * @param array<string,string> $joins
 	 * @param array<string,int> $limit
-	 * @param string $groupBy
 	 * @param list<array<string,mixed>> $orderBy
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
@@ -126,6 +130,10 @@ trait FindOperationsTrait
 	/**
 	 * Finds records with limits and sorting.
 	 *
+	 * @param array<string,int> $limit
+	 * @param list<array<string,mixed>> $orderBy
+	 * @param array<string,mixed> $conditions
+	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */
 	public function findAllByWithLimits(array $limit = [], array $orderBy = [], array $conditions = []): array
@@ -140,6 +148,9 @@ trait FindOperationsTrait
 
 	/**
 	 * Finds a single value by a custom WHERE clause.
+	 * @param array<string,mixed> $conditions
+	 * @param array<string,string> $joins
+	 * @param list<array<string,mixed>> $orderBy
 	 *
 	 * @throws Exception
 	 */
@@ -157,15 +168,15 @@ trait FindOperationsTrait
 	 */
 	public function getFirstDataSet(array $result): array
 	{
-		if (!empty($result) && array_key_exists(0, $result))
-			return $result[0];
+		if (count($result) === 0)
+			return [];
 
-		return [];
+		return reset($result);
 	}
 
 	/**
 	 * @param array<string,mixed> $conditions
-	 * @param array<string,mixed> $joins
+	 * @param array<string,string> $joins
 	 * @param list<array<string,mixed>> $orderBy
 	 */
 	private function buildQuery(string $field, array $conditions, array $joins, string $groupBy = '', array $orderBy = []):
@@ -198,7 +209,7 @@ trait FindOperationsTrait
 	}
 
 	/**
-	 * @param array<string,mixed> $joins
+	 * @param array<string,string> $joins
 	 */
 	protected function determineLeftJoins(QueryBuilder $queryBuilder, array $joins): void
 	{
@@ -208,6 +219,9 @@ trait FindOperationsTrait
 		}
 	}
 
+	/**
+	 * @return array{first:int, max:int}|array{}
+	 */
 	public function determineLimit(int $first = 0, int $max = 0): array
 	{
 		if ($first == 0)

@@ -60,6 +60,7 @@ abstract class AbstractInputFieldRenderer
 	protected function initAttributes(): static
 	{
 		$this->attributes = [];
+		return $this;
 	}
 
 	protected function addCustomAttributes(): static

@@ -52,13 +52,20 @@ class TokensRepository extends SqlBase implements AuthCodeRepositoryInterface, A
 	 */
 	public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
 	{
+
+		$scopeIdentifiers = [];
+		foreach ($authCodeEntity->getScopes() as $scopeEntity)
+		{
+			$scopeIdentifiers[] = $scopeEntity->getIdentifier();
+		}
+
 		$data = [
 			'type'               => 'auth_code',
 			'token'              => $authCodeEntity->getIdentifier(),
 			'client_id'          => $authCodeEntity->getClient()->getIdentifier(),
 			'UID'                => $authCodeEntity->getUserIdentifier(),
 			'redirect_uri'       => $authCodeEntity->getRedirectUri(),
-			'scopes'             => implode(' ', $authCodeEntity->getScopes()),
+			'scopes'             => implode(' ', $scopeIdentifiers),
 			'expires_at'         => $authCodeEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
 			'created_at'         => date('Y-m-d H:i:s')
 		];
@@ -83,10 +90,16 @@ class TokensRepository extends SqlBase implements AuthCodeRepositoryInterface, A
 		return $revoked === 1;
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, ?string $userIdentifier = null): AccessTokenEntityInterface
 	{
 		$accessToken = new AccessTokenEntity();
 		$accessToken->setClient($clientEntity);
+		if ($userIdentifier === null || $userIdentifier === '')
+			throw new \Exception('User identifier is required');
+
 		$accessToken->setUserIdentifier($userIdentifier);
 		$accessToken->addScope(new ScopeEntity());
 

@@ -218,6 +218,7 @@ class BaseParametersTest extends TestCase
 
 		$this->baseParameters->setValueOfParameter('testParam', 'newValue');
 
+		/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value:mixed}> $parameters */
 		$parameters = $this->baseParameters->getInputParametersArray();
 		$this->assertArrayHasKey('testParam', $parameters);
 		$this->assertSame('newValue', $parameters['testParam']['value']);

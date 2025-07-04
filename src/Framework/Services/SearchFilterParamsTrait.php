@@ -74,7 +74,7 @@ trait SearchFilterParamsTrait
 	}
 
 	/**
-	 * @return list<array<string,mixed>>
+	 * @return array<int,mixed>
 	 */
 	public function getCompanyArray(): array
 	{
@@ -116,6 +116,9 @@ trait SearchFilterParamsTrait
 		return $this->currentFilterResults;
 	}
 
+	/**
+	 * @return array<int,string>|array<empty,empty>
+	 */
 	public function returnFilteredDomainsArrayForCheckBoxes(): array
 	{
 		$domains = [];
@@ -132,8 +135,8 @@ trait SearchFilterParamsTrait
 	}
 
 	/**
-	 * this method adds an all (-) for dropdowns at first position
-	 * If you don't need this, call ::returnFilteredDomainsArray()
+	 * this method adds an all (-) for dropdowns at the first position
+	 * If you don't need this, call returnFilteredDomainsArray()
 	 *
 	 * the return array is
 	 * - key: domain_id
@@ -141,10 +144,11 @@ trait SearchFilterParamsTrait
 	 *
 	 * NOT usable for createBinaryDomainCheckboxGroup()
 	 *
+	 * @return array<int,string>
 	 */
 	public function returnFilteredCompaniesForDropdowns(): array
 	{
-		// need domain_id as key, not value
+		// need domain_id as a key, not value
 		$allowed_ids       = array_flip($this->getAllowedCompanyIds());
 		$allowed_companies = array_intersect_key($this->getCompanyArray(), $allowed_ids);
 
@@ -159,11 +163,13 @@ trait SearchFilterParamsTrait
 	 * the key as pow(2, domain_id). Bit values for comparing AND with our stored value in DB
 	 *
 	 * example:
-	 * array ( 2 => 'first company', 4 => 'second company', 8 => 'third company',...)
+	 * array (2 => 'first company', 4 => 'second company', 8 => 'third company', ...)
+	 *
+	 * @return array<int,string>
 	 */
 	public function returnFilteredDomainsForDropdowns(): array
 	{
-		// need domain_id as key, not value
+		// need domain_id as a key, not value
 		$allowed_ids       = array_flip($this->getAllowedCompanyIds());
 		$allowed_companies = array_intersect_key($this->getCompanyArray(), $allowed_ids);
 
@@ -175,7 +181,7 @@ trait SearchFilterParamsTrait
 
 	/**
 	 * @param int $total
-	 * @param array $results
+	 * @param list<array<string,mixed>> $results
 	 * @return $this
 	 */
 	protected function setAllResultData(int $total, array $results): static

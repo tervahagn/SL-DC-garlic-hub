@@ -44,7 +44,7 @@ class Runner
 	 * @throws Exception
 	 * @throws FilesystemException
 	 */
-	public function execute(int $targetVersion = null): void
+	public function execute(?int $targetVersion = null): void
 	{
 		if (!$this->hasMigrationTable())
 			$this->migrateRepository->createMigrationTable();
@@ -52,7 +52,7 @@ class Runner
 		$appliedMigrations   = $this->getAppliedMigrations();
 		$availableMigrations = $this->determineAvailableMigrations();
 
-		// Filter all available migrations that are >= target version
+		// Filter all available migrations that are >= a target version
 		$targetMigrations = $targetVersion
 			? array_filter($availableMigrations, fn($version) => $version <= $targetVersion)
 			: $availableMigrations; // or apply all available migrations
@@ -74,14 +74,14 @@ class Runner
 	 * @throws DatabaseException
 	 * @throws FilesystemException
 	 */
-	public function rollback(int $targetVersion = null): void
+	public function rollback(?int $targetVersion = null): void
 	{
 		if (!$this->hasMigrationTable())
 			throw new DatabaseException('Migration table not found.');
 
 		$availableRollbacks = $this->determineAvailableRollbacks();
 
-		// Filter all available rollbacks that are >= target version
+		// Filter all available rollbacks that are >= a target version
 		$targetRollback = $targetVersion
 			? array_filter($availableRollbacks, fn($version) => $version <= $targetVersion)
 			: $availableRollbacks; // or apply all available rollbacks

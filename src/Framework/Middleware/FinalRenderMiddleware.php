@@ -48,6 +48,7 @@ use Slim\Psr7\Stream;
 class FinalRenderMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
+	// @phpstan-ignore-next-line // wil be needed in future versions
 	private Config $config;
 	private Locales $locales;
 	private Session $session;

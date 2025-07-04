@@ -46,9 +46,10 @@ class ClientsRepository extends SqlBase implements ClientRepositoryInterface
 	{
 		$conditions = ['client_id' => $clientIdentifier];
 		$client     = $this->getFirstDataSet($this->findAllBy($conditions));
-		if (empty($client))
+		if ($client === [])
 			throw new FrameworkException('Client not found');
 
+		/** @var array<string,string> $client */
 		return new ClientEntity($client);
 	}
 

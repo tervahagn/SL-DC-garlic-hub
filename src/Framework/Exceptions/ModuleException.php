@@ -29,7 +29,7 @@ use Exception;
  */
 class ModuleException extends BaseException
 {
-	public function __construct(string $module_name, $message = '', $code = 0, ?Exception $previous = null)
+	public function __construct(string $module_name, string $message = '', int $code = 0, ?Exception $previous = null)
 	{
 		$this->setModuleName($module_name);
 		parent::__construct($message, $code, $previous);
