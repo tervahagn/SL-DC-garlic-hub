@@ -6,10 +6,7 @@
 Garlic-Hub is a comprehensive Digital Signage Management solution that handles core CMS tasks alongside device management. From single-screen setups to distributed networks, it provides centralized control with flexibility for various signage environments.
 
 > **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback.
-> 
-> Current works:
-> - towards PHPStan Level 8 Compliance
-> - Simple User Management.
+ 
 
 ![Garlic-Hub Mediapool Screenshot](docs/media/showcase.gif)
 
@@ -33,15 +30,18 @@ Garlic-Hub is being developed in three phases, each delivering a distinct editio
 Each edition builds upon previous features, ensuring a smooth upgrade path as Garlic-Hub evolves into a comprehensive, SMIL-based digital signage solution.
 
 ### Current Features (Edge Edition)
-| Section                  | Status | description                                                                                                                            |
-|--------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------|
-| **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                      |
-| **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                                |
+| Section                  | Status | description                                                                                                                           |
+|--------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------|
+| **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                     |
+| **Initial admin user**   | 🚧      | Set initial admin user after installation                                                                                             |
+| **User management**      | ✅      | Basic user management                                                                                                                 |
+| **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                               |
 | **Media Management**     | ✅      | Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key) |
-| **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                        |
-| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                            |
-| **Local Player Support** | ✅      | Integration with one local media player                                                                                                |
-| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English complete, German complete)                                                    |
+| **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                       |
+| **Push support**         | 🚧      | Push playlist to a local player                                                                                                       |
+| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                           |
+| **Local Player Support** | ✅      | Integration with one local media player                                                                                               |
+| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English complete, German complete)                                                   |
 
 ### Coming Soon
 - Online documentation
@@ -58,10 +58,10 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 ### Stack
 - PHP 8.4
 - SLIM 4 Framework
+- Phpstan Level 8
 - Vanilla JavaScript with some external libs support
 - Selected composer libraries
-- PHPUnit 11 (targeting >95% test coverage)
-- no vibe coding!
+- PHPUnit 12 (targeting >95% test coverage)
 
 ### Developer Documentation
 - [Coding Standards](docs/coding-standards.md)
