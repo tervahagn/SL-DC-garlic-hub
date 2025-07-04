@@ -96,7 +96,7 @@ class AclHelper
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 */
-	public function hasEditorAccessOnUnit($UID, int|string $unitId, string $moduleName): bool
+	public function hasEditorAccessOnUnit(int $UID, int|string $unitId, string $moduleName): bool
 	{
 		return $this->hasVip($UID,$moduleName.'_'.AclSections::EDITOR->value, $unitId);
 	}

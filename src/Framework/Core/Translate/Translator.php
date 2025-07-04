@@ -28,7 +28,6 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-use Throwable;
 use function intl_get_error_message;
 
 class Translator
@@ -62,35 +61,32 @@ class Translator
 		$languageCode = $this->locales->getLanguageCode();
 		$translation = $this->findTranslation($key, $module, $languageCode);
 
-		return !empty($replacements) ? $this->doReplacements($translation, $replacements) : $translation;
+		if (!is_string($translation))
+			return '';
+
+		return $replacements !== [] ? $this->doReplacements($translation, $replacements) : $translation;
 	}
 
 	/**
 	 * @return  array<string,mixed>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function translateArrayForOptions(string $key, string $module): array
 	{
-		try
-		{
-			$language_code      = $this->locales->getLanguageCode();
-			$translation_array  = $this->findTranslation($key, $module, $language_code);
+		$language_code      = $this->locales->getLanguageCode();
+		$translation_array  = $this->findTranslation($key, $module, $language_code);
 
-			if (!is_array($translation_array))
-			{
-				throw new FrameworkException('Expected to get an array. Got ' . gettype($translation_array) . ' with key: ' . $key . ' in module ' . $module . ' for language ' . $language_code);
-			}
+		if (!is_array($translation_array))
+			return [];
 
-			return $translation_array;
-		}
-		catch(Throwable $e)
-		{
-			/// logger
-			return array();
-		}
+		return $translation_array;
 	}
 
 	/**
-	 * @param array<string,int|string> $replacements
+	 * @param array<string,mixed> $replacements
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException|PhpfastcacheSimpleCacheException
@@ -100,6 +96,9 @@ class Translator
 		$languageCode = $this->locales->getLanguageCode();
 		$translation  = $this->findTranslation($key, $module, $languageCode);
 
+		if (!is_string($translation))
+			throw new FrameworkException('Expected to be a string');
+
 		// add number of replacements
 		$replacements['count'] = $count;
 
@@ -107,7 +106,7 @@ class Translator
 	}
 
 	/**
-	 * @param array<string,int|string> $replacements
+	 * @param array<string,mixed> $replacements
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -150,7 +149,7 @@ class Translator
 	}
 
 	/**
-	 * @param array<string,int|string> $replacements
+	 * @param array<string,mixed> $replacements
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 */

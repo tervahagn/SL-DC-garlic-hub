@@ -33,7 +33,7 @@ class Cookie
 	}
 
 	/**
-	 * @return ?array<string,string>
+	 * @return array<string,string>|null
 	 * @throws  FrameworkException
 	 */
 	public function getHashedCookie(string $cookieName): ?array
@@ -55,7 +55,7 @@ class Cookie
 	}
 
 	/**
-	 * @param array<string,int|string> $contents
+	 * @param array<string,string> $contents
 	 * @throws FrameworkException
 	 */
 	public function createHashedCookie(string $name, array $contents, DateTime $expire): void
@@ -78,7 +78,7 @@ class Cookie
 
 	public function deleteCookie(string $name): void
 	{
-		// cheap way to delete a cookie without knowing its details
+		// easiest way to delete a cookie without knowing its details
 		setcookie($name, '', time() - 3600, '/');
 	}
 

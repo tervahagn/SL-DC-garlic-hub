@@ -35,7 +35,6 @@ use PHPUnit\Framework\TestCase;
 class CookieTest extends TestCase
 {
 	use PHPMock;
-
 	private Cookie $cookie;
 	private Crypt&MockObject $cryptMock;
 
@@ -58,7 +57,7 @@ class CookieTest extends TestCase
 		$setcookie = $this->getFunctionMock('App\Framework\Core', 'setcookie');
 		$setcookie->expects($this->once())->willReturn(['content', 'checksum']);
 
-		$contents = ['UID' => 123, 'LSID' => 'test_session'];
+		$contents = ['UID' => '123', 'LSID' => 'test_session'];
 		$expire = new DateTime('+1 day');
 
 		$this->expectOutputRegex('/.*/'); // Prevent PHP warnings from setcookie()

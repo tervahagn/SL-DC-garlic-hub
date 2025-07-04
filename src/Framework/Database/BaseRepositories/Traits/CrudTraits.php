@@ -29,7 +29,7 @@ trait CrudTraits
 	/**
 	 * Inserts a new record into the database and returns the new insert id.
 	 *
-	 * creates internally a prepared statement
+	 * internally creates a prepared statement
 	 * @param array<string, mixed> $fields
 	 * @throws Exception
 	 */
@@ -42,7 +42,7 @@ trait CrudTraits
 
 	/**
 	 * Updates a record in the database by ID and returns the affected rows.
-	 * creates internally a prepared statement
+	 * internally creates a prepared statement
 	 *
 	 * @param array<string,mixed> $fields
 	 * @throws Exception
@@ -127,7 +127,7 @@ trait CrudTraits
 			$compare  = $parameter['compare'] ?? '=';
 			$logic    = $parameter['logic'] ?? 'AND';
 
-			$govno = str_replace('.', '', $field); // because DBAl do not accept SQL-dots like table.field
+			$govno = str_replace('.', '', $field); // because DBAl do not accept SQL dots like table.field
 			if ($compare === 'IN')
 				$placeholder = "(:$govno)";
 			else
@@ -151,7 +151,7 @@ trait CrudTraits
 	}
 
 	/**
-	 * Secure that return value will be an array
+	 * Secure that the return value will be an array
 	 *
 	 * @return array<string,mixed>
 	 * @throws Exception
@@ -192,11 +192,17 @@ trait CrudTraits
 		return $ar;
 	}
 
+	/**
+	 * @param list<array<string,mixed>>|array<string,mixed> $data
+	 */
 	protected function secureImplode(array $data): string
 	{
 		return implode(',', $data);
 	}
 
+	/**
+	 * @param list<array<string,mixed>>|array<string,mixed> $data
+	 */
 	protected function secureSerialize(array $data): string
 	{
 		return  @serialize($data);

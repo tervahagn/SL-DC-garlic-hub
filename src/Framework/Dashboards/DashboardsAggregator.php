@@ -23,6 +23,9 @@ namespace App\Framework\Dashboards;
 
 class DashboardsAggregator
 {
+	/**
+	 * @var array<string,DashboardInterface>|array<empty,empty>
+	 */
 	private array $dashboards = [];
 
 	public function __construct()
@@ -34,6 +37,9 @@ class DashboardsAggregator
 		$this->dashboards[$dashboard->getId()] = $dashboard;
 	}
 
+	/**
+	 * @return list<array<string,string>>
+	 */
 	public function renderDashboardsContents(): array
 	{
 		$resolvedDashboards = [];
