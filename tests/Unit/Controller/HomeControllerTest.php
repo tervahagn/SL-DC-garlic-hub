@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Controller;
 
@@ -43,6 +44,7 @@ class HomeControllerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
 		$this->sessionMock  = $this->getMockBuilder(Session::class)

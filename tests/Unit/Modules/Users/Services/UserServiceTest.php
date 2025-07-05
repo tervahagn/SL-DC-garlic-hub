@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Users\Services;
 
@@ -47,6 +48,7 @@ class UserServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$repositoryFactoryMock        = $this->createMock(UserRepositoryFactory::class);
 		$this->entityFactoryMock      = $this->createMock(UserEntityFactory::class);
 		$this->cacheMock              = $this->createMock(Psr16Adapter::class);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Middleware;
 
@@ -45,6 +46,7 @@ class SessionMiddlewareTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->sessionMock = $this->createMock(Session::class);
 		$this->cookieMock = $this->createMock(Cookie::class);
 		$this->flashMock = $this->createMock(Messages::class);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Mediapool\Utils;
 
@@ -49,6 +50,7 @@ class MediaHandlerFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->configMock         = $this->createMock(Config::class);
 		$filesystemMock           = $this->createMock(Filesystem::class);
 		$zipFilesystemFactoryMock = $this->createMock(ZipFilesystemFactory::class);

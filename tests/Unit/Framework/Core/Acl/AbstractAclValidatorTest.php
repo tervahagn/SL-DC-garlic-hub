@@ -1,4 +1,23 @@
 <?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Core\Acl;
 
@@ -28,6 +47,7 @@ class AbstractAclValidatorTest extends TestCase
 	 */
 	public function setUp(): void
 	{
+		parent::setUp();
 		$this->aclHelperMock = $this->createMock(AclHelper::class);
 		$this->aclValidator = new ConcreteAclValidator('testModule', $this->aclHelperMock);
 	}
@@ -146,6 +166,7 @@ class AbstractAclValidatorTest extends TestCase
 		$this->expectExceptionMessage('Missing company id or UID in unit data.');
 
 		$result = $this->aclValidator->isAdmin($UID, $unit);
+		// @phpstan-ignore-next-line // company_id should be tested as it is optional
 
 		$this->assertTrue($result);
 	}
@@ -161,7 +182,7 @@ class AbstractAclValidatorTest extends TestCase
 	public function testIsAdminFails(): void
 	{
 		$UID = 1;
-		$unit = ['UID' => 1, 'company_id' => 4];
+		$unit = ['UID' => 2, 'company_id' => 4];
 		$result = $this->aclValidator->isAdmin($UID, $unit);
 
 		$this->assertFalse($result);

@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Mediapool\Utils;
 
@@ -57,6 +57,7 @@ class AbstractMediaHandlerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->configMock           = $this->createMock(Config::class);
 		$this->filesystemMock = $this->createMock(Filesystem::class);
 
@@ -259,9 +260,9 @@ class AbstractMediaHandlerTest extends TestCase
 			->willReturn('/absolute/path/to');
 
 		$clientMock->expects($this->once())->method('request')
-			->with('GET', 'http://example.com/file', ['sink' => '/absolute/path/to//originals/file']);
+			->with('GET', 'https://example.com/file', ['sink' => '/absolute/path/to//originals/file']);
 
-		$result = $this->concreteMediaHandler->uploadFromExternal($clientMock, 'http://example.com/file');
+		$result = $this->concreteMediaHandler->uploadFromExternal($clientMock, 'https://example.com/file');
 		$this->assertEquals('//originals/file', $result);
 	}
 }

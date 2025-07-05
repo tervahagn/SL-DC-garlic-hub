@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 
 namespace Tests\Unit\Framework\Utils\Datatable;
@@ -42,6 +43,7 @@ class DatatableTemplatePreparerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->preparer = new DatatableTemplatePreparer($this->translatorMock);
 	}

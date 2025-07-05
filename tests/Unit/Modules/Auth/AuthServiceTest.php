@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Auth;
 
@@ -45,6 +46,7 @@ class AuthServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->userServiceMock = $this->createMock(UsersService::class);
 		$this->cookieMock      = $this->createMock(Cookie::class);
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);

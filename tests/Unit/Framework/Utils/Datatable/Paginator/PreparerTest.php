@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Utils\Datatable\Paginator;
 
@@ -42,6 +42,7 @@ class PreparerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->urlBuilderMock           = $this->createMock(UrlBuilder::class);
 		$this->baseFilterParametersMock = $this->createMock(BaseFilterParameters::class);
 		$this->preparer                 = new Preparer($this->urlBuilderMock);

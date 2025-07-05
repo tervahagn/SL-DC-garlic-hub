@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Middleware;
 
@@ -67,6 +68,7 @@ class FinalRenderMiddlewareTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->templateServiceMock = $this->createMock(AdapterInterface::class);
 		$this->aclValidatorMock    = $this->createMock(AclValidator::class);
 		$this->requestMock         = $this->createMock(ServerRequestInterface::class);

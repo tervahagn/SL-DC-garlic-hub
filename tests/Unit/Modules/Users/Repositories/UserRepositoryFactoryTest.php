@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Users\Repositories;
 
@@ -38,6 +39,7 @@ class UserRepositoryFactoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->configMock = $this->createMock(Config::class);
 		$connectionMock = $this->createMock(Connection::class);
 		$this->factory = new UserRepositoryFactory($this->configMock, $connectionMock);

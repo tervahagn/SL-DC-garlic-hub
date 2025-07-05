@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
@@ -41,6 +41,7 @@ class AclValidatorTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->aclHelperMock = $this->createMock(AclHelper::class);
 
 		$this->aclValidator    = new AclValidator($this->aclHelperMock);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Mediapool\Services;
 
@@ -47,6 +48,7 @@ class NodesServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 		$this->nestedSetServiceMock = $this->createMock(Service::class);

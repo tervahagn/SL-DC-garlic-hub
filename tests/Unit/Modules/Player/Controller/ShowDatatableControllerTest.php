@@ -1,4 +1,24 @@
 <?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+declare(strict_types=1);
+
 
 namespace Tests\Unit\Modules\Player\Controller;
 
@@ -10,7 +30,6 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Player\Helper\Datatable\ControllerFacade;
-use App\Modules\Playlists\Helper\Datatable\ControllerFacade as Facade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -37,6 +56,7 @@ class ShowDatatableControllerTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->facadeMock           = $this->createMock(ControllerFacade::class);
 		$this->templatePreparerMock = $this->createMock(DatatableTemplatePreparer::class);
 		$this->requestMock          = $this->createMock(ServerRequestInterface::class);

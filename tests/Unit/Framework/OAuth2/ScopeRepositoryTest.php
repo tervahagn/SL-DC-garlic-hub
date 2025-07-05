@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\OAuth2;
 
@@ -39,6 +40,7 @@ class ScopeRepositoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$connectionMock = $this->createMock(Connection::class);
 		$this->repository = new ScopeRepository($connectionMock);
 	}

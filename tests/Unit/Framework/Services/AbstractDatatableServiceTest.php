@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Services;
 
@@ -59,6 +59,7 @@ class AbstractDatatableServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->loggerMock = $this->createMock(LoggerInterface::class);
 		$this->repositoryMock = $this->createMock(FilterBase::class);
 		$this->parametersMock = $this->createMock(BaseParameters::class);

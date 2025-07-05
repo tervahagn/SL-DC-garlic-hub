@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace Tests\Unit\Commands;
 
@@ -44,7 +44,8 @@ class MigrateCommandTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
-		// Initialisiere Mocks für alle Tests
+		parent::setUp();
+
 		$this->runnerMock = $this->createMock(Runner::class);
 		$this->inputMock = $this->createMock(InputInterface::class);
 		$this->outputMock = $this->createMock(OutputInterface::class);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Core\Config;
 
@@ -39,7 +40,8 @@ class ConfigTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->configLoaderMock = $this->createMock(ConfigLoaderInterface::class);
+		parent::setUp();
+		$this->configLoaderMock = $this->createMock(ConfigLoaderInterface::class);
         $this->config           = new Config($this->configLoaderMock, ['key_path' => 'value_path'], ['key_env' => 'value_env']);
     }
 

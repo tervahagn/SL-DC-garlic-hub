@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Database\Migration;
 
@@ -39,6 +40,7 @@ class RepositoryTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->connection = DriverManager::getConnection([
 			'driver' => 'pdo_sqlite',
 			'memory' => true,
