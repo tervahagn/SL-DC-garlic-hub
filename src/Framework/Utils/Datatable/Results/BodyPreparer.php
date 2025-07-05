@@ -95,7 +95,7 @@ class BodyPreparer
 	}
 
 	/**
-	 * @return array{LANG_ACTION: string, LINK_ACTION: string, ACTION_ID: string, ACTION_NAME: string}
+	 * @return array{LANG_ACTION: string, LINK_ACTION: string, ACTION_ID: string|int, ACTION_NAME: string}
 	 */
 	public function formatAction(string $lang, string $link, string $name, string|int $id, string $cssClass): array
 	{
