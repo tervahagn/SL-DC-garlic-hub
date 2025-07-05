@@ -71,6 +71,7 @@ class CrudTraitTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->connectionMock   = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 		$this->repository       = new SqlConcrete($this->connectionMock, 'table', 'id');

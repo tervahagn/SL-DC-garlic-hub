@@ -49,7 +49,7 @@ class Widget extends AbstractMediaHandler
 		$this->zipFilesystemFactory = $zipFilesystemFactory;
 		$this->imagick              = $imagick;
 		$this->configXML            = $configXML;
-		$this->maxDownloadSize      = $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
+		$this->maxDownloadSize      = (int) $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

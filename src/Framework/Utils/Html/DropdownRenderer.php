@@ -24,11 +24,15 @@ namespace App\Framework\Utils\Html;
 class DropdownRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 
-	public function render(DropdownField|FieldInterface $field): string
+	public function render(FieldInterface $field): string
 	{
 		$this->field = $field;
 
 		$id = $this->field->getId();
+
+		if (!($this->field instanceof DropdownField))
+			return '';
+
 		$html = '<select id="'.$id.'" name= "' . $this->field->getName(). '" aria-describedby="error_' . $id. '">';
 		if ($this->field->isOptionsZero())
 			$html .= '<option value="">-</option>';

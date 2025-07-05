@@ -59,7 +59,7 @@ class ConfigTest extends TestCase
         $this->configLoaderMock
             ->method('load')
             ->with($module)
-            ->willReturn(['section' => [$key => $value]]);
+            ->willReturn(['heidewitzka' => 'Der Kapitan', 'section' => [$key => $value]]);
 
         $result = $this->config->getConfigValue($key, $module, 'section');
 
@@ -110,7 +110,7 @@ class ConfigTest extends TestCase
 
         $result = $this->config->getConfigValue($key, $module, 'section');
 
-        static::assertNull($result);
+        static::assertEmpty($result);
     }
 
 	#[Group('units')]

@@ -23,9 +23,9 @@ namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\DatatableFacadeInterface;
+use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,10 +44,8 @@ readonly class ShowDatatableController
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
-	 * @noinspection PhpPossiblePolymorphicInvocationInspection
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -58,7 +56,10 @@ readonly class ShowDatatableController
 		$dataGrid = $this->facade->prepareUITemplate();
 
 		$templateData = $this->templateFormatter->preparerUITemplate($dataGrid);
-		$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->facade->prepareContextMenu();
+
+		if ($this->facade instanceof ControllerFacade)
+			$templateData['this_layout']['data']['create_playlist_contextmenu'] = $this->facade->prepareContextMenu();
+
 		$response->getBody()->write(serialize($templateData));
 
 		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);

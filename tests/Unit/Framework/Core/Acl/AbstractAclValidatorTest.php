@@ -166,7 +166,6 @@ class AbstractAclValidatorTest extends TestCase
 		$this->expectExceptionMessage('Missing company id or UID in unit data.');
 
 		$result = $this->aclValidator->isAdmin($UID, $unit);
-		// @phpstan-ignore-next-line // company_id should be tested as it is optional
 
 		static::assertTrue($result);
 	}

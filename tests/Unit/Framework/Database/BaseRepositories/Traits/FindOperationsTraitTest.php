@@ -35,7 +35,8 @@ use PHPUnit\Framework\TestCase;
 
 class ConcreteTrait extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 }
 class FindOperationsTraitTest extends TestCase
 {

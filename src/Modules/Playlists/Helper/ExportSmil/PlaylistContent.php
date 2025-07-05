@@ -140,8 +140,11 @@ class PlaylistContent
 		$item = $this->itemsFactory->createItem($itemData);
 		$item->setIsMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
-		$link = $this->config->getConfigValue('content_server_url', 'mediapool').'/'.
-				str_replace('public/', '', $this->config->getConfigValue('originals', 'mediapool', 'directories')).'/'.
+		/** @var string $serverUrl */
+		$serverUrl = $this->config->getConfigValue('content_server_url', 'mediapool');
+		/** @var string $originalPath */
+		$originalPath = $this->config->getConfigValue('originals', 'mediapool', 'directories');
+		$link = $serverUrl.'/'.str_replace('public/', '', $originalPath).'/'.
 				$itemData['file_resource'].'.'. $itemData['extension'];
 
 		$item->setLink($link);
@@ -251,7 +254,7 @@ class PlaylistContent
 					$this->contentPrefetch .= $prefetch;
 				break;
 */
-			// default not required as we check in build method for valid ItemTypes and throw an exception
+			// default isn't required as we check in build method for valid ItemTypes and throw an exception
 		}
 
 		if (!$disabled)

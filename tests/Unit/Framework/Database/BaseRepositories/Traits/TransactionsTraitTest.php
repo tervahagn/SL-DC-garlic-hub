@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Database\BaseRepositories\Traits;
 
+use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
@@ -28,10 +29,19 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+class TestSqlWithTraits extends SqlBase
+{
+	use TransactionsTrait;
+	public function __construct(Connection $connection)
+	{
+		parent::__construct($connection, 'test', 'test_id');
+	}
+}
+
 class TransactionsTraitTest extends TestCase
 {
 	private Connection&MockObject $connectionMock;
-	private object $traitObject;
+	private TestSqlWithTraits $traitObject;
 
 	/**
 	 * @throws Exception
@@ -40,21 +50,13 @@ class TransactionsTraitTest extends TestCase
 	{
 		parent::setUp();
 		$this->connectionMock = $this->createMock(Connection::class);
-		$this->traitObject = new class($this->connectionMock)
-		{
-			use TransactionsTrait;
 
-			public function __construct(private readonly Connection $connection)
-			{
-			}
-
-			public function __get(string $name): string
-			{
-				return $this->$name;
-			}
-		};
+		$this->traitObject    = new TestSqlWithTraits($this->connectionMock);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testBeginTransaction(): void
 	{
@@ -76,6 +78,9 @@ class TransactionsTraitTest extends TestCase
 		static::assertTrue($this->traitObject->isTransactionActive());
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCommitTransaction(): void
 	{
@@ -86,6 +91,9 @@ class TransactionsTraitTest extends TestCase
 		$this->traitObject->commitTransaction();
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testRollBackTransaction(): void
 	{

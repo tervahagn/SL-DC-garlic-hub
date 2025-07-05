@@ -56,7 +56,7 @@ class PlaylistMetricsCalculator
 	 */
 	public function getDefaultDuration(): int
 	{
-		return $this->config->getConfigValue('duration', 'playlists', 'Defaults');
+		return (int) $this->config->getConfigValue('duration', 'playlists', 'Defaults');
 	}
 
 	public function getCountEntries(): int

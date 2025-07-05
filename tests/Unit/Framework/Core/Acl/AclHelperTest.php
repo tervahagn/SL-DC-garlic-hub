@@ -434,11 +434,11 @@ class AclHelperTest extends TestCase
 			{
 				return match ($key)
 				{
-					'moduleadmin' => 8,
-					'subadmin' => 4,
-					'editor' => 2,
-					'viewer' => 1,
-					default => 0,
+					'moduleadmin' => '8',
+					'subadmin' => '4',
+					'editor' => '2',
+					'viewer' => '1',
+					default => '0',
 				};
 			});
 	}

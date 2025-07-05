@@ -52,7 +52,7 @@ class Image extends AbstractMediaHandler
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->imagick      = $imagick;
-		$this->maxImageSize = $this->config->getConfigValue('images', 'mediapool', 'max_file_sizes');
+		$this->maxImageSize = (int) $this->config->getConfigValue('images', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

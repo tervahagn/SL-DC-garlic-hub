@@ -358,7 +358,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$this->configMock->expects($this->once())->method('getConfigValue')
 			->with('duration', 'playlists', 'Defaults')
-			->willReturn(15);
+			->willReturn('15');
 
 		$result = $this->calculator->calculateRemainingMediaDuration($playlist, $media);
 		static::assertSame(15, $result);

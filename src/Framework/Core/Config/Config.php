@@ -21,24 +21,23 @@ declare(strict_types=1);
 
 namespace App\Framework\Core\Config;
 
-use App\Framework\Exceptions\CoreException;
 use Monolog\Level;
 
 /**
  * The Config class manages application configuration settings.
  *
  * Provides methods to load, cache, and retrieve configuration data for different modules.
- * This class utilizes a ConfigLoaderInterface for flexibility in loading configurations.
+ * This class uses a ConfigLoaderInterface for flexibility in loading configurations.
  */
 class Config
 {
-	const string PLATFORM_EDITION_EDGE = 'edge';
-	const string PLATFORM_EDITION_CORE = 'core';
-	const string PLATFORM_EDITION_ENTERPRISE = 'enterprise';
+	public const string PLATFORM_EDITION_EDGE = 'edge';
+	public const string PLATFORM_EDITION_CORE = 'core';
+	public const string PLATFORM_EDITION_ENTERPRISE = 'enterprise';
 
 	private ConfigLoaderInterface $configLoader;
 
-	/** @var array<string,mixed> */
+	/** @var array<string,array<string,string|array<string,string>>> */
 	private array $configCache = [];
 	/** @var array<string,string> */
 	private array $paths;
@@ -90,27 +89,22 @@ class Config
 	 *
 	 * Searches for the value in the given module and optional section.
 	 *
-	 * @param string      $key     The configuration key to retrieve.
-	 * @param string      $module  The name of the module.
-	 * @param string|null $section Optional. The section within the module.
-	 *
-	 * @return mixed|null The configuration value or null if not found.
-	 * @throws CoreException
+	 * @return string The configuration value or null if not found.
 	 */
-	public function getConfigValue(string $key, string $module, ?string $section = null): mixed
+	public function getConfigValue(string $key, string $module, ?string $section = null): string
 	{
 		$config = $this->getConfigForModule($module);
 
 		if ($section !== null && array_key_exists($section, $config))
 			$config = $config[$section];
 
-
-		return $config[$key] ?? null;
+		/** @var array<string,string> $config */
+		return $config[$key] ?? '';
 	}
 
 	/**
+	 * @param string $module
 	 * @return array<string,mixed>
-	 * @throws CoreException
 	 */
 	public function getFullConfigDataByModule(string $module): array
 	{
@@ -118,25 +112,23 @@ class Config
 	}
 
 	/**
-	 * @return array<string,mixed>
-	 * @throws CoreException
+	 * @return array<string,string|array<string,string>>
 	 */
 	private function getConfigForModule(string $module): array
 	{
-		if (!isset($this->configCache[$module])) {
+		if (!array_key_exists($module, $this->configCache))
 			$this->configCache[$module] = $this->configLoader->load($module);
-		}
 
 		return $this->configCache[$module];
 	}
 
 	/**
 	 * @param string[] $modules An array of module names to preload.
-	 * @throws CoreException
 	 */
 	public function preloadModules(array $modules): void
 	{
-		foreach ($modules as $module) {
+		foreach ($modules as $module)
+		{
 			$this->getConfigForModule($module);
 		}
 	}

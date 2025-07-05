@@ -34,7 +34,7 @@ use App\Framework\Exceptions\ModuleException;
  * - Adding parameters with detailed type constraints and optional default values.
  * - Removing single or multiple parameters by name.
  * - Retrieving and setting parameter values, including defaults.
- * - Parsing parameter values leveraging sanitization methods.
+ * - Parsing parameter values, leveraging sanitization methods.
  * - Detecting and managing user input for parameter processing.
  * - Support for custom hooks before and after parameter parsing.
  *
@@ -274,7 +274,6 @@ abstract class BaseParameters
 	 * @param array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed} $parameter
 	 * @return array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}
 	 */
-	// @phpstan-ignore-next-line
 	protected function afterParseHook(string $parameter_name, array $parameter): array
 	{
 		return $parameter;
@@ -287,7 +286,6 @@ abstract class BaseParameters
 	 * @param  array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed} $parameter
 	 * @return array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}
 	 */
-	// @phpstan-ignore-next-line
 	protected function beforeParseHook(string $parameterName, array $parameter): array
 	{
 		return $parameter;

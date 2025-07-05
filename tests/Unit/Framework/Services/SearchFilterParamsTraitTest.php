@@ -67,7 +67,7 @@ class SearchFilterParamsTraitTest extends TestCase
 	{
 		$filterParams = ['keyword' => 'test', 'category' => 'example'];
 		$this->searchFilterService->setCurrentFilterParams($filterParams);
-		// @phpstan-ignore-next-line
+
 		static::assertSame($filterParams, $this->searchFilterService->getCurrentFilterParameter());
 	}
 

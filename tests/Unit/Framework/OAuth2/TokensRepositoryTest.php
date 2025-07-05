@@ -131,7 +131,6 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
-		// @phpstan-ignore-next-line
 		static::assertTrue($result);
 	}
 

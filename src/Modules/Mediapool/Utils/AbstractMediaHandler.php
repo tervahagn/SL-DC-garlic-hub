@@ -62,11 +62,11 @@ abstract class AbstractMediaHandler
 		$this->config     = $config;
 		$this->filesystem = $filesystem;
 
-		$this->maxWidth   = $this->config->getConfigValue('width', 'mediapool', 'max_resolution');
-		$this->maxHeight  = $this->config->getConfigValue('height', 'mediapool', 'max_resolution');
+		$this->maxWidth   = (int) $this->config->getConfigValue('width', 'mediapool', 'max_resolution');
+		$this->maxHeight  = (int) $this->config->getConfigValue('height', 'mediapool', 'max_resolution');
 
-		$this->thumbWidth   = $this->config->getConfigValue('thumb_width', 'mediapool', 'dimensions');
-		$this->thumbHeight  = $this->config->getConfigValue('thumb_height', 'mediapool', 'dimensions');
+		$this->thumbWidth   = (int) $this->config->getConfigValue('thumb_width', 'mediapool', 'dimensions');
+		$this->thumbHeight  = (int) $this->config->getConfigValue('thumb_height', 'mediapool', 'dimensions');
 		$this->uploadPath   = $this->config->getConfigValue('uploads', 'mediapool', 'directories');
 		$this->thumbPath    = $this->config->getConfigValue('thumbnails', 'mediapool', 'directories');
 		$this->originalPath = $this->config->getConfigValue('originals', 'mediapool', 'directories');

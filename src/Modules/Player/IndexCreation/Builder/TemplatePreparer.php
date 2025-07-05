@@ -17,13 +17,14 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\IndexCreation\Builder;
 
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\Enums\IndexSections;
 use App\Modules\Player\Enums\TemplateIndexFiles;
+use App\Modules\Player\IndexCreation\Builder\Preparers\PlaylistPreparer;
 use App\Modules\Player\IndexCreation\Builder\Preparers\PreparerFactory;
 use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 use Exception;
@@ -102,7 +103,9 @@ class TemplatePreparer
 		$this->standby_times = $this->preparerFactory->create(IndexSections::STANDBY_TIMES, $this->playerEntity)->prepare();
 		$playlist            = $this->preparerFactory->create(IndexSections::PLAYLIST, $this->playerEntity);
 
-		$playlist->setPlaylistStructure($this->playlistStructure)->setIsSimple(false);
+		if ($playlist instanceof PlaylistPreparer)
+			$playlist->setPlaylistStructure($this->playlistStructure)->setIsSimple(false);
+
 		$this->playlist = $playlist->prepare();
 		$this->setTemplateData();
 	}
@@ -123,7 +126,9 @@ class TemplatePreparer
 		$this->prepareStandards();
 
 		$playlist =	$this->preparerFactory->create(IndexSections::PLAYLIST, $this->playerEntity);
-		$playlist->setPlaylistStructure($this->playlistStructure)->setIsSimple(true);
+		if ($playlist instanceof PlaylistPreparer)
+			$playlist->setPlaylistStructure($this->playlistStructure)->setIsSimple(true);
+
 		$this->playlist = $playlist->prepare();
 		$this->setTemplateDataSimple();
 	}

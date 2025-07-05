@@ -25,6 +25,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
+use App\Framework\Utils\Html\ClipboardTextField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
@@ -118,7 +119,7 @@ readonly class FormElementsCreator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function createClipboardTextField(string $value, string $purpose, string $expiresAt): FieldInterface
+	public function createClipboardTextField(string $value, string $purpose, string $expiresAt): ClipboardTextField
 	{
 		$http = isset($_SERVER['HTTPS']) ? 'https://': 'http://';
 
@@ -127,7 +128,8 @@ readonly class FormElementsCreator
 			$purposeStr,
 			$expiresAt
 		);
-		
+
+		/** @var ClipboardTextField $object */
 		$object = $this->formBuilder->createField([
 			'type' => FieldType::CLIPBOARD_TEXT,
 			'id' => $value,

@@ -23,10 +23,12 @@ namespace App\Framework\Utils\Html;
 
 class ClipboardTextRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
-	public function render(ClipboardTextField|FieldInterface $field): string
+	public function render(FieldInterface $field): string
 	{
 		$this->field = $field;
 		$id = $this->field->getId();
+		if (!($this->field instanceof ClipboardTextField))
+			return '';
 
 		return '<input type="text" id="'.$id.'" class="verification-link" title="'.$this->field->getTitle().'" value="'.$this->field->getValue().'" readonly>
 <button type="button" data-id="'.$id.'" class="copy-verification-link" title="'.$this->field->getTitle().'."><i class="bi bi-clipboard"></i></button>

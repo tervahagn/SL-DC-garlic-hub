@@ -74,16 +74,16 @@ class MediaHandlerFactoryTest extends TestCase
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['images', 'mediapool', 'max_file_sizes', 20971520]
+				['images', 'mediapool', 'max_file_sizes', '20971520']
 			]);
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
@@ -99,16 +99,16 @@ class MediaHandlerFactoryTest extends TestCase
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['videos', 'mediapool', 'max_file_sizes', 1073741824]
+				['videos', 'mediapool', 'max_file_sizes', '1073741824']
 			]);
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
@@ -124,16 +124,16 @@ class MediaHandlerFactoryTest extends TestCase
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['documents', 'mediapool', 'max_file_sizes', 20971520]
+				['documents', 'mediapool', 'max_file_sizes', '20971520']
 			]);
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
@@ -149,16 +149,16 @@ class MediaHandlerFactoryTest extends TestCase
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['downloads', 'mediapool', 'max_file_sizes', 1073741824]
+				['downloads', 'mediapool', 'max_file_sizes', '1073741824']
 			]);
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
@@ -174,16 +174,16 @@ class MediaHandlerFactoryTest extends TestCase
 	{
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['downloads', 'mediapool', 'max_file_sizes', 1073741824]
+				['downloads', 'mediapool', 'max_file_sizes', '1073741824']
 			]);
 
 		$handler = $this->mediaHandlerFactory->createHandler('application/zip');

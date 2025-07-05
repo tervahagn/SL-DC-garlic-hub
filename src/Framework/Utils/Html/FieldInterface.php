@@ -34,6 +34,8 @@ interface FieldInterface
 
 	public function getLabel(): string;
 
+	public function getTitle(): string;
+
 	public function getValue(): ?string;
 
 	/**

@@ -47,7 +47,7 @@ class Video extends AbstractMediaHandler
 
 		$this->ffmpeg       = $ffmpeg;
 		$this->imagick      = $imagick;
-		$this->maxVideoSize = $this->config->getConfigValue('videos', 'mediapool', 'max_file_sizes');
+		$this->maxVideoSize = (int) $this->config->getConfigValue('videos', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

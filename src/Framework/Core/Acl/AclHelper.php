@@ -140,7 +140,7 @@ class AclHelper
 		$userEntity = $this->userService->getUserById($UID);
 		$acls       = $userEntity->getAcl();
 
-		$aclValue = $this->config->getConfigValue($aclName, $moduleName, self::SECTION_GLOBAL_ACLS);
+		$aclValue = (int) $this->config->getConfigValue($aclName, $moduleName, self::SECTION_GLOBAL_ACLS);
 
 		foreach ($acls as $acl)
 		{

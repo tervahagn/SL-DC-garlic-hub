@@ -38,7 +38,7 @@ class Miscellaneous extends AbstractMediaHandler
 	{
 		parent::__construct($config, $fileSystem); // should be first
 
-		$this->maxSize = $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
+		$this->maxSize = (int) $this->config->getConfigValue('downloads', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

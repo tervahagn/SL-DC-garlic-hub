@@ -24,11 +24,13 @@ namespace App\Framework\Utils\Html;
 class AutocompleteRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
 
-	public function render(AutocompleteField|FieldInterface $field): string
+	public function render(FieldInterface $field): string
 	{
 		$this->field = $field;
 		$inputId    = $this->field->getId().'_search';
 		$datalistId = $this->field->getId().'_suggestions';
+		if (!($this->field instanceof AutocompleteField))
+			return '';
 
 		return '<input id="'.$inputId.'" list="'.$datalistId.'" value="'.$this->field->getDataLabel().'" data-id="'.$this->field->getValue().'" aria-describedby="error_'.$this->field->getId().'">
 		<input type="hidden" id="'.$this->field->getId().'" name="'.$this->field->getId().'" value="'.$this->field->getValue().'" autocomplete="off">

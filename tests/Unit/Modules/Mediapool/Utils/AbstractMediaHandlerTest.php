@@ -63,10 +63,10 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$this->configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],

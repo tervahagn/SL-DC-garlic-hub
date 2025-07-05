@@ -44,7 +44,7 @@ class Pdf extends AbstractMediaHandler
 		parent::__construct($config, $fileSystem); // should be first
 
 		$this->imagick = $imagick;
-		$this->maxDocumentSize = $this->config->getConfigValue('documents', 'mediapool', 'max_file_sizes');
+		$this->maxDocumentSize = (int) $this->config->getConfigValue('documents', 'mediapool', 'max_file_sizes');
 	}
 
 	/**

@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace App\Modules\Player\Entities;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Exceptions\CoreException;
 use App\Modules\Player\Enums\PlayerModel;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use DateTime;
@@ -284,7 +283,7 @@ class PlayerEntity
 	}
 
 	/**
-	 * @throws CoreException
+	 * @return string
 	 */
 	public function getReportServer(): string
 	{
@@ -292,7 +291,6 @@ class PlayerEntity
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function getIndexPath(): string
 	{

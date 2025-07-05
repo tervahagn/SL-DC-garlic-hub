@@ -271,7 +271,7 @@ class LocalesTest extends TestCase
 							 if ($section === 'general')
 								 return 'en_US';
 
-							 return null;
+							 return '';
 						 });
 		$this->expectException(FrameworkException::class);
 		$this->expectExceptionMessage('Missing configuration for language_code in locale en_US.');

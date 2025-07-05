@@ -53,16 +53,16 @@ class AudioTest extends TestCase
 
 		$configMock->method('getConfigValue')
 			->willReturnMap([
-				['width', 'mediapool', 'max_resolution', 3840],
-				['height', 'mediapool', 'max_resolution', 3840],
-				['thumb_width', 'mediapool', 'dimensions', 150],
-				['thumb_height', 'mediapool', 'dimensions', 150],
+				['width', 'mediapool', 'max_resolution', '3840'],
+				['height', 'mediapool', 'max_resolution', '3840'],
+				['thumb_width', 'mediapool', 'dimensions', '150'],
+				['thumb_height', 'mediapool', 'dimensions', '150'],
 				['uploads', 'mediapool', 'directories', '/uploads'],
 				['thumbnails', 'mediapool', 'directories', '/thumbnails'],
 				['originals', 'mediapool', 'directories', '/originals'],
 				['previews', 'mediapool', 'directories', '/previews'],
 				['icons', 'mediapool', 'directories', '/icons'],
-				['audios', 'mediapool', 'max_file_sizes', 1073741824]
+				['audios', 'mediapool', 'max_file_sizes', '1073741824']
 			]);
 
 		$this->audio = new Audio($configMock, $this->filesystemMock, $this->ffmpegMock);

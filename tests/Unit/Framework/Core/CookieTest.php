@@ -129,7 +129,6 @@ class CookieTest extends TestCase
 	{
 		$result = $this->cookie->getHashedCookie('nonexistent_cookie');
 
-		// @phpstan-ignore-next-line
 		static::assertNull($result);
 	}
 

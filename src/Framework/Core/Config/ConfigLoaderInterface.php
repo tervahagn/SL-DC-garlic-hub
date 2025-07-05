@@ -21,12 +21,10 @@ declare(strict_types=1);
 
 namespace App\Framework\Core\Config;
 
-use App\Framework\Exceptions\CoreException;
-
 interface ConfigLoaderInterface
 {
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,string|array<string,string>>
 	 */
 	public function load(string $module): array;
 }

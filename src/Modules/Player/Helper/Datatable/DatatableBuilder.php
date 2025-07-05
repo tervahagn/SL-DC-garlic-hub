@@ -54,7 +54,8 @@ class DatatableBuilder extends AbstractDatatableBuilder
 		if ($this->aclValidator->getConfig()->getEdition() === Config::PLATFORM_EDITION_EDGE)
 			return;
 
-		$this->parameters->addActivity();
+		if ($this->parameters instanceof Parameters)
+			$this->parameters->addActivity();
 
 		if ($this->aclValidator->isModuleAdmin($UID) || $this->aclValidator->isSubAdmin($UID))
 		{
