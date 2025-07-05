@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Users\Helper\Settings;
 
@@ -97,7 +98,7 @@ class Facade
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		$UID = $post['UID'] ?? 0;
+		$UID = (int) ($post['UID'] ?? 0);
 		if ($UID > 0)
 		{
 			$user = $this->usersAdminService->loadForAdminEdit($UID);

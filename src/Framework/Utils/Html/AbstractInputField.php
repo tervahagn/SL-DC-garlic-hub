@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Framework\Utils\Html;
 
@@ -45,7 +45,7 @@ class AbstractInputField implements FieldInterface
 		$this->name            = $attributes['name'] ?? $attributes['id'];
 		$this->title           = $attributes['title'] ?? '';
 		$this->label           = $attributes['label'] ?? '';
-		$this->value           = $attributes['value'] ?? '';
+		$this->value           = (string) ($attributes['value'] ?? '');
 		$this->defaultValue    = $attributes['default_value'] ?? '';
 		$this->validationRules = $attributes['rules'] ?? [];
 		$this->attributes      = $attributes['attributes'] ?? [];
@@ -66,7 +66,7 @@ class AbstractInputField implements FieldInterface
 		return $this;
 	}
 
-	public function setAttribute(string $name, string $value): static
+	public function setAttribute(string $name, string|int $value): static
 	{
 		$this->attributes[$name] = $value;
 		return $this;

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Framework\Utils\Widget;
 
@@ -33,8 +34,8 @@ use SimpleXMLElement;
  */
 class ConfigXML extends BaseSimpleXml
 {
-	const string DEFAULT_LANGUAGE = 'en';
-	const string DEFAULT_DIRECTION = 'ltr';
+	public const string DEFAULT_LANGUAGE = 'en';
+	public const string DEFAULT_DIRECTION = 'ltr';
 
 	protected ?SimpleXMLElement $MyXML = null;
 	protected string $default_language = self::DEFAULT_LANGUAGE;
@@ -199,7 +200,7 @@ class ConfigXML extends BaseSimpleXml
 		foreach($this->MyXML->preference as $pref)
 		{
 			// readonly is only interesting for player not for an authoring tool or CMS
-			if (isset($pref['readonly']) && strtolower($pref['readonly']) == 'true')
+			if (isset($pref['readonly']) && strtolower((string) $pref['readonly']) == 'true')
 				continue;
 			if (!isset($pref['name']) || empty($pref['name']))
 				continue;
@@ -253,7 +254,7 @@ class ConfigXML extends BaseSimpleXml
 	private function parseDefaultDirection(): static
 	{
 		if (isset($this->MyXML['dir']))
-			$this->default_language = $this->MyXML['dir'];
+			$this->default_language = (string) $this->MyXML['dir'];
 
 		return $this;
 	}

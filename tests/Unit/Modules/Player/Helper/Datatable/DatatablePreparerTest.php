@@ -144,7 +144,7 @@ class DatatablePreparerTest extends TestCase
 					'status' => PlayerStatus::RELEASED->value,
 					'refresh' => '900',
 					'model' => PlayerModel::GARLIC->value,
-					'playlist_id' => 123,
+					'playlist_id' => '123',
 				]
 			],
 			$fields,
@@ -201,9 +201,9 @@ class DatatablePreparerTest extends TestCase
 
 		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
 			->willReturnMap([
-				['Select playlist', '#', 'edit', '123', 'pencil select-playlist', []],
-				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
-				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
+				['Select playlist', '#', 'edit', 123, 'pencil select-playlist', []],
+				['Remove playlist', '#', 'playlist', 123, 'x-circle remove-playlist', []],
+				['Goto playlist', '/playlists/compose/123', 'playlist', 123, 'music-note-list playlist-link', []]
 			]);
 
 		$result = $this->datatablePreparer->prepareTableBody(
@@ -286,7 +286,7 @@ class DatatablePreparerTest extends TestCase
 					'status' => PlayerStatus::RELEASED->value,
 					'refresh' => '900',
 					'model' => PlayerModel::GARLIC->value,
-					'playlist_id' => 123,
+					'playlist_id' => '123',
 				]
 			],
 			$fields,
@@ -341,7 +341,7 @@ class DatatablePreparerTest extends TestCase
 					'status' => PlayerStatus::RELEASED->value,
 					'player_name' => 'Player name',
 					'model' => PlayerModel::GARLIC->value,
-					'playlist_id' => 123,
+					'playlist_id' => '123',
 				]
 			],
 			$fields,
@@ -602,9 +602,9 @@ class DatatablePreparerTest extends TestCase
 
 		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
 			->willReturnMap([
-				['Select playlist', '#', 'edit', '123', 'pencil select-playlist', []],
-				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
-				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
+				['Select playlist', '#', 'edit', 123, 'pencil select-playlist', []],
+				['Remove playlist', '#', 'playlist', 123, 'x-circle remove-playlist', []],
+				['Goto playlist', '/playlists/compose/123', 'playlist', 123, 'music-note-list playlist-link', []]
 			]);
 
 		$result = $this->datatablePreparer->prepareTableBody(
@@ -623,8 +623,8 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertCount(1, $result);
-		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+		static::assertCount(1, $result);
+		static::assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
@@ -74,7 +75,7 @@ class ShowSettingsController
 	 */
 	public function editPlaylistForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = (int) $args['playlist_id'];
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 
 		$this->initFacade($request);
 

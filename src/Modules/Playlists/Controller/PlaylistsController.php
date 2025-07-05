@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
@@ -24,6 +25,7 @@ use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
@@ -55,6 +57,7 @@ class PlaylistsController extends AbstractAsyncController
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function delete(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -64,7 +67,7 @@ class PlaylistsController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
-		$playlistId = $post['playlist_id'] ?? 0;
+		$playlistId = (int) ($post['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -76,10 +79,14 @@ class PlaylistsController extends AbstractAsyncController
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function toggleShuffle(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -88,11 +95,12 @@ class PlaylistsController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
-		if (empty($post['playlist_id']))
+		$playlistId = (int) ($post['playlist_id'] ?? 0);
+		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
 		$this->setServiceUID($request);
-		$data = $this->playlistsService->toggleShuffle($post['playlist_id']);
+		$data = $this->playlistsService->toggleShuffle($playlistId);
 		if ($data['affected'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
@@ -104,6 +112,7 @@ class PlaylistsController extends AbstractAsyncController
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function shufflePicking(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -120,7 +129,7 @@ class PlaylistsController extends AbstractAsyncController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No picking value found.']);
 
 		$this->setServiceUID($request);
-		$data = $this->playlistsService->shufflePicking($post['playlist_id'], $post['shuffle_picking']);
+		$data = $this->playlistsService->shufflePicking((int) $post['playlist_id'], (int) $post['shuffle_picking']);
 
 		if ($data['affected'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
@@ -133,8 +142,7 @@ class PlaylistsController extends AbstractAsyncController
 	 */
 	public function loadZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = $args['playlist_id'] ?? 0;
-
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -151,7 +159,7 @@ class PlaylistsController extends AbstractAsyncController
 	 */
 	public function saveZone(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = $args['playlist_id'] ?? 0;
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -213,7 +221,7 @@ class PlaylistsController extends AbstractAsyncController
 	 */
 	public function findById(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = $args['playlist_id'] ?? 0;
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 

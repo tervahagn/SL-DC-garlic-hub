@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Helper\Settings;
 
@@ -78,7 +79,7 @@ readonly class FormElementsCreator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function createUIDField(string $value, string $username, int $UID): FieldInterface
+	public function createUIDField(string|int $value, string $username, int $UID): FieldInterface
 	{
 		return $this->formBuilder->createField([
 			'type'          => FieldType::AUTOCOMPLETE,
@@ -128,7 +129,7 @@ readonly class FormElementsCreator
 	/**
 	 * @throws FrameworkException
 	 */
-	public function createPlaylistModeField(string $value): FieldInterface
+	public function createPlaylistModeField(string|int $value): FieldInterface
 	{
 		return $this->formBuilder->createField([
 			'type' => FieldType::HIDDEN,

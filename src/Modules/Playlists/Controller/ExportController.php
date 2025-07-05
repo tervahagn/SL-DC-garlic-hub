@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
@@ -48,7 +48,6 @@ class ExportController extends AbstractAsyncController
 	 */
 	public function export(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
-
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
 
@@ -60,7 +59,7 @@ class ExportController extends AbstractAsyncController
 
 		$this->exportService->setUID($this->userSession->getUID());
 
-		if ($this->exportService->exportToSmil($post['playlist_id']) === 0)
+		if ($this->exportService->exportToSmil((int) $post['playlist_id']) === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist not found.']);
 
 		return $this->jsonResponse($response, ['success' => true]);

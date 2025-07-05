@@ -17,12 +17,14 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\ItemsService;
@@ -45,15 +47,19 @@ class ItemsController extends AbstractAsyncController
 	}
 
 	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
 	 * @param array<string,mixed> $args
-	 * @throws ModuleException
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	public function loadItems(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$playlistId = $args['playlist_id'] ?? 0;
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
@@ -91,16 +97,20 @@ class ItemsController extends AbstractAsyncController
 		$UID = $this->setServiceUID($request);
 
 		$insertItem->setUID($UID);
-		$item = $insertItem->insert($requestData['playlist_id'], $requestData['id'], $requestData['position']);
+		$item = $insertItem->insert((int) $requestData['playlist_id'], (int) $requestData['id'], (int) $requestData['position']);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function edit(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -140,11 +150,15 @@ class ItemsController extends AbstractAsyncController
 	}
 
 	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
 	 * @param array<string,mixed> $args
-	 * @throws ModuleException
+	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
@@ -163,6 +177,7 @@ class ItemsController extends AbstractAsyncController
 
 	/**
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function updateItemOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -171,14 +186,16 @@ class ItemsController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
-		if (empty($requestData['playlist_id']))
+		$playlistId = (int) ($requestData['playlist_id'] ?? 0);
+		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		if (empty($requestData['items_positions']))
+		$itemsPositions = $requestData['items_positions'] ?? [];
+		if ($itemsPositions === [])
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Items Position array is not valid.']);
 
 		$this->setServiceUID($request);
-		$result = $this->itemsService->updateItemOrder($requestData['playlist_id'], $requestData['items_positions']);
+		$result = $this->itemsService->updateItemOrder($playlistId, $itemsPositions);
 
 		return $this->jsonResponse($response, ['success' => $result]);
 	}
@@ -194,15 +211,17 @@ class ItemsController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
-		if (empty($requestData['playlist_id']))
+		$playlistId = (int) ($requestData['playlist_id'] ?? 0);
+		if ($playlistId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
 
-		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
+		$itemId = (int) ($requestData['item_id'] ?? 0);
+		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
 		$this->setServiceUID($request);
 
-		$item = $this->itemsService->delete((int)$requestData['playlist_id'], (int) $requestData['item_id']);
+		$item = $this->itemsService->delete($playlistId, $itemId);
 
 		if(!empty($item))
 			return $this->jsonResponse($response, ['success' => true, 'data' => $item]);

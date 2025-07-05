@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Users\Controller;
 
@@ -54,7 +55,7 @@ class ShowDatatableController extends AbstractAsyncController
 		$post       = $request->getParsedBody();
 		$flash      = $request->getAttribute('flash');
 		$translator = $request->getAttribute('translator');
-		$UID = $post['UID'] ?? 0;
+		$UID = (int) ($post['UID'] ?? 0);
 		if ($UID === 0)
 		{
 			$flash->addMessage('error', $translator->translate('user_not_found', 'users'));

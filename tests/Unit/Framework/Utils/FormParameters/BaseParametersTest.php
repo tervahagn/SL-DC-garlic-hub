@@ -430,12 +430,10 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->addParameter('boolParam', ScalarType::BOOLEAN, false);
 		$this->baseParameters->setUserInputs(['intParam' => '42', 'boolParam' => 'true']);
 
-		$this->sanitizerMock->expects($this->once())
-			->method('int')
+		$this->sanitizerMock->expects($this->once())->method('int')
 			->with('42')
 			->willReturn(42);
-		$this->sanitizerMock->expects($this->once())
-			->method('bool')
+		$this->sanitizerMock->expects($this->once())->method('bool')
 			->with('true')
 			->willReturn(true);
 

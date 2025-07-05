@@ -45,7 +45,7 @@ class NumberFieldTest extends TestCase
 		$rAttributes = $this->numberField->getAttributes();
 		$this->assertArrayHasKey('min', $rAttributes);
 		$this->assertArrayNotHasKey('max', $rAttributes);
-		$this->assertSame('5', $rAttributes['min']);
+		$this->assertSame(5, $rAttributes['min']);
 	}
 
 	#[Group('units')]
@@ -63,7 +63,7 @@ class NumberFieldTest extends TestCase
 		$rAttributes = $this->numberField->getAttributes();
 		$this->assertArrayNotHasKey('min', $rAttributes);
 		$this->assertArrayHasKey('max', $rAttributes);
-		$this->assertSame('15', $rAttributes['max']);
+		$this->assertSame(15, $rAttributes['max']);
 	}
 
 	#[Group('units')]
@@ -99,7 +99,7 @@ class NumberFieldTest extends TestCase
 		$this->assertArrayHasKey('min', $rAttributes);
 		$this->assertArrayHasKey('max', $rAttributes);
 
-		$this->assertSame('5', $rAttributes['min']);
-		$this->assertSame('15', $rAttributes['max']);
+		$this->assertSame(5, $rAttributes['min']);
+		$this->assertSame(15, $rAttributes['max']);
 	}
 }

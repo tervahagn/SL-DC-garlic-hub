@@ -17,10 +17,10 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
+
 namespace App\Modules\Mediapool\Repositories;
 
-use App\Framework\Database\BaseRepositories\NestedSetRepository;
-use App\Framework\Database\BaseRepositories\NestedSetHelper;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;

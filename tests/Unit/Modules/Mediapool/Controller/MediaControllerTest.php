@@ -119,12 +119,12 @@ class MediaControllerTest extends TestCase
 
 		$this->mediaServiceMock ->expects($this->once())
 			->method('fetchMedia')
-			->with(1)
+			->with('1')
 			->willReturn(['media' => 'data']);
 
 		$this->mockResponse(['success' => true, 'media' => ['media' => 'data']]);
 
-		$this->controller->getInfo($this->requestMock , $this->responseMock , ['media_id' => 1]);
+		$this->controller->getInfo($this->requestMock , $this->responseMock , ['media_id' => '1']);
 	}
 
 	/**
@@ -201,7 +201,7 @@ class MediaControllerTest extends TestCase
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
-			->willReturn(['media_id' => 1, 'filename' => 'test.jpg', 'description' => 'Test description']);
+			->willReturn(['media_id' => 'a_media_id', 'filename' => 'test.jpg', 'description' => 'Test description']);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
@@ -212,7 +212,7 @@ class MediaControllerTest extends TestCase
 
 		$this->mediaServiceMock->expects($this->once())
 			->method('updateMedia')
-			->with(1, 'test.jpg', 'Test description');
+			->with('a_media_id', 'test.jpg', 'Test description');
 
 		$this->mockResponse(['success' => true]);
 
@@ -244,7 +244,7 @@ class MediaControllerTest extends TestCase
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
-			->willReturn(['media_id' => 1]);
+			->willReturn(['media_id' => '1']);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mediaServiceMock->expects($this->once())
@@ -255,7 +255,7 @@ class MediaControllerTest extends TestCase
 
 		$this->mediaServiceMock->expects($this->once())
 			->method('deleteMedia')
-			->with(1)
+			->with('1')
 			->willReturn(1);
 
 		$this->mockResponse(['success' => true, 'data' => ['deleted_media' => 1]]);
@@ -289,7 +289,7 @@ class MediaControllerTest extends TestCase
 	{
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
-			->willReturn(['media_id' => 1, 'node_id' => 2]);
+			->willReturn(['media_id' => '1', 'node_id' => 2]);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
@@ -299,7 +299,7 @@ class MediaControllerTest extends TestCase
 
 		$this->mediaServiceMock->expects($this->once())
 			->method('moveMedia')
-			->with(1, 2)
+			->with('1', 2)
 			->willReturn(1);
 
 		$this->mockResponse(['success' => true, 'data' => ['deleted_media' => 1]]);
@@ -334,7 +334,7 @@ class MediaControllerTest extends TestCase
 
 		$this->requestMock->expects($this->once())
 			->method('getParsedBody')
-			->willReturn(['media_id' => 1]);
+			->willReturn(['media_id' => 'a_media_id']);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->mockSession();
@@ -344,7 +344,7 @@ class MediaControllerTest extends TestCase
 
 		$this->mediaServiceMock->expects($this->once())
 			->method('cloneMedia')
-			->with(1)
+			->with('a_media_id')
 			->willReturn(['new_media' => 'data']);
 
 		$this->mockResponse(['success' => true, 'new_media' => ['new_media' => 'data']]);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Framework\Utils\Datatable\Results;
 
@@ -96,7 +97,7 @@ class BodyPreparer
 	/**
 	 * @return array{LANG_ACTION: string, LINK_ACTION: string, ACTION_ID: string, ACTION_NAME: string}
 	 */
-	public function formatAction(string $lang, string $link, string $name, string $id, string $cssClass): array
+	public function formatAction(string $lang, string $link, string $name, string|int $id, string $cssClass): array
 	{
 		return 	[
 				'LANG_ACTION'       => $lang,

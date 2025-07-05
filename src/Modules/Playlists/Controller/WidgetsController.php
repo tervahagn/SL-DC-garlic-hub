@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
@@ -44,7 +44,7 @@ class WidgetsController extends AbstractAsyncController
 	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$itemId = $args['item_id'] ?? 0;
+		$itemId = (int) ($args['item_id'] ?? 0);
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -64,7 +64,7 @@ class WidgetsController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
 
-		$itemId = $requestData['item_id'] ?? 0;
+		$itemId = (int) ($requestData['item_id'] ?? 0);
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
@@ -75,5 +75,4 @@ class WidgetsController extends AbstractAsyncController
 
 		return $this->jsonResponse($response, ['success' => true]);
 	}
-
 }

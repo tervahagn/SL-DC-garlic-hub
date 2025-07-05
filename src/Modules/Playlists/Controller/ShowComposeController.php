@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
@@ -53,7 +54,7 @@ class ShowComposeController
 	public function show(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
 		$this->setImportantAttributes($request);
-		$playlistId = $args['playlist_id'] ?? 0;
+		$playlistId = (int) ($args['playlist_id'] ?? 0);
 		if ($playlistId === 0)
 			return $this->redirectWithErrors($response, 'Playlist ID not valid.');
 
@@ -106,6 +107,4 @@ class ShowComposeController
 		}
 		return $response->withHeader('Location', '/playlists')->withStatus(302);
 	}
-
-
 }

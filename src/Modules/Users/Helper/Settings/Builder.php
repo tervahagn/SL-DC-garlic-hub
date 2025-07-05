@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Users\Helper\Settings;
 
@@ -113,7 +114,7 @@ class Builder
 		}
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_STATUS))
-			$form['status'] = $this->formElementsCreator->createUserStatusField($user[Parameters::PARAMETER_USER_STATUS] ?? 2);
+			$form['status'] = $this->formElementsCreator->createUserStatusField((string) ($user[Parameters::PARAMETER_USER_STATUS] ?? 2));
 
 		if ($this->parameters->hasParameter(Parameters::PARAMETER_USER_LOCALE))
 			$form['locale'] = $this->formElementsCreator->createUserLocaleField($user[Parameters::PARAMETER_USER_LOCALE] ?? 'en_US');

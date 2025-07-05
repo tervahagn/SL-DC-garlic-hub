@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Users\Controller;
 
@@ -76,7 +76,7 @@ class ShowAdminController
 	 */
 	public function editUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$UID = $args['UID'] ?? 0;
+		$UID = (int) ($args['UID'] ?? 0);
 		$this->initFacade($request);
 		if ($UID === 0)
 		{
@@ -120,7 +120,7 @@ class ShowAdminController
 
 		if (isset($post['standardSubmit']))
 		{
-			$id = $this->facade->storeUser($post['UID'] ?? 0);
+			$id = $this->facade->storeUser((int)$post['UID']);
 			if ($id > 0)
 			{
 				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ successfully stored.');
@@ -138,7 +138,7 @@ class ShowAdminController
 		}
 		elseif (isset($post['resetPassword']))
 		{
-			$token = $this->facade->createPasswordResetToken($post['UID']);
+			$token = $this->facade->createPasswordResetToken((int) $post['UID']);
 			if ($token !== '')
 			{
 				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ Password reset was successfully.');

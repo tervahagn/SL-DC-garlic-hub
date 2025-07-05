@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\Controller;
 
@@ -46,11 +46,11 @@ class PlayerController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
-		$playerId = isset($post['player_id']) ? (int) $post['player_id'] : 0;
+		$playerId = (int) ($post['player_id'] ?? 0);
 		if ($playerId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player ID not valid.']);
 
-		$playlistId = isset($post['playlist_id']) ? (int) $post['playlist_id'] : 0;
+		$playlistId = (int) ($post['playlist_id'] ?? 0);
 
 		$session = $request->getAttribute('session');
 		$this->playerService->setUID($session->get('user')['UID']);

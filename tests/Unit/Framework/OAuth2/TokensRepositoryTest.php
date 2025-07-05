@@ -115,7 +115,7 @@ class TokensRepositoryTest extends TestCase
 	public function testIsAuthCodeRevokedReturnsFalse(): void
 	{
 		$this->connectionMock->expects($this->once())->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
-		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
+		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn('0');
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
 		$this->assertFalse($result);

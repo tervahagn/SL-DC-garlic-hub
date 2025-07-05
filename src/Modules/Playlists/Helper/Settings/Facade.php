@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Playlists\Helper\Settings;
 
@@ -109,7 +110,9 @@ class Facade
 			$this->settingsParameters->getInputParametersKeys(),
 			$this->settingsParameters->getInputValuesArray()
 		);
-		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
+
+		$playlistId = (int) ($post['playlist_id'] ?? 0);
+		if ($playlistId > 0)
 			$id = $this->playlistsService->updateSecure($saveData);
 		else
 			$id = $this->playlistsService->createNew($saveData);

@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Mediapool\Controller;
 
@@ -52,7 +53,7 @@ class NodesController extends AbstractAsyncController
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$parent_id = $args['parent_id'] ?? 0;
+		$parent_id = (int) ($args['parent_id'] ?? 0);
 		$this->nodesService->UID = $request->getAttribute('session')->get('user')['UID'];
 		$result = $this->nodesService->getNodes($parent_id);
 
@@ -82,7 +83,7 @@ class NodesController extends AbstractAsyncController
 			if (!isset($bodyParams['name']))
 				throw new ModuleException('mediapool','node name is missing');
 
-			$node_id = $bodyParams['node_id'] ?? 0;
+			$node_id = (int) ($bodyParams['node_id'] ?? 0);
 			$this->nodesService->UID = $request->getAttribute('session')->get('user')['UID'];
 			$new_node_id = $this->nodesService->addNode($node_id, $bodyParams['name']);
 

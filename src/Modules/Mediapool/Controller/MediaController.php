@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Mediapool\Controller;
 
@@ -45,7 +45,7 @@ class MediaController extends AbstractAsyncController
 	 */
 	public function list(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$node_id = $args['node_id'] ?? 0;
+		$node_id = (int) ($args['node_id'] ?? 0);
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
@@ -60,8 +60,8 @@ class MediaController extends AbstractAsyncController
 	public function getInfo(ServerRequestInterface $request, ResponseInterface $response, array $args):
 	ResponseInterface
 	{
-		$media_id = $args['media_id'] ?? 0;
-		if ($media_id === 0)
+		$media_id = $args['media_id'] ?? '';
+		if ($media_id === '')
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media_id is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);

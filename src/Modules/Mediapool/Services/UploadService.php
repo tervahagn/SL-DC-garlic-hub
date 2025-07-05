@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Mediapool\Services;
 
@@ -74,7 +74,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 
 		$response = $this->client->request('GET', $apiUrl, $options);
 
-		return (array) json_decode($response->getBody(), true);
+		return (array) json_decode($response->getBody()->getContents(), true);
 	}
 
 	/**

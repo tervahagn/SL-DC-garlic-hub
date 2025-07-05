@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Framework\Core;
 
@@ -39,17 +40,17 @@ class Sanitizer
 		return strip_tags($value, $this->allowedTags);
 	}
 
-	public function int(string $value = ''): int
+	public function int(string|int $value = ''): int
 	{
 		return (int) $value;
 	}
 
-	public function float(string $value = ''): float
+	public function float(string|float $value = ''): float
 	{
 		return (float) $value; // Simple cast for sanitization
 	}
 
-	public function bool(string $value = ''): bool
+	public function bool(string|bool $value = ''): bool
 	{
 		return (bool) $value;
 	}

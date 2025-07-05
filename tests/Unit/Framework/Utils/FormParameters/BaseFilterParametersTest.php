@@ -169,7 +169,7 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->sanitizerMock->expects($this->exactly(2))
 			->method('int')
-			->willReturnMap([['10', 10], ['1',1]]);
+			->willReturnMap([[10, 10], [1,1]]);
 
 		$this->baseFilterParameters->parseInputFilterAllUsers();
 
@@ -190,7 +190,7 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->sanitizerMock->expects($this->exactly(2))
 			->method('int')
-			->willReturnMap([['10', 10], ['1',1]]);
+			->willReturnMap([[10, 10], [1,1]]);
 
 		$baseFilterParameters1->parseInputFilterAllUsers();
 

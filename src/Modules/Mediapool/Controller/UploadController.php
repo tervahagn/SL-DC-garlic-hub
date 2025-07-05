@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace App\Modules\Mediapool\Controller;
 
@@ -94,7 +95,7 @@ class UploadController extends AbstractAsyncController
 		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
-		$node_id  = $bodyParams['node_id'] ?? 0;
+		$node_id  = (int) ($bodyParams['node_id'] ?? 0);
 		if ($node_id === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'node is missing']);
 
