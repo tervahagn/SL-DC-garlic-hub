@@ -97,8 +97,8 @@ class AuthMiddlewareTest extends TestCase
 		$middleware = new AuthMiddleware($this->authServiceMock);
 		$response = $middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals(['/login'], $response->getHeader('Location'));
+		static::assertEquals(302, $response->getStatusCode());
+		static::assertEquals(['/login'], $response->getHeader('Location'));
 	}
 
 	/**
@@ -127,8 +127,8 @@ class AuthMiddlewareTest extends TestCase
 		$middleware = new AuthMiddleware($this->authServiceMock);
 		$response = $middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals(['/login'], $response->getHeader('Location'));
+		static::assertEquals(302, $response->getStatusCode());
+		static::assertEquals(['/login'], $response->getHeader('Location'));
 	}
 
 	/**
@@ -157,8 +157,8 @@ class AuthMiddlewareTest extends TestCase
 		$middleware = new AuthMiddleware($this->authServiceMock);
 		$response = $middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals(['/login'], $response->getHeader('Location'));
+		static::assertEquals(302, $response->getStatusCode());
+		static::assertEquals(['/login'], $response->getHeader('Location'));
 	}
 
 	/**
@@ -194,7 +194,7 @@ class AuthMiddlewareTest extends TestCase
 		$middleware = new AuthMiddleware($this->authServiceMock);
 		$response = $middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertEquals(401, $response->getStatusCode());
+		static::assertEquals(401, $response->getStatusCode());
 	}
 
 	/**
@@ -292,8 +292,8 @@ class AuthMiddlewareTest extends TestCase
 		$middleware = new AuthMiddleware($this->authServiceMock);
 		$response = $middleware->process($this->requestMock, $this->handlerMock);
 
-		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals(['/'], $response->getHeader('Location'));
+		static::assertEquals(302, $response->getStatusCode());
+		static::assertEquals(['/'], $response->getHeader('Location'));
 	}
 
 	/**

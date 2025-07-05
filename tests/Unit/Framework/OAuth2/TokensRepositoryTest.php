@@ -59,7 +59,7 @@ class TokensRepositoryTest extends TestCase
 	{
 		$authCode = $this->repository->getNewAuthCode();
 		// @phpstan-ignore-next-line
-		$this->assertNotNull($authCode);
+		static::assertNotNull($authCode);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn('0');
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -132,7 +132,7 @@ class TokensRepositoryTest extends TestCase
 
 		$result = $this->repository->isAuthCodeRevoked('test-auth-code-id');
 		// @phpstan-ignore-next-line
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -144,7 +144,7 @@ class TokensRepositoryTest extends TestCase
 		$mockClientEntity = $this->createMock(ClientEntityInterface::class);
 		$accessToken = $this->repository->getNewToken($mockClientEntity, [], 'test-user-id');
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(AccessTokenEntityInterface::class, $accessToken);
+		static::assertInstanceOf(AccessTokenEntityInterface::class, $accessToken);
 	}
 
 	/**
@@ -190,7 +190,7 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
 
 		$result = $this->repository->isAccessTokenRevoked('test-access-token-id');
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -203,14 +203,14 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isAccessTokenRevoked('test-access-token-id');
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	#[Group('units')]
 	public function testGetNewRefreshTokenReturnsRefreshTokenEntity(): void
 	{
 		$refreshToken = $this->repository->getNewRefreshToken();
-		$this->assertInstanceOf(RefreshTokenEntityInterface::class, $refreshToken);
+		static::assertInstanceOf(RefreshTokenEntityInterface::class, $refreshToken);
 	}
 
 	/**
@@ -260,7 +260,7 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(0);
 
 		$result = $this->repository->isRefreshTokenRevoked('test-refresh-token-id');
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -273,6 +273,6 @@ class TokensRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')->willReturn(1);
 
 		$result = $this->repository->isRefreshTokenRevoked('test-refresh-token-id');
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 }

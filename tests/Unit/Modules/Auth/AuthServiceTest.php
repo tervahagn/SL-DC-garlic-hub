@@ -82,8 +82,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->login($identifier, $password);
 
-		$this->assertInstanceOf(UserEntity::class, $userEntity);
-		$this->assertEmpty($this->authService->getErrorMessage());
+		static::assertInstanceOf(UserEntity::class, $userEntity);
+		static::assertEmpty($this->authService->getErrorMessage());
 	}
 
 	/**
@@ -104,8 +104,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->login($identifier, $password);
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('Invalid credentials.', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('Invalid credentials.', $this->authService->getErrorMessage());
 	}
 
 	/**
@@ -127,8 +127,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->login($identifier, $password);
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('login//account_deleted', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('login//account_deleted', $this->authService->getErrorMessage());
 	}
 
 	/**
@@ -150,8 +150,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->login($identifier, $password);
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('login//account_inactive', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('login//account_inactive', $this->authService->getErrorMessage());
 	}
 
 	/**
@@ -174,7 +174,7 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->loginByCookie();
 
-		$this->assertInstanceOf(UserEntity::class, $userEntity);
+		static::assertInstanceOf(UserEntity::class, $userEntity);
 	}
 
 	/**
@@ -189,8 +189,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->loginByCookie();
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('No cookie for autologin was found.', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('No cookie for autologin was found.', $this->authService->getErrorMessage());
 	}
 
 	/**
@@ -213,8 +213,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->loginByCookie();
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('No valid UID found after cookie login.', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('No valid UID found after cookie login.', $this->authService->getErrorMessage());
 	}
 
 
@@ -236,8 +236,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->loginSilent($UID, $sessionId);
 
-		$this->assertInstanceOf(UserEntity::class, $userEntity);
-		$this->assertEmpty($this->authService->getErrorMessage());
+		static::assertInstanceOf(UserEntity::class, $userEntity);
+		static::assertEmpty($this->authService->getErrorMessage());
 	}
 
 	/**
@@ -258,8 +258,8 @@ class AuthServiceTest extends TestCase
 
 		$userEntity = $this->authService->loginSilent($UID, $sessionId);
 
-		$this->assertNull($userEntity);
-		$this->assertEquals('login//account_locked', $this->authService->getErrorMessage());
+		static::assertNull($userEntity);
+		static::assertEquals('login//account_locked', $this->authService->getErrorMessage());
 	}
 
 	/**
@@ -273,7 +273,7 @@ class AuthServiceTest extends TestCase
 			->with(
 				AuthService::COOKIE_NAME_AUTO_LOGIN,
 				$payload,
-				$this->anything());
+				static::anything());
 
 		$this->authService->createAutologinCookie(45, 'the_session_id');
 	}

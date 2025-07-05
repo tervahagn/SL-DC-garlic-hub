@@ -56,7 +56,7 @@ class ItemsRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		$this->assertSame('playlists_items', $this->repository->getTable());
+		static::assertSame('playlists_items', $this->repository->getTable());
 	}
 
 	/**
@@ -88,7 +88,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['result']);
 
-		$this->assertEquals(['result'], $this->repository->findAllByPlaylistId($playlistId));
+		static::assertEquals(['result'], $this->repository->findAllByPlaylistId($playlistId));
 	}
 
 	/**
@@ -126,7 +126,7 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn([]);
 
-		$this->assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_CORE));
+		static::assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_CORE));
 	}
 
 	/**
@@ -172,7 +172,7 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn([]);
 
-		$this->assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_ENTERPRISE));
+		static::assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, Config::PLATFORM_EDITION_ENTERPRISE));
 	}
 
 	/**
@@ -201,7 +201,7 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn([]);
 
-		$this->assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, 'undefined_edition'));
+		static::assertSame([], $this->repository->findAllByPlaylistIdWithJoins(1, 'undefined_edition'));
 	}
 
 	/**
@@ -238,7 +238,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['result']);
 
-		$this->assertEquals(['result'], $this->repository->findAllPlaylistItemsByPlaylistId($playlistId));
+		static::assertEquals(['result'], $this->repository->findAllPlaylistItemsByPlaylistId($playlistId));
 	}
 
 	/**
@@ -283,7 +283,7 @@ class ItemsRepositoryTest extends TestCase
 				'owner_duration' => 3600,
 			]);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'count_items' => 10,
 			'count_owner_items' => 5,
 			'filesize' => 1500,
@@ -329,7 +329,7 @@ class ItemsRepositoryTest extends TestCase
 			->method('fetchAssociative')
 			->willReturn(false);
 
-		$this->assertEquals([], $this->repository->sumAndCountMetricsByPlaylistIdAndOwner($playlistId, $ownerId));
+		static::assertEquals([], $this->repository->sumAndCountMetricsByPlaylistIdAndOwner($playlistId, $ownerId));
 	}
 
 
@@ -370,7 +370,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['result']);
 
-		$this->assertEquals(['result'], $this->repository->findAllPlaylistsContainingPlaylist($playlistId));
+		static::assertEquals(['result'], $this->repository->findAllPlaylistsContainingPlaylist($playlistId));
 	}
 
 	/**
@@ -408,7 +408,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
 			->willReturn(5);
 
-		$this->assertSame(5, $this->repository->updatePositionsWhenInserted($playlistId, $position));
+		static::assertSame(5, $this->repository->updatePositionsWhenInserted($playlistId, $position));
 	}
 
 	/**
@@ -446,7 +446,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
 			->willReturn(5);
 
-		$this->assertSame(5, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
+		static::assertSame(5, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
 	}
 
 	/**
@@ -484,7 +484,7 @@ class ItemsRepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
 			->willReturn(0);
 
-		$this->assertSame(0, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
+		static::assertSame(0, $this->repository->updatePositionsWhenDeleted($playlistId, $position));
 	}
 
 	/**
@@ -501,7 +501,7 @@ class ItemsRepositoryTest extends TestCase
 			->willReturn(1);
 
 
-		$this->assertSame(1, $this->repository->updateItemOrder($itemId, $newOrder));
+		static::assertSame(1, $this->repository->updateItemOrder($itemId, $newOrder));
 	}
 
 
@@ -527,7 +527,7 @@ class ItemsRepositoryTest extends TestCase
 				['playlist_id' => '456']
 			]);
 
-		$this->assertEquals(
+		static::assertEquals(
 			[['playlist_id' => '123'], ['playlist_id' => '456']],
 			$this->repository->findFileResourcesByPlaylistId($playlistIds)
 		);
@@ -542,6 +542,6 @@ class ItemsRepositoryTest extends TestCase
 		$this->connectionMock->expects($this->never())
 			->method('executeQuery');
 
-		$this->assertEquals([], $this->repository->findFileResourcesByPlaylistId([]));
+		static::assertEquals([], $this->repository->findFileResourcesByPlaylistId([]));
 	}
 }

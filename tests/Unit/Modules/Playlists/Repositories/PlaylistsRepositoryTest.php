@@ -89,7 +89,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->repository->countAllFiltered($fields);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 
 	}
 
@@ -127,7 +127,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->repository->countAllFiltered($fields);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->repository->countAllFiltered($fields);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 
 	/**
@@ -182,7 +182,7 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFilteredByUID($fields, 1);
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 
@@ -209,7 +209,7 @@ class PlaylistsRepositoryTest extends TestCase
 
 		$result = $this->repository->delete($id);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -241,7 +241,7 @@ class PlaylistsRepositoryTest extends TestCase
 
 		$result = $this->repository->findFirstWithUserName($playlistId);
 
-		$this->assertSame($expectedData, $result);
+		static::assertSame($expectedData, $result);
 	}
 
 	/**
@@ -272,7 +272,7 @@ class PlaylistsRepositoryTest extends TestCase
 
 		$result = $this->repository->updateExport($playlistId, $saveData);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -312,6 +312,6 @@ class PlaylistsRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->repository->countAllFiltered($fields);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 }

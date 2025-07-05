@@ -92,7 +92,7 @@ class UiTemplatesPreparerTest extends TestCase
 			],
 		];
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -302,7 +302,7 @@ class UiTemplatesPreparerTest extends TestCase
 			],
 		];
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 

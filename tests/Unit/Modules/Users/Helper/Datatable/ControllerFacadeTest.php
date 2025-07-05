@@ -145,7 +145,7 @@ class ControllerFacadeTest extends TestCase
 		$result = $this->controllerFacade->prepareDataGrid();
 
 		// Assert
-		$this->assertSame($this->controllerFacade, $result);
+		static::assertSame($this->controllerFacade, $result);
 	}
 
 
@@ -222,12 +222,12 @@ class ControllerFacadeTest extends TestCase
 
 		$this->datatablePreparerMock->expects($this->once())
 			->method('prepareTableBody')
-			->with($this->usersServiceMock->getCurrentFilterResults(), $mockDatatableStructure['header'], $this->anything())
+			->with($this->usersServiceMock->getCurrentFilterResults(), $mockDatatableStructure['header'], static::anything())
 			->willReturn($mockFormattedList);
 
 		$result = $this->controllerFacade->prepareUITemplate();
 
-		$this->assertEquals([
+		static::assertEquals([
 			'filter_elements' => ['prepared_filter_form'],
 			'pagination_dropdown' => 'mock_dropdown',
 			'pagination_links' => 'mock_links',

@@ -38,30 +38,30 @@ class BaseValidatorTest extends TestCase
 	#[Group('units')]
 	public function testIsEmailValid(): void
 	{
-		$this->assertTrue($this->baseValidator->isEmail('test@example.com'));
+		static::assertTrue($this->baseValidator->isEmail('test@example.com'));
 	}
 
 	#[Group('units')]
 	public function testIsEmailInvalid(): void
 	{
-		$this->assertFalse($this->baseValidator->isEmail('invalid-email'));
+		static::assertFalse($this->baseValidator->isEmail('invalid-email'));
 	}
 
 	#[Group('units')]
 	public function testIsJsonValid(): void
 	{
-		$this->assertTrue($this->baseValidator->isJson('{"key": "value"}'));
+		static::assertTrue($this->baseValidator->isJson('{"key": "value"}'));
 	}
 
 	#[Group('units')]
 	public function testIsJsonInvalid(): void
 	{
-		$this->assertFalse($this->baseValidator->isJson('invalid-json'));
+		static::assertFalse($this->baseValidator->isJson('invalid-json'));
 	}
 
 	#[Group('units')]
 	public function testIsJsonEmpty(): void
 	{
-		$this->assertFalse($this->baseValidator->isJson(''));
+		static::assertFalse($this->baseValidator->isJson(''));
 	}
 }

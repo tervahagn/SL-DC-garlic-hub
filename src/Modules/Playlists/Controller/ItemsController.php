@@ -97,7 +97,7 @@ class ItemsController extends AbstractAsyncController
 		$UID = $this->setServiceUID($request);
 
 		$insertItem->setUID($UID);
-		$item = $insertItem->insert((int) $requestData['playlist_id'], (int) $requestData['id'], (int) $requestData['position']);
+		$item = $insertItem->insert((int) $requestData['playlist_id'], $requestData['id'], (int) $requestData['position']);
 
 		return $this->jsonResponse($response, ['success' => true, 'data' => $item]);
 	}

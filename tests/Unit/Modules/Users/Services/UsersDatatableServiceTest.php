@@ -81,8 +81,8 @@ class UsersDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -112,7 +112,7 @@ class UsersDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame([['result' => 1]], $this->service->getCurrentFilterResults());
 	}
 }

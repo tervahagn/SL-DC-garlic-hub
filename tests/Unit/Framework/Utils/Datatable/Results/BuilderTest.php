@@ -38,7 +38,7 @@ class BuilderTest extends TestCase
 	#[Group('units')]
 	public function testGetHeaderFieldsInitiallyEmpty(): void
 	{
-		$this->assertSame([], $this->builder->getHeaderFields());
+		static::assertSame([], $this->builder->getHeaderFields());
 	}
 
 	#[Group('units')]
@@ -47,9 +47,9 @@ class BuilderTest extends TestCase
 		$this->builder->createField('test_field', true);
 
 		$fields = $this->builder->getHeaderFields();
-		$this->assertCount(1, $fields);
-		$this->assertSame('test_field', $fields[0]->getName());
-		$this->assertTrue($fields[0]->isSortable());
+		static::assertCount(1, $fields);
+		static::assertSame('test_field', $fields[0]->getName());
+		static::assertTrue($fields[0]->isSortable());
 	}
 
 	#[Group('units')]
@@ -59,10 +59,10 @@ class BuilderTest extends TestCase
 		$this->builder->createField('field2', true);
 
 		$fields = $this->builder->getHeaderFields();
-		$this->assertCount(2, $fields);
-		$this->assertSame('field1', $fields[0]->getName());
-		$this->assertFalse($fields[0]->isSortable());
-		$this->assertSame('field2', $fields[1]->getName());
-		$this->assertTrue($fields[1]->isSortable());
+		static::assertCount(2, $fields);
+		static::assertSame('field1', $fields[0]->getName());
+		static::assertFalse($fields[0]->isSortable());
+		static::assertSame('field2', $fields[1]->getName());
+		static::assertTrue($fields[1]->isSortable());
 	}
 }

@@ -48,8 +48,8 @@ class ShellExecutorTest extends TestCase
 		$this->executor->setCommand('echo "Hello, World!"');
 		$result = $this->executor->execute();
 
-		$this->assertEquals(0, $result['code']);
-		$this->assertEquals('Hello, World!', $result['output'][0]);
+		static::assertEquals(0, $result['code']);
+		static::assertEquals('Hello, World!', $result['output'][0]);
 	}
 
 	#[Group('units')]
@@ -78,7 +78,7 @@ class ShellExecutorTest extends TestCase
 		$this->executor->setCommand('echo "Hello, World!"');
 		$result = $this->executor->executeSimple();
 
-		$this->assertEquals("Hello, World!\n", $result);
+		static::assertEquals("Hello, World!\n", $result);
 	}
 
 	#[RunInSeparateProcess] #[Group('units')]

@@ -102,7 +102,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->loadPlaylistForEdit($playlistId);
 
-		$this->assertSame($expectedPlaylist, $result);
+		static::assertSame($expectedPlaylist, $result);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->configurePlaylistFormParameter($post);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -164,7 +164,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->configurePlaylistFormParameter($post);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->storePlaylist($post);
 
-		$this->assertSame($expectedId, $result);
+		static::assertSame($expectedId, $result);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->storePlaylist($post);
 
-		$this->assertSame($expectedId, $result);
+		static::assertSame($expectedId, $result);
 	}
 
 	/**
@@ -314,7 +314,7 @@ class FacadeTest extends TestCase
 
 		$result = $this->facade->prepareUITemplate($post);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 }

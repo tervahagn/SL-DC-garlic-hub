@@ -51,7 +51,7 @@ class SystemStatsTest extends TestCase
 	public function testISLinux(): void
 	{
 		$this->systemStats->setIsLinux(true);
-		$this->assertTrue($this->systemStats->isLinux());
+		static::assertTrue($this->systemStats->isLinux());
 	}
 
 	#[RunInSeparateProcess] #[Group('units')]
@@ -68,7 +68,7 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineSystemLoad();
 
-		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
+		static::assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
 	#[RunInSeparateProcess] #[Group('units')]
@@ -85,7 +85,7 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineSystemLoad();
 
-		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
+		static::assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
 	#[RunInSeparateProcess] #[Group('units')]
@@ -102,7 +102,7 @@ class SystemStatsTest extends TestCase
 
 		$this->systemStats->determineSystemLoad();
 
-		$this->assertSame($expectedFormatted, $this->systemStats->getLoadData());
+		static::assertSame($expectedFormatted, $this->systemStats->getLoadData());
 	}
 
 
@@ -123,7 +123,7 @@ class SystemStatsTest extends TestCase
 		$this->systemStats->determineRamStats();
 
 		$expected = ['total' => 8000, 'used' => 6000, 'free' => 2000];
-		$this->assertSame($expected, $this->systemStats->getRamStats());
+		static::assertSame($expected, $this->systemStats->getRamStats());
 	}
 
 	/**
@@ -144,7 +144,7 @@ class SystemStatsTest extends TestCase
 		$this->systemStats->determineRamStats();
 
 		$expected = ['total' => 0, 'used' => 0, 'free' => 0];
-		$this->assertSame($expected, $this->systemStats->getRamStats());
+		static::assertSame($expected, $this->systemStats->getRamStats());
 	}
 
 	/**
@@ -171,7 +171,7 @@ class SystemStatsTest extends TestCase
 			'available' => '25G',
 			'percent' => '75%',
 		];
-		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+		static::assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
 	/**
@@ -197,7 +197,7 @@ class SystemStatsTest extends TestCase
 			'available' => '',
 			'percent' => '',
 		];
-		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+		static::assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
 	/**
@@ -225,7 +225,7 @@ class SystemStatsTest extends TestCase
 			'available' => '',
 			'percent' => '',
 		];
-		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+		static::assertSame($expected, $this->systemStats->getDiscInfo());
 	}
 
 
@@ -241,20 +241,20 @@ class SystemStatsTest extends TestCase
 		$this->systemStats->determineSystemStats();
 
 		$expected = ['total' => 0, 'used' => 0, 'free' => 0];
-		$this->assertSame($expected, $this->systemStats->getRamStats());
+		static::assertSame($expected, $this->systemStats->getRamStats());
 		$expected = [
 			'size' => '',
 			'used' => '',
 			'available' => '',
 			'percent' => '',
 		];
-		$this->assertSame($expected, $this->systemStats->getDiscInfo());
+		static::assertSame($expected, $this->systemStats->getDiscInfo());
 		$expected = [
 			'1_min' => '',
 			'5_min' => '',
 			'15_min' => '',
 		];
-		$this->assertSame($expected, $this->systemStats->getLoadData());
+		static::assertSame($expected, $this->systemStats->getLoadData());
 	}
 
 	/**

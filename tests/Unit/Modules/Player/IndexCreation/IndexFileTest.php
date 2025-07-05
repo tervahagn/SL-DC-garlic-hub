@@ -86,7 +86,7 @@ class IndexFileTest extends TestCase
 			->willReturn(false);
 
 		$this->loggerMock->expects($this->once())->method('warning')
-			->with($this->stringContains('Index content generation failed'));
+			->with(static::stringContains('Index content generation failed'));
 
 		$this->expectException(ModuleException::class);
 		$this->expectExceptionMessage('Index content generation failed and no old index file present');

@@ -95,8 +95,8 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertCount(1, $result);
-		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+		static::assertCount(1, $result);
+		static::assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class DatatablePreparerTest extends TestCase
 	{
 		$result = $this->datatablePreparer->prepareTableBody([], [], 123);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	/**
@@ -141,8 +141,8 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertNotEmpty($result[0]['has_action']);
-		$this->assertNotEmpty($result[0]['has_delete']);
+		static::assertNotEmpty($result[0]['has_action']);
+		static::assertNotEmpty($result[0]['has_delete']);
 	}
 
 	/**
@@ -180,7 +180,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertEquals('edgeUsername', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
+		static::assertEquals('edgeUsername', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
 	}
 
 	/**
@@ -225,7 +225,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertEquals('Active', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
+		static::assertEquals('Active', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
 	}
 
 
@@ -264,7 +264,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertEquals('some_value', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
+		static::assertEquals('some_value', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
 	}
 
 

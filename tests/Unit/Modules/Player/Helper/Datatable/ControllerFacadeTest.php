@@ -122,7 +122,7 @@ class ControllerFacadeTest extends TestCase
 		$this->datatableBuilderMock->expects($this->once())->method('createDropDown');
 		$this->datatableBuilderMock->expects($this->once())->method('createTableFields');
 		$result = $this->controllerFacade->prepareDataGrid();
-		$this->assertSame($this->controllerFacade, $result);
+		static::assertSame($this->controllerFacade, $result);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class ControllerFacadeTest extends TestCase
 			->willReturn($mockedContextMenu);
 
 		$result = $this->controllerFacade->preparePlayerSettingsContextMenu();
-		$this->assertSame($mockedContextMenu, $result);
+		static::assertSame($mockedContextMenu, $result);
 	}
 
 
@@ -232,6 +232,6 @@ class ControllerFacadeTest extends TestCase
 			'page' => ['pagination_config']
 		];
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 }

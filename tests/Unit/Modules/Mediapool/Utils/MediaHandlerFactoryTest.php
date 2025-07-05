@@ -88,7 +88,7 @@ class MediaHandlerFactoryTest extends TestCase
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
 		$handler = $this->mediaHandlerFactory->createHandler('image/jpeg');
-		$this->assertInstanceOf(Image::class, $handler);
+		static::assertInstanceOf(Image::class, $handler);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class MediaHandlerFactoryTest extends TestCase
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
 		$handler = $this->mediaHandlerFactory->createHandler('video/mp4');
-		$this->assertInstanceOf(Video::class, $handler);
+		static::assertInstanceOf(Video::class, $handler);
 	}
 
 	/**
@@ -138,7 +138,7 @@ class MediaHandlerFactoryTest extends TestCase
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
 		$handler = $this->mediaHandlerFactory->createHandler('application/pdf');
-		$this->assertInstanceOf(Pdf::class, $handler);
+		static::assertInstanceOf(Pdf::class, $handler);
 	}
 
 	/**
@@ -163,7 +163,7 @@ class MediaHandlerFactoryTest extends TestCase
 
 		$this->imagickFactoryMock->method('createImagick')->willReturn(new Imagick());
 		$handler = $this->mediaHandlerFactory->createHandler('application/widget');
-		$this->assertInstanceOf(Widget::class, $handler);
+		static::assertInstanceOf(Widget::class, $handler);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class MediaHandlerFactoryTest extends TestCase
 			]);
 
 		$handler = $this->mediaHandlerFactory->createHandler('application/zip');
-		$this->assertInstanceOf(Miscellaneous::class, $handler);
+		static::assertInstanceOf(Miscellaneous::class, $handler);
 	}
 
 	#[Group('units')]

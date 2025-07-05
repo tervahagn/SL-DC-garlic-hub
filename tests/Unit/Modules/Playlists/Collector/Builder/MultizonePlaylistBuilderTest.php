@@ -95,7 +95,7 @@ class MultizonePlaylistBuilderTest extends TestCase
 
 		$result = $this->builder->buildPlaylist();
 
-		$this->assertSame($playlistStructureMock, $result);
+		static::assertSame($playlistStructureMock, $result);
 	}
 
 

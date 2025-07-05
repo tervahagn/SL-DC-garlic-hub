@@ -57,7 +57,7 @@ class WidgetsServiceTest extends TestCase
 	#[Group('units')]
 	public function testGetErrorTextReturnsDefaultEmptyValue(): void
 	{
-		$this->assertSame('', $this->widgetsService->getErrorText());
+		static::assertSame('', $this->widgetsService->getErrorText());
 	}
 
 	#[Group('units')]
@@ -89,7 +89,7 @@ class WidgetsServiceTest extends TestCase
 			'preferences' => ['prefs_key' => 'prefs_value'],
 			'item_name' => 'Test Widget',
 		];
-		$this->assertSame($expected, $this->widgetsService->fetchWidgetByItemId($itemId));
+		static::assertSame($expected, $this->widgetsService->fetchWidgetByItemId($itemId));
 	}
 
 	#[Group('units')]
@@ -112,9 +112,9 @@ class WidgetsServiceTest extends TestCase
 
 		$this->contentDataMock->expects($this->never())->method('determinePreferences');
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains('Error widget fetch: Not a widget item.'));
+			->with(static::stringContains('Error widget fetch: Not a widget item.'));
 
-		$this->assertEmpty($this->widgetsService->fetchWidgetByItemId($itemId));
+		static::assertEmpty($this->widgetsService->fetchWidgetByItemId($itemId));
 
 	}
 
@@ -149,7 +149,7 @@ class WidgetsServiceTest extends TestCase
 			->method('updateField')
 			->with($itemId, 'content_data', $serializedContent);
 
-		$this->assertTrue($this->widgetsService->saveWidget($itemId, $requestData));
+		static::assertTrue($this->widgetsService->saveWidget($itemId, $requestData));
 	}
 
 	#[Group('units')]
@@ -170,9 +170,9 @@ class WidgetsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with($this->stringContains($exceptionMessage));
+			->with(static::stringContains($exceptionMessage));
 
-		$this->assertFalse($this->widgetsService->saveWidget($itemId, $requestData));
-		$this->assertSame($exceptionMessage, $this->widgetsService->getErrorText());
+		static::assertFalse($this->widgetsService->saveWidget($itemId, $requestData));
+		static::assertSame($exceptionMessage, $this->widgetsService->getErrorText());
 	}
 }

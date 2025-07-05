@@ -99,9 +99,9 @@ class MediaTest extends TestCase
 
 		$result = $this->media->insert(1, 'mediaId', 2);
 
-		$this->assertNotEmpty($result);
-		$this->assertArrayHasKey('playlist_metrics', $result);
-		$this->assertArrayHasKey('item', $result);
+		static::assertNotEmpty($result);
+		static::assertArrayHasKey('playlist_metrics', $result);
+		static::assertArrayHasKey('item', $result);
 	}
 
 	/**
@@ -138,9 +138,9 @@ class MediaTest extends TestCase
 
 		$result = $this->media->insert(1, 'mediaId', 2);
 
-		$this->assertNotEmpty($result);
-		$this->assertArrayHasKey('playlist_metrics', $result);
-		$this->assertArrayHasKey('item', $result);
+		static::assertNotEmpty($result);
+		static::assertArrayHasKey('playlist_metrics', $result);
+		static::assertArrayHasKey('item', $result);
 	}
 
 	/**
@@ -158,11 +158,11 @@ class MediaTest extends TestCase
 		$this->itemsRepositoryMock->expects($this->once())->method('rollBackTransaction');
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains('Error insert media: Playlist is not accessible'));
+			->with(static::stringContains('Error insert media: Playlist is not accessible'));
 
 		$result = $this->media->insert(1, 'invalidMediaId', 2);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 
@@ -182,11 +182,11 @@ class MediaTest extends TestCase
 		$this->itemsRepositoryMock->expects($this->once())->method('rollBackTransaction');
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains('Error insert media: Media is not accessible'));
+			->with(static::stringContains('Error insert media: Media is not accessible'));
 
 		$result = $this->media->insert(1, 'invalidMediaId', 2);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	/**
@@ -212,11 +212,11 @@ class MediaTest extends TestCase
 			->method('rollBackTransaction');
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains('Error insert media: Playlist item could not be inserted.'));
+			->with(static::stringContains('Error insert media: Playlist item could not be inserted.'));
 
 		$result = $this->media->insert(1, 'mediaId', 2);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	private function checkAclMockSuccessful(): void

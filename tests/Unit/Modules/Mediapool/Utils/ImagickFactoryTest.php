@@ -34,6 +34,6 @@ class ImagickFactoryTest extends TestCase
 		$factory = new ImagickFactory();
 		$imagick1 = $factory->createImagick();
 		$imagick2 = $factory->createImagick();
-		$this->assertNotSame($imagick1, $imagick2);
+		static::assertNotSame($imagick1, $imagick2);
 	}
 }

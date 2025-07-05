@@ -52,7 +52,7 @@ class MetaPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEquals(
+		static::assertEquals(
 			[['TITLE' => 'Test Player - Test Playlist', 'REFRESH_TIME' => 120]],
 			$result
 		);

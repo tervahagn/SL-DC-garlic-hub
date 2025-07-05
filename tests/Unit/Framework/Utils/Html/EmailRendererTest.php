@@ -47,6 +47,6 @@ class EmailRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="email" name="email_1" id="email_1" value="test@test.kl" title="edit email_1" aria-describedby="error_email_1">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

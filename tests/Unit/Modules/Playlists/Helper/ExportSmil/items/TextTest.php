@@ -67,6 +67,6 @@ class TextTest extends TestCase
 		$expected  = Base::TABSTOPS_TAG.'<ref xml:id="1" title="Sample Item" region="screen" src="path/to/index.html" dur="500s" type="text/html">'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 
-		$this->assertSame($expected, $this->text->getSmilElementTag());
+		static::assertSame($expected, $this->text->getSmilElementTag());
 	}
 }

@@ -109,6 +109,6 @@ class ShowDatatableControllerTest extends TestCase
 
 		$result = $this->controller->show($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 }

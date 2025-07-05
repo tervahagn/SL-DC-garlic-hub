@@ -110,6 +110,6 @@ class UsersControllerTest extends TestCase
 
 		$result = $this->controller->findByName($this->requestMock, $this->responseMock, $args);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 }

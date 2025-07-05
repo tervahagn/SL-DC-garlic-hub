@@ -173,7 +173,7 @@ class DatatableBuilderTest extends TestCase
 
 		$this->builder->buildTitle();
 
-		$this->assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
+		static::assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
 	}
 
 	/**
@@ -235,14 +235,14 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
-		$this->assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
+		static::assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
 
-		$this->assertEquals($playerNameFieldMock, $form[Parameters::PARAMETER_PLAYER_NAME]);
-		$this->assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
-		$this->assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
+		static::assertEquals($playerNameFieldMock, $form[Parameters::PARAMETER_PLAYER_NAME]);
+		static::assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
+		static::assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
 	}
 
 	/**
@@ -294,11 +294,11 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYER_NAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_MODEL, $form);
 
-		$this->assertEquals($playerNameFieldMock, $form[Parameters::PARAMETER_PLAYER_NAME]);
-		$this->assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
+		static::assertEquals($playerNameFieldMock, $form[Parameters::PARAMETER_PLAYER_NAME]);
+		static::assertEquals($playerModeFieldMock, $form[Parameters::PARAMETER_MODEL]);
 	}
 
 	/**

@@ -62,7 +62,7 @@ class TimeUnitsCalculatorTest extends TestCase
 			new DateTime('2025-01-01 00:00:00')
 		);
 
-		$this->assertSame(11, $this->timeUnitsCalculator->getLastAccessTimeStamp());
+		static::assertSame(11, $this->timeUnitsCalculator->getLastAccessTimeStamp());
 	}
 
 	#[Group('units')]
@@ -94,7 +94,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('seconds', 'time_unit_ago', 'main', 1, [])
 			->willReturn('1 second ago');
-		$this->assertSame('1 second ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('1 second ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 	/**
@@ -114,7 +114,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('minutes', 'time_unit_ago', 'main', 10, [])
 			->willReturn('10 minutes ago');
-		$this->assertSame('10 minutes ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('10 minutes ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 	/**
@@ -134,7 +134,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('hours', 'time_unit_ago', 'main', 1, [])
 			->willReturn('1 hour ago');
-		$this->assertSame('1 hour ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('1 hour ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 	/**
@@ -154,7 +154,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('days', 'time_unit_ago', 'main', 2, [])
 			->willReturn('2 days ago');
-		$this->assertSame('2 days ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('2 days ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 	/**
@@ -174,7 +174,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('months', 'time_unit_ago', 'main', 4, [])
 			->willReturn('4 months ago');
-		$this->assertSame('4 months ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('4 months ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 	/**
@@ -194,7 +194,7 @@ class TimeUnitsCalculatorTest extends TestCase
 		$this->translatorMock->expects($this->once())->method('translateArrayWithPlural')
 			->with('years', 'time_unit_ago', 'main', 5, [])
 			->willReturn('5 years ago');
-		$this->assertSame('5 years ago', $this->timeUnitsCalculator->printDistance());
+		static::assertSame('5 years ago', $this->timeUnitsCalculator->printDistance());
 	}
 
 }

@@ -79,6 +79,6 @@ class SessionMiddlewareTest extends TestCase
 		$result = $middleware->process($this->requestMock, $this->handlerMock);
 
 		// Assert the returned response is as expected
-		$this->assertSame($responseMock, $result);
+		static::assertSame($responseMock, $result);
 	}
 }

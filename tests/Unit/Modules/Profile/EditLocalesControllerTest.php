@@ -89,7 +89,7 @@ class EditLocalesControllerTest extends TestCase
 
 		$controller = new EditLocalesController($this->profileServiceMock);
 		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class EditLocalesControllerTest extends TestCase
 
 		$controller = new EditLocalesController($this->profileServiceMock);
 		$result = $controller->setLocales($this->requestMock, $this->responseMock, ['locale' => 'de_DE']);
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 }

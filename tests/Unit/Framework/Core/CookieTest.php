@@ -86,7 +86,7 @@ class CookieTest extends TestCase
 
 		$_COOKIE['test_cookie'] = serialize(['content', hash('sha256','mocked_hash')]);
 
-		$this->assertEmpty($this->cookie->getHashedCookie('test_cookie'));
+		static::assertEmpty($this->cookie->getHashedCookie('test_cookie'));
 	}
 
 	#[RunInSeparateProcess] #[Group('units')]
@@ -117,8 +117,8 @@ class CookieTest extends TestCase
 
 		$result = $this->cookie->getHashedCookie('test_cookie');
 
-		$this->assertIsArray($result);
-		$this->assertEquals($contents, $result);
+		static::assertIsArray($result);
+		static::assertEquals($contents, $result);
 	}
 
 	/**
@@ -130,7 +130,7 @@ class CookieTest extends TestCase
 		$result = $this->cookie->getHashedCookie('nonexistent_cookie');
 
 		// @phpstan-ignore-next-line
-		$this->assertNull($result);
+		static::assertNull($result);
 	}
 
 	#[Group('units')]
@@ -141,7 +141,7 @@ class CookieTest extends TestCase
 		$this->cookie->deleteCookie('test_cookie');
 
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true); // If no exception is thrown, the test passes.
+		static::assertTrue(true); // If no exception is thrown, the test passes.
 	}
 
 	#[Group('units')]
@@ -149,8 +149,8 @@ class CookieTest extends TestCase
 	{
 		$_COOKIE['test_cookie'] = 'some_value';
 
-		$this->assertTrue($this->cookie->hasCookie('test_cookie'));
-		$this->assertFalse($this->cookie->hasCookie('nonexistent_cookie'));
+		static::assertTrue($this->cookie->hasCookie('test_cookie'));
+		static::assertFalse($this->cookie->hasCookie('nonexistent_cookie'));
 	}
 
 	#[Group('units')]

@@ -94,9 +94,9 @@ class PlaylistContentTest extends TestCase
 
 		$this->playlistContent->init($playlist, $itemData)->build();
 
-		$this->assertSame('smilTag', $this->playlistContent->getContentElements());
-		$this->assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame('smilTag', $this->playlistContent->getContentElements());
+		static::assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	#[Group('units')]
@@ -134,9 +134,9 @@ class PlaylistContentTest extends TestCase
 		$this->playlistContent->init($playlist, $itemData)->build();
 		$shuffle = Base::TABSTOPS_TAG.'<metadata><meta name="adapi:pickingAlgorithm" content="shuffle"/></metadata>'."\n";
 
-		$this->assertSame($shuffle.'smilTag', $this->playlistContent->getContentElements());
-		$this->assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame($shuffle.'smilTag', $this->playlistContent->getContentElements());
+		static::assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	#[Group('units')]
@@ -178,9 +178,9 @@ class PlaylistContentTest extends TestCase
 			.Base::TABSTOPS_PARAMETER.'<meta name="adapi:pickNumber" content="1"/>'."\n"
 			.Base::TABSTOPS_TAG.'</metadata>'."\n";
 
-		$this->assertSame($shuffle.'smilTag', $this->playlistContent->getContentElements());
-		$this->assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame($shuffle.'smilTag', $this->playlistContent->getContentElements());
+		static::assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	#[Group('units')]
@@ -210,9 +210,9 @@ class PlaylistContentTest extends TestCase
 
 		$this->playlistContent->init($playlist, $itemData)->build();
 
-		$this->assertSame('smilTag', $this->playlistContent->getContentElements());
-		$this->assertEmpty($this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame('smilTag', $this->playlistContent->getContentElements());
+		static::assertEmpty($this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	#[Group('units')]
@@ -243,9 +243,9 @@ class PlaylistContentTest extends TestCase
 
 		$this->playlistContent->init($playlist, $itemData)->build();
 
-		$this->assertSame('smilTag', $this->playlistContent->getContentElements());
-		$this->assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame('smilTag', $this->playlistContent->getContentElements());
+		static::assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	/**
@@ -275,9 +275,9 @@ class PlaylistContentTest extends TestCase
 
 		$this->playlistContent->init($playlist, $itemData)->build();
 
-		$this->assertSame('smilTag', $this->playlistContent->getContentElements());
-		$this->assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
-		$this->assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
+		static::assertSame('smilTag', $this->playlistContent->getContentElements());
+		static::assertSame('prefetchTag', $this->playlistContent->getContentPrefetch());
+		static::assertSame('exclusiveTag', $this->playlistContent->getContentExclusive());
 	}
 
 	/**

@@ -49,8 +49,8 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		$this->assertCount(6, $this->parameters->getCurrentParameters());
-		$this->assertSame('playlists', $this->parameters->getModuleName());
+		static::assertCount(6, $this->parameters->getCurrentParameters());
+		static::assertSame('playlists', $this->parameters->getModuleName());
 	}
 
 }

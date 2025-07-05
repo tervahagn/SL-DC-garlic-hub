@@ -55,7 +55,7 @@ class HiddenRendererTest extends TestCase
 		$this->fieldMock->method('getLabel')->willReturn('');
 
 		$expectedHtml = '<input type="hidden" name="testField" id="hiddenField" value="hiddenValue">';
-		$this->assertSame($expectedHtml, $this->hiddenRenderer->render($this->fieldMock));
+		static::assertSame($expectedHtml, $this->hiddenRenderer->render($this->fieldMock));
 	}
 
 

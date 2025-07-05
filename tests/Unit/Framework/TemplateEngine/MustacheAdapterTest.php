@@ -49,6 +49,6 @@ class MustacheAdapterTest extends TestCase
 		$adapter = new MustacheAdapter($mustacheMock);
 
 		$output = $adapter->render($template, $data);
-		$this->assertEquals($expectedOutput, $output);
+		static::assertEquals($expectedOutput, $output);
 	}
 }

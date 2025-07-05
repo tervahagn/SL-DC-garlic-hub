@@ -49,14 +49,14 @@ class ScopeRepositoryTest extends TestCase
 	public function testImplementsScopeRepositoryInterface(): void
 	{
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(ScopeRepositoryInterface::class, $this->repository);
+		static::assertInstanceOf(ScopeRepositoryInterface::class, $this->repository);
 	}
 
 	#[Group('units')]
 	public function testGetScopeEntityByIdentifierReturnsNull(): void
 	{
 		$result = $this->repository->getScopeEntityByIdentifier('non-existent-scope');
-		$this->assertNull($result);
+		static::assertNull($result);
 	}
 
 	/**
@@ -69,6 +69,6 @@ class ScopeRepositoryTest extends TestCase
 
 		$result = $this->repository->finalizeScopes([], 'authorization_code', $mockClientEntity);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 }

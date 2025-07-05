@@ -33,7 +33,7 @@ class BaseExceptionTest extends TestCase
 		$exception = new BaseException('Test Exception');
 		$exception->setModuleName('TestModule');
 
-		$this->assertSame('TestModule', $exception->getModuleName());
+		static::assertSame('TestModule', $exception->getModuleName());
 	}
 
 	#[Group('units')]
@@ -44,9 +44,9 @@ class BaseExceptionTest extends TestCase
 
 		$details = $exception->getDetails();
 
-		$this->assertSame('TestModule', $details['module_name']);
-		$this->assertSame('Test Exception', $details['message']);
-		$this->assertSame(123, $details['code']);
+		static::assertSame('TestModule', $details['module_name']);
+		static::assertSame('Test Exception', $details['message']);
+		static::assertSame(123, $details['code']);
 	}
 
 	#[Group('units')]
@@ -57,10 +57,10 @@ class BaseExceptionTest extends TestCase
 
 		$detailsString = $exception->getDetailsAsString();
 
-		$this->assertStringContainsString('Module: TestModule', $detailsString);
-		$this->assertStringContainsString('Message: Test Exception', $detailsString);
-		$this->assertStringContainsString('Code: 123', $detailsString);
-		$this->assertStringContainsString('File:', $detailsString);
-		$this->assertStringContainsString('Trace:', $detailsString);
+		static::assertStringContainsString('Module: TestModule', $detailsString);
+		static::assertStringContainsString('Message: Test Exception', $detailsString);
+		static::assertStringContainsString('Code: 123', $detailsString);
+		static::assertStringContainsString('File:', $detailsString);
+		static::assertStringContainsString('Trace:', $detailsString);
 	}
 }

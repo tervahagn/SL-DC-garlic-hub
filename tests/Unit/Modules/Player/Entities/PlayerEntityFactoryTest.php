@@ -60,9 +60,9 @@ class PlayerEntityFactoryTest extends TestCase
 
 		$playerEntity = $this->factory->create($data, $this->userAgentHandlerMock);
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(PlayerEntity::class, $playerEntity);
+		static::assertInstanceOf(PlayerEntity::class, $playerEntity);
 
-		$this->assertSame(1,$playerEntity->getPlayerId());
+		static::assertSame(1,$playerEntity->getPlayerId());
 	}
 
 }

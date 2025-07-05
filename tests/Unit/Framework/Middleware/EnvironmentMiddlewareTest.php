@@ -54,12 +54,12 @@ class EnvironmentMiddlewareTest extends TestCase
 		$handlerMock = $this->createMock(RequestHandlerInterface::class);
 		$handlerMock->expects($this->once())
 					->method('handle')
-					->with($this->isInstanceOf(ServerRequestInterface::class))
+					->with(static::isInstanceOf(ServerRequestInterface::class))
 					->willReturn($responseMock);
 
 		$middleware = new EnvironmentMiddleware($configMock, $localesMock, $translatorMock);
 		$result     = $middleware->process($requestMock, $handlerMock);
 
-		$this->assertSame($responseMock, $result);
+		static::assertSame($responseMock, $result);
 	}
 }

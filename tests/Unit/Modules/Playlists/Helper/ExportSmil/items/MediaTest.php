@@ -89,7 +89,7 @@ class MediaTest extends TestCase
 		$this->concreteMedia->setLink('/example/path');
 
 		$result = $this->concreteMedia->getPrefetchTag();
-		$this->assertSame(Base::TABSTOPS_TAG . '<prefetch src="example/path" />' . "\n", $result);
+		static::assertSame(Base::TABSTOPS_TAG . '<prefetch src="example/path" />' . "\n", $result);
 	}
 
 	#[Group('units')]
@@ -100,7 +100,7 @@ class MediaTest extends TestCase
 
 		$this->concreteMedia->setLink('/example/path');
 
-		$this->assertEmpty($this->concreteMedia->getPrefetchTag());
+		static::assertEmpty($this->concreteMedia->getPrefetchTag());
 	}
 
 	#[Group('units')]
@@ -115,7 +115,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectAttributes();
 
-		$this->assertSame('xml:id="1" title="Sample Item" region="screen" src="test/path" dur="5000s" fit="fill" align="center" ', $result);
+		static::assertSame('xml:id="1" title="Sample Item" region="screen" src="test/path" dur="5000s" fit="fill" align="center" ', $result);
 	}
 
 	#[Group('units')]
@@ -130,7 +130,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectAttributes();
 
-		$this->assertSame('xml:id="1" title="Sample Item" region="screen" src="empty/path" dur="5000s" ', $result);
+		static::assertSame('xml:id="1" title="Sample Item" region="screen" src="empty/path" dur="5000s" ', $result);
 	}
 
 	#[Group('units')]
@@ -141,7 +141,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectParameters();
 
-		$this->assertSame(Base::TABSTOPS_PARAMETER . '<param name="cacheControl" value="onlyIfCached" />' . "\n", $result);
+		static::assertSame(Base::TABSTOPS_PARAMETER . '<param name="cacheControl" value="onlyIfCached" />' . "\n", $result);
 	}
 
 	#[Group('units')]
@@ -152,7 +152,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectParameters();
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	#[Group('units')]
@@ -163,7 +163,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testLoggable();
 
-		$this->assertSame(Base::TABSTOPS_PARAMETER . '<param name="logContentId" value="123" />' . "\n", $result);
+		static::assertSame(Base::TABSTOPS_PARAMETER . '<param name="logContentId" value="123" />' . "\n", $result);
 	}
 
 	#[Group('units')]
@@ -172,7 +172,7 @@ class MediaTest extends TestCase
 		$item = ['item_id' => 123, 'flags' => 0];
 		$this->concreteMedia = new ConcreteMedia($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock,);
 
-		$this->assertEmpty($this->concreteMedia->testLoggable());
+		static::assertEmpty($this->concreteMedia->testLoggable());
 	}
 
 

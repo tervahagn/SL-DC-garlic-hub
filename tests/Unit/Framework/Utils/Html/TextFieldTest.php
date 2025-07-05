@@ -43,11 +43,11 @@ class TextFieldTest extends TestCase
 
 		$textField = new TextField($attributes);
 
-		$this->assertSame('username', $textField->getId());
-		$this->assertSame('user_name', $textField->getName());
-		$this->assertSame('defaultUser', $textField->getValue());
-		$this->assertSame(['required' => true], $textField->getValidationRules());
-		$this->assertSame(['class' => 'form-control', 'placeholder' => 'Enter username'], $textField->getAttributes());
+		static::assertSame('username', $textField->getId());
+		static::assertSame('user_name', $textField->getName());
+		static::assertSame('defaultUser', $textField->getValue());
+		static::assertSame(['required' => true], $textField->getValidationRules());
+		static::assertSame(['class' => 'form-control', 'placeholder' => 'Enter username'], $textField->getAttributes());
 	}
 
 	#[Group('units')]
@@ -57,7 +57,7 @@ class TextFieldTest extends TestCase
 
 		$textField->setValue('secret123');
 
-		$this->assertSame('secret123', $textField->getValue());
+		static::assertSame('secret123', $textField->getValue());
 	}
 
 	#[Group('units')]
@@ -65,7 +65,7 @@ class TextFieldTest extends TestCase
 	{
 		$textField = new TextField(['id' => 'email', 'type' => FieldType::TEXT, 'default_value' => 'guest']);
 
-		$this->assertSame('guest', $textField->getValue());
+		static::assertSame('guest', $textField->getValue());
 	}
 
 	#[Group('units')]
@@ -75,7 +75,7 @@ class TextFieldTest extends TestCase
 
 		$textField->setValidationRules(['required' => true, 'email' => true]);
 
-		$this->assertSame(['required' => true, 'email' => true], $textField->getValidationRules());
+		static::assertSame(['required' => true, 'email' => true], $textField->getValidationRules());
 	}
 
 	#[Group('units')]
@@ -85,7 +85,7 @@ class TextFieldTest extends TestCase
 
 		$textField->setAttribute('class', 'phone-input');
 
-		$this->assertSame(['class' => 'phone-input'], $textField->getAttributes());
+		static::assertSame(['class' => 'phone-input'], $textField->getAttributes());
 	}
 
 	#[Group('units')]
@@ -95,6 +95,6 @@ class TextFieldTest extends TestCase
 
 		$textField->addValidationRule('url');
 
-		$this->assertSame(['url' => true], $textField->getValidationRules());
+		static::assertSame(['url' => true], $textField->getValidationRules());
 	}
 }

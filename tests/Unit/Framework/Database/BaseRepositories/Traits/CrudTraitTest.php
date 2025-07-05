@@ -92,7 +92,7 @@ class CrudTraitTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('lastInsertId')
 			->willReturn(1);
 
-		$this->assertEquals(1, $this->repository->insert($fields));
+		static::assertEquals(1, $this->repository->insert($fields));
 	}
 
 	/**
@@ -109,7 +109,7 @@ class CrudTraitTest extends TestCase
 			->with('table', $fields, ['id' => 34])
 			->willReturn(2);
 
-		$this->assertEquals(2, $this->repository->update(34, $fields));
+		static::assertEquals(2, $this->repository->update(34, $fields));
 	}
 
 	/**
@@ -137,8 +137,8 @@ class CrudTraitTest extends TestCase
 			->willReturnCallback(function ($field, $param) {
 				$expectedFields = ['field1', 'field2'];
 				$expectedParams = [':set_field1', ':set_field2'];
-				$this->assertContains($field, $expectedFields);
-				$this->assertContains($param, $expectedParams);
+				static::assertContains($field, $expectedFields);
+				static::assertContains($param, $expectedParams);
 				return $this->queryBuilderMock;
 			});
 
@@ -146,7 +146,7 @@ class CrudTraitTest extends TestCase
 			->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['condition1 = :condition1', 'condition2 = :condition2'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 
@@ -155,8 +155,8 @@ class CrudTraitTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['set_field1', 'set_field2', 'condition1', 'condition2'];
 				$expectedValues = ['field 1 value', 'field 2 value', 'condition 1 value', 'condition 2 value'];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -164,7 +164,7 @@ class CrudTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
 			->willReturn(1);
 
-		$this->assertEquals(1, $this->repository->updateWithWhere($fields, $conditions));
+		static::assertEquals(1, $this->repository->updateWithWhere($fields, $conditions));
 
 	}
 
@@ -178,7 +178,7 @@ class CrudTraitTest extends TestCase
 			->with('table', ['id' => 36])
 			->willReturn(17);
 
-		$this->assertEquals(17, $this->repository->delete(36));
+		static::assertEquals(17, $this->repository->delete(36));
 	}
 
 	/**
@@ -191,7 +191,7 @@ class CrudTraitTest extends TestCase
 			->with('table', ['field' => 'value'])
 			->willReturn(94);
 
-		$this->assertEquals(94, $this->repository->deleteByField('field', 'value'));
+		static::assertEquals(94, $this->repository->deleteByField('field', 'value'));
 	}
 
 	/**
@@ -214,7 +214,7 @@ class CrudTraitTest extends TestCase
 			->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['condition1 = :condition1', 'condition2 = :condition2'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 
@@ -223,8 +223,8 @@ class CrudTraitTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['condition1', 'condition2'];
 				$expectedValues = ['condition1_value', 'condition2_value'];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -232,7 +232,7 @@ class CrudTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')
 			->willReturn(365);
 
-		$this->assertEquals(365, $this->repository->deleteBy($conditions));
+		static::assertEquals(365, $this->repository->deleteBy($conditions));
 	}
 
 	/**
@@ -246,7 +246,7 @@ class CrudTraitTest extends TestCase
 		$this->queryBuilderMock->method('executeQuery')->willReturn($resultMock);
 		$resultMock->method('fetchAssociative')->willReturn(false);
 
-		$this->assertEmpty($this->repository->testFetchAssociative($this->queryBuilderMock));
+		static::assertEmpty($this->repository->testFetchAssociative($this->queryBuilderMock));
 	}
 
 	/**
@@ -261,35 +261,35 @@ class CrudTraitTest extends TestCase
 		$expected = ['some' => 'result'];
 		$resultMock->method('fetchAssociative')->willReturn($expected);
 
-		$this->assertSame($expected, $this->repository->testFetchAssociative($this->queryBuilderMock));
+		static::assertSame($expected, $this->repository->testFetchAssociative($this->queryBuilderMock));
 	}
 
 	#[Group('units')]
 	public function testSecureExplodeEmpty(): void
 	{
-		$this->assertEmpty($this->repository->testSecureExplode(''));
+		static::assertEmpty($this->repository->testSecureExplode(''));
 	}
 
 	#[Group('units')]
 	public function testSecureExplode(): void
 	{
 		$expected = ['some'];
-		$this->assertSame($expected, $this->repository->testSecureExplode('some'));
+		static::assertSame($expected, $this->repository->testSecureExplode('some'));
 
 		$expected = ['some', 'result'];
-		$this->assertSame($expected, $this->repository->testSecureExplode('some,result'));
+		static::assertSame($expected, $this->repository->testSecureExplode('some,result'));
 	}
 
 	#[Group('units')]
 	public function testSecureUnserializeEmpty(): void
 	{
-		$this->assertEmpty($this->repository->testSecureUnserialize(''));
+		static::assertEmpty($this->repository->testSecureUnserialize(''));
 	}
 
 	#[Group('units')]
 	public function testSecureUnserializeError(): void
 	{
-		$this->assertEmpty($this->repository->testSecureUnserialize('mbmb'));
+		static::assertEmpty($this->repository->testSecureUnserialize('mbmb'));
 	}
 
 	#[Group('units')]
@@ -297,7 +297,7 @@ class CrudTraitTest extends TestCase
 	{
 		$expected = ['some', 'array', 'result'];
 		$result = $this->repository->testSecureUnserialize(serialize($expected));
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 }

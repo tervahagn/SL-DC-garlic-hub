@@ -62,7 +62,7 @@ class FfmpegTest extends TestCase
 		$metadata = ['test' => 'test'];
 		$this->ffmpeg->setMetadata($metadata);
 
-		$this->assertEquals($metadata, $this->ffmpeg->getMetadata());
+		static::assertEquals($metadata, $this->ffmpeg->getMetadata());
 	}
 
 	/**
@@ -80,15 +80,15 @@ class FfmpegTest extends TestCase
 
 		$this->ffmpeg->init('/path/to/video.mp4');
 		$this->mediaPropertiesMock->method('toArray')->willReturn(['filename' => 'test.mp4']);
-		$this->assertEquals('test.mp4', $this->ffmpeg->getMediaProperties()['filename']);
+		static::assertEquals('test.mp4', $this->ffmpeg->getMediaProperties()['filename']);
 	}
 
 	#[Group('units')]
 	public function testGetDuration(): void
 	{
-		$this->assertSame(0.0, $this->ffmpeg->getDuration());
+		static::assertSame(0.0, $this->ffmpeg->getDuration());
 		$this->mediaPropertiesMock->method('getDuration')->willReturn(10.0);
-		$this->assertSame(10.0, $this->ffmpeg->getDuration());
+		static::assertSame(10.0, $this->ffmpeg->getDuration());
 	}
 
 	/**
@@ -139,7 +139,7 @@ class FfmpegTest extends TestCase
 
 		$vidcapPath = $this->ffmpeg->createVideoThumbnail('/path/to/destination');
 
-		$this->assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
+		static::assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
 	}
 
 	/**
@@ -163,7 +163,7 @@ class FfmpegTest extends TestCase
 		$this->expectExceptionMessage('Thumbnail /path/to/destination/vid_1.jpg not found');
 		$vidcapPath = $this->ffmpeg->createVideoThumbnail('/path/to/destination');
 
-		$this->assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
+		static::assertEquals('/path/to/destination/vid_1.jpg', $vidcapPath);
 	}
 
 

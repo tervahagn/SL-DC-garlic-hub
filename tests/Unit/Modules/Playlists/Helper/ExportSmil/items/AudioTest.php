@@ -72,6 +72,6 @@ class AudioTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</audio>'."\n";
 
-		$this->assertSame($expected, $this->audio->getSmilElementTag());
+		static::assertSame($expected, $this->audio->getSmilElementTag());
 	}
 }

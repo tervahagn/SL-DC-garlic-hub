@@ -62,9 +62,9 @@ class CsrfTokenFieldTest extends TestCase
 
 		$csrfTokenField = new CsrfTokenField($attributes, $this->csrfTokeMock);
 
-		$this->assertSame('csrf_token', $csrfTokenField->getId());
-		$this->assertSame('csrf_token_name', $csrfTokenField->getName());
-		$this->assertNotEmpty($csrfTokenField->getValue());
+		static::assertSame('csrf_token', $csrfTokenField->getId());
+		static::assertSame('csrf_token_name', $csrfTokenField->getName());
+		static::assertNotEmpty($csrfTokenField->getValue());
 	}
 
 }

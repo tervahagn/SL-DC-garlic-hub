@@ -59,7 +59,7 @@ class CsrfTokenTest extends TestCase
 
 		$result = $this->csrfToken->getToken();
 
-		$this->assertSame('newGeneratedToken', $result);
+		static::assertSame('newGeneratedToken', $result);
 	}
 
 	#[Group('units')]
@@ -79,7 +79,7 @@ class CsrfTokenTest extends TestCase
 
 		$result = $this->csrfToken->getToken();
 
-		$this->assertSame('newGeneratedToken', $result);
+		static::assertSame('newGeneratedToken', $result);
 	}
 
 	#[Group('units')]
@@ -92,7 +92,7 @@ class CsrfTokenTest extends TestCase
 
 		$result = $this->csrfToken->validateToken($validToken);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	#[Group('units')]
@@ -107,7 +107,7 @@ class CsrfTokenTest extends TestCase
 
 		$result = $this->csrfToken->validateToken($receivedToken);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	#[Group('units')]
@@ -119,7 +119,7 @@ class CsrfTokenTest extends TestCase
 
 		$result = $this->csrfToken->validateToken('someToken');
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	#[Group('units')]
@@ -134,7 +134,7 @@ class CsrfTokenTest extends TestCase
 
 		$this->csrfToken->generateToken();
 
-		$this->assertSame('newGeneratedToken', $this->csrfToken->getToken());
+		static::assertSame('newGeneratedToken', $this->csrfToken->getToken());
 	}
 
 	#[Group('units')]
@@ -153,7 +153,7 @@ class CsrfTokenTest extends TestCase
 
 		$this->csrfToken->generateToken();
 
-		$this->assertSame('replacedToken', $this->csrfToken->getToken());
+		static::assertSame('replacedToken', $this->csrfToken->getToken());
 	}
 
 

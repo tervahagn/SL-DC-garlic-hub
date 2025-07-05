@@ -67,7 +67,7 @@ class InsertItemFactoryTest extends TestCase
 	{
 		$result = $this->factory->create('mediapool');
 
-		$this->assertInstanceOf(Media::class, $result);
+		static::assertInstanceOf(Media::class, $result);
 	}
 
 	#[Group('units')]
@@ -75,7 +75,7 @@ class InsertItemFactoryTest extends TestCase
 	{
 		$result = $this->factory->create('playlist');
 
-		$this->assertInstanceOf(Playlist::class, $result);
+		static::assertInstanceOf(Playlist::class, $result);
 	}
 
 	#[Group('units')]
@@ -83,7 +83,7 @@ class InsertItemFactoryTest extends TestCase
 	{
 		$result = $this->factory->create('invalid_source');
 
-		$this->assertNull($result);
+		static::assertNull($result);
 	}
 
 

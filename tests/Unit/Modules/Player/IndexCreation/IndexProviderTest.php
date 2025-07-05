@@ -72,7 +72,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleForbidden();
 
 		$expectedPath = '/var/www/defaults/forbidden.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -84,7 +84,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleNew();
 
 		$expectedPath = '/var/www/defaults/unreleased.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -96,7 +96,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleUnreleased();
 
 		$expectedPath = '/var/www/defaults/unreleased.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -112,7 +112,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleReleased($this->playerEntityMock);
 
 		$expectedPath = '/var/www/defaults/released.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -132,7 +132,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleReleased($this->playerEntityMock);
 
 		$expectedPath = '/var/www/tests/released.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -144,7 +144,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleTestSMil();
 
 		$expectedPath = '/var/www/tests/index.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -156,7 +156,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleCorrectSMil();
 
 		$expectedPath = '/var/www/simulate/without_errors.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -168,7 +168,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleCorruptSMIL();
 
 		$expectedPath = '/var/www/simulate/broken_index.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -180,7 +180,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleCorruptContent();
 
 		$expectedPath = '/var/www/simulate/unreachable_content.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 	/**
@@ -192,7 +192,7 @@ class IndexProviderTest extends TestCase
 		$this->indexProvider->handleCorruptPrefetchContent();
 
 		$expectedPath = '/var/www/simulate/unreachable_prefetch_content.smil';
-		$this->assertSame($expectedPath, $this->indexProvider->getFilePath());
+		static::assertSame($expectedPath, $this->indexProvider->getFilePath());
 	}
 
 

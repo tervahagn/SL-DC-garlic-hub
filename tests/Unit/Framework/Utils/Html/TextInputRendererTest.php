@@ -47,7 +47,7 @@ class TextInputRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" title="edit username" aria-describedby="error_user_1">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -71,7 +71,7 @@ class TextInputRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="text" name="email" id="email_input" value="john@example.com" title="edit email" required="required" maxlength="255" aria-describedby="error_email_input">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class TextInputRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="text" name="username" id="user_1" value="JohnDoe" title="edit username" class="form-control" placeholder="Enter your username" aria-describedby="error_user_1">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -122,6 +122,6 @@ class TextInputRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="text" name="password" id="password_input" value="" title="edit password" class="password-input" placeholder="Enter your password" required="required" maxlength="20" aria-describedby="error_password_input">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

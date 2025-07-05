@@ -38,46 +38,46 @@ class HeaderFieldTest extends TestCase
 	#[Group('units')]
 	public function testIsSortableInitiallyFalse(): void
 	{
-		$this->assertFalse($this->headerField->isSortable());
+		static::assertFalse($this->headerField->isSortable());
 	}
 
 	#[Group('units')]
 	public function testSortableSetterAndGetter(): void
 	{
 		$this->headerField->sortable(true);
-		$this->assertTrue($this->headerField->isSortable());
+		static::assertTrue($this->headerField->isSortable());
 
 		$this->headerField->sortable(false);
-		$this->assertFalse($this->headerField->isSortable());
+		static::assertFalse($this->headerField->isSortable());
 	}
 
 	#[Group('units')]
 	public function testShouldSkipTranslationInitiallyFalse(): void
 	{
-		$this->assertFalse($this->headerField->shouldSkipTranslation());
+		static::assertFalse($this->headerField->shouldSkipTranslation());
 	}
 
 	#[Group('units')]
 	public function testSkipTranslationSetterAndGetter(): void
 	{
 		$this->headerField->skipTranslation(true);
-		$this->assertTrue($this->headerField->shouldSkipTranslation());
+		static::assertTrue($this->headerField->shouldSkipTranslation());
 
 		$this->headerField->skipTranslation(false);
-		$this->assertFalse($this->headerField->shouldSkipTranslation());
+		static::assertFalse($this->headerField->shouldSkipTranslation());
 	}
 
 	#[Group('units')]
 	public function testHasSpecificLangModuleInitiallyFalse(): void
 	{
-		$this->assertFalse($this->headerField->hasSpecificLangModule());
+		static::assertFalse($this->headerField->hasSpecificLangModule());
 	}
 
 	#[Group('units')]
 	public function testUseSpecificLangModuleSetterAndGetter(): void
 	{
 		$this->headerField->useSpecificLangModule('test_module');
-		$this->assertTrue($this->headerField->hasSpecificLangModule());
-		$this->assertSame('test_module', $this->headerField->getSpecificLanguageModule());
+		static::assertTrue($this->headerField->hasSpecificLangModule());
+		static::assertSame('test_module', $this->headerField->getSpecificLanguageModule());
 	}
 }

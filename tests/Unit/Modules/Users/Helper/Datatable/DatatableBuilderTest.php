@@ -174,7 +174,7 @@ class DatatableBuilderTest extends TestCase
 
 		$this->builder->buildTitle();
 
-		$this->assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
+		static::assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
 	}
 
 	/**
@@ -249,21 +249,21 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_USERNAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_EMAIL, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_FIRSTNAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_SURNAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_COMPANY_NAME, $form);
-		$this->assertArrayHasKey(BaseFilterParametersInterface::PARAMETER_COMPANY_ID, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_STATUS, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_USERNAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_EMAIL, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_FIRSTNAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_SURNAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_COMPANY_NAME, $form);
+		static::assertArrayHasKey(BaseFilterParametersInterface::PARAMETER_COMPANY_ID, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_STATUS, $form);
 
-		$this->assertEquals($userFieldMock, $form[Parameters::PARAMETER_USERNAME]);
-		$this->assertEquals($emailFieldMock, $form[Parameters::PARAMETER_EMAIL]);
-		$this->assertEquals($firstNameFieldMock, $form[Parameters::PARAMETER_FIRSTNAME]);
-		$this->assertEquals($surNameFieldMock, $form[Parameters::PARAMETER_SURNAME]);
-		$this->assertEquals($companyNameFieldMock, $form[Parameters::PARAMETER_COMPANY_NAME]);
-		$this->assertEquals($companyIdMock, $form[BaseFilterParametersInterface::PARAMETER_COMPANY_ID]);
-		$this->assertEquals($statusMock, $form[Parameters::PARAMETER_STATUS]);
+		static::assertEquals($userFieldMock, $form[Parameters::PARAMETER_USERNAME]);
+		static::assertEquals($emailFieldMock, $form[Parameters::PARAMETER_EMAIL]);
+		static::assertEquals($firstNameFieldMock, $form[Parameters::PARAMETER_FIRSTNAME]);
+		static::assertEquals($surNameFieldMock, $form[Parameters::PARAMETER_SURNAME]);
+		static::assertEquals($companyNameFieldMock, $form[Parameters::PARAMETER_COMPANY_NAME]);
+		static::assertEquals($companyIdMock, $form[BaseFilterParametersInterface::PARAMETER_COMPANY_ID]);
+		static::assertEquals($statusMock, $form[Parameters::PARAMETER_STATUS]);
 
 	}
 
@@ -310,11 +310,11 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_USERNAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_EMAIL, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_USERNAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_EMAIL, $form);
 
-		$this->assertEquals($userFieldMock, $form[Parameters::PARAMETER_USERNAME]);
-		$this->assertEquals($emailFieldMock, $form[Parameters::PARAMETER_EMAIL]);
+		static::assertEquals($userFieldMock, $form[Parameters::PARAMETER_USERNAME]);
+		static::assertEquals($emailFieldMock, $form[Parameters::PARAMETER_EMAIL]);
 	}
 
 	/**

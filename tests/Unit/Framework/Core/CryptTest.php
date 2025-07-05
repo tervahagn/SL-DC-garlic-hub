@@ -45,7 +45,7 @@ class CryptTest extends TestCase
 		$length = 64;
 		$randomString = $this->crypt->generateRandomString($length / 2);
 
-		$this->assertEquals($length, strlen($randomString));
+		static::assertEquals($length, strlen($randomString));
 	}
 
 	/**
@@ -57,7 +57,7 @@ class CryptTest extends TestCase
 		$length = 64;
 		$randomString = $this->crypt->generateRandomString(0);
 
-		$this->assertEquals($length, strlen($randomString));
+		static::assertEquals($length, strlen($randomString));
 	}
 
 
@@ -70,7 +70,7 @@ class CryptTest extends TestCase
 		$length = 8;
 		$password = $this->crypt->generatePassword($length);
 
-		$this->assertEquals($length, strlen($password));
+		static::assertEquals($length, strlen($password));
 	}
 
 	/**
@@ -82,8 +82,8 @@ class CryptTest extends TestCase
 		$places = 5;
 		$randomNumber = $this->crypt->generateRandomNumber($places);
 
-		$this->assertGreaterThanOrEqual(10000, $randomNumber);
-		$this->assertLessThanOrEqual(99999, $randomNumber);
+		static::assertGreaterThanOrEqual(10000, $randomNumber);
+		static::assertLessThanOrEqual(99999, $randomNumber);
 	}
 
 	#[Group('units')]
@@ -92,8 +92,8 @@ class CryptTest extends TestCase
 		$password = 'securePassword123!';
 		$hash = $this->crypt->createPasswordHash($password);
 
-		$this->assertTrue($this->crypt->checkPassword($password, $hash));
-		$this->assertFalse($this->crypt->checkPassword('wrongPassword', $hash));
+		static::assertTrue($this->crypt->checkPassword($password, $hash));
+		static::assertFalse($this->crypt->checkPassword('wrongPassword', $hash));
 	}
 
 	#[Group('units')]
@@ -102,7 +102,7 @@ class CryptTest extends TestCase
 		$input = 'test';
 		$hash = $this->crypt->createSha256Hash($input);
 
-		$this->assertEquals(64, strlen($hash)); // SHA-256 creates 64 chars
+		static::assertEquals(64, strlen($hash)); // SHA-256 creates 64 chars
 	}
 
 	#[Group('units')]
@@ -111,7 +111,7 @@ class CryptTest extends TestCase
 		$input = 'test';
 		$hash = $this->crypt->createMd5Hash($input);
 
-		$this->assertEquals(32, strlen($hash)); // md5 creates 32 chars
+		static::assertEquals(32, strlen($hash)); // md5 creates 32 chars
 	}
 
 	#[Group('units')]
@@ -120,6 +120,6 @@ class CryptTest extends TestCase
 		$input = 'test';
 		$hash = $this->crypt->createCrc32bHash($input);
 
-		$this->assertGreaterThan(0, strlen($hash));
+		static::assertGreaterThan(0, strlen($hash));
 	}
 }

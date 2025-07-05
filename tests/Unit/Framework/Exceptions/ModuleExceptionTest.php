@@ -33,10 +33,10 @@ class ModuleExceptionTest extends TestCase
 	{
 		$exception = new ModuleException('CustomModule', 'Base exception occurred', 100);
 
-		$this->assertSame('CustomModule', $exception->getModuleName());
-		$this->assertSame('Base exception occurred', $exception->getMessage());
-		$this->assertSame(100, $exception->getCode());
-		$this->assertNull($exception->getPrevious());
+		static::assertSame('CustomModule', $exception->getModuleName());
+		static::assertSame('Base exception occurred', $exception->getMessage());
+		static::assertSame(100, $exception->getCode());
+		static::assertNull($exception->getPrevious());
 	}
 
 	#[Group('units')]
@@ -45,9 +45,9 @@ class ModuleExceptionTest extends TestCase
 		$previousException = new Exception('Previous error');
 		$exception = new ModuleException('CustomModule', 'Base exception occurred', 100, $previousException);
 
-		$this->assertSame('CustomModule', $exception->getModuleName());
-		$this->assertSame('Base exception occurred', $exception->getMessage());
-		$this->assertSame(100, $exception->getCode());
-		$this->assertSame($previousException, $exception->getPrevious());
+		static::assertSame('CustomModule', $exception->getModuleName());
+		static::assertSame('Base exception occurred', $exception->getMessage());
+		static::assertSame(100, $exception->getCode());
+		static::assertSame($previousException, $exception->getPrevious());
 	}
 }

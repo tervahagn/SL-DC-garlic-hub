@@ -61,12 +61,12 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertEquals($userData['main'], $result->getMain());
-		$this->assertEquals($userData['contact'], $result->getContact());
-		$this->assertEquals($userData['stats'], $result->getStats());
-		$this->assertEquals($userData['security'], $result->getSecurity());
-		$this->assertEquals($userData['acl'], $result->getAcl());
-		$this->assertEquals($userData['vip'], $result->getVip());
+		static::assertEquals($userData['main'], $result->getMain());
+		static::assertEquals($userData['contact'], $result->getContact());
+		static::assertEquals($userData['stats'], $result->getStats());
+		static::assertEquals($userData['security'], $result->getSecurity());
+		static::assertEquals($userData['acl'], $result->getAcl());
+		static::assertEquals($userData['vip'], $result->getVip());
 	}
 
 	#[Group('units')]
@@ -87,12 +87,12 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertEquals($userData['main'], $result->getMain());
-		$this->assertEquals($userData['contact'], $result->getContact());
-		$this->assertEquals($userData['stats'], $result->getStats());
-		$this->assertEquals([], $result->getSecurity());
-		$this->assertEquals($userData['acl'], $result->getAcl());
-		$this->assertEquals([], $result->getVip());
+		static::assertEquals($userData['main'], $result->getMain());
+		static::assertEquals($userData['contact'], $result->getContact());
+		static::assertEquals($userData['stats'], $result->getStats());
+		static::assertEquals([], $result->getSecurity());
+		static::assertEquals($userData['acl'], $result->getAcl());
+		static::assertEquals([], $result->getVip());
 	}
 
 	#[Group('units')]
@@ -113,11 +113,11 @@ class UserEntityFactoryTest extends TestCase
 
 		$result = $this->factory->create($userData);
 
-		$this->assertEquals($userData['main'], $result->getMain());
-		$this->assertEmpty($result->getContact());
-		$this->assertEmpty($result->getStats());
-		$this->assertEmpty($result->getSecurity());
-		$this->assertNotEmpty($result->getAcl());
-		$this->assertEmpty($result->getVip());
+		static::assertEquals($userData['main'], $result->getMain());
+		static::assertEmpty($result->getContact());
+		static::assertEmpty($result->getStats());
+		static::assertEmpty($result->getSecurity());
+		static::assertNotEmpty($result->getAcl());
+		static::assertEmpty($result->getVip());
 	}
 }

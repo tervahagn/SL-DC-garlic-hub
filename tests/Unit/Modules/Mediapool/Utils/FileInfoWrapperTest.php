@@ -69,7 +69,7 @@ class FileInfoWrapperTest extends TestCase
 
 		$fileInfoWrapperMock->__construct(); // Ensures `finfo_open` is called.
 		// @phpstan-ignore-next-line
-		$this->assertNotNull($fileInfoWrapperMock);
+		static::assertNotNull($fileInfoWrapperMock);
 
 		// Expect finfo_close to be called during destruction
 		$fileInfoWrapperMock->__destruct();
@@ -83,7 +83,7 @@ class FileInfoWrapperTest extends TestCase
 
 		$filePath = $this->baseDirectory . '/testFile.txt';
 		file_put_contents($filePath, 'test content');
-		$this->assertTrue($this->fileInfoWrapper->fileExists($filePath));
+		static::assertTrue($this->fileInfoWrapper->fileExists($filePath));
 
 		unlink($filePath);
 	}
@@ -93,7 +93,7 @@ class FileInfoWrapperTest extends TestCase
 	{
 		$this->fileInfoWrapper = new FileInfoWrapper();
 		$filePath = $this->baseDirectory . '/nonExistentFile.txt';
-		$this->assertFalse($this->fileInfoWrapper->fileExists($filePath));
+		static::assertFalse($this->fileInfoWrapper->fileExists($filePath));
 
 	}
 
@@ -104,7 +104,7 @@ class FileInfoWrapperTest extends TestCase
 
 		$filePath = $this->baseDirectory . '/plain.txt';
 		file_put_contents($filePath, 'some content');
-		$this->assertSame('text/plain', $this->fileInfoWrapper->detectMimeTypeFromFile($filePath));
+		static::assertSame('text/plain', $this->fileInfoWrapper->detectMimeTypeFromFile($filePath));
 		unlink($filePath);
 	}
 
@@ -113,7 +113,7 @@ class FileInfoWrapperTest extends TestCase
 	{
 		$this->fileInfoWrapper = new FileInfoWrapper();
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent('test content');
-		$this->assertEquals('text/plain', $mimeType);
+		static::assertEquals('text/plain', $mimeType);
 	}
 
 	#[Group('units')]
@@ -122,7 +122,7 @@ class FileInfoWrapperTest extends TestCase
 		$this->fileInfoWrapper = new FileInfoWrapper();
 
 		$mimeType = $this->fileInfoWrapper->detectMimeTypeFromStreamContent('');
-		$this->assertEquals('application/x-empty', $mimeType);
+		static::assertEquals('application/x-empty', $mimeType);
 	}
 
 	#[Group('units')]
@@ -137,7 +137,7 @@ class FileInfoWrapperTest extends TestCase
 		if ($i === false)
 			return;
 		rewind($stream);
-		$this->assertTrue($this->fileInfoWrapper->isStream($stream));
+		static::assertTrue($this->fileInfoWrapper->isStream($stream));
 		fclose($stream);
 	}
 
@@ -154,7 +154,7 @@ class FileInfoWrapperTest extends TestCase
 			return;
 
 		rewind($stream);
-		$this->assertSame('test content', $this->fileInfoWrapper->getStreamContent($stream));
+		static::assertSame('test content', $this->fileInfoWrapper->getStreamContent($stream));
 		fclose($stream);
 	}
 }

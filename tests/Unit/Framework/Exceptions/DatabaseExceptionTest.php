@@ -33,10 +33,10 @@ class DatabaseExceptionTest extends TestCase
 	{
 		$exception = new DatabaseException('Database error occurred', 200);
 
-		$this->assertSame('DB', $exception->getModuleName());
-		$this->assertSame('Database error occurred', $exception->getMessage());
-		$this->assertSame(200, $exception->getCode());
-		$this->assertNull($exception->getPrevious());
+		static::assertSame('DB', $exception->getModuleName());
+		static::assertSame('Database error occurred', $exception->getMessage());
+		static::assertSame(200, $exception->getCode());
+		static::assertNull($exception->getPrevious());
 	}
 
 	#[Group('units')]
@@ -45,9 +45,9 @@ class DatabaseExceptionTest extends TestCase
 		$previousException = new Exception('Previous error');
 		$exception = new DatabaseException('Database error occurred', 200, $previousException);
 
-		$this->assertSame('DB', $exception->getModuleName());
-		$this->assertSame('Database error occurred', $exception->getMessage());
-		$this->assertSame(200, $exception->getCode());
-		$this->assertSame($previousException, $exception->getPrevious());
+		static::assertSame('DB', $exception->getModuleName());
+		static::assertSame('Database error occurred', $exception->getMessage());
+		static::assertSame(200, $exception->getCode());
+		static::assertSame($previousException, $exception->getPrevious());
 	}
 }

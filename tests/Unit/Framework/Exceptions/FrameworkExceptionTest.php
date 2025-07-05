@@ -33,10 +33,10 @@ class FrameworkExceptionTest extends TestCase
 	{
 		$exception = new FrameworkException('Framework error occurred', 500);
 
-		$this->assertSame('Framework', $exception->getModuleName());
-		$this->assertSame('Framework error occurred', $exception->getMessage());
-		$this->assertSame(500, $exception->getCode());
-		$this->assertNull($exception->getPrevious());
+		static::assertSame('Framework', $exception->getModuleName());
+		static::assertSame('Framework error occurred', $exception->getMessage());
+		static::assertSame(500, $exception->getCode());
+		static::assertNull($exception->getPrevious());
 	}
 
 	#[Group('units')]
@@ -45,9 +45,9 @@ class FrameworkExceptionTest extends TestCase
 		$previousException = new Exception('Previous framework error');
 		$exception = new FrameworkException('Framework error occurred', 500, $previousException);
 
-		$this->assertSame('Framework', $exception->getModuleName());
-		$this->assertSame('Framework error occurred', $exception->getMessage());
-		$this->assertSame(500, $exception->getCode());
-		$this->assertSame($previousException, $exception->getPrevious());
+		static::assertSame('Framework', $exception->getModuleName());
+		static::assertSame('Framework error occurred', $exception->getMessage());
+		static::assertSame(500, $exception->getCode());
+		static::assertSame($previousException, $exception->getPrevious());
 	}
 }

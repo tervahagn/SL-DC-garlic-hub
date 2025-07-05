@@ -56,7 +56,7 @@ class SystemDashboardTest extends TestCase
 	{
 		$result = $this->systemDashboard->getId();
 
-		$this->assertSame('system', $result);
+		static::assertSame('system', $result);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class SystemDashboardTest extends TestCase
 
 		$result = $this->systemDashboard->getTitle();
 
-		$this->assertSame('System Dashboard', $result);
+		static::assertSame('System Dashboard', $result);
 	}
 
 	/**
@@ -121,6 +121,6 @@ class SystemDashboardTest extends TestCase
 	<li><strong>Disc Usage:</strong><span>100GB of 500GB (20%)</span></li>
 </ul>';
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

@@ -64,7 +64,7 @@ class BaseParametersTest extends TestCase
 
 		$result = $this->baseParameters->getInputValuesArray();
 
-		$this->assertSame(['value1', 42], $result);
+		static::assertSame(['value1', 42], $result);
 	}
 
 	#[Group('units')]
@@ -75,7 +75,7 @@ class BaseParametersTest extends TestCase
 
 		$result = $this->baseParameters->getInputValuesArray();
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -90,7 +90,7 @@ class BaseParametersTest extends TestCase
 
 		$result = $this->baseParameters->getInputValuesArray();
 
-		$this->assertSame(['value1'], $result);
+		static::assertSame(['value1'], $result);
 	}
 
 	#[Group('units')]
@@ -99,10 +99,10 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->addOwner();
 
 		$parameters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayHasKey(BaseParameters::PARAMETER_UID, $parameters);
-		$this->assertSame(ScalarType::INT, $parameters[BaseParameters::PARAMETER_UID]['scalar_type']);
-		$this->assertSame(0, $parameters[BaseParameters::PARAMETER_UID]['default_value']);
-		$this->assertFalse($parameters[BaseParameters::PARAMETER_UID]['parsed']);
+		static::assertArrayHasKey(BaseParameters::PARAMETER_UID, $parameters);
+		static::assertSame(ScalarType::INT, $parameters[BaseParameters::PARAMETER_UID]['scalar_type']);
+		static::assertSame(0, $parameters[BaseParameters::PARAMETER_UID]['default_value']);
+		static::assertFalse($parameters[BaseParameters::PARAMETER_UID]['parsed']);
 	}
 
 	#[Group('units')]
@@ -115,10 +115,10 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->addParameter($parameterName, $scalarType, $defaultValue);
 
 		$parameters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayHasKey($parameterName, $parameters);
-		$this->assertSame($scalarType, $parameters[$parameterName]['scalar_type']);
-		$this->assertSame($defaultValue, $parameters[$parameterName]['default_value']);
-		$this->assertFalse($parameters[$parameterName]['parsed']);
+		static::assertArrayHasKey($parameterName, $parameters);
+		static::assertSame($scalarType, $parameters[$parameterName]['scalar_type']);
+		static::assertSame($defaultValue, $parameters[$parameterName]['default_value']);
+		static::assertFalse($parameters[$parameterName]['parsed']);
 	}
 
 	#[Group('units')]
@@ -130,7 +130,7 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->removeParameter($parameterName);
 
 		$parameters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayNotHasKey($parameterName, $parameters, 'Parameter should be removed.');
+		static::assertArrayNotHasKey($parameterName, $parameters, 'Parameter should be removed.');
 	}
 
 	#[Group('units')]
@@ -139,12 +139,12 @@ class BaseParametersTest extends TestCase
 		$parameterName = 'testParam';
 		$this->baseParameters->addParameter($parameterName, ScalarType::STRING, 'defaultValue');
 
-		$this->assertCount(1, $this->baseParameters->getInputParametersArray());
+		static::assertCount(1, $this->baseParameters->getInputParametersArray());
 
 		$parameterName = 'nonExistentParam';
 		$this->baseParameters->removeParameter($parameterName);
 
-		$this->assertCount(1, $this->baseParameters->getInputParametersArray());
+		static::assertCount(1, $this->baseParameters->getInputParametersArray());
 	}
 
 	#[Group('units')]
@@ -152,25 +152,25 @@ class BaseParametersTest extends TestCase
 	{
 		$current_filter_count = 0;
 
-		$this->assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param1', ScalarType::STRING, 'default_this_is1'));
-		$this->assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param2', ScalarType::STRING, 'default_this_is2'));
-		$this->assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param3', ScalarType::STRING, 'default_this_is3'));
-		$this->assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param4', ScalarType::STRING, 'default_this_is4'));
+		static::assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param1', ScalarType::STRING, 'default_this_is1'));
+		static::assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param2', ScalarType::STRING, 'default_this_is2'));
+		static::assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param3', ScalarType::STRING, 'default_this_is3'));
+		static::assertEquals($this->baseParameters, $this->baseParameters->addParameter('new_param4', ScalarType::STRING, 'default_this_is4'));
 
 		$filters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayHasKey('new_param1', $filters);
-		$this->assertArrayHasKey('new_param2', $filters);
-		$this->assertArrayHasKey('new_param3', $filters);
-		$this->assertArrayHasKey('new_param4', $filters);
-		$this->assertCount($current_filter_count + 4, $filters);
+		static::assertArrayHasKey('new_param1', $filters);
+		static::assertArrayHasKey('new_param2', $filters);
+		static::assertArrayHasKey('new_param3', $filters);
+		static::assertArrayHasKey('new_param4', $filters);
+		static::assertCount($current_filter_count + 4, $filters);
 
-		$this->assertEquals($this->baseParameters, $this->baseParameters->removeParameters(array('new_param1', 'new_param2', 'new_param4')));
+		static::assertEquals($this->baseParameters, $this->baseParameters->removeParameters(array('new_param1', 'new_param2', 'new_param4')));
 		$filters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayNotHasKey('new_param1', $filters);
-		$this->assertArrayNotHasKey('new_param2', $filters);
-		$this->assertArrayHasKey('new_param3', $filters);
-		$this->assertArrayNotHasKey('new_param4', $filters);
-		$this->assertCount($current_filter_count + 1, $filters);
+		static::assertArrayNotHasKey('new_param1', $filters);
+		static::assertArrayNotHasKey('new_param2', $filters);
+		static::assertArrayHasKey('new_param3', $filters);
+		static::assertArrayNotHasKey('new_param4', $filters);
+		static::assertCount($current_filter_count + 1, $filters);
 	}
 
 	/**
@@ -184,7 +184,7 @@ class BaseParametersTest extends TestCase
 
 		$result = $this->baseParameters->getValueOfParameter('testParam');
 
-		$this->assertSame('actualValue', $result);
+		static::assertSame('actualValue', $result);
 	}
 
 	#[Group('units')]
@@ -221,8 +221,8 @@ class BaseParametersTest extends TestCase
 
 		/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value:mixed}> $parameters */
 		$parameters = $this->baseParameters->getInputParametersArray();
-		$this->assertArrayHasKey('testParam', $parameters);
-		$this->assertSame('newValue', $parameters['testParam']['value']);
+		static::assertArrayHasKey('testParam', $parameters);
+		static::assertSame('newValue', $parameters['testParam']['value']);
 	}
 
 	#[Group('units')]
@@ -246,7 +246,7 @@ class BaseParametersTest extends TestCase
 
 		$this->baseParameters->setDefaultForParameter('testParam', 'newDefaultValue');
 
-		$this->assertSame(
+		static::assertSame(
 			'newDefaultValue',
 			$this->baseParameters->getDefaultValueOfParameter('testParam'),
 			'The default value of the parameter was not updated correctly.'
@@ -271,14 +271,14 @@ class BaseParametersTest extends TestCase
 	public function testSetDefaultForParameterCorrectlyUpdatesDefaultValue(): void
 	{
 		$this->baseParameters->addParameter('testParam', ScalarType::STRING, 'defaultValue');
-		$this->assertSame(
+		static::assertSame(
 			'defaultValue',
 			$this->baseParameters->getDefaultValueOfParameter('testParam'),
 			'The initial default value is incorrect.'
 		);
 
 		$this->baseParameters->setDefaultForParameter('testParam', 'updatedDefaultValue');
-		$this->assertSame(
+		static::assertSame(
 			'updatedDefaultValue',
 			$this->baseParameters->getDefaultValueOfParameter('testParam'),
 			'The default value of the parameter was not updated correctly.'
@@ -304,7 +304,7 @@ class BaseParametersTest extends TestCase
 
 		$result = $this->baseParameters->getInputParametersKeys();
 
-		$this->assertSame(['param1', 'param2'], $result);
+		static::assertSame(['param1', 'param2'], $result);
 	}
 
 	/**
@@ -321,8 +321,8 @@ class BaseParametersTest extends TestCase
 		$this->sanitizerMock->expects($this->once())->method('int')->with(42)->willReturn(42);
 
 		$this->baseParameters->parseInputAllParameters();
-		$this->assertSame('default1', $this->baseParameters->getValueOfParameter('param1'));
-		$this->assertSame(42, $this->baseParameters->getValueOfParameter('param2'));
+		static::assertSame('default1', $this->baseParameters->getValueOfParameter('param1'));
+		static::assertSame(42, $this->baseParameters->getValueOfParameter('param2'));
 	}
 
 	/**
@@ -340,8 +340,8 @@ class BaseParametersTest extends TestCase
 
 		$this->baseParameters->parseInputAllParameters();
 
-		$this->assertSame('userValue1', $this->baseParameters->getValueOfParameter('param1'));
-		$this->assertSame(84, $this->baseParameters->getValueOfParameter('param2'));
+		static::assertSame('userValue1', $this->baseParameters->getValueOfParameter('param1'));
+		static::assertSame(84, $this->baseParameters->getValueOfParameter('param2'));
 	}
 
 	/**
@@ -357,8 +357,8 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->parseInputAllParameters();
 		$parameters = $this->baseParameters->getInputParametersArray();
 
-		$this->assertTrue($parameters['param1']['parsed']);
-		$this->assertTrue($parameters['param2']['parsed']);
+		static::assertTrue($parameters['param1']['parsed']);
+		static::assertTrue($parameters['param2']['parsed']);
 	}
 
 	#[Group('units')]
@@ -391,7 +391,7 @@ class BaseParametersTest extends TestCase
 
 		$this->baseParameters->parseInputFilterByName('testParam');
 		$result = $this->baseParameters->getValueOfParameter('testParam');
-		$this->assertSame('defaultValue', $result);
+		static::assertSame('defaultValue', $result);
 
 		$this->baseParameters->setUserInputs(['testParam' => 'userValue']);
 		$this->baseParameters->parseInputFilterByName('testParam');
@@ -415,7 +415,7 @@ class BaseParametersTest extends TestCase
 
 		$this->baseParameters->parseInputFilterByName('testParam');
 		$result = $this->baseParameters->getValueOfParameter('testParam');
-		$this->assertSame('defaultValue', $result);
+		static::assertSame('defaultValue', $result);
 
 		$this->baseParameters->parseInputFilterByName('testParam');
 	}
@@ -440,7 +440,7 @@ class BaseParametersTest extends TestCase
 		$this->baseParameters->parseInputFilterByName('intParam');
 		$this->baseParameters->parseInputFilterByName('boolParam');
 
-		$this->assertSame(42, $this->baseParameters->getValueOfParameter('intParam'));
-		$this->assertTrue($this->baseParameters->getValueOfParameter('boolParam'));
+		static::assertSame(42, $this->baseParameters->getValueOfParameter('intParam'));
+		static::assertTrue($this->baseParameters->getValueOfParameter('boolParam'));
 	}
 }

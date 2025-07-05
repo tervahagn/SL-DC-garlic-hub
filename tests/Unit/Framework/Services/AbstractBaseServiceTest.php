@@ -56,13 +56,13 @@ class AbstractBaseServiceTest extends TestCase
 	#[Group('units')]
 	public function testErrorMessages(): void
 	{
-		$this->assertFalse($this->service->hasErrorMessages());
-		$this->assertEmpty($this->service->getErrorMessages());
+		static::assertFalse($this->service->hasErrorMessages());
+		static::assertEmpty($this->service->getErrorMessages());
 
 		$this->service->addSomeErrors();
 
-		$this->assertTrue($this->service->hasErrorMessages());
-		$this->assertSame(['This is an Error'], $this->service->getErrorMessages());
+		static::assertTrue($this->service->hasErrorMessages());
+		static::assertSame(['This is an Error'], $this->service->getErrorMessages());
 	}
 
 	#[Group('units')]
@@ -70,7 +70,7 @@ class AbstractBaseServiceTest extends TestCase
 	{
 		$this->service->setUID(123);
 
-		$this->assertSame(123, $this->service->getUID());
+		static::assertSame(123, $this->service->getUID());
 	}
 
 

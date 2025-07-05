@@ -86,8 +86,8 @@ class AbstractDatatableServiceTest extends TestCase
 
 		$this->service->fetchForModuleAdmin($this->repositoryMock, $this->parametersMock);
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -112,8 +112,8 @@ class AbstractDatatableServiceTest extends TestCase
 
 		$this->service->fetchForUser($this->repositoryMock, $this->parametersMock);
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 }

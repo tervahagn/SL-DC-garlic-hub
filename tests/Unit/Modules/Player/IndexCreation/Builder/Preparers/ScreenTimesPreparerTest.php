@@ -59,7 +59,7 @@ class ScreenTimesPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class ScreenTimesPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class ScreenTimesPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 

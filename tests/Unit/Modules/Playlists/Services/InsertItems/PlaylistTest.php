@@ -116,8 +116,8 @@ class PlaylistTest extends TestCase
 		$saveItem['item_id'] = 1;
 		$saveItem['paths']['thumbnail'] = 'public/images/icons/playlist.svg';
 
-		$this->assertSame($playlistMetrics, $result['playlist_metrics']);
-		$this->assertSame($saveItem, $result['item']);
+		static::assertSame($playlistMetrics, $result['playlist_metrics']);
+		static::assertSame($saveItem, $result['item']);
 	}
 
 	/**
@@ -144,7 +144,7 @@ class PlaylistTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error insert playlist: Playlist recursion alert.');
 
-		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
+		static::assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
 	/**
@@ -175,7 +175,7 @@ class PlaylistTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error insert playlist: Playlist recursion alert.');
 
-		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
+		static::assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
 	/**
@@ -208,7 +208,7 @@ class PlaylistTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error insert playlist: Positions could not be updated.');
 
-		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
+		static::assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
 	/**
@@ -258,7 +258,7 @@ class PlaylistTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error insert playlist: Playlist item could not inserted.');
 
-		$this->assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
+		static::assertEmpty($this->playlist->insert($playlistId, $insertId, $position));
 	}
 
 	/**

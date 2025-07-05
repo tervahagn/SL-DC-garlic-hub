@@ -33,10 +33,10 @@ class UserExceptionTest extends TestCase
 	{
 		$exception = new UserException('User error occurred', 400);
 
-		$this->assertSame('User', $exception->getModuleName());
-		$this->assertSame('User error occurred', $exception->getMessage());
-		$this->assertSame(400, $exception->getCode());
-		$this->assertNull($exception->getPrevious());
+		static::assertSame('User', $exception->getModuleName());
+		static::assertSame('User error occurred', $exception->getMessage());
+		static::assertSame(400, $exception->getCode());
+		static::assertNull($exception->getPrevious());
 	}
 
 	#[Group('units')]
@@ -45,9 +45,9 @@ class UserExceptionTest extends TestCase
 		$previousException = new Exception('Previous user error');
 		$exception = new UserException('User error occurred', 400, $previousException);
 
-		$this->assertSame('User', $exception->getModuleName());
-		$this->assertSame('User error occurred', $exception->getMessage());
-		$this->assertSame(400, $exception->getCode());
-		$this->assertSame($previousException, $exception->getPrevious());
+		static::assertSame('User', $exception->getModuleName());
+		static::assertSame('User error occurred', $exception->getMessage());
+		static::assertSame(400, $exception->getCode());
+		static::assertSame($previousException, $exception->getPrevious());
 	}
 }

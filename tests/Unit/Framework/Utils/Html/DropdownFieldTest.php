@@ -46,6 +46,6 @@ class DropdownFieldTest extends TestCase
 	#[Group('units')]
 	public function testGetOptionsReturnsCorrectOptions(): void
 	{
-		$this->assertSame(['Option1' => [], 'Option2' => [], 'Option3' => []], $this->dropdownField->getOptions());
+		static::assertSame(['Option1' => [], 'Option2' => [], 'Option3' => []], $this->dropdownField->getOptions());
 	}
 }

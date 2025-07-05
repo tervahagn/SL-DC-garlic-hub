@@ -59,7 +59,7 @@ class UserAgentHandlerTest extends TestCase
 			'model'    => PlayerModel::IADEA_XMP1X0
 		];
 
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -75,7 +75,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'Player with spaces in name',
 			'model' => PlayerModel::IADEA_XMP3X0
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -93,7 +93,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'AML8726M3',
 			'model' => PlayerModel::IADEA_XMP2X00
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -110,7 +110,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'TEST PLAYER',
 			'model' => PlayerModel::IADEA_XMP3X0
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -127,7 +127,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'RK3188',
 			'model' => PlayerModel::IADEA_XMP2X00
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -144,7 +144,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'RK3188',
 			'model' => PlayerModel::IADEA_XMP2X00
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -161,7 +161,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'RK3288',
 			'model' => PlayerModel::IADEA_XMP2X00
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -178,7 +178,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => '',
 			'model' => PlayerModel::UNKNOWN
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -195,7 +195,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => '05B200T100223',
 			'model' => PlayerModel::QBIC
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -212,7 +212,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'Android-App-898a48587eb9f96f',
 			'model' => PlayerModel::IDS
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 
@@ -231,7 +231,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'Screenlite Web Test',
 			'model' => PlayerModel::SCREENLITE
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -248,7 +248,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'testplayername',
 			'model' => PlayerModel::IADEA_XMP1X0
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 
 	}
 
@@ -266,7 +266,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'Player with spaces in name',
 			'model' => PlayerModel::IADEA_XMP3X0
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -283,7 +283,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'TEST PLAYER',
 			'model' => PlayerModel::IADEA_XMP3X0
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 	}
 
 	#[Group('units')]
@@ -300,7 +300,7 @@ class UserAgentHandlerTest extends TestCase
 			'name' => 'RK3188',
 			'model' => PlayerModel::IADEA_XMP2X00
 		];
-		$this->assertEquals($expected, $this->handler->getInfo());
+		static::assertEquals($expected, $this->handler->getInfo());
 
 	}
 

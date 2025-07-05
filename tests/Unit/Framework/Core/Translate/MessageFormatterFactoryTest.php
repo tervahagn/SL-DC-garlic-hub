@@ -48,7 +48,7 @@ class MessageFormatterFactoryTest extends TestCase
 
         $formatter = $this->factory->create($locale, $pattern);
 
-        $this->assertEquals('5 items', $formatter->format(['count' => 5]));
+        static::assertEquals('5 items', $formatter->format(['count' => 5]));
     }
 
     #[Group('units')]

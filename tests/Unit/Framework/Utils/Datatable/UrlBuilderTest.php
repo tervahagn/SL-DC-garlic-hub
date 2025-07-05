@@ -39,7 +39,7 @@ class UrlBuilderTest extends TestCase
 
 		$expectedUrl = 'https://example.com?elements_page=1&sort_column=name&sort_order=asc&elements_per_page=10';
 
-		$this->assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
+		static::assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
 	}
 
 	#[Group('units')]
@@ -55,15 +55,15 @@ class UrlBuilderTest extends TestCase
 			->addAdditionalUrlParameter('key2', 'value2')
 			->addAdditionalUrlParameter('key3', 'value3');
 
-		$this->assertTrue($urlBuilder->hasAdditionalUrlParameters());
+		static::assertTrue($urlBuilder->hasAdditionalUrlParameters());
 
 		$urlBuilder->clearAdditionalUrlParameters();
 
-		$this->assertFalse($urlBuilder->hasAdditionalUrlParameters());
+		static::assertFalse($urlBuilder->hasAdditionalUrlParameters());
 
 		$expectedUrl = 'https://example.com?elements_page=1&sort_column=name&sort_order=asc&elements_per_page=10';
 
-		$this->assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
+		static::assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
 	}
 
 	#[Group('units')]
@@ -80,7 +80,7 @@ class UrlBuilderTest extends TestCase
 
 		$expectedUrl = 'https://example.com?elements_page=2&sort_column=date&sort_order=desc&elements_per_page=20&filter=active&category=news';
 
-		$this->assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
+		static::assertEquals($expectedUrl, $urlBuilder->buildFilterUrl());
 	}
 
 }

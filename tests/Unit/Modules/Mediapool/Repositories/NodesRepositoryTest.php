@@ -78,7 +78,7 @@ class NodesRepositoryTest extends TestCase
 			->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['node_id = :node_id'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->exactly(1))
@@ -86,8 +86,8 @@ class NodesRepositoryTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['node_id'];
 				$expectedValues = [1];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -96,7 +96,7 @@ class NodesRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([]);
 
-		$this->assertEmpty($this->nodesRepository->getNode($node_id));
+		static::assertEmpty($this->nodesRepository->getNode($node_id));
 	}
 
 	/**
@@ -120,7 +120,7 @@ class NodesRepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->nodesRepository->findNodeOwner($nodeId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**

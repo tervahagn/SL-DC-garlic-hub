@@ -40,7 +40,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::wrapWithSequence($content);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 	#[Group('units')]
@@ -53,7 +53,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::wrapWithSequence($content);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 	#[Group('units')]
@@ -66,7 +66,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::wrapWithSequence($content);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 	#
@@ -81,7 +81,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::formatMultiZoneItems($screenId, $items);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 	#[Group('units')]
@@ -93,7 +93,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::formatMultiZoneExclusive($screenId, $exclusive);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 	#[Group('units')]
@@ -105,7 +105,7 @@ class FormatHelperTest extends TestCase
 
 		$result = FormatHelper::formatMultiZoneExclusive($screenId, $exclusive);
 
-		$this->assertSame($expectedOutput, $result);
+		static::assertSame($expectedOutput, $result);
 	}
 
 }

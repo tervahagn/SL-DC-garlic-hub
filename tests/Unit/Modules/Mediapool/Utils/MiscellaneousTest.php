@@ -130,7 +130,7 @@ class MiscellaneousTest extends TestCase
 		$this->filesystemMock->method('copy');
 
 		$this->misc->createThumbnail('/path/to/file.csv');
-		$this->assertEquals('svg', $this->misc->getThumbExtension());
+		static::assertEquals('svg', $this->misc->getThumbExtension());
 	}
 
 	/**
@@ -142,5 +142,5 @@ class MiscellaneousTest extends TestCase
 		$this->filesystemMock->method('copy');
 
 		$this->misc->createThumbnail('/path/to/file.txt');
-		$this->assertEquals('svg', $this->misc->getThumbExtension());
+		static::assertEquals('svg', $this->misc->getThumbExtension());
 	}}

@@ -53,7 +53,7 @@ class SessionLocaleExtractorTest extends TestCase
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);
 
-		$this->assertEquals('de_DE', $result);
+		static::assertEquals('de_DE', $result);
 	}
 
 	#[Group('units')]
@@ -64,7 +64,7 @@ class SessionLocaleExtractorTest extends TestCase
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);
 
-		$this->assertEquals('en_US', $result);
+		static::assertEquals('en_US', $result);
 	}
 
 	#[Group('units')]
@@ -75,6 +75,6 @@ class SessionLocaleExtractorTest extends TestCase
 		$whiteList = ['en_US', 'de_DE', 'fr_FR'];
 		$result = $this->localeExtractor->extractLocale($whiteList);
 
-		$this->assertEquals('en_US', $result);
+		static::assertEquals('en_US', $result);
 	}
 }

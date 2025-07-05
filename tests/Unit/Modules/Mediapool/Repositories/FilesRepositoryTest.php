@@ -72,7 +72,7 @@ class FilesRepositoryTest extends TestCase
 			->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['media_id = :media_id', 'deleted = :deleted'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->exactly(2))
@@ -80,8 +80,8 @@ class FilesRepositoryTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['media_id', 'deleted'];
 				$expectedValues = ['123', 0];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -98,7 +98,7 @@ class FilesRepositoryTest extends TestCase
 
 		// Call the method and assert the result
 		$result = $this->filesRepository->findAllWithOwnerById('123');
-		$this->assertEquals(['username' => 'testuser', 'media_id' => '123'], $result);
+		static::assertEquals(['username' => 'testuser', 'media_id' => '123'], $result);
 	}
 
 	/**
@@ -129,7 +129,7 @@ class FilesRepositoryTest extends TestCase
 			->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['node_id = :node_id', 'deleted = :deleted'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->exactly(2))
@@ -137,8 +137,8 @@ class FilesRepositoryTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['node_id', 'deleted'];
 				$expectedValues = [456, 0];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -162,7 +162,7 @@ class FilesRepositoryTest extends TestCase
 
 		// Call the method and assert the result
 		$result = $this->filesRepository->findAllByNodeId(456);
-		$this->assertEquals([['username' => 'testuser', 'node_id' => 456]], $result);
+		static::assertEquals([['username' => 'testuser', 'node_id' => 456]], $result);
 	}
 
 	/**
@@ -214,6 +214,6 @@ class FilesRepositoryTest extends TestCase
 
 		// Call the method and assert the result
 		$result = $this->filesRepository->findAllWithOwnerByCheckSum('test-checksum');
-		$this->assertEquals(['username' => 'testuser', 'checksum' => 'test-checksum'], $result);
+		static::assertEquals(['username' => 'testuser', 'checksum' => 'test-checksum'], $result);
 	}
 }

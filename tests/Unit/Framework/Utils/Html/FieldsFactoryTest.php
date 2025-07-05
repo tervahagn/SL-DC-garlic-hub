@@ -45,8 +45,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createTextField($attributes);
 
-		$this->assertSame('username', $field->getId());
-		$this->assertSame('user_name', $field->getName());
+		static::assertSame('username', $field->getId());
+		static::assertSame('user_name', $field->getName());
 	}
 
 	#[Group('units')]
@@ -56,8 +56,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createNumberField($attributes);
 
-		$this->assertSame('status', $field->getId());
-		$this->assertSame('user_status', $field->getName());
+		static::assertSame('status', $field->getId());
+		static::assertSame('user_status', $field->getName());
 	}
 
 	#[Group('units')]
@@ -67,8 +67,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createAutocompleteField($attributes);
 
-		$this->assertSame('UID', $field->getId());
-		$this->assertSame('username', $field->getName());
+		static::assertSame('UID', $field->getId());
+		static::assertSame('username', $field->getName());
 	}
 
 	#[Group('units')]
@@ -78,8 +78,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createDropdownField($attributes);
 
-		$this->assertSame('countries', $field->getId());
-		$this->assertSame('countries_names', $field->getName());
+		static::assertSame('countries', $field->getId());
+		static::assertSame('countries_names', $field->getName());
 	}
 
 
@@ -90,8 +90,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createEmailField($attributes);
 
-		$this->assertSame('email', $field->getId());
-		$this->assertSame('email_address', $field->getName());
+		static::assertSame('email', $field->getId());
+		static::assertSame('email_address', $field->getName());
 	}
 
 	#[Group('units')]
@@ -101,8 +101,8 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createPasswordField($attributes);
 
-		$this->assertSame('password', $field->getId());
-		$this->assertSame('user_password', $field->getName());
+		static::assertSame('password', $field->getId());
+		static::assertSame('user_password', $field->getName());
 	}
 
 	/**
@@ -116,9 +116,9 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createCsrfTokenField($attributes, $this->createMock(CsrfToken::class));
 
-		$this->assertSame('csrf_token', $field->getId());
-		$this->assertSame('csrf_token_name', $field->getName());
-		$this->assertEmpty($field->getValue());
+		static::assertSame('csrf_token', $field->getId());
+		static::assertSame('csrf_token_name', $field->getName());
+		static::assertEmpty($field->getValue());
 	}
 
 	#[Group('units')]
@@ -128,7 +128,7 @@ class FieldsFactoryTest extends TestCase
 
 		$field = $this->fieldsFactory->createHiddenField($attributes);
 
-		$this->assertSame('username', $field->getId());
-		$this->assertSame('user_name', $field->getName());
+		static::assertSame('username', $field->getId());
+		static::assertSame('user_name', $field->getName());
 	}
 }

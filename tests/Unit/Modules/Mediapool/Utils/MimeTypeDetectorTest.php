@@ -62,7 +62,7 @@ class MimeTypeDetectorTest extends TestCase
 			->with($filePath)
 			->willReturn('mime/type');
 		$mimeType = $this->mimeTypeDetector->detectFromFile($filePath);
-		$this->assertEquals('mime/type', $mimeType);
+		static::assertEquals('mime/type', $mimeType);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class MimeTypeDetectorTest extends TestCase
 		$this->fileInfoWrapperMock->expects($this->never())->method('detectMimeTypeFromFile');
 
 		$mimeType = $this->mimeTypeDetector->detectFromFile($filePath);
-		$this->assertEquals('application/widget', $mimeType);
+		static::assertEquals('application/widget', $mimeType);
 		unlink($filePath);
 	}
 
@@ -132,7 +132,7 @@ class MimeTypeDetectorTest extends TestCase
 			->with($streamContent)
 			->willReturn($mimetype);
 
-		$this->assertEquals($mimetype, $this->mimeTypeDetector->detectFromStream($stream));
+		static::assertEquals($mimetype, $this->mimeTypeDetector->detectFromStream($stream));
 	}
 
 	/**
@@ -213,13 +213,13 @@ class MimeTypeDetectorTest extends TestCase
 
 		foreach ($mimeTypeMap as $mimeType => $expectedExtension)
 		{
-			$this->assertEquals($expectedExtension, $this->mimeTypeDetector->determineExtensionByType($mimeType));
+			static::assertEquals($expectedExtension, $this->mimeTypeDetector->determineExtensionByType($mimeType));
 		}
 	}
 
 	#[Group('units')]
 	public function testDetermineExtensionByTypeReturnsBinForUnknownMimeType(): void
 	{
-		$this->assertEquals('bin', $this->mimeTypeDetector->determineExtensionByType('unknown/mime-type'));
+		static::assertEquals('bin', $this->mimeTypeDetector->determineExtensionByType('unknown/mime-type'));
 	}
 }

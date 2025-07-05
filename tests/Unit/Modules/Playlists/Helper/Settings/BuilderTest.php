@@ -67,7 +67,7 @@ class BuilderTest extends TestCase
 	{
 		$user = ['UID' => 123, 'username' => 'username'];
 		$this->sessionMock->expects($this->once())->method('get')->with('user')->willReturn($user);
-		$this->assertSame($this->builder, $this->builder->init($this->sessionMock));
+		static::assertSame($this->builder, $this->builder->init($this->sessionMock));
 	}
 
 	/**
@@ -246,7 +246,7 @@ class BuilderTest extends TestCase
 
 		$result = $this->builder->buildForm([]);
 
-		$this->assertSame($preparedFormWithAllFields, $result);
+		static::assertSame($preparedFormWithAllFields, $result);
 	}
 
 	/**
@@ -324,7 +324,7 @@ class BuilderTest extends TestCase
 
 		$result = $this->builder->buildForm($playlist);
 
-		$this->assertSame($preparedFormWithAllFields, $result);
+		static::assertSame($preparedFormWithAllFields, $result);
 	}
 
 

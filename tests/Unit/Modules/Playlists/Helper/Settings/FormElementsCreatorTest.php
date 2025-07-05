@@ -82,7 +82,7 @@ class FormElementsCreatorTest extends TestCase
 
 		$result = $this->collector->prepareForm($formData);
 
-		$this->assertSame($preparedForm, $result);
+		static::assertSame($preparedForm, $result);
 	}
 
 
@@ -120,7 +120,7 @@ class FormElementsCreatorTest extends TestCase
 
 		$result = $this->collector->createPlaylistNameField($value);
 
-		$this->assertSame($expectedField, $result);
+		static::assertSame($expectedField, $result);
 	}
 
 	/**
@@ -160,7 +160,7 @@ class FormElementsCreatorTest extends TestCase
 
 		$result = $this->collector->createUIDField($value, $username, $UID);
 
-		$this->assertSame($expectedField, $result);
+		static::assertSame($expectedField, $result);
 	}
 
 	/**
@@ -224,7 +224,7 @@ class FormElementsCreatorTest extends TestCase
 
 		$result = $this->collector->createHiddenPlaylistIdField($value);
 
-		$this->assertSame($expectedField, $result);
+		static::assertSame($expectedField, $result);
 	}
 
 	/**
@@ -249,7 +249,7 @@ class FormElementsCreatorTest extends TestCase
 			->willReturn($expectedField);
 
 		$result = $this->collector->createPlaylistModeField($value);
-		$this->assertSame($expectedField, $result);
+		static::assertSame($expectedField, $result);
 	}
 
 	/**
@@ -273,6 +273,6 @@ class FormElementsCreatorTest extends TestCase
 
 		$result = $this->collector->createCSRFTokenField();
 
-		$this->assertSame($expectedField, $result);
+		static::assertSame($expectedField, $result);
 	}
 }

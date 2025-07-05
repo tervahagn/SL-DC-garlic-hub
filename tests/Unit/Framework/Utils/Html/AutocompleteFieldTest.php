@@ -49,6 +49,6 @@ class AutocompleteFieldTest extends TestCase
 	#[Group('units')]
 	public function testGetDataLabelReturnsExpectedValue(): void
 	{
-		$this->assertSame('test-label', $this->autocompleteField->getDataLabel());
+		static::assertSame('test-label', $this->autocompleteField->getDataLabel());
 	}
 }

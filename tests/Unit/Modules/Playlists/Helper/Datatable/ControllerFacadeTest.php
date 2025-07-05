@@ -99,7 +99,10 @@ class ControllerFacadeTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testProcessSubmittedUserInput(): void
@@ -117,7 +120,6 @@ class ControllerFacadeTest extends TestCase
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testPrepareDataGrid(): void
@@ -130,7 +132,7 @@ class ControllerFacadeTest extends TestCase
 		$this->datatableBuilderMock->expects($this->once())->method('createDropDown');
 		$this->datatableBuilderMock->expects($this->once())->method('createTableFields');
 		$result = $this->controllerFacade->prepareDataGrid();
-		$this->assertSame($this->controllerFacade, $result);
+		static::assertSame($this->controllerFacade, $result);
 	}
 
 	/**
@@ -213,12 +215,12 @@ class ControllerFacadeTest extends TestCase
 		$this->datatablePreparerMock->expects($this->once())->method('setUsedPlaylists')->with([]);
 
 		$this->datatablePreparerMock->expects($this->once())->method('prepareTableBody')
-			->with($currentFilterResults, $mockDatatableStructure['header'], $this->anything())
+			->with($currentFilterResults, $mockDatatableStructure['header'], static::anything())
 			->willReturn($mockFormattedList);
 
 		$result = $this->controllerFacade->prepareUITemplate();
 
-		$this->assertEquals([
+		static::assertEquals([
 			'filter_elements' => ['prepared_filter_form'],
 			'pagination_dropdown' => 'mock_dropdown',
 			'pagination_links' => 'mock_links',
@@ -237,9 +239,6 @@ class ControllerFacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws CoreException
 	 */
 	#[Group('units')]
 	public function testPrepareContextMenu(): void
@@ -255,6 +254,6 @@ class ControllerFacadeTest extends TestCase
 
 		$result = $this->controllerFacade->prepareContextMenu();
 
-		$this->assertSame($mockContextMenu, $result);
+		static::assertSame($mockContextMenu, $result);
 	}
 }

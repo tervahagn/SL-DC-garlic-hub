@@ -32,14 +32,14 @@ class TriggerTest extends TestCase
 	public function testHasTriggersReturnsTrueWhenTriggersExist(): void
 	{
 		$trigger = new Trigger(['wallclocks' => ['example']]);
-		$this->assertTrue($trigger->hasTriggers());
+		static::assertTrue($trigger->hasTriggers());
 	}
 
 	#[Group('units')]
 	public function testHasTriggersReturnsFalseWhenTriggersDoNotExist(): void
 	{
 		$trigger = new Trigger([]);
-		$this->assertFalse($trigger->hasTriggers());
+		static::assertFalse($trigger->hasTriggers());
 	}
 
 	#[Group('units')]
@@ -60,7 +60,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(R/2023-11-03T10:00:00/P1Y)', $result);
+		static::assertEquals('wallclock(R/2023-11-03T10:00:00/P1Y)', $result);
 	}
 
 	#[Group('units')]
@@ -81,7 +81,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(2023-11-03T10:00:00)', $result);
+		static::assertEquals('wallclock(2023-11-03T10:00:00)', $result);
 	}
 
 	#[Group('units')]
@@ -102,7 +102,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(R4/2023-11-03T10:00:00/P1W)', $result);
+		static::assertEquals('wallclock(R4/2023-11-03T10:00:00/P1W)', $result);
 	}
 
 	#[Group('units')]
@@ -123,7 +123,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(R2/2023-11-03T10:00:00/P1M1D)', $result);
+		static::assertEquals('wallclock(R2/2023-11-03T10:00:00/P1M1D)', $result);
 	}
 
 	#[Group('units')]
@@ -144,7 +144,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(R/2023-11-03T10:00:00/PT1H30M)', $result);
+		static::assertEquals('wallclock(R/2023-11-03T10:00:00/PT1H30M)', $result);
 	}
 
 	#[Group('units')]
@@ -165,7 +165,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(R/2023-11-03T10:00:00/P1Y1M1W1DT1H1M)', $result);
+		static::assertEquals('wallclock(R/2023-11-03T10:00:00/P1Y1M1W1DT1H1M)', $result);
 	}
 
 	#[Group('units')]
@@ -186,7 +186,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(2025-11-03+w3T10:00:00)', $result);
+		static::assertEquals('wallclock(2025-11-03+w3T10:00:00)', $result);
 	}
 
 	#[Group('units')]
@@ -207,7 +207,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(2025-11-03-w2T10:00:00)', $result);
+		static::assertEquals('wallclock(2025-11-03-w2T10:00:00)', $result);
 	}
 
 	#[Group('units')]
@@ -228,7 +228,7 @@ class TriggerTest extends TestCase
 		];
 		$triggers = new Trigger(['wallclocks' => $wallclocks]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('wallclock(2025-11-03T10:00:00)', $result);
+		static::assertEquals('wallclock(2025-11-03T10:00:00)', $result);
 	}
 
 
@@ -239,7 +239,7 @@ class TriggerTest extends TestCase
 		$accessKeys = [['accesskey' => 'A']];
 		$triggers = new Trigger(['accesskeys' => $accessKeys]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('accesskey(A)', $result);
+		static::assertEquals('accesskey(A)', $result);
 	}
 
 	#[Group('units')]
@@ -248,7 +248,7 @@ class TriggerTest extends TestCase
 		$touches = [['touch_item_id' => '123']];
 		$triggers = new Trigger(['touches' => $touches]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('123.activateEvent', $result);
+		static::assertEquals('123.activateEvent', $result);
 	}
 
 	#[Group('units')]
@@ -257,7 +257,7 @@ class TriggerTest extends TestCase
 		$notifies = [['notify' => 'event']];
 		$triggers = new Trigger(['notifies' => $notifies]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('notify(event)', $result);
+		static::assertEquals('notify(event)', $result);
 	}
 
 	#[Group('units')]
@@ -265,6 +265,6 @@ class TriggerTest extends TestCase
 	{
 		$triggers = new Trigger([]);
 		$result = $triggers->determineTrigger();
-		$this->assertEquals('', $result);
+		static::assertEquals('', $result);
 	}
 }

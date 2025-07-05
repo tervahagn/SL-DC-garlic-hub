@@ -59,7 +59,7 @@ class PlaylistPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEquals(
+		static::assertEquals(
 			[['INSERT_ELEMENTS' => 'item1,item2']],
 			$result
 		);
@@ -85,7 +85,7 @@ class PlaylistPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEquals(
+		static::assertEquals(
 			[[
 				'INSERT_PRIORITY_CLASSES' => 'exclusiveData',
 				'INSERT_ELEMENTS' => 'item1,item2',
@@ -107,7 +107,7 @@ class PlaylistPreparerTest extends TestCase
 			->willReturn(800);
 
 		$result = $this->preparer->calculatePrefetchDuration();
-		$this->assertEquals(900, $result);
+		static::assertEquals(900, $result);
 	}
 
 	#[Group('units')]
@@ -121,7 +121,7 @@ class PlaylistPreparerTest extends TestCase
 			->willReturn(800);
 
 		$result = $this->preparer->calculatePrefetchDuration();
-		$this->assertEquals(2402, $result);
+		static::assertEquals(2402, $result);
 	}
 
 	#[Group('units')]
@@ -135,7 +135,7 @@ class PlaylistPreparerTest extends TestCase
 			->willReturn(300);
 
 		$result = $this->preparer->calculatePrefetchDuration();
-		$this->assertEquals(900, $result);
+		static::assertEquals(900, $result);
 	}
 
 	#[Group('units')]
@@ -149,7 +149,7 @@ class PlaylistPreparerTest extends TestCase
 			->willReturn(1000);
 
 		$result = $this->preparer->calculatePrefetchDuration();
-		$this->assertEquals(2002, $result);
+		static::assertEquals(2002, $result);
 	}
 
 }

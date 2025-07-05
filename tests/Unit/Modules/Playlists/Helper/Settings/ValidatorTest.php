@@ -77,7 +77,7 @@ class ValidatorTest extends TestCase
 			'Playlist name is missing.',
 			 'Unsupported Playlist.'
 		];
-		$this->assertEquals($expectedErrors, $errors);
+		static::assertEquals($expectedErrors, $errors);
 	}
 
 	/**
@@ -106,7 +106,7 @@ class ValidatorTest extends TestCase
 			'Playlist name is missing.',
 			'Parameter are missing.'
 		];
-		$this->assertEquals($expectedErrors, $errors);
+		static::assertEquals($expectedErrors, $errors);
 	}
 
 	/**
@@ -132,7 +132,7 @@ class ValidatorTest extends TestCase
 		];
 
 		$errors = $this->validator->validateUserInput($userInput);
-		$this->assertEmpty($errors);
+		static::assertEmpty($errors);
 	}
 
 

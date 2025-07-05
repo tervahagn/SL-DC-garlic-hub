@@ -47,6 +47,6 @@ class PasswordRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<div class="password-container"><input type="password" name="password" id="password_1" value="janzjeheim" title="edit password" aria-describedby="error_password_1"><span class="toggle-password bi bi-eye-fill" id="toggle_password_1"></span></div>';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

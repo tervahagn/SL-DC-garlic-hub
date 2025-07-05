@@ -43,8 +43,8 @@ class MediaPropertiesTest extends TestCase
 		$stdClass = json_decode($json);
 		$this->mediaProperties->fromStdClass($stdClass);
 
-		$this->assertEquals('test.mp4', $this->mediaProperties->getFilename());
-		$this->assertEquals(60, $this->mediaProperties->getDuration());
+		static::assertEquals('test.mp4', $this->mediaProperties->getFilename());
+		static::assertEquals(60, $this->mediaProperties->getDuration());
 	}
 
 	#[Group('units')]
@@ -55,8 +55,8 @@ class MediaPropertiesTest extends TestCase
 		$stdClass = json_decode($json);
 		$this->mediaProperties->fromStdClass($stdClass, ['duration' => '160']);
 
-		$this->assertEquals('test.mp4', $this->mediaProperties->getFilename());
-		$this->assertEquals(160, $this->mediaProperties->getDuration());
+		static::assertEquals('test.mp4', $this->mediaProperties->getFilename());
+		static::assertEquals(160, $this->mediaProperties->getDuration());
 	}
 
 	#[Group('units')]
@@ -67,12 +67,12 @@ class MediaPropertiesTest extends TestCase
 		$stdClass = json_decode($json);
 		$this->mediaProperties->fromStdClass($stdClass);
 
-		$this->assertEquals(1280, $this->mediaProperties->getWidth());
-		$this->assertEquals(720, $this->mediaProperties->getHeight());
-		$this->assertEquals('vp9', $this->mediaProperties->getVideoCodec());
-		$this->assertEquals('aac', $this->mediaProperties->getAudioCodec());
-		$this->assertEquals('media.mp4', $this->mediaProperties->getFilename());
-		$this->assertTrue($this->mediaProperties->hasVideoStream());
+		static::assertEquals(1280, $this->mediaProperties->getWidth());
+		static::assertEquals(720, $this->mediaProperties->getHeight());
+		static::assertEquals('vp9', $this->mediaProperties->getVideoCodec());
+		static::assertEquals('aac', $this->mediaProperties->getAudioCodec());
+		static::assertEquals('media.mp4', $this->mediaProperties->getFilename());
+		static::assertTrue($this->mediaProperties->hasVideoStream());
 
 	}
 
@@ -92,9 +92,9 @@ class MediaPropertiesTest extends TestCase
 			'filesize' => 0,
 			'container' => '',
 		];
-		$this->assertFalse($this->mediaProperties->hasVideoStream());
+		static::assertFalse($this->mediaProperties->hasVideoStream());
 
-		$this->assertEquals($expected, $this->mediaProperties->toArray());
+		static::assertEquals($expected, $this->mediaProperties->toArray());
 	}
 
 	#[Group('units')]
@@ -119,7 +119,7 @@ class MediaPropertiesTest extends TestCase
 			'container' => 'mkv',
 		];
 
-		$this->assertEquals($expected, $this->mediaProperties->toArray());
+		static::assertEquals($expected, $this->mediaProperties->toArray());
 	}
 
 	#[Group('units')]
@@ -134,16 +134,16 @@ class MediaPropertiesTest extends TestCase
 		$this->mediaProperties->reset();
 
 		// Verify that all properties have been reset to defaults
-		$this->assertEquals(0, $this->mediaProperties->getWidth());
-		$this->assertEquals(0, $this->mediaProperties->getHeight());
-		$this->assertEquals('', $this->mediaProperties->getVideoCodec());
-		$this->assertEquals('', $this->mediaProperties->getAudioCodec());
-		$this->assertEquals('', $this->mediaProperties->getAspectRatio());
-		$this->assertEquals('', $this->mediaProperties->getStartTime());
-		$this->assertEquals(0.0, $this->mediaProperties->getDuration());
-		$this->assertEquals('', $this->mediaProperties->getFilename());
-		$this->assertEquals(0, $this->mediaProperties->getFilesize());
-		$this->assertEquals('', $this->mediaProperties->getContainer());
+		static::assertEquals(0, $this->mediaProperties->getWidth());
+		static::assertEquals(0, $this->mediaProperties->getHeight());
+		static::assertEquals('', $this->mediaProperties->getVideoCodec());
+		static::assertEquals('', $this->mediaProperties->getAudioCodec());
+		static::assertEquals('', $this->mediaProperties->getAspectRatio());
+		static::assertEquals('', $this->mediaProperties->getStartTime());
+		static::assertEquals(0.0, $this->mediaProperties->getDuration());
+		static::assertEquals('', $this->mediaProperties->getFilename());
+		static::assertEquals(0, $this->mediaProperties->getFilesize());
+		static::assertEquals('', $this->mediaProperties->getContainer());
 	}
 
 	#[Group('units')]
@@ -159,16 +159,16 @@ class MediaPropertiesTest extends TestCase
 		$this->mediaProperties->reset();
 
 		// Verify that all properties have been reset to defaults
-		$this->assertEquals(0, $this->mediaProperties->getWidth());
-		$this->assertEquals(0, $this->mediaProperties->getHeight());
-		$this->assertEquals('', $this->mediaProperties->getVideoCodec());
-		$this->assertEquals('', $this->mediaProperties->getAudioCodec());
-		$this->assertEquals('', $this->mediaProperties->getAspectRatio());
-		$this->assertEquals('', $this->mediaProperties->getStartTime());
-		$this->assertEquals(0.0, $this->mediaProperties->getDuration());
-		$this->assertEquals('', $this->mediaProperties->getFilename());
-		$this->assertEquals(0, $this->mediaProperties->getFilesize());
-		$this->assertEquals('', $this->mediaProperties->getContainer());
+		static::assertEquals(0, $this->mediaProperties->getWidth());
+		static::assertEquals(0, $this->mediaProperties->getHeight());
+		static::assertEquals('', $this->mediaProperties->getVideoCodec());
+		static::assertEquals('', $this->mediaProperties->getAudioCodec());
+		static::assertEquals('', $this->mediaProperties->getAspectRatio());
+		static::assertEquals('', $this->mediaProperties->getStartTime());
+		static::assertEquals(0.0, $this->mediaProperties->getDuration());
+		static::assertEquals('', $this->mediaProperties->getFilename());
+		static::assertEquals(0, $this->mediaProperties->getFilesize());
+		static::assertEquals('', $this->mediaProperties->getContainer());
 	}
 
 }

@@ -70,10 +70,10 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$this->calculator->calculateFromItems($playlist, $items);
 
-		$this->assertSame(2, $this->calculator->getCountEntries());
-		$this->assertSame(300, $this->calculator->getFileSize());
-		$this->assertSame(70, $this->calculator->getDuration());
-		$this->assertSame(30, $this->calculator->getOwnerDuration());
+		static::assertSame(2, $this->calculator->getCountEntries());
+		static::assertSame(300, $this->calculator->getFileSize());
+		static::assertSame(70, $this->calculator->getDuration());
+		static::assertSame(30, $this->calculator->getOwnerDuration());
 
 		$expectedMetrics = [
 			'count_items'       => 2,
@@ -84,7 +84,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 		];
 		$frontendMetrics =  $this->calculator->getMetricsForFrontend();
 
-		$this->assertSame($expectedMetrics, $frontendMetrics);
+		static::assertSame($expectedMetrics, $frontendMetrics);
 
 	}
 
@@ -106,9 +106,9 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$this->calculator->calculateFromItems($playlist, $items);
 
-		$this->assertSame(3, $this->calculator->getCountEntries());
-		$this->assertLessThan(150, $this->calculator->getDuration());
-		$this->assertLessThanOrEqual($this->calculator->getDuration(), $this->calculator->getOwnerDuration());
+		static::assertSame(3, $this->calculator->getCountEntries());
+		static::assertLessThan(150, $this->calculator->getDuration());
+		static::assertLessThanOrEqual($this->calculator->getDuration(), $this->calculator->getOwnerDuration());
 
 		$expectedMetrics = [
 			'count_items'       => 3,
@@ -118,7 +118,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 			'owner_duration'    => 50
 		];
 		$frontendMetrics =  $this->calculator->getMetricsForFrontend();
-		$this->assertSame($expectedMetrics, $frontendMetrics);
+		static::assertSame($expectedMetrics, $frontendMetrics);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 			'owner_duration'    => 150
 		];
 		$frontendMetrics =  $this->calculator->getMetricsForFrontend();
-		$this->assertSame($expectedMetrics, $frontendMetrics);
+		static::assertSame($expectedMetrics, $frontendMetrics);
 	}
 
 	/**
@@ -169,9 +169,9 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$this->calculator->calculateFromItems($playlist, $items);
 
-		$this->assertSame(3, $this->calculator->getCountEntries());
-		$this->assertLessThan(150, $this->calculator->getDuration());
-		$this->assertLessThanOrEqual($this->calculator->getDuration(), $this->calculator->getOwnerDuration());
+		static::assertSame(3, $this->calculator->getCountEntries());
+		static::assertLessThan(150, $this->calculator->getDuration());
+		static::assertLessThanOrEqual($this->calculator->getDuration(), $this->calculator->getOwnerDuration());
 
 		$expectedMetrics = [
 			'count_items'       => 3,
@@ -181,7 +181,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 			'owner_duration'    => 0
 		];
 		$frontendMetrics =  $this->calculator->getMetricsForFrontend();
-		$this->assertSame($expectedMetrics, $frontendMetrics);
+		static::assertSame($expectedMetrics, $frontendMetrics);
 	}
 
 
@@ -229,7 +229,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$this->calculator->calculateFromPlaylistData($playlist);
 		$frontendMetrics =  $this->calculator->getMetricsForFrontend();
-		$this->assertSame($expectedMetrics, $frontendMetrics);
+		static::assertSame($expectedMetrics, $frontendMetrics);
 
 	}
 
@@ -255,14 +255,14 @@ class PlaylistMetricsCalculatorTest extends TestCase
 			'owner_duration' => 0
 		];
 
-		$this->assertSame($expectedMetrics, $this->calculator->getMetricsForFrontend());
+		static::assertSame($expectedMetrics, $this->calculator->getMetricsForFrontend());
 
 		$expectedMetrics2 = [
 			'filesize' => 0,
 			'duration' => 0,
 			'owner_duration' => 0
 		];
-		$this->assertSame($expectedMetrics2, $this->calculator->getMetricsForPlaylistTable());
+		static::assertSame($expectedMetrics2, $this->calculator->getMetricsForPlaylistTable());
 	}
 
 	/**
@@ -279,7 +279,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateRemainingMediaDuration($playlist, $media);
 
-		$this->assertSame(50, $result);
+		static::assertSame(50, $result);
 	}
 
 	/**
@@ -309,7 +309,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateRemainingMediaDuration($playlist, $media);
 
-		$this->assertSame(20, $result); // Expected remaining time
+		static::assertSame(20, $result); // Expected remaining time
 	}
 
 	/**
@@ -339,7 +339,7 @@ class PlaylistMetricsCalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateRemainingMediaDuration($playlist, $media);
 
-		$this->assertSame(0, $result); // Expected remaining time
+		static::assertSame(0, $result); // Expected remaining time
 	}
 
 
@@ -361,6 +361,6 @@ class PlaylistMetricsCalculatorTest extends TestCase
 			->willReturn(15);
 
 		$result = $this->calculator->calculateRemainingMediaDuration($playlist, $media);
-		$this->assertSame(15, $result);
+		static::assertSame(15, $result);
 	}
 }

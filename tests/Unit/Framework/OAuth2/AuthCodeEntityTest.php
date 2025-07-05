@@ -33,7 +33,7 @@ class AuthCodeEntityTest extends TestCase
 	{
 		$authCodeEntity = new AuthCodeEntity();
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(AuthCodeEntityInterface::class, $authCodeEntity);
+		static::assertInstanceOf(AuthCodeEntityInterface::class, $authCodeEntity);
 	}
 
 	#[Group('units')]
@@ -44,7 +44,7 @@ class AuthCodeEntityTest extends TestCase
 
 		$authCodeEntity->setRedirectUri($testUri);
 
-		$this->assertSame($testUri, $authCodeEntity->getRedirectUri());
+		static::assertSame($testUri, $authCodeEntity->getRedirectUri());
 	}
 
 }

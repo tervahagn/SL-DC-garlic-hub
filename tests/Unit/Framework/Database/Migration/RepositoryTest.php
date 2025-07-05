@@ -59,11 +59,11 @@ class RepositoryTest extends TestCase
 	public function testCreateMigrationTable(): void
 	{
 		$tables = $this->repository->showTables();
-		$this->assertNotEmpty($tables);
+		static::assertNotEmpty($tables);
 
 		// Prüfe, ob die Tabelle existiert
 		$tableNames = array_map(fn($table) => $table->getName(), $tables);
-		$this->assertContains('_migration_version', $tableNames);
+		static::assertContains('_migration_version', $tableNames);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class RepositoryTest extends TestCase
 	public function testGetAppliedMigrationsEmpty(): void
 	{
 		$appliedMigrations = $this->repository->getAppliedMigrations();
-		$this->assertEmpty($appliedMigrations, 'Expected no applied migrations in a fresh database.');
+		static::assertEmpty($appliedMigrations, 'Expected no applied migrations in a fresh database.');
 	}
 
 	/**
@@ -91,11 +91,11 @@ class RepositoryTest extends TestCase
 		$this->repository->applySqlBatch($sqlBatch);
 
 		$appliedMigrations = $this->repository->getAppliedMigrations();
-		$this->assertCount(2, $appliedMigrations);
+		static::assertCount(2, $appliedMigrations);
 
 		$versions = array_column($appliedMigrations, 'version');
-		$this->assertContains(1, $versions);
-		$this->assertContains(2, $versions);
+		static::assertContains(1, $versions);
+		static::assertContains(2, $versions);
 	}
 
 	/**
@@ -121,10 +121,10 @@ class RepositoryTest extends TestCase
 	public function testShowColumns(): void
 	{
 		$columns = $this->repository->showColumns();
-		$this->assertNotEmpty($columns);
+		static::assertNotEmpty($columns);
 
 		$columnNames = array_keys($columns);
-		$this->assertContains('version', $columnNames);
-		$this->assertContains('migrated_at', $columnNames);
+		static::assertContains('version', $columnNames);
+		static::assertContains('migrated_at', $columnNames);
 	}
 }

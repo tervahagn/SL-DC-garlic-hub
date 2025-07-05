@@ -60,7 +60,7 @@ class AbstractAclValidatorTest extends TestCase
 	{
 		$configMock = $this->createMock(Config::class);
 		$this->aclHelperMock->expects($this->once())->method('getConfig')->willReturn($configMock);
-		$this->assertSame($configMock, $this->aclValidator->getConfig());
+		static::assertSame($configMock, $this->aclValidator->getConfig());
 	}
 
 	/**
@@ -74,7 +74,7 @@ class AbstractAclValidatorTest extends TestCase
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(true);
 		$this->aclHelperMock->expects($this->never())->method('isSubAdmin');
 
-		$this->assertTrue($this->aclValidator->isSimpleAdmin(1));
+		static::assertTrue($this->aclValidator->isSimpleAdmin(1));
 	}
 
 	/**
@@ -88,7 +88,7 @@ class AbstractAclValidatorTest extends TestCase
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(false);
 		$this->aclHelperMock->expects($this->once())->method('isSubAdmin')->with(1, 'testModule')->willReturn(true);
 
-		$this->assertTrue($this->aclValidator->isSimpleAdmin(1));
+		static::assertTrue($this->aclValidator->isSimpleAdmin(1));
 	}
 
 	/**
@@ -102,7 +102,7 @@ class AbstractAclValidatorTest extends TestCase
 		$this->aclHelperMock->expects($this->once())->method('isModuleAdmin')->with(1, 'testModule')->willReturn(false);
 		$this->aclHelperMock->expects($this->once())->method('isSubAdmin')->with(1, 'testModule')->willReturn(false);
 
-		$this->assertFalse($this->aclValidator->isSimpleAdmin(1));
+		static::assertFalse($this->aclValidator->isSimpleAdmin(1));
 	}
 
 	/**
@@ -137,7 +137,7 @@ class AbstractAclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isAdmin($UID, $unit);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class AbstractAclValidatorTest extends TestCase
 		$result = $this->aclValidator->isAdmin($UID, $unit);
 		// @phpstan-ignore-next-line // company_id should be tested as it is optional
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 
@@ -185,7 +185,7 @@ class AbstractAclValidatorTest extends TestCase
 		$unit = ['UID' => 2, 'company_id' => 4];
 		$result = $this->aclValidator->isAdmin($UID, $unit);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 }

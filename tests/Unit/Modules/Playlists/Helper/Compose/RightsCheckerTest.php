@@ -69,7 +69,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertExternalMedia();
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertExternalMedia();
 
-		$this->assertSame(['LANG_INSERT_EXTERNAL_MEDIA' => 'Translated Message'], $result);
+		static::assertSame(['LANG_INSERT_EXTERNAL_MEDIA' => 'Translated Message'], $result);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertPlaylist(5);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertPlaylist(0);
 
-		$this->assertSame(['LANG_INSERT_PLAYLISTS' => 'Translated Playlist Message'], $result);
+		static::assertSame(['LANG_INSERT_PLAYLISTS' => 'Translated Playlist Message'], $result);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertExternalPlaylist(10);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -150,7 +150,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertExternalPlaylist(10);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertExternalPlaylist(0);
 
-		$this->assertSame(['LANG_INSERT_EXTERNAL_PLAYLISTS' => 'Translated External Playlist Message'], $result);
+		static::assertSame(['LANG_INSERT_EXTERNAL_PLAYLISTS' => 'Translated External Playlist Message'], $result);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertTemplates();
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -203,7 +203,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertTemplates();
 
-		$this->assertSame(['LANG_INSERT_TEMPLATES' => 'Translated Template Message'], $result);
+		static::assertSame(['LANG_INSERT_TEMPLATES' => 'Translated Template Message'], $result);
 	}
 
 	#[Group('units')]
@@ -214,7 +214,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertChannels();
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	#[Group('units')]
@@ -228,7 +228,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkInsertChannels();
 
-		$this->assertSame(['LANG_INSERT_CHANNELS' => 'Translated Channels Message'], $result);
+		static::assertSame(['LANG_INSERT_CHANNELS' => 'Translated Channels Message'], $result);
 	}
 
 	/**
@@ -244,7 +244,7 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkTimeLimit(0);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -263,6 +263,6 @@ class RightsCheckerTest extends TestCase
 
 		$result = $this->checker->checkTimeLimit(10);
 
-		$this->assertSame(['LANG_PLAYLIST_REMAIN_DURATION' => 'Translated Remain Duration Message'], $result);
+		static::assertSame(['LANG_PLAYLIST_REMAIN_DURATION' => 'Translated Remain Duration Message'], $result);
 	}
 }

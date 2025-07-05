@@ -79,7 +79,7 @@ class DatatablePreparerTest extends TestCase
 	{
 		$result = $this->datatablePreparer->prepareTableBody([], [], 123);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 
@@ -134,8 +134,8 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertCount(1, $result);
-		$this->assertArrayHasKey('UNIT_ID', $result[0]);
+		static::assertCount(1, $result);
+		static::assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
 	/**
@@ -178,7 +178,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertNotEmpty($result[0]['has_action']);
+		static::assertNotEmpty($result[0]['has_action']);
 	}
 
 	/**
@@ -223,7 +223,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertNotEmpty($result[0]['has_action']);
+		static::assertNotEmpty($result[0]['has_action']);
 	}
 
 	/**
@@ -273,7 +273,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertNotEmpty($result[0]['has_action']);
+		static::assertNotEmpty($result[0]['has_action']);
 	}
 
 	/**
@@ -314,7 +314,7 @@ class DatatablePreparerTest extends TestCase
 			123
 		);
 
-		$this->assertEquals('some_value', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
+		static::assertEquals('some_value', $result[0]['elements_result_element'][0]['is_text']['formattedText']);
 	}
 
 	/**
@@ -330,8 +330,8 @@ class DatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->formatPlaylistContextMenu();
 
-		$this->assertCount(2, $result);
-		$this->assertEquals(
+		static::assertCount(2, $result);
+		static::assertEquals(
 			[
 				['CREATE_PLAYLIST_MODE' => 'master', 'LANG_CREATE_PLAYLIST_MODE' => 'Master'],
 				['CREATE_PLAYLIST_MODE' => 'slave', 'LANG_CREATE_PLAYLIST_MODE' => 'Slave']
@@ -357,8 +357,8 @@ class DatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->formatPlaylistContextMenu();
 
-		$this->assertCount(1, $result);
-		$this->assertEquals(
+		static::assertCount(1, $result);
+		static::assertEquals(
 			[
 				['CREATE_PLAYLIST_MODE' => 'master', 'LANG_CREATE_PLAYLIST_MODE' => 'Master']
 			],

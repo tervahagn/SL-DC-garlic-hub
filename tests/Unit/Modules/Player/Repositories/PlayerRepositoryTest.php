@@ -81,10 +81,10 @@ class PlayerRepositoryTest extends TestCase
 			->willReturn(['active' => 3, 'pending' => 2, 'inactive' => 5]);
 
 		$result = $this->repository->findAllForDashboard();
-		$this->assertNotEmpty($result);
-		$this->assertEquals(3, $result['active']);
-		$this->assertEquals(2, $result['pending']);
-		$this->assertEquals(5, $result['inactive']);
+		static::assertNotEmpty($result);
+		static::assertEquals(3, $result['active']);
+		static::assertEquals(2, $result['pending']);
+		static::assertEquals(5, $result['inactive']);
 	}
 
 	/**
@@ -111,10 +111,10 @@ class PlayerRepositoryTest extends TestCase
 			->willReturn(['active' => 6, 'pending' => 7, 'inactive' => 8]);
 
 		$result = $this->repository->findAllForDashboard();
-		$this->assertNotEmpty($result);
-		$this->assertEquals(6, $result['active']);
-		$this->assertEquals(7, $result['pending']);
-		$this->assertEquals(8, $result['inactive']);
+		static::assertNotEmpty($result);
+		static::assertEquals(6, $result['active']);
+		static::assertEquals(7, $result['pending']);
+		static::assertEquals(8, $result['inactive']);
 	}
 
 	/**
@@ -131,14 +131,14 @@ class PlayerRepositoryTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('fetchAssociative')
 			->willReturn(false);
 
-		$this->assertEmpty($this->repository->findAllForDashboard());
+		static::assertEmpty($this->repository->findAllForDashboard());
 	}
 
 	#[Group('units')]
 	public function testConstructorInitializesConnection(): void
 	{
-		$this->assertSame('player', $this->repository->getTable());
-		$this->assertSame('player_id', $this->repository->getIdField());
+		static::assertSame('player', $this->repository->getTable());
+		static::assertSame('player_id', $this->repository->getIdField());
 	}
 
 	/**
@@ -184,7 +184,7 @@ class PlayerRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFiltered($fields);
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -220,7 +220,7 @@ class PlayerRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFiltered($fields);
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -254,7 +254,7 @@ class PlayerRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFiltered($fields);
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -286,7 +286,7 @@ class PlayerRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expected);
 
 		$result = $this->repository->findAllFilteredByUID($fields, 1);
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 
@@ -297,7 +297,7 @@ class PlayerRepositoryTest extends TestCase
 	public function testFindPlaylistIdsByPlaylistIdsWithEmptyArray(): void
 	{
 		$result = $this->repository->findPlaylistIdsByPlaylistIds([]);
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -324,7 +324,7 @@ class PlayerRepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$result = $this->repository->findPlaylistIdsByPlaylistIds($playlistIds);
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -347,6 +347,6 @@ class PlayerRepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$result = $this->repository->findPlaylistIdsByPlaylistIds($playlistIds);
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 }

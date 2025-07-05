@@ -85,11 +85,11 @@ class UploadServiceTest extends TestCase
 			->willReturn($responseMock);
 
 		$resource = fopen('php://temp', 'r+');
-		$this->assertNotFalse($resource, 'Failed to resource for testing.');
+		static::assertNotFalse($resource, 'Failed to resource for testing.');
 		$str = json_encode($expectedData);
-		$this->assertNotFalse($str, 'Failed to json for testing.');
+		static::assertNotFalse($str, 'Failed to json for testing.');
 		$i = fwrite($resource, $str);
-		$this->assertNotFalse($i, 'Failed to resource for testing.');
+		static::assertNotFalse($i, 'Failed to resource for testing.');
 
 		rewind($resource);
 
@@ -97,7 +97,7 @@ class UploadServiceTest extends TestCase
 		$responseMock->method('getBody')->willReturn($stream);
 
 		$result = $this->uploadService->requestApi('https://api.example.com');
-		$this->assertEquals($expectedData, $result);
+		static::assertEquals($expectedData, $result);
 	}
 
 	/**
@@ -117,19 +117,19 @@ class UploadServiceTest extends TestCase
 			->willReturn($responseMock);
 
 		$resource = fopen('php://temp', 'r+');
-		$this->assertNotFalse($resource, 'Failed to resource for testing.');
+		static::assertNotFalse($resource, 'Failed to resource for testing.');
 
 		$str = json_encode($expectedData);
-		$this->assertNotFalse($str, 'Failed to json for testing.');
+		static::assertNotFalse($str, 'Failed to json for testing.');
 		$i = fwrite($resource, $str);
-		$this->assertNotFalse($i, 'Failed to resource for testing.');
+		static::assertNotFalse($i, 'Failed to resource for testing.');
 		rewind($resource);
 
 		$stream = new Stream($resource);
 		$responseMock->method('getBody')->willReturn($stream);
 
 		$result = $this->uploadService->requestApi('https://api.example.com', ['Auth' => 'Authorization: Bearer']);
-		$this->assertEquals($expectedData, $result);
+		static::assertEquals($expectedData, $result);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadMediaFiles($nodeId, $uid, $uploadedFile, $metadata);
 
-		$this->assertTrue($result[0]['success']);
+		static::assertTrue($result[0]['success']);
 	}
 
 	/**
@@ -231,7 +231,7 @@ class UploadServiceTest extends TestCase
 		$extMetadata = ['duration' => 4050, 'description' => 'Test file'];
 		$result = $this->uploadService->uploadMediaFiles($nodeId, $uid, $uploadedFileMock, $extMetadata);
 
-		$this->assertTrue($result[0]['success']);
+		static::assertTrue($result[0]['success']);
 	}
 
 	/**
@@ -246,7 +246,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -262,7 +262,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -278,7 +278,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -294,7 +294,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -310,7 +310,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -326,7 +326,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -342,7 +342,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 	/**
@@ -358,7 +358,7 @@ class UploadServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
 
-		$this->assertFalse($result[0]['success']);
+		static::assertFalse($result[0]['success']);
 	}
 
 
@@ -387,7 +387,7 @@ class UploadServiceTest extends TestCase
 		$expected = ['success' => false, 'error_message' => 'Not able to detect size.'];
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFileMock, []);
 
-		$this->assertSame($expected, $result[0]);
+		static::assertSame($expected, $result[0]);
 	}
 
 
@@ -417,7 +417,7 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadExternalMedia($nodeId, $uid, $externalLink, $extMetadata);
 
-		$this->assertTrue($result['success']);
+		static::assertTrue($result['success']);
 	}
 
 	/**
@@ -446,7 +446,7 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadExternalMedia($nodeId, $uid, $externalLink, $extMetadata);
 
-		$this->assertTrue($result['success']);
+		static::assertTrue($result['success']);
 	}
 
 
@@ -476,7 +476,7 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadExternalMedia($nodeId, $uid, $externalLink, $extMetadata);
 
-		$this->assertTrue($result['success']);
+		static::assertTrue($result['success']);
 	}
 
 	/**
@@ -507,7 +507,7 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadExternalMedia($nodeId, $uid, $externalLink, $extMetadata);
 
-		$this->assertTrue($result['success']);
+		static::assertTrue($result['success']);
 	}
 
 
@@ -535,6 +535,6 @@ class UploadServiceTest extends TestCase
 
 		$result = $this->uploadService->uploadExternalMedia($nodeId, $uid, $externalLink, $extMetadata);
 
-		$this->assertFalse($result['success']);
+		static::assertFalse($result['success']);
 	}
 }

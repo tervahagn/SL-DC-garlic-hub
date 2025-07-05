@@ -80,7 +80,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([[1], [2], [3]]);
 
-		$this->assertEquals([1], $this->repository->findFirstById($id));
+		static::assertEquals([1], $this->repository->findFirstById($id));
 	}
 
 	/**
@@ -109,7 +109,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([]);
 
-		$this->assertEquals([], $this->repository->findFirstBy());
+		static::assertEquals([], $this->repository->findFirstBy());
 	}
 
 	/**
@@ -136,7 +136,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn([[1], [2]]);
 
-		$this->assertEquals([[1], [2]], $this->repository->findById($id));
+		static::assertEquals([[1], [2]], $this->repository->findById($id));
 	}
 
 	/**
@@ -159,7 +159,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')
 			->willReturn(32);
 
-		$this->assertEquals(32, $this->repository->countAll());
+		static::assertEquals(32, $this->repository->countAll());
 	}
 
 	/**
@@ -214,7 +214,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')
 			->willReturn(16);
 
-		$this->assertEquals(16, $this->repository->countAllBy($conditions, $joins, $groupBy));
+		static::assertEquals(16, $this->repository->countAllBy($conditions, $joins, $groupBy));
 	}
 
 	/**
@@ -241,7 +241,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')
 			->willReturn(64);
 
-		$this->assertEquals(64, $this->repository->countAllBy());
+		static::assertEquals(64, $this->repository->countAllBy());
 	}
 
 	/**
@@ -291,7 +291,7 @@ class FindOperationsTraitTest extends TestCase
 			->willReturnCallback(function ($condition)
 			{
 				$expectedConditions = ['test_id = :test_id', 'test_username = :test_username'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->exactly(count($conditions)))->method('setParameter')
@@ -299,8 +299,8 @@ class FindOperationsTraitTest extends TestCase
 			{
 				$expectedNames = ['test_id', 'test_username'];
 				$expectedValues = [4711, 'Horst Erwin Günther Günzel'];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 		$this->queryBuilderMock->expects($this->once())->method('groupBy')->with($groupBy);
@@ -315,7 +315,7 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn(['hurz', 'wurz', 'murks']);
 
 		$limit = ['first' => $limitStart, 'max' => $limitShow];
-		$this->assertEquals(['hurz', 'wurz', 'murks'], $this->repository->findAllBy($conditions, $joins, $limit, $groupBy, [$orderBy]));
+		static::assertEquals(['hurz', 'wurz', 'murks'], $this->repository->findAllBy($conditions, $joins, $limit, $groupBy, [$orderBy]));
 	}
 
 	/**
@@ -347,7 +347,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
 			->willReturn(['heidewitzka', 'der Kapitän']);
 
-		$this->assertEquals(['heidewitzka', 'der Kapitän'], $this->repository->findAllByWithFields($fields));
+		static::assertEquals(['heidewitzka', 'der Kapitän'], $this->repository->findAllByWithFields($fields));
 	}
 
 	/**
@@ -383,7 +383,7 @@ class FindOperationsTraitTest extends TestCase
 			->willReturn(['Highway to hell', 'Stairway to heaven']);
 
 		$limit = ['first' => $limitStart, 'max' => $limitShow];
-		$this->assertEquals(['Highway to hell', 'Stairway to heaven'], $this->repository->findAllByWithLimits($limit, [$orderBy]));
+		static::assertEquals(['Highway to hell', 'Stairway to heaven'], $this->repository->findAllByWithLimits($limit, [$orderBy]));
 	}
 
 	/**
@@ -412,7 +412,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')
 			->willReturn('Everytime we say goodbye, I die a little');
 
-		$this->assertEquals('Everytime we say goodbye, I die a little', $this->repository->findOneValueBy($field));
+		static::assertEquals('Everytime we say goodbye, I die a little', $this->repository->findOneValueBy($field));
 	}
 
 	/**
@@ -439,7 +439,7 @@ class FindOperationsTraitTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('fetchOne')
 			->willReturn(null);
 
-		$this->assertEquals('', $this->repository->findOneValueBy('none'));
+		static::assertEquals('', $this->repository->findOneValueBy('none'));
 	}
 
 
@@ -447,11 +447,11 @@ class FindOperationsTraitTest extends TestCase
 	public function testGetFirstDataset(): void
 	{
 		// if empty
-		$this->assertEmpty($this->repository->getFirstDataSet([]));
+		static::assertEmpty($this->repository->getFirstDataSet([]));
 
 		//with data
 		$data = [['first' => 1], ['second' => 2],['third' => []]];
-		$this->assertEquals(['first' => 1], $this->repository->getFirstDataSet($data));
+		static::assertEquals(['first' => 1], $this->repository->getFirstDataSet($data));
 
 	}
 }

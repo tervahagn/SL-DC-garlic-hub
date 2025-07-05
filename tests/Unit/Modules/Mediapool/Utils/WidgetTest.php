@@ -98,7 +98,7 @@ class WidgetTest extends TestCase
 	{
 		$this->widget->checkFileBeforeUpload(1073741824);
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true); // If no exception is thrown, the test passes
+		static::assertTrue(true); // If no exception is thrown, the test passes
 	}
 
 	/**
@@ -142,7 +142,7 @@ class WidgetTest extends TestCase
 
 		$this->widget->checkFileAfterUpload('/path/to/file');
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true); // If no exception is thrown, the test passes
+		static::assertTrue(true); // If no exception is thrown, the test passes
 	}
 
 	/**

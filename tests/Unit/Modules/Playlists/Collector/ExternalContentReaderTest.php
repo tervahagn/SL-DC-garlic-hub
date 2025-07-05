@@ -85,7 +85,7 @@ class ExternalContentReaderTest extends TestCase
 			->willReturn('file_content');
 
 		$this->reader->init('playlist/url');
-		$this->assertSame('file_content', $this->reader->loadPlaylistItems());
+		static::assertSame('file_content', $this->reader->loadPlaylistItems());
 	}
 
 	/**
@@ -132,7 +132,7 @@ class ExternalContentReaderTest extends TestCase
 			->with('playlist/url', ['sink' => 'path/to/cache/' . md5('playlist/url') . '.smil']);
 
 		$this->reader->init('playlist/url');
-		$this->assertSame('existing_file_content', $this->reader->loadPlaylistItems());
+		static::assertSame('existing_file_content', $this->reader->loadPlaylistItems());
 	}
 
 	/**
@@ -178,7 +178,7 @@ class ExternalContentReaderTest extends TestCase
 
 
 		$this->reader->init('playlist/url');
-		$this->assertSame('existing_file_content', $this->reader->loadPlaylistItems());
+		static::assertSame('existing_file_content', $this->reader->loadPlaylistItems());
 	}
 
 

@@ -67,7 +67,7 @@ class PlaylistBuilderFactoryTest extends TestCase
 
 		$result = $this->factory->createBuilder($this->playerEntityMock);
 
-		$this->assertInstanceOf(MultiZonePlaylistBuilder::class, $result);
+		static::assertInstanceOf(MultiZonePlaylistBuilder::class, $result);
 	}
 
 	/**
@@ -80,6 +80,6 @@ class PlaylistBuilderFactoryTest extends TestCase
 
 		$result = $this->factory->createBuilder($this->playerEntityMock);
 
-		$this->assertInstanceOf(StandardPlaylistBuilder::class, $result);
+		static::assertInstanceOf(StandardPlaylistBuilder::class, $result);
 	}
 }

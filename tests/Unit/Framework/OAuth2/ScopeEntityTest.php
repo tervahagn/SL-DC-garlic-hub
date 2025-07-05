@@ -43,28 +43,28 @@ class ScopeEntityTest extends TestCase
 	public function testImplementsScopeEntityInterface(): void
 	{
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(ScopeEntityInterface::class, $this->scopeEntity);
+		static::assertInstanceOf(ScopeEntityInterface::class, $this->scopeEntity);
 	}
 
 	#[Group('units')]
 	public function testGetIdentifierReturnsString(): void
 	{
 		$result = $this->scopeEntity->getIdentifier();
-		$this->assertSame('dummy', $result);
+		static::assertSame('dummy', $result);
 	}
 
 	#[Group('units')]
 	public function testGetIdentifierReturnsEmptyString(): void
 	{
 		$result = $this->scopeEntity->getIdentifier();
-		$this->assertSame('dummy', $result);
+		static::assertSame('dummy', $result);
 	}
 
 	#[Group('units')]
 	public function testJsonSerializeReturnsSerializedData(): void
 	{
 		$result = $this->scopeEntity->jsonSerialize();
-		$this->assertIsString($result);
-		$this->assertSame('[]', $result);
+		static::assertIsString($result);
+		static::assertSame('[]', $result);
 	}
 }

@@ -75,7 +75,7 @@ class SeqContainerTest extends TestCase
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
-		$this->assertSame($expected, $this->seqContainer->getSmilElementTag());
+		static::assertSame($expected, $this->seqContainer->getSmilElementTag());
 	}
 
 	#[Group('units')]
@@ -92,7 +92,7 @@ class SeqContainerTest extends TestCase
 			$this->conditionalMock
 		);
 
-		$this->assertSame('', $this->seqContainer->getSmilElementTag());
+		static::assertSame('', $this->seqContainer->getSmilElementTag());
 	}
 
 	#[Group('units')]
@@ -111,7 +111,7 @@ class SeqContainerTest extends TestCase
 
 		$expected = Base::TABSTOPS_TAG . '{ITEMS_0#example.com}' . "\n";
 
-		$this->assertSame($expected, $this->seqContainer->getElementLink());
+		static::assertSame($expected, $this->seqContainer->getElementLink());
 	}
 
 	#[Group('units')]
@@ -132,6 +132,6 @@ class SeqContainerTest extends TestCase
 
 		$expected = Base::TABSTOPS_TAG . '{PREFETCH_12345}' . "\n";
 
-		$this->assertSame($expected, $this->seqContainer->getPrefetchTag());
+		static::assertSame($expected, $this->seqContainer->getPrefetchTag());
 	}
 }

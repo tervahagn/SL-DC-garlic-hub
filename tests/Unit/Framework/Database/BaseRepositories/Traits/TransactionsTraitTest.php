@@ -73,7 +73,7 @@ class TransactionsTraitTest extends TestCase
 			->method('isTransactionActive')
 			->willReturn(true);
 
-		$this->assertTrue($this->traitObject->isTransactionActive());
+		static::assertTrue($this->traitObject->isTransactionActive());
 	}
 
 	#[Group('units')]

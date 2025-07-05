@@ -57,6 +57,6 @@ class NumberRendererTest extends TestCase
 
 		$actualHtml = $this->numberRenderer->render($this->fieldMock);
 
-		$this->assertSame($expectedHtml, $actualHtml);
+		static::assertSame($expectedHtml, $actualHtml);
 	}
 }

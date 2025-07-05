@@ -68,7 +68,7 @@ class SearchFilterParamsTraitTest extends TestCase
 		$filterParams = ['keyword' => 'test', 'category' => 'example'];
 		$this->searchFilterService->setCurrentFilterParams($filterParams);
 		// @phpstan-ignore-next-line
-		$this->assertSame($filterParams, $this->searchFilterService->getCurrentFilterParameter());
+		static::assertSame($filterParams, $this->searchFilterService->getCurrentFilterParameter());
 	}
 
 	#[Group('units')]
@@ -76,7 +76,7 @@ class SearchFilterParamsTraitTest extends TestCase
 	{
 		$totalResult = 100;
 		$this->searchFilterService->setCurrentTotalResult($totalResult);
-		$this->assertEquals($totalResult, $this->searchFilterService->getCurrentTotalResult());
+		static::assertEquals($totalResult, $this->searchFilterService->getCurrentTotalResult());
 	}
 
 	#[Group('units')]
@@ -84,7 +84,7 @@ class SearchFilterParamsTraitTest extends TestCase
 	{
 		$companies = [1 => 'Company A', 2 => 'Company B', 3 => []];
 		$this->searchFilterService->setCompanyArray($companies);
-		$this->assertEquals($companies, $this->searchFilterService->getCompanyArray());
+		static::assertEquals($companies, $this->searchFilterService->getCompanyArray());
 	}
 
 	#[Group('units')]
@@ -92,13 +92,13 @@ class SearchFilterParamsTraitTest extends TestCase
 	{
 		$filterResults = [['id' => 1, 'name' => 'Result 1'], ['id' => 2, 'name' => 'Result 2']];
 		$this->searchFilterService->setCurrentFilterResults($filterResults);
-		$this->assertEquals($filterResults, $this->searchFilterService->getCurrentFilterResults());
+		static::assertEquals($filterResults, $this->searchFilterService->getCurrentFilterResults());
 	}
 
 	#[Group('units')]
 	public function testReturnFilteredDomainsArrayForCheckBoxes(): void
 	{
-		$this->assertEquals([], $this->searchFilterService->returnFilteredDomainsArrayForCheckBoxes());
+		static::assertEquals([], $this->searchFilterService->returnFilteredDomainsArrayForCheckBoxes());
 	}
 
 	#[Group('units')]
@@ -107,7 +107,7 @@ class SearchFilterParamsTraitTest extends TestCase
 		$this->searchFilterService->setAllowedCompanyIds([1, 2]);
 		$this->searchFilterService->setCompanyArray([1 => 'Company A', 2 => 'Company B', 3 => 'Company C']);
 		$expected = [0 => '-', 1 => 'Company A', 2 => 'Company B'];
-		$this->assertEquals($expected, $this->searchFilterService->returnFilteredCompaniesForDropdowns());
+		static::assertEquals($expected, $this->searchFilterService->returnFilteredCompaniesForDropdowns());
 	}
 
 	#[Group('units')]
@@ -116,7 +116,7 @@ class SearchFilterParamsTraitTest extends TestCase
 		$this->searchFilterService->setAllowedCompanyIds([1, 2, 3]);
 		$this->searchFilterService->setCompanyArray([1 => 'Company A', 2 => 'Company B', 3 => 'Company C']);
 		$expected = [0 => '-', 2 => 'Company A', 4 => 'Company B', 8 => 'Company C'];
-		$this->assertEquals($expected, $this->searchFilterService->returnFilteredDomainsForDropdowns());
+		static::assertEquals($expected, $this->searchFilterService->returnFilteredDomainsForDropdowns());
 	}
 
 	#[Group('units')]
@@ -125,7 +125,7 @@ class SearchFilterParamsTraitTest extends TestCase
 		$total = 50;
 		$results = [['id' => 1, 'name' => 'Result 1'], ['id' => 2, 'name' => 'Result 2']];
 		$this->searchFilterService->setPublicAllResultData($total, $results);
-		$this->assertEquals($total, $this->searchFilterService->getCurrentTotalResult());
-		$this->assertEquals($results, $this->searchFilterService->getCurrentFilterResults());
+		static::assertEquals($total, $this->searchFilterService->getCurrentTotalResult());
+		static::assertEquals($results, $this->searchFilterService->getCurrentFilterResults());
 	}
 }

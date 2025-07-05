@@ -64,7 +64,7 @@ class TransactionsTest extends TestCase
 			->method('isTransactionActive')
 			->willReturn(true);
 
-		$this->assertTrue($this->transactions->isActive());
+		static::assertTrue($this->transactions->isActive());
 	}
 
 	#[Group('units')]

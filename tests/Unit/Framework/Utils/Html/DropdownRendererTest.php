@@ -60,7 +60,7 @@ class DropdownRendererTest extends TestCase
 			. '<option value="2">Option 2</option>'
 			. '</select>';
 
-		$this->assertSame($expectedHtml, $html);
+		static::assertSame($expectedHtml, $html);
 	}
 
 	#[Group('units')]
@@ -79,7 +79,7 @@ class DropdownRendererTest extends TestCase
 			. '<option value="2" selected>Option 2</option>'
 			. '</select>';
 
-		$this->assertSame($expectedHtml, $html);
+		static::assertSame($expectedHtml, $html);
 	}
 
 	#[Group('units')]
@@ -97,6 +97,6 @@ class DropdownRendererTest extends TestCase
 			. '<option value="">-</option>'
 			. '</select>';
 
-		$this->assertSame($expectedHtml, $html);
+		static::assertSame($expectedHtml, $html);
 	}
 }

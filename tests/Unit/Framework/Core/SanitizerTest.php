@@ -38,58 +38,58 @@ class SanitizerTest extends TestCase
 	#[Group('units')]
 	public function testStringSanitization(): void
 	{
-		$this->assertSame('&lt;script&gt;alert(1)&lt;/script&gt;', $this->sanitizer->string('<script>alert(1)</script>'));
-		$this->assertSame('Hello &quot;World&quot;', $this->sanitizer->string('Hello "World"'));
+		static::assertSame('&lt;script&gt;alert(1)&lt;/script&gt;', $this->sanitizer->string('<script>alert(1)</script>'));
+		static::assertSame('Hello &quot;World&quot;', $this->sanitizer->string('Hello "World"'));
 	}
 
 	#[Group('units')]
 	public function testHtmlSanitization(): void
 	{
-		$this->assertSame('<b>bold</b>', $this->sanitizer->html('<b>bold</b>'));
-		$this->assertSame('alert()', $this->sanitizer->html('<script>alert()</script>'));
+		static::assertSame('<b>bold</b>', $this->sanitizer->html('<b>bold</b>'));
+		static::assertSame('alert()', $this->sanitizer->html('<script>alert()</script>'));
 	}
 
 	#[Group('units')]
 	public function testIntSanitization(): void
 	{
-		$this->assertSame(123, $this->sanitizer->int('123abc'));
-		$this->assertSame(0, $this->sanitizer->int('abc'));
+		static::assertSame(123, $this->sanitizer->int('123abc'));
+		static::assertSame(0, $this->sanitizer->int('abc'));
 	}
 
 	#[Group('units')]
 	public function testFloatSanitization(): void
 	{
-		$this->assertSame(12.34, $this->sanitizer->float('12.34abc'));
-		$this->assertSame(0.0, $this->sanitizer->float('abc'));
+		static::assertSame(12.34, $this->sanitizer->float('12.34abc'));
+		static::assertSame(0.0, $this->sanitizer->float('abc'));
 	}
 
 	#[Group('units')]
 	public function testBoolSanitization(): void
 	{
-		$this->assertTrue($this->sanitizer->bool('1'));
-		$this->assertFalse($this->sanitizer->bool());
-		$this->assertTrue($this->sanitizer->bool('true'));
+		static::assertTrue($this->sanitizer->bool('1'));
+		static::assertFalse($this->sanitizer->bool());
+		static::assertTrue($this->sanitizer->bool('true'));
 	}
 
 	#[Group('units')]
 	public function testStringArraySanitization(): void
 	{
-		$this->assertSame(
+		static::assertSame(
 			['&lt;script&gt;alert(1)&lt;/script&gt;', 'Hello &quot;World&quot;'],
 			$this->sanitizer->stringArray(['<script>alert(1)</script>', 'Hello "World"'])
 		);
 
-		$this->assertSame(
+		static::assertSame(
 			['foo', 'bar', 'baz'],
 			$this->sanitizer->stringArray(['foo', 'bar', 'baz'])
 		);
 
-		$this->assertSame(
+		static::assertSame(
 			['&lt;div&gt;', '&amp;', '&lt;br&gt;'],
 			$this->sanitizer->stringArray(['<div>', '&', '<br>'])
 		);
 
-		$this->assertSame(
+		static::assertSame(
 			[],
 			$this->sanitizer->stringArray()
 		);
@@ -98,13 +98,13 @@ class SanitizerTest extends TestCase
 	#[Group('units')]
 	public function testIntArraySanitization(): void
 	{
-		$this->assertSame(
+		static::assertSame(
 			[123, 456, 789],
 			$this->sanitizer->intArray([123, 456, 789])
 		);
 
 
-		$this->assertSame(
+		static::assertSame(
 			[],
 			$this->sanitizer->intArray()
 		);
@@ -113,13 +113,13 @@ class SanitizerTest extends TestCase
 	#[Group('units')]
 	public function testFloatArraySanitization(): void
 	{
-		$this->assertSame(
+		static::assertSame(
 			[12.34, 56.78, 90.12],
 			$this->sanitizer->floatArray([12.34, 56.78, 90.12])
 		);
 
 
-		$this->assertSame(
+		static::assertSame(
 			[],
 			$this->sanitizer->floatArray()
 		);
@@ -128,22 +128,22 @@ class SanitizerTest extends TestCase
 	#[Group('units')]
 	public function testJsonArraySanitization(): void
 	{
-		$this->assertSame(
+		static::assertSame(
 			['key' => 'value', 'number' => 123, 'bool' => true],
 			$this->sanitizer->jsonArray('{"key": "value", "number": 123, "bool": true}')
 		);
 
-		$this->assertSame(
+		static::assertSame(
 			[['id' => 1], ['id' => 2], ['id' => 3]],
 			$this->sanitizer->jsonArray('[{"id": 1}, {"id": 2}, {"id": 3}]')
 		);
 
-		$this->assertSame([], $this->sanitizer->jsonArray('invalid json'));
+		static::assertSame([], $this->sanitizer->jsonArray('invalid json'));
 
-		$this->assertSame([], $this->sanitizer->jsonArray('null'));
+		static::assertSame([], $this->sanitizer->jsonArray('null'));
 
-		$this->assertSame([], $this->sanitizer->jsonArray('{"incomplete":'));
+		static::assertSame([], $this->sanitizer->jsonArray('{"incomplete":'));
 
-		$this->assertSame([], $this->sanitizer->jsonArray(''));
+		static::assertSame([], $this->sanitizer->jsonArray(''));
 	}
 }

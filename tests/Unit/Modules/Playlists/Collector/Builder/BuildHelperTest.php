@@ -68,7 +68,7 @@ class BuildHelperTest extends TestCase
 
 		$result = $this->buildHelper->collectItems($playlistId);
 
-		$this->assertSame($playlistContent, $result);
+		static::assertSame($playlistContent, $result);
 	}
 
 	#[Group('units')]
@@ -91,7 +91,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectItems($playlistId);
 
 		$expected = "Content before placeholder \n$subPlaylistContent\n content after.";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 
@@ -122,7 +122,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectItems($playlistId);
 
 		$expected = "Playlist content \nSubPlaylist 2 content \nFinal resolved content.\n.\n.";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	
@@ -150,7 +150,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectItems($playlistId);
 
 		$expected = "Some content $externalContent more content.";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -162,11 +162,11 @@ class BuildHelperTest extends TestCase
 			->willThrowException(new RuntimeException("Error during collection."));
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with($this->stringContains("Error recurse items"));
+			->with(static::stringContains("Error recurse items"));
 
 		$result = $this->buildHelper->collectItems($playlistId);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	#[Group('units')]
@@ -184,7 +184,7 @@ class BuildHelperTest extends TestCase
 
 		$result = $this->buildHelper->collectPrefetches($playlistId);
 
-		$this->assertSame($prefetchContent, $result);
+		static::assertSame($prefetchContent, $result);
 	}
 
 
@@ -207,7 +207,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectPrefetches($playlistId);
 
 		$expected = "Prefetch content $subPrefetchContent.";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -221,12 +221,12 @@ class BuildHelperTest extends TestCase
 		$this->loggerMock->expects($this->once())
 			->method('error')
 			->with(
-				$this->stringContains("Error recurse prefetches")
+				static::stringContains("Error recurse prefetches")
 			);
 
 		$result = $this->buildHelper->collectPrefetches($playlistId);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	#[Group('units')]
@@ -244,7 +244,7 @@ class BuildHelperTest extends TestCase
 
 		$result = $this->buildHelper->collectExclusives($playlistId);
 
-		$this->assertSame($exclusiveContent, $result);
+		static::assertSame($exclusiveContent, $result);
 	}
 
 	#[Group('units')]
@@ -270,7 +270,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectExclusives($playlistId);
 
 		$expected = "Exclusive content with $subPlaylistContent.";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -299,7 +299,7 @@ class BuildHelperTest extends TestCase
 		$result = $this->buildHelper->collectExclusives($playlistId);
 
 		$expected = "Exclusive content SubContent 2 Resolved content...";
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -315,12 +315,12 @@ class BuildHelperTest extends TestCase
 			->expects($this->once())
 			->method('error')
 			->with(
-				$this->stringContains("Error recurse exclusive")
+				static::stringContains("Error recurse exclusive")
 			);
 
 		$result = $this->buildHelper->collectExclusives($playlistId);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 }

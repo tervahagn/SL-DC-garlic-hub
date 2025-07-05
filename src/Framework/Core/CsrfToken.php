@@ -25,8 +25,8 @@ use Exception;
 
 class CsrfToken
 {
-	const string CSRF_TOKEN_SESSION_KEY = 'csrf_token';
-	const int CSRF_TOKEN_LENGTH = 32;
+	public const string CSRF_TOKEN_SESSION_KEY = 'csrf_token';
+	public const int CSRF_TOKEN_LENGTH = 32;
 	private readonly Session $session;
 	private readonly Crypt $crypt;
 	private string $token = '';

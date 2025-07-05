@@ -88,8 +88,8 @@ class PlayerDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -124,8 +124,8 @@ class PlayerDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 }

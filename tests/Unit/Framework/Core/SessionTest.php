@@ -46,7 +46,7 @@ class SessionTest extends TestCase
 	public function testStart(): void
 	{
 		$this->session->start();
-		$this->assertEquals(PHP_SESSION_ACTIVE, session_status());
+		static::assertEquals(PHP_SESSION_ACTIVE, session_status());
 	}
 
 	/**
@@ -60,7 +60,7 @@ class SessionTest extends TestCase
 		$this->session->regenerateID();
 		$newId = session_id();
 
-		$this->assertNotEquals($oldId, $newId);
+		static::assertNotEquals($oldId, $newId);
 	}
 
 	#[Group('units')]
@@ -140,19 +140,19 @@ class SessionTest extends TestCase
 	public function testGet(): void
 	{
 		$_SESSION['test_key'] = 'test_value';
-		$this->assertEquals('test_value', $this->session->get('test_key'));
-		$this->assertNull($this->session->get('non_existent_key'));
+		static::assertEquals('test_value', $this->session->get('test_key'));
+		static::assertNull($this->session->get('non_existent_key'));
 	}
 
 	#[Group('units')]
 	public function testSet(): void
 	{
 		$this->session->set('test_key', 'test_value');
-		$this->assertEquals('test_value', $_SESSION['test_key']);
+		static::assertEquals('test_value', $_SESSION['test_key']);
 
 		$testArray = ['a' => 1, 'b' => 2];
 		$this->session->set('test_array', $testArray);
-		$this->assertEquals($testArray, $_SESSION['test_array']);
+		static::assertEquals($testArray, $_SESSION['test_array']);
 	}
 
 	#[Group('units')]
@@ -160,7 +160,7 @@ class SessionTest extends TestCase
 	{
 		$_SESSION['test_key'] = 'test_value';
 		$this->session->delete('test_key');
-		$this->assertArrayNotHasKey('test_key', $_SESSION);
+		static::assertArrayNotHasKey('test_key', $_SESSION);
 
 		$this->session->delete('non_existent_key'); // Should not cause an error
 	}
@@ -171,15 +171,15 @@ class SessionTest extends TestCase
 		$_SESSION['test_key'] = 'test_value';
 		$_SESSION['another_key'] = 'another_value';
 		$this->session->clear();
-		$this->assertEmpty($this->session->getSession());
+		static::assertEmpty($this->session->getSession());
 	}
 
 	#[Group('units')]
 	public function testExists(): void
 	{
 		$_SESSION['test_key'] = 'test_value';
-		$this->assertTrue($this->session->exists('test_key'));
-		$this->assertFalse($this->session->exists('non_existent_key'));
+		static::assertTrue($this->session->exists('test_key'));
+		static::assertFalse($this->session->exists('non_existent_key'));
 	}
 
 	#[Group('units')]
@@ -187,17 +187,17 @@ class SessionTest extends TestCase
 	{
 		$this->session->start();
 		$id = Session::id();
-		$this->assertNotEmpty($id);
+		static::assertNotEmpty($id);
 
 		$newId = Session::id(true); //regenerate
-		$this->assertNotEmpty($newId);
-		$this->assertNotEquals($id, $newId);
+		static::assertNotEmpty($newId);
+		static::assertNotEquals($id, $newId);
 	}
 
 	#[Group('units')]
 	public function testIdNotStarted(): void
 	{
 		$id = Session::id();
-		$this->assertEmpty($id); // Should be empty if the session hasn't started
+		static::assertEmpty($id); // Should be empty if the session hasn't started
 	}
 }

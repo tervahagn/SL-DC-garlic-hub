@@ -41,7 +41,7 @@ class ConditionalTest extends TestCase
 		$this->conditionalMock = new Conditional([]);
 		$result = $this->conditionalMock->determineExprAttribute();
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	#[Group('units')]
@@ -59,7 +59,7 @@ class ConditionalTest extends TestCase
 		$result = $this->conditionalMock->determineExprAttribute();
 
 		$expected = 'expr="adapi-compare(substring-before(adapi-date(), \'T\'), \'2023-11-01\')&gt;=0 and adapi-compare(substring-before(adapi-date(), \'T\'), \'2023-12-31\')&lt;=0" ';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -77,7 +77,7 @@ class ConditionalTest extends TestCase
 		$result = $this->conditionalMock->determineExprAttribute();
 
 		$expected = 'expr="adapi-compare(substring-before(adapi-date(), \'T\'), \'2023-11-01\')&gt;=0 and adapi-compare(substring-before(adapi-date(), \'T\'), \'2023-12-31\')&lt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'04:00:00\')&gt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'12:00:00\')&lt;=0" ';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 
@@ -96,7 +96,7 @@ class ConditionalTest extends TestCase
 		$result = $this->conditionalMock->determineExprAttribute();
 
 		$expected = 'expr="adapi-compare(substring-after(adapi-date(), \'T\'), \'08:00:00\')&gt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'18:00:00\')&lt;=0" ';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -119,7 +119,7 @@ class ConditionalTest extends TestCase
 		$expectedWeektimes = '((0=adapi-weekday() and adapi-compare(substring-after(adapi-date(), \'T\'), \'08:00:00\')&gt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'12:00:00\')&lt;=0) or (1=adapi-weekday() and adapi-compare(substring-after(adapi-date(), \'T\'), \'16:00:00\')&gt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'20:00:00\')&lt;=0))';
 		$expected = 'expr="' . $expectedWeektimes . '" ';
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -141,6 +141,6 @@ class ConditionalTest extends TestCase
 		$expectedWeektimes = 'adapi-compare(substring-before(adapi-date(), \'T\'), \'2024-02-01\')&gt;=0 and adapi-compare(substring-before(adapi-date(), \'T\'), \'2024-05-31\')&lt;=0 and ((0=adapi-weekday() and adapi-compare(substring-after(adapi-date(), \'T\'), \'00:00:00\')&gt;=0 and adapi-compare(substring-after(adapi-date(), \'T\'), \'23:59:59\')&lt;=0))';
 		$expected = 'expr="' . $expectedWeektimes . '" ';
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

@@ -39,7 +39,7 @@ class ClientEntityTest extends TestCase
 
 		$clientEntity = new ClientEntity($client);
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(ClientEntityInterface::class, $clientEntity);
+		static::assertInstanceOf(ClientEntityInterface::class, $clientEntity);
 	}
 
 	#[Group('units')]
@@ -53,10 +53,10 @@ class ClientEntityTest extends TestCase
 
 		$clientEntity = new ClientEntity($client);
 
-		$this->assertSame('test-client-id', $clientEntity->getIdentifier());
-		$this->assertSame('https://example.com/callback', $clientEntity->getRedirectUri());
-		$this->assertSame('Test Client', $clientEntity->getName());
-		$this->assertTrue($clientEntity->isConfidential());
+		static::assertSame('test-client-id', $clientEntity->getIdentifier());
+		static::assertSame('https://example.com/callback', $clientEntity->getRedirectUri());
+		static::assertSame('Test Client', $clientEntity->getName());
+		static::assertTrue($clientEntity->isConfidential());
 	}
 
 	#[Group('units')]
@@ -69,6 +69,6 @@ class ClientEntityTest extends TestCase
 		];
 
 		$clientEntity = new ClientEntity($client);
-		$this->assertTrue($clientEntity->isConfidential());
+		static::assertTrue($clientEntity->isConfidential());
 	}
 }

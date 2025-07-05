@@ -56,9 +56,9 @@ class FileUtilsTest extends TestCase
 	#[Group('units')]
 	public function testGetFileMethods(): void
 	{
-		$this->assertSame(filemtime($this->filePath), $this->fileUtils->getFileMTime($this->filePath));
-		$this->assertSame(4, $this->fileUtils->getFileSize($this->filePath));
-		$this->assertSame('2f249230a8e7c2bf6005ccd2679259ec', $this->fileUtils->getETag($this->filePath));
+		static::assertSame(filemtime($this->filePath), $this->fileUtils->getFileMTime($this->filePath));
+		static::assertSame(4, $this->fileUtils->getFileSize($this->filePath));
+		static::assertSame('2f249230a8e7c2bf6005ccd2679259ec', $this->fileUtils->getETag($this->filePath));
 
 		$this->fileUtils->createStream($this->filePath);
 	}

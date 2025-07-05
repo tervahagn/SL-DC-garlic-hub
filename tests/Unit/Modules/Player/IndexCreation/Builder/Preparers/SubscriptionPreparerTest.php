@@ -55,8 +55,8 @@ class SubscriptionPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertCount(1, $result);
-		$this->assertEquals('TaskSchedule', $result[0]['SUBSCRIPTION_TYPE']);
+		static::assertCount(1, $result);
+		static::assertEquals('TaskSchedule', $result[0]['SUBSCRIPTION_TYPE']);
 	}
 
 	#[Group('units')]
@@ -83,12 +83,12 @@ class SubscriptionPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertCount(5, $result);
-		$this->assertEquals('InventoryReport', $result[0]['SUBSCRIPTION_TYPE']);
-		$this->assertEquals('PlaylogCollection', $result[1]['SUBSCRIPTION_TYPE']);
-		$this->assertEquals('EventlogCollection', $result[2]['SUBSCRIPTION_TYPE']);
-		$this->assertEquals('SystemReport', $result[3]['SUBSCRIPTION_TYPE']);
-		$this->assertEquals('TaskExecutionReport', $result[4]['SUBSCRIPTION_TYPE']);
+		static::assertCount(5, $result);
+		static::assertEquals('InventoryReport', $result[0]['SUBSCRIPTION_TYPE']);
+		static::assertEquals('PlaylogCollection', $result[1]['SUBSCRIPTION_TYPE']);
+		static::assertEquals('EventlogCollection', $result[2]['SUBSCRIPTION_TYPE']);
+		static::assertEquals('SystemReport', $result[3]['SUBSCRIPTION_TYPE']);
+		static::assertEquals('TaskExecutionReport', $result[4]['SUBSCRIPTION_TYPE']);
 	}
 
 	#[Group('units')]
@@ -103,6 +103,6 @@ class SubscriptionPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 }

@@ -104,7 +104,7 @@ class BaseTest extends TestCase
 		$this->endMock->method('determineTrigger')->willReturn('trigger_end');
 
 		$result = $this->concreteBase->testTrigger();
-		$this->assertSame('begin="trigger_begin" end="trigger_end" ', $result);
+		static::assertSame('begin="trigger_begin" end="trigger_end" ', $result);
 	}
 
 	#[Group('units')]
@@ -115,7 +115,7 @@ class BaseTest extends TestCase
 		$this->endMock->method('hasTriggers')->willReturn(false);
 
 		$result = $this->concreteBase->testTrigger();
-		$this->assertSame('begin="trigger_begin" ', $result);
+		static::assertSame('begin="trigger_begin" ', $result);
 	}
 
 	#[Group('units')]
@@ -126,7 +126,7 @@ class BaseTest extends TestCase
 		$this->endMock->method('determineTrigger')->willReturn('trigger_end');
 
 		$result = $this->concreteBase->testTrigger();
-		$this->assertSame('end="trigger_end" ', $result);
+		static::assertSame('end="trigger_end" ', $result);
 	}
 
 	#[Group('units')]
@@ -135,14 +135,14 @@ class BaseTest extends TestCase
 		$this->conditionalMock->method('determineExprAttribute')->willReturn('expr="" ');
 
 		$result = $this->concreteBase->testCollectAttributes();
-		$this->assertSame('xml:id="1" expr="" title="Example Title" ', $result);
+		static::assertSame('xml:id="1" expr="" title="Example Title" ', $result);
 	}
 
 	#[Group('units')]
 	public function testInsertXmlIdForNonMasterPlaylist(): void
 	{
 		$result = $this->concreteBase->testInsertXmlId();
-		$this->assertSame('xml:id="1" ', $result);
+		static::assertSame('xml:id="1" ', $result);
 	}
 
 	#[Group('units')]
@@ -150,7 +150,7 @@ class BaseTest extends TestCase
 	{
 		$this->concreteBase->setIsMasterPlaylist(true);
 		$result = $this->concreteBase->testInsertXmlId();
-		$this->assertSame('xml:id="m1" ', $result);
+		static::assertSame('xml:id="m1" ', $result);
 	}
 
 	#[Group('units')]
@@ -162,9 +162,9 @@ class BaseTest extends TestCase
 
 		$result = $this->concreteBase->getExclusive();
 
-		$this->assertStringContainsString('<priorityClass>', $result);
-		$this->assertStringContainsString('smilElementTag', $result);
-		$this->assertStringContainsString('</priorityClass>', $result);
+		static::assertStringContainsString('<priorityClass>', $result);
+		static::assertStringContainsString('smilElementTag', $result);
+		static::assertStringContainsString('</priorityClass>', $result);
 	}
 
 	#[Group('units')]
@@ -174,14 +174,14 @@ class BaseTest extends TestCase
 
 		$result = $this->concreteBase->getExclusive();
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	#[Group('units')]
 	public function testEncodeItemNameForTitleTag(): void
 	{
 		$result = $this->concreteBase->testEncodeTitle();
-		$this->assertStringContainsString('title="Example Title" ', $result);
+		static::assertStringContainsString('title="Example Title" ', $result);
 	}
 
 	#[Group('units')]
@@ -191,7 +191,7 @@ class BaseTest extends TestCase
 		$this->concreteBase = new ConcreteBase($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
 
 		$result = $this->concreteBase->testEncodeTitle();
-		$this->assertStringContainsString('title="Special &lt;Title&gt; &amp; $^" ', $result);
+		static::assertStringContainsString('title="Special &lt;Title&gt; &amp; $^" ', $result);
 	}
 
 	#[Group('units')]
@@ -201,14 +201,14 @@ class BaseTest extends TestCase
 		$this->concreteBase = new ConcreteBase($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
 
 		$result = $this->concreteBase->testEncodeTitle();
-		$this->assertStringContainsString('title="Title &amp; Subtitle" ', $result);
+		static::assertStringContainsString('title="Title &amp; Subtitle" ', $result);
 	}
 
 	#[Group('units')]
 	public function testDetermineDuration(): void
 	{
 		$result = $this->concreteBase->testDetermineDuration();
-		$this->assertStringContainsString('dur="1000s"', $result);
+		static::assertStringContainsString('dur="1000s"', $result);
 	}
 
 	#[Group('units')]
@@ -218,6 +218,6 @@ class BaseTest extends TestCase
 		$this->concreteBase = new ConcreteBase($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
 
 		$result = $this->concreteBase->testDetermineDuration();
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 }

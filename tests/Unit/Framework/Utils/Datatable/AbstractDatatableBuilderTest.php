@@ -88,8 +88,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createPagination($resultCount);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('pager', $datatableStructure);
-		$this->assertEquals($paginationLinks, $datatableStructure['pager']);
+		static::assertArrayHasKey('pager', $datatableStructure);
+		static::assertEquals($paginationLinks, $datatableStructure['pager']);
 	}
 
 	#[Group('units')]
@@ -117,8 +117,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createPagination($resultCount, false, false);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('pager', $datatableStructure);
-		$this->assertEquals($paginationLinks, $datatableStructure['pager']);
+		static::assertArrayHasKey('pager', $datatableStructure);
+		static::assertEquals($paginationLinks, $datatableStructure['pager']);
 	}
 
 	#[Group('units')]
@@ -146,8 +146,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createPagination($resultCount);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('pager', $datatableStructure);
-		$this->assertEquals($paginationLinks, $datatableStructure['pager']);
+		static::assertArrayHasKey('pager', $datatableStructure);
+		static::assertEquals($paginationLinks, $datatableStructure['pager']);
 	}
 
 	#[Group('units')]
@@ -168,8 +168,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createDropDown($min, $max, $steps);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('dropdown', $datatableStructure);
-		$this->assertEquals($dropdownOptions, $datatableStructure['dropdown']);
+		static::assertArrayHasKey('dropdown', $datatableStructure);
+		static::assertEquals($dropdownOptions, $datatableStructure['dropdown']);
 	}
 
 	#[Group('units')]
@@ -190,8 +190,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createDropDown($min, $max, $steps);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('dropdown', $datatableStructure);
-		$this->assertEquals($dropdownOptions, $datatableStructure['dropdown']);
+		static::assertArrayHasKey('dropdown', $datatableStructure);
+		static::assertEquals($dropdownOptions, $datatableStructure['dropdown']);
 	}
 
 	#[Group('units')]
@@ -212,8 +212,8 @@ class AbstractDatatableBuilderTest extends TestCase
 		$this->datatableBuilder->createDropDown($min, $max, $steps);
 
 		$datatableStructure = $this->datatableBuilder->getDatatableStructure();
-		$this->assertArrayHasKey('dropdown', $datatableStructure);
-		$this->assertEquals($dropdownOptions, $datatableStructure['dropdown']);
+		static::assertArrayHasKey('dropdown', $datatableStructure);
+		static::assertEquals($dropdownOptions, $datatableStructure['dropdown']);
 	}
 
 }

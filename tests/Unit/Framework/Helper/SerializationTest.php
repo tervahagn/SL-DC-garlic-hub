@@ -32,14 +32,14 @@ class SerializationTest extends TestCase
     {
         $expected = ['a', 'b', 'c', 'd'];
         $result   = Serialization::unserializeSecure(serialize($expected));
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     #[Group('units')]
     public function testUnSerializeSecureFails(): void
     {
         $result   = Serialization::unserializeSecure('');
-        $this->assertEquals([], $result);
+        static::assertEquals([], $result);
     }
 
 }

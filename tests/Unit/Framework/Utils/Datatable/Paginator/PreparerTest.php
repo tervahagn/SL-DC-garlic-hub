@@ -97,7 +97,7 @@ class PreparerTest extends TestCase
 
 		$result = $this->preparer->prepareLinks($pageLinks);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -157,6 +157,6 @@ class PreparerTest extends TestCase
 		$result = $this->preparer->prepareDropdown($settings);
 
 		// Assert
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 }

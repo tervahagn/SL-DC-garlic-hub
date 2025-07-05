@@ -129,6 +129,6 @@ class IndexCreatorTest extends TestCase
 
 		$this->indexCreator->createForReleasedPlayer($playerEntityMock, $configMock);
 
-		$this->assertSame($filepath, $this->indexCreator->getIndexFilePath());
+		static::assertSame($filepath, $this->indexCreator->getIndexFilePath());
 	}
 }

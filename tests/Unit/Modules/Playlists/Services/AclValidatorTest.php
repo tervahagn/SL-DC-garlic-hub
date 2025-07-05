@@ -62,7 +62,7 @@ class AclValidatorTest extends TestCase
 		$this->aclHelperMock->expects($this->never())->method('isModuleAdmin');
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -82,7 +82,7 @@ class AclValidatorTest extends TestCase
 			->willReturn(true);
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -104,7 +104,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -129,7 +129,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -178,7 +178,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -203,6 +203,6 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlaylistEditable($UID, $playlist);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 }

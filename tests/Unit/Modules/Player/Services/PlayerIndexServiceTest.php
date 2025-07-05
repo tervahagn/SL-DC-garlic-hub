@@ -85,7 +85,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, true);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -113,7 +113,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -142,7 +142,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -170,7 +170,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -198,7 +198,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -226,7 +226,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -254,7 +254,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -282,7 +282,7 @@ class PlayerIndexServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->handleIndexRequest($userAgent, false);
 
-		$this->assertSame($filePath, $result);
+		static::assertSame($filePath, $result);
 	}
 
 	#[Group('units')]
@@ -307,7 +307,7 @@ class PlayerIndexServiceTest extends TestCase
 			->with('Error fetch Index: Unknown player status: 14');
 
 		$this->service->setUID(1);
-		$this->assertEmpty($this->service->handleIndexRequest($userAgent, false));
+		static::assertEmpty($this->service->handleIndexRequest($userAgent, false));
 	}
 
 	#[Group('units')]
@@ -344,7 +344,7 @@ class PlayerIndexServiceTest extends TestCase
 
 		$result = $this->service->handleIndexRequest($userAgent, true);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 

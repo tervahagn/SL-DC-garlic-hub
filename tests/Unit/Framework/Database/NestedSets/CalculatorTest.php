@@ -44,9 +44,9 @@ class CalculatorTest extends TestCase
 	{
 		$node = ['lft' => 5, 'rgt' => 10];
 
-		$this->assertSame(5, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_BEFORE, $node));
-		$this->assertSame(10, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_APPENDCHILD, $node));
-		$this->assertSame(11, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_AFTER, $node));
+		static::assertSame(5, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_BEFORE, $node));
+		static::assertSame(10, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_APPENDCHILD, $node));
+		static::assertSame(11, $this->calculator->determineLgtPositionByRegion(Calculator::REGION_AFTER, $node));
 	}
 
 	/**
@@ -71,7 +71,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = $targetLevel - $movedLevel;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -83,7 +83,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = 0;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -95,7 +95,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = $targetLevel - $movedLevel;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -107,7 +107,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = ($targetLevel - $movedLevel) + 1;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -119,7 +119,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = $targetLevel - $movedLevel;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -131,7 +131,7 @@ class CalculatorTest extends TestCase
 
 		$expectedDiffLevel = ($targetLevel - $movedLevel) + 1;
 
-		$this->assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
+		static::assertSame($expectedDiffLevel, $this->calculator->calculateDiffLevelByRegion($region, $movedLevel, $targetLevel));
 	}
 
 	#[Group('units')]
@@ -140,7 +140,7 @@ class CalculatorTest extends TestCase
 		$node = ['node_id' => 10, 'parent_id' => 5];
 		$region = Calculator::REGION_APPENDCHILD;
 
-		$this->assertSame(10, $this->calculator->determineParentIdByRegion($region, $node));
+		static::assertSame(10, $this->calculator->determineParentIdByRegion($region, $node));
 	}
 
 	#[Group('units')]
@@ -149,7 +149,7 @@ class CalculatorTest extends TestCase
 		$node = ['node_id' => 10, 'parent_id' => 5];
 		$region = Calculator::REGION_BEFORE;
 
-		$this->assertSame(5, $this->calculator->determineParentIdByRegion($region, $node));
+		static::assertSame(5, $this->calculator->determineParentIdByRegion($region, $node));
 	}
 
 	#[Group('units')]
@@ -162,7 +162,7 @@ class CalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
 
-		$this->assertSame(['distance' => 7, 'tmpPos' => 3, 'width' => 4], $result);
+		static::assertSame(['distance' => 7, 'tmpPos' => 3, 'width' => 4], $result);
 	}
 
 	#[Group('units')]
@@ -175,7 +175,7 @@ class CalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
 
-		$this->assertSame(['distance' => -9, 'tmpPos' => 14, 'width' => 4], $result);
+		static::assertSame(['distance' => -9, 'tmpPos' => 14, 'width' => 4], $result);
 	}
 
 	#[Group('units')]
@@ -188,7 +188,7 @@ class CalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
 
-		$this->assertSame(['distance' => -4, 'tmpPos' => 8, 'width' => 5], $result);
+		static::assertSame(['distance' => -4, 'tmpPos' => 8, 'width' => 5], $result);
 	}
 
 	#[Group('units')]
@@ -201,6 +201,6 @@ class CalculatorTest extends TestCase
 
 		$result = $this->calculator->calculateBeforeMoveSubTree($movedNode, $targetNode, $newLgtPos, $width);
 
-		$this->assertSame(['distance' => 0, 'tmpPos' => 3, 'width' => 2], $result);
+		static::assertSame(['distance' => 0, 'tmpPos' => 3, 'width' => 2], $result);
 	}
 }

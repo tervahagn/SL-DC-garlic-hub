@@ -58,7 +58,7 @@ class PlayerIndexRepositoryTest extends TestCase
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		$this->assertSame('player', $this->repository->getTable());
+		static::assertSame('player', $this->repository->getTable());
 	}
 
 	/**
@@ -95,7 +95,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			->willReturn(1);
 
 		$result = $this->repository->insertPlayer($saveData);
-		$this->assertSame(1, $result);
+		static::assertSame(1, $result);
 	}
 
 
@@ -111,7 +111,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			->willReturn(false);
 
 		$result = $this->repository->findPlayerById(123);
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			->willReturn($rawData);
 
 		$result = $this->repository->findPlayerById(123);
-		$this->assertSame($expandedData, $result);
+		static::assertSame($expandedData, $result);
 	}
 
 	/**
@@ -181,7 +181,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->resultMock->method('fetchAssociative')->willReturn(false);
 
 		$result = $this->repository->findPlayerByUuid('test-uuid');
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 	}
 
 	/**
@@ -219,7 +219,7 @@ class PlayerIndexRepositoryTest extends TestCase
 		$this->resultMock->method('fetchAssociative')->willReturn($rawData);
 
 		$result = $this->repository->findPlayerByUuid('test-uuid');
-		$this->assertSame($expectedData, $result);
+		static::assertSame($expectedData, $result);
 	}
 
 	private function mockQueryBuilder(): void

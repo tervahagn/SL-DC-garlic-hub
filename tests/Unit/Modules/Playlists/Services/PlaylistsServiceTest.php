@@ -73,7 +73,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->createNew($postData);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->createNew($postData);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->toggleShuffle($playlistId);
 
-		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+		static::assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
 	/**
@@ -185,7 +185,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->toggleShuffle($playlistId);
 
-		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+		static::assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
 	/**
@@ -249,7 +249,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->shufflePicking($playlistId, $shufflePicking);
 
-		$this->assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
+		static::assertEquals(['affected' => 1, 'playlist_metrics' => ['metric' => 'value']], $result);
 	}
 
 	/**
@@ -396,7 +396,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->delete($playlistId);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -476,7 +476,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
-		$this->assertEquals(['zone1', 'zone2'], $result);
+		static::assertEquals(['zone1', 'zone2'], $result);
 	}
 
 	#[Group('units')]
@@ -495,7 +495,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -519,7 +519,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -538,7 +538,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -558,7 +558,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
-		$this->assertEmpty($result);
+		static::assertEmpty($result);
 
 	}
 
@@ -579,7 +579,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadNameById($playlistId);
 
-		$this->assertEquals(['playlist_id' => $playlistId, 'name' => 'Test Playlist'], $result);
+		static::assertEquals(['playlist_id' => $playlistId, 'name' => 'Test Playlist'], $result);
 	}
 
 	#[Group('units')]
@@ -597,7 +597,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadNameById($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -615,7 +615,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadNameById($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -644,7 +644,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->saveZones($playlistId, $zones);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	#[Group('units')]
@@ -667,7 +667,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->saveZones($playlistId, $zones);
 
-		$this->assertEquals(0, $result);
+		static::assertEquals(0, $result);
 	}
 
 	#[Group('units')]
@@ -695,7 +695,7 @@ class PlaylistsServiceTest extends TestCase
 		$this->service->setUID(1);
 		$result = $this->service->saveZones($playlistId, $zones);
 
-		$this->assertEquals(0, $result);
+		static::assertEquals(0, $result);
 	}
 
 	#[Group('units')]
@@ -727,7 +727,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->saveZones($playlistId, $zones);
 
-		$this->assertEquals(0, $result);
+		static::assertEquals(0, $result);
 	}
 
 	#[Group('units')]
@@ -749,7 +749,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
-		$this->assertEquals($playlist, $result);
+		static::assertEquals($playlist, $result);
 	}
 
 	#[Group('units')]
@@ -769,7 +769,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -795,7 +795,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 
 	#[Group('units')]
@@ -815,6 +815,6 @@ class PlaylistsServiceTest extends TestCase
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
-		$this->assertEquals([], $result);
+		static::assertEquals([], $result);
 	}
 }

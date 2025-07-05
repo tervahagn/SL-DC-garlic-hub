@@ -73,7 +73,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::UNKNOWN);
 
 		$result = $this->assembler->parseUserAgent($userAgent);
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	#[Group('units')]
@@ -87,7 +87,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::IADEA_XMP1X0);
 
 		$result = $this->assembler->parseUserAgent($userAgent);
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**

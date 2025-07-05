@@ -45,9 +45,9 @@ class DashboardsAggregatorTest extends TestCase
 
 		$result = $aggregator->renderDashboardsContents();
 
-		$this->assertCount(1, $result);
-		$this->assertSame('Test Title', $result[0]['LANG_DASHBOARD_TITLE']);
-		$this->assertSame('Test Content', $result[0]['DASHBOARD_CONTENT']);
+		static::assertCount(1, $result);
+		static::assertSame('Test Title', $result[0]['LANG_DASHBOARD_TITLE']);
+		static::assertSame('Test Content', $result[0]['DASHBOARD_CONTENT']);
 	}
 
 }

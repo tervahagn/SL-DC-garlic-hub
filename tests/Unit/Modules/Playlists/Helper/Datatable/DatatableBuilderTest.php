@@ -173,7 +173,7 @@ class DatatableBuilderTest extends TestCase
 
 		$this->builder->buildTitle();
 
-		$this->assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
+		static::assertSame($expectedTitle, $this->builder->getDatatableStructure()['title']);
 	}
 
 	/**
@@ -228,13 +228,13 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_NAME, $form);
-		$this->assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_MODE, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_NAME, $form);
+		static::assertArrayHasKey(BaseParameters::PARAMETER_UID, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_MODE, $form);
 
-		$this->assertEquals($playlistNameFieldMock, $form[Parameters::PARAMETER_PLAYLIST_NAME]);
-		$this->assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
-		$this->assertEquals($playlistModeFieldMock, $form[Parameters::PARAMETER_PLAYLIST_MODE]);
+		static::assertEquals($playlistNameFieldMock, $form[Parameters::PARAMETER_PLAYLIST_NAME]);
+		static::assertEquals($ownerFieldMock, $form[BaseParameters::PARAMETER_UID]);
+		static::assertEquals($playlistModeFieldMock, $form[Parameters::PARAMETER_PLAYLIST_MODE]);
 	}
 
 	/**
@@ -285,11 +285,11 @@ class DatatableBuilderTest extends TestCase
 
 		$form = $this->builder->getDatatableStructure()['form'];
 
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_NAME, $form);
-		$this->assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_MODE, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_NAME, $form);
+		static::assertArrayHasKey(Parameters::PARAMETER_PLAYLIST_MODE, $form);
 
-		$this->assertEquals($playlistNameFieldMock, $form[Parameters::PARAMETER_PLAYLIST_NAME]);
-		$this->assertEquals($playlistModeFieldMock, $form[Parameters::PARAMETER_PLAYLIST_MODE]);
+		static::assertEquals($playlistNameFieldMock, $form[Parameters::PARAMETER_PLAYLIST_NAME]);
+		static::assertEquals($playlistModeFieldMock, $form[Parameters::PARAMETER_PLAYLIST_MODE]);
 	}
 
 	/**
@@ -338,7 +338,7 @@ class DatatableBuilderTest extends TestCase
 			->willReturn([PlaylistMode::MASTER->value => 'Master', PlaylistMode::CHANNEL->value => 'Channel', PlaylistMode::EXTERNAL->value => 'External']);
 
 		$result = $this->builder->determineAllowedPlaylistModes();
-		$this->assertSame([PlaylistMode::MASTER->value => 'Master'], $result);
+		static::assertSame([PlaylistMode::MASTER->value => 'Master'], $result);
 
 	}
 

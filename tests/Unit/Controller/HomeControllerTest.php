@@ -68,7 +68,7 @@ class HomeControllerTest extends TestCase
 		$controller = new HomeController($this->dashboardsAggregatorMock);
 		$result = $controller->index($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class HomeControllerTest extends TestCase
 		$controller = new HomeController($this->dashboardsAggregatorMock);
 		$result = $controller->legals($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 }

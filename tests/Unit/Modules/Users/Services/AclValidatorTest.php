@@ -48,6 +48,6 @@ class AclValidatorTest extends TestCase
 	#[Group('units')]
 	public function testcheckModuleName(): void
 	{
-		$this->assertSame('users', $this->aclValidator->getModuleName());
+		static::assertSame('users', $this->aclValidator->getModuleName());
 	}
 }

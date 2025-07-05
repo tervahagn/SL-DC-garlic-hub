@@ -57,7 +57,7 @@ class TranslatorManagerTest extends TestCase
 
 		$result = $this->translatorManager->translate($headerField);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class TranslatorManagerTest extends TestCase
 
 		$result = $this->translatorManager->translate($headerField);
 
-		$this->assertSame('translated_value', $result);
+		static::assertSame('translated_value', $result);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class TranslatorManagerTest extends TestCase
 
 		$result = $this->translatorManager->translate($headerField);
 
-		$this->assertSame('translated_value', $result);
+		static::assertSame('translated_value', $result);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class TranslatorManagerTest extends TestCase
 
 		$result = $this->translatorManager->translate($headerField);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	/**
@@ -142,6 +142,6 @@ class TranslatorManagerTest extends TestCase
 
 		$result = $this->translatorManager->translate($headerField);
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 }

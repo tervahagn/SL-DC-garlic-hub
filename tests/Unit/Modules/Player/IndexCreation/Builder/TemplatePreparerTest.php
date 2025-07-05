@@ -93,7 +93,7 @@ class TemplatePreparerTest extends TestCase
 		$this->templatePreparer->prepare(TemplateIndexFiles::GARLIC);
 
 		$templateData = $this->templatePreparer->getTemplateData();
-		$this->assertEquals([
+		static::assertEquals([
 			'meta' => ['meta'],
 			'subscriptions' => ['subscriptions'],
 			'layout' => ['layout'],
@@ -135,7 +135,7 @@ class TemplatePreparerTest extends TestCase
 		$this->templatePreparer->prepare(TemplateIndexFiles::XMP2XXX);
 
 		$templateData = $this->templatePreparer->getTemplateData();
-		$this->assertEquals([
+		static::assertEquals([
 			'meta' => ['meta'],
 			'subscriptions' => ['subscriptions'],
 			'layout' => ['layout'],
@@ -171,7 +171,7 @@ class TemplatePreparerTest extends TestCase
 		$this->templatePreparer->prepare(TemplateIndexFiles::SIMPLE);
 
 		$templateData = $this->templatePreparer->getTemplateData();
-		$this->assertEquals([
+		static::assertEquals([
 			'meta' => ['meta'],
 			'layout' => ['layout'],
 			'playlist' => ['playlist'],

@@ -87,7 +87,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findAllRootNodes();
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -110,7 +110,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findTreeByRootId($rootId);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 
@@ -130,7 +130,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findNodeOwner($nodeId);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -151,7 +151,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findAllChildNodesByParentNode($parentNodeId);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -173,7 +173,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findAllChildrenInTreeOfNodeId($nodeId);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -191,7 +191,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findRootIdRgtAndLevelByNodeId($nodeId);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -214,7 +214,7 @@ class ServiceTest extends TestCase
 
 		$result = $this->service->findAllSubNodeIdsByRootIdsAndPosition($rootId, $nodeRgt, $nodeLft);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 
 	/**
@@ -252,8 +252,8 @@ class ServiceTest extends TestCase
 		$this->transactionsMock->expects($this->once())->method('commit');
 
 		$actualNewNodeId = $this->service->addRootNode($uid, $name, true);
-		$this->assertEquals($actualNewNodeId, $actualNewNodeId);
-		$this->assertFalse($this->service->hasErrorMessages());
+		static::assertEquals($actualNewNodeId, $actualNewNodeId);
+		static::assertFalse($this->service->hasErrorMessages());
 	}
 
 	/**
@@ -276,7 +276,7 @@ class ServiceTest extends TestCase
 			->with('Add root node failed because of: Insert new node failed');
 
 		$this->service->addRootNode($uid, $name);
-		$this->assertTrue($this->service->hasErrorMessages());
+		static::assertTrue($this->service->hasErrorMessages());
 	}
 
 	/**
@@ -313,7 +313,7 @@ class ServiceTest extends TestCase
 			->with('Add root node failed because of: Update root node failed');
 
 		$this->service->addRootNode($uid, $name);
-		$this->assertTrue($this->service->hasErrorMessages());
+		static::assertTrue($this->service->hasErrorMessages());
 	}
 
 	/**
@@ -339,7 +339,7 @@ class ServiceTest extends TestCase
 		$this->transactionsMock->expects($this->once())->method('commit');
 
 		$actualNewNodeId = $this->service->addSubNode($uid, $name, $parentNode);
-		$this->assertEquals($expectedNewNodeId, $actualNewNodeId);
+		static::assertEquals($expectedNewNodeId, $actualNewNodeId);
 	}
 
 	/**

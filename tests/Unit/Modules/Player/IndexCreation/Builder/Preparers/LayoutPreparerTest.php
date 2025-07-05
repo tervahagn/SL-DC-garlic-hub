@@ -72,14 +72,14 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
-		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
-		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
-		$this->assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
-		$this->assertArrayHasKey('regions', $result[0]);
-		$this->assertIsArray($result[0]['regions']);
-		$this->assertCount(1, $result[0]['regions']);
-		$this->assertEquals('0%', $result[0]['regions'][0]['REGION_LEFT']);
+		static::assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
+		static::assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
+		static::assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
+		static::assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
+		static::assertArrayHasKey('regions', $result[0]);
+		static::assertIsArray($result[0]['regions']);
+		static::assertCount(1, $result[0]['regions']);
+		static::assertEquals('0%', $result[0]['regions'][0]['REGION_LEFT']);
 	}
 
 	#[Group('units')]
@@ -109,14 +109,14 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
-		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
-		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
-		$this->assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
-		$this->assertArrayHasKey('regions', $result[0]);
-		$this->assertIsArray($result[0]['regions']);
-		$this->assertCount(1, $result[0]['regions']);
-		$this->assertEquals('0', $result[0]['regions'][0]['REGION_LEFT']);
+		static::assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
+		static::assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
+		static::assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
+		static::assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
+		static::assertArrayHasKey('regions', $result[0]);
+		static::assertIsArray($result[0]['regions']);
+		static::assertCount(1, $result[0]['regions']);
+		static::assertEquals('0', $result[0]['regions'][0]['REGION_LEFT']);
 	}
 
 
@@ -132,13 +132,13 @@ class LayoutPreparerTest extends TestCase
 
 		$result = $this->preparer->prepare();
 
-		$this->assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
-		$this->assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
-		$this->assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
-		$this->assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
-		$this->assertArrayHasKey('regions', $result[0]);
-		$this->assertIsArray($result[0]['regions']);
-		$this->assertCount(1, $result[0]['regions']);
-		$this->assertEquals(0, $result[0]['regions'][0]['REGION_LEFT']);
+		static::assertArrayHasKey('ROOT_LAYOUT_WIDTH', $result[0]);
+		static::assertEquals('1920', $result[0]['ROOT_LAYOUT_WIDTH']);
+		static::assertArrayHasKey('ROOT_LAYOUT_HEIGHT', $result[0]);
+		static::assertEquals('1080', $result[0]['ROOT_LAYOUT_HEIGHT']);
+		static::assertArrayHasKey('regions', $result[0]);
+		static::assertIsArray($result[0]['regions']);
+		static::assertCount(1, $result[0]['regions']);
+		static::assertEquals(0, $result[0]['regions'][0]['REGION_LEFT']);
 	}
 }

@@ -80,7 +80,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn($userData);
 
-		$this->assertEquals($userData, $this->userMain->findByIdentifier($identifier));
+		static::assertEquals($userData, $this->userMain->findByIdentifier($identifier));
 	}
 
 	/**
@@ -112,7 +112,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAssociative')
 			->willReturn($userData);
 
-		$this->assertEquals($userData, $this->userMain->findByIdentifier($identifier));
+		static::assertEquals($userData, $this->userMain->findByIdentifier($identifier));
 	}
 
 	/**
@@ -148,7 +148,7 @@ class UserMainRepositoryTest extends TestCase
 
 
 		$result = $this->userMain->findByIdSecured($UID);
-		$this->assertEquals($userData, $result);
+		static::assertEquals($userData, $result);
 	}
 
 	/**
@@ -192,7 +192,7 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
 
 		$result = $this->userMain->findAllFiltered($fields);
-		$this->assertSame($expectedResults, $result);
+		static::assertSame($expectedResults, $result);
 	}
 
 }

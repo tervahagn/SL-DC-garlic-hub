@@ -42,7 +42,7 @@ class BuilderTest extends TestCase
 		$this->builder->buildPagerLinks();
 
 		$pagerLinks = $this->builder->getPagerLinks();
-		$this->assertCount(9, $pagerLinks);
+		static::assertCount(9, $pagerLinks);
 
 	}
 
@@ -54,7 +54,7 @@ class BuilderTest extends TestCase
 
 		$expectedLinks = [['name' => 1, 'page' => 1, 'active' => 1]];
 		$pagerLinks    = $this->builder->getPagerLinks();
-		$this->assertEquals($expectedLinks, $pagerLinks);
+		static::assertEquals($expectedLinks, $pagerLinks);
 	}
 
 	#[Group('units')]
@@ -74,7 +74,7 @@ class BuilderTest extends TestCase
 			['name' => '»', 'page' => 5]
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -95,7 +95,7 @@ class BuilderTest extends TestCase
 			['name' => '»', 'page' => 5]
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -114,7 +114,7 @@ class BuilderTest extends TestCase
 			['name' => '5', 'page' => 5, 'active' => true]
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -128,7 +128,7 @@ class BuilderTest extends TestCase
 			['name' => '1', 'page' => 1, 'active' => true],
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -154,7 +154,7 @@ class BuilderTest extends TestCase
 			['name' => '»', 'page' => 10],
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -177,7 +177,7 @@ class BuilderTest extends TestCase
 			['name' => '»', 'page' => 10],
 		];
 
-		$this->assertSame($expectedLinks, $this->builder->getPagerLinks());
+		static::assertSame($expectedLinks, $this->builder->getPagerLinks());
 	}
 
 	#[Group('units')]
@@ -186,7 +186,7 @@ class BuilderTest extends TestCase
 		$this->builder->createDropDown(10, 1000, 100);
 
 		$expected =  ['min' => 10, 'max' => 1000, 'steps' => 100];
-		$this->assertSame($expected, $this->builder->getDropDownSettings());
+		static::assertSame($expected, $this->builder->getDropDownSettings());
 
 	}
 

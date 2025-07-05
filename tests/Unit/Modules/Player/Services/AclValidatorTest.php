@@ -65,7 +65,7 @@ class AclValidatorTest extends TestCase
 			->willReturn(true);
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -87,7 +87,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -112,7 +112,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -162,7 +162,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class AclValidatorTest extends TestCase
 
 		$result = $this->aclValidator->isPlayerEditable($UID, $player);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 }

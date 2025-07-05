@@ -69,7 +69,7 @@ class PlaylistUsageServiceTest extends TestCase
 
 		$result = $this->service->determinePlaylistsInUse($playlistIds);
 
-		$this->assertSame([
+		static::assertSame([
 			1 => true,
 			2 => true,
 			3 => true
@@ -98,7 +98,7 @@ class PlaylistUsageServiceTest extends TestCase
 
 		$result = $this->service->determinePlaylistsInUse($playlistIds);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 }

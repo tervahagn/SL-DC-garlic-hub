@@ -90,7 +90,7 @@ class RunnerTest extends TestCase
 
 		$this->runner->execute();
 
-		$this->assertTrue($this->runner->isApplied());
+		static::assertTrue($this->runner->isApplied());
 	}
 
 	/**
@@ -107,7 +107,7 @@ class RunnerTest extends TestCase
 
 		$this->runner->execute();
 
-		$this->assertFalse($this->runner->isApplied());
+		static::assertFalse($this->runner->isApplied());
 	}
 
 	/**
@@ -134,7 +134,7 @@ class RunnerTest extends TestCase
 
 		$this->runner->execute();
 
-		$this->assertFalse($this->runner->isApplied());
+		static::assertFalse($this->runner->isApplied());
 	}
 
 	/**
@@ -174,7 +174,7 @@ class RunnerTest extends TestCase
 
 		$this->runner->rollback();
 
-		$this->assertTrue($this->runner->isApplied());
+		static::assertTrue($this->runner->isApplied());
 	}
 
 	/**

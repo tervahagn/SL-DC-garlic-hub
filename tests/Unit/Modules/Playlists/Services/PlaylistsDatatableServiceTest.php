@@ -89,8 +89,8 @@ class PlaylistsDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -123,8 +123,8 @@ class PlaylistsDatatableServiceTest extends TestCase
 
 		$this->service->loadDatatable();
 
-		$this->assertSame(12, $this->service->getCurrentTotalResult());
-		$this->assertSame($result, $this->service->getCurrentFilterResults());
+		static::assertSame(12, $this->service->getCurrentTotalResult());
+		static::assertSame($result, $this->service->getCurrentFilterResults());
 	}
 
 	/**
@@ -134,7 +134,7 @@ class PlaylistsDatatableServiceTest extends TestCase
 	public function testGetPlaylistsInUseWithEmptyIds(): void
 	{
 		$result = $this->service->getPlaylistsInUse([]);
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**
@@ -154,6 +154,6 @@ class PlaylistsDatatableServiceTest extends TestCase
 			->willReturn($expectedResult);
 		$result = $this->service->getPlaylistsInUse($playlistIds);
 
-		$this->assertSame($expectedResult, $result);
+		static::assertSame($expectedResult, $result);
 	}
 }

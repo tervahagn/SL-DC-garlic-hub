@@ -103,7 +103,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findAllRootNodes();
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -131,7 +131,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findTreeByRootId($rootId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -155,7 +155,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findNodeOwner($nodeId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -207,7 +207,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findAllChildNodesByParentNode($parentId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -251,7 +251,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findAllChildrenInTreeOfNodeId($nodeId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -282,7 +282,7 @@ class RepositoryTest extends TestCase
 		$queryBuilderMock2->expects($this->never())->method('select');
 
 
-		$this->assertEmpty($this->repository->findAllChildrenInTreeOfNodeId($nodeId));
+		static::assertEmpty($this->repository->findAllChildrenInTreeOfNodeId($nodeId));
 	}
 
 	/**
@@ -321,7 +321,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findRootIdRgtAndLevelByNodeId($nodeId);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 
@@ -357,7 +357,7 @@ class RepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->exactly(2))->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['lft >= :node_lft', 'rgt <= :node_rgt'];
-				$this->assertContains($condition, $expectedConditions);
+				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
 
@@ -365,8 +365,8 @@ class RepositoryTest extends TestCase
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['root_id', 'node_lft', 'node_rgt'];
 				$expectedValues = [1, 6, 3];
-				$this->assertContains($name, $expectedNames);
-				$this->assertContains($value, $expectedValues);
+				static::assertContains($name, $expectedNames);
+				static::assertContains($value, $expectedValues);
 				return $this->queryBuilderMock;
 			});
 
@@ -378,7 +378,7 @@ class RepositoryTest extends TestCase
 			->willReturn($expectedResult);
 
 		$actualResult = $this->repository->findAllSubNodeIdsByRootIdsAndPosition($rootId, $nodeRgt, $nodeLft);
-		$this->assertEquals($expectedResult, $actualResult);
+		static::assertEquals($expectedResult, $actualResult);
 	}
 
 	/**
@@ -429,7 +429,7 @@ class RepositoryTest extends TestCase
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
 
-		$this->assertSame(1, $this->repository->moveSubTree($movedNode, $targetNode, $calculated, $diffLevel));
+		static::assertSame(1, $this->repository->moveSubTree($movedNode, $targetNode, $calculated, $diffLevel));
 	}
 
 	/**
@@ -465,7 +465,7 @@ class RepositoryTest extends TestCase
 			]);
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-		$this->assertSame(1, $this->repository->moveNodesToRightForInsert($rootId, $position, $width));
+		static::assertSame(1, $this->repository->moveNodesToRightForInsert($rootId, $position, $width));
 
 	}
 
@@ -501,7 +501,7 @@ class RepositoryTest extends TestCase
 			]);
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-		$this->assertSame(1, $this->repository->moveNodesToLeftForInsert($rootId, $position, $width));
+		static::assertSame(1, $this->repository->moveNodesToLeftForInsert($rootId, $position, $width));
 	}
 
 	/**
@@ -535,7 +535,7 @@ class RepositoryTest extends TestCase
 			]);
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-		$this->assertSame(1, $this->repository->moveNodesToLeftForDeletion($rootId, $position, $width));
+		static::assertSame(1, $this->repository->moveNodesToLeftForDeletion($rootId, $position, $width));
 	}
 
 	/**
@@ -569,7 +569,7 @@ class RepositoryTest extends TestCase
 			]);
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-		$this->assertSame(1, $this->repository->moveNodesToRightForDeletion($rootId, $position, $width));
+		static::assertSame(1, $this->repository->moveNodesToRightForDeletion($rootId, $position, $width));
 	}
 
 	/**
@@ -599,7 +599,7 @@ class RepositoryTest extends TestCase
 			]);
 		$this->queryBuilderMock->expects($this->once())->method('executeStatement')->willReturn(1);
 
-		$this->assertSame(1, $this->repository->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']));
+		static::assertSame(1, $this->repository->deleteFullTree($node['root_id'], $node['rgt'], $node['lft']));
 	}
 
 

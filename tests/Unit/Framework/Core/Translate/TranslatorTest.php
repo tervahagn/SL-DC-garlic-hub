@@ -80,7 +80,7 @@ class TranslatorTest extends TestCase
 
         $result = $this->translator->translate('greeting', 'test_module', ['{name}' => 'John']);
 
-        $this->assertEquals('Hello, John!', $result);
+        static::assertEquals('Hello, John!', $result);
     }
 
 	/**
@@ -99,7 +99,7 @@ class TranslatorTest extends TestCase
         $this->cacheMock->expects($this->never())->method('set');
 
         $result = $this->translator->translate('greeting', 'test_module', ['{name}' => 'John']);
-        $this->assertEquals('Hello, John!', $result);
+        static::assertEquals('Hello, John!', $result);
     }
 
 	/**
@@ -117,7 +117,7 @@ class TranslatorTest extends TestCase
         $this->cacheMock->expects($this->once())->method('set');
 
         $result = $this->translator->translate('missing_key', 'test_module');
-        $this->assertEmpty($result);
+        static::assertEmpty($result);
     }
 
 	/**
@@ -139,7 +139,7 @@ class TranslatorTest extends TestCase
         $this->formatterFactoryMock->method('create')->willReturn($formatterMock);
 
         $result = $this->translator->translateWithPlural('item_count', 'test_module', 5);
-        $this->assertEquals('5 items', $result);
+        static::assertEquals('5 items', $result);
     }
 
 	/**
@@ -178,8 +178,8 @@ class TranslatorTest extends TestCase
         $this->loaderMock->method('load')->willReturn(['options' => ['opt1' => 'Option 1', 'opt2' => 'Option 2']]);
 
         $result = $this->translator->translateArrayForOptions('options', 'test_module');
-        $this->assertArrayHasKey('opt1', $result);
-        $this->assertEquals('Option 1', $result['opt1']);
+        static::assertArrayHasKey('opt1', $result);
+        static::assertEquals('Option 1', $result['opt1']);
     }
 
 	/**
@@ -195,7 +195,7 @@ class TranslatorTest extends TestCase
         $this->loaderMock->method('load')->willReturn(['options' => 'Not an array']);
 
 		$result = $this->translator->translateArrayForOptions('options', 'test_module');
-        $this->assertEmpty($result);
+        static::assertEmpty($result);
     }
 
 	/**
@@ -217,7 +217,7 @@ class TranslatorTest extends TestCase
 		$this->formatterFactoryMock->method('create')->willReturn($formatterMock);
 
 		$result = $this->translator->translateArrayWithPlural('days', 'time_unit_ago', 'test_module', 5);
-		$this->assertEquals('5 days ago', $result);
+		static::assertEquals('5 days ago', $result);
 	}
 
 	/**
@@ -239,7 +239,7 @@ class TranslatorTest extends TestCase
 		$this->formatterFactoryMock->method('create')->willReturn($formatterMock);
 
 		$result = $this->translator->translateArrayWithPlural('days', 'time_unit_ago', 'test_module', 5);
-		$this->assertEquals('', $result);
+		static::assertEquals('', $result);
 	}
 
 }

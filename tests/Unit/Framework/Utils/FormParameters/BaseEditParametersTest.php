@@ -111,6 +111,6 @@ class BaseEditParametersTest extends TestCase
 		$this->baseEditParameters->checkCsrfToken();
 
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true);
+		static::assertTrue(true);
 	}
 }

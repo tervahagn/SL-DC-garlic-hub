@@ -77,7 +77,7 @@ class ContentDataPreparerTest extends TestCase
 
 		$result = $this->contentDataPreparer->determinePreferences($configData);
 
-		$this->assertSame($preferences, $result);
+		static::assertSame($preferences, $result);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class ContentDataPreparerTest extends TestCase
 
 		$result = $this->contentDataPreparer->prepareContentData($configData, $requestData);
 
-		$this->assertSame(['preference1' => '&lt;value&gt;', 'preference2' => 123], $result);
+		static::assertSame(['preference1' => '&lt;value&gt;', 'preference2' => 123], $result);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class ContentDataPreparerTest extends TestCase
 
 		$result = $this->contentDataPreparer->prepareContentData($configData, $requestData, true);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	/**

@@ -50,14 +50,14 @@ class AbstractInputFieldTest extends TestCase
 			'rules' => ['required' => true]
 		]);
 
-		$this->assertSame('custom_id', $field->getId());
-		$this->assertSame(FieldType::TEXT, $field->getType());
-		$this->assertSame('custom_name', $field->getName());
-		$this->assertSame('Custom Title', $field->getTitle());
-		$this->assertSame('Custom Label', $field->getLabel());
-		$this->assertSame('Custom Value', $field->getValue());
-		$this->assertSame(['attr1' => 'value1'], $field->getAttributes());
-		$this->assertSame(['required' => true], $field->getValidationRules());
+		static::assertSame('custom_id', $field->getId());
+		static::assertSame(FieldType::TEXT, $field->getType());
+		static::assertSame('custom_name', $field->getName());
+		static::assertSame('Custom Title', $field->getTitle());
+		static::assertSame('Custom Label', $field->getLabel());
+		static::assertSame('Custom Value', $field->getValue());
+		static::assertSame(['attr1' => 'value1'], $field->getAttributes());
+		static::assertSame(['required' => true], $field->getValidationRules());
 	}
 
 

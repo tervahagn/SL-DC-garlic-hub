@@ -66,7 +66,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$clientEntity = $this->repository->getClientEntity('test-client-id');
 
-		$this->assertInstanceOf(ClientEntityInterface::class, $clientEntity);
+		static::assertInstanceOf(ClientEntityInterface::class, $clientEntity);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('test-client-id', 'client-secret');
 
-		$this->assertTrue($isValid);
+		static::assertTrue($isValid);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('non-existent-client-id', 'client-secret');
 
-		$this->assertFalse($isValid);
+		static::assertFalse($isValid);
 	}
 
 	/**
@@ -138,7 +138,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('test-client-id', 'wrong-secret');
 
-		$this->assertFalse($isValid);
+		static::assertFalse($isValid);
 	}
 
 	/**
@@ -159,7 +159,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('test-client-id', 'client-secret');
 
-		$this->assertFalse($isValid);
+		static::assertFalse($isValid);
 	}
 
 	/**
@@ -174,7 +174,7 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('test-client-id', null);
 
-		$this->assertFalse($isValid);
+		static::assertFalse($isValid);
 	}
 
 	/**
@@ -189,6 +189,6 @@ class ClientsRepositoryTest extends TestCase
 
 		$isValid = $this->repository->validateClient('test-client-id', 'client-secret', null);
 
-		$this->assertFalse($isValid);
+		static::assertFalse($isValid);
 	}
 }

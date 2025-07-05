@@ -84,8 +84,8 @@ class FormBuilderTest extends TestCase
 		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$textFieldMock, $csrfFieldMock]);
 
-		$this->assertCount(1, $result['visible']);
-		$this->assertSame(
+		static::assertCount(1, $result['visible']);
+		static::assertSame(
 			[
 				'HTML_ELEMENT_ID' => 'text_field_1',
 				'LANG_ELEMENT_LABEL' => 'Text Field',
@@ -96,8 +96,8 @@ class FormBuilderTest extends TestCase
 			$result['visible'][0]
 		);
 
-		$this->assertCount(1, $result['hidden']);
-		$this->assertSame(
+		static::assertCount(1, $result['hidden']);
+		static::assertSame(
 			[
 				'HIDDEN_HTML_ELEMENT' => '<input type="hidden" name="csrf_token" />',
 			],
@@ -110,8 +110,8 @@ class FormBuilderTest extends TestCase
 	{
 		$result = $this->formBuilder->prepareForm([]);
 
-		$this->assertEmpty($result['visible']);
-		$this->assertEmpty($result['hidden']);
+		static::assertEmpty($result['visible']);
+		static::assertEmpty($result['hidden']);
 	}
 
 	/**
@@ -130,9 +130,9 @@ class FormBuilderTest extends TestCase
 		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$hiddenFieldMock]);
 
-		$this->assertEmpty($result['visible']);
-		$this->assertCount(1, $result['hidden']);
-		$this->assertSame(
+		static::assertEmpty($result['visible']);
+		static::assertCount(1, $result['hidden']);
+		static::assertSame(
 			[
 				'HIDDEN_HTML_ELEMENT' => '<input type="hidden" id="hidden_field_1" />',
 			],
@@ -158,9 +158,9 @@ class FormBuilderTest extends TestCase
 		// @phpstan-ignore-next-line
 		$result = $this->formBuilder->prepareForm([$visibleFieldMock]);
 
-		$this->assertEmpty($result['hidden']);
-		$this->assertCount(1, $result['visible']);
-		$this->assertSame(
+		static::assertEmpty($result['hidden']);
+		static::assertCount(1, $result['visible']);
+		static::assertSame(
 			[
 				'HTML_ELEMENT_ID' => 'visible_field_1',
 				'LANG_ELEMENT_LABEL' => 'Visible Field',
@@ -190,7 +190,7 @@ class FormBuilderTest extends TestCase
 
 		$field = $this->formBuilder->createField(['type' => FieldType::TEXT]);
 
-		$this->assertSame($fieldMock, $field);
+		static::assertSame($fieldMock, $field);
 	}
 
 	/**
@@ -210,7 +210,7 @@ class FormBuilderTest extends TestCase
 
 		$field = $this->formBuilder->createField(['type' => FieldType::PASSWORD]);
 
-		$this->assertSame($fieldMock, $field);
+		static::assertSame($fieldMock, $field);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class FormBuilderTest extends TestCase
 
 		$field = $this->formBuilder->createField(['type' => FieldType::EMAIL]);
 
-		$this->assertSame($fieldMock, $field);
+		static::assertSame($fieldMock, $field);
 	}
 
 	/**
@@ -250,7 +250,7 @@ class FormBuilderTest extends TestCase
 
 		$field = $this->formBuilder->createField(['type' => FieldType::CSRF]);
 
-		$this->assertSame($fieldMock, $field);
+		static::assertSame($fieldMock, $field);
 	}
 
 	#[Group('units')]
@@ -277,6 +277,6 @@ class FormBuilderTest extends TestCase
 
 		$output = $this->formBuilder->renderField($fieldMock);
 
-		$this->assertSame('<input type="text" />', $output);
+		static::assertSame('<input type="text" />', $output);
 	}
 }

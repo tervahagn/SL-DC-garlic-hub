@@ -83,7 +83,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildFormField($attributes);
 
-		$this->assertSame($this->fieldMock, $result);
+		static::assertSame($this->fieldMock, $result);
 	}
 
 	/**
@@ -100,8 +100,8 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildFormField();
 
-		$this->assertSame($this->resultsBuilderMock, $this->buildService->getResultsBuilder());
-		$this->assertSame($this->fieldMock, $result);
+		static::assertSame($this->resultsBuilderMock, $this->buildService->getResultsBuilder());
+		static::assertSame($this->fieldMock, $result);
 	}
 
 	#[Group('units')]
@@ -148,7 +148,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->getDatatableFields();
 
-		$this->assertSame($expectedFields, $result);
+		static::assertSame($expectedFields, $result);
 	}
 
 
@@ -172,7 +172,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationDropDown($min, $max, $steps);
 
-		$this->assertSame(['min' => 15, 'max' => 50, 'steps' => 5], $result);
+		static::assertSame(['min' => 15, 'max' => 50, 'steps' => 5], $result);
 	}
 
 	#[Group('units')]
@@ -191,7 +191,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationDropDown();
 
-		$this->assertSame(['min' => 10, 'max' => 100, 'steps' => 10],$result);
+		static::assertSame(['min' => 10, 'max' => 100, 'steps' => 10],$result);
 	}
 
 	#[Group('units')]
@@ -224,7 +224,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems);
 
-		$this->assertSame($expectedLinks, $result);
+		static::assertSame($expectedLinks, $result);
 	}
 
 	#[Group('units')]
@@ -257,7 +257,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, true);
 
-		$this->assertSame($expectedLinks, $result);
+		static::assertSame($expectedLinks, $result);
 	}
 
 	#[Group('units')]
@@ -290,7 +290,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems, false, false);
 
-		$this->assertSame($expectedLinks, $result);
+		static::assertSame($expectedLinks, $result);
 	}
 
 	#[Group('units')]
@@ -319,7 +319,7 @@ class BuildServiceTest extends TestCase
 
 		$result = $this->buildService->buildPaginationLinks($currentPage, $itemsPerPage, $totalItems);
 
-		$this->assertSame($expectedLinks, $result);
+		static::assertSame($expectedLinks, $result);
 	}
 
 

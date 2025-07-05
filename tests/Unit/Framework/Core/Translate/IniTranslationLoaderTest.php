@@ -44,7 +44,7 @@ class IniTranslationLoaderTest extends TestCase
     {
         $loader = new IniTranslationLoader($this->baseDirectory);
         $result = $loader->load('en', 'valid');
-        $this->assertArrayHasKey('username', $result);
+        static::assertArrayHasKey('username', $result);
     }
 
     #[Group('units')]

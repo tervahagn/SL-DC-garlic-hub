@@ -31,13 +31,13 @@ use App\Modules\Playlists\Helper\ItemType;
 
 class ItemsFactory
 {
-	const string MEDIA_TYPE_IMAGE       = 'image';
-	const string MEDIA_TYPE_VIDEO       = 'video';
-	const string MEDIA_TYPE_AUDIO       = 'audio';
-	const string MEDIA_TYPE_WIDGET      = 'widget';
-	const string MEDIA_TYPE_DOWNLOAD    = 'download';
-	const string MEDIA_TYPE_APPLICATION = 'application';
-	const string MEDIA_TYPE_TEXT        = 'text';
+	public const string MEDIA_TYPE_IMAGE       = 'image';
+	public const string MEDIA_TYPE_VIDEO       = 'video';
+	public const string MEDIA_TYPE_AUDIO       = 'audio';
+	public const string MEDIA_TYPE_WIDGET      = 'widget';
+	public const string MEDIA_TYPE_DOWNLOAD    = 'download';
+	public const string MEDIA_TYPE_APPLICATION = 'application';
+	public const string MEDIA_TYPE_TEXT        = 'text';
 
 	private Config $config;
 

@@ -58,7 +58,7 @@ class PlayerDashboardTest extends TestCase
 	public function testGetId(): void
 	{
 		$result = $this->playerDashboard->getId();
-		$this->assertSame('player', $result);
+		static::assertSame('player', $result);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class PlayerDashboardTest extends TestCase
 
 		$result = $this->playerDashboard->getTitle();
 
-		$this->assertSame('Player Dashboard', $result);
+		static::assertSame('Player Dashboard', $result);
 	}
 
 	/**
@@ -119,6 +119,6 @@ class PlayerDashboardTest extends TestCase
 	<li><strong>Inactive Players:</strong><span>3</span></li>
 </ul>';
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

@@ -43,6 +43,6 @@ class ZipFilesystemFactoryTest extends TestCase
 		$filesystem = $factory->create($zipPath);
 
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(Filesystem::class, $filesystem);
+		static::assertInstanceOf(Filesystem::class, $filesystem);
 	}
 }

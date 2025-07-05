@@ -96,7 +96,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->showLogin($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -182,7 +182,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 
@@ -233,7 +233,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 
@@ -267,7 +267,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 	/**
@@ -295,7 +295,7 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->login($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 
 
@@ -332,6 +332,6 @@ class LoginControllerTest extends TestCase
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
 		$result = $controller->logout($this->requestMock, $this->responseMock);
 
-		$this->assertSame($this->responseMock, $result);
+		static::assertSame($this->responseMock, $result);
 	}
 }

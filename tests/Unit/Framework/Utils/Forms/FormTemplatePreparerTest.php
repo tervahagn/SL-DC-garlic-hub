@@ -78,7 +78,7 @@ class FormTemplatePreparerTest extends TestCase
 
 		$result = $this->formTemplatePreparer->prepareUITemplate($dataSections);
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	#[Group('units')]
@@ -123,6 +123,6 @@ class FormTemplatePreparerTest extends TestCase
 
 		$result = $this->formTemplatePreparer->prepareUITemplate($dataSections);
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

@@ -75,7 +75,7 @@ class ContentReaderTest extends TestCase
 
 		$result = $this->reader->loadPlaylistItems();
 
-		$this->assertSame($fileContent, $result);
+		static::assertSame($fileContent, $result);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class ContentReaderTest extends TestCase
 
 		$result = $this->reader->loadPlaylistItems();
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class ContentReaderTest extends TestCase
 
 		$result = $this->reader->loadPlaylistPrefetch();
 
-		$this->assertSame($fileContent, $result);
+		static::assertSame($fileContent, $result);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class ContentReaderTest extends TestCase
 
 		$result = $this->reader->loadPlaylistPrefetch();
 
-		$this->assertSame('', $result);
+		static::assertSame('', $result);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class ContentReaderTest extends TestCase
 
 		$result = $this->reader->loadPlaylistExclusive();
 
-		$this->assertSame($fileContent, $result);
+		static::assertSame($fileContent, $result);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class ContentReaderTest extends TestCase
 	{
 		$this->reader->init(0);
 
-		$this->assertEmpty($this->reader->loadPlaylistExclusive());
+		static::assertEmpty($this->reader->loadPlaylistExclusive());
 	}
 
 

@@ -131,7 +131,7 @@ class AbstractDatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->prepareAdd();
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class AbstractDatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->prepareAdd('hurz');
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class AbstractDatatablePreparerTest extends TestCase
 
 		$result = $this->datatablePreparer->prepareSort();
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 
 	/**
@@ -202,6 +202,6 @@ class AbstractDatatablePreparerTest extends TestCase
 		$expected = ['current' => 1, 'num_elements' => 100,];
 		$result   = $this->datatablePreparer->preparePage();
 
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

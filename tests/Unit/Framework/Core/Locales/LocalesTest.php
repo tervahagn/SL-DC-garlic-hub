@@ -64,7 +64,7 @@ class LocalesTest extends TestCase
 						 ->willReturn('en_US');
 
 		$locales = $this->initTestClass();
-		$this->assertSame('en_US', $locales->getDefaultLocale());
+		static::assertSame('en_US', $locales->getDefaultLocale());
 	}
 
 	/**
@@ -78,7 +78,7 @@ class LocalesTest extends TestCase
 						 ->with('default_locale', 'locales', 'general')
 						 ->willReturn('en_US');
 		$locales = $this->initTestClass();
-		$this->assertSame(['en_US', 'de_DE'], $locales->getAvailableLocales());
+		static::assertSame(['en_US', 'de_DE'], $locales->getAvailableLocales());
 	}
 
 	/**
@@ -94,8 +94,8 @@ class LocalesTest extends TestCase
 
 		$locales = $this->initTestClass();
 
-		$this->assertTrue($locales->isLocaleValid('en_US'));
-		$this->assertFalse($locales->isLocaleValid('fr_FR'));
+		static::assertTrue($locales->isLocaleValid('en_US'));
+		static::assertFalse($locales->isLocaleValid('fr_FR'));
 	}
 
 	/**
@@ -112,7 +112,7 @@ class LocalesTest extends TestCase
 		$locales = $this->initTestClass();
 		$locales->determineCurrentLocale();
 
-		$this->assertSame('en_US', $locales->getCurrentLocale());
+		static::assertSame('en_US', $locales->getCurrentLocale());
 	}
 
 	/**
@@ -137,7 +137,7 @@ class LocalesTest extends TestCase
 		$locales = new Locales($this->configMock, $localeExtractorMock);
 		$locales->determineCurrentLocale();
 
-		$this->assertSame('en_US', $locales->getCurrentLocale());
+		static::assertSame('en_US', $locales->getCurrentLocale());
 	}
 
 	/**
@@ -159,7 +159,7 @@ class LocalesTest extends TestCase
 
 		$locales = $this->initTestClass();
 		$locales->determineCurrentLocale();
-		$this->assertSame('en', $locales->getLanguageCode());
+		static::assertSame('en', $locales->getLanguageCode());
 	}
 
 	/**
@@ -181,7 +181,7 @@ class LocalesTest extends TestCase
 		$locales = $this->initTestClass();
 
 		$locales->determineCurrentLocale();
-		$this->assertSame('US', $locales->getCountryCode());
+		static::assertSame('US', $locales->getCountryCode());
 	}
 
 	/**
@@ -207,7 +207,7 @@ class LocalesTest extends TestCase
 
 		$locales->determineCurrentLocale();
 
-		$this->assertSame('d.m.Y', $locales->getDateFormat());
+		static::assertSame('d.m.Y', $locales->getDateFormat());
 	}
 
 	/**
@@ -233,7 +233,7 @@ class LocalesTest extends TestCase
 
 		$locales->determineCurrentLocale();
 
-		$this->assertSame('d.m.Y h:i:s', $locales->getDateTimeFormat());
+		static::assertSame('d.m.Y h:i:s', $locales->getDateTimeFormat());
 	}
 
 

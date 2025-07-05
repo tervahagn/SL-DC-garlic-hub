@@ -74,7 +74,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(true);
 
 		$result = $this->nodesService->isModuleAdmin($uid);
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -103,8 +103,8 @@ class NodesServiceTest extends TestCase
 
 		$this->nodesService->UID = 123;
 		$result = $this->nodesService->getNodes($parentId);
-		$this->assertCount(1, $result);
-		$this->assertEquals('Root Node', $result[0]['title']);
+		static::assertCount(1, $result);
+		static::assertEquals('Root Node', $result[0]['title']);
 	}
 
 	/**
@@ -132,8 +132,8 @@ class NodesServiceTest extends TestCase
 
 		$this->nodesService->UID = 123;
 		$result = $this->nodesService->getNodes($parentId);
-		$this->assertCount(1, $result);
-		$this->assertEquals('Sub Node', $result[0]['title']);
+		static::assertCount(1, $result);
+		static::assertEquals('Sub Node', $result[0]['title']);
 	}
 
 	/**
@@ -160,7 +160,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(1);
 
 		$result = $this->nodesService->addNode(0, $name);
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -188,7 +188,7 @@ class NodesServiceTest extends TestCase
 		$this->expectExceptionMessage('No rights to add root node.');
 
 		$result = $this->nodesService->addNode(0, $name);
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 
@@ -224,7 +224,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(2);
 
 		$result = $this->nodesService->addNode($parentNodeId, $name);
-		$this->assertEquals(2, $result);
+		static::assertEquals(2, $result);
 	}
 
 	/**
@@ -292,7 +292,7 @@ class NodesServiceTest extends TestCase
 		$this->expectExceptionMessage('No rights to add node under: Parent Node');
 
 		$result = $this->nodesService->addNode($parentNodeId, $name);
-		$this->assertEquals(2, $result);
+		static::assertEquals(2, $result);
 	}
 
 	/**
@@ -329,7 +329,7 @@ class NodesServiceTest extends TestCase
 			->willReturn(1);
 
 		$result = $this->nodesService->editNode($nodeId, $name, $visibility);
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -421,7 +421,7 @@ class NodesServiceTest extends TestCase
 			->with($movedNode, $targetNode, $region);
 
 		$result = $this->nodesService->moveNode($movedNodeId, $targetNodeId, $region);
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -581,7 +581,7 @@ class NodesServiceTest extends TestCase
 			->method('deleteTree');
 
 		$result = $this->nodesService->deleteNode($nodeId);
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -688,7 +688,7 @@ class NodesServiceTest extends TestCase
 			->with($node);
 
 		$result = $this->nodesService->deleteNode($nodeId);
-		$this->assertEquals(3, $result);
+		static::assertEquals(3, $result);
 	}
 
 }

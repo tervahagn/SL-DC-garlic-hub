@@ -123,7 +123,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->FilterBase->countAllFiltered($fields);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 
 	/**
@@ -147,7 +147,7 @@ class FilterBaseTest extends TestCase
 
 		$expectedCount = 333;
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
-		$this->assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
+		static::assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
 	}
 
 	/**
@@ -162,7 +162,7 @@ class FilterBaseTest extends TestCase
 
 		$expectedCount = 888;
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
-		$this->assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
+		static::assertSame($expectedCount,  $this->FilterBase->countAllFiltered($fields));
 	}
 
 	/**
@@ -194,7 +194,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
 
 		$result = $this->FilterBase->findAllFiltered($fields);
-		$this->assertSame($expectedResults, $result);
+		static::assertSame($expectedResults, $result);
 	}
 
 	/**
@@ -231,7 +231,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->FilterBase->countAllFilteredByUIDCompanyReseller($companyId, $fields, $UID);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 
 	/**
@@ -277,7 +277,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
 
 		$result = $this->FilterBase->findAllFilteredByUIDCompanyReseller($companyId, $fields, $UID);
-		$this->assertSame($expectedResults, $result);
+		static::assertSame($expectedResults, $result);
 
 	}
 
@@ -309,7 +309,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchOne')->willReturn($expectedCount);
 
 		$result = $this->FilterBase->countAllFilteredByUID($fields, $UID);
-		$this->assertSame($expectedCount, $result);
+		static::assertSame($expectedCount, $result);
 	}
 
 	/**
@@ -348,7 +348,7 @@ class FilterBaseTest extends TestCase
 		$this->resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn($expectedResults);
 
 		$result = $this->FilterBase->findAllFilteredByUID($fields, $UID);
-		$this->assertSame($expectedResults, $result);
+		static::assertSame($expectedResults, $result);
 	}
 
 	private function setStandardMocksForCount(): void

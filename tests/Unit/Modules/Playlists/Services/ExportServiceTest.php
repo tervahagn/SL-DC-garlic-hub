@@ -114,7 +114,7 @@ class ExportServiceTest extends TestCase
 		$this->loggerMock->expects($this->never())->method('error');
 		$result = $this->service->exportToSmil($playlistId);
 
-		$this->assertSame(1, $result);
+		static::assertSame(1, $result);
 	}
 
 	/**
@@ -239,7 +239,7 @@ class ExportServiceTest extends TestCase
 		$this->loggerMock->expects($this->never())->method('error');
 		$result = $this->service->exportToSmil($playlistId);
 
-		$this->assertSame(2, $result);
+		static::assertSame(2, $result);
 	}
 
 

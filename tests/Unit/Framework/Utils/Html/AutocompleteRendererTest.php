@@ -56,6 +56,6 @@ class AutocompleteRendererTest extends TestCase
 
 		$result = $this->renderer->render($this->fieldMock);
 
-		$this->assertSame($expectedHtml, $result);
+		static::assertSame($expectedHtml, $result);
 	}
 }

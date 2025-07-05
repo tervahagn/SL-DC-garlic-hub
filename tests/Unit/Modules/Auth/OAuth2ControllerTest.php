@@ -151,7 +151,7 @@ class OAuth2ControllerTest extends TestCase
 		$response = $this->controller->token($this->requestMock, $this->responseMock);
 
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(ResponseInterface::class, $response);
+		static::assertInstanceOf(ResponseInterface::class, $response);
 	}
 
 	/**

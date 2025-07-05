@@ -78,7 +78,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
+		static::assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
+		static::assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'], $permissions);
 	}
 
 	/**
@@ -126,7 +126,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => 'company'], $permissions);
+		static::assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => 'company'], $permissions);
 	}
 
 	/**
@@ -178,7 +178,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
 	}
 
 	/**
@@ -204,7 +204,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'company'], $permissions);
+		static::assertEquals(['create' => true, 'read' => true, 'edit' => true, 'share' => 'company'], $permissions);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => true, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
 	}
 
 	/**
@@ -256,7 +256,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => false, 'read' => false, 'edit' => false, 'share' => ''], $permissions);
 	}
 
 	/**
@@ -282,7 +282,7 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
 	}
 
 	/**
@@ -299,6 +299,6 @@ class AclValidatorTest extends TestCase
 
 		$permissions = $this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
-		$this->assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
+		static::assertEquals(['create' => false, 'read' => true, 'edit' => false, 'share' => ''], $permissions);
 	}
 }

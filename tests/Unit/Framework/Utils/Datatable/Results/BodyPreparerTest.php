@@ -42,7 +42,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatText($text);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_TEXT' => 'Sample Text',
 		], $result);
 	}
@@ -57,7 +57,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatSpan($valueName, $title, $valueId, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'Sample Name',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Sample Title',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
@@ -74,7 +74,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatSpan($valueName, $title, $valueId);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'Sample Name',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Sample Title',
 			'CONTROL_ELEMENT_VALUE_ID' => '123',
@@ -87,7 +87,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$result = $this->bodyPreparer->formatSpan('', '', '');
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => '',
 			'CONTROL_ELEMENT_VALUE_TITLE' => '',
 			'CONTROL_ELEMENT_VALUE_ID' => '',
@@ -107,7 +107,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_ACTION' => 'en',
 			'LINK_ACTION' => 'https://example.com/action',
 			'ACTION_ID'   => 'action_id',
@@ -127,7 +127,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_ACTION' => '',
 			'LINK_ACTION' => '',
 			'ACTION_ID'   => '',
@@ -147,7 +147,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatAction($lang, $link, $name, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_ACTION' => '!lang123',
 			'LINK_ACTION' => 'https://example.com?action=1&data=special',
 			'ACTION_ID'   => 'action_id',
@@ -162,7 +162,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatText($text);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_TEXT' => '',
 		], $result);
 	}
@@ -174,7 +174,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatText($text);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_TEXT' => 'Text with special characters: !@#$%^&*()_+',
 		], $result);
 	}
@@ -190,7 +190,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'testValue',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
@@ -210,7 +210,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'testValue',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Test Title',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com',
@@ -225,7 +225,7 @@ class BodyPreparerTest extends TestCase
 	{
 		$result = $this->bodyPreparer->formatLink('', '', '', '');
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => '',
 			'CONTROL_ELEMENT_VALUE_TITLE' => '',
 			'CONTROL_ELEMENT_VALUE_LINK' => '',
@@ -246,7 +246,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatLink($valueName, $title, $href, $valueId, $cssClass, 'some suffix');
 
-		$this->assertEquals([
+		static::assertEquals([
 			'CONTROL_ELEMENT_VALUE_NAME' => 'val@123',
 			'CONTROL_ELEMENT_VALUE_TITLE' => 'Title & More',
 			'CONTROL_ELEMENT_VALUE_LINK' => 'https://example.com?page=1&name=test',
@@ -264,7 +264,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatUID($UID, $username);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'OWNER_UID' => 12345,
 			'OWNER_NAME' => 'test_user',
 		], $result);
@@ -278,7 +278,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatUID($UID, $username);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'OWNER_UID' => 0,
 			'OWNER_NAME' => 'guest',
 		], $result);
@@ -292,7 +292,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatUID($UID, $username);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'OWNER_UID' => 999,
 			'OWNER_NAME' => '',
 		], $result);
@@ -306,7 +306,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatUID($UID, $username);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'OWNER_UID' => -123,
 			'OWNER_NAME' => 'negative_test',
 		], $result);
@@ -322,7 +322,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_DELETE_ACTION' => 'delete',
 			'DELETE_ID' => '456',
 			'LANG_CONFIRM_DELETE' => 'Are you sure?',
@@ -340,7 +340,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_DELETE_ACTION' => '',
 			'DELETE_ID' => '',
 			'LANG_CONFIRM_DELETE' => '',
@@ -358,7 +358,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatActionDelete($lang, $langConfirm, $id, $cssClass);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'LANG_DELETE_ACTION' => 'del@ete',
 			'DELETE_ID' => 'del-123#456',
 			'LANG_CONFIRM_DELETE' => 'Conf!rm@tion??',
@@ -374,7 +374,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'ICON_CLASS' => 'icon-class-test',
 			'ICON_TITLE' => 'Icon Test',
 		], $result);
@@ -388,7 +388,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'ICON_CLASS' => '',
 			'ICON_TITLE' => '',
 		], $result);
@@ -402,7 +402,7 @@ class BodyPreparerTest extends TestCase
 
 		$result = $this->bodyPreparer->formatIcon($iconClass, $title);
 
-		$this->assertEquals([
+		static::assertEquals([
 			'ICON_CLASS' => '.icon-class@special',
 			'ICON_TITLE' => 'Special@Icon!',
 		], $result);

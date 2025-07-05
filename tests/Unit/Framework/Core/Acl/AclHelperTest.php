@@ -54,7 +54,7 @@ class AclHelperTest extends TestCase
 	#[Group('units')]
 	public function testGetConfig(): void
 	{
-		$this->assertSame($this->configMock, $this->aclHelper->getConfig());
+		static::assertSame($this->configMock, $this->aclHelper->getConfig());
 	}
 
 	/**
@@ -77,7 +77,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isModuleAdmin($UID, $moduleName);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isModuleAdmin($UID, $moduleName);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isSubAdmin($UID, $moduleName);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -146,7 +146,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isSubAdmin($UID, $moduleName);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isEditor($UID, $moduleName);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -192,7 +192,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isEditor($UID, $moduleName);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -215,7 +215,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isViewer($UID, $moduleName);
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -238,7 +238,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->isViewer($UID, $moduleName);
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -260,7 +260,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasSubAdminAccessOnCompany($UID, $companyId, 'testModule');
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -282,7 +282,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasSubAdminAccessOnCompany($UID, $companyId, 'testModule');
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -299,7 +299,7 @@ class AclHelperTest extends TestCase
 		$this->usersServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 
 		$result = $this->aclHelper->hasSubAdminAccessOnCompany($UID, $companyId, 'testModule');
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -321,7 +321,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasEditorAccessOnUnit($UID, $unitId, 'testModule');
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -343,7 +343,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasViewerAccessOnUnit($UID, $unitId, 'testModule');
 
-		$this->assertTrue($result);
+		static::assertTrue($result);
 	}
 
 	/**
@@ -365,7 +365,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasViewerAccessOnUnit($UID, $unitId, 'testModule');
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -384,7 +384,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasViewerAccessOnUnit($UID, $unitId, 'testModule');
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -406,7 +406,7 @@ class AclHelperTest extends TestCase
 
 		$result = $this->aclHelper->hasEditorAccessOnUnit($UID, $unitId, 'testModule');
 
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	/**
@@ -424,7 +424,7 @@ class AclHelperTest extends TestCase
 		$this->usersServiceMock->method('getUserById')->willReturn($this->userEntityMock);
 
 		$result = $this->aclHelper->hasEditorAccessOnUnit($UID, $unitId, 'testModule');
-		$this->assertFalse($result);
+		static::assertFalse($result);
 	}
 
 	private function mockConfigValues(): void

@@ -80,10 +80,10 @@ class AbstractMediaHandlerTest extends TestCase
 	#[Group('units')]
 	public function testSomeGetters(): void
 	{
-		$this->assertEmpty($this->concreteMediaHandler->getDimensions());
-		$this->assertEmpty($this->concreteMediaHandler->getFileSize());
-		$this->assertEmpty($this->concreteMediaHandler->getConfigData());
-		$this->assertEquals(0.0, $this->concreteMediaHandler->getDuration());}
+		static::assertEmpty($this->concreteMediaHandler->getDimensions());
+		static::assertEmpty($this->concreteMediaHandler->getFileSize());
+		static::assertEmpty($this->concreteMediaHandler->getConfigData());
+		static::assertEquals(0.0, $this->concreteMediaHandler->getDuration());}
 
 	/**
 	 * @throws FilesystemException
@@ -92,7 +92,7 @@ class AbstractMediaHandlerTest extends TestCase
 	public function testExistsSucceed(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
-		$this->assertTrue($this->concreteMediaHandler->exists('/path/to/file'));
+		static::assertTrue($this->concreteMediaHandler->exists('/path/to/file'));
 	}
 
 	/**
@@ -102,7 +102,7 @@ class AbstractMediaHandlerTest extends TestCase
 	public function testExistsFailed(): void
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(false);
-		$this->assertFalse($this->concreteMediaHandler->exists('/path/to/file'));
+		static::assertFalse($this->concreteMediaHandler->exists('/path/to/file'));
 	}
 
 	/**
@@ -162,7 +162,7 @@ class AbstractMediaHandlerTest extends TestCase
 		rewind($this->filesystemMock->readStream('/path/to/file'));
 
 		$hash = $this->concreteMediaHandler->determineNewFilename('/path/to/file');
-		$this->assertEquals(hash('sha256', 'file content'), $hash);
+		static::assertEquals(hash('sha256', 'file content'), $hash);
 	}
 
 	#[Group('units')]
@@ -174,7 +174,7 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
-		$this->assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
+		static::assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
 	}
 
 	#[Group('units')]
@@ -186,7 +186,7 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
-		$this->assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
+		static::assertEquals('/path/to/1234567890abcdef.txt', $newFilePath);
 	}
 
 	#[Group('units')]
@@ -198,7 +198,7 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
-		$this->assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
+		static::assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
 	}
 
 	#[Group('units')]
@@ -210,7 +210,7 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$newFilePath = $this->concreteMediaHandler->determineNewFilePath($oldFilePath, $filehash, $extension);
 
-		$this->assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
+		static::assertEquals('/path/to/1234567890abcdef.jpg', $newFilePath);
 	}
 
 	/**
@@ -245,7 +245,7 @@ class AbstractMediaHandlerTest extends TestCase
 
 		$result = $this->concreteMediaHandler->uploadFromLocal($uploadedFileMock);
 
-		$this->assertEquals('//originals/testfile.jpg', $result);
+		static::assertEquals('//originals/testfile.jpg', $result);
 	}
 
 	/**
@@ -263,6 +263,6 @@ class AbstractMediaHandlerTest extends TestCase
 			->with('GET', 'https://example.com/file', ['sink' => '/absolute/path/to//originals/file']);
 
 		$result = $this->concreteMediaHandler->uploadFromExternal($clientMock, 'https://example.com/file');
-		$this->assertEquals('//originals/file', $result);
+		static::assertEquals('//originals/file', $result);
 	}
 }

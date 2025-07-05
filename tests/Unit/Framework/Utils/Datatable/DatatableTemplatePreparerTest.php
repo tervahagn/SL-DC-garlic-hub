@@ -95,15 +95,15 @@ class DatatableTemplatePreparerTest extends TestCase
 
 		$result = $this->preparer->preparerUITemplate($datalistSections);
 
-		$this->assertEquals('Test Title', $result['main_layout']['LANG_PAGE_TITLE']);
-		$this->assertEquals(['styles.css'], $result['main_layout']['additional_css']);
-		$this->assertEquals(['footer1', 'footer2'], $result['main_layout']['footer_modules']);
+		static::assertEquals('Test Title', $result['main_layout']['LANG_PAGE_TITLE']);
+		static::assertEquals(['styles.css'], $result['main_layout']['additional_css']);
+		static::assertEquals(['footer1', 'footer2'], $result['main_layout']['footer_modules']);
 
-		$this->assertEquals('template1', $result['this_layout']['template']);
-		$this->assertEquals('/module1', $result['this_layout']['data']['FORM_ACTION']);
-		$this->assertEquals('Filter', $result['this_layout']['data']['LANG_ELEMENTS_FILTER']);
-		$this->assertEquals('asc', $result['this_layout']['data']['SORT_ORDER']);
-		$this->assertEquals('100 results found.', $result['this_layout']['data']['LANG_COUNT_SEARCH_RESULTS']);
+		static::assertEquals('template1', $result['this_layout']['template']);
+		static::assertEquals('/module1', $result['this_layout']['data']['FORM_ACTION']);
+		static::assertEquals('Filter', $result['this_layout']['data']['LANG_ELEMENTS_FILTER']);
+		static::assertEquals('asc', $result['this_layout']['data']['SORT_ORDER']);
+		static::assertEquals('100 results found.', $result['this_layout']['data']['LANG_COUNT_SEARCH_RESULTS']);
 	}
 
 	/**

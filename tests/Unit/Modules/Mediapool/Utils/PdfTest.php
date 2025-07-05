@@ -131,7 +131,7 @@ class PdfTest extends TestCase
 	public function testCreateThumbnail(): void
 	{
 		$this->imagickMock->expects($this->once())->method('setResolution')->with(150, 150);
-		$this->imagickMock->expects($this->once())->method('readImage')->with($this->stringContains('[0]'));
+		$this->imagickMock->expects($this->once())->method('readImage')->with(static::stringContains('[0]'));
 		$this->imagickMock->expects($this->once())->method('setImageAlphaChannel')->with(Imagick::ALPHACHANNEL_REMOVE);
 		$this->imagickMock->expects($this->once())->method('setImageFormat')->with('jpg');
 		$this->imagickMock->expects($this->once())->method('thumbnailImage')->with(150, 150, true);

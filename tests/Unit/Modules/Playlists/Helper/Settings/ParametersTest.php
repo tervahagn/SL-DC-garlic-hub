@@ -47,8 +47,8 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		$this->assertCount(2, $this->parameters->getCurrentParameters());
-		$this->assertSame('playlists', $this->parameters->getModuleName());
+		static::assertCount(2, $this->parameters->getCurrentParameters());
+		static::assertSame('playlists', $this->parameters->getModuleName());
 	}
 
 	/**
@@ -56,10 +56,10 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testAddPlaylistMode(): void
 	{
-		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
+		static::assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
 		$this->parameters->addPlaylistMode();
-		$this->assertCount(3, $this->parameters->getCurrentParameters());
-		$this->assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
+		static::assertCount(3, $this->parameters->getCurrentParameters());
+		static::assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_MODE));
 	}
 
 	/**
@@ -67,10 +67,10 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testAddPlaylistId(): void
 	{
-		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
+		static::assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
 		$this->parameters->addPlaylistId();
-		$this->assertCount(3, $this->parameters->getCurrentParameters());
-		$this->assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
+		static::assertCount(3, $this->parameters->getCurrentParameters());
+		static::assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PLAYLIST_ID));
 	}
 
 	/**
@@ -78,10 +78,10 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testAddTimeLimit(): void
 	{
-		$this->assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT));
+		static::assertFalse($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT));
 		$this->parameters->addTimeLimit();
-		$this->assertCount(3, $this->parameters->getCurrentParameters());
-		$this->asserttrue($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT));
+		static::assertCount(3, $this->parameters->getCurrentParameters());
+		static::asserttrue($this->parameters->hasParameter(Parameters::PARAMETER_TIME_LIMIT));
 	}
 
 }

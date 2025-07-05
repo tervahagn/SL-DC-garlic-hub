@@ -76,7 +76,7 @@ class BaseSimpleXmlTest extends TestCase
 		$xmlString = '<root><child>value</child></root>';
 		$xmlObj = new SimpleXMLElement($xmlString);
 		$this->concreteSimpleXml->setXmlObj($xmlObj);
-		$this->assertSame($xmlObj, $this->concreteSimpleXml->getXmlObj());
+		static::assertSame($xmlObj, $this->concreteSimpleXml->getXmlObj());
 	}
 
 	/**
@@ -88,7 +88,7 @@ class BaseSimpleXmlTest extends TestCase
 		$xmlString = $this->getValidTestXml();
 		$this->concreteSimpleXml->loadXmlFromStringPublic($xmlString);
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
+		static::assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
 	}
 
 	#[Group('units')]
@@ -108,7 +108,7 @@ class BaseSimpleXmlTest extends TestCase
 		file_put_contents($filePath, '<root><child>value</child></root>');
 		$this->concreteSimpleXml->loadXmlFromFilePublic($filePath);
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
+		static::assertInstanceOf(SimpleXMLElement::class, $this->concreteSimpleXml->getXmlObj());
 		unlink($filePath);
 	}
 
@@ -122,7 +122,7 @@ class BaseSimpleXmlTest extends TestCase
 	#[Group('units')]
 	public function testgetXmlErrorsAsStringEmpty(): void
 	{
-		$this->assertEmpty($this->concreteSimpleXml->getXmlErrorsAsString());
+		static::assertEmpty($this->concreteSimpleXml->getXmlErrorsAsString());
 	}
 
 	#[Group('units')]
@@ -139,22 +139,22 @@ class BaseSimpleXmlTest extends TestCase
 		catch (ModuleException $me)
 		{
 			$exception_thrown = true;
-			$this->assertEquals('Error reading/parsing xml', $me->getMessage());
-			$this->assertEquals('TestModule', $me->getModuleName());
+			static::assertEquals('Error reading/parsing xml', $me->getMessage());
+			static::assertEquals('TestModule', $me->getModuleName());
 		}
 
-		$this->assertTrue($exception_thrown);
+		static::assertTrue($exception_thrown);
 
 		$xml_errors_array = $this->concreteSimpleXml->getXmlErrorArray();
-		$this->assertGreaterThanOrEqual(4, $xml_errors_array);
+		static::assertGreaterThanOrEqual(4, $xml_errors_array);
 		foreach($xml_errors_array as $error)
 		{
-			$this->assertEquals(LIBXML_ERR_FATAL, $error->level);
+			static::assertEquals(LIBXML_ERR_FATAL, $error->level);
 		}
 
 		$xml_error_string = $this->concreteSimpleXml->getXmlErrorsAsString();
 		$expected = "Fatal Error: StartTag: invalid element name Line: 6, Column: 17";
-		$this->assertEquals($expected, $xml_error_string);
+		static::assertEquals($expected, $xml_error_string);
 
 	}
 
@@ -172,27 +172,27 @@ class BaseSimpleXmlTest extends TestCase
 		catch (ModuleException $me)
 		{
 			$exception_thrown = true;
-			$this->assertEquals('Error reading/parsing xml', $me->getMessage());
-			$this->assertEquals('TestModule', $me->getModuleName());
+			static::assertEquals('Error reading/parsing xml', $me->getMessage());
+			static::assertEquals('TestModule', $me->getModuleName());
 		}
 
-		$this->assertTrue($exception_thrown);
+		static::assertTrue($exception_thrown);
 
 		$xml_errors_array = $this->concreteSimpleXml->getXmlErrorArray();
-		$this->assertCount(2, $xml_errors_array);
+		static::assertCount(2, $xml_errors_array);
 
 		list($first_error, $second_error) = $xml_errors_array;
 
-		$this->assertEquals(LIBXML_ERR_FATAL, $first_error->level);
-		$this->assertEquals(LIBXML_ERR_FATAL, $second_error->level);
+		static::assertEquals(LIBXML_ERR_FATAL, $first_error->level);
+		static::assertEquals(LIBXML_ERR_FATAL, $second_error->level);
 
-		$this->assertEquals('Opening and ending tag mismatch: body line 7 and document', trim($first_error->message));
+		static::assertEquals('Opening and ending tag mismatch: body line 7 and document', trim($first_error->message));
 		// Php 7.4 cries
 		//	$this->assertEquals('Premature end of data in tag document line 2', trim($second_error->message));
 
 		$xml_error_string = $this->concreteSimpleXml->getXmlErrorsAsString();
 		$expected = "Fatal Error: Opening and ending tag mismatch: body line 7 and document Line: 9, Column: 13";
-		$this->assertEquals($expected, $xml_error_string);
+		static::assertEquals($expected, $xml_error_string);
 	}
 
 

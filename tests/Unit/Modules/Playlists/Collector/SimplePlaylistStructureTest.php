@@ -37,9 +37,9 @@ class SimplePlaylistStructureTest extends TestCase
 
 		$entity = new SimplePlaylistStructure($items, $prefetch, $exclusive);
 
-		$this->assertSame($items, $entity->getItems());
-		$this->assertSame($prefetch, $entity->getPrefetch());
-		$this->assertSame($exclusive, $entity->getExclusive());
+		static::assertSame($items, $entity->getItems());
+		static::assertSame($prefetch, $entity->getPrefetch());
+		static::assertSame($exclusive, $entity->getExclusive());
 	}
 
 }

@@ -89,8 +89,8 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->listMedia($nodeId);
 
-		$this->assertCount(2, $result);
-		$this->assertEquals(['key' => 'value'], $result[0]['metadata']);
+		static::assertCount(2, $result);
+		static::assertEquals(['key' => 'value'], $result[0]['metadata']);
 	}
 
 	#[Group('units')]
@@ -104,7 +104,7 @@ class MediaServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 		->with('Error listing media: No read permissions on directory:Test Node');
 
-		$this->assertEmpty($this->mediaService->listMedia($nodeId));
+		static::assertEmpty($this->mediaService->listMedia($nodeId));
 	}
 
 	#[Group('units')]
@@ -126,7 +126,7 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->fetchMedia($mediaId);
 
-		$this->assertEquals(['key' => 'value'], $result['metadata']);
+		static::assertEquals(['key' => 'value'], $result['metadata']);
 	}
 
 	#[Group('units')]
@@ -140,7 +140,7 @@ class MediaServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error fetch media: No read permissions in this directory: 1');
 
-		$this->assertEmpty($this->mediaService->fetchMedia($mediaId));
+		static::assertEmpty($this->mediaService->fetchMedia($mediaId));
 	}
 
 	#[Group('units')]
@@ -158,7 +158,7 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->updateMedia($mediaId, $filename, $description);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	#[Group('units')]
@@ -175,7 +175,7 @@ class MediaServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error updating media: No edit permissions in this directory: 2');
 
-		$this->assertEquals(0, $this->mediaService->updateMedia($mediaId, $filename, $description));
+		static::assertEquals(0, $this->mediaService->updateMedia($mediaId, $filename, $description));
 	}
 
 	#[Group('units')]
@@ -190,7 +190,7 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->deleteMedia($mediaId);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	#[Group('units')]
@@ -205,7 +205,7 @@ class MediaServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error deleting media: No edit permissions in this directory: 1');
 
-		$this->assertEquals(0, $this->mediaService->deleteMedia($mediaId));
+		static::assertEquals(0, $this->mediaService->deleteMedia($mediaId));
 	}
 
 	#[Group('units')]
@@ -224,7 +224,7 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->moveMedia($mediaId, $nodeId);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	#[Group('units')]
@@ -280,7 +280,7 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->cloneMedia($mediaId);
 
-		$this->assertEquals('new-media-id', $result['uuid']);
+		static::assertEquals('new-media-id', $result['uuid']);
 	}
 
 	#[Group('units')]
@@ -316,8 +316,8 @@ class MediaServiceTest extends TestCase
 
 		$result = $this->mediaService->fetchMediaByChecksum($checksum);
 
-		$this->assertEquals(['key' => 'value'], $result['metadata']);
-		$this->assertEquals($checksum, $result['checksum']);
+		static::assertEquals(['key' => 'value'], $result['metadata']);
+		static::assertEquals($checksum, $result['checksum']);
 	}
 
 }

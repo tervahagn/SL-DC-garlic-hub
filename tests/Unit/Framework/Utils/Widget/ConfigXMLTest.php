@@ -78,13 +78,13 @@ class ConfigXMLTest extends TestCase
 
 		$TestClass->load($xml_string)->parseBasic();
 
-		$this->assertEquals('', $TestClass->getId());
-		$this->assertEquals('', $TestClass->getNameByLanguage());
-		$this->assertEquals('icon.png', $TestClass->getIcon());
-		$this->assertEquals('index.html', $TestClass->getContent());
-		$this->assertEquals('en', $TestClass->getDefaultLanguage());
-		$this->assertEquals('ltr', $TestClass->getDefaultDirection());
-		$this->assertEquals('', $TestClass->getVersion());
+		static::assertEquals('', $TestClass->getId());
+		static::assertEquals('', $TestClass->getNameByLanguage());
+		static::assertEquals('icon.png', $TestClass->getIcon());
+		static::assertEquals('index.html', $TestClass->getContent());
+		static::assertEquals('en', $TestClass->getDefaultLanguage());
+		static::assertEquals('ltr', $TestClass->getDefaultDirection());
+		static::assertEquals('', $TestClass->getVersion());
 	}
 
 	/**
@@ -96,13 +96,13 @@ class ConfigXMLTest extends TestCase
 
 		$TestClass->parseBasic();
 
-		$this->assertEquals('', $TestClass->getId());
-		$this->assertEquals('', $TestClass->getNameByLanguage());
-		$this->assertEquals('icon.png', $TestClass->getIcon());
-		$this->assertEquals('index.html', $TestClass->getContent());
-		$this->assertEquals('en', $TestClass->getDefaultLanguage());
-		$this->assertEquals('ltr', $TestClass->getDefaultDirection());
-		$this->assertEquals('', $TestClass->getVersion());
+		static::assertEquals('', $TestClass->getId());
+		static::assertEquals('', $TestClass->getNameByLanguage());
+		static::assertEquals('icon.png', $TestClass->getIcon());
+		static::assertEquals('index.html', $TestClass->getContent());
+		static::assertEquals('en', $TestClass->getDefaultLanguage());
+		static::assertEquals('ltr', $TestClass->getDefaultDirection());
+		static::assertEquals('', $TestClass->getVersion());
 	}
 
 
@@ -117,10 +117,10 @@ class ConfigXMLTest extends TestCase
 
 		$TestClass->load($this->getBasicStandard())->parseBasic();
 
-		$this->assertEquals('http://example.org/exampleWidget', $TestClass->getId());
-		$this->assertEquals('Standard Basic Widget Configuration', $TestClass->getNameByLanguage());
-		$this->assertEquals('de', $TestClass->getDefaultLanguage());
-		$this->assertEquals('2.0 Beta', $TestClass->getVersion());
+		static::assertEquals('http://example.org/exampleWidget', $TestClass->getId());
+		static::assertEquals('Standard Basic Widget Configuration', $TestClass->getNameByLanguage());
+		static::assertEquals('de', $TestClass->getDefaultLanguage());
+		static::assertEquals('2.0 Beta', $TestClass->getVersion());
 	}
 
 	/**
@@ -134,9 +134,9 @@ class ConfigXMLTest extends TestCase
 
 		$TestClass->load($this->getBasicIAdea())->parseBasic();
 
-		$this->assertEquals('123456-7890-IAdea', $TestClass->getId());
-		$this->assertEquals('IAdea Basic Widget Configuration', $TestClass->getNameByLanguage());
-		$this->assertEquals('2.0.0.0', $TestClass->getVersion());
+		static::assertEquals('123456-7890-IAdea', $TestClass->getId());
+		static::assertEquals('IAdea Basic Widget Configuration', $TestClass->getNameByLanguage());
+		static::assertEquals('2.0.0.0', $TestClass->getVersion());
 	}
 
 	/**
@@ -149,13 +149,13 @@ class ConfigXMLTest extends TestCase
 		$TestClass = new ConfigXML();
 
 		$TestClass->load($this->getNoDefaultLanguage())->parseBasic();
-		$this->assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage());
-		$this->assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('de-De'));
-		$this->assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('de'));
-		$this->assertEquals('Όχι έτσι, βρε φίλε μου!', $TestClass->getNameByLanguage('el'));
-		$this->assertEquals('Όχι έτσι, βρε φίλε μου!', $TestClass->getNameByLanguage('el_should_check only_first_letters'));
-		$this->assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('fallback'));
-		$this->assertCount(3, $TestClass->getName());
+		static::assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage());
+		static::assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('de-De'));
+		static::assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('de'));
+		static::assertEquals('Όχι έτσι, βρε φίλε μου!', $TestClass->getNameByLanguage('el'));
+		static::assertEquals('Όχι έτσι, βρε φίλε μου!', $TestClass->getNameByLanguage('el_should_check only_first_letters'));
+		static::assertEquals('Nicht so, mein Freund!', $TestClass->getNameByLanguage('fallback'));
+		static::assertCount(3, $TestClass->getName());
 	}
 
 	/**
@@ -167,40 +167,40 @@ class ConfigXMLTest extends TestCase
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/standard_config.xml');
 		if ($xml_string === false)
-			$this->markTestSkipped('Could not read file');
+			static::markTestSkipped('Could not read file');
 
 		$TestClass = new ConfigXML();
 		$TestClass->load($xml_string)->parseBasic();
 
-		$this->assertEquals('http://example.org/exampleWidget', $TestClass->getId());
-		$this->assertEquals('en', $TestClass->getDefaultLanguage());
-		$this->assertEquals('2.0', $TestClass->getVersion());
-		$this->assertEquals('start.html', $TestClass->getContent());
-		$this->assertEquals('icon.jpg', $TestClass->getIcon());
+		static::assertEquals('http://example.org/exampleWidget', $TestClass->getId());
+		static::assertEquals('en', $TestClass->getDefaultLanguage());
+		static::assertEquals('2.0', $TestClass->getVersion());
+		static::assertEquals('start.html', $TestClass->getContent());
+		static::assertEquals('icon.jpg', $TestClass->getIcon());
 
-		$this->assertEquals('The example Widget!', $TestClass->getNameByLanguage());
-		$this->assertEquals('The example Widget!', $TestClass->getNameByLanguage('en'));
-		$this->assertEquals('Ein Beispiel Widget!', $TestClass->getNameByLanguage('de'));
-		$this->assertCount(2, $TestClass->getName());
+		static::assertEquals('The example Widget!', $TestClass->getNameByLanguage());
+		static::assertEquals('The example Widget!', $TestClass->getNameByLanguage('en'));
+		static::assertEquals('Ein Beispiel Widget!', $TestClass->getNameByLanguage('de'));
+		static::assertCount(2, $TestClass->getName());
 
-		$this->assertEquals('English description.', $TestClass->getDescriptionByLanguage());
-		$this->assertEquals('English description.', $TestClass->getDescriptionByLanguage('en'));
-		$this->assertEquals('Deutsche Beschreibung.', $TestClass->getDescriptionByLanguage('de'));
-		$this->assertCount(2, $TestClass->getDescription());
+		static::assertEquals('English description.', $TestClass->getDescriptionByLanguage());
+		static::assertEquals('English description.', $TestClass->getDescriptionByLanguage('en'));
+		static::assertEquals('Deutsche Beschreibung.', $TestClass->getDescriptionByLanguage('de'));
+		static::assertCount(2, $TestClass->getDescription());
 
-		$this->assertEquals('English license', $TestClass->getLicenseByLanguage());
-		$this->assertEquals('English license', $TestClass->getLicenseByLanguage('en'));
-		$this->assertEquals('Deutsche Lizenz', $TestClass->getLicenseByLanguage('de'));
-		$this->assertCount(2, $TestClass->getLicense());
+		static::assertEquals('English license', $TestClass->getLicenseByLanguage());
+		static::assertEquals('English license', $TestClass->getLicenseByLanguage('en'));
+		static::assertEquals('Deutsche Lizenz', $TestClass->getLicenseByLanguage('de'));
+		static::assertCount(2, $TestClass->getLicense());
 		$expected_author = array('href' => 'http://foo-bar.example.org/',
 			'email' => 'foo-bar@example.org',
 			'data'  => 'Foo Bar Corp'
 		);
-		$this->assertEquals($expected_author, $TestClass->getAuthor());
+		static::assertEquals($expected_author, $TestClass->getAuthor());
 
 		$TestClass->parsePreferences();
 		$expect_preference = array('url' => array());
-		$this->assertEquals($expect_preference, $TestClass->getPreferences());
+		static::assertEquals($expect_preference, $TestClass->getPreferences());
 	}
 
 	/**
@@ -212,56 +212,56 @@ class ConfigXMLTest extends TestCase
 	{
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
 		if ($xml_string === false)
-			$this->markTestSkipped('Could not read file');
+			static::markTestSkipped('Could not read file');
 
 		$TestClass = new ConfigXML();
 		$TestClass->load($xml_string)->parseBasic();
 
-		$this->assertEquals('4679064D-0C36-4FCB-97EE-F9A00F8D77C2', $TestClass->getId());
-		$this->assertEquals('en', $TestClass->getDefaultLanguage());
-		$this->assertEquals('1.0.0.0', $TestClass->getVersion());
-		$this->assertEquals('index.html', $TestClass->getContent());
-		$this->assertEquals('icon.png', $TestClass->getIcon());
+		static::assertEquals('4679064D-0C36-4FCB-97EE-F9A00F8D77C2', $TestClass->getId());
+		static::assertEquals('en', $TestClass->getDefaultLanguage());
+		static::assertEquals('1.0.0.0', $TestClass->getVersion());
+		static::assertEquals('index.html', $TestClass->getContent());
+		static::assertEquals('icon.png', $TestClass->getIcon());
 
-		$this->assertEquals('Rss', $TestClass->getNameByLanguage());
-		$this->assertCount(1, $TestClass->getName());
+		static::assertEquals('Rss', $TestClass->getNameByLanguage());
+		static::assertCount(1, $TestClass->getName());
 
 		$TestClass->parsePreferences();
 		$preferences = $TestClass->getPreferences();
-		$this->assertCount(10, $preferences);
+		static::assertCount(10, $preferences);
 
 		$expected = array('types' => 'text', 'mandatory' => 'true', 'tooltip' => 'e.g. http://rss.cnn.com/rss/cnn_topstories.rss');
-		$this->assertEquals($expected, $preferences['urls']);
+		static::assertEquals($expected, $preferences['urls']);
 
 		$expected = array('types' => 'radio', 'default' => 'ltr', 'options' => array('ltr' => 'ltr', 'rtl' => 'rtl'));
-		$this->assertEquals($expected, $preferences['WritingDirection']);
+		static::assertEquals($expected, $preferences['WritingDirection']);
 
 		$expected = array('types' => 'checkbox', 'default' => 'true');
-		$this->assertEquals($expected, $preferences['showSweepHand']);
+		static::assertEquals($expected, $preferences['showSweepHand']);
 
 		$expected = array('types' => 'color', 'default' => '#008080', 'previewbg' => 'true');
-		$this->assertEquals($expected, $preferences['BackgroundColor']);
+		static::assertEquals($expected, $preferences['BackgroundColor']);
 
 		$expected = array('types' => 'colorOpacity', 'value' => '100');
-		$this->assertEquals($expected, $preferences['BackgroundOpacity']);
+		static::assertEquals($expected, $preferences['BackgroundOpacity']);
 
 		$expected = array('types' => 'color', 'default' => '#ffffff');
-		$this->assertEquals($expected, $preferences['Color']);
+		static::assertEquals($expected, $preferences['Color']);
 
 		$expected = array('types' => 'integer', 'value' => '', 'notes' => array('en' => 'Control the length of the RSS title.', 'de' => 'Steuert die Länge des RSS-Titels.'));
-		$this->assertEquals($expected, $preferences['Title-Length']);
+		static::assertEquals($expected, $preferences['Title-Length']);
 
 		$expected = array('types' => 'integer', 'value' => '', 'notes' => array('en' => 'Control the length of the RSS content. 0 or non-integer words will display the full length of the content.'));
-		$this->assertEquals($expected, $preferences['Content-Length']);
+		static::assertEquals($expected, $preferences['Content-Length']);
 
 		$expected = array('types' => 'combo',
 			'mandatory' => 'true',
 			'default' => 'New York',
 			'options' => array('Athens'=>'Athens','Hamburg'=>'Hamburg','London'=>'London','New York'=>'New York','Beijing'=>'Beijing','Paris'=>'Paris','Sao Paulo'=>'Sao Paulo','Taipei'=>'Taipei','Tokyo'=>'Tokyo'));
-		$this->assertEquals($expected, $preferences['cities']);
+		static::assertEquals($expected, $preferences['cities']);
 
 		$expected = array('types' => 'list', 'default' => 'right', 'options' => array('right' => 'right', 'center' => 'center', 'left' => 'left'));
-		$this->assertEquals($expected, $preferences['align']);
+		static::assertEquals($expected, $preferences['align']);
 	}
 
 	/**
@@ -280,7 +280,7 @@ class ConfigXMLTest extends TestCase
 		$TestClass->load($xml_string)->parseBasic();
 
 		$TestClass->parsePreferences();
-		$this->assertEmpty($TestClass->getPreferences());
+		static::assertEmpty($TestClass->getPreferences());
 	}
 
 	/**
@@ -304,7 +304,7 @@ class ConfigXMLTest extends TestCase
 		$TestClass->load($xml_string)->parseBasic();
 
 		$TestClass->parsePreferences();
-		$this->assertEmpty($TestClass->getPreferences());
+		static::assertEmpty($TestClass->getPreferences());
 
 	}
 
@@ -326,7 +326,7 @@ class ConfigXMLTest extends TestCase
 		$TestClass->load($xml_string)->parseBasic();
 
 		$TestClass->parsePreferences();
-		$this->assertEmpty($TestClass->getPreferences());
+		static::assertEmpty($TestClass->getPreferences());
 	}
 
 	/**
@@ -339,12 +339,12 @@ class ConfigXMLTest extends TestCase
 		$xml_string = file_get_contents($this->baseDirectory.'/iadea_config.xml');
 		if ($xml_string === false)
 		{
-			$this->markTestSkipped('Could not read file');
+			static::markTestSkipped('Could not read file');
 		}
 
 		$TestClass = new ConfigXML();
 
-		$this->assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
+		static::assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
 	/**
@@ -357,7 +357,7 @@ class ConfigXMLTest extends TestCase
 		$xml_string = $this->getReadOnly();
 		$TestClass = new ConfigXML();
 
-		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
+		static::assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
 	/**
@@ -370,7 +370,7 @@ class ConfigXMLTest extends TestCase
 		$xml_string = $this->getBasicStandard();
 		$TestClass = new ConfigXML();
 
-		$this->assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
+		static::assertFalse($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
 	#[Group('units')]
@@ -378,7 +378,7 @@ class ConfigXMLTest extends TestCase
 	{
 		$TestClass = new ConfigXML();
 
-		$this->assertFalse($TestClass->hasEditablePreferences());
+		static::assertFalse($TestClass->hasEditablePreferences());
 	}
 
 
@@ -392,7 +392,7 @@ class ConfigXMLTest extends TestCase
 		$xml_string = $this->getNoReadOnly();
 		$TestClass = new ConfigXML();
 
-		$this->assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
+		static::assertTrue($TestClass->load($xml_string)->hasEditablePreferences());
 	}
 
 

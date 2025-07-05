@@ -80,7 +80,7 @@ class HeaderPreparerTest extends TestCase
 		$this->headerPreparer->configure($this->filterParametersMock, $site, $languageModules);
 
 		// @phpstan-ignore-next-line
-		$this->assertNotNull($this->headerPreparer);
+		static::assertNotNull($this->headerPreparer);
 	}
 
 	/**
@@ -135,7 +135,7 @@ class HeaderPreparerTest extends TestCase
 
 		$result = $this->headerPreparer->prepareTableHeader([$headerFieldMock]);
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 	/**
@@ -190,7 +190,7 @@ class HeaderPreparerTest extends TestCase
 
 		$result = $this->headerPreparer->prepareTableHeader([$headerFieldMock]);
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 	/**
@@ -245,7 +245,7 @@ class HeaderPreparerTest extends TestCase
 
 		$result = $this->headerPreparer->prepareTableHeader([$headerFieldMock]);
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 
@@ -278,7 +278,7 @@ class HeaderPreparerTest extends TestCase
 
 		$result = $this->headerPreparer->prepareTableHeader([$headerFieldMock]);
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 	/**
@@ -295,7 +295,7 @@ class HeaderPreparerTest extends TestCase
 
 		$result = $this->headerPreparer->prepareTableHeader([]);
 
-		$this->assertEquals($expectedResult, $result);
+		static::assertEquals($expectedResult, $result);
 	}
 
 }

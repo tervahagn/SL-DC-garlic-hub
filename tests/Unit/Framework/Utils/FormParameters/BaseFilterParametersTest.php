@@ -71,7 +71,7 @@ class BaseFilterParametersTest extends TestCase
 	public function testSetParameterDefaultValuesSuccessfullySetsDefault(): void
 	{
 		$this->baseFilterParameters->setParameterDefaultValues('column_name');
-		$this->assertSame('column_name', $this->baseFilterParameters->getDefaultValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN));
+		static::assertSame('column_name', $this->baseFilterParameters->getDefaultValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN));
 	}
 
 
@@ -84,22 +84,22 @@ class BaseFilterParametersTest extends TestCase
 		$this->baseFilterParameters->setValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE, 10);
 		$this->baseFilterParameters->setValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE, 10);
 
-		$this->assertSame(
+		static::assertSame(
 			10,
 			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE)
 		);
-		$this->assertSame(
+		static::assertSame(
 			10,
 			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE)
 		);
 
 		$this->baseFilterParameters->setElementsParametersToNull();
 
-		$this->assertSame(
+		static::assertSame(
 			0,
 			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE)
 		);
-		$this->assertSame(
+		static::assertSame(
 			0,
 			$this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE)
 		);
@@ -110,7 +110,7 @@ class BaseFilterParametersTest extends TestCase
 	{
 		$this->baseFilterParameters->addCompany();
 
-		$this->assertTrue($this->baseFilterParameters->hasParameter(BaseFilterParametersInterface::PARAMETER_COMPANY_ID));
+		static::assertTrue($this->baseFilterParameters->hasParameter(BaseFilterParametersInterface::PARAMETER_COMPANY_ID));
 	}
 
 	/**
@@ -136,9 +136,9 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->baseFilterParameters->parseInputFilterAllUsers();
 
-		$this->assertSame(15, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
-		$this->assertSame('name', $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN));
-		$this->assertSame('DESC', $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER));
+		static::assertSame(15, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
+		static::assertSame('name', $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN));
+		static::assertSame('DESC', $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_ORDER));
 	}
 
 	/**
@@ -155,7 +155,7 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->baseFilterParameters->parseInputFilterAllUsers();
 
-		$this->assertEmpty($this->baseFilterParameters->getCurrentParameters());
+		static::assertEmpty($this->baseFilterParameters->getCurrentParameters());
 	}
 
 
@@ -173,8 +173,8 @@ class BaseFilterParametersTest extends TestCase
 
 		$this->baseFilterParameters->parseInputFilterAllUsers();
 
-		$this->assertSame(10, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
-		$this->assertSame(1, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE));
+		static::assertSame(10, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
+		static::assertSame(1, $this->baseFilterParameters->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE));
 	}
 
 	/**
@@ -194,8 +194,8 @@ class BaseFilterParametersTest extends TestCase
 
 		$baseFilterParameters1->parseInputFilterAllUsers();
 
-		$this->assertSame(10, $baseFilterParameters1->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
-		$this->assertSame(1, $baseFilterParameters1->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE));
+		static::assertSame(10, $baseFilterParameters1->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PER_PAGE));
+		static::assertSame(1, $baseFilterParameters1->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_ELEMENTS_PAGE));
 	}
 
 }

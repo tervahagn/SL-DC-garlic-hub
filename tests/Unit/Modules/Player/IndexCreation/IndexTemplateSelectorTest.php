@@ -54,7 +54,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::XMP2XXX, $result);
+		static::assertSame(TemplateIndexFiles::XMP2XXX, $result);
 	}
 
 	#[Group('units')]
@@ -66,7 +66,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::XMP2XXX, $result);
+		static::assertSame(TemplateIndexFiles::XMP2XXX, $result);
 	}
 
 	#[Group('units')]
@@ -82,7 +82,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::GARLIC, $result);
+		static::assertSame(TemplateIndexFiles::GARLIC, $result);
 	}
 
 	#[Group('units')]
@@ -98,7 +98,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::SIMPLE, $result);
+		static::assertSame(TemplateIndexFiles::SIMPLE, $result);
 	}
 
 	#[Group('units')]
@@ -110,7 +110,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::SIMPLE, $result);
+		static::assertSame(TemplateIndexFiles::SIMPLE, $result);
 	}
 
 	#[Group('units')]
@@ -122,7 +122,7 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::SIMPLE, $result);
+		static::assertSame(TemplateIndexFiles::SIMPLE, $result);
 	}
 	#[Group('units')]
 	public function testSelectReturnsSimpleForUnknownModel(): void
@@ -133,6 +133,6 @@ class IndexTemplateSelectorTest extends TestCase
 
 		$result = $this->selector->select($this->playerEntityMock);
 
-		$this->assertSame(TemplateIndexFiles::SIMPLE, $result);
+		static::assertSame(TemplateIndexFiles::SIMPLE, $result);
 	}
 }

@@ -63,34 +63,34 @@ class ConfigTest extends TestCase
 
         $result = $this->config->getConfigValue($key, $module, 'section');
 
-        $this->assertEquals($value, $result);
+        static::assertEquals($value, $result);
     }
 
 	#[Group('units')]
 	public function testGetEnv(): void
 	{
-		$this->assertEquals('value_env', $this->config->getEnv('key_env'));
-		$this->assertEmpty($this->config->getEnv('manamana'));
+		static::assertEquals('value_env', $this->config->getEnv('key_env'));
+		static::assertEmpty($this->config->getEnv('manamana'));
 	}
 
 	#[Group('units')]
 	public function testGetEdition(): void
 	{
 		$config           = new Config($this->configLoaderMock, [], ['APP_PLATFORM_EDITION' => 'enterprise']);
-		$this->assertEquals(Config::PLATFORM_EDITION_ENTERPRISE, $config->getEdition());
+		static::assertEquals(Config::PLATFORM_EDITION_ENTERPRISE, $config->getEdition());
 	}
 
 	#[Group('units')]
 	public function testGetEditionDefault(): void
 	{
-		$this->assertEquals(Config::PLATFORM_EDITION_EDGE, $this->config->getEdition());
+		static::assertEquals(Config::PLATFORM_EDITION_EDGE, $this->config->getEdition());
 	}
 
 	#[Group('units')]
 	public function testGetPaths(): void
 	{
-		$this->assertEquals('value_path', $this->config->getPaths('key_path'));
-		$this->assertEmpty($this->config->getPaths('manamana'));
+		static::assertEquals('value_path', $this->config->getPaths('key_path'));
+		static::assertEmpty($this->config->getPaths('manamana'));
 
 	}
 
@@ -110,42 +110,42 @@ class ConfigTest extends TestCase
 
         $result = $this->config->getConfigValue($key, $module, 'section');
 
-        $this->assertNull($result);
+        static::assertNull($result);
     }
 
 	#[Group('units')]
 	public function testLogLevelIsDebugInDevEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'dev']);
-		$this->assertEquals(Level::Debug, $config->getLogLevel());
+		static::assertEquals(Level::Debug, $config->getLogLevel());
 	}
 
 	#[Group('units')]
 	public function testLogLevelIsInfoInTestEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'test']);
-		$this->assertEquals(Level::Info, $config->getLogLevel());
+		static::assertEquals(Level::Info, $config->getLogLevel());
 	}
 
 	#[Group('units')]
 	public function testLogLevelIsErrorInProdEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'prod']);
-		$this->assertEquals(Level::Error, $config->getLogLevel());
+		static::assertEquals(Level::Error, $config->getLogLevel());
 	}
 
 	#[Group('units')]
 	public function testLogLevelIsWarningInUnknownEnvironment(): void
 	{
 		$config = new Config($this->configLoaderMock, [], ['APP_ENV' => 'unknown']);
-		$this->assertEquals(Level::Info, $config->getLogLevel());
+		static::assertEquals(Level::Info, $config->getLogLevel());
 	}
 
 	#[Group('units')]
 	public function logLevelIsWarningWhenEnvIsNotSet(): void
 	{
 		$config = new Config($this->configLoaderMock, [], []);
-		$this->assertEquals(Level::Warning, $config->getLogLevel());
+		static::assertEquals(Level::Warning, $config->getLogLevel());
 	}
 
 	/**
@@ -164,7 +164,7 @@ class ConfigTest extends TestCase
 
         $result = $this->config->getFullConfigDataByModule($module);
 
-        $this->assertEquals($configData, $result);
+        static::assertEquals($configData, $result);
     }
 
     /**
@@ -189,8 +189,8 @@ class ConfigTest extends TestCase
         $this->config->preloadModules($modules);
 
         // check if configuration loaded correctly
-        $this->assertEquals($configData['module1'], $this->config->getFullConfigDataByModule('module1'));
-        $this->assertEquals($configData['module2'], $this->config->getFullConfigDataByModule('module2'));
+        static::assertEquals($configData['module1'], $this->config->getFullConfigDataByModule('module1'));
+        static::assertEquals($configData['module2'], $this->config->getFullConfigDataByModule('module2'));
     }
 
     /**
@@ -214,8 +214,8 @@ class ConfigTest extends TestCase
         // 2nd request from cache
         $result2 = $this->config->getFullConfigDataByModule($module);
 
-        $this->assertEquals($configData, $result1);
-        $this->assertEquals($configData, $result2);
+        static::assertEquals($configData, $result1);
+        static::assertEquals($configData, $result2);
     }
 
     #[Group('units')]

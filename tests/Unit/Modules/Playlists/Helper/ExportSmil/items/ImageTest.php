@@ -68,7 +68,7 @@ class ImageTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</img>'."\n";
 
-		$this->assertSame($expected, $this->image->getSmilElementTag());
+		static::assertSame($expected, $this->image->getSmilElementTag());
 	}
 
 }

@@ -71,7 +71,7 @@ class ItemsServiceTest extends TestCase
 	public function testGetItemsRepository(): void
 	{
 		$result = $this->itemsService->getItemsRepository();
-		$this->assertSame($this->itemsRepositoryMock, $result);
+		static::assertSame($this->itemsRepositoryMock, $result);
 	}
 
 	/**
@@ -107,11 +107,11 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadByPlaylistForExport($playlist, $edition);
 
-		$this->assertArrayHasKey('playlist_metrics', $result);
-		$this->assertArrayHasKey('items', $result);
+		static::assertArrayHasKey('playlist_metrics', $result);
+		static::assertArrayHasKey('items', $result);
 
-		$this->assertEquals($metrics, $result['playlist_metrics']);
-		$this->assertCount(2, $result['items']);
+		static::assertEquals($metrics, $result['playlist_metrics']);
+		static::assertCount(2, $result['items']);
 	}
 
 	/**
@@ -142,11 +142,11 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadByPlaylistForExport($playlist, $edition);
 
-		$this->assertArrayHasKey('playlist_metrics', $result);
-		$this->assertArrayHasKey('items', $result);
+		static::assertArrayHasKey('playlist_metrics', $result);
+		static::assertArrayHasKey('items', $result);
 
-		$this->assertEquals(['metric1' => 'value1'], $result['playlist_metrics']);
-		$this->assertCount(0, $result['items']);
+		static::assertEquals(['metric1' => 'value1'], $result['playlist_metrics']);
+		static::assertCount(0, $result['items']);
 	}
 
 	/**
@@ -187,8 +187,8 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertArrayHasKey('default_duration', $result);
-		$this->assertEquals(120, $result['default_duration']);
+		static::assertArrayHasKey('default_duration', $result);
+		static::assertEquals(120, $result['default_duration']);
 	}
 
 	/**
@@ -229,8 +229,8 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertArrayHasKey('default_duration', $result);
-		$this->assertEquals(17, $result['default_duration']);
+		static::assertArrayHasKey('default_duration', $result);
+		static::assertEquals(17, $result['default_duration']);
 	}
 
 	/**
@@ -304,8 +304,8 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertArrayHasKey('default_duration', $result);
-		$this->assertEquals(150, $result['default_duration']);
+		static::assertArrayHasKey('default_duration', $result);
+		static::assertEquals(150, $result['default_duration']);
 	}
 
 
@@ -342,8 +342,8 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->fetchItemById($itemId);
 
-		$this->assertArrayHasKey('default_duration', $result);
-		$this->assertEquals(100, $result['default_duration']);
+		static::assertArrayHasKey('default_duration', $result);
+		static::assertEquals(100, $result['default_duration']);
 	}
 
 	/**
@@ -382,9 +382,9 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertArrayHasKey('items', $result);
-		$this->assertCount(1, $result['items']);
-		$this->assertEquals('/path/to/thumbnails/video_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
+		static::assertArrayHasKey('items', $result);
+		static::assertCount(1, $result['items']);
+		static::assertEquals('/path/to/thumbnails/video_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
 	}
 
 	/**
@@ -423,9 +423,9 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertArrayHasKey('items', $result);
-		$this->assertCount(1, $result['items']);
-		$this->assertEquals('/path/to/thumbnails/image_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
+		static::assertArrayHasKey('items', $result);
+		static::assertCount(1, $result['items']);
+		static::assertEquals('/path/to/thumbnails/image_checksum.jpg', $result['items'][0]['paths']['thumbnail']);
 	}
 
 	/**
@@ -465,9 +465,9 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertArrayHasKey('items', $result);
-		$this->assertCount(1, $result['items']);
-		$this->assertEquals('/path/to/thumbnails/image_checksum.svg', $result['items'][0]['paths']['thumbnail']);
+		static::assertArrayHasKey('items', $result);
+		static::assertCount(1, $result['items']);
+		static::assertEquals('/path/to/thumbnails/image_checksum.svg', $result['items'][0]['paths']['thumbnail']);
 	}
 
 
@@ -506,9 +506,9 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertArrayHasKey('items', $result);
-		$this->assertCount(1, $result['items']);
-		$this->assertEquals('public/images/icons/playlist.svg', $result['items'][0]['paths']['thumbnail']);
+		static::assertArrayHasKey('items', $result);
+		static::assertCount(1, $result['items']);
+		static::assertEquals('public/images/icons/playlist.svg', $result['items'][0]['paths']['thumbnail']);
 	}
 
 	/**
@@ -539,8 +539,8 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->loadItemsByPlaylistIdForComposer($playlistId);
 
-		$this->assertArrayHasKey('items', $result);
-		$this->assertCount(0, $result['items']);
+		static::assertArrayHasKey('items', $result);
+		static::assertCount(0, $result['items']);
 	}
 
 	/**
@@ -577,7 +577,7 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->updateField($itemId, $fieldName, $fieldValue);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 
@@ -606,7 +606,7 @@ class ItemsServiceTest extends TestCase
 			]);
 		$this->itemsRepositoryMock->expects($this->once())->method('commitTransaction');
 
-		$this->assertTrue($this->itemsService->updateItemOrder($playlistId, $itemsOrder));
+		static::assertTrue($this->itemsService->updateItemOrder($playlistId, $itemsOrder));
 	}
 
 	/**
@@ -635,7 +635,7 @@ class ItemsServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error item reorder: Item order for item_id 3 could not be updated');
 
-		$this->assertFalse($this->itemsService->updateItemOrder($playlistId, $itemsOrder));
+		static::assertFalse($this->itemsService->updateItemOrder($playlistId, $itemsOrder));
 	}
 
 	/**
@@ -686,10 +686,10 @@ class ItemsServiceTest extends TestCase
 
 		$result = $this->itemsService->delete($playlistId, $itemId);
 
-		$this->assertArrayHasKey('playlist_metrics', $result);
-		$this->assertArrayHasKey('delete_id', $result);
-		$this->assertEquals($metrics, $result['playlist_metrics']);
-		$this->assertEquals(1, $result['delete_id']);
+		static::assertArrayHasKey('playlist_metrics', $result);
+		static::assertArrayHasKey('delete_id', $result);
+		static::assertEquals($metrics, $result['playlist_metrics']);
+		static::assertEquals(1, $result['delete_id']);
 	}
 
 	/**
@@ -719,7 +719,7 @@ class ItemsServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error delete item: Playlist is not accessible');
 
-		$this->assertEmpty($this->itemsService->delete($playlistId, $itemId));
+		static::assertEmpty($this->itemsService->delete($playlistId, $itemId));
 	}
 
 	/**
@@ -754,7 +754,7 @@ class ItemsServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error delete item: Item with idem_id: '.$itemId.' not found');
 
-		$this->assertEmpty($this->itemsService->delete($playlistId, $itemId));
+		static::assertEmpty($this->itemsService->delete($playlistId, $itemId));
 	}
 
 	/**
@@ -801,7 +801,7 @@ class ItemsServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error delete item: Item could not deleted');
 
-		$this->assertEmpty($this->itemsService->delete($playlistId, $itemId));
+		static::assertEmpty($this->itemsService->delete($playlistId, $itemId));
 	}
 
 	/**

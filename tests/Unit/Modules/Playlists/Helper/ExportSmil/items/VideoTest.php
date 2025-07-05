@@ -72,7 +72,7 @@ class VideoTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</video>'."\n";
 
-		$this->assertSame($expected, $this->video->getSmilElementTag());
+		static::assertSame($expected, $this->video->getSmilElementTag());
 	}
 
 	#[Group('units')]
@@ -92,6 +92,6 @@ class VideoTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="stream" value="true" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</video>'."\n";
 
-		$this->assertSame($expected, $this->video->getSmilElementTag());
+		static::assertSame($expected, $this->video->getSmilElementTag());
 	}
 }

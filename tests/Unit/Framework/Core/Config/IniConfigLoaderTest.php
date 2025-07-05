@@ -44,7 +44,7 @@ class IniConfigLoaderTest extends TestCase
     {
         $loader = new IniConfigLoader($this->baseDirectory);
         $result = $loader->load('valid');
-        $this->assertArrayHasKey('edition', $result);
+        static::assertArrayHasKey('edition', $result);
     }
 
     #[Group('units')]

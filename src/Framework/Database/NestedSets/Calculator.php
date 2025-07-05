@@ -25,9 +25,9 @@ use App\Framework\Exceptions\DatabaseException;
 
 class Calculator
 {
-	const string REGION_BEFORE = 'before';
-	const string REGION_AFTER = 'after';
-	const string REGION_APPENDCHILD = 'appendChild';
+	public const string REGION_BEFORE = 'before';
+	public const string REGION_AFTER = 'after';
+	public const string REGION_APPENDCHILD = 'appendChild';
 
 	/**
 	 * @param array<string,mixed> $node

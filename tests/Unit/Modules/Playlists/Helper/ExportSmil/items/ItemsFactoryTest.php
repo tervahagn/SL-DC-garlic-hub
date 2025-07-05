@@ -72,7 +72,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
-		$this->assertInstanceOf(Image::class, $result);
+		static::assertInstanceOf(Image::class, $result);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
-		$this->assertInstanceOf(Video::class, $result);
+		static::assertInstanceOf(Video::class, $result);
 	}
 
 	/**
@@ -112,7 +112,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
-		$this->assertInstanceOf(Audio::class, $result);
+		static::assertInstanceOf(Audio::class, $result);
 	}
 
 	/**
@@ -131,7 +131,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
-		$this->assertInstanceOf(Widget::class, $result);
+		static::assertInstanceOf(Widget::class, $result);
 	}
 
 	/**
@@ -151,7 +151,7 @@ class ItemsFactoryTest extends TestCase
 		];
 
 		$result = $this->itemsFactory->createItem($item);
-		$this->assertInstanceOf(Text::class, $result);
+		static::assertInstanceOf(Text::class, $result);
 	}
 
 	/**
@@ -189,7 +189,7 @@ class ItemsFactoryTest extends TestCase
 
 		$result = $this->itemsFactory->createItem($item);
 		// @phpstan-ignore-next-line
-		$this->assertInstanceOf(ItemInterface::class, $result);
+		static::assertInstanceOf(ItemInterface::class, $result);
 	}
 
 	/**

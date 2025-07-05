@@ -65,7 +65,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->findAllForDashboard();
 
-		$this->assertSame(['active' => 5, 'inactive' => 3, 'pending' => 2], $result);
+		static::assertSame(['active' => 5, 'inactive' => 3, 'pending' => 2], $result);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->findAllForDashboard();
 
-		$this->assertSame(['active' => 0, 'inactive' => 0, 'pending' => 0], $result);
+		static::assertSame(['active' => 0, 'inactive' => 0, 'pending' => 0], $result);
 	}
 
 	#[Group('units')]
@@ -100,7 +100,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->replaceMasterPlaylist(1, 10);
 
-		$this->assertSame(['affected' => 1, 'playlist_name' => 'Master Playlist'], $result);
+		static::assertSame(['affected' => 1, 'playlist_name' => 'Master Playlist'], $result);
 	}
 
 	#[Group('units')]
@@ -122,7 +122,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->replaceMasterPlaylist(1, 10);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	#[Group('units')]
@@ -140,7 +140,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->replaceMasterPlaylist(999, 10);
 
-		$this->assertSame([], $result);
+		static::assertSame([], $result);
 	}
 
 	#[Group('units')]
@@ -158,7 +158,7 @@ class PlayerServiceTest extends TestCase
 
 		$result = $this->service->replaceMasterPlaylist(1, 0);
 
-		$this->assertSame(['affected' => 1, 'playlist_name' => ''], $result);
+		static::assertSame(['affected' => 1, 'playlist_name' => ''], $result);
 	}
 
 

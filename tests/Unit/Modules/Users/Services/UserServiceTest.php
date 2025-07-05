@@ -81,12 +81,12 @@ class UserServiceTest extends TestCase
 		$this->userMainRepositoryMock
 			->expects($this->once())
 			->method('update')
-			->with($UID, $this->equalTo($expectedData))
+			->with($UID, static::equalTo($expectedData))
 			->willReturn(1);
 
 		$result = $this->usersService->updateUserStats($UID, $sessionId);
 
-		$this->assertEquals(1, $result);
+		static::assertEquals(1, $result);
 	}
 
 	/**
@@ -100,12 +100,12 @@ class UserServiceTest extends TestCase
 		$this->userMainRepositoryMock
 			->expects($this->once())
 			->method('update')
-			->with($UID, $this->arrayHasKey('login_time'))
+			->with($UID, static::arrayHasKey('login_time'))
 			->willReturn(0);
 
 		$result = $this->usersService->updateUserStats($UID, $sessionId);
 
-		$this->assertEquals(0, $result);
+		static::assertEquals(0, $result);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class UserServiceTest extends TestCase
 
 		$result = $this->usersService->findUser($identifier);
 
-		$this->assertEquals($mockUserData, $result);
+		static::assertEquals($mockUserData, $result);
 	}
 
 	/**
@@ -140,7 +140,7 @@ class UserServiceTest extends TestCase
 			->with($identifier)
 			->willReturn([]);
 
-		$this->assertEmpty($this->usersService->findUser($identifier));
+		static::assertEmpty($this->usersService->findUser($identifier));
 	}
 
 	/**
@@ -165,7 +165,7 @@ class UserServiceTest extends TestCase
 			->willReturn($mockUserEntity);
 
 		$result = $this->usersService->getUserById($UID);
-		$this->assertEquals($mockUserEntity, $result);
+		static::assertEquals($mockUserEntity, $result);
 	}
 
 	/**
@@ -192,7 +192,7 @@ class UserServiceTest extends TestCase
 
 		$result = $this->usersService->getUserById($UID);
 
-		$this->assertEquals($mockUserEntity, $result);
+		static::assertEquals($mockUserEntity, $result);
 	}
 
 	/**

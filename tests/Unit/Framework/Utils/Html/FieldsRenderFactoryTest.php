@@ -84,7 +84,7 @@ class FieldsRenderFactoryTest extends TestCase
 		$renderedText = '<input type="text" name="" id="" value="" aria-describedby="error_">';
 		$textRenderFieldMock->method('render');
 
-		$this->assertSame($renderedText,  $this->fieldsRenderFactory->getRenderer($textFieldMock));
+		static::assertSame($renderedText,  $this->fieldsRenderFactory->getRenderer($textFieldMock));
 	}
 
 	#[Group('units')]

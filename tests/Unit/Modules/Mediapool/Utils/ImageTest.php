@@ -86,7 +86,7 @@ class ImageTest extends TestCase
 	{
 		$this->image->checkFileBeforeUpload(20 * 1024 * 1024);
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true); // If no exception is thrown, the test passes
+		static::assertTrue(true); // If no exception is thrown, the test passes
 	}
 
 	/**
@@ -169,7 +169,7 @@ class ImageTest extends TestCase
 
 		$this->image->checkFileAfterUpload('/path/to/file');
 		// @phpstan-ignore-next-line
-		$this->assertTrue(true); // If no exception is thrown, the test passes
+		static::assertTrue(true); // If no exception is thrown, the test passes
 	}
 
 	/**

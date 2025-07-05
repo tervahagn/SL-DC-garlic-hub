@@ -78,7 +78,7 @@ class MigrateCommandTest extends TestCase
 			->with('<info>Migration succeed.</info>');
 
 		$result = $this->command->run($this->inputMock, $this->outputMock);
-		$this->assertSame(0, $result); // Command::SUCCESS
+		static::assertSame(0, $result); // Command::SUCCESS
 	}
 
 	/**
@@ -105,7 +105,7 @@ class MigrateCommandTest extends TestCase
 			->with('<info>Migration succeed.</info>');
 
 		$result = $this->command->run($this->inputMock, $this->outputMock);
-		$this->assertSame(0, $result); // Command::SUCCESS
+		static::assertSame(0, $result); // Command::SUCCESS
 	}
 
 	/**
@@ -131,7 +131,7 @@ class MigrateCommandTest extends TestCase
 
 		$result = $this->command->run($this->inputMock, $this->outputMock);
 
-		$this->assertSame(1, $result); // Command::FAILURE
+		static::assertSame(1, $result); // Command::FAILURE
 	}
 
 	/**
@@ -158,6 +158,6 @@ class MigrateCommandTest extends TestCase
 			->with('<comment>No migrations found to apply.</comment>');
 
 		$result = $this->command->run($this->inputMock, $this->outputMock);
-		$this->assertSame(0, $result); // Command::SUCCESS
+		static::assertSame(0, $result); // Command::SUCCESS
 	}
 }

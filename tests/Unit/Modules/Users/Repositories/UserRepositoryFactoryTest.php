@@ -52,13 +52,13 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$result = $this->factory->create();
 
-		$this->assertArrayHasKey('contact', $result);
+		static::assertArrayHasKey('contact', $result);
 
-		$this->assertArrayHasKey('stats', $result);
+		static::assertArrayHasKey('stats', $result);
 
-		$this->assertArrayHasKey('vip', $result);
+		static::assertArrayHasKey('vip', $result);
 
-		$this->assertArrayHasKey('security', $result);
+		static::assertArrayHasKey('security', $result);
 	}
 
 	#[Group('units')]
@@ -68,10 +68,10 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$result = $this->factory->create();
 
-		$this->assertArrayHasKey('contact', $result);
-		$this->assertArrayHasKey('stats', $result);
-		$this->assertArrayNotHasKey('vip', $result);
-		$this->assertArrayNotHasKey('security', $result);
+		static::assertArrayHasKey('contact', $result);
+		static::assertArrayHasKey('stats', $result);
+		static::assertArrayNotHasKey('vip', $result);
+		static::assertArrayNotHasKey('security', $result);
 	}
 
 	#[Group('units')]
@@ -81,9 +81,9 @@ class UserRepositoryFactoryTest extends TestCase
 
 		$result = $this->factory->create();
 
-		$this->assertArrayNotHasKey('contact', $result);
-		$this->assertArrayNotHasKey('stats', $result);
-		$this->assertArrayNotHasKey('vip', $result);
-		$this->assertArrayNotHasKey('security', $result);
+		static::assertArrayNotHasKey('contact', $result);
+		static::assertArrayNotHasKey('stats', $result);
+		static::assertArrayNotHasKey('vip', $result);
+		static::assertArrayNotHasKey('security', $result);
 	}
 }

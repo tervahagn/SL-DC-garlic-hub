@@ -52,8 +52,8 @@ class ParametersTest extends TestCase
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		$this->assertCount(7, $this->parameters->getCurrentParameters());
-		$this->assertSame('player', $this->parameters->getModuleName());
+		static::assertCount(7, $this->parameters->getCurrentParameters());
+		static::assertSame('player', $this->parameters->getModuleName());
 	}
 
 	#[Group('units')]
@@ -63,13 +63,13 @@ class ParametersTest extends TestCase
 		$this->parameters->addActivity();
 
 		// Assert that the parameter is now present
-		$this->assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_ACTIVITY));
+		static::assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_ACTIVITY));
 
 		// Assert that the parameter has the correct type and default value
 		$currentParameters = $this->parameters->getCurrentParameters();
-		$this->assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $currentParameters);
-		$this->assertSame('', $currentParameters[Parameters::PARAMETER_ACTIVITY]['default_value']);
-		$this->assertSame(\App\Framework\Utils\FormParameters\ScalarType::STRING, $currentParameters[Parameters::PARAMETER_ACTIVITY]['scalar_type']);
+		static::assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $currentParameters);
+		static::assertSame('', $currentParameters[Parameters::PARAMETER_ACTIVITY]['default_value']);
+		static::assertSame(\App\Framework\Utils\FormParameters\ScalarType::STRING, $currentParameters[Parameters::PARAMETER_ACTIVITY]['scalar_type']);
 	}
 
 

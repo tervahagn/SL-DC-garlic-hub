@@ -28,9 +28,9 @@ use App\Framework\Utils\FormParameters\ScalarType;
 
 class Parameters extends BaseEditParameters
 {
-	const string PARAMETER_PASSWORD           = 'password';
-	const string PARAMETER_PASSWORD_CONFIRM   = 'password_confirm';
-	const string PARAMETER_PASSWORD_TOKEN     = 'token';
+	public const string PARAMETER_PASSWORD           = 'password';
+	public const string PARAMETER_PASSWORD_CONFIRM   = 'password_confirm';
+	public const string PARAMETER_PASSWORD_TOKEN     = 'token';
 
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>

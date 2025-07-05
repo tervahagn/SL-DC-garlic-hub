@@ -33,10 +33,10 @@ class CoreExceptionTest extends TestCase
 	{
 		$exception = new CoreException('Test Message', 100);
 
-		$this->assertSame('Core', $exception->getModuleName());
-		$this->assertSame('Test Message', $exception->getMessage());
-		$this->assertSame(100, $exception->getCode());
-		$this->assertNull($exception->getPrevious());
+		static::assertSame('Core', $exception->getModuleName());
+		static::assertSame('Test Message', $exception->getMessage());
+		static::assertSame(100, $exception->getCode());
+		static::assertNull($exception->getPrevious());
 	}
 
 	#[Group('units')]
@@ -45,7 +45,7 @@ class CoreExceptionTest extends TestCase
 		$previousException = new Exception('Previous Message');
 		$exception = new CoreException('Test Message', 100, $previousException);
 
-		$this->assertSame($previousException, $exception->getPrevious());
+		static::assertSame($previousException, $exception->getPrevious());
 	}
 
 }

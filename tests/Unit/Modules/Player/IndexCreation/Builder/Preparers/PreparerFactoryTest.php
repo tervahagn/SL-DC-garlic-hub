@@ -56,7 +56,7 @@ class PreparerFactoryTest extends TestCase
 	public function testCreateReturnsMetaPreparer(): void
 	{
 		$result = $this->preparerFactory->create(IndexSections::META, $this->playerEntityMock);
-		$this->assertInstanceOf(MetaPreparer::class, $result);
+		static::assertInstanceOf(MetaPreparer::class, $result);
 	}
 
 	/**
@@ -66,7 +66,7 @@ class PreparerFactoryTest extends TestCase
 	public function testCreateReturnsSubscriptionPreparer(): void
 	{
 		$result = $this->preparerFactory->create(IndexSections::SUBSCRIPTIONS, $this->playerEntityMock);
-		$this->assertInstanceOf(SubscriptionPreparer::class, $result);
+		static::assertInstanceOf(SubscriptionPreparer::class, $result);
 	}
 
 	/**
@@ -76,7 +76,7 @@ class PreparerFactoryTest extends TestCase
 	public function testCreateReturnsLayoutPreparer(): void
 	{
 		$result = $this->preparerFactory->create(IndexSections::LAYOUT, $this->playerEntityMock);
-		$this->assertInstanceOf(LayoutPreparer::class, $result);
+		static::assertInstanceOf(LayoutPreparer::class, $result);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class PreparerFactoryTest extends TestCase
 	public function testCreateReturnsScreenTimesPreparer(): void
 	{
 		$result = $this->preparerFactory->create(IndexSections::STANDBY_TIMES, $this->playerEntityMock);
-		$this->assertInstanceOf(ScreenTimesPreparer::class, $result);
+		static::assertInstanceOf(ScreenTimesPreparer::class, $result);
 	}
 
 	/**
@@ -96,6 +96,6 @@ class PreparerFactoryTest extends TestCase
 	public function testCreateReturnsPlaylistPreparer(): void
 	{
 		$result = $this->preparerFactory->create(IndexSections::PLAYLIST, $this->playerEntityMock);
-		$this->assertInstanceOf(PlaylistPreparer::class, $result);
+		static::assertInstanceOf(PlaylistPreparer::class, $result);
 	}
 }

@@ -44,6 +44,6 @@ class CsrfTokenRendererTest extends TestCase
 		$result = $renderer->render($fieldMock);
 
 		$expected = '<input type="hidden" name="csrf_token" id="csrf_token" value="the_token_in_some_hash">';
-		$this->assertSame($expected, $result);
+		static::assertSame($expected, $result);
 	}
 }

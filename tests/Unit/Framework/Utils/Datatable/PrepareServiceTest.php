@@ -93,7 +93,7 @@ class PrepareServiceTest extends TestCase
 
 		$result = $this->prepareService->prepareForm($datatableForm);
 
-		$this->assertSame($preparedForm, $result);
+		static::assertSame($preparedForm, $result);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class PrepareServiceTest extends TestCase
 
 		$result = $this->prepareService->preparePagination($paginationLinks, $dropDownSettings);
 
-		$this->assertSame(['links' => $preparedLinks, 'dropdown' => $preparedDropdown], $result);
+		static::assertSame(['links' => $preparedLinks, 'dropdown' => $preparedDropdown], $result);
 	}
 
 	/**
@@ -163,14 +163,14 @@ class PrepareServiceTest extends TestCase
 
 		$result = $this->prepareService->prepareDatatableHeader($tableHeaderFields, $langModules);
 
-		$this->assertSame($expectedPreparedHeader, $result);
+		static::assertSame($expectedPreparedHeader, $result);
 	}
 
 	#[Group('units')]
 	public function testGetBodyPreparer(): void
 	{
 		$result = $this->prepareService->getBodyPreparer();
-		$this->assertSame($this->bodyPreparerMock, $result);
+		static::assertSame($this->bodyPreparerMock, $result);
 	}
 
 }
