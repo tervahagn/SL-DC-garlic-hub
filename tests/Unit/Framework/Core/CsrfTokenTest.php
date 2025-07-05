@@ -25,14 +25,19 @@ use App\Framework\Core\Crypt;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CsrfTokenTest extends TestCase
 {
-	private Session $sessionMock;
-	private Crypt $cryptMock;
+	private Session&MockObject $sessionMock;
+	private Crypt&MockObject $cryptMock;
 	private CsrfToken $csrfToken;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
 		parent::setUp();
@@ -122,6 +127,9 @@ class CsrfTokenTest extends TestCase
 		static::assertFalse($result);
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testGenerateTokenSetsValidToken(): void
 	{
@@ -137,6 +145,9 @@ class CsrfTokenTest extends TestCase
 		static::assertSame('newGeneratedToken', $this->csrfToken->getToken());
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	#[Group('units')]
 	public function testGenerateTokenReplacesExistingToken(): void
 	{

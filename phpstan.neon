@@ -5,8 +5,8 @@ parameters:
         - tests
 
     reportUnmatchedIgnoredErrors: false
-    ignoreErrors:
-        - '#Call to an undefined method *#'
+#    ignoreErrors:
+#        - '#Call to an undefined method *#'
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon

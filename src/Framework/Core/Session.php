@@ -25,7 +25,7 @@ namespace App\Framework\Core;
 use App\Framework\Exceptions\FrameworkException;
 
 /**
- * Let's ignore single responsibility here and put session management and
+ * Let's ignore a single responsibility here and put session management and
  * storage in one class.
  */
 class Session
@@ -72,11 +72,11 @@ class Session
 		if ($sessionId === false)
 			throw new FrameworkException('Session Id failed for regenerating.');
 
-		$cookieLifetime = ini_get("session.cookie_lifetime");
+		$cookieLifetime = ini_get('session.cookie_lifetime');
 		if ($cookieLifetime === false)
 			throw new FrameworkException('Cookie lifetime failed for regenerating.');
 
-		setcookie($sessionName, $sessionId, (int) $cookieLifetime, "/");
+		setcookie($sessionName, $sessionId, (int) $cookieLifetime, '/');
 	}
 
 
@@ -103,7 +103,7 @@ class Session
 	}
 
 	/**
-	 * @return array<mixed>
+	 * @return array<string,mixed>
 	 */
 	public function getSession(): array
 	{
