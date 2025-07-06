@@ -55,19 +55,19 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 ## Technical Details
 
 ### Stack
-- PHP 8.4
+- PHP 8.4 with strict types 
 - SLIM 4 Framework
-- Phpstan Level 8 / declare(strict_types=1);
+- Phpstan Level 8 with zero errors
+- PHPUnit 12 (targeting >95% test coverage)
 - Vanilla JavaScript with some external libs support
 - Selected composer libraries
-- PHPUnit 12 (targeting >95% test coverage)
 
 ### Developer Documentation
 - [Coding Standards](docs/coding-standards.md)
 - [Installation](docs/install.md)
 - [Exceptions](docs/exceptions.md)
 - [DI-Container](docs/di-container.md)
-- [CLI.php - Command Line Interface](docs/cli.md)
+- [CLI.php—Command Line Interface](docs/cli.md)
 - [Api/Oauth2 - API and Oauth2](docs/oauth2.md)
 - [User- Administration](docs/user-administration.md)
 - [Connect Media Player](docs/connect-media-player.md)
