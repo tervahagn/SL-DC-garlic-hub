@@ -19,7 +19,6 @@
 */
 declare(strict_types=1);
 
-
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Sanitizer;
