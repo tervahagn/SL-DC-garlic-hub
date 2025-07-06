@@ -57,7 +57,7 @@ class BuildHelperTest extends TestCase
 	public function testCollectItemsWithNoPlaceholders(): void
 	{
 		$playlistId = 1;
-		$playlistContent = "Static content with no placeholders.";
+		$playlistContent = 'Static content with no placeholders.';
 
 		$this->contentReaderMock->method('init')
 			->with($playlistId)
@@ -75,8 +75,8 @@ class BuildHelperTest extends TestCase
 	public function testCollectItemsWithInternalPlaceholders(): void
 	{
 		$playlistId = 1;
-		$playlistContent = "Content before placeholder {ITEMS_2} content after.";
-		$subPlaylistContent = "SubPlaylist content.";
+		$playlistContent = 'Content before placeholder {ITEMS_2} content after.';
+		$subPlaylistContent = 'SubPlaylist content.';
 
 		$this->contentReaderMock->method('init')
 			->willReturnOnConsecutiveCalls(
@@ -99,10 +99,10 @@ class BuildHelperTest extends TestCase
 	public function testCollectItemsWithRecursivePlaceholders(): void
 	{
 		$playlistId = 1;
-		$playlistContent = "Playlist content {ITEMS_2}.";
-		$subPlaylistContent1 = "SubPlaylist 2 content {ITEMS_3}.";
-		$subPlaylistContent2 = "Final resolved content.{ITEMS_4}";
-		$subPlaylistContent3 = "";
+		$playlistContent = 'Playlist content {ITEMS_2}.';
+		$subPlaylistContent1 = 'SubPlaylist 2 content {ITEMS_3}.';
+		$subPlaylistContent2 = 'Final resolved content.{ITEMS_4}';
+		$subPlaylistContent3 = '';
 
 		$this->contentReaderMock->method('init')
 			->willReturnOnConsecutiveCalls(
@@ -130,8 +130,8 @@ class BuildHelperTest extends TestCase
 	public function testCollectItemsWithExternalPlaceholders(): void
 	{
 		$playlistId = 1;
-		$playlistContent = "Some content {ITEMS_0#https://example.com} more content.";
-		$externalContent = "External playlist content.";
+		$playlistContent = 'Some content {ITEMS_0#https://example.com} more content.';
+		$externalContent = 'External playlist content.';
 
 		$this->contentReaderMock->method('init')
 			->with($playlistId)

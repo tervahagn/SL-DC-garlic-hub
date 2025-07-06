@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Modules\Mediapool\Utils;
 
 use App\Modules\Mediapool\Utils\ImagickFactory;
-use Imagick;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

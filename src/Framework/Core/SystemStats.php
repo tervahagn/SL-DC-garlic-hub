@@ -100,7 +100,7 @@ class SystemStats
 		if (!isset($freeArr[1]))
 			return;
 
-		$mem = explode(" ", $freeArr[1]);
+		$mem = explode(' ', $freeArr[1]);
 		$mem = array_filter($mem); // Remove empty values
 		$mem = array_merge($mem); // Reindex array
 

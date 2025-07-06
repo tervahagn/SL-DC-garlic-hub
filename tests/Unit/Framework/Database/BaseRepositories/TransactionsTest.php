@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Framework\Database\BaseRepositories;
 
-use App\Framework\Database\BaseRepositories\Traits\TransactionsTrait;
 use App\Framework\Database\BaseRepositories\Transactions;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
@@ -46,6 +45,9 @@ class TransactionsTest extends TestCase
 		$this->transactions = new Transactions($this->connectionMock);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testBeginTransaction(): void
 	{
@@ -67,6 +69,9 @@ class TransactionsTest extends TestCase
 		static::assertTrue($this->transactions->isActive());
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testCommitTransaction(): void
 	{
@@ -77,6 +82,9 @@ class TransactionsTest extends TestCase
 		$this->transactions->commit();
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testRollBackTransaction(): void
 	{

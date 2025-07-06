@@ -104,7 +104,7 @@ trait FindOperationsTrait
 	 */
 	public function findAllBy(array $conditions = [], array $joins = [], array $limit = [], string $groupBy = '', array $orderBy = []): array
 	{
-		return $this->findAllByWithFields(array('*'), $conditions, $joins, $limit, $groupBy, $orderBy);
+		return $this->findAllByWithFields(['*'], $conditions, $joins, $limit, $groupBy, $orderBy);
 	}
 
 	/**

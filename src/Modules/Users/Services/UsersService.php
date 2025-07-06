@@ -25,7 +25,6 @@ use App\Framework\Database\BaseRepositories\FilterBase;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
-use App\Modules\Profile\Services\UserTokenService;
 use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\Edge\UserTokensRepository;

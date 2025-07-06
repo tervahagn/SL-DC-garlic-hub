@@ -90,11 +90,11 @@ class Conditional
 					if ($weektimes != '')
 						$weektimes .= ' or ';
 
-					$from =  gmdate("H:i:s",$this->conditional['weektimes'][$j]['from']*15*60);
-					$until = gmdate("H:i:s",$this->conditional['weektimes'][$j]['until']*15*60);
+					$from =  gmdate('H:i:s',$this->conditional['weektimes'][$j]['from']*15*60);
+					$until = gmdate('H:i:s',$this->conditional['weektimes'][$j]['until']*15*60);
 					if ($until == '00:00:00')
 						$until = '23:59:59';
-					$weektimes .= "(".($i-1)."=adapi-weekday() and adapi-compare(substring-after(adapi-date(), 'T'), '$from')&gt;=0 and adapi-compare(substring-after(adapi-date(), 'T'), '$until')&lt;=0)";
+					$weektimes .= '(' .($i-1)."=adapi-weekday() and adapi-compare(substring-after(adapi-date(), 'T'), '$from')&gt;=0 and adapi-compare(substring-after(adapi-date(), 'T'), '$until')&lt;=0)";
 				}
 			}
 			if ($weektimes != '')

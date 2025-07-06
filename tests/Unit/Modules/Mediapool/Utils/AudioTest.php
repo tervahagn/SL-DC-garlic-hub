@@ -48,7 +48,7 @@ class AudioTest extends TestCase
 	{
 		parent::setUp();
 		$configMock           = $this->createMock(Config::class);
-		$this->filesystemMock = $this->createMock(\League\Flysystem\Filesystem::class);
+		$this->filesystemMock = $this->createMock(Filesystem::class);
 		$this->ffmpegMock     = $this->createMock(Ffmpeg::class);
 
 		$configMock->method('getConfigValue')

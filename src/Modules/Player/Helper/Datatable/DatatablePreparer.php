@@ -28,7 +28,6 @@ use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\Results\HeaderField;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
 use App\Modules\Player\Enums\PlayerStatus;
-use App\Modules\Player\Services\AclValidator;
 use DateMalformedStringException;
 use DateTime;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -165,6 +164,10 @@ class DatatablePreparer extends AbstractDatatablePreparer
 
 	/**
 	 * @return list<array<string,mixed>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function formatPlayerContextMenu(): array
 	{

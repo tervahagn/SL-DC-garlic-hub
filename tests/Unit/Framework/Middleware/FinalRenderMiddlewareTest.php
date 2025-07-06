@@ -44,6 +44,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Random\RandomException;
 use Slim\Flash\Messages;
 
 class FinalRenderMiddlewareTest extends TestCase
@@ -61,7 +62,6 @@ class FinalRenderMiddlewareTest extends TestCase
 	private Config&MockObject $configMock;
 	private Locales&MockObject $localesMock;
 	private Messages&MockObject $flashMock;
-	private CsrfToken&MockObject $csrfTokenMock;
 
 	/**
 	 * @throws \Exception|Exception
@@ -81,17 +81,18 @@ class FinalRenderMiddlewareTest extends TestCase
 		$this->configMock          = $this->createMock(Config::class);
 		$this->flashMock 	       = $this->createMock(Messages::class);
 		$this->requestMock->method('getUri')->willReturn($uriInterfaceMock);
-		$this->csrfTokenMock       = $this->createMock(CsrfToken::class);
-		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock, $this->aclValidatorMock, $this->csrfTokenMock);
+		$csrfTokenMock = $this->createMock(CsrfToken::class);
+		$this->middleware = new FinalRenderMiddleware($this->templateServiceMock, $this->aclValidatorMock, $csrfTokenMock);
 	}
 
 	/**
-	 * @throws Exception
 	 * @throws CoreException
+	 * @throws Exception
 	 * @throws FrameworkException
-	 * @throws \Doctrine\DBAL\Exception
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws RandomException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testProcessReturnsControllerFalse(): void
@@ -115,6 +116,7 @@ class FinalRenderMiddlewareTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws RandomException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -154,10 +156,11 @@ class FinalRenderMiddlewareTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws \Doctrine\DBAL\Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws RandomException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[RunInSeparateProcess] #[Group('units')]
 	public function testProcessFailFOpen(): void
@@ -201,6 +204,7 @@ class FinalRenderMiddlewareTest extends TestCase
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws RandomException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -221,11 +225,12 @@ class FinalRenderMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws RandomException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -269,12 +274,13 @@ class FinalRenderMiddlewareTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws RandomException
 	 */
 	#[Group('units')]
 	public function testProcessWithUser(): void

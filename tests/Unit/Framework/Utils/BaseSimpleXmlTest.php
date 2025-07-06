@@ -153,7 +153,7 @@ class BaseSimpleXmlTest extends TestCase
 		}
 
 		$xml_error_string = $this->concreteSimpleXml->getXmlErrorsAsString();
-		$expected = "Fatal Error: StartTag: invalid element name Line: 6, Column: 17";
+		$expected = 'Fatal Error: StartTag: invalid element name Line: 6, Column: 17';
 		static::assertEquals($expected, $xml_error_string);
 
 	}
@@ -191,7 +191,7 @@ class BaseSimpleXmlTest extends TestCase
 		//	$this->assertEquals('Premature end of data in tag document line 2', trim($second_error->message));
 
 		$xml_error_string = $this->concreteSimpleXml->getXmlErrorsAsString();
-		$expected = "Fatal Error: Opening and ending tag mismatch: body line 7 and document Line: 9, Column: 13";
+		$expected = 'Fatal Error: Opening and ending tag mismatch: body line 7 and document Line: 9, Column: 13';
 		static::assertEquals($expected, $xml_error_string);
 	}
 

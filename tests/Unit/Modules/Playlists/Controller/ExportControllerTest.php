@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Modules\Playlists\Controller;
 
 use App\Framework\Core\CsrfToken;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Auth\UserSession;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Services\ExportService;
@@ -60,6 +61,7 @@ class ExportControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws UserException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -79,6 +81,7 @@ class ExportControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws UserException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -95,6 +98,7 @@ class ExportControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws UserException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

@@ -60,7 +60,7 @@ class WidgetsService extends AbstractBaseService
 			$item            = $this->fetchItem($itemId);
 			$preferencesData = $this->contentDataPreparer->determinePreferences($item['config_data']);
 
-			$values = array();
+			$values = [];
 			if (!is_null($item['content_data']))
 			{
 				$ar = unserialize($item['content_data']);
@@ -119,6 +119,7 @@ class WidgetsService extends AbstractBaseService
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	private function fetchItem(int $itemId): array
 	{

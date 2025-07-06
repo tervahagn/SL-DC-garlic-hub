@@ -170,7 +170,7 @@ class Service extends AbstractBaseService
 		{
 			$this->transactions->begin();
 
-			$fields = array(
+			$fields = [
 				'lft' => $parentNode['rgt'],
 				'rgt' => $parentNode['rgt'] + 1,
 				'parent_id' => $parentNode['node_id'],
@@ -180,7 +180,7 @@ class Service extends AbstractBaseService
 				'level' => $parentNode['level'] + 1,
 				'name' => $name,
 				'UID' => $UID
-			);
+			];
 
 			$this->repository->moveNodesToLeftForInsert($parentNode['root_id'], $parentNode['rgt']);
 			$this->repository->moveNodesToRightForInsert($parentNode['root_id'], $parentNode['rgt']);

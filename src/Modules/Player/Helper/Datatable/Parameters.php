@@ -39,11 +39,11 @@ class Parameters extends BaseFilterParameters
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
 	 */
-	protected array $moduleParameters = array(
-		self::PARAMETER_PLAYER_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_MODEL => array('scalar_type' => ScalarType::INT, 'default_value' => 0, 'parsed' => false),
-		self::PARAMETER_UUID => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-	);
+	protected array $moduleParameters = [
+		self::PARAMETER_PLAYER_NAME => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
+		self::PARAMETER_MODEL => ['scalar_type' => ScalarType::INT, 'default_value' => 0, 'parsed' => false],
+		self::PARAMETER_UUID => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
+	];
 
 	/**
 	 * @throws ModuleException

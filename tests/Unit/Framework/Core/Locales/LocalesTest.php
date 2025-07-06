@@ -46,8 +46,8 @@ class LocalesTest extends TestCase
 		$this->configMock->method('getFullConfigDataByModule')
 						 ->with('locales')
 						 ->willReturn([
-							 'en_US' => ['language_code' => 'en', 'country_code' => 'US', 'date_format' => "%Y-%m-%d"],
-							 'de_DE' => ['language_code' => 'de', 'country_code' => 'DE', 'date_format' => "%d-%m-%Y"],
+							 'en_US' => ['language_code' => 'en', 'country_code' => 'US', 'date_format' => '%Y-%m-%d'],
+							 'de_DE' => ['language_code' => 'de', 'country_code' => 'DE', 'date_format' => '%d-%m-%Y'],
 							 'general' => ['default_locale' => 'en_US']
 						 ]);
 	}

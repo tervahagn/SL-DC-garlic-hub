@@ -29,7 +29,7 @@ class CsrfToken
 	public const int CSRF_TOKEN_LENGTH = 32;
 	private readonly Session $session;
 	private readonly Crypt $crypt;
-	private string $token = '';
+	private string $token;
 
 	public function __construct(Crypt $crypt, Session $session)
 	{

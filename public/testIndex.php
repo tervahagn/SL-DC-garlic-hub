@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 require '../vendor/autoload.php';
 
@@ -39,7 +40,7 @@ try
 	$statusCode = $response->getStatusCode();
 	$body       = (string) $response->getBody();
 
-	echo "Status Code: " . $statusCode . "\n";
+	echo 'Status Code: ' . $statusCode . "\n";
 	echo "Response Body:\n" . $body . "\n";
 	echo "\n--- Sent successful! ---\n";
 
@@ -61,5 +62,5 @@ catch (GuzzleException $e)
 }
 catch (Exception $e)
 {
-	echo "Unexpected error: " . $e->getMessage() . "\n";
+	echo 'Unexpected error: ' . $e->getMessage() . "\n";
 }

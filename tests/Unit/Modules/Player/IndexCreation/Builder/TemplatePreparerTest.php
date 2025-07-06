@@ -61,6 +61,7 @@ class TemplatePreparerTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Exception
 	 */
 	#[Group('units')]
 	public function testPrepareForGarlic(): void
@@ -104,6 +105,7 @@ class TemplatePreparerTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Exception
 	 */
 	#[Group('units')]
 	public function testPrepareForIAdea(): void
@@ -146,6 +148,7 @@ class TemplatePreparerTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Exception
 	 */
 	#[Group('units')]
 	public function testPrepareForCompatible(): void

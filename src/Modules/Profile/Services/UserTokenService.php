@@ -32,8 +32,8 @@ use Psr\Log\LoggerInterface;
 
 class UserTokenService extends AbstractBaseService
 {
-	const string TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL = '24';
-	const string TOKEN_EXPIRATION_HOURS = '2';
+	private const string TOKEN_EXP_HOURS_PWD_INIT = '24';
+	private const string TOKEN_EXPIRATION_HOURS = '2';
 	private readonly UserTokensRepository $userTokensRepository;
 	private readonly Crypt $crypt;
 
@@ -104,7 +104,7 @@ class UserTokenService extends AbstractBaseService
 	public function insertToken(int $UID, TokenPurposes $purpose): string
 	{
 		if ($purpose === TokenPurposes::INITIAL_PASSWORD)
-			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXP_HOURS_PWD_INIT.' hour'));
 		else
 			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
 
@@ -140,13 +140,16 @@ class UserTokenService extends AbstractBaseService
 			return 0;
 
 		if ($purpose === TokenPurposes::INITIAL_PASSWORD->value)
-			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS_PASSWORD_INITIAL.' hour'));
+			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXP_HOURS_PWD_INIT.' hour'));
 		else
 			$expiresAt = date('Y-m-d H:i:s', strtotime('+'.self::TOKEN_EXPIRATION_HOURS.' hour'));
 
 		return $this->userTokensRepository->refresh($token, $expiresAt);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function useToken(string $token): int
 	{
 		$token = hex2bin($token);

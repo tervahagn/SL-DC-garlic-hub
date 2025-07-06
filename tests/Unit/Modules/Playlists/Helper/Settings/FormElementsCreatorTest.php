@@ -234,7 +234,7 @@ class FormElementsCreatorTest extends TestCase
 	#[Group('units')]
 	public function testCreatePlaylistModeField(): void
 	{
-		$value = "2";
+		$value = '2';
 		$expectedField = $this->createMock(FieldInterface::class);
 
 		$this->formBuilderMock

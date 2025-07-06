@@ -23,7 +23,6 @@ namespace App\Framework\Utils\Html;
 
 
 use App\Framework\Core\CsrfToken;
-use App\Framework\Core\Session;
 use Exception;
 
 class CsrfTokenField extends AbstractInputField

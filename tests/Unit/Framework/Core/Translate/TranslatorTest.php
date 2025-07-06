@@ -169,6 +169,7 @@ class TranslatorTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
     #[Group('units')]
     public function testTranslateArrayForOptionsReturnsArray(): void
@@ -186,6 +187,7 @@ class TranslatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
     #[Group('units')]
     public function testTranslateArrayForOptionsHandlesNonArrayGracefully(): void

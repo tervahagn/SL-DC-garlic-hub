@@ -40,7 +40,6 @@ class MediaServiceTest extends TestCase
 	private FilesRepository&MockObject $mediaRepositoryMock;
 	private NodesRepository&MockObject $nodesRepositoryMock;
 	private AclValidator&MockObject $aclValidatorMock;
-	private Config&MockObject $configMock;
 	private LoggerInterface&MockObject $loggerMock;
 
 	/**
@@ -54,9 +53,9 @@ class MediaServiceTest extends TestCase
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
 		$this->aclValidatorMock    = $this->createMock(AclValidator::class);
 		$this->loggerMock          = $this->createMock(LoggerInterface::class);
-		$this->configMock          = $this->createMock(Config::class);
-		$this->aclValidatorMock->method('getConfig')->willReturn($this->configMock);
-		$this->configMock->method('getConfigValue')->willReturnMap([
+		$configMock = $this->createMock(Config::class);
+		$this->aclValidatorMock->method('getConfig')->willReturn($configMock);
+		$configMock->method('getConfigValue')->willReturnMap([
 				['originals', 'mediapool', 'directories', 'original_directory'],
 				['previews', 'mediapool', 'directories', 'preview_directory'],
 				['thumbnails', 'mediapool', 'directories', 'thumbnail_directory'],

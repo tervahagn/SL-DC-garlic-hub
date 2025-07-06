@@ -152,6 +152,10 @@ class DatatablePreparer extends AbstractDatatablePreparer
 
 	/**
 	 * @return list<array<string,mixed>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function formatPlaylistContextMenu(): array
 	{
@@ -185,6 +189,6 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	private function convertSeconds(string $seconds): string
 	{
 		$dtT = new DateTime("@$seconds");
-		return (new DateTime("@0"))->diff($dtT)->format('%H:%I:%S');
+		return new DateTime('@0')->diff($dtT)->format('%H:%I:%S');
 	}
 }

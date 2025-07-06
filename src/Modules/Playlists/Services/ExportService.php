@@ -23,6 +23,7 @@ namespace App\Modules\Playlists\Services;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Playlists\Helper\ExportSmil\LocalWriter;
@@ -53,7 +54,10 @@ class ExportService extends AbstractBaseService
 	}
 
 	/**
+	 * @param int $playlistId
+	 * @return int
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	public function exportToSmil(int $playlistId): int
 	{

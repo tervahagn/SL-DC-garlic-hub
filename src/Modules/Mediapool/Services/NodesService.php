@@ -234,7 +234,7 @@ class NodesService
 	 */
 	private function prepareForWunderbaum(array $node, array $rights): array
 	{
-		return array(
+		return [
 			'title' => $node['name'],
 			'folder' => true,
 			'key' => $node['node_id'],
@@ -242,7 +242,7 @@ class NodesService
 			'rights' => $rights,
 			'UID' => $node['UID'],
 			'visibility' => $node['visibility']
-		);
+		];
 	}
 
 	/**

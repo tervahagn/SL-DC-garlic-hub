@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Framework\TemplateEngine;
 
 use App\Framework\TemplateEngine\MustacheAdapter;
-use Mustache_Engine;
+use Mustache\Engine;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +35,7 @@ class MustacheAdapterTest extends TestCase
 	#[Group('units')]
 	public function testRenderReturnsExpectedOutput(): void
 	{
-		$mustacheMock = $this->createMock(Mustache_Engine::class);
+		$mustacheMock = $this->createMock(Engine::class);
 
 		$template = 'Hello, {{name}}!';
 		$data = ['name' => 'World'];

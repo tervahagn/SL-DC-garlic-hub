@@ -32,10 +32,10 @@ use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class LoginController
+readonly class LoginController
 {
-	private readonly AuthService $authService;
-	private readonly CsrfToken $csrfToken;
+	private AuthService $authService;
+	private CsrfToken $csrfToken;
 
 	public function __construct(AuthService $authService, CsrfToken $csrfToken)
 	{

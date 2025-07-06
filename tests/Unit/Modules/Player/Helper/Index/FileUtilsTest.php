@@ -47,6 +47,7 @@ class FileUtilsTest extends TestCase
 
 	protected function tearDown(): void
 	{
+		parent::tearDown();
 		unlink($this->filePath);
 	}
 

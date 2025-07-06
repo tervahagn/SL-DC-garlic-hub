@@ -24,6 +24,7 @@ namespace Tests\Unit\Modules\Playlists\Services;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -50,8 +51,9 @@ class AclValidatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws PhpfastcacheSimpleCacheException|ModuleException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableOwner(): void
@@ -67,9 +69,9 @@ class AclValidatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws ModuleException
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableModuleAdmin(): void
@@ -86,9 +88,9 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws Exception
 	 * @throws CoreException
+	 * @throws Exception
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -108,8 +110,8 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -133,8 +135,8 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -159,8 +161,9 @@ class AclValidatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
+	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws \Doctrine\DBAL\Exception|ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableEditorAccess(): void
@@ -183,8 +186,8 @@ class AclValidatorTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

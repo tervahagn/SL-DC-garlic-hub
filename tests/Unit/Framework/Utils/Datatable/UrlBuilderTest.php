@@ -30,7 +30,7 @@ class UrlBuilderTest extends TestCase
 	#[Group('units')]
 	public function testBuildFilterUrlWithoutAdditionalParameters(): void
 	{
-		$urlBuilder = (new UrlBuilder())
+		$urlBuilder = new UrlBuilder()
 			->setSite('https://example.com')
 			->setPage(1)
 			->setElementsPerPage(10)
@@ -45,7 +45,7 @@ class UrlBuilderTest extends TestCase
 	#[Group('units')]
 	public function testClearAdditionalUrlParameters(): void
 	{
-		$urlBuilder = (new UrlBuilder())
+		$urlBuilder = new UrlBuilder()
 			->setSite('https://example.com')
 			->setPage(1)
 			->setElementsPerPage(10)
@@ -69,7 +69,7 @@ class UrlBuilderTest extends TestCase
 	#[Group('units')]
 	public function testBuildFilterUrlWithAdditionalParameters(): void
 	{
-		$urlBuilder = (new UrlBuilder())
+		$urlBuilder = new UrlBuilder()
 			->setSite('https://example.com')
 			->setPage(2)
 			->setElementsPerPage(20)

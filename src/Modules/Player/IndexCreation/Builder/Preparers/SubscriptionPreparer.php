@@ -17,9 +17,11 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\IndexCreation\Builder\Preparers;
+
+use App\Framework\Exceptions\CoreException;
 
 class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 {
@@ -54,6 +56,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, mixed>
+	 * @throws CoreException
 	 */
 	private function replaceTaskSchedule(): array
 	{
@@ -67,6 +70,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, string>
+	 * @throws CoreException
 	 */
 	protected function replaceReportInventory(): array
 	{
@@ -79,6 +83,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, string>
+	 * @throws CoreException
 	 */
 	protected function replaceReportPlayed(): array
 	{
@@ -91,6 +96,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, string>
+	 * @throws CoreException
 	 */
 	protected function replaceReportEvents(): array
 	{
@@ -103,6 +109,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, string>
+	 * @throws CoreException
 	 */
 	protected function replaceSystemConfiguration(): array
 	{
@@ -116,6 +123,7 @@ class SubscriptionPreparer extends AbstractPreparer implements PreparerInterface
 
 	/**
 	 * @return array<string, string>
+	 * @throws CoreException
 	 */
 	protected function replaceTasksExecutions(): array
 	{

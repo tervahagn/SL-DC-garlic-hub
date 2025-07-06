@@ -69,7 +69,6 @@ class ConcreteFilterBase extends FilterBase
 }
 class FilterBaseTest extends TestCase
 {
-	private Connection&MockObject	 $connectionMock;
 	private QueryBuilder&MockObject $queryBuilderMock;
 	private Result&MockObject $resultMock;
 	private ConcreteFilterBase $FilterBase;
@@ -80,13 +79,13 @@ class FilterBaseTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->connectionMock   = $this->createMock(Connection::class);
+		$connectionMock = $this->createMock(Connection::class);
 		$this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 		$this->resultMock       = $this->createMock(Result::class);
 
-		$this->FilterBase = new ConcreteFilterBase($this->connectionMock, 'table', 'id');
+		$this->FilterBase = new ConcreteFilterBase($connectionMock, 'table', 'id');
 
-		$this->connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
+		$connectionMock->method('createQueryBuilder')->willReturn($this->queryBuilderMock);
 	}
 
 	/**

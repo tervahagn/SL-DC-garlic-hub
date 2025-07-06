@@ -33,4 +33,3 @@ $paths = [
 	'logDir' => $systemDir . '/var/log',
 	'configDir' => $systemDir . '/config'
 ];
-define('_TestLibPath', $systemDir);

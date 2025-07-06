@@ -33,7 +33,7 @@ class FormatHelperTest extends TestCase
 	#[Group('units')]
 	public function testWrapWithSequence(): void
 	{
-		$content = "<item>Sample Content</item>";
+		$content = '<item>Sample Content</item>';
 		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
 			$content .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
@@ -46,7 +46,7 @@ class FormatHelperTest extends TestCase
 	#[Group('units')]
 	public function testWrapWithSequenceHandlesEmptyContent(): void
 	{
-		$content = "";
+		$content = '';
 		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
 			$content .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
@@ -59,7 +59,7 @@ class FormatHelperTest extends TestCase
 	#[Group('units')]
 	public function testWrapWithSequenceHandlesLargeContent(): void
 	{
-		$content = str_repeat("LargeContent", 1000);
+		$content = str_repeat('LargeContent', 1000);
 		$expectedOutput = Base::TABSTOPS_TAG . '<seq repeatCount="indefinite">' . "\n" .
 			$content .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";

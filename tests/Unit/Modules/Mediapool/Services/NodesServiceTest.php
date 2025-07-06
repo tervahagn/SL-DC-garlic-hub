@@ -39,7 +39,6 @@ class NodesServiceTest extends TestCase
 {
 	private NodesRepository&MockObject $nodesRepositoryMock;
 	private Service&MockObject $nestedSetServiceMock;
-	private MediaService&MockObject $mediaServiceMock;
 	private AclValidator&MockObject $aclValidatorMock;
 	private NodesService $nodesService;
 
@@ -52,10 +51,10 @@ class NodesServiceTest extends TestCase
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 		$this->nestedSetServiceMock = $this->createMock(Service::class);
-		$this->mediaServiceMock = $this->createMock(MediaService::class);
+		$mediaServiceMock = $this->createMock(MediaService::class);
 
 		$this->nodesService = new NodesService(
-			$this->nodesRepositoryMock, $this->nestedSetServiceMock, $this->mediaServiceMock,$this->aclValidatorMock
+			$this->nodesRepositoryMock, $this->nestedSetServiceMock, $mediaServiceMock,$this->aclValidatorMock
 		);
 	}
 

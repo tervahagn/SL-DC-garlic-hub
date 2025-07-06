@@ -37,10 +37,10 @@ class Parameters extends BaseFilterParameters implements BaseFilterParametersInt
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}>
 	 */
-	protected array $moduleParameters = array(
-		self::PARAMETER_PLAYLIST_NAME => array('scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_PLAYLIST_MODE => array('scalar_type' => ScalarType::STRING,  'default_value' => '', 'parsed' => false)
-	);
+	protected array $moduleParameters = [
+		self::PARAMETER_PLAYLIST_NAME => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
+		self::PARAMETER_PLAYLIST_MODE => ['scalar_type' => ScalarType::STRING,  'default_value' => '', 'parsed' => false]
+	];
 
 	/**
 	 * @throws ModuleException

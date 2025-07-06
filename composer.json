@@ -1,6 +1,6 @@
 {
   "name": "garlic-signage/garlic-hub",
-  "description": "Digital Signage Content and Device Managament.",
+  "description": "Digital Signage Content and Device Management for SMIL compatible Media Player",
   "type": "project",
   "license": "AGPL",
   "require": {

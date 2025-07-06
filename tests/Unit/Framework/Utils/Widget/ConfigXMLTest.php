@@ -192,14 +192,14 @@ class ConfigXMLTest extends TestCase
 		static::assertEquals('English license', $TestClass->getLicenseByLanguage('en'));
 		static::assertEquals('Deutsche Lizenz', $TestClass->getLicenseByLanguage('de'));
 		static::assertCount(2, $TestClass->getLicense());
-		$expected_author = array('href' => 'http://foo-bar.example.org/',
+		$expected_author = ['href' => 'http://foo-bar.example.org/',
 			'email' => 'foo-bar@example.org',
 			'data'  => 'Foo Bar Corp'
-		);
+		];
 		static::assertEquals($expected_author, $TestClass->getAuthor());
 
 		$TestClass->parsePreferences();
-		$expect_preference = array('url' => array());
+		$expect_preference = ['url' => []];
 		static::assertEquals($expect_preference, $TestClass->getPreferences());
 	}
 
@@ -230,37 +230,37 @@ class ConfigXMLTest extends TestCase
 		$preferences = $TestClass->getPreferences();
 		static::assertCount(10, $preferences);
 
-		$expected = array('types' => 'text', 'mandatory' => 'true', 'tooltip' => 'e.g. http://rss.cnn.com/rss/cnn_topstories.rss');
+		$expected = ['types' => 'text', 'mandatory' => 'true', 'tooltip' => 'e.g. http://rss.cnn.com/rss/cnn_topstories.rss'];
 		static::assertEquals($expected, $preferences['urls']);
 
-		$expected = array('types' => 'radio', 'default' => 'ltr', 'options' => array('ltr' => 'ltr', 'rtl' => 'rtl'));
+		$expected = ['types' => 'radio', 'default' => 'ltr', 'options' => ['ltr' => 'ltr', 'rtl' => 'rtl']];
 		static::assertEquals($expected, $preferences['WritingDirection']);
 
-		$expected = array('types' => 'checkbox', 'default' => 'true');
+		$expected = ['types' => 'checkbox', 'default' => 'true'];
 		static::assertEquals($expected, $preferences['showSweepHand']);
 
-		$expected = array('types' => 'color', 'default' => '#008080', 'previewbg' => 'true');
+		$expected = ['types' => 'color', 'default' => '#008080', 'previewbg' => 'true'];
 		static::assertEquals($expected, $preferences['BackgroundColor']);
 
-		$expected = array('types' => 'colorOpacity', 'value' => '100');
+		$expected = ['types' => 'colorOpacity', 'value' => '100'];
 		static::assertEquals($expected, $preferences['BackgroundOpacity']);
 
-		$expected = array('types' => 'color', 'default' => '#ffffff');
+		$expected = ['types' => 'color', 'default' => '#ffffff'];
 		static::assertEquals($expected, $preferences['Color']);
 
-		$expected = array('types' => 'integer', 'value' => '', 'notes' => array('en' => 'Control the length of the RSS title.', 'de' => 'Steuert die Länge des RSS-Titels.'));
+		$expected = ['types' => 'integer', 'value' => '', 'notes' => ['en' => 'Control the length of the RSS title.', 'de' => 'Steuert die Länge des RSS-Titels.']];
 		static::assertEquals($expected, $preferences['Title-Length']);
 
-		$expected = array('types' => 'integer', 'value' => '', 'notes' => array('en' => 'Control the length of the RSS content. 0 or non-integer words will display the full length of the content.'));
+		$expected = ['types' => 'integer', 'value' => '', 'notes' => ['en' => 'Control the length of the RSS content. 0 or non-integer words will display the full length of the content.']];
 		static::assertEquals($expected, $preferences['Content-Length']);
 
-		$expected = array('types' => 'combo',
+		$expected = ['types' => 'combo',
 			'mandatory' => 'true',
 			'default' => 'New York',
-			'options' => array('Athens'=>'Athens','Hamburg'=>'Hamburg','London'=>'London','New York'=>'New York','Beijing'=>'Beijing','Paris'=>'Paris','Sao Paulo'=>'Sao Paulo','Taipei'=>'Taipei','Tokyo'=>'Tokyo'));
+			'options' => ['Athens'=>'Athens','Hamburg'=>'Hamburg','London'=>'London','New York'=>'New York','Beijing'=>'Beijing','Paris'=>'Paris','Sao Paulo'=>'Sao Paulo','Taipei'=>'Taipei','Tokyo'=>'Tokyo']];
 		static::assertEquals($expected, $preferences['cities']);
 
-		$expected = array('types' => 'list', 'default' => 'right', 'options' => array('right' => 'right', 'center' => 'center', 'left' => 'left'));
+		$expected = ['types' => 'list', 'default' => 'right', 'options' => ['right' => 'right', 'center' => 'center', 'left' => 'left']];
 		static::assertEquals($expected, $preferences['align']);
 	}
 

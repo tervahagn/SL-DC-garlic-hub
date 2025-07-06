@@ -49,6 +49,7 @@ class MigrateCommand extends Command
 
 	protected function configure(): void
 	{
+		parent::configure();
 		$this->addOption('rollback', 'r', InputOption::VALUE_NONE, 'Revert migrations (rollback)');
 		$this->addArgument('version', InputArgument::OPTIONAL, 'Target version for migration');
 	}

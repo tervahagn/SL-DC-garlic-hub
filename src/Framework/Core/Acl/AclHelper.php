@@ -29,7 +29,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class AclHelper
 {
-	const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
+	protected const string SECTION_GLOBAL_ACLS = 'GlobalACLs';
 	protected readonly UsersService $userService;
 	protected readonly Config $config;
 

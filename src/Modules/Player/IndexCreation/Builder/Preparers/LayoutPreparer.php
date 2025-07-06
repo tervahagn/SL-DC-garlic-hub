@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\IndexCreation\Builder\Preparers;
 
@@ -85,7 +85,7 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 	/**
 	 * @return array<string,string|int>
 	 */
-	private function replaceRegion(string $screenId, string $top, string $left, string $width, string $height, int $zIndex, string $bgColor = 'transparent'): array
+	private function replaceRegion(string $screenId, string|int $top, string|int $left, string|int $width, string|int $height, int $zIndex, string $bgColor = 'transparent'): array
 	{
 		return [
 			'SCREEN_ID' => $screenId,

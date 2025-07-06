@@ -25,7 +25,7 @@ class DropdownField extends AbstractInputField
 {
 	/** @var array<string,mixed> */
 	private array $options;
-	private bool $optionsZero = true;
+	private bool $optionsZero;
 
 	public function __construct(array $attributes)
 	{

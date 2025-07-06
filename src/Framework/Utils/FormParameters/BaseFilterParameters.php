@@ -42,12 +42,12 @@ abstract class BaseFilterParameters extends BaseParameters implements BaseFilter
 	protected readonly Session $session;
 
 	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool}> */
-	protected array $defaultParameters = array(
-		self::PARAMETER_ELEMENTS_PER_PAGE  => array('scalar_type'  => ScalarType::INT,       'default_value' => 10,    'parsed' => false),
-		self::PARAMETER_ELEMENTS_PAGE      => array('scalar_type'  => ScalarType::INT,       'default_value' => 1,     'parsed' => false),
-		self::PARAMETER_SORT_COLUMN        => array('scalar_type'  => ScalarType::STRING,    'default_value' => '',    'parsed' => false),
-		self::PARAMETER_SORT_ORDER         => array('scalar_type'  => ScalarType::STRING,    'default_value' => 'ASC', 'parsed' => false)
-	);
+	protected array $defaultParameters = [
+		self::PARAMETER_ELEMENTS_PER_PAGE  => ['scalar_type'  => ScalarType::INT,       'default_value' => 10,    'parsed' => false],
+		self::PARAMETER_ELEMENTS_PAGE      => ['scalar_type'  => ScalarType::INT,       'default_value' => 1,     'parsed' => false],
+		self::PARAMETER_SORT_COLUMN        => ['scalar_type'  => ScalarType::STRING,    'default_value' => '',    'parsed' => false],
+		self::PARAMETER_SORT_ORDER         => ['scalar_type'  => ScalarType::STRING,    'default_value' => 'ASC', 'parsed' => false]
+	];
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session, string $session_key_store = '')
 	{

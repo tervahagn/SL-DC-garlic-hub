@@ -24,6 +24,7 @@ namespace Tests\Unit\Modules\Playlists\Controller;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Services\InsertItems\AbstractInsertItem;
@@ -70,8 +71,9 @@ class ItemsControllerTest extends TestCase
 
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -93,8 +95,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -199,8 +202,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -223,8 +227,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -247,8 +252,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -271,8 +277,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -289,8 +296,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -307,8 +315,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -325,8 +334,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -345,8 +355,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -368,8 +379,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -385,8 +397,9 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -407,6 +420,7 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -428,6 +442,7 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -445,6 +460,7 @@ class ItemsControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

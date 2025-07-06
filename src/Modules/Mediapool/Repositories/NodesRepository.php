@@ -27,7 +27,6 @@ use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use App\Framework\Exceptions\DatabaseException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Psr\Log\LoggerInterface;
 
 class NodesRepository  extends SqlBase
 {

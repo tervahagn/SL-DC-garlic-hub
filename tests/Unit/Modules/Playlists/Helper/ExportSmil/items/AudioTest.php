@@ -39,7 +39,6 @@ class AudioTest extends TestCase
 	private Trigger&MockObject $beginMock;
 	private Trigger&MockObject $endMock;
 	private Conditional&MockObject $conditionalMock;
-	private Audio $audio;
 
 	/**
 	 * @throws Exception|\PHPUnit\Framework\MockObject\Exception
@@ -64,14 +63,14 @@ class AudioTest extends TestCase
 		$this->propertiesMock->method('getVolume')->willReturn('soundLevel="100"');
 
 		$item = ['item_id' => 1, 'item_name' => 'Sample Item', 'item_duration' => 500, 'flags' => 0, 'datasource' => 'file'];
-		$this->audio = new Audio($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
+		$audio = new Audio($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
 
-		$this->audio->setLink('/path/to/video.webm');
+		$audio->setLink('/path/to/video.webm');
 
 		$expected  = Base::TABSTOPS_TAG.'<audio xml:id="1" title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</audio>'."\n";
 
-		static::assertSame($expected, $this->audio->getSmilElementTag());
+		static::assertSame($expected, $audio->getSmilElementTag());
 	}
 }

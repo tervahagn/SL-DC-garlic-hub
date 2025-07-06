@@ -226,10 +226,10 @@ class ConfigTest extends TestCase
         $this->configLoaderMock
             ->method('load')
             ->with($module)
-            ->willThrowException(new CoreException("Error loading module"));
+            ->willThrowException(new CoreException('Error loading module'));
 
         $this->expectException(CoreException::class);
-        $this->expectExceptionMessage("Error loading module");
+        $this->expectExceptionMessage('Error loading module');
 
         $this->config->getFullConfigDataByModule($module);
     }

@@ -98,13 +98,13 @@ class PlayerRepositoryTest extends TestCase
 			->method('getDatabasePlatform')
 			->willReturn($sqliteplatform);
 
-		$mariaDBSql = "SELECT
+		$mariaDBSql = 'SELECT
             SUM(CASE WHEN last_access >= DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND) THEN 1 ELSE 0 END) AS active,
             SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND)
                       AND last_access >= DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
             SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
         FROM
-            player;";
+            player;';
 
 		$this->connectionMock->expects($this->once())->method('fetchAssociative')
 			->with($mariaDBSql)

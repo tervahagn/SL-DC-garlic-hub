@@ -195,7 +195,7 @@ class ConfigXML extends BaseSimpleXml
 		if (!isset($this->MyXML->preference))
 			return $this;
 
-		$this->preferences = array();
+		$this->preferences = [];
 
 		foreach($this->MyXML->preference as $pref)
 		{
@@ -265,7 +265,7 @@ class ConfigXML extends BaseSimpleXml
 		if (isset($this->MyXML['id']))
 			$this->id =  (string) $this->MyXML['id'];
 		else if (isset($this->MyXML->id)) // IAdea style
-			$this->id =  str_replace(array('{', '}'), '', (string)$this->MyXML->id);
+			$this->id =  str_replace(['{', '}'], '', (string)$this->MyXML->id);
 
 		return $this;
 	}
@@ -326,7 +326,7 @@ class ConfigXML extends BaseSimpleXml
 	protected function parseLicense(): array
 	{
 		if (!isset($this->MyXML->license))
-			return array();
+			return [];
 
 		return $this->parseLanguages($this->MyXML->license);
 	}
@@ -336,7 +336,7 @@ class ConfigXML extends BaseSimpleXml
 	 */
 	protected function parseLanguages(SimpleXMLElement $element): array
 	{
-		$ret = array();
+		$ret = [];
 		foreach($element as $value)
 		{
 			$attr =  $value->attributes('xml', true);
@@ -425,7 +425,7 @@ class ConfigXML extends BaseSimpleXml
 		if (isset($attr['lang']))
 			$lang = strtolower(substr((string)$attr['lang'], 0, 2));
 
-		return array($lang => trim((string)$note));
+		return [$lang => trim((string)$note)];
 
 	}
 
@@ -444,7 +444,7 @@ class ConfigXML extends BaseSimpleXml
 				$value = (string) $v;
 		}
 
-		return array($key => $value);
+		return [$key => $value];
 	}
 
 	/**

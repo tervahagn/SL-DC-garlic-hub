@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Core\CsrfToken;
-use App\Framework\Core\Session;
 use App\Framework\Utils\Html\CsrfTokenField;
 use App\Framework\Utils\Html\FieldType;
 use Exception;

@@ -132,7 +132,7 @@ class SystemStatsTest extends TestCase
 	#[Group('units')]
 	public function testDetermineRamStatsHandlesInvalidOutput(): void
 	{
-		$mockOutput = "invalid output";
+		$mockOutput = 'invalid output';
 
 		$this->shellExecutorMock->method('setCommand')
 			->with('free -m')
@@ -154,7 +154,7 @@ class SystemStatsTest extends TestCase
 	public function testDetermineDiskUsageSetsDiskStatsCorrectly(): void
 	{
 		$mockOutput = "Filesystem      Size  Used Avail Use% Mounted on\n"
-			. "total           100G   75G   25G  75% -";
+			. 'total           100G   75G   25G  75% -';
 
 		$this->shellExecutorMock->method('setCommand')
 			->with('df -h --total')
@@ -180,7 +180,7 @@ class SystemStatsTest extends TestCase
 	#[Group('units')]
 	public function testDetermineDiskUsageHandlesInvalidOutput(): void
 	{
-		$mockOutput = "Invalid data format";
+		$mockOutput = 'Invalid data format';
 
 		$this->shellExecutorMock->method('setCommand')
 			->with('df -h --total')
@@ -207,7 +207,7 @@ class SystemStatsTest extends TestCase
 	public function testDetermineDiskUsageHandlesInvalidPregsOutput(): void
 	{
 		$mockOutput = "Filesystem      Size  Used Avail Use% Mounted on\n"
-			. "total           100G   75G";
+			. 'total           100G   75G';
 
 
 		$this->shellExecutorMock->method('setCommand')

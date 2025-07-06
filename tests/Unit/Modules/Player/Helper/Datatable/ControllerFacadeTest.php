@@ -93,7 +93,10 @@ class ControllerFacadeTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws Exception
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testProcessSubmittedUserInput(): void
@@ -154,6 +157,7 @@ class ControllerFacadeTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \DateMalformedStringException
 	 */
 	#[Group('units')]
 	public function testPrepareUITemplate(): void

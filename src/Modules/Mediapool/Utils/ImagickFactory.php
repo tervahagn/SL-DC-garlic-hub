@@ -21,10 +21,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Mediapool\Utils;
 
+use Imagick;
+
 class ImagickFactory
 {
-	public function createImagick(): \Imagick
+	public function createImagick(): Imagick
 	{
-		return new \Imagick();
+		return new Imagick();
 	}
 }

@@ -17,11 +17,11 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 /**
- * @var $app Application
+ * @var Application $app
  */
-
 use Symfony\Component\Console\Application;
 
 $app = require __DIR__ . '/../config/bootstrap.php';

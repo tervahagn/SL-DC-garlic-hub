@@ -33,7 +33,6 @@ use PHPUnit\Framework\TestCase;
 class RepositoryTest extends TestCase
 {
 	private Repository $repository;
-	private Connection $connection;
 
 	/**
 	 * @throws Exception
@@ -41,13 +40,13 @@ class RepositoryTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->connection = DriverManager::getConnection([
+		$connection = DriverManager::getConnection([
 			'driver' => 'pdo_sqlite',
 			'memory' => true,
 		]);
 
 		// Repository-Instanz initialisieren
-		$this->repository = new Repository($this->connection);
+		$this->repository = new Repository($connection);
 
 		$this->repository->createMigrationTable();
 	}
@@ -83,10 +82,10 @@ class RepositoryTest extends TestCase
 	#[Group('units')]
 	public function testApplySqlBatch(): void
 	{
-		$sqlBatch = "
+		$sqlBatch = '
             INSERT INTO _migration_version (version) VALUES (1);
             INSERT INTO _migration_version (version) VALUES (2);
-        ";
+        ';
 
 		$this->repository->applySqlBatch($sqlBatch);
 
@@ -107,9 +106,9 @@ class RepositoryTest extends TestCase
 		$this->expectException(DatabaseException::class);
 		$this->expectExceptionMessage('An exception occurred while executing a query');
 
-		$sqlBatch = "
+		$sqlBatch = '
             INSERT INTO invalid_table (version) VALUES (1);
-        ";
+        ';
 
 		$this->repository->applySqlBatch($sqlBatch);
 	}

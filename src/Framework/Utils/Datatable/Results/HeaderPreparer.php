@@ -98,7 +98,7 @@ class HeaderPreparer
 	 */
 	protected function prepareSortableHeaderField(HeaderField $headerField):array
 	{
-		$sortableData = array();
+		$sortableData = [];
 
 		if ($this->filterParameter->getValueOfParameter(BaseFilterParametersInterface::PARAMETER_SORT_COLUMN) == $headerField->getName())
 		{

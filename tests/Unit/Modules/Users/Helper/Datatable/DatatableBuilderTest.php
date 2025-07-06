@@ -25,6 +25,7 @@ use App\Framework\Core\Config\Config;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\Results\Builder;
 use App\Framework\Utils\FormParameters\BaseFilterParametersInterface;
@@ -178,11 +179,12 @@ class DatatableBuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws FrameworkException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testCollectFormElements(): void
@@ -268,11 +270,12 @@ class DatatableBuilderTest extends TestCase
 	}
 
 	/**
-	 * @throws FrameworkException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
 	 */
 	#[Group('units')]
 	public function testCollectFormElementsMinimum(): void

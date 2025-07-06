@@ -31,9 +31,9 @@ abstract class BaseEditParameters extends BaseParameters
 	public const string PARAMETER_CSRF_TOKEN  = 'csrf_token';
 
 	/** @var array<string, array{scalar_type: ScalarType, default_value: mixed, parsed: bool, value?:mixed}> */
-	protected array $defaultParameters = array(
-		self::PARAMETER_CSRF_TOKEN  => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false)
-	);
+	protected array $defaultParameters = [
+		self::PARAMETER_CSRF_TOKEN  => ['scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false]
+	];
 
 	public function __construct(string $moduleName, Sanitizer $sanitizer, Session $session)
 	{

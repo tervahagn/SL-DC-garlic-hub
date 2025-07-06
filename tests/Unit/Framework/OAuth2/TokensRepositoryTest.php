@@ -136,6 +136,7 @@ class TokensRepositoryTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \Exception
 	 */
 	#[Group('units')]
 	public function testGetNewAccessTokenReturnsAccessTokenEntity(): void

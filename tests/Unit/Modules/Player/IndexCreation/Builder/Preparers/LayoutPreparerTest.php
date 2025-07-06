@@ -85,14 +85,11 @@ class LayoutPreparerTest extends TestCase
 	#[Group('units')]
 	public function testPrepareWithMultizoneAsPixel(): void
 	{
-		$this->playerEntityMock
-			->method('getProperties')
+		$this->playerEntityMock->method('getProperties')
 			->willReturn(['width' => '1920', 'height' => '1080']);
-		$this->playerEntityMock
-			->method('getPlaylistMode')
+		$this->playerEntityMock->method('getPlaylistMode')
 			->willReturn(PlaylistMode::MULTIZONE->value);
-		$this->playerEntityMock
-			->method('getZones')
+		$this->playerEntityMock->method('getZones')
 			->willReturn([
 				'export_unit' => 'pixel',
 				'zones' => [

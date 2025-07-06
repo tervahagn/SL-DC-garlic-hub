@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\IndexCreation;
 
@@ -28,6 +28,7 @@ use App\Framework\TemplateEngine\AdapterInterface;
 use App\Modules\Player\Entities\PlayerEntity;
 use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
+use Exception;
 use League\Flysystem\FilesystemException;
 
 class IndexCreator
@@ -55,8 +56,7 @@ class IndexCreator
 	/**
 	 * @throws ModuleException
 	 * @throws FilesystemException
-	 * @throws CoreException
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function createForReleasedPlayer(PlayerEntity $playerEntity, Config $config): void
 	{

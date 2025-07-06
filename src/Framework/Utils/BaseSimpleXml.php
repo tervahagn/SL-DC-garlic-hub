@@ -83,7 +83,7 @@ abstract class BaseSimpleXml
 		libxml_use_internal_errors(true);
 
 		// clear possible previously stored errors
-		$this->xml_errors = array();
+		$this->xml_errors = [];
 		libxml_clear_errors();
 
 		$simple_xml = simplexml_load_string($xml_input);
@@ -104,7 +104,7 @@ abstract class BaseSimpleXml
 		libxml_use_internal_errors(true);
 
 		// clear possible previously stored errors
-		$this->xml_errors = array();
+		$this->xml_errors = [];
 		libxml_clear_errors();
 
 		$simple_xml = simplexml_load_file($file_name);
@@ -153,7 +153,7 @@ abstract class BaseSimpleXml
 	 */
 	private function buildXmlErrors(): void
 	{
-		$ar_error_lines = array();
+		$ar_error_lines = [];
 
 		foreach(libxml_get_errors() as $error)
 		{

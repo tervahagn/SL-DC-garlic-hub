@@ -30,7 +30,7 @@ $app->add(function ($request, $handler)
 	$path = $uri->getPath();
 
 	if ($path !== '/' && str_ends_with($path, '/')) {
-		return (new Response())
+		return new Response()
 			->withHeader('Location', rtrim($path, '/'))
 			->withStatus(301);
 	}

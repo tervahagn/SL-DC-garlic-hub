@@ -43,11 +43,11 @@ class Parameters extends BaseFilterParameters
 	/**
 	 * @var array<string, array{scalar_type: ScalarType, default_value: string|int, parsed: bool}>
 	 */
-	protected array $moduleParameters = array(
-		self::PARAMETER_USERNAME   => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_EMAIL      => array('scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false),
-		self::PARAMETER_STATUS     => array('scalar_type'  => ScalarType::INT,    'default_value' => 0,  'parsed' => false)
-	);
+	protected array $moduleParameters = [
+		self::PARAMETER_USERNAME   => ['scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
+		self::PARAMETER_EMAIL      => ['scalar_type'  => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
+		self::PARAMETER_STATUS     => ['scalar_type'  => ScalarType::INT,    'default_value' => 0,  'parsed' => false]
+	];
 
 	/**
 	 * @throws ModuleException

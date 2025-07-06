@@ -36,6 +36,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
+use TypeError;
 
 class ConcreteMediaHandler extends AbstractMediaHandler
 {
@@ -126,7 +127,7 @@ class AbstractMediaHandlerTest extends TestCase
 	{
 		$this->filesystemMock->method('fileExists')->willReturn(true);
 		$this->filesystemMock->method('readStream')->willReturn(null);
-		$this->expectException(\TypeError::class);
+		$this->expectException(TypeError::class);
 		$this->concreteMediaHandler->determineNewFilename('/path/to/file');
 	}
 

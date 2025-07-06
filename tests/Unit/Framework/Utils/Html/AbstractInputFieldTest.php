@@ -24,7 +24,6 @@ namespace Tests\Unit\Framework\Utils\Html;
 use App\Framework\Utils\Html\AbstractInputField;
 use App\Framework\Utils\Html\FieldType;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class ConcreteInputField extends AbstractInputField

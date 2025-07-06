@@ -52,7 +52,7 @@ class BaseEditParametersTest extends TestCase
 	/**
 	 * @throws Exception
 	 */
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		$sanitizerMock = $this->createMock(Sanitizer::class);

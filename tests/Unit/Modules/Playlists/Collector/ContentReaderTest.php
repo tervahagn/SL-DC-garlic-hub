@@ -36,7 +36,6 @@ use PHPUnit\Framework\TestCase;
 class ContentReaderTest extends TestCase
 {
 	private Filesystem&MockObject $fileSystemMock;
-	private Config&MockObject $configMock;
 
 	private ContentReaderInterface $reader;
 
@@ -46,14 +45,14 @@ class ContentReaderTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->configMock = $this->createMock(Config::class);
+		$configMock = $this->createMock(Config::class);
 		$this->fileSystemMock = $this->createMock(Filesystem::class);
 
-		$this->configMock->method('getConfigValue')
+		$configMock->method('getConfigValue')
 			->with('path_playlists', 'playlists')
 			->willReturn('path/to/playlists');
 
-		$this->reader = new ContentReader($this->configMock, $this->fileSystemMock);
+		$this->reader = new ContentReader($configMock, $this->fileSystemMock);
 	}
 
 	/**

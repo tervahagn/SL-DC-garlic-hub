@@ -23,6 +23,7 @@ namespace Tests\Unit\Modules\Playlists\Services;
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\MediaService;
 use App\Modules\Playlists\Helper\ItemType;
@@ -150,8 +151,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -192,8 +194,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -234,8 +237,10 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -274,8 +279,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -310,8 +316,9 @@ class ItemsServiceTest extends TestCase
 
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -347,8 +354,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -388,8 +396,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -429,8 +438,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -472,8 +482,9 @@ class ItemsServiceTest extends TestCase
 
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -512,8 +523,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -544,8 +556,9 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -582,6 +595,7 @@ class ItemsServiceTest extends TestCase
 
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -610,6 +624,7 @@ class ItemsServiceTest extends TestCase
 	}
 
 	/**
+	 * @throws FrameworkException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]

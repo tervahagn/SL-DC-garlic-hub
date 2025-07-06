@@ -23,7 +23,6 @@ namespace Tests\Unit\Framework\Core\Translate;
 
 use App\Framework\Core\Translate\MessageFormatterFactory;
 use App\Framework\Exceptions\FrameworkException;
-use MessageFormatter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

@@ -17,11 +17,9 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\IndexCreation;
-
-
 
 use App\Framework\Exceptions\ModuleException;
 use League\Flysystem\Filesystem;

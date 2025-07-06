@@ -25,9 +25,9 @@ use App\Modules\Playlists\Collector\Contracts\PlaylistStructureInterface;
 
 class SimplePlaylistStructure implements PlaylistStructureInterface
 {
-	private string $items = '';
-	private string $prefetch = '';
-	private string $exclusive = '';
+	private string $items;
+	private string $prefetch;
+	private string $exclusive;
 
 	public function __construct(string $items = '', string $prefetch = '', string $exclusive = '')
 	{

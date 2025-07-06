@@ -43,7 +43,7 @@ class BaseParametersTest extends TestCase
 	/**
 	 * @throws Exception
 	 */
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->sanitizerMock = $this->createMock(Sanitizer::class);
@@ -164,7 +164,7 @@ class BaseParametersTest extends TestCase
 		static::assertArrayHasKey('new_param4', $filters);
 		static::assertCount($current_filter_count + 4, $filters);
 
-		static::assertEquals($this->baseParameters, $this->baseParameters->removeParameters(array('new_param1', 'new_param2', 'new_param4')));
+		static::assertEquals($this->baseParameters, $this->baseParameters->removeParameters(['new_param1', 'new_param2', 'new_param4']));
 		$filters = $this->baseParameters->getInputParametersArray();
 		static::assertArrayNotHasKey('new_param1', $filters);
 		static::assertArrayNotHasKey('new_param2', $filters);

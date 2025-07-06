@@ -27,6 +27,7 @@ use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\UserStatus;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class ProfileService extends AbstractBaseService
 {
@@ -76,7 +77,7 @@ class ProfileService extends AbstractBaseService
 
 			return $count;
 		}
-		catch (\Throwable $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->userMainRepository->rollBackTransaction();

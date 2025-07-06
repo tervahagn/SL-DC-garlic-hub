@@ -82,7 +82,7 @@ class Trigger
 	 */
 	private function parseAccesskeys(array $accessKeys): array
 	{
-		$determined = array();
+		$determined = [];
 		foreach ($accessKeys as $accessKey)
 		{
 			$determined[] = 'accesskey('.$accessKey['accesskey'].')';
@@ -97,7 +97,7 @@ class Trigger
 	 */
 	private function parseTouches(array $touches): array
 	{
-		$determined = array();
+		$determined = [];
 		foreach ($touches as $touch)
 		{
 			$determined[] = $touch['touch_item_id'].'.activateEvent';

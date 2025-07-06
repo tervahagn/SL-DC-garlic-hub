@@ -34,7 +34,7 @@ abstract class AbstractDatatableService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	protected function fetchForModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
+	public function fetchForModuleAdmin(FilterBase $repository, BaseParameters $parameters): static
 	{
 		$total_elements 	   = $repository->countAllFiltered($parameters->getInputParametersArray());
 		$results	           = $repository->findAllFiltered($parameters->getInputParametersArray());
@@ -45,7 +45,7 @@ abstract class AbstractDatatableService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	protected function fetchForUser(FilterBase $repository, BaseParameters $parameters): static
+	public function fetchForUser(FilterBase $repository, BaseParameters $parameters): static
 	{
 		$total_elements = $repository->countAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);
 		$results        = $repository->findAllFilteredByUID($parameters->getInputParametersArray(), $this->UID);

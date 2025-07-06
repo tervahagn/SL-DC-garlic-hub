@@ -17,6 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 use App\Commands\MigrateCommand;
 use App\Framework\Core\Acl\AclHelper;
@@ -144,7 +145,7 @@ $dependencies[AdapterInterface::class] = DI\factory(function ()
 {
 	$mustacheEngine = new Engine([
 		'loader' => new Mustache\Loader\FilesystemLoader(__DIR__ . '/../../templates'),
-    	'partials_loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/../../templates/generic')
+    	'partials_loader' => new Mustache\Loader\FilesystemLoader(__DIR__ . '/../../templates/generic')
 	]);
 	return new MustacheAdapter($mustacheEngine);
 });
@@ -176,7 +177,7 @@ $dependencies['SqlConnection'] = DI\factory(function (ContainerInterface $contai
 				$connectionParams['charset'] = 'utf8mb4';
 			break;
 		default:
-			throw new InvalidArgumentException("Unsupported DBAL driver: " . $driver);
+			throw new InvalidArgumentException('Unsupported DBAL driver: ' . $driver);
 	}
 
 	$logger = new Logger('dbal');

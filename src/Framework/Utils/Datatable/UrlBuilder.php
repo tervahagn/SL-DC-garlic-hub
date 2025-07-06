@@ -65,12 +65,12 @@ class UrlBuilder
 
 	public function buildFilterUrl(): string
 	{
-		$params = array(
+		$params = [
 			'elements_page' => $this->page,
 			'sort_column' => $this->sortColumn,
 			'sort_order' => $this->sortOrder,
 			'elements_per_page' =>$this->elementsPerPage
-		);
+		];
 
 		if ($this->hasAdditionalUrlParameters())
 		{

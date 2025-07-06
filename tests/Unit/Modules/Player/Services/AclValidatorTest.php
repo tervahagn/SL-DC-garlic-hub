@@ -24,6 +24,7 @@ namespace Tests\Unit\Modules\Player\Services;
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -53,6 +54,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableModuleAdmin(): void
@@ -74,6 +76,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableEdgeEdition(): void
@@ -95,6 +98,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableSubAdminAccessFailed(): void
@@ -120,6 +124,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableSubAdminAccessSucceed(): void
@@ -145,6 +150,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableEditorAccess(): void
@@ -170,6 +176,7 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testIsPlaylistEditableNoAccess(): void

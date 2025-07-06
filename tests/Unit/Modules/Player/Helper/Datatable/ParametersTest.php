@@ -24,6 +24,7 @@ namespace Tests\Unit\Modules\Player\Helper\Datatable;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\ScalarType;
 use App\Modules\Player\Helper\Datatable\Parameters;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,7 +33,6 @@ use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-	private Session&MockObject $sessionMock;
 	private Parameters $parameters;
 
 	/**
@@ -44,9 +44,9 @@ class ParametersTest extends TestCase
 	{
 		parent::setUp();
 		$sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock   = $this->createMock(Session::class);
+		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($sanitizerMock, $this->sessionMock);
+		$this->parameters    = new Parameters($sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]
@@ -69,7 +69,7 @@ class ParametersTest extends TestCase
 		$currentParameters = $this->parameters->getCurrentParameters();
 		static::assertArrayHasKey(Parameters::PARAMETER_ACTIVITY, $currentParameters);
 		static::assertSame('', $currentParameters[Parameters::PARAMETER_ACTIVITY]['default_value']);
-		static::assertSame(\App\Framework\Utils\FormParameters\ScalarType::STRING, $currentParameters[Parameters::PARAMETER_ACTIVITY]['scalar_type']);
+		static::assertSame(ScalarType::STRING, $currentParameters[Parameters::PARAMETER_ACTIVITY]['scalar_type']);
 	}
 
 

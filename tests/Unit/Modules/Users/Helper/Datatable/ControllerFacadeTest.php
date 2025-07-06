@@ -44,7 +44,6 @@ class ControllerFacadeTest extends TestCase
 	private DatatableBuilder&MockObject $datatableBuilderMock;
 	private DatatablePreparer&MockObject $datatablePreparerMock;
 	private UsersDatatableService&MockObject $usersServiceMock;
-	private UsersAdminService&MockObject $usersAdminServiceMock;
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 
@@ -57,7 +56,7 @@ class ControllerFacadeTest extends TestCase
 		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
 		$this->datatablePreparerMock = $this->createMock(DatatablePreparer::class);
 		$this->usersServiceMock = $this->createMock(UsersDatatableService::class);
-		$this->usersAdminServiceMock = $this->createMock(UsersAdminService::class);
+		$usersAdminServiceMock = $this->createMock(UsersAdminService::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->sessionMock = $this->createMock(Session::class);
 
@@ -65,7 +64,7 @@ class ControllerFacadeTest extends TestCase
 			$this->datatableBuilderMock,
 			$this->datatablePreparerMock,
 			$this->usersServiceMock,
-			$this->usersAdminServiceMock
+			$usersAdminServiceMock
 		);
 
 		$this->usersServiceMock->method('getCurrentTotalResult')->willReturn(42);
@@ -109,8 +108,9 @@ class ControllerFacadeTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -125,9 +125,10 @@ class ControllerFacadeTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testPrepareDataGrid(): void

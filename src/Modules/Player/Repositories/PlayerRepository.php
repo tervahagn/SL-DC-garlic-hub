@@ -17,7 +17,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+declare(strict_types=1);
 
 namespace App\Modules\Player\Repositories;
 
@@ -53,13 +53,13 @@ class PlayerRepository extends FilterBase
 		}
 		else
 		{
-			$sql = "SELECT
+			$sql = 'SELECT
             SUM(CASE WHEN last_access >= DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND) THEN 1 ELSE 0 END) AS active,
             SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (2 * refresh) SECOND)
                       AND last_access >= DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS pending,
             SUM(CASE WHEN last_access < DATE_SUB(NOW(), INTERVAL (4 * refresh) SECOND) THEN 1 ELSE 0 END) AS inactive
         FROM
-            player;";
+            player;';
 		}
 
 		$result =  $this->connection->fetchAssociative($sql);

@@ -156,7 +156,7 @@ trait SearchFilterParamsTrait
 		// array_merge re-numerate keys+
 		// look at https://www.php.net/manual/de/function.array-merge.php
 		// we need
-		return array('-') + $allowed_companies;
+		return ['-'] + $allowed_companies;
 	}
 
 	/**
@@ -177,7 +177,7 @@ trait SearchFilterParamsTrait
 		$domain_ids = array_map( function($value) { return pow(2, $value); }, $this->getAllowedCompanyIds());
 
 		// notice: we can not use array_merge() because this will renumber any numeric key
-		return array('-') + array_combine($domain_ids, $allowed_companies);
+		return ['-'] + array_combine($domain_ids, $allowed_companies);
 	}
 
 	/**
