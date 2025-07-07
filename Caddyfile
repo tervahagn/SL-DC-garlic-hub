@@ -1,0 +1,28 @@
+localhost {
+
+    encode zstd br gzip
+    log {
+        output file var/logs/frankenphp.log
+        format console
+      	level ERROR
+  }
+
+
+    root * ./public
+
+    php_server {
+        try_files {path} index.php
+    }
+
+    @rewrite {
+        not {
+            file
+        }
+    }
+
+    handle @rewrite {
+        rewrite * index.php?{query}
+    }
+
+    file_server
+}
