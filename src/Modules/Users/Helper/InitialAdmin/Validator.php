@@ -19,7 +19,7 @@
 */
 declare(strict_types=1);
 
-namespace App\Modules\Profile\Helper\Password;
+namespace App\Modules\Users\Helper\InitialAdmin;
 
 use App\Framework\Core\BaseValidator;
 use App\Framework\Core\Translate\Translator;
@@ -42,22 +42,30 @@ class Validator extends BaseValidator
 
 	/**
 	 * @return string[]
-	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function validateUserInput(string $passwordPattern): array
 	{
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
-		$password = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
+		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_NAME)))
+			$errors[] = $this->translator->translate('no_username', 'users');
+
+		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_EMAIL)) ||
+			!$this->isEmail($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_NAME))
+		)
+			$errors[] = $this->translator->translate('no_email', 'users');
+
+		$password = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_PASSWORD);
 		if (empty($password))
 			$errors[] = $this->translator->translate('no_password', 'profile');
 
-		$passwordConfirm = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD_CONFIRM);
+		$passwordConfirm = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_PASSWORD_CONFIRM);
 		if (empty($passwordConfirm))
 			$errors[] = $this->translator->translate('no_password_confirm', 'profile');
 
@@ -80,4 +88,7 @@ class Validator extends BaseValidator
 
 		return false;
 	}
+
+
+
 }
