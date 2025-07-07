@@ -40,6 +40,7 @@ readonly class Builder
 	}
 
 	/**
+	 * @param array{username?:string, email?:string, locale?: string} $post
 	 * @return array<string,mixed>
 	 * @throws CoreException
 	 * @throws FrameworkException

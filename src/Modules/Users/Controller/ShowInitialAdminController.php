@@ -76,7 +76,7 @@ class ShowInitialAdminController
 		if (!$this->facade->isFunctionAllowed())
 			return $response->withHeader('Location', '/')->withStatus(302);
 
-		/** @var array<string,mixed> $post */
+		/** @var array{username:string, email:string, locale: string, password:string, password_confirm: string} $post */
 		$post = $request->getParsedBody();
 
 		$this->initFacade($request);
@@ -109,14 +109,15 @@ class ShowInitialAdminController
 
 
 	/**
+	 * @param array{username?:string, email?:string, locale?: string, password?:string, password_confirm?: string} $post
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
+	private function outputRenderedForm(ResponseInterface $response, array $post): ResponseInterface
 	{
-		$dataSections = $this->facade->prepareUITemplate($userInput);
+		$dataSections = $this->facade->prepareUITemplate($post);
 		$templateData = $this->formElementPreparer->prepareUITemplate($dataSections);
 
 		$response->getBody()->write(serialize($templateData));
@@ -124,7 +125,7 @@ class ShowInitialAdminController
 	}
 
 	/**
-	 * @throws Exception
+	 * @param ServerRequestInterface $request
 	 */
 	private function initFacade(ServerRequestInterface $request): void
 	{

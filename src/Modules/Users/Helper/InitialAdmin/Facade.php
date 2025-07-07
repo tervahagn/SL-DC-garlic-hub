@@ -64,7 +64,7 @@ class Facade
 			return false;
 
 		// means something happens with an installed lock file
-		// create lock file silently and send an error message
+		// create a lock file silently and send an error message
 		if ($this->usersAdminService->hasAdminUser())
 		{
 			$this->usersAdminService->creatLockfile();
@@ -96,7 +96,7 @@ class Facade
 	 */
 	public function storeUser(): int
 	{
-		/** @var array{username:string, email:string, locale?: string, status?: int} $saveData */
+		/** @var array{username:string, email:string, locale: string, password: string} $saveData */
 		$saveData  = array_combine(
 			$this->settingsParameters->getInputParametersKeys(),
 			$this->settingsParameters->getInputValuesArray()
@@ -124,7 +124,7 @@ class Facade
 	}
 
 	/**
-	 * @param array<string,string> $post
+	 * @param array{username?:string, email?:string, locale?: string, password?:string, password_confirm?: string}  $post
 	 * @return array<string,mixed>
 	 *
 	 * @throws CoreException

@@ -61,11 +61,11 @@ class UsersAdminCreateService extends AbstractBaseService
 
 	public function logAlarm(): void
 	{
-		$this->logger->error('Logfile was removed. Create a new one.');;
+		$this->logger->error('Logfile was removed. Create a new one.');
 	}
 
 	/**
-	 * @param array{username:string, email:string, status?: int} $postData
+	 * @param array{username:string, email:string, locale: string, password:string} $postData
 	 * @throws Exception
 	 */
 	public function insertNewAdminUser(array $postData): int
@@ -79,7 +79,6 @@ class UsersAdminCreateService extends AbstractBaseService
 			if ($this->hasAdminUser())
 				throw new ModuleException('users', 'There is an admin user already.');
 
-			/** @var array{username:string, email:string, status?: int} $saveData */
 			$saveData = $this->collectCommonData($postData);
 			$UID = (int) $this->userMainRepository->insert($saveData);
 			if ($UID !== 1)
@@ -104,12 +103,9 @@ class UsersAdminCreateService extends AbstractBaseService
 		}
 	}
 
-
-
-
 	/**
-	 * @param array{username?:string, email?:string, locale?: string, status?: int} $postData
-	 * @return array{username?:string, email?:string, locale?: string, status?: int}
+	 * @param array{username:string, email:string, locale: string, password:string} $postData
+	 * @return array{UID: int, username:string, email:string, locale: string, status: int, password:string}
 	 */
 	private function collectCommonData(array $postData): array
 	{
