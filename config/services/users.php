@@ -46,6 +46,7 @@ use App\Modules\Users\Helper\Settings\Validator;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\AclValidator;
+use App\Modules\Users\Services\UsersAdminCreateService;
 use App\Modules\Users\Services\UsersAdminService;
 use App\Modules\Users\Services\UsersDatatableService;
 use App\Modules\Users\Services\UsersService;
@@ -168,7 +169,17 @@ $dependencies[UsersAdminService::class] = DI\factory(function (ContainerInterfac
 		$container->get('ModuleLogger')
 	);
 });
+$dependencies[UsersAdminCreateService::class] = DI\factory(function (ContainerInterface $container)
+{
+	$factory      = $container->get(UserRepositoryFactory::class);
+	$repositories = $factory->create();
 
+	return new UsersAdminCreateService(
+		$repositories['main'],
+		$container->get(NodesService::class),
+		$container->get('ModuleLogger')
+	);
+});
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Facade(
@@ -177,7 +188,6 @@ $dependencies[Facade::class] = DI\factory(function (ContainerInterface $containe
 		$container->get(\App\Modules\Users\Helper\Settings\Parameters::class)
 	);
 });
-
 $dependencies[ShowAdminController::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new ShowAdminController(

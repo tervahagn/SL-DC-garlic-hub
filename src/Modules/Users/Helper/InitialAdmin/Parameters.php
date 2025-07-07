@@ -40,7 +40,7 @@ class Parameters extends BaseEditParameters
 	protected array $moduleParameters = [
 		self::PARAMETER_ADMIN_NAME  => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
 		self::PARAMETER_ADMIN_EMAIL  => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
-		self::PARAMETER_ADMIN_LOCALE  => ['scalar_type' => ScalarType::STRING, 'default_value' => 'en_UD', 'parsed' => false],
+		self::PARAMETER_ADMIN_LOCALE  => ['scalar_type' => ScalarType::STRING, 'default_value' => 'en_US', 'parsed' => false],
 		self::PARAMETER_ADMIN_PASSWORD  => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false],
 		self::PARAMETER_ADMIN_PASSWORD_CONFIRM  => ['scalar_type' => ScalarType::STRING, 'default_value' => '', 'parsed' => false]
 	];

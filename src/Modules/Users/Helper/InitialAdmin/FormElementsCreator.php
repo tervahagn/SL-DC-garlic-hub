@@ -133,8 +133,8 @@ readonly class FormElementsCreator
 			'type' => FieldType::DROPDOWN,
 			'id' => 'locale',
 			'name' => 'locale',
-			'title' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
-			'label' => $this->translator->translate(Parameters::PARAMETER_USER_LOCALE, 'users'),
+			'title' => $this->translator->translate(Parameters::PARAMETER_ADMIN_LOCALE, 'users'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_LOCALE, 'users'),
 			'value' => $value,
 			'options' => $this->translator->translateArrayForOptions('languages', 'menu'),
 			'options_zero' => false
@@ -159,36 +159,6 @@ readonly class FormElementsCreator
 			'rules' => ['required' => true],
 			'default_value' => ''
 		]);
-	}
-
-
-	/**
-	 * @throws FrameworkException
-	 */
-	public function createHiddenUIDField(int $value): FieldInterface
-	{
-		return $this->formBuilder->createField([
-			'type' => FieldType::HIDDEN,
-			'id' => 'UID',
-			'name' => 'UID',
-			'value' => $value,
-		]);
-	}
-
-	/**
-	 * @return array<string,string>
-	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function addResetPasswordButton(): array
-	{
-		return [
-			'ADDITIONAL_BUTTON_TYPE' => 'submit',
-			'ADDITIONAL_BUTTON_NAME' => 'resetPassword',
-			'LANG_ADDITIONAL_BUTTON' => $this->translator->translate('password_reset', 'profile')
-		];
 	}
 
 	/**

@@ -53,20 +53,18 @@ class Validator extends BaseValidator
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_NAME)))
+		if ($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_NAME) === '')
 			$errors[] = $this->translator->translate('no_username', 'users');
 
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_EMAIL)) ||
-			!$this->isEmail($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_NAME))
-		)
+		if (!$this->isEmail($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_EMAIL)))
 			$errors[] = $this->translator->translate('no_email', 'users');
 
 		$password = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_PASSWORD);
-		if (empty($password))
+		if ($password === '')
 			$errors[] = $this->translator->translate('no_password', 'profile');
 
 		$passwordConfirm = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_ADMIN_PASSWORD_CONFIRM);
-		if (empty($passwordConfirm))
+		if ($passwordConfirm === '')
 			$errors[] = $this->translator->translate('no_password_confirm', 'profile');
 
 		if ($password !== $passwordConfirm)
@@ -74,7 +72,6 @@ class Validator extends BaseValidator
 
 		if (!$this->validatePassword($password, $passwordPattern))
 			$errors[] = $this->translator->translate('password_explanation', 'profile');
-
 
 		return $errors;
 	}

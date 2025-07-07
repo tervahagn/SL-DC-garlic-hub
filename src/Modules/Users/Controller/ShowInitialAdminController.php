@@ -19,13 +19,14 @@
 */
 declare(strict_types=1);
 
+
 namespace App\Modules\Users\Controller;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
-use App\Modules\Users\Helper\Settings\Facade;
+use App\Modules\Users\Helper\InitialAdmin\Facade;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +34,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
-class ShowAdminController
+class ShowInitialAdminController
 {
 	private readonly Facade $facade;
 	private readonly FormTemplatePreparer $formElementPreparer;
@@ -47,61 +48,34 @@ class ShowAdminController
 
 	/**
 	 * @throws CoreException
-	 * @throws Exception
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
 	 */
-	public function newUserForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		if (!$this->facade->isFunctionAllowed())
+			return $response->withHeader('Location', '/')->withStatus(302);
+
 		$this->initFacade($request);
-		$this->facade->buildCreateNewParameter();
 
 		return $this->outputRenderedForm($response, []);
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array<string,mixed> $args
-	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws Exception
 	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function editUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
-	{
-		$UID = (int) ($args['UID'] ?? 0);
-		$this->initFacade($request);
-		if ($UID === 0)
-		{
-			$this->flash->addMessage('error', 'UID not valid.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
-		}
-
-		$user = $this->facade->loadUserForEdit($UID);
-		if (empty($user))
-		{
-			$this->flash->addMessage('error', 'User not found.');
-			return $response->withHeader('Location', '/users')->withStatus(302);
-		}
-		$this->facade->buildEditParameter();
-
-		return $this->outputRenderedForm($response, $user);
-	}
-
-	/**
+	 * @throws Exception
 	 * @throws ModuleException
-	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 * @throws Exception
 	 */
 	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
+		if (!$this->facade->isFunctionAllowed())
+			return $response->withHeader('Location', '/')->withStatus(302);
+
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
 
@@ -115,52 +89,30 @@ class ShowAdminController
 		if (!empty($errors))
 			return $this->outputRenderedForm($response, $post);
 
-		if (isset($post['standardSubmit']))
+		$id = $this->facade->storeUser();
+		if ($id > 0)
 		{
-			$id = $this->facade->storeUser((int)$post['UID']);
-			if ($id > 0)
-			{
-				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ successfully stored.');
-				return $response->withHeader('Location', '/users')->withStatus(302);
-			}
-			else
-			{
-				$errors = $this->facade->getUserServiceErrors();
-				foreach ($errors as $errorText)
-				{
-					$this->flash->addMessageNow('error', $errorText);
-				}
-				return $this->outputRenderedForm($response, $post);
-			}
+			$this->flash->addMessage('success', 'Admin User “' . $post['username'] . '“ successfully stored. You can now login with your username and password.');
+			return $response->withHeader('Location', '/login')->withStatus(302);
 		}
-		elseif (isset($post['resetPassword']))
+		else
 		{
-			$token = $this->facade->createPasswordResetToken((int) $post['UID']);
-			if ($token !== '')
+			$errors = $this->facade->getUserServiceErrors();
+			foreach ($errors as $errorText)
 			{
-				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ Password reset was successfully.');
+				$this->flash->addMessageNow('error', $errorText);
 			}
-			else
-			{
-				$errors = $this->facade->getUserServiceErrors();
-				foreach ($errors as $errorText)
-				{
-					$this->flash->addMessage('error', $errorText);
-				}
-			}
+			return $this->outputRenderedForm($response, $post);
 		}
-		return $response->withHeader('Location', '/users/edit/'.$post['UID'])->withStatus(302);
 	}
 
 
+
 	/**
-	 * @param ResponseInterface $response
-	 * @param array<string,mixed> $userInput
-	 * @return ResponseInterface
 	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
 	 */
 	private function outputRenderedForm(ResponseInterface $response, array $userInput): ResponseInterface
 	{
@@ -171,10 +123,14 @@ class ShowAdminController
 		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function initFacade(ServerRequestInterface $request): void
 	{
 		$this->flash      = $request->getAttribute('flash');
-		$this->facade->init($request->getAttribute('translator'), $request->getAttribute('session'));
+		$this->facade->init($request->getAttribute('translator'));
 	}
+
 
 }

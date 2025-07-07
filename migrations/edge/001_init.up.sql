@@ -15,10 +15,6 @@ CREATE TABLE `user_main` (
      `last_password_change` TIMESTAMP DEFAULT NULL,
      UNIQUE (`email`)
 );
-INSERT INTO `user_main`
-(`company_id`, `last_access`, `login_time`, `num_logins`, `created_at`, `status`, `locale`, `username`, `password`, `gender`, `email`, `last_password_change`)
-VALUES
-    (1, CURRENT_TIMESTAMP, NULL, 0, CURRENT_TIMESTAMP, 9, 'en_US', 'admin', '$2y$10$GNIvEOnYy5OxEfdnMO0O0O2g1myLht2CTK4SaVfMK664O85Sd4MA6', '', 'example@example.com', NULL);
 
 CREATE TABLE `user_acl` (
     `UID` INTEGER,
@@ -94,10 +90,6 @@ CREATE INDEX idx_mediapool_nodes_root_id ON mediapool_nodes (root_id);
 -- set some default root dirs.
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, visibility, last_updated, create_date, name)
 VALUES (1, 0, 1, 1, 1, 12, 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'public');
-
-INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, is_user_folder, lft, rgt, UID, visibility,
-                             last_updated, create_date, name)
- VALUES (2, 0, 1, 2, 1, 1, 4, 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin');
 
 -- set some default dirs under public
 INSERT INTO mediapool_nodes (root_id, parent_id, level, root_order, lft, rgt, UID, visibility, last_updated, create_date, name)

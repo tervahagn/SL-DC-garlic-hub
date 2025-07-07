@@ -39,6 +39,7 @@ use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Profile\Controller\ShowPasswordController;
 use App\Modules\Users\Controller\ShowAdminController;
+use App\Modules\Users\Controller\ShowInitialAdminController;
 use App\Modules\Users\Controller\UsersController;
 use App\Modules\Users\Controller\UserTokenController;
 use Psr\Container\ContainerInterface;
@@ -74,6 +75,8 @@ $app->get('/smil-index', createControllerCallable([PlayerIndexController::class,
 $app->group('', function (RouteCollectorProxy $group) use ($container)
 {
 	$group->get('/', createControllerCallable([HomeController::class, 'index'], $container));
+	$group->get('/create-initial', createControllerCallable([ShowInitialAdminController::class, 'show'], $container));
+	$group->post('/create-initial', createControllerCallable([ShowInitialAdminController::class, 'store'], $container));
 	$group->get('/legals', createControllerCallable([HomeController::class, 'legals'], $container));
 	$group->get('/login', createControllerCallable([LoginController::class, 'showLogin'], $container));
 	$group->post('/login', createControllerCallable([LoginController::class, 'login'], $container));

@@ -21,44 +21,22 @@ declare(strict_types=1);
 
 namespace App\Modules\Users\Helper\InitialAdmin;
 
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Users\Services\AclValidator;
-use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Builder
+readonly class Builder
 {
-	private readonly FormElementsCreator $formElementsCreator;
-	private readonly Validator $validator;
-	private readonly Parameters $parameters;
-	private int $UID;
+	private FormElementsCreator $formElementsCreator;
+	private Validator $validator;
+	private Parameters $parameters;
 	public function __construct( Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
 		$this->parameters           = $parameters;
 		$this->validator            = $validator;
 		$this->formElementsCreator  = $formElementsCreator;
-	}
-
-	public function init(Session $session): static
-	{
-		/** @var array{UID: int} $user */
-		$user = $session->get('user');
-		$this->UID      = $user['UID'];
-
-		return $this;
-	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
-	public function configParameter(): void
-	{
 	}
 
 	/**
@@ -68,20 +46,20 @@ class Builder
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function buildForm(string $pattern): array
+	public function buildForm(array $post, string $pattern): array
 	{
 		$form       = [];
 		$form['username'] = $this->formElementsCreator->createUserNameField(
-			$user[Parameters::PARAMETER_ADMIN_NAME] ?? ''
+			$post[Parameters::PARAMETER_ADMIN_NAME] ?? ''
 		);
 
 		$form['email'] = $this->formElementsCreator->createEmailField(
-			$user[Parameters::PARAMETER_ADMIN_EMAIL] ?? ''
+			$post[Parameters::PARAMETER_ADMIN_EMAIL] ?? ''
 		);
 		$form['password']         = $this->formElementsCreator->createPasswordField('', $pattern);
 		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
 
-		$form['locale'] = $this->formElementsCreator->createUserLocaleField($user[Parameters::PARAMETER_ADMIN_LOCALE] ?? 'en_US');
+		$form['locale'] = $this->formElementsCreator->createUserLocaleField($post[Parameters::PARAMETER_ADMIN_LOCALE] ?? 'en_US');
 
 		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
 
@@ -98,12 +76,12 @@ class Builder
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function handleUserInput(array $post): array
+	public function handleUserInput(array $post, string $passwordPattern): array
 	{
 		$this->parameters->setUserInputs($post)
 			->parseInputAllParameters();
 
-		return $this->validator->validateUserInput();
+		return $this->validator->validateUserInput($passwordPattern);
 	}
 
 }

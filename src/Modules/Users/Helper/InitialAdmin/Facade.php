@@ -22,13 +22,11 @@ declare(strict_types=1);
 namespace App\Modules\Users\Helper\InitialAdmin;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Users\Helper\Settings\Parameters;
-use App\Modules\Users\Services\UsersAdminService;
+use App\Modules\Users\Services\UsersAdminCreateService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -36,12 +34,12 @@ use Psr\SimpleCache\InvalidArgumentException;
 class Facade
 {
 	private readonly Builder $settingsFormBuilder;
-	private readonly UsersAdminService $usersAdminService;
+	private readonly UsersAdminCreateService $usersAdminService;
 	private readonly Config $config;
 	private readonly Parameters $settingsParameters;
 	private Translator $translator;
 
-	 public function __construct(Builder $settingsFormBuilder, UsersAdminService $usersAdminService, Config $config, Parameters $settingsParameters)
+	 public function __construct(Builder $settingsFormBuilder, UsersAdminCreateService $usersAdminService, Config $config, Parameters $settingsParameters)
 	{
 		$this->settingsFormBuilder = $settingsFormBuilder;
 		$this->usersAdminService   = $usersAdminService;
@@ -49,32 +47,49 @@ class Facade
 		$this->settingsParameters  = $settingsParameters;
 	}
 
-	public function init(Translator $translator, Session $session): void
+	/**
+	 * @param Translator $translator
+	 */
+	public function init(Translator $translator): void
 	{
 		$this->translator = $translator;
-		$this->settingsFormBuilder->init($session);
-		/** @var array{UID: int, username: string} $user */
-		$user = $session->get('user');
-		$this->usersAdminService->setUID($user['UID']);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function isFunctionAllowed(): bool
+	{
+		if (file_exists(INSTALL_LOCK_FILE))
+			return false;
+
+		// means something happens with an installed lock file
+		// create lock file silently and send an error message
+		if ($this->usersAdminService->hasAdminUser())
+		{
+			$this->usersAdminService->creatLockfile();
+			$this->usersAdminService->logAlarm();
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
 	 * @param array<string,mixed> $post
 	 * @return string[]
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
-	 * @throws Exception
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		$this->settingsFormBuilder->configParameter();
+		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
 
-		return $this->settingsFormBuilder->handleUserInput($post);
+		return $this->settingsFormBuilder->handleUserInput($post, $passwordPattern);
 	}
-
 
 	/**
 	 * @throws Exception
@@ -87,7 +102,7 @@ class Facade
 			$this->settingsParameters->getInputValuesArray()
 		);
 
-		return $this->usersAdminService->insertNewUser($saveData);
+		return $this->usersAdminService->insertNewAdminUser($saveData);
 	}
 
 	/**
@@ -109,16 +124,6 @@ class Facade
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws Exception
-	 */
-	public function buildCreateParameter(): void
-	{
-		$this->settingsFormBuilder->configParameter();
-	}
-
-	/**
 	 * @param array<string,string> $post
 	 * @return array<string,mixed>
 	 *
@@ -129,16 +134,14 @@ class Facade
 	 */
 	public function prepareUITemplate(array $post): array
 	{
-		$name = $this->oldUser['username'] ?? $this->translator->translate('add', 'users');
-
 		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
-		$title = $this->translator->translate('create_admin_user', 'users'). ': ' .$name;
-		$dataSections                      = $this->settingsFormBuilder->buildForm($passwordPattern);
+		$title = $this->translator->translate('create_admin', 'users');
+		$dataSections                      = $this->settingsFormBuilder->buildForm($post, $passwordPattern);
 		$dataSections['title']             = $title;
 		$dataSections['additional_css']    = ['/css/users/edit.css'];
-		$dataSections['footer_modules']    = ['/js/users/edit/init.js'];
+		$dataSections['footer_modules']    = [];
 		$dataSections['template_name']     = 'users/edit';
-		$dataSections['form_action']       = '/users/edit';
+		$dataSections['form_action']       = '/create-initial';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
 
 		return $dataSections;

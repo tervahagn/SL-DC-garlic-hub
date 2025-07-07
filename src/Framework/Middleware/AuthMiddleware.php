@@ -51,6 +51,7 @@ class AuthMiddleware implements MiddlewareInterface
 	private AuthService $authService;
 	/** @var string[]  */
 	private array $publicRoutes = [
+		'create-initial',
 		'set-locales',
 		'smil-index',
 		'register',
