@@ -93,13 +93,16 @@ class UserMainRepository extends FilterBase
 	 */
 	public function findExistingUser(string $username, string $email): array
 	{
-		$where = [
-			'username' => $this->generateWhereClause($username, '=', 'OR'),
-			'email' => $this->generateWhereClause($email, '=', 'OR')
-		];
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('UID, username, email')
+			->from($this->table)
+			->where('username = :username')
+			->orWhere('email = :email')
+			->setParameter('username', $username)
+			->setParameter('email', $email)
+		;
 
-		return $this->findAllByWithFields(['UID', 'username', 'email'], $where);
-
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**
@@ -107,7 +110,7 @@ class UserMainRepository extends FilterBase
 	 */
 	protected function prepareJoin(): array
 	{
-		return [];
+		return $this->prepareUserJoin();
 	}
 
 	/**

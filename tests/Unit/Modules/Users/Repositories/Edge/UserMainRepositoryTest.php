@@ -49,7 +49,6 @@ class UserMainRepositoryTest extends TestCase
 		$this->resultMock       = $this->createMock(Result::class);
 
 		$this->userMain = new UserMainRepository($this->connectionMock);
-
 	}
 
 	/**
@@ -194,5 +193,48 @@ class UserMainRepositoryTest extends TestCase
 		$result = $this->userMain->findAllFiltered($fields);
 		static::assertSame($expectedResults, $result);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testFindExistingUserWithMatchingUsers(): void
+	{
+		$username = 'johndoe';
+		$email = 'johndoe@example.com';
+		$userData = [
+			['UID' => 1, 'username' => 'johndoe', 'email' => 'johndoe@example.com']
+		];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with('UID, username, email')
+			->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('from')
+			->with('user_main')
+			->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('where')
+			->with('username = :username')
+			->willReturnSelf();
+		$this->queryBuilderMock->expects($this->once())->method('orWhere')
+			->with('email = :email')
+			->willReturnSelf();
+		$this->queryBuilderMock->expects($this->exactly(2))->method('setParameter')
+			->willReturnMap([
+				['username', $username, $this->queryBuilderMock],
+				['email', $email, $this->queryBuilderMock],
+			]);
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn($userData);
+
+		$result = $this->userMain->findExistingUser($username, $email);
+		static::assertSame($userData, $result);
+	}
+
 
 }

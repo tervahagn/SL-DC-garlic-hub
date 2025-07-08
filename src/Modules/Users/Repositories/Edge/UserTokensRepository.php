@@ -54,7 +54,7 @@ class UserTokensRepository extends SqlBase
 	}
 
 	/**
-	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findValidByUID(int $UID): array
@@ -66,10 +66,7 @@ class UserTokensRepository extends SqlBase
 			->andWhere('used_at IS NULL')
 			->setParameter('uid', $UID);
 
-		/** @var list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string,null}> $result */
-		$result =  $queryBuilder->executeQuery()->fetchAllAssociative();
-
-		return $result;
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 
 	/**

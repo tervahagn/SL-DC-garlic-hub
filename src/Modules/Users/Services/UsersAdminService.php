@@ -59,7 +59,7 @@ class UsersAdminService extends AbstractBaseService
 	 * locale: string,
 	 * email:string,
 	 * username:string,
-	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 *}|array{}
 	 *
 	 * @throws Exception
@@ -75,7 +75,7 @@ class UsersAdminService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function loadUserTokensForAdminEdit(int $UID): array
@@ -161,7 +161,7 @@ class UsersAdminService extends AbstractBaseService
 	{
 		// check first if there is another valid token
 		$tokens = $this->userTokenService->findTokenByUID($UID);
-		if (!empty($tokens))
+		if ($tokens !== [])
 		{
 			$this->addErrorMessage('tokens_exists');
 			return '';

@@ -88,7 +88,7 @@ class UserTokenService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * @return list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findTokenByUID(int $UID): array

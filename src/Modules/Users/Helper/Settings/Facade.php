@@ -42,7 +42,7 @@ class Facade
 	 * locale: string,
 	 * email:string,
 	 * username:string,
-	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 * tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 * }
 	 */
 	private array $oldUser;
@@ -72,14 +72,14 @@ class Facade
 	 *  locale: string,
 	 *  email:string,
 	 *  username:string,
-	 *  tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>
+	 *  tokens:list<array{token:string, UID: int, purpose: string, expires_at: string, used_at:string|null}>|array<empty,empty>
 	 * }|array{}
 	 * @throws Exception
 	 */
 	public function loadUserForEdit(int $UID): array
 	{
 		$user = $this->usersAdminService->loadForAdminEdit($UID);
-		if (empty($user))
+		if ($user === [])
 			return [];
 
 		$this->oldUser = $user;
@@ -102,8 +102,10 @@ class Facade
 		if ($UID > 0)
 		{
 			$user = $this->usersAdminService->loadForAdminEdit($UID);
-			if (empty($user))
+			if ($user === [])
 				return [$this->translator->translate('user_not_found', 'users')];
+
+
 			$this->oldUser =  $user;
 			$this->settingsFormBuilder->configEditParameter($this->oldUser);
 		}

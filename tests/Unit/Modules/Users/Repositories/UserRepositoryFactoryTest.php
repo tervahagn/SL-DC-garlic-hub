@@ -53,11 +53,8 @@ class UserRepositoryFactoryTest extends TestCase
 		$result = $this->factory->create();
 
 		static::assertArrayHasKey('contact', $result);
-
 		static::assertArrayHasKey('stats', $result);
-
 		static::assertArrayHasKey('vip', $result);
-
 		static::assertArrayHasKey('security', $result);
 	}
 
@@ -86,4 +83,27 @@ class UserRepositoryFactoryTest extends TestCase
 		static::assertArrayNotHasKey('vip', $result);
 		static::assertArrayNotHasKey('security', $result);
 	}
+
+	#[Group('units')]
+	public function testCreateEdgeEditionFromCache(): void
+	{
+		$this->configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
+
+		$result = $this->factory->create();
+
+		static::assertArrayNotHasKey('contact', $result);
+		static::assertArrayNotHasKey('stats', $result);
+		static::assertArrayNotHasKey('vip', $result);
+		static::assertArrayNotHasKey('security', $result);
+
+		$result = $this->factory->create();
+
+		static::assertArrayNotHasKey('contact', $result);
+		static::assertArrayNotHasKey('stats', $result);
+		static::assertArrayNotHasKey('vip', $result);
+		static::assertArrayNotHasKey('security', $result);
+
+	}
+
+
 }
