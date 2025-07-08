@@ -25,33 +25,15 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
+use App\Framework\Utils\Forms\AbstractBaseFormElementsCreator;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-readonly class FormElementsCreator
+class FormElementsCreator extends AbstractBaseFormElementsCreator
 {
-	private FormBuilder $formBuilder;
-
-	private Translator $translator;
-
-
-	public function __construct(FormBuilder $formBuilder, Translator $translator)
-	{
-		$this->formBuilder = $formBuilder;
-		$this->translator = $translator;
-	}
-
-	/**
-	 * @param  array<string,FieldInterface> $form
-	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
-	 */
-	public function prepareForm(array $form): array
-	{
-		return $this->formBuilder->prepareForm($form);
-	}
 
 	/**
 	 * @throws CoreException
@@ -136,18 +118,6 @@ readonly class FormElementsCreator
 			'id' => 'playlist_mode',
 			'name' => 'playlist_mode',
 			'value' => $value,
-		]);
-	}
-
-	/**
-	 * @throws FrameworkException
-	 */
-	public function createCSRFTokenField(): FieldInterface
-	{
-		return $this->formBuilder->createField([
-			'type' => FieldType::CSRF,
-			'id'   => BaseEditParameters::PARAMETER_CSRF_TOKEN,
-			'name' => BaseEditParameters::PARAMETER_CSRF_TOKEN,
 		]);
 	}
 

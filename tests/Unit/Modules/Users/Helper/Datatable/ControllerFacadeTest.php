@@ -44,6 +44,7 @@ class ControllerFacadeTest extends TestCase
 	private DatatableBuilder&MockObject $datatableBuilderMock;
 	private DatatablePreparer&MockObject $datatablePreparerMock;
 	private UsersDatatableService&MockObject $usersServiceMock;
+	private UsersAdminService&MockObject $usersAdminServiceMock;
 	private Translator&MockObject $translatorMock;
 	private Session&MockObject $sessionMock;
 
@@ -56,7 +57,7 @@ class ControllerFacadeTest extends TestCase
 		$this->datatableBuilderMock = $this->createMock(DatatableBuilder::class);
 		$this->datatablePreparerMock = $this->createMock(DatatablePreparer::class);
 		$this->usersServiceMock = $this->createMock(UsersDatatableService::class);
-		$usersAdminServiceMock = $this->createMock(UsersAdminService::class);
+		$this->usersAdminServiceMock = $this->createMock(UsersAdminService::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->sessionMock = $this->createMock(Session::class);
 
@@ -64,7 +65,7 @@ class ControllerFacadeTest extends TestCase
 			$this->datatableBuilderMock,
 			$this->datatablePreparerMock,
 			$this->usersServiceMock,
-			$usersAdminServiceMock
+			$this->usersAdminServiceMock
 		);
 
 		$this->usersServiceMock->method('getCurrentTotalResult')->willReturn(42);
@@ -105,6 +106,19 @@ class ControllerFacadeTest extends TestCase
 
 		$this->controllerFacade->configure($this->translatorMock, $this->sessionMock);
 
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteUser(): void
+	{
+		$this->usersAdminServiceMock->expects($this->once())->method('deleteUser')
+			->with(12345)
+			->willReturn(true);
+
+		static::assertTrue($this->controllerFacade->deleteUser(12345));
 	}
 
 	/**

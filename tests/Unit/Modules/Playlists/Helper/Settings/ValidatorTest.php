@@ -135,6 +135,4 @@ class ValidatorTest extends TestCase
 		static::assertEmpty($errors);
 	}
 
-
-
 }

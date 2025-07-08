@@ -53,12 +53,11 @@ class Validator extends BaseValidator
 		$this->inputEditParameters->checkCsrfToken();
 
 		$errors = [];
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_NAME)))
+		if ($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_NAME) === '')
 			$errors[] = $this->translator->translate('no_username', 'users');
 
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL)) ||
-			!$this->isEmail($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL))
-		)
+		$email = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_EMAIL);
+		if ($email === '' || !$this->isEmail($email))
 			$errors[] = $this->translator->translate('no_email', 'users');
 
 		return $errors;
