@@ -126,8 +126,6 @@ class UsersAdminCreateServiceTest extends TestCase
 			->with('Logfile was removed. Create a new one.');
 
 		$this->service->logAlarm();
-
-		static::assertTrue(true);
 	}
 
 
@@ -270,7 +268,7 @@ class UsersAdminCreateServiceTest extends TestCase
 	#[RunInSeparateProcess] #[Group('units')]
 	public function testInsertNewAdminLockfileFails(): void
 	{
-		$postData = ['username' => 'admin', 'email' => 'admin@example.com', 'locale' => 'en', 'password' => 'securepassword'];
+		$postData = ['username' => 'admin', 'email' => 'admin@example.com', 'locale' => 'en', 'password' => 'secure-password'];
 
 		$this->transactionsMock->expects($this->once())->method('begin');
 		define('INSTALL_LOCK_FILE', '/mock/path/install.lock');

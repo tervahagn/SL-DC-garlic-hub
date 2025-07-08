@@ -234,7 +234,7 @@ class UsersAdminService extends AbstractBaseService
 		if ($result === [])
 			return true;
 
-
+		/** @var array{UID: int, username:string, email:string} $existing */
 		foreach ($result as $existing)
 		{
 			if ($existing['username'] === $username && (int) $existing['UID'] !== $UID)
