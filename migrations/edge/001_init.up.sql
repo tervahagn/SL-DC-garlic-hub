@@ -27,6 +27,20 @@ INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'mediapool');
 INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'player');
 INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'playlists');
 
+CREATE TABLE user_tokens (
+     token BLOB(32) PRIMARY KEY,
+     UID INTEGER NOT NULL,
+     purpose TEXT NOT NULL,
+     expires_at TIMESTAMP NOT NULL,
+     used_at TIMESTAMP,
+     additional_data TEXT,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     FOREIGN KEY (UID) REFERENCES user_main(UID) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_token_user_purpose ON user_tokens (UID, purpose);
+CREATE INDEX idx_token_expires ON user_tokens (expires_at);
+
 CREATE TABLE oauth2_clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id TEXT UNIQUE NOT NULL,
@@ -116,6 +130,7 @@ CREATE TABLE mediapool_files (
      filename TEXT COLLATE NOCASE DEFAULT NULL,
      extension varchar(10) DEFAULT NULL,
      thumb_extension varchar(10) DEFAULT NULL,
+     config_data TEXT DEFAULT NULL,
      media_description TEXT DEFAULT NULL
 );
 

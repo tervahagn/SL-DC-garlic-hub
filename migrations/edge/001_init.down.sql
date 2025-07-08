@@ -1,5 +1,6 @@
 DROP TABLE `user_main`;
 DROP TABLE `user_acl`;
+DROP TABLE `user_tokens`;
 DROP TABLE `oauth2_clients`;
 DROP TABLE `oauth2_credentials`;
 DROP TABLE `oauth2_scopes`;
