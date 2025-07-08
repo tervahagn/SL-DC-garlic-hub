@@ -148,6 +148,7 @@ class UsersService extends AbstractBaseService
 			}
 			elseif ($key === 'acl')
 			{
+				// because there can be more than one result
 				/** @var UserAclRepository $repository */
 				$userData[$key] = $repository->findById($UID);
 			}

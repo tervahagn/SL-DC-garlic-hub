@@ -29,7 +29,8 @@ use Doctrine\DBAL\Exception;
 
 class UserTokensRepository extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{

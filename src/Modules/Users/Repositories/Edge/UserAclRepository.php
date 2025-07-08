@@ -28,7 +28,8 @@ use Doctrine\DBAL\Connection;
 
 class UserAclRepository extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 
 	const string USER_MODULE_ADMIN = 'module_admin';
 	const string USER_SUB_ADMIN = 'sub_admin';

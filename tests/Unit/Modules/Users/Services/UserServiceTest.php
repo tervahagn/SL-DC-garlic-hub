@@ -23,7 +23,9 @@ namespace Tests\Unit\Modules\Users\Services;
 
 use App\Modules\Profile\Entities\UserEntity;
 use App\Modules\Profile\Entities\UserEntityFactory;
+use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
+use App\Modules\Users\Repositories\Edge\UserTokensRepository;
 use App\Modules\Users\Repositories\UserRepositoryFactory;
 use App\Modules\Users\Services\UsersService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -40,6 +42,8 @@ class UserServiceTest extends TestCase
 	private UserEntityFactory&MockObject $entityFactoryMock;
 	private Psr16Adapter&MockObject $cacheMock;
 	private UserMainRepository&MockObject $userMainRepositoryMock;
+	private UserRepositoryFactory&MockObject $repositoryFactoryMock;
+	private LoggerInterface&MockObject $loggerMock;
 	private UsersService $usersService;
 
 	/**
@@ -48,20 +52,11 @@ class UserServiceTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$repositoryFactoryMock        = $this->createMock(UserRepositoryFactory::class);
+		$this->repositoryFactoryMock  = $this->createMock(UserRepositoryFactory::class);
 		$this->entityFactoryMock      = $this->createMock(UserEntityFactory::class);
 		$this->cacheMock              = $this->createMock(Psr16Adapter::class);
 		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
-		$loggerMock = $this->createMock(LoggerInterface::class);
-		$repositoryFactoryMock->method('create')
-			->willReturn(['main' => $this->userMainRepositoryMock]);
-
-		$this->usersService = new UsersService(
-			$repositoryFactoryMock,
-			$this->entityFactoryMock,
-			$this->cacheMock,
-			$loggerMock
-		);
+		$this->loggerMock             = $this->createMock(LoggerInterface::class);
 	}
 
 	/**
@@ -77,6 +72,11 @@ class UserServiceTest extends TestCase
 			'num_logins' => 'num_logins + 1',
 			'session_id' => $sessionId,
 		];
+
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
+
 		$this->userMainRepositoryMock
 			->expects($this->once())
 			->method('update')
@@ -96,6 +96,11 @@ class UserServiceTest extends TestCase
 	{
 		$UID = 123;
 		$sessionId = 'invalid-session';
+
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
+
 		$this->userMainRepositoryMock
 			->expects($this->once())
 			->method('update')
@@ -116,6 +121,10 @@ class UserServiceTest extends TestCase
 		$identifier = 'test@example.com';
 		$mockUserData = ['UID' => 1, 'username' => 'testuser'];
 
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
+
 		$this->userMainRepositoryMock
 			->method('findByIdentifier')
 			->with($identifier)
@@ -133,6 +142,10 @@ class UserServiceTest extends TestCase
 	public function testFindUserNotFound(): void
 	{
 		$identifier = 'unknown@example.com';
+
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
 
 		// Repository simuliert, dass kein Benutzer gefunden wurde
 		$this->userMainRepositoryMock->method('findByIdentifier')
@@ -152,6 +165,10 @@ class UserServiceTest extends TestCase
 	{
 		$UID = 1;
 		$cachedData = ['UID' => 1, 'username' => 'testuser'];
+
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
 
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn($cachedData);
@@ -178,15 +195,33 @@ class UserServiceTest extends TestCase
 		$UID = 1;
 		$userData = ['UID' => 1, 'username' => 'testuser'];
 
+		$aclRepositoryMock      = $this->createMock(UserAclRepository::class);
+		$elseRepositoryMock     = $this->createMock(UserTokensRepository::class);
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(
+				[
+					'main' => $this->userMainRepositoryMock,
+					'acl'  => $aclRepositoryMock,
+					'else' => $elseRepositoryMock
+				]
+			);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
+
+
 		$this->cacheMock->method('get')->with("user_$UID")
 			->willReturn(null);
 
+
 		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with($UID)
 			->willReturn($userData);
+		$aclRepositoryMock->expects($this->once())->method('findById')->with($UID)
+			->willReturn([]);
+		$elseRepositoryMock->expects($this->once())->method('findFirstById')->with($UID)
+			->willReturn([]);
 
 		$mockUserEntity = $this->createMock(UserEntity::class);
 		$this->entityFactoryMock->method('create')
-			->with(['main' => $userData])
+			->with(['main' => $userData, 'acl' => [], 'else' => []])
 			->willReturn($mockUserEntity);
 
 		$result = $this->usersService->getUserById($UID);
@@ -202,6 +237,11 @@ class UserServiceTest extends TestCase
 	public function testInvalidCache(): void
 	{
 		$UID = 14;
+
+		$this->repositoryFactoryMock->method('create')
+			->willReturn(['main' => $this->userMainRepositoryMock]);
+		$this->usersService = new UsersService($this->repositoryFactoryMock, $this->entityFactoryMock, $this->cacheMock, $this->loggerMock);
+
 
 		$this->cacheMock->expects($this->once())->method('delete')
 			->with('user_'.$UID)
