@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript \
     ffmpeg
 
-
 # Install required PHP extensions
 RUN docker-php-ext-install zip intl
 

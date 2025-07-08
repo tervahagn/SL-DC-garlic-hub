@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Users\Services;
 
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Mediapool\Services\NodesService;
@@ -34,17 +35,19 @@ use Throwable;
 class UsersAdminService extends AbstractBaseService
 {
 	private readonly UserMainRepository $userMainRepository;
+	private readonly Transactions $transactions;
 	private readonly NodesService $nodesService;
 	private readonly UserTokenService $userTokenService;
 	private readonly AclValidator $aclValidator;
 
 
-	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService, UserTokenService $userTokenService,AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService, UserTokenService $userTokenService,AclValidator $aclValidator, Transactions $transactions, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->userTokenService   = $userTokenService;
 		$this->nodesService       = $nodesService;
 		$this->aclValidator       = $aclValidator;
+		$this->transactions       = $transactions;
 
 		parent::__construct($logger);
 	}
@@ -88,32 +91,35 @@ class UsersAdminService extends AbstractBaseService
 	{
 		try
 		{
-			$this->userMainRepository->beginTransaction();
+			$this->transactions->begin();
 			if (!$this->isUnique(0, $postData['username'], $postData['email']))
-				throw new ModuleException('users', 'Values are not unique');
+				throw new ModuleException('users', 'User or email already exists.');
 
 			/** @var array{username:string, email:string, status?: int} $saveData */
 			$saveData = $this->collectCommonData($postData);
 
 			$UID = (int) $this->userMainRepository->insert($saveData);
 			if ($UID === 0)
-				throw new ModuleException('users', 'insert failed.');
+				throw new ModuleException('users', 'Insert failed.');
 
 			$this->userTokenService->insertToken($UID, TokenPurposes::INITIAL_PASSWORD);
 
 			$this->nodesService->UID = $this->UID;
 			$nodeId = $this->nodesService->addUserDirectory($UID, $saveData['username']);
 			if ($nodeId === 0)
+			{
+				$this->addErrorMessage('create_media_dir_failed');
 				throw new ModuleException('users', 'Create mediapool user directory failed.');
+			}
 
-			$this->userMainRepository->commitTransaction();
+			$this->transactions->commit();
 
 			return $UID;
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
-			$this->userMainRepository->rollBackTransaction();
+			$this->transactions->rollBack();
 			return 0;
 		}
 	}
@@ -125,24 +131,24 @@ class UsersAdminService extends AbstractBaseService
 	{
 		try
 		{
-			$this->userMainRepository->beginTransaction();
+			$this->transactions->begin();
 
 			if (!$this->aclValidator->isModuleAdmin($this->UID))
 				throw new ModuleException('users', 'No rights to delete user');
 
 			if ($this->userMainRepository->delete($UID) === 0)
-				throw new ModuleException('users', 'Remove the user from  db-table failed.');
+				throw new ModuleException('users', 'Remove the user from db-table failed.');
 
 			$this->nodesService->UID = $this->UID;
 			$this->nodesService->deleteUserDirectory($UID);
 
-			$this->userMainRepository->commitTransaction();
+			$this->transactions->commit();
 			return true;
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
-			$this->userMainRepository->rollBackTransaction();
+			$this->transactions->rollBack();
 			$this->addErrorMessage('delete_user_failed');
 			return false;
 		}
@@ -162,7 +168,7 @@ class UsersAdminService extends AbstractBaseService
 		}
 		try
 		{
-			$this->userMainRepository->beginTransaction();
+			$this->transactions->begin();
 			if($this->userMainRepository->update($UID, ['password' => '']) === 0)
 				throw new ModuleException('users', 'Password reset failed.');
 
@@ -170,12 +176,12 @@ class UsersAdminService extends AbstractBaseService
 			if($id === '')
 				throw new ModuleException('users', 'Password reset failed.');
 
-			$this->userMainRepository->commitTransaction();
+			$this->transactions->commit();
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
-			$this->userMainRepository->rollBackTransaction();
+			$this->transactions->rollBack();
 			$this->addErrorMessage('password_reset_failed');
 			return '';
 		}
@@ -195,7 +201,6 @@ class UsersAdminService extends AbstractBaseService
 
 		return $this->userMainRepository->update($UID, $saveData);
 	}
-
 
 	/**
 	 * @param array{username?:string, email?:string, locale?: string, status?: int} $postData
@@ -224,15 +229,12 @@ class UsersAdminService extends AbstractBaseService
 	 */
 	private function isUnique(int $UID, string $username, string $email): bool
 	{
-		$where = [
-			'username' => $this->userMainRepository->generateWhereClause($username, '=', 'OR'),
-			'email' => $this->userMainRepository->generateWhereClause($email, '=', 'OR')
-		];
-		$result =  $this->userMainRepository->findAllByWithFields(['UID', 'username', 'email'], $where);
+		$result =  $this->userMainRepository->findExistingUser($username, $email);
 
-		if (empty($result))
+		if ($result === [])
 			return true;
 
+		/** @var array{UID: int, username: string, email: string} $existing */
 		foreach ($result as $existing)
 		{
 			if ($existing['username'] === $username && (int) $existing['UID'] !== $UID)
@@ -241,9 +243,6 @@ class UsersAdminService extends AbstractBaseService
 			if ($existing['email'] === $email && (int) $existing['UID'] !== $UID)
 				$this->addErrorMessage('email_exists');
 		}
-
-		if (!$this->hasErrorMessages())
-			return true;
 
 		return false;
 	}

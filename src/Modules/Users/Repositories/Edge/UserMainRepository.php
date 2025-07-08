@@ -40,8 +40,8 @@ class UserMainRepository extends FilterBase
 	}
 
 	/**
-	 * We do not want to use * as this will transfer user sensitive data
-	 * like passwords, tokens etc.
+	 * We do not want to use * as this will transfer user-sensitive data
+	 * like passwords, tokens, etc.
 	 *
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
@@ -85,6 +85,21 @@ class UserMainRepository extends FilterBase
 		$queryBuilder->setParameter('identifier', $identifier);
 
 		return $this->fetchAssociative($queryBuilder);
+	}
+
+	/**
+	 * @return list<array{UID: int, username:string, email:string}>|array<empty,empty>
+	 * @throws Exception
+	 */
+	public function findExistingUser(string $username, string $email): array
+	{
+		$where = [
+			'username' => $this->generateWhereClause($username, '=', 'OR'),
+			'email' => $this->generateWhereClause($email, '=', 'OR')
+		];
+
+		return $this->findAllByWithFields(['UID', 'username', 'email'], $where);
+
 	}
 
 	/**
