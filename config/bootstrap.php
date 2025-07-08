@@ -35,8 +35,7 @@ $systemDir = realpath(__DIR__. '/../');
 define('INSTALL_LOCK_FILE', $systemDir . '/var/install.lock');
 
 // allow only change of language
-if (
-	!file_exists(INSTALL_LOCK_FILE) && !str_starts_with($_SERVER['REQUEST_URI'], '/create-initial') &&
+if (!file_exists(INSTALL_LOCK_FILE) && isset($_SERVER['REQUEST_URI']) && !str_starts_with($_SERVER['REQUEST_URI'], '/create-initial') &&
 	!str_starts_with($_SERVER['REQUEST_URI'], '/set-locales'))
 {
 	header('Location: /create-initial');
