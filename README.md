@@ -32,7 +32,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 | Section                  | Status | description                                                                                                                           |
 |--------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------|
 | **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                     |
-| **Initial admin user**   | 🚧      | Set initial admin user after installation                                                                                             |
+| **Initial admin user**   | ✅      | Set initial admin user after installation                                                                                             |
 | **User management**      | ✅      | Basic user management                                                                                                                 |
 | **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                               |
 | **Media Management**     | ✅      | Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key) |
@@ -51,16 +51,15 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - Image templating engine
 - Raspberry Pi Player / CMS Bundle
 - Scalable deployment options
-- add multiple languages
-## Technical Details
+- add multiple languages (French, Russian, Spanish, Greek)
 
 ### Stack
 - PHP 8.4 with strict types 
 - SLIM 4 Framework
 - Phpstan Level 8 with zero errors
-- PHPUnit 12 (targeting >95% test coverage)
-- Vanilla JavaScript with some external libs support
-- Selected composer libraries
+- PHPUnit 12 with >90% test coverage)
+- Vanilla JavaScript and external libraries
+- Composer libraries
 
 ### Developer Documentation
 - [Coding Standards](docs/coding-standards.md)
