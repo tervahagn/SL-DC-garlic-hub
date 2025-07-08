@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Users\Services;
 
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Mediapool\Services\NodesService;
@@ -34,11 +35,13 @@ class UsersAdminCreateService extends AbstractBaseService
 {
 	private readonly UserMainRepository $userMainRepository;
 	private readonly NodesService $nodesService;
+	private readonly Transactions $transactions;
 
-	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService,  LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, NodesService $nodesService, Transactions $transactions, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->nodesService       = $nodesService;
+		$this->transactions       = $transactions;
 
 		parent::__construct($logger);
 	}
@@ -72,7 +75,7 @@ class UsersAdminCreateService extends AbstractBaseService
 	{
 		try
 		{
-			$this->userMainRepository->beginTransaction();
+			$this->transactions->begin();
 			if (file_exists(INSTALL_LOCK_FILE))
 				throw new ModuleException('users', 'There is an existing lockfile already.');
 
@@ -92,13 +95,13 @@ class UsersAdminCreateService extends AbstractBaseService
 			if (!$this->creatLockfile())
 				throw new ModuleException('users', 'Lockfile could not created.');
 
-			$this->userMainRepository->commitTransaction();
+			$this->transactions->commit();
 			return $UID;
 		}
 		catch (Throwable $e)
 		{
+			$this->transactions->rollBack();
 			$this->logger->error($e->getMessage());
-			$this->userMainRepository->rollBackTransaction();
 			return 0;
 		}
 	}

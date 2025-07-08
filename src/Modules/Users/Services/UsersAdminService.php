@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or modify
@@ -118,8 +118,8 @@ class UsersAdminService extends AbstractBaseService
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error($e->getMessage());
 			$this->transactions->rollBack();
+			$this->logger->error($e->getMessage());
 			return 0;
 		}
 	}
@@ -147,8 +147,8 @@ class UsersAdminService extends AbstractBaseService
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error($e->getMessage());
 			$this->transactions->rollBack();
+			$this->logger->error($e->getMessage());
 			$this->addErrorMessage('delete_user_failed');
 			return false;
 		}
@@ -180,8 +180,8 @@ class UsersAdminService extends AbstractBaseService
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error($e->getMessage());
 			$this->transactions->rollBack();
+			$this->logger->error($e->getMessage());
 			$this->addErrorMessage('password_reset_failed');
 			return '';
 		}
@@ -234,7 +234,7 @@ class UsersAdminService extends AbstractBaseService
 		if ($result === [])
 			return true;
 
-		/** @var array{UID: int, username: string, email: string} $existing */
+
 		foreach ($result as $existing)
 		{
 			if ($existing['username'] === $username && (int) $existing['UID'] !== $UID)
