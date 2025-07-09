@@ -32,7 +32,7 @@ readonly class Builder
 	private FormElementsCreator $formElementsCreator;
 	private Validator $validator;
 	private Parameters $parameters;
-	public function __construct( Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
+	public function __construct(Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
 		$this->parameters           = $parameters;
 		$this->validator            = $validator;
@@ -41,7 +41,7 @@ readonly class Builder
 
 	/**
 	 * @param array{username?:string, email?:string, locale?: string} $post
-	 * @return array<string,mixed>
+	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException

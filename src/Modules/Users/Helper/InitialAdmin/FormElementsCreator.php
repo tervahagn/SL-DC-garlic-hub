@@ -21,14 +21,11 @@ declare(strict_types=1);
 
 namespace App\Modules\Users\Helper\InitialAdmin;
 
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Framework\Utils\Forms\AbstractBaseFormElementsCreator;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
-use App\Framework\Utils\Html\FormBuilder;
 use App\Framework\Utils\Html\PasswordField;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -46,10 +43,10 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 	{
 		return  $this->formBuilder->createField([
 			'type' => FieldType::TEXT,
-			'id' => 'username',
-			'name' => 'username',
-			'title' => $this->translator->translate('username', 'main'),
-			'label' => $this->translator->translate('username', 'main'),
+			'id' => Parameters::PARAMETER_ADMIN_NAME,
+			'name' => Parameters::PARAMETER_ADMIN_NAME,
+			'title' => $this->translator->translate(Parameters::PARAMETER_ADMIN_NAME, 'main'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_NAME, 'main'),
 			'value' => $value,
 			'rules' => ['required' => true, 'minlength' => 2],
 			'default_value' => ''
@@ -67,10 +64,10 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 		/** @var PasswordField $field */
 		$field = $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
-			'id' => 'password',
-			'name' => 'password',
+			'id' => Parameters::PARAMETER_ADMIN_PASSWORD,
+			'name' => Parameters::PARAMETER_ADMIN_PASSWORD,
 			'title' => $this->translator->translate('password_explanation', 'profile'),
-			'label' => $this->translator->translate('password', 'profile'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_PASSWORD, 'profile'),
 			'value' => $value,
 			'rules' => ['required' => true, 'minlength' => 8],
 			'default_value' => ''
@@ -79,7 +76,6 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 
 		return $field;
 	}
-
 
 	/**
 	 * @throws CoreException
@@ -92,10 +88,10 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 		/** @var PasswordField $field */
 		$field =  $this->formBuilder->createField([
 			'type' => FieldType::PASSWORD,
-			'id' => 'password_confirm',
-			'name' => 'password_confirm',
+			'id' => Parameters::PARAMETER_ADMIN_PASSWORD_CONFIRM,
+			'name' => Parameters::PARAMETER_ADMIN_PASSWORD_CONFIRM,
 			'title' => $this->translator->translate('password_explanation', 'profile'),
-			'label' => $this->translator->translate('password_confirm', 'profile'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_PASSWORD_CONFIRM, 'profile'),
 			'value' => $value,
 			'rules' => ['required' => true, 'minlength' => 8],
 			'default_value' => ''
@@ -114,8 +110,8 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 	{
 		return  $this->formBuilder->createField([
 			'type' => FieldType::DROPDOWN,
-			'id' => 'locale',
-			'name' => 'locale',
+			'id' => Parameters::PARAMETER_ADMIN_LOCALE,
+			'name' => Parameters::PARAMETER_ADMIN_LOCALE,
 			'title' => $this->translator->translate(Parameters::PARAMETER_ADMIN_LOCALE, 'users'),
 			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_LOCALE, 'users'),
 			'value' => $value,
@@ -134,26 +130,13 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 	{
 		return  $this->formBuilder->createField([
 			'type' => FieldType::EMAIL,
-			'id' => 'email',
-			'name' => 'email',
-			'title' => $this->translator->translate('email', 'users'),
-			'label' => $this->translator->translate('email', 'users'),
+			'id' => Parameters::PARAMETER_ADMIN_EMAIL,
+			'name' => Parameters::PARAMETER_ADMIN_EMAIL,
+			'title' => $this->translator->translate(Parameters::PARAMETER_ADMIN_EMAIL, 'users'),
+			'label' => $this->translator->translate(Parameters::PARAMETER_ADMIN_EMAIL, 'users'),
 			'value' => $value,
 			'rules' => ['required' => true],
 			'default_value' => ''
 		]);
 	}
-
-	/**
-	 * @throws FrameworkException
-	 */
-	public function createCSRFTokenField(): FieldInterface
-	{
-		return $this->formBuilder->createField([
-			'type' => FieldType::CSRF,
-			'id'   => BaseEditParameters::PARAMETER_CSRF_TOKEN,
-			'name' => BaseEditParameters::PARAMETER_CSRF_TOKEN,
-		]);
-	}
-
 }

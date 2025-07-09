@@ -71,7 +71,7 @@ class FormElementsCreatorTest extends TestCase
 		$expectedField = $this->createMock(FieldInterface::class);
 
 		$this->translatorMock->expects($this->exactly(2))->method('translate')
-			->with('username', 'main')
+			->with(Parameters::PARAMETER_USER_NAME, 'main')
 			->willReturn('User name');
 
 		$this->formBuilderMock
@@ -79,8 +79,8 @@ class FormElementsCreatorTest extends TestCase
 			->method('createField')
 			->with([
 				'type' => FieldType::TEXT,
-				'id' => 'username',
-				'name' => 'username',
+				'id' => Parameters::PARAMETER_USER_NAME,
+				'name' => Parameters::PARAMETER_USER_NAME,
 				'title' => 'User name',
 				'label' => 'User name',
 				'value' => $value,
