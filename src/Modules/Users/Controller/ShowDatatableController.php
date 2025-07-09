@@ -59,16 +59,21 @@ class ShowDatatableController extends AbstractAsyncController
 		if ($UID === 0)
 		{
 			$flash->addMessage('error', $translator->translate('user_not_found', 'users'));
-			return $this->jsonResponse($response, ['success' => true]);
+			return $this->jsonResponse($response, ['success' => false]);
 		}
 
 		$this->facade->configure($translator, $request->getAttribute('session'));
 		if ($this->facade->deleteUser($UID))
+		{
 			$flash->addMessage('success', $translator->translate('user_deleted', 'users'));
+			return $this->jsonResponse($response, ['success' => true]);
+		}
 		else
+		{
 			$flash->addMessage('error', $translator->translate('user_delete_failed', 'users'));
+			return $this->jsonResponse($response, ['success' => false]);
+		}
 
-		return $this->jsonResponse($response, ['success' => true]);
 	}
 
 	/**

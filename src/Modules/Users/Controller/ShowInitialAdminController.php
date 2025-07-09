@@ -106,8 +106,6 @@ class ShowInitialAdminController
 		}
 	}
 
-
-
 	/**
 	 * @param array{username?:string, email?:string, locale?: string, password?:string, password_confirm?: string} $post
 	 * @throws CoreException

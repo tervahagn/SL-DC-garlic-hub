@@ -71,13 +71,11 @@ class FacadeTest extends TestCase
 	{
 		$sessionMock = $this->createMock(Session::class);
 
-		$sessionMock->expects($this->once())
-			->method('get')
+		$sessionMock->expects($this->once())->method('get')
 			->with('user')
 			->willReturn(['UID' => 123]);
 
-		$this->settingsFormBuilderMock->expects($this->once())
-			->method('init')
+		$this->settingsFormBuilderMock->expects($this->once())->method('init')
 			->with($sessionMock);
 
 		$this->usersAdminService->expects($this->once())->method('setUID')
@@ -358,7 +356,7 @@ class FacadeTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
-	public function testGetUserServiceErrorsReturnsEmptyArrayWhenNoErrors(): void
+	public function testGetUserServiceErrorsNoErrors(): void
 	{
 		$this->usersAdminService->expects($this->once())->method('getErrorMessages')
 			->willReturn([]);
@@ -368,6 +366,37 @@ class FacadeTest extends TestCase
 		$result = $this->facade->getUserServiceErrors();
 
 		self::assertSame([], $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testGetUserServiceErrors(): void
+	{
+		$this->usersAdminService->expects($this->once())->method('getErrorMessages')
+			->willReturn(['an_error']);
+
+		$this->translatorMock->expects($this->once())->method('translate')
+			->with('an_error', 'users')
+ 			->willReturn('An error');
+
+		$sessionMock = $this->createMock(Session::class);
+
+		$sessionMock->expects($this->once())->method('get')
+			->with('user')
+			->willReturn(['UID' => 123]);
+
+		$this->settingsFormBuilderMock->expects($this->once())->method('init')
+			->with($sessionMock);
+
+		$this->facade->init($this->translatorMock, $sessionMock);
+		$result = $this->facade->getUserServiceErrors();
+
+		self::assertSame([0 =>'An error'], $result);
 	}
 
 

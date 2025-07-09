@@ -37,6 +37,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Slim\Flash\Messages;
 
 class ShowDatatableControllerTest extends TestCase
 {
@@ -46,6 +47,7 @@ class ShowDatatableControllerTest extends TestCase
 	private ServerRequestInterface&MockObject $requestMock;
 	private ResponseInterface&MockObject $responseMock;
 	private Translator&MockObject $translatorMock;
+	private Messages&MockObject $flashMock;
 	private Session&MockObject $sessionMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 
@@ -61,6 +63,7 @@ class ShowDatatableControllerTest extends TestCase
 		$this->requestMock          = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock         = $this->createMock(ResponseInterface::class);
 		$this->translatorMock       = $this->createMock(Translator::class);
+		$this->flashMock            = $this->createMock(Messages::class);
 		$this->sessionMock          = $this->createMock(Session::class);
 		$this->streamInterfaceMock  = $this->createMock(StreamInterface::class);
 
@@ -111,4 +114,109 @@ class ShowDatatableControllerTest extends TestCase
 
 		static::assertSame($this->responseMock, $result);
 	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	#[Group('units')]
+	public function testDeleteNoUser(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->setStandardMocks(0);
+
+		$this->translatorMock->expects($this->once())->method('translate')
+			->with('user_not_found', 'users')
+			->willReturn('User not found');
+
+		$this->flashMock->expects($this->once())->method('addMessage')
+			->with('error', 'User not found');
+
+		$this->mockJsonResponse(['success' => false]);
+
+		$this->controller->delete($this->requestMock, $this->responseMock);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	#[Group('units')]
+	public function testDeleteMethodHandlesSuccessfulDeletion(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn(['UID' => 123]);
+		$this->setStandardMocks(123);
+
+		$this->facadeMock->expects($this->once())->method('configure')
+			->with($this->translatorMock, $this->sessionMock);
+
+		$this->facadeMock->expects($this->once())->method('deleteUser')
+			->with(123)
+			->willReturn(true);
+		$this->translatorMock->method('translate')
+			->with('user_deleted', 'users')
+			->willReturn('User deleted');
+		$this->flashMock->expects($this->once())->method('addMessage')
+			->with('success', 'User deleted');
+
+		$this->mockJsonResponse(['success' => true]);
+
+		$this->controller->delete($this->requestMock, $this->responseMock);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 */
+	#[Group('units')]
+	public function testDeleteFails(): void
+	{
+		$this->requestMock->method('getParsedBody')->willReturn(['UID' => 123]);
+		$this->setStandardMocks(123);
+
+		$this->facadeMock->expects($this->once())->method('configure')
+			->with($this->translatorMock, $this->sessionMock);
+
+		$this->facadeMock->expects($this->once())->method('deleteUser')
+			->with(123)
+			->willReturn(false);
+		$this->translatorMock->method('translate')
+			->with('user_delete_failed', 'users')
+			->willReturn('User delete failed.');
+		$this->flashMock->expects($this->once())->method('addMessage')
+			->with('error', 'User delete failed.');
+
+		$this->mockJsonResponse(['success' => false]);
+
+		$this->controller->delete($this->requestMock, $this->responseMock);
+	}
+
+	private function setStandardMocks(int $UID): void
+	{
+		$this->requestMock->method('getAttribute')
+			->willReturnMap([
+				['flash', null, $this->flashMock],
+				['translator', null, $this->translatorMock],
+				['session', null, $this->sessionMock]
+			]);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => $UID]);
+	}
+
+	/**
+	 * @param array<string,mixed> $data
+	 */
+	private function mockJsonResponse(array $data): void
+	{
+		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
+		$this->streamInterfaceMock->method('write')->with(json_encode($data));
+		$this->responseMock->expects($this->once())->method('withHeader')
+			->with('Content-Type', 'application/json')
+			->willReturnSelf();
+		$this->responseMock->method('withStatus')->with('200');
+	}
+
 }

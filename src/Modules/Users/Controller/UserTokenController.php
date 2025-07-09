@@ -92,7 +92,7 @@ class UserTokenController extends AbstractAsyncController
 		$post = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		$token = $post['token'] ?? '';
 		if ($token === '')
@@ -103,7 +103,7 @@ class UserTokenController extends AbstractAsyncController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Token not exists.']);
 
 		if (!$this->aclValidator->isAdmin($this->userSession->getUID(), $userToken))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No rights to delete token.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No rights to handle tokens.']);
 
 		$errorMessage = 'Token not editable.';
 		if ($action === 'refreshToken')

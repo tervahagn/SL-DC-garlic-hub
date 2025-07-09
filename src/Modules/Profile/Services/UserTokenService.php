@@ -136,7 +136,7 @@ class UserTokenService extends AbstractBaseService
 	public function refreshToken(string $token, string $purpose): int
 	{
 		$token = hex2bin($token);
-		if ($token === false)
+		if ($token === false || $purpose === '')
 			return 0;
 
 		if ($purpose === TokenPurposes::INITIAL_PASSWORD->value)
