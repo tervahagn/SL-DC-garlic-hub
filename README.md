@@ -57,7 +57,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - PHP 8.4 with strict types 
 - SLIM 4 Framework
 - Phpstan Level 8 with zero errors
-- PHPUnit 12 with >90% test coverage)
+- PHPUnit 12 targeting >95% test coverage)
 - Vanilla JavaScript and external libraries
 - Composer libraries
 

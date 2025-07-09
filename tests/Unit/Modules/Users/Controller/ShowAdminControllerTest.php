@@ -26,6 +26,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Users\Controller\ShowAdminController;
 use App\Modules\Users\Helper\Settings\Facade;
@@ -50,6 +51,9 @@ class ShowAdminControllerTest extends TestCase
 	private StreamInterface&MockObject $streamInterfaceMock;
 	private ShowAdminController $controller;
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	protected function setUp(): void
 	{
 		parent::setUp();
@@ -65,6 +69,9 @@ class ShowAdminControllerTest extends TestCase
 	}
 
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
 	private function setStandardMocks(): void
 	{
 		$translatorMock = $this->createMock(Translator::class);
@@ -86,7 +93,7 @@ class ShowAdminControllerTest extends TestCase
 	private function outputStandard(array $data): void
 	{
 		$dataSections = ['key' => 'value'];
-		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];;
+		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];
 		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with($data)
 			->willReturn($dataSections);
@@ -100,6 +107,14 @@ class ShowAdminControllerTest extends TestCase
 		$this->responseMock->method('withStatus')->with(200);
 	}
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testNewUserFormSuccessful(): void
 	{
@@ -113,10 +128,11 @@ class ShowAdminControllerTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	#[Group('units')]
 	public function testEditUserFormSuccessful(): void
@@ -135,6 +151,14 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->editUserForm($this->requestMock, $this->responseMock, $args);
 	}
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testEditUserFormInvalidUIDRedirectsToUsers(): void
 	{
@@ -150,6 +174,14 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->editUserForm($this->requestMock, $this->responseMock, $args);
 	}
 
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testEditUserFormUserNotFoundRedirectsToUsers(): void
 	{
@@ -165,6 +197,15 @@ class ShowAdminControllerTest extends TestCase
 
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStoreWithValidationErrors(): void
 	{
@@ -192,6 +233,15 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStoreUserSuccessfully(): void
 	{
@@ -210,6 +260,15 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStorePasswordResetSuccessfully(): void
 	{
@@ -228,6 +287,15 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStoreServiceErrorsWhenStoringUser(): void
 	{
@@ -251,6 +319,15 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 * @throws Exception
+	 */
 	#[Group('units')]
 	public function testStoreServiceErrorsWhenResettingPassword(): void
 	{

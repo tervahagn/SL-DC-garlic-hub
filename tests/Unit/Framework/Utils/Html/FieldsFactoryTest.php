@@ -131,4 +131,14 @@ class FieldsFactoryTest extends TestCase
 		static::assertSame('username', $field->getId());
 		static::assertSame('user_name', $field->getName());
 	}
+	#[Group('units')]
+	public function testCreateClipboardTextField(): void
+	{
+		$attributes = ['id' => 'clipboard', 'type' => FieldType::CLIPBOARD_TEXT, 'name' => 'clipboard-text'];
+
+		$field = $this->fieldsFactory->createClipboardTextField($attributes);
+
+		static::assertSame('clipboard', $field->getId());
+		static::assertSame('clipboard-text', $field->getName());
+	}
 }

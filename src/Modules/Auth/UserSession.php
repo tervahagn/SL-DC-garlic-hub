@@ -24,12 +24,10 @@ namespace App\Modules\Auth;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\UserException;
 
-class UserSession
+readonly class UserSession
 {
-	private readonly Session $session;
+	private Session $session;
 
-	/** @var array{UID:int, username:string, locale:string}|null */
-	private ?array $user = null;
 	public function __construct(Session $session)
 	{
 		$this->session = $session;
@@ -40,11 +38,9 @@ class UserSession
 	 */
 	public function getUID(): int
 	{
-		$this->checkUser();
-		if ($this->user === null)
-			throw new UserException("Attempted to get UID for unauthenticated user.");
+		$user = $this->checkUser();
 
-		return $this->user['UID'];
+		return $user['UID'];
 	}
 
 	/**
@@ -52,12 +48,8 @@ class UserSession
 	 */
 	public function getUsername(): string
 	{
-		$this->checkUser();
-
-		if ($this->user === null)
-			throw new UserException("Attempted to get UID for unauthenticated user.");
-
-		return $this->user['username'];
+		$user = $this->checkUser();
+		return $user['username'];
 	}
 
 	/**
@@ -65,25 +57,22 @@ class UserSession
 	 */
 	public function getLocales(): string
 	{
-		$this->checkUser();
-
-		if ($this->user === null)
-			throw new UserException("Attempted to get UID for unauthenticated user.");
-
-		return (string) $this->user['locale'];
+		$user = $this->checkUser();
+		return $user['locale'];
 	}
 
 	/**
+	 * @return array{UID:int, username:string, locale:string}
 	 * @throws UserException
 	 */
-	private function checkUser(): void
+	private function checkUser(): array
 	{
-		$sessionData = $this->session->get('user');
-		if (!is_array($sessionData) || !isset($sessionData['UID'], $sessionData['username'], $sessionData['locale']))
+		/** @var array{UID?:int, username?:string, locale?:string}|null $user */
+		$user = $this->session->get('user');
+		if (!is_array($user) || !isset($user['UID'], $user['username'], $user['locale']))
 			throw new UserException('User not found in session.');
 
-		/** @var array{UID:int, username:string, locale:string} $sessionData */
-		$this->user = $sessionData;
+		return $user;
 	}
 
 

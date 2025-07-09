@@ -186,10 +186,10 @@ class SessionTest extends TestCase
 	public function testId(): void
 	{
 		$this->session->start();
-		$id = Session::id();
+		$id = $this->session->id();
 		static::assertNotEmpty($id);
 
-		$newId = Session::id(true); //regenerate
+		$newId =$this->session->id(true); //regenerate
 		static::assertNotEmpty($newId);
 		static::assertNotEquals($id, $newId);
 	}
@@ -197,7 +197,7 @@ class SessionTest extends TestCase
 	#[Group('units')]
 	public function testIdNotStarted(): void
 	{
-		$id = Session::id();
+		$id = $this->session->id();
 		static::assertEmpty($id); // Should be empty if the session hasn't started
 	}
 }

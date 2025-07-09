@@ -120,7 +120,7 @@ class Session
 		return array_key_exists($key, $_SESSION);
 	}
 
-	public static function id(bool $new = false): false|string
+	public function id(bool $new = false): false|string
 	{
 		if ($new && session_id())
 			session_regenerate_id(true);

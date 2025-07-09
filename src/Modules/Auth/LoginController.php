@@ -40,7 +40,7 @@ readonly class LoginController
 	public function __construct(AuthService $authService, CsrfToken $csrfToken)
 	{
 		$this->authService = $authService;
-		$this->csrfToken = $csrfToken;
+		$this->csrfToken   = $csrfToken;
 	}
 
 	/**
@@ -117,10 +117,10 @@ readonly class LoginController
 
 		if (array_key_exists('autologin', $params))
 		{
-			$sessionId = Session::id();
+			$sessionId = $session->id();
 			if ($sessionId === false)
 			{
-				$flash->addMessage('error', 'Bo session id found');
+				$flash->addMessage('error', 'No session id found');
 				return $this->redirect($response, '/login');
 			}
 			$this->authService->createAutologinCookie($main_data['UID'], $sessionId);

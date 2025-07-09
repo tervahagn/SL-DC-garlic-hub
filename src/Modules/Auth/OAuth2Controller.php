@@ -58,7 +58,7 @@ class OAuth2Controller
 		{
 			$authRequest = $this->authServer->validateAuthorizationRequest($request);
 			/**  @var Session $session */
-			// check if user is logged in
+			// check if a user is logged in
 			$session  = $request->getAttribute('session');
 			if (!$session->exists('user'))
 			{
@@ -104,7 +104,7 @@ class OAuth2Controller
 	{
 		try
 		{
-			// return a json token {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read write"}
+			// return a JSON token {"access_token": "xy...z", "token_type": "Bearer", "expires_in": 3600, "scope": "read-write"}
 			return $this->authServer->respondToAccessTokenRequest($request, $response);
 		}
 		catch (OAuthServerException $e)

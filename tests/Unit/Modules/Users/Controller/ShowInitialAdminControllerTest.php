@@ -23,9 +23,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Modules\Users\Controller;
 
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Users\Controller\ShowInitialAdminController;
 use App\Modules\Users\Helper\InitialAdmin\Facade;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,6 +37,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use Slim\Flash\Messages;
 
 class ShowInitialAdminControllerTest extends TestCase
@@ -63,7 +68,11 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
 	#[Group('units')]
 	public function testShowFunctionIsNotAllowed(): void
@@ -85,7 +94,12 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testShowReturnsRenderedFormOnAllowedFunction(): void
@@ -101,7 +115,12 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testStoreFunctionIsNotAllowed(): void
@@ -122,7 +141,13 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testStoreAddsErrorMessagesAndReturnsRenderedFormOnValidationErrors(): void
@@ -150,7 +175,13 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testStoreRedirectsToLoginOnSuccessfulUserStore(): void
@@ -195,7 +226,13 @@ class ShowInitialAdminControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testStoreAddsErrorMessagesAndReturnsRenderedFormOnUserServiceErrors(): void
@@ -255,7 +292,7 @@ class ShowInitialAdminControllerTest extends TestCase
 	private function outputStandard(array $data): void
 	{
 		$dataSections = ['key' => 'value'];
-		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];;
+		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];
 		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
 			->with($data)
 			->willReturn($dataSections);

@@ -33,8 +33,8 @@ use Psr\Log\LoggerInterface;
 
 class AuthService
 {
-	const string COOKIE_NAME_AUTO_LOGIN = 'UserLogin';
-	const string AUTOLOGIN_EXPIRE = '+28 days';
+	public const string COOKIE_NAME_AUTO_LOGIN = 'UserLogin';
+	public const string AUTOLOGIN_EXPIRE = '+28 days';
 	private UsersService $userService;
 	private Cookie $cookie;
 	private string $errorMessage = '';

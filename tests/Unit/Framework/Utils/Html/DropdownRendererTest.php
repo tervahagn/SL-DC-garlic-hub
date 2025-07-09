@@ -23,6 +23,7 @@ namespace Tests\Unit\Framework\Utils\Html;
 
 use App\Framework\Utils\Html\DropdownField;
 use App\Framework\Utils\Html\DropdownRenderer;
+use App\Framework\Utils\Html\FieldInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,8 +31,8 @@ use PHPUnit\Framework\TestCase;
 
 class DropdownRendererTest extends TestCase
 {
-	private DropdownRenderer $renderer;
 	private DropdownField&MockObject $dropdownFieldMock;
+	private DropdownRenderer $renderer;
 
 	/**
 	 * @throws Exception
@@ -99,4 +100,21 @@ class DropdownRendererTest extends TestCase
 
 		static::assertSame($expectedHtml, $html);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testRenderGeneratesNothing(): void
+	{
+		$fieldMock = $this->createMock(FieldInterface::class);
+		$renderer = new DropdownRenderer();
+
+		$expectedHtml = '';
+
+		$result = $renderer->render($fieldMock);
+
+		static::assertSame($expectedHtml, $result);
+	}
+
 }

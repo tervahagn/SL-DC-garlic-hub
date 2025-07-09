@@ -146,4 +146,24 @@ class SanitizerTest extends TestCase
 
 		static::assertSame([], $this->sanitizer->jsonArray(''));
 	}
+
+	#[Group('units')]
+	public function testJsonHTMLSanitization(): void
+	{
+		static::assertSame(
+			['&lt;script&gt;', '&lt;div&gt;Hello&lt;/div&gt;', '&quot;key&quot;'],
+			$this->sanitizer->jsonHTML('["<script>", "<div>Hello</div>", "\"key\""]')
+		);
+
+		static::assertSame(
+			['&lt;b&gt;bold&lt;/b&gt;', '&lt;span&gt;&amp;&lt;/span&gt;'],
+			$this->sanitizer->jsonHTML('["<b>bold</b>", "<span>&</span>"]')
+		);
+
+		static::assertSame([], $this->sanitizer->jsonHTML('invalid json'));
+
+		static::assertSame([], $this->sanitizer->jsonHTML('{"incomplete":'));
+
+		static::assertSame([], $this->sanitizer->jsonHTML(''));
+	}
 }

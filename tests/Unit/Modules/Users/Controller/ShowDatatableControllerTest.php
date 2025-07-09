@@ -25,6 +25,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Modules\Users\Controller\ShowDatatableController;
 use App\Modules\Users\Helper\Datatable\ControllerFacade;
@@ -73,8 +74,10 @@ class ShowDatatableControllerTest extends TestCase
 	/**
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws ModuleException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testShowMethodReturnsResponseWithSerializedTemplateData(): void
@@ -117,9 +120,8 @@ class ShowDatatableControllerTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testDeleteNoUser(): void
@@ -141,8 +143,8 @@ class ShowDatatableControllerTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testDeleteMethodHandlesSuccessfulDeletion(): void
@@ -169,8 +171,8 @@ class ShowDatatableControllerTest extends TestCase
 
 	/**
 	 * @throws CoreException
-	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testDeleteFails(): void

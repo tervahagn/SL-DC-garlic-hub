@@ -19,50 +19,45 @@
 */
 declare(strict_types=1);
 
-namespace Tests\Unit\Framework\Utils\Html;
 
-use App\Framework\Core\CsrfToken;
-use App\Framework\Utils\Html\CsrfTokenField;
-use App\Framework\Utils\Html\FieldType;
-use Exception;
+namespace Tests\Unit\Framework\Database\BaseRepositories;
+
+use App\Framework\Database\BaseRepositories\SqlBase;
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-
-class CsrfTokenFieldTest extends TestCase
+class ConcreteSqlBase extends SqlBase
 {
-	private CsrfToken&MockObject $csrfTokeMock;
 
-	/**
-	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 */
+}
+class SqlBaseTest extends TestCase
+{
+	private Connection&MockObject $connection;
+	private ConcreteSqlBase $sqlBase;
+
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->csrfTokeMock = $this->createMock(CsrfToken::class);
+		$this->connection = $this->createMock(Connection::class);
+		$this->sqlBase = new ConcreteSqlBase($this->connection, 'test', 'test_id');
 	}
 
 	/**
-	 * @throws Exception
+	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testSetupWithAttributes(): void
+	public function testGetterSetter(): void
 	{
-		$attributes = [
-			'id' => 'csrf_token',
-			'type' => FieldType::CSRF,
-			'name' => 'csrf_token_name'
-		];
+		static::assertSame('test', $this->sqlBase->getTable());
+		static::assertSame('test_id', $this->sqlBase->getIdField());
 
-		$token = 'token';
-		$this->csrfTokeMock->expects($this->once())->method('getToken')
-			->willReturn($token);
+		$this->sqlBase->setTable('new');
+		$this->sqlBase->setIdField('new_id');
 
-		$csrfTokenField = new CsrfTokenField($attributes, $this->csrfTokeMock);
+		static::assertSame('new', $this->sqlBase->getTable());
+		static::assertSame('new_id', $this->sqlBase->getIdField());
 
-		static::assertSame('csrf_token', $csrfTokenField->getId());
-		static::assertSame('csrf_token_name', $csrfTokenField->getName());
-		static::assertNotEmpty($csrfTokenField->getValue());
 	}
 
 }

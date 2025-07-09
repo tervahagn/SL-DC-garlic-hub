@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or modify
@@ -19,34 +19,33 @@
 */
 declare(strict_types=1);
 
+
 namespace Tests\Unit\Framework\Utils\Html;
 
-use App\Framework\Utils\Html\DropdownField;
 use App\Framework\Utils\Html\FieldType;
+use App\Framework\Utils\Html\PasswordField;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class DropdownFieldTest extends TestCase
+class PasswordFieldTest extends TestCase
 {
-	private DropdownField $dropdownField;
-
+	private PasswordField $passwordField;
 	protected function setUp(): void
 	{
 		parent::setUp();
 		$attributes = [
-			'id' => 'dropdown1',
-			'type' => FieldType::DROPDOWN,
-			'name' => 'dropdown_field',
-			'options' => ['Option1' => [], 'Option2' => [], 'Option3' => []]
+			'id' => 'password',
+			'type' => FieldType::PASSWORD,
 		];
-
-		$this->dropdownField = new DropdownField($attributes);
+		$this->passwordField = new PasswordField($attributes);
 	}
 
 	#[Group('units')]
-	public function testGetOptionsReturnsCorrectOptions(): void
+	public function testSetPattern(): void
 	{
-		static::assertSame(['Option1' => [], 'Option2' => [], 'Option3' => []], $this->dropdownField->getOptions());
-		static::assertTrue($this->dropdownField->isOptionsZero());
+		$pattern = 'complicated Pattern';
+		$this->passwordField->setPattern($pattern);
+
+		static::assertSame($pattern, $this->passwordField->getPattern());
 	}
 }

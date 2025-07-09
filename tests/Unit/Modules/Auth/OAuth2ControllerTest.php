@@ -81,6 +81,28 @@ class OAuth2ControllerTest extends TestCase
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
 
+	#[Group('units')]
+	public function testAuthorizeNoRedirectToLoginIfUserNotLoggedIn(): void
+	{
+		$mockAuthRequest = $this->createMock(AuthorizationRequestInterface::class);
+		$this->authServerMock->expects($this->once())->method('validateAuthorizationRequest')->willReturn($mockAuthRequest);
+
+		$mockSession = $this->createMock(Session::class);
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($mockSession);
+		$this->requestMock->method('getQueryParams')
+			->willReturn(['response_type' => 'code', 'client_id' => '123', 'state' => '123']);
+
+		$mockSession->method('exists')->with('user')->willReturn(false);
+		$mockSession->expects($this->never())->method('set');
+
+		$mockStreamInterface = $this->createMock(StreamInterface::class);
+		$this->responseMock->expects($this->once())->method('getBody')->willReturn($mockStreamInterface);
+		$mockStreamInterface->expects($this->once())->method('write');
+		$this->responseMock->expects($this->once())->method('withStatus')->with(500);
+
+		$this->controller->authorize($this->requestMock, $this->responseMock);
+	}
+
 	/**
 	 * @throws Exception
 	 * @throws \Doctrine\DBAL\Exception
@@ -107,7 +129,6 @@ class OAuth2ControllerTest extends TestCase
 		$this->authServerMock->expects($this->once())->method('validateAuthorizationRequest')
 							 ->willThrowException(new \Exception('unknown bum bum'));
 
-
 		$mockStreamInterface = $this->createMock(StreamInterface::class);
 		$this->responseMock->expects($this->once())->method('getBody')->willReturn($mockStreamInterface);
 		$mockStreamInterface->expects($this->once())->method('write');
@@ -115,6 +136,7 @@ class OAuth2ControllerTest extends TestCase
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
+
 
 	/**
 	 * @throws Exception
@@ -129,12 +151,12 @@ class OAuth2ControllerTest extends TestCase
 		$mockSession = $this->createMock(Session::class);
 		$this->requestMock->method('getAttribute')->with('session')->willReturn($mockSession);
 		$this->requestMock->method('getQueryParams')
-						  ->willReturn(['response_type' => 'code', 'client_id' => '123', 'redirect_uri' => 'https://example.com', 'state' => '123']);
+			->willReturn(['response_type' => 'code', 'client_id' => '123', 'redirect_uri' => 'https://example.com', 'state' => '123']);
 
 		$mockSession->method('exists')->with('user')->willReturn(true);
 		$mockSession->expects($this->never())->method('set');
 		$mockSession->expects($this->once())->method('get')->with('user')
-		            ->willReturn(['UID' => 159]);
+			->willReturn(['UID' => 159]);
 
 		$this->authServiceMock->expects($this->once())->method('getCurrentUser')->with(159);
 		$mockAuthRequest->expects($this->once())->method('setUser');
@@ -305,4 +327,5 @@ class OAuth2ControllerTest extends TestCase
 
 		$this->controller->authorize($this->requestMock, $this->responseMock);
 	}
+
 }

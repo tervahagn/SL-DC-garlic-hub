@@ -171,12 +171,63 @@ class LoginControllerTest extends TestCase
 		});
 		$this->sessionMock->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
 		$this->sessionMock->expects($this->exactly(2))->method('set');
+		$this->sessionMock->expects($this->once())->method('id')->willReturn('1234567890');
 
 		$this->authServiceMock->expects($this->once())->method('createAutologinCookie');
 		$main_data = ['locale' => 'kl_KL', 'UID' => 1];
 		$userEntity->method('getMain')->willReturn($main_data);
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
+
+		static::assertSame($this->responseMock, $result);
+	}
+
+
+
+	/**
+	 * @throws Exception
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception|UserException
+	 */
+	#[Group('units')]
+	public function testLoginCreateAutologinNoSessionId(): void
+	{
+		$flashMock  = $this->createMock(Messages::class);
+		$userEntity = $this->createMock(UserEntity::class);
+
+		$this->requestMock->method('getParsedBody')->willReturn([
+			'username' => 'testuser',
+			'password' => 'password',
+			'autologin' => '1',
+			'csrf_token' => 'token'
+		]);
+		$main_data = ['locale' => 'kl_KL', 'UID' => 1];
+		$userEntity->method('getMain')->willReturn($main_data);
+
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flashMock);
+		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
+		$this->sessionMock->expects($this->once())->method('exists')->willReturnCallback(function ($attribute)
+		{
+			if ($attribute === 'csrf_token')
+				return true;
+			elseif ($attribute === 'oauth_redirect_params')
+				return false;
+			return null;
+		});
+		$this->sessionMock->expects($this->once())->method('get')->with('csrf_token')->willReturn('token');
+		$this->sessionMock->expects($this->exactly(2))->method('set');
+		$this->sessionMock->expects($this->once())->method('id')->willReturn(false);
+
+		$this->authServiceMock->expects($this->never())->method('createAutologinCookie');
+
+		$flashMock->expects($this->once())->method('addMessage')->with('error', 'No session id found');
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/login')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
@@ -228,6 +279,55 @@ class LoginControllerTest extends TestCase
 
 
 		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/api/authorize?some=stuff')->willReturnSelf();
+		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
+
+		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);
+		$result = $controller->login($this->requestMock, $this->responseMock);
+
+		static::assertSame($this->responseMock, $result);
+	}
+
+	/**
+	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws UserException
+	 */
+	#[Group('units')]
+	public function testLoginRedirectsToApiOnFailedLogin(): void
+	{
+		$flash = $this->createMock(Messages::class);
+		$userEntity = $this->createMock(UserEntity::class);
+
+		$main_data = ['locale' => 'kl_KL'];
+		$userEntity->method('getMain')->willReturn($main_data);
+
+		$this->requestMock->method('getParsedBody')->willReturn(['username' => 'testuser', 'password' => 'password', 'csrf_token' => 'token']);
+		$this->requestMock->method('getAttribute')->willReturnOnConsecutiveCalls($this->sessionMock, $flash);
+		$this->authServiceMock->method('login')->with('testuser', 'password')->willReturn($userEntity);
+
+		$this->sessionMock->expects($this->exactly(2))->method('exists')->willReturnCallback(function ($attribute)
+		{
+			if ($attribute === 'csrf_token')
+				return true;
+			elseif ($attribute === 'oauth_redirect_params')
+				return true;
+			return null;
+		});
+
+		$this->sessionMock->expects($this->exactly(2))->method('get')->willReturnCallback(function ($attribute)
+		{
+			if ($attribute === 'csrf_token')
+				return 'token';
+			elseif ($attribute === 'oauth_redirect_params')
+				return '';
+			return null;
+		});
+		$this->sessionMock->expects($this->never())->method('delete');
+
+		$this->responseMock->expects($this->once())->method('withHeader')->with('Location', '/')->willReturnSelf();
 		$this->responseMock->expects($this->once())->method('withStatus')->with(302)->willReturnSelf();
 
 		$controller = new LoginController($this->authServiceMock, $this->csrfTokenMock);

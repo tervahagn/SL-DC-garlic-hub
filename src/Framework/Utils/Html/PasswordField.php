@@ -28,4 +28,9 @@ class PasswordField extends AbstractInputField
 		$this->setAttribute('pattern', $pattern);
 		return $this;
 	}
+
+	public function getPattern(): string
+	{
+		return$this->getAttributes()['pattern'];
+	}
 }
