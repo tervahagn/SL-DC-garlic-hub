@@ -67,17 +67,6 @@ class Validator extends BaseValidator
 		if (!$this->validatePassword($password, $passwordPattern))
 			$errors[] = $this->translator->translate('password_explanation', 'profile');
 
-
 		return $errors;
-	}
-
-	public function validatePassword(string $password, string $pattern): bool
-	{
-		$pattern = '/^'.$pattern.'$/';
-
-		if (preg_match($pattern, $password))
-			return true;
-
-		return false;
 	}
 }

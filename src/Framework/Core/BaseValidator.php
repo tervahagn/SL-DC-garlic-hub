@@ -33,4 +33,15 @@ class BaseValidator
 		// Just decode, don't need the result for validation
 		return json_validate($value);
 	}
+
+	public function validatePassword(string $password, string $pattern): bool
+	{
+		$pattern = '/^'.$pattern.'$/';
+
+		if (preg_match($pattern, $password))
+			return true;
+
+		return false;
+	}
+
 }
