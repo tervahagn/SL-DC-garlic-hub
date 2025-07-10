@@ -27,13 +27,3 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: sagiadinos/garlic-hub:latest
-
-# old working steps without buildx
-#    - name: Build the Docker image
-#      run: docker compose build
-      
-#    - name: Push image manually
-#      run: |
-#        docker tag garlic-hub sagiadinos/garlic-hub:latest
-#        docker push sagiadinos/garlic-hub:latest
-
