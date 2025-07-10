@@ -38,11 +38,11 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class TranslatorTest extends TestCase
 {
-    private Translator $translator;
     private Locales&MockObject $localesMock;
     private TranslationLoaderInterface&MockObject $loaderMock;
     private Psr16Adapter&MockObject $cacheMock;
     private MessageFormatterFactory&MockObject $formatterFactoryMock;
+	private Translator $translator;
 
     /**
      * @throws Exception
@@ -82,6 +82,27 @@ class TranslatorTest extends TestCase
 
         static::assertEquals('Hello, John!', $result);
     }
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testTranslateReturnsEmpty(): void
+	{
+		$this->localesMock->method('getLanguageCode')->willReturn('en');
+		$this->cacheMock->method('has')->willReturn(false);
+		$this->loaderMock->method('load')->willReturn(['greeting' => ['Hello','John']]);
+		$this->cacheMock->expects($this->once())->method('set');
+		$this->cacheMock->expects($this->never())->method('get');
+
+		$result = $this->translator->translate('greeting', 'test_module');
+
+		static::assertEmpty($result);
+	}
+
 
 	/**
 	 * @throws CoreException
@@ -141,6 +162,29 @@ class TranslatorTest extends TestCase
         $result = $this->translator->translateWithPlural('item_count', 'test_module', 5);
         static::assertEquals('5 items', $result);
     }
+
+	/**
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testTranslatePluralReturnsEmpty(): void
+	{
+		$this->localesMock->method('getLanguageCode')->willReturn('en');
+		$this->cacheMock->method('has')->willReturn(false);
+		$this->loaderMock->method('load')->willReturn(['item_count' => ['uiuiuiui']]);
+
+		$formatterMock = $this->createMock(MessageFormatter::class);
+		$formatterMock->method('format')->willReturn('5 items');
+		$this->formatterFactoryMock->method('create')->willReturn($formatterMock);
+
+		$result = $this->translator->translateWithPlural('item_count', 'test_module', 5);
+		static::assertEmpty($result);
+	}
+
 
 	/**
 	 * @throws CoreException

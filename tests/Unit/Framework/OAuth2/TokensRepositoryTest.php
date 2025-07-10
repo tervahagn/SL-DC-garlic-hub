@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Framework\OAuth2;
 
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\OAuth2\TokensRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
@@ -29,6 +30,7 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
+use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,7 +38,6 @@ use PHPUnit\Framework\TestCase;
 
 class TokensRepositoryTest extends TestCase
 {
-
 	private Connection&MockObject $connectionMock;
 	private QueryBuilder&MockObject $queryBuilderMock;
 	private TokensRepository $repository;
@@ -76,7 +77,11 @@ class TokensRepositoryTest extends TestCase
 		$mockAuthCodeEntity->method('getRedirectUri')->willReturn('https://example.com/callback');
 		$datetime_immutable = new DateTimeImmutable('now +1 hour');
 		$mockAuthCodeEntity->method('getExpiryDateTime')->willReturn($datetime_immutable);
-		$mockAuthCodeEntity->method('getScopes')->willReturn([]);
+		$scopeEntityMock1 = $this->createMock(ScopeEntityInterface::class);
+		$scopeEntityMock2 = $this->createMock(ScopeEntityInterface::class);
+		$scopeEntityMock1->method('getIdentifier')->willReturn('test-scope-id1');
+		$scopeEntityMock2->method('getIdentifier')->willReturn('test-scope-id2');
+		$mockAuthCodeEntity->method('getScopes')->willReturn([$scopeEntityMock1, $scopeEntityMock2]);
 		$this->connectionMock->expects($this->once())->method('insert')->with('oauth2_credentials',
 			[
 				'type'         => 'auth_code',
@@ -84,7 +89,7 @@ class TokensRepositoryTest extends TestCase
 				'client_id'    => '',
 				'UID'          => 'test-user-id',
 				'redirect_uri' => 'https://example.com/callback',
-				'scopes'       => '',
+				'scopes'       => 'test-scope-id1 test-scope-id2',
 				'expires_at'   => $datetime_immutable->format('Y-m-d H:i:s'),
 				'created_at'   => date('Y-m-d H:i:s'),
 			]
@@ -92,6 +97,8 @@ class TokensRepositoryTest extends TestCase
 		$this->connectionMock->expects($this->once())->method('lastInsertId');
 		$this->repository->persistNewAuthCode($mockAuthCodeEntity);
 	}
+
+
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception
@@ -146,6 +153,23 @@ class TokensRepositoryTest extends TestCase
 		// @phpstan-ignore-next-line
 		static::assertInstanceOf(AccessTokenEntityInterface::class, $accessToken);
 	}
+
+	/**
+	 * @throws Exception
+	 * @throws \Exception
+	 */
+	#[Group('units')]
+	public function testGetNewAccessException(): void
+	{
+		$mockClientEntity = $this->createMock(ClientEntityInterface::class);
+
+		static::expectException(FrameworkException::class);
+		static::expectExceptionMessage('User identifier is required.');
+
+		$accessToken = $this->repository->getNewToken($mockClientEntity, []);
+
+	}
+
 
 	/**
 	 * @throws Exception

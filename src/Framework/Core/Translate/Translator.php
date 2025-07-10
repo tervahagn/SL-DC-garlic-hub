@@ -98,7 +98,7 @@ class Translator
 		$translation  = $this->findTranslation($key, $module, $languageCode);
 
 		if (!is_string($translation))
-			throw new FrameworkException('Expected to be a string');
+			return '';
 
 		// add number of replacements
 		$replacements['count'] = $count;

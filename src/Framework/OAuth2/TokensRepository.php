@@ -24,6 +24,7 @@ namespace App\Framework\OAuth2;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
+use App\Framework\Exceptions\FrameworkException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
@@ -92,14 +93,14 @@ class TokensRepository extends SqlBase implements AuthCodeRepositoryInterface, A
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws FrameworkException
 	 */
 	public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, ?string $userIdentifier = null): AccessTokenEntityInterface
 	{
 		$accessToken = new AccessTokenEntity();
 		$accessToken->setClient($clientEntity);
 		if ($userIdentifier === null || $userIdentifier === '')
-			throw new \Exception('User identifier is required');
+			throw new FrameworkException('User identifier is required.');
 
 		$accessToken->setUserIdentifier($userIdentifier);
 		$accessToken->addScope(new ScopeEntity());
