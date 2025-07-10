@@ -71,4 +71,19 @@ class ClientEntityTest extends TestCase
 		$clientEntity = new ClientEntity($client);
 		static::assertTrue($clientEntity->isConfidential());
 	}
+
+	#[Group('units')]
+	public function testFails(): void
+	{
+		$client = [
+			'redirect_uri' => 'https://example.com/callback',
+			'client_name' => 'Test Client'
+		];
+		static::expectException(\InvalidArgumentException::class);
+		static::expectExceptionMessage('Client ID cannot be an empty.');
+
+		$clientEntity = new ClientEntity($client);
+		static::assertTrue($clientEntity->isConfidential());
+	}
+
 }

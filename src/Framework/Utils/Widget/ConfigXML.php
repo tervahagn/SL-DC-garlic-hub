@@ -38,8 +38,8 @@ class ConfigXML extends BaseSimpleXml
 	public const string DEFAULT_DIRECTION = 'ltr';
 
 	protected ?SimpleXMLElement $MyXML = null;
-	protected string $default_language = self::DEFAULT_LANGUAGE;
-	protected string $default_direction = self::DEFAULT_DIRECTION;
+	protected string $defaultLanguage = self::DEFAULT_LANGUAGE;
+	protected string $defaultDirection = self::DEFAULT_DIRECTION;
 	protected string $id = '';
 	protected string $version = '';
 	protected string $icon = 'icon.png';
@@ -55,19 +55,18 @@ class ConfigXML extends BaseSimpleXml
 	/** @var array<string,mixed> */
 	protected array $author = [];
 
-
 	public function __construct()
 	{
 	}
 
 	public function getDefaultLanguage(): string
 	{
-		return $this->default_language;
+		return $this->defaultLanguage;
 	}
 
 	public function getDefaultDirection(): string
 	{
-		return $this->default_direction;
+		return $this->defaultDirection;
 	}
 
 	public function getId(): string
@@ -237,16 +236,14 @@ class ConfigXML extends BaseSimpleXml
 
 	private function parseDefaultLanguage(): static
 	{
-		if ($this->MyXML === null)
-			return $this;
-
+		/** @phpstan-ignore-next-line */ // calling method parseBasic already checks for $this->>MyXml === null
 		$attr =  $this->MyXML->attributes('xml', true);
 		if ($attr === null)
 			return $this;
 
 		$attributesAsArray = (array)$attr;
 		if (array_key_exists('@attributes', $attributesAsArray) && array_key_exists('lang', $attributesAsArray['@attributes']))
-			$this->default_language = strtolower(substr($attributesAsArray['@attributes']['lang'], 0, 2));
+			$this->defaultLanguage = strtolower(substr($attributesAsArray['@attributes']['lang'], 0, 2));
 
 		return $this;
 	}
@@ -254,7 +251,7 @@ class ConfigXML extends BaseSimpleXml
 	private function parseDefaultDirection(): static
 	{
 		if (isset($this->MyXML['dir']))
-			$this->default_language = (string) $this->MyXML['dir'];
+			$this->defaultLanguage = (string) $this->MyXML['dir'];
 
 		return $this;
 	}
@@ -452,7 +449,7 @@ class ConfigXML extends BaseSimpleXml
 	 */
 	private function checkLanguageKeyOfArray(array $ar, string $lang): string
 	{
-		if (empty($ar))
+		if ($ar === [])
 			return '';
 
 		$lang = substr(strtolower($lang), 0, 2);

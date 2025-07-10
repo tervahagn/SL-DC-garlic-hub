@@ -36,27 +36,26 @@ use SimpleXMLElement;
  *
  * So, if your class is using PHP's SimpleXML class, just extend from this, to use the two methods.
  *
- * It needs an abstract method getModuleName() (protected)
  * we need this to throw correct exceptions
  *
  */
 abstract class BaseSimpleXml
 {
 	/** @var LibXMLError[] */
-	protected array $xml_errors;
+	protected array $xmlErrors;
 
-	protected SimpleXMLElement $xml_obj;
+	protected SimpleXMLElement $xmlObj;
 
 	abstract protected function getModuleName(): string;
 
 	public function getXmlObj(): SimpleXMLElement
 	{
-		return $this->xml_obj;
+		return $this->xmlObj;
 	}
 
-	public function setXmlObj(SimpleXMLElement $xml_obj): void
+	public function setXmlObj(SimpleXMLElement $xmlObj): void
 	{
-		$this->xml_obj = $xml_obj;
+		$this->xmlObj = $xmlObj;
 	}
 
 	/**
@@ -64,15 +63,15 @@ abstract class BaseSimpleXml
 	 */
 	protected function getXmlErrors(): array
 	{
-		return $this->xml_errors;
+		return $this->xmlErrors;
 	}
 
 	/**
-	 * @param list<LibXMLError> $xml_errors
+	 * @param list<LibXMLError> $xmlErrors
 	 */
-	protected function setXmlErrors(array $xml_errors): void
+	protected function setXmlErrors(array $xmlErrors): void
 	{
-		$this->xml_errors = $xml_errors;
+		$this->xmlErrors = $xmlErrors;
 	}
 
 	/**
@@ -83,7 +82,7 @@ abstract class BaseSimpleXml
 		libxml_use_internal_errors(true);
 
 		// clear possible previously stored errors
-		$this->xml_errors = [];
+		$this->xmlErrors = [];
 		libxml_clear_errors();
 
 		$simple_xml = simplexml_load_string($xml_input);
@@ -104,7 +103,7 @@ abstract class BaseSimpleXml
 		libxml_use_internal_errors(true);
 
 		// clear possible previously stored errors
-		$this->xml_errors = [];
+		$this->xmlErrors = [];
 		libxml_clear_errors();
 
 		$simple_xml = simplexml_load_file($file_name);
@@ -129,9 +128,9 @@ abstract class BaseSimpleXml
 	{
 		$this->buildXmlErrors();
 
-		if (array_key_exists(0, $this->xml_errors))
+		if (array_key_exists(0, $this->xmlErrors))
 		{
-			$last_error = $this->xml_errors[0];
+			$last_error = $this->xmlErrors[0];
 			/* @var $last_error LibXMLError */
 
 			return sprintf('%s: %s Line: %s, Column: %s',

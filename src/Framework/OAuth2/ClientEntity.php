@@ -36,10 +36,10 @@ class ClientEntity implements ClientEntityInterface
 	 */
 	public function __construct(array $client)
 	{
-		$clientId = $client['client_id']; // Eine lokale Variable hilft der Lesbarkeit
+		$clientId = $client['client_id'] ?? '';
 
 		if ($clientId === '')
-			throw new InvalidArgumentException('Client ID cannot be an empty string.');
+			throw new InvalidArgumentException('Client ID cannot be an empty.');
 
 		$this->setIdentifier($clientId);
 		$this->redirectUri    = $client['redirect_uri'];

@@ -36,17 +36,17 @@ class BaseException extends Exception
 	/**
 	 * @var string The name of the module where the exception occurred.
 	 */
-	protected string $module_name;
+	protected string $moduleName;
 
 	/**
 	 * Sets the module name where the exception occurred.
 	 *
-	 * @param string $module_name The module name.
+	 * @param string $moduleName The module name.
 	 * @return $this
 	 */
-	public function setModuleName(string $module_name): self
+	public function setModuleName(string $moduleName): self
 	{
-		$this->module_name = $module_name;
+		$this->moduleName = $moduleName;
 		return $this;
 	}
 
@@ -57,19 +57,13 @@ class BaseException extends Exception
 	 */
 	public function getModuleName(): string
 	{
-		return $this->module_name;
+		return $this->moduleName;
 	}
 
 	/**
 	 * Returns exception details as an associative array.
 	 *
 	 * @return array{module_name: string, message: string, code: int|mixed, file: string, line: int, trace: string}
-	 * - 'module_name': The module name.
-	 * - 'message': The exception message.
-	 * - 'code': The exception code.
-	 * - 'file': The file where the exception occurred.
-	 * - 'line': The line number where the exception occurred.
-	 * - 'trace': The exception stack trace.
 	 */
 	public function getDetails(): array
 	{
@@ -83,11 +77,6 @@ class BaseException extends Exception
 		];
 	}
 
-	/**
-	 * Returns exception details as a formatted string.
-	 *
-	 * @return string The formatted exception details.
-	 */
 	public function getDetailsAsString(): string
 	{
 		$details = $this->getDetails();
