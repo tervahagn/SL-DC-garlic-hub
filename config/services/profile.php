@@ -24,6 +24,7 @@ use App\Framework\Core\Crypt;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Profile\Controller\EditLocalesController;
@@ -60,6 +61,8 @@ $dependencies[ProfileService::class] = DI\factory(function (ContainerInterface $
 	return new ProfileService(
 		$repositories['main'],
 		$container->get(UserTokenService::class),
+		$container->get(Crypt::class),
+		$container->get(Transactions::class),
 		$container->get('ModuleLogger')
 	);
 });

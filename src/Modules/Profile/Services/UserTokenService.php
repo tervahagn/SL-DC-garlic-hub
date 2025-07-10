@@ -50,12 +50,12 @@ class UserTokenService extends AbstractBaseService
 	 */
 	public function findByTokenForAction(string $token): ?array
 	{
-		$token = hex2bin($token);
+		$token = @hex2bin($token);
 		if ($token === false)
 			return null;
 
 		$token =  $this->userTokensRepository->findFirstByToken($token);
-		if (empty($token))
+		if ($token === [])
 			return null;
 
 		/** @var array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string} $token */
@@ -63,19 +63,19 @@ class UserTokenService extends AbstractBaseService
 	}
 
 
-		/**
+	/**
 	 * @return array{"UID":int, "company_id":int, "username":string, "status":int, "purpose":string}|null
 	 * @throws DateMalformedStringException|Exception
 	 */
 	public function findByToken(string $token): ?array
 	{
-		$token = hex2bin($token);
+		$token = @hex2bin($token);
 		if ($token === false)
 			return null;
 
 		$result = $this->userTokensRepository->findFirstByToken($token);
 		$now = new DateTime();
-		if (isset($result['used_at']) || new DateTime($result['expires_at']) < $now)
+		if ($result === [] || isset($result['used_at']) || new DateTime($result['expires_at']) < $now)
 			return null;
 
 		return [
@@ -95,7 +95,6 @@ class UserTokenService extends AbstractBaseService
 	{
 		return $this->userTokensRepository->findValidByUID($UID);
 	}
-
 
 	/**
 	 * @throws Exception
@@ -123,7 +122,7 @@ class UserTokenService extends AbstractBaseService
 	 */
 	public function deleteToken(string $token): int
 	{
-		$token = hex2bin($token);
+		$token = @hex2bin($token);
 		if ($token === false)
 			return 0;
 
@@ -135,7 +134,7 @@ class UserTokenService extends AbstractBaseService
 	 */
 	public function refreshToken(string $token, string $purpose): int
 	{
-		$token = hex2bin($token);
+		$token = @hex2bin($token);
 		if ($token === false || $purpose === '')
 			return 0;
 
@@ -152,7 +151,7 @@ class UserTokenService extends AbstractBaseService
 	 */
 	public function useToken(string $token): int
 	{
-		$token = hex2bin($token);
+		$token = @hex2bin($token);
 		if ($token === false)
 			return 0;
 

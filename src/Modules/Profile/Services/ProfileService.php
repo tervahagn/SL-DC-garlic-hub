@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Profile\Services;
 
+use App\Framework\Core\Crypt;
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
@@ -33,20 +35,27 @@ class ProfileService extends AbstractBaseService
 {
 	private readonly UserMainRepository $userMainRepository;
 	private readonly UserTokenService $userTokenService;
+	private readonly Crypt $crypt;
+	private readonly Transactions $transactions;
 
-	public function __construct(UserMainRepository $userMainRepository, UserTokenService $userTokenService, LoggerInterface $logger)
+	public function __construct(UserMainRepository $userMainRepository, UserTokenService $userTokenService, Crypt $crypt, Transactions $transactions, LoggerInterface $logger)
 	{
 		$this->userMainRepository = $userMainRepository;
 		$this->userTokenService   = $userTokenService;
+		$this->crypt              = $crypt;
+		$this->transactions       = $transactions;
 
 		parent::__construct($logger);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function storeNewForcedPassword(int $UID, string $passwordToken, string $password): int
 	{
 		try
 		{
-			$this->userMainRepository->beginTransaction();
+			$this->transactions->begin();
 			$count = $this->updatePassword($UID, $password);
 			if ($count === 0)
 			{
@@ -73,14 +82,14 @@ class ProfileService extends AbstractBaseService
 					throw new ModuleException('profile', 'User status update failed');
 				}
 
-			$this->userMainRepository->commitTransaction();
+			$this->transactions->commit();
 
 			return $count;
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
-			$this->userMainRepository->rollBackTransaction();
+			$this->transactions->rollBack();
 			return 0;
 		}
 	}
@@ -90,7 +99,7 @@ class ProfileService extends AbstractBaseService
 	 */
 	public function updatePassword(int $UID, string $password): int
 	{
-		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
+		$data = ['password' => $this->crypt->createPasswordHash($password)];
 
 		return $this->userMainRepository->update($UID, $data);
 	}

@@ -52,12 +52,13 @@ class Crypt
 
 	public function checkPassword(string $clearText, string $hash): bool
 	{
+		// todo: implement password_needs_rehash and update this to userMain DB
 		return password_verify($clearText, $hash);
 	}
 
 	public function createPasswordHash(string $clearText):string
 	{
-		return password_hash($clearText, PASSWORD_BCRYPT);
+		return password_hash($clearText, PASSWORD_DEFAULT);
 	}
 
 	public function createSha256Hash(string $clearText): string
