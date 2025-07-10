@@ -61,7 +61,7 @@ class AuthService
 	{
 		$userData = $this->userService->findUser($identifier);
 		$this->logger->info('Login attempt from: '. $identifier);
-		if (empty($userData) || !password_verify($password, $userData['password']))
+		if ($userData === [] || !password_verify($password, $userData['password']))
 		{
 			$this->errorMessage = 'Invalid credentials.';
 			$this->logger->error('Login failed', [

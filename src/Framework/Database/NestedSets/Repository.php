@@ -145,7 +145,7 @@ class Repository extends SqlBase
 	}
 
 	/**
-	 * @return array<string, mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findRootIdRgtAndLevelByNodeId(int $node_id):array

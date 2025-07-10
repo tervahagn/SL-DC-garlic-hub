@@ -35,7 +35,7 @@ class SqlConcrete extends SqlBase
 {
 	use CrudTraits;
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function testFetchAssociative(QueryBuilder $queryBuilder): array

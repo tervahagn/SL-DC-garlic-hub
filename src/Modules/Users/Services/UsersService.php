@@ -89,7 +89,7 @@ class UsersService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findUser(string $identifier): array
