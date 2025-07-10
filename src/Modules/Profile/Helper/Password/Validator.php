@@ -54,11 +54,11 @@ class Validator extends BaseValidator
 
 		$errors = [];
 		$password = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD);
-		if (empty($password))
+		if ($password === '')
 			$errors[] = $this->translator->translate('no_password', 'profile');
 
 		$passwordConfirm = $this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PASSWORD_CONFIRM);
-		if (empty($passwordConfirm))
+		if ($passwordConfirm === '')
 			$errors[] = $this->translator->translate('no_password_confirm', 'profile');
 
 		if ($password !== $passwordConfirm)

@@ -42,7 +42,7 @@ class Parameters extends BaseEditParameters
 
 	public function __construct(Sanitizer $sanitizer, Session $session)
 	{
-		parent::__construct('user', $sanitizer, $session);
+		parent::__construct('profile', $sanitizer, $session);
 		$this->currentParameters = array_merge($this->defaultParameters, $this->moduleParameters);
 	}
 

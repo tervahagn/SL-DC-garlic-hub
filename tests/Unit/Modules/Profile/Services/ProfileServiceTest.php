@@ -39,7 +39,6 @@ class ProfileServiceTest extends TestCase
 	private UserTokenService&MockObject $userTokenServiceMock;
 	private Crypt&MockObject $cryptMock;
 	private Transactions&MockObject $transactionsMock;
-	private LoggerInterface&MockObject $loggerMock;
 	private ProfileService $profileService;
 
 	/**
@@ -47,21 +46,25 @@ class ProfileServiceTest extends TestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
 		$this->userTokenServiceMock   = $this->createMock(UserTokenService::class);
 		$this->cryptMock              = $this->createMock(Crypt::class);
 		$this->transactionsMock       = $this->createMock(Transactions::class);
-		$this->loggerMock             = $this->createMock(LoggerInterface::class);
+		$loggerMock = $this->createMock(LoggerInterface::class);
 
 		$this->profileService = new ProfileService(
 			$this->userMainRepositoryMock,
 			$this->userTokenServiceMock,
 			$this->cryptMock,
 			$this->transactionsMock,
-			$this->loggerMock
+			$loggerMock
 		);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStoreNewForcedPasswordSuccess(): void
 	{
@@ -92,6 +95,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(1, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStoreNewForcedPasswordFailsWhenPasswordUpdateFails(): void
 	{
@@ -112,6 +118,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(0, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStoreNewForcedPasswordFailsWhenTokenUpdateFails(): void
 	{
@@ -138,6 +147,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(0, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStoreNewForcedPasswordFailsWhenUserNotFound(): void
 	{
@@ -163,6 +175,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(0, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testStoreNewForcedPasswordFailsWhenStatusUpdateFails(): void
 	{
@@ -186,7 +201,7 @@ class ProfileServiceTest extends TestCase
 			->willReturn(1);
 		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')
 			->with($UID)
-			->willReturn(['status' => UserStatus::NOT_VERIFICATED->value]);;
+			->willReturn(['status' => UserStatus::NOT_VERIFICATED->value]);
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 
 		$result = $this->profileService->storeNewForcedPassword($UID, $passwordToken, $password);
@@ -194,6 +209,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(0, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateLocaleSuccess(): void
 	{
@@ -210,6 +228,9 @@ class ProfileServiceTest extends TestCase
 		static::assertSame(1, $result);
 	}
 
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testUpdateLocaleFails(): void
 	{

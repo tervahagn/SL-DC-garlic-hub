@@ -49,29 +49,11 @@ readonly class Builder
 	public function buildForm(string $pattern, string $passwordToken = ''): array
 	{
 		$form       = [];
-		$form['password'] = $this->formElementsCreator->createPasswordField('', $pattern);
-		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
-		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
-		if (!empty($passwordToken))
-			$form['password_token'] = $this->formElementsCreator->createPasswordTokenField($passwordToken);
-
-
-		return $this->formElementsCreator->prepareForm($form);
-	}
-
-	/**
-	 * @return array{hidden:list<array<string,string>>, visible: list<array<string,string>>}
-	 * @throws CoreException
-	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
-	 * @throws PhpfastcacheSimpleCacheException
-	 */
-	public function buildForcedForm(string $pattern): array
-	{
-		$form                     = [];
 		$form['password']         = $this->formElementsCreator->createPasswordField('', $pattern);
 		$form['password_confirm'] = $this->formElementsCreator->createPasswordConfirmField('');
 		$form['csrf_token']       = $this->formElementsCreator->createCSRFTokenField();
+		if ($passwordToken !== '')
+			$form['password_token'] = $this->formElementsCreator->createPasswordTokenField($passwordToken);
 
 		return $this->formElementsCreator->prepareForm($form);
 	}
@@ -88,8 +70,7 @@ readonly class Builder
 	 */
 	public function handleUserInput(array $post, string $passwordPattern): array
 	{
-		$this->parameters->setUserInputs($post)
-			->parseInputAllParameters();
+		$this->parameters->setUserInputs($post)->parseInputAllParameters();
 
 		return $this->validator->validateUserInput($passwordPattern);
 	}

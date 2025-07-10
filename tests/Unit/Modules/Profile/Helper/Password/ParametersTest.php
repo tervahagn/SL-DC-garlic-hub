@@ -19,14 +19,15 @@
 */
 declare(strict_types=1);
 
-namespace Tests\Unit\Modules\Users\Helper\Datatable;
+
+namespace Tests\Unit\Modules\Profile\Helper\Password;
 
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
-use App\Framework\Exceptions\ModuleException;
-use App\Modules\Users\Helper\Datatable\Parameters;
+use App\Framework\Utils\FormParameters\ScalarType;
+use App\Modules\Profile\Helper\Password\Parameters;
+use Exception;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
@@ -34,8 +35,7 @@ class ParametersTest extends TestCase
 	private Parameters $parameters;
 
 	/**
-	 * @throws ModuleException
-	 * @throws Exception
+	 * @throws Exception|\PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
@@ -43,14 +43,24 @@ class ParametersTest extends TestCase
 		$sanitizerMock = $this->createMock(Sanitizer::class);
 		$sessionMock = $this->createMock(Session::class);
 
-		$this->parameters    = new Parameters($sanitizerMock, $sessionMock);
+		$this->parameters = new Parameters($sanitizerMock, $sessionMock);
 	}
 
 	#[Group('units')]
 	public function testConstructor(): void
 	{
-		static::assertCount(7, $this->parameters->getCurrentParameters());
-		static::assertSame('users', $this->parameters->getModuleName());
+		static::assertCount(3, $this->parameters->getCurrentParameters());
+		static::assertSame('profile', $this->parameters->getModuleName());
 	}
 
+
+	#[Group('units')]
+	public function testAddToken(): void
+	{
+		static::assertCount(3, $this->parameters->getCurrentParameters());
+		$this->parameters->addToken();
+
+		static::assertTrue($this->parameters->hasParameter(Parameters::PARAMETER_PASSWORD_TOKEN));
+		static::assertCount(4, $this->parameters->getCurrentParameters());
+	}
 }

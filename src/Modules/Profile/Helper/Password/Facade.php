@@ -95,7 +95,6 @@ class Facade
 	 */
 	public function configureUserFormParameter(array $post): array
 	{
-		/** @var string $passwordPattern */
 		$passwordPattern = $this->config->getConfigValue('password_pattern', 'main');
 
 		return $this->passwordFormBuilder->handleUserInput($post, $passwordPattern);
@@ -140,7 +139,7 @@ class Facade
 	 */
 	public function prepareUITemplate(string $passwordToken): array
 	{
-		if (!empty($passwordToken) && !empty($this->user))
+		if (!empty($passwordToken) && $this->user !== [])
 		{
 			$this->passwordParameters->addToken();
 			$formAction = '/force-password';
@@ -163,7 +162,7 @@ class Facade
 	}
 
 	/**
-	 * @throws ModuleException
+	 * @throws ModuleException|Exception
 	 */
 	public function storeForcedPassword(int $UID, string $passwordToken): int
 	{
@@ -188,4 +187,5 @@ class Facade
 
 		return $title;
 	}
+
 }

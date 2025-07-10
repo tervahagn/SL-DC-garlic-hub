@@ -44,8 +44,8 @@ class FacadeTest extends TestCase
 {
 	use PHPMock;
 	private Builder&MockObject $settingsFormBuilderMock;
-	private UsersAdminCreateService&MockObject $usersAdminCreateService;
-	private Parameters&MockObject $settingsParameters;
+	private UsersAdminCreateService&MockObject $usersAdminCreateServiceMock;
+	private Parameters&MockObject $settingsParametersMock;
 	private Translator&MockObject $translatorMock;
 	private Config&MockObject $configMock;
 	private Facade $facade;
@@ -57,16 +57,16 @@ class FacadeTest extends TestCase
 	{
 		parent::setUp();
 		$this->settingsFormBuilderMock = $this->createMock(Builder::class);
-		$this->usersAdminCreateService = $this->createMock(UsersAdminCreateService::class);
-		$this->settingsParameters      = $this->createMock(Parameters::class);
+		$this->usersAdminCreateServiceMock = $this->createMock(UsersAdminCreateService::class);
+		$this->settingsParametersMock      = $this->createMock(Parameters::class);
 		$this->configMock              = $this->createMock(Config::class);
 		$this->translatorMock          = $this->createMock(Translator::class);
 
 		$this->facade = new Facade(
 			$this->settingsFormBuilderMock,
-			$this->usersAdminCreateService,
+			$this->usersAdminCreateServiceMock,
 			$this->configMock,
-			$this->settingsParameters,
+			$this->settingsParametersMock,
 		);
 	}
 
@@ -93,9 +93,9 @@ class FacadeTest extends TestCase
 		$fileExistsMock = $this->getFunctionMock('App\Modules\Users\Helper\InitialAdmin', 'file_exists');
 		$fileExistsMock->expects($this->once())->with('INSTALL_LOCK_FILE')->willReturn(false);
 
-		$this->usersAdminCreateService->expects(self::once())->method('hasAdminUser')->willReturn(true);
-		$this->usersAdminCreateService->expects(self::once())->method('creatLockfile');
-		$this->usersAdminCreateService->expects(self::once())->method('logAlarm');
+		$this->usersAdminCreateServiceMock->expects(self::once())->method('hasAdminUser')->willReturn(true);
+		$this->usersAdminCreateServiceMock->expects(self::once())->method('creatLockfile');
+		$this->usersAdminCreateServiceMock->expects(self::once())->method('logAlarm');
 
 		self::assertFalse($this->facade->isFunctionAllowed());
 	}
@@ -110,7 +110,7 @@ class FacadeTest extends TestCase
 		$fileExistsMock = $this->getFunctionMock('App\Modules\Users\Helper\InitialAdmin', 'file_exists');
 		$fileExistsMock->expects($this->once())->with('INSTALL_LOCK_FILE')->willReturn(false);
 
-		$this->usersAdminCreateService->expects(self::once())->method('hasAdminUser')->willReturn(false);
+		$this->usersAdminCreateServiceMock->expects(self::once())->method('hasAdminUser')->willReturn(false);
 
 		self::assertTrue($this->facade->isFunctionAllowed());
 	}
@@ -153,15 +153,15 @@ class FacadeTest extends TestCase
 		$expectedValues = ['testuser', 'test@example.com', 'en', 'Test@1234'];
 		$saveData = array_combine($expectedKeys, $expectedValues);
 
-		$this->settingsParameters->expects(self::once())
+		$this->settingsParametersMock->expects(self::once())
 			->method('getInputParametersKeys')
 			->willReturn($expectedKeys);
 
-		$this->settingsParameters->expects(self::once())
+		$this->settingsParametersMock->expects(self::once())
 			->method('getInputValuesArray')
 			->willReturn($expectedValues);
 
-		$this->usersAdminCreateService->expects(self::once())
+		$this->usersAdminCreateServiceMock->expects(self::once())
 			->method('insertNewAdminUser')
 			->with($saveData)
 			->willReturn(1);
@@ -182,7 +182,7 @@ class FacadeTest extends TestCase
 	{
 		$errorMessages = ['error.user.not_found', 'error.user.invalid_data'];
 		$translatedMessages = ['User not found', 'Invalid data'];
-		$this->usersAdminCreateService->expects(self::once())->method('getErrorMessages')
+		$this->usersAdminCreateServiceMock->expects(self::once())->method('getErrorMessages')
 			->willReturn($errorMessages);
 
 		$this->translatorMock->expects(self::exactly(2))->method('translate')
