@@ -117,7 +117,8 @@ class ShowAdminController
 
 		if (isset($post['standardSubmit']))
 		{
-			$id = $this->facade->storeUser((int)$post['UID']);
+			$UID =  $post['UID'] ?? 0;
+			$id = $this->facade->storeUser((int) $UID);
 			if ($id > 0)
 			{
 				$this->flash->addMessage('success', 'User “' . $post['username'] . '“ successfully stored.');
