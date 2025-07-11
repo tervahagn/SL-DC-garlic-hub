@@ -53,7 +53,7 @@ class ValidatorTest extends TestCase
 		$this->parametersMock = $this->createMock(Parameters::class);
 		$this->csrfTokenMock  = $this->createMock(CsrfToken::class);
 
-		$this->validator = new \App\Modules\Playlists\Helper\Settings\Validator($this->translatorMock, $this->parametersMock, $this->csrfTokenMock);
+		$this->validator = new Validator($this->translatorMock, $this->parametersMock, $this->csrfTokenMock);
 	}
 
 	/**
