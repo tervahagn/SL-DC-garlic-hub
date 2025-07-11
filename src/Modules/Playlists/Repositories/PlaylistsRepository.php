@@ -66,7 +66,7 @@ class PlaylistsRepository extends FilterBase
 		$queryBuilder->update($this->table);
 		foreach ($saveData as $key => $value)
 		{
-			$queryBuilder->set($key,$value);
+			$queryBuilder->set($key, (string)$value);
 		}
 		$queryBuilder->set('export_time', 'CURRENT_TIMESTAMP');
 
