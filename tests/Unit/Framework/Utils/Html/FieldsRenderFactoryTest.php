@@ -80,7 +80,7 @@ class FieldsRenderFactoryTest extends TestCase
 		$textFieldMock = $this->createMock(TextField::class);
 		$textRenderFieldMock = $this->createMock(TextRenderer::class);
 
-		$renderedText = '<input type="text" name="" id="" value="" aria-describedby="error_">';
+		$renderedText = '<input type="text" name="" id="" value="0" aria-describedby="error_">';
 		$textRenderFieldMock->method('render');
 
 		static::assertSame($renderedText,  $this->fieldsRenderFactory->getRenderer($textFieldMock));

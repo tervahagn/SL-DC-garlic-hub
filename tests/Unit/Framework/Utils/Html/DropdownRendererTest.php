@@ -50,7 +50,7 @@ class DropdownRendererTest extends TestCase
 		$this->dropdownFieldMock->method('getId')->willReturn('test-id');
 		$this->dropdownFieldMock->method('getName')->willReturn('test-name');
 		$this->dropdownFieldMock->method('getOptions')->willReturn(['1' => 'Option 1', '2' => 'Option 2']);
-		$this->dropdownFieldMock->method('getValue')->willReturn(null);
+		$this->dropdownFieldMock->method('getValue')->willReturn('');
 		$this->dropdownFieldMock->method('isOptionsZero')->willReturn(true);
 
 		$html = $this->renderer->render($this->dropdownFieldMock);
@@ -89,7 +89,7 @@ class DropdownRendererTest extends TestCase
 		$this->dropdownFieldMock->method('getId')->willReturn('test-id');
 		$this->dropdownFieldMock->method('getName')->willReturn('test-name');
 		$this->dropdownFieldMock->method('getOptions')->willReturn([]);
-		$this->dropdownFieldMock->method('getValue')->willReturn(null);
+		$this->dropdownFieldMock->method('getValue')->willReturn('');
 		$this->dropdownFieldMock->method('isOptionsZero')->willReturn(true);
 
 		$html = $this->renderer->render($this->dropdownFieldMock);

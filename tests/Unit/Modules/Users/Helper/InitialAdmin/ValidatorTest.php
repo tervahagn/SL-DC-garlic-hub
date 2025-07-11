@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Users\Helper\InitialAdmin;
 
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -39,6 +40,7 @@ class ValidatorTest extends TestCase
 {
 	private Translator&MockObject $translatorMock;
 	private Parameters&MockObject $parametersMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private Validator $validator;
 
 	/**
@@ -49,7 +51,9 @@ class ValidatorTest extends TestCase
 		parent::setUp();
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->parametersMock = $this->createMock(Parameters::class);
-		$this->validator = new Validator($this->translatorMock, $this->parametersMock);
+		$this->csrfTokenMock  = $this->createMock(CsrfToken::class);
+
+		$this->validator = new Validator($this->translatorMock, $this->parametersMock, $this->csrfTokenMock);
 	}
 
 	/**
