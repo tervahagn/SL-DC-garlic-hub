@@ -28,8 +28,8 @@ class AbstractInputField implements FieldInterface
 	private string $id;
 	private string $title;
 	private FieldType $type;
-	private string $value;
-	private string $defaultValue;
+	private string|int $value;
+	private string|int $defaultValue;
 	/** @var array<string,mixed>  */
 	private array $attributes;
 	/** @var array<string,mixed>  */
@@ -51,7 +51,7 @@ class AbstractInputField implements FieldInterface
 		$this->attributes      = $attributes['attributes'] ?? [];
 	}
 
-	public function setValue(string $value): self
+	public function setValue(string|int $value): self
 	{
 		$this->value = $value;
 		return $this;
@@ -103,7 +103,7 @@ class AbstractInputField implements FieldInterface
 		return $this->label;
 	}
 
-	public function getValue(): ?string
+	public function getValue(): string|int
 	{
 		if (empty($this->value))
 			return $this->defaultValue;
