@@ -68,45 +68,6 @@ class ShowAdminControllerTest extends TestCase
 		$this->controller = new ShowAdminController($this->facadeMock, $this->formElementPreparerMock);
 	}
 
-
-	/**
-	 * @throws \PHPUnit\Framework\MockObject\Exception
-	 */
-	private function setStandardMocks(): void
-	{
-		$translatorMock = $this->createMock(Translator::class);
-		$sessionMock    = $this->createMock(Session::class);
-		$this->requestMock->expects($this->exactly(3))->method('getAttribute')
-			->willReturnMap([
-				['flash', null, $this->flashMock],
-				['translator', null, $translatorMock],
-				['session', null, $sessionMock],
-			]);
-
-		$this->facadeMock->expects($this->once())->method('init')
-			->with($translatorMock, $sessionMock);
-	}
-
-	/**
-	 * @param array<string,mixed> $data
-	 */
-	private function outputStandard(array $data): void
-	{
-		$dataSections = ['key' => 'value'];
-		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];
-		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
-			->with($data)
-			->willReturn($dataSections);
-
-		$this->formElementPreparerMock->expects($this->once())->method('prepareUITemplate')
-			->with($dataSections)
-			->willReturn($templateData);
-		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
-		$this->streamInterfaceMock->method('write')->with(serialize($templateData));
-		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
-		$this->responseMock->method('withStatus')->with(200);
-	}
-
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 * @throws CoreException
@@ -351,4 +312,44 @@ class ShowAdminControllerTest extends TestCase
 
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
+
+
+	/**
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
+	private function setStandardMocks(): void
+	{
+		$translatorMock = $this->createMock(Translator::class);
+		$sessionMock    = $this->createMock(Session::class);
+		$this->requestMock->expects($this->exactly(3))->method('getAttribute')
+			->willReturnMap([
+				['flash', null, $this->flashMock],
+				['translator', null, $translatorMock],
+				['session', null, $sessionMock],
+			]);
+
+		$this->facadeMock->expects($this->once())->method('init')
+			->with($translatorMock, $sessionMock);
+	}
+
+	/**
+	 * @param array<string,mixed> $data
+	 */
+	private function outputStandard(array $data): void
+	{
+		$dataSections = ['key' => 'value'];
+		$templateData = ['main_layout' => ['key' => 'value'], 'this_layout' => ['key2' => 'value2']];
+		$this->facadeMock->expects($this->once())->method('prepareUITemplate')
+			->with($data)
+			->willReturn($dataSections);
+
+		$this->formElementPreparerMock->expects($this->once())->method('prepareUITemplate')
+			->with($dataSections)
+			->willReturn($templateData);
+		$this->responseMock->method('getBody')->willReturn($this->streamInterfaceMock);
+		$this->streamInterfaceMock->method('write')->with(serialize($templateData));
+		$this->responseMock->method('withHeader')->with('Content-Type', 'text/html')->willReturnSelf();
+		$this->responseMock->method('withStatus')->with(200);
+	}
+
 }
