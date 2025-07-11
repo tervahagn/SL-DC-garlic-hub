@@ -21,9 +21,11 @@ declare(strict_types=1);
 
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Database\BaseRepositories\Transactions;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
@@ -148,7 +150,8 @@ $dependencies[Builder::class] = DI\factory(function (ContainerInterface $contain
 		$container->get(\App\Modules\Users\Helper\Settings\Parameters::class),
 		new Validator(
 			$container->get(Translator::class),
-			$container->get(\App\Modules\Users\Helper\Settings\Parameters::class)
+			$container->get(\App\Modules\Users\Helper\Settings\Parameters::class),
+			$container->get(CsrfToken::class)
 		),
 		new FormElementsCreator(
 			$container->get(FormBuilder::class),
@@ -166,6 +169,7 @@ $dependencies[UsersAdminService::class] = DI\factory(function (ContainerInterfac
 		$container->get(NodesService::class),
 		$container->get(UserTokenService::class),
 		$container->get(AclValidator::class),
+		$container->get(Transactions::class),
 		$container->get('ModuleLogger')
 	);
 });
@@ -177,7 +181,8 @@ $dependencies[UsersAdminCreateService::class] = DI\factory(function (ContainerIn
 	return new UsersAdminCreateService(
 		$repositories['main'],
 		$container->get(NodesService::class),
-		$container->get('ModuleLogger')
+		$container->get('ModuleLogger'),
+		$container->get(CsrfToken::class)
 	);
 });
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)

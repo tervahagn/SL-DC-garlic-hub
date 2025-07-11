@@ -22,17 +22,20 @@ declare(strict_types=1);
 namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\BaseValidator;
+use App\Framework\Core\CsrfToken;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class BaseValidatorTest extends TestCase
 {
 	private BaseValidator $baseValidator;
+	private CsrfToken&\PHPUnit\Framework\MockObject\MockObject $csrfTokenMock;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->baseValidator = new BaseValidator();
+		$this->csrfTokenMock = $this->createMock(CsrfToken::class);
+		$this->baseValidator = new BaseValidator($this->csrfTokenMock);
 	}
 
 	#[Group('units')]
@@ -63,5 +66,30 @@ class BaseValidatorTest extends TestCase
 	public function testIsJsonEmpty(): void
 	{
 		static::assertFalse($this->baseValidator->isJson(''));
+	}
+	#[Group('units')]
+	public function testValidateCsrfTokenValid(): void
+	{
+		$token = 'validCsrfToken';
+
+		$this->csrfTokenMock
+			->expects($this->once())
+			->method('validateToken')
+			->with($token)
+			->willReturn(true);
+
+		static::assertTrue($this->baseValidator->validateCsrfToken($token));
+	}
+
+	#[Group('units')]
+	public function testValidateCsrfTokenInvalid(): void
+	{
+		$token = 'invalidCsrfToken';
+
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')
+			->with($token)
+			->willReturn(false);
+
+		static::assertFalse($this->baseValidator->validateCsrfToken($token));
 	}
 }

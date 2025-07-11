@@ -36,7 +36,7 @@ interface FieldInterface
 
 	public function getTitle(): string;
 
-	public function getValue(): ?string;
+	public function getValue(): string|int;
 
 	/**
 	 * @return array<string,mixed>

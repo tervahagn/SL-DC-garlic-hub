@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Crypt;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -79,7 +80,11 @@ $dependencies[Parameters::class] = DI\factory(function (ContainerInterface $cont
 });
 $dependencies[ShowPasswordController::class] = DI\factory(function (ContainerInterface $container)
 {
-	$validator = new Validator($container->get(Translator::class), $container->get(Parameters::class));
+	$validator = new Validator(
+		$container->get(Translator::class),
+		$container->get(Parameters::class),
+		$container->get(CsrfToken::class)
+	);
 	$creator   = new FormElementsCreator($container->get(FormBuilder::class), $container->get(Translator::class));
 	$builder   = new Builder($container->get(Parameters::class),$validator, $creator);
 	$facade    = new Facade(

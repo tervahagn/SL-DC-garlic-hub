@@ -23,6 +23,16 @@ namespace App\Framework\Core;
 
 class BaseValidator
 {
+	protected readonly CsrfToken $csrfToken;
+
+	/**
+	 * @param CsrfToken $csrfToken
+	 */
+	public function __construct(CsrfToken $csrfToken)
+	{
+		$this->csrfToken = $csrfToken;
+	}
+
 	public function isEmail(string $value): bool
 	{
 		return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
@@ -44,4 +54,8 @@ class BaseValidator
 		return false;
 	}
 
+	public function validateCsrfToken(string $receivedToken): bool
+	{
+		return $this->csrfToken->validateToken($receivedToken);
+	}
 }

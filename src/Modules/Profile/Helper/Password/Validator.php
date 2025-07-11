@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace App\Modules\Profile\Helper\Password;
 
 use App\Framework\Core\BaseValidator;
+use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
@@ -34,8 +35,9 @@ class Validator extends BaseValidator
 	private Translator $translator;
 	private Parameters $inputEditParameters;
 
-	public function __construct(Translator $translator, Parameters $inputEditParameters)
+	public function __construct(Translator $translator, Parameters $inputEditParameters, CsrfToken $csrfToken)
 	{
+		parent::__construct($csrfToken);
 		$this->translator = $translator;
 		$this->inputEditParameters = $inputEditParameters;
 	}

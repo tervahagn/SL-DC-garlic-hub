@@ -109,6 +109,7 @@ $dependencies[Validator::class] = DI\factory(function (ContainerInterface $conta
 	return new Validator(
 		$container->get(Translator::class),
 		$container->get(Parameters::class),
+		$container->get(CsrfToken::class)
 	);
 });
 $dependencies[Builder::class] = DI\factory(function (ContainerInterface $container)
