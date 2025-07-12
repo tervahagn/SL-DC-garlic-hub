@@ -59,17 +59,18 @@ class PlayerIndexControllerTest extends TestCase
 	#[Group('units')]
 	public function testIndexHandlesMissingFilePath(): void
 	{
-		$this->requestMock->method('getQueryParams')->willReturn([]);
-		$this->requestMock->method('getServerParams')->willReturn([
+		$server = [
 			'HTTP_USER_AGENT' => 'TestAgent',
 			'HTTP_X_SIGNAGE_AGENT' => 'extra useragent',
 			'SERVER_NAME' => 'extern'
-		]);
+		];
+		$this->requestMock->method('getQueryParams')->willReturn([]);
+		$this->requestMock->method('getServerParams')->willReturn($server);
 
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('extra useragent', false)
+			->with('extra useragent', $server, false)
 			->willReturn('');
 		$this->indexResponseHandler->expects($this->never())->method('init');
 
@@ -86,15 +87,13 @@ class PlayerIndexControllerTest extends TestCase
 	#[Group('units')]
 	public function testIndexHandlesLocalhostPlayer(): void
 	{
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'SERVER_NAME' => 'localhost', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
 		$this->requestMock->method('getQueryParams')->willReturn([]);
-		$this->requestMock->method('getServerParams')->willReturn([
-			'HTTP_USER_AGENT' => 'TestAgent',
-			'SERVER_NAME' => 'localhost'
-		]);
+		$this->requestMock->method('getServerParams')->willReturn($serverData);
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('TestAgent', true)
+			->with('TestAgent', $serverData, true)
 			->willReturn('');
 
 		$this->indexResponseHandler->expects($this->never())->method('init');
@@ -112,16 +111,14 @@ class PlayerIndexControllerTest extends TestCase
 	#[Group('units')]
 	public function testIndexHandlesDdevPlayer(): void
 	{
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
 		$this->requestMock->method('getQueryParams')->willReturn([]);
-		$this->requestMock->method('getServerParams')->willReturn([
-			'HTTP_USER_AGENT' => 'TestAgent',
-			'SERVER_NAME' => 'garlic-hub.ddev.site',
-			'REQUEST_METHOD' => 'HEAD'
-		]);
+		$this->requestMock->method('getServerParams')->willReturn($serverData);
+
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('TestAgent', true)
+			->with('TestAgent', $serverData, true)
 			->willReturn('');
 		$this->indexResponseHandler->expects($this->never())->method('init');
 
@@ -151,7 +148,7 @@ class PlayerIndexControllerTest extends TestCase
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('TestAgent', 'localhost')->willReturn($filePath);
+			->with('TestAgent', $server, true)->willReturn($filePath);
 
 		$this->indexResponseHandler->expects($this->once())->method('init')
 			->with($server, $filePath);
@@ -169,6 +166,7 @@ class PlayerIndexControllerTest extends TestCase
 		$filePath = '/tmp/test.smil';
 		$server = [
 			'HTTP_USER_AGENT' => 'TestAgent',
+			'REMOTE_ADDR' => '192.168.1.10',
 			'SERVER_NAME' => 'localhost',
 			'REQUEST_METHOD' => 'GET'
 		];
@@ -179,7 +177,7 @@ class PlayerIndexControllerTest extends TestCase
 		$this->sanitizerMock->method('int')->with(0)->willReturn(0);
 		$this->playerIndexServiceMock->method('setUID')->with(0);
 		$this->playerIndexServiceMock->method('handleIndexRequest')
-			->with('TestAgent', 'localhost')->willReturn($filePath);
+			->with('TestAgent', $server, true)->willReturn($filePath);
 
 		$this->indexResponseHandler->expects($this->once())->method('init')
 			->with($server, $filePath);

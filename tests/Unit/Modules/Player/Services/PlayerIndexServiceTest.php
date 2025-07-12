@@ -68,6 +68,10 @@ class PlayerIndexServiceTest extends TestCase
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
 
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
+
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
@@ -83,7 +87,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, true);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData, true);
 
 		static::assertSame($filePath, $result);
 	}
@@ -101,6 +105,10 @@ class PlayerIndexServiceTest extends TestCase
 			->with($userAgent)
 			->willReturn(true);
 
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
+
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
 
@@ -111,7 +119,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData,false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -124,6 +132,11 @@ class PlayerIndexServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
+
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
@@ -140,7 +153,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData,false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -158,6 +171,10 @@ class PlayerIndexServiceTest extends TestCase
 			->with($userAgent)
 			->willReturn(true);
 
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
+
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
 
@@ -168,7 +185,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData, false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -185,6 +202,9 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
@@ -196,7 +216,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData,false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -213,6 +233,9 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
@@ -224,7 +247,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData, false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -241,6 +264,9 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
@@ -252,7 +278,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData, false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -269,6 +295,9 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
@@ -280,7 +309,7 @@ class PlayerIndexServiceTest extends TestCase
 			->willReturn($filePath);
 
 		$this->service->setUID(1);
-		$result = $this->service->handleIndexRequest($userAgent, false);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData,false);
 
 		static::assertSame($filePath, $result);
 	}
@@ -296,6 +325,9 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(true);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->once())->method('setServerData')
+			->with($serverData);
 
 		$this->playerDataAssemblerMock->expects($this->once())->method('fetchDatabase')
 			->willReturn($this->playerEntityMock);
@@ -307,7 +339,7 @@ class PlayerIndexServiceTest extends TestCase
 			->with('Error fetch Index: Unknown player status: 14');
 
 		$this->service->setUID(1);
-		static::assertEmpty($this->service->handleIndexRequest($userAgent, false));
+		static::assertEmpty($this->service->handleIndexRequest($userAgent, $serverData, false));
 	}
 
 	#[Group('units')]
@@ -318,13 +350,15 @@ class PlayerIndexServiceTest extends TestCase
 		$this->playerDataAssemblerMock->expects($this->once())->method('parseUserAgent')
 			->with($userAgent)
 			->willReturn(false);
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->never())->method('setServerData');
 
 		$this->indexProviderMock->expects($this->once())->method('handleForbidden');
 
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
 
-		$this->service->handleIndexRequest($userAgent, false);
+		$this->service->handleIndexRequest($userAgent, $serverData, false);
 	}
 
 	#[Group('units')]
@@ -336,13 +370,16 @@ class PlayerIndexServiceTest extends TestCase
 			->with($userAgent)
 			->willThrowException(new RuntimeException('Parsing error'));
 
+		$serverData = ['HTTP_USER_AGENT' => 'TestAgent', 'REQUEST_METHOD' => 'HEAD', 'SERVER_NAME' => 'garlic-hub.ddev.site', 'REMOTE_ADDR' => '192.168.1.10', 'port' => 80];
+		$this->playerDataAssemblerMock->expects($this->never())->method('setServerData');
+
 		$this->loggerMock->expects($this->once())->method('info')
 			->with('Connection from: ' . $userAgent);
 
 		$this->loggerMock->expects($this->once())->method('error')
 			->with('Error fetch Index: Parsing error');
 
-		$result = $this->service->handleIndexRequest($userAgent, true);
+		$result = $this->service->handleIndexRequest($userAgent, $serverData, true);
 
 		static::assertSame('', $result);
 	}

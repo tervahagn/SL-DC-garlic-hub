@@ -63,6 +63,9 @@ class PlayerDataAssembler
 		return true;
 	}
 
+	/**
+	 * @param array<string,string> $serverData
+	 */
 	public function setServerData(array $serverData): void
 	{
 		$this->serverData = $serverData;

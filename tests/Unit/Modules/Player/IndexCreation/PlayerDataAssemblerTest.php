@@ -98,7 +98,7 @@ class PlayerDataAssemblerTest extends TestCase
 	#[Group('units')]
 	public function testHandleLocalPlayerReturnsExistingPlayer(): void
 	{
-		$playerData = ['player_id' => 1, 'uuid' => 'valid-uuid', 'status' => PlayerStatus::RELEASED->value];
+		$playerData = ['player_id' => 1, 'uuid' => 'valid-uuid', 'status' => PlayerStatus::RELEASED->value, 'is_intranet' => true];
 
 		$this->playerRepositoryMock->expects($this->once())->method('findPlayerById')
 			->with(1)
@@ -109,6 +109,9 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->playerEntityFactoryMock->expects($this->once())->method('create')
 			->with($playerData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
+
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->handleLocalPlayer();
 	}
@@ -133,6 +136,8 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::IADEA_XMP1X0);
 		$insertData =  [
 			'player_id' => 1,
+			'port'		 => 8080,
+			'ip_address' => '192.168.10.9',
 			'uuid'        => 'u-u-i-d',
 			'player_name' => 'PlayerName',
 			'firmware'    => 'firmware',
@@ -150,9 +155,10 @@ class PlayerDataAssemblerTest extends TestCase
 			'categories' => [],
 			'properties' => [],
 			'remote_administration' => [],
-			'screen_times' => []
+			'screen_times' => [],
+			'is_intranet' => true,
 		];
-		$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'licence_id' => 1];
+		$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'licence_id' => 1, 'is_intranet' => true];
 
 		$this->playerRepositoryMock->expects($this->once())->method('insertPlayer')
 			->with($insertData)
@@ -161,6 +167,9 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->playerEntityFactoryMock->expects($this->once())->method('create')
 			->with($result, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
+
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->handleLocalPlayer();
 	}
@@ -185,6 +194,8 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::IADEA_XMP1X0);
 		$insertData =  [
 			'player_id' => 1,
+			'port'		 => 8080,
+			'ip_address' => '192.168.10.9',
 			'uuid'        => 'u-u-i-d',
 			'player_name' => 'PlayerName',
 			'firmware'    => 'firmware',
@@ -202,7 +213,8 @@ class PlayerDataAssemblerTest extends TestCase
 			'categories' => [],
 			'properties' => [],
 			'remote_administration' => [],
-			'screen_times' => []
+			'screen_times' => [],
+			'is_intranet' => true,
 		];
 
 		$this->playerRepositoryMock->expects($this->once())
@@ -214,6 +226,8 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->expectExceptionMessage('Failed to insert local player');
 
 		$this->playerEntityFactoryMock->expects($this->never())->method('create');
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->handleLocalPlayer();
 	}
@@ -250,6 +264,8 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
+			'port' => '8080',
+			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -280,6 +296,8 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->playerEntityFactoryMock->expects($this->once())->method('create')
 			->with($saveData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->insertNewPlayer($ownerId);
 	}
@@ -292,6 +310,8 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
+			'port' => '8080',
+			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -323,6 +343,8 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->expectExceptionMessage('Failed to insert local player');
 
 		$this->playerEntityFactoryMock->expects($this->never())->method('create');
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->insertNewPlayer($ownerId);
 	}
@@ -337,6 +359,8 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
+			'port' => '8080',
+			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -370,6 +394,9 @@ class PlayerDataAssemblerTest extends TestCase
 			->with($saveData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
 
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
+
 		$this->assembler->insertNewPlayer($ownerId);
 	}
 
@@ -390,6 +417,9 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->playerEntityFactoryMock->expects($this->once())->method('create')
 			->with($playerData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
+
+		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
+		$this->assembler->setServerData($serverData);
 
 		$this->assembler->fetchDatabase();
 	}

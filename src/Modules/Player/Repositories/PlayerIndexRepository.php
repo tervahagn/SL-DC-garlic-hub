@@ -75,6 +75,8 @@ class PlayerIndexRepository extends SqlBase
 		$queryBuilder->where('player_id = :id');
 		$queryBuilder->setParameter('id', $Id);
 		$result = $queryBuilder->executeQuery()->fetchAssociative();
+		if ($result === false)
+			return [];
 
 		return $this->expandResult($result);
 	}
@@ -100,7 +102,7 @@ class PlayerIndexRepository extends SqlBase
 
 	private function buildQueryForIndex(QueryBuilder $queryBuilder): void
 	{
-		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, ip_address, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times');
+		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, ip_address, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times');
 		$queryBuilder->from($this->table);
 		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id = ' . $this->table . '.playlist_id');
 	}
