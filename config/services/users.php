@@ -181,8 +181,8 @@ $dependencies[UsersAdminCreateService::class] = DI\factory(function (ContainerIn
 	return new UsersAdminCreateService(
 		$repositories['main'],
 		$container->get(NodesService::class),
-		$container->get('ModuleLogger'),
-		$container->get(CsrfToken::class)
+		$container->get(Transactions::class),
+		$container->get('ModuleLogger')
 	);
 });
 $dependencies[Facade::class] = DI\factory(function (ContainerInterface $container)
