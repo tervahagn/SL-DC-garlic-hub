@@ -26,8 +26,8 @@ use Psr\Http\Message\ResponseInterface;
 class JsonResponseHandler
 {
     /**
-     * @param array<string,mixed>|list<array<string,mixed>> $data
-     */
+	 * @param array<string,mixed>|list<array<string,mixed>>|array<empty,empty> $data
+	 */
     public function jsonResponse(ResponseInterface $response, array $data, int $status = 200): ResponseInterface
     {
         $json = json_encode($data);
@@ -37,6 +37,9 @@ class JsonResponseHandler
         return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
     }
 
+	/**
+	 * @param array<string,mixed>|list<array<string,mixed>>|array<empty,empty> $data
+	 */
     public function jsonSuccess(ResponseInterface $response, array $data = []): ResponseInterface
     {
         return $this->jsonResponse($response, ['success' => true] + $data);
