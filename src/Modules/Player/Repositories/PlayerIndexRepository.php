@@ -57,7 +57,7 @@ class PlayerIndexRepository extends SqlBase
 	public function updateLastAccess(int $id, string $ipAddress = ''): void
 	{
 		$time = 'last_access = CURRENT_TIMESTAMP, ';
-		$ip   = 'ip_address = '.inet_pton($ipAddress);
+		$ip   = 'ip_address = '."'".inet_pton($ipAddress)."'";
 
 		$this->connection->executeStatement(
 			'UPDATE '.$this->table.' SET '.$time.$ip.' WHERE player_id = '.$id
@@ -75,8 +75,6 @@ class PlayerIndexRepository extends SqlBase
 		$queryBuilder->where('player_id = :id');
 		$queryBuilder->setParameter('id', $Id);
 		$result = $queryBuilder->executeQuery()->fetchAssociative();
-		if (empty($result))
-			return [];
 
 		return $this->expandResult($result);
 	}
@@ -114,7 +112,6 @@ class PlayerIndexRepository extends SqlBase
 	private function expandResult(array $result): array
 	{
 		$result['commands']              = $this->secureExplode($result['commands']);
-		$result['ipaddress']             = inet_ntop($result['ipaddress']);
 		$result['reports']               = $this->secureExplode($result['reports']);
 		$result['location_data']         = $this->secureUnserialize($result['location_data']);
 		$result['properties']            = $this->secureUnserialize($result['properties']);
@@ -122,6 +119,7 @@ class PlayerIndexRepository extends SqlBase
 		$result['categories']            = $this->secureUnserialize($result['categories']);
 		$result['multizone']             = $this->secureUnserialize($result['multizone']);
 		$result['screen_times']          = $this->secureUnserialize($result['screen_times']);
+		$result['ip_address']            = inet_ntop($result['ip_address']);
 
 		return $result;
 	}
@@ -139,7 +137,7 @@ class PlayerIndexRepository extends SqlBase
 		$result['remote_administration'] = $this->secureSerialize($result['remote_administration']);
 		$result['categories']            = $this->secureSerialize($result['categories']);
 		$result['screen_times']          = $this->secureSerialize($result['screen_times']);
-		$result['ipaddress']             = inet_pton($result['ipaddress']);
+		$result['ip_address']            = inet_pton($result['ip_address']);
 
 		return $result;
 	}

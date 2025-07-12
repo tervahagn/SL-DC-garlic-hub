@@ -133,6 +133,7 @@ class PlayerDataAssembler
 	private function buildInsertArray(int $ownerId = 1): array
 	{
 		return [
+			'port'        => 8080,
 			'ip_address'  => $this->serverData['REMOTE_ADDR'],
 			'uuid'        => $this->userAgentHandler->getUuid(),
 			'player_name' => $this->userAgentHandler->getName(),
