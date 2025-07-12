@@ -56,7 +56,7 @@ class NodesRepository  extends SqlBase
 	 */
 	public function getUserRootNode(int $UID): array
 	{
-		$select = [$this->table.'.UID, company_id, node_id, root_id'];
+		$select = [$this->table.'.UID', 'company_id', 'node_id', 'root_id'];
 		$where = [
 			$this->table.'.UID' => $this->generateWhereClause($UID),
 			'parent_id' => $this->generateWhereClause(0),

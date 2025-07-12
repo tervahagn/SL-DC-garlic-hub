@@ -61,28 +61,23 @@ class NodesRepositoryTest extends TestCase
 		$node_id = 1;
 		$select = 'mediapool_nodes.UID, username, company_id, node_id, visibility, root_id, is_user_folder, parent_id, level, lft, rgt, last_updated, create_date, name, media_location, ROUND((rgt - lft - 1) / 2) AS children';
 
-		$this->connectionMock->expects($this->once())
-			->method('createQueryBuilder')
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
 			->willReturn($this->queryBuilderMock );
 
-		$this->queryBuilderMock->expects($this->once())
-			->method('select')
+		$this->queryBuilderMock->expects($this->once())->method('select')
 			->with($select)
 			->willReturn($this->queryBuilderMock);
 
-		$this->queryBuilderMock->expects($this->once())
-			->method('from')
+		$this->queryBuilderMock->expects($this->once())->method('from')
 			->with('mediapool_nodes');
 
-		$this->queryBuilderMock->expects($this->once())
-			->method('andWhere')
+		$this->queryBuilderMock->expects($this->once())->method('andWhere')
 			->willReturnCallback(function ($condition) {
 				$expectedConditions = ['node_id = :node_id'];
 				static::assertContains($condition, $expectedConditions);
 				return $this->queryBuilderMock;
 			});
-		$this->queryBuilderMock->expects($this->exactly(1))
-			->method('setParameter')
+		$this->queryBuilderMock->expects($this->exactly(1))->method('setParameter')
 			->willReturnCallback(function ($name, $value) {
 				$expectedNames = ['node_id'];
 				$expectedValues = [1];
@@ -97,6 +92,51 @@ class NodesRepositoryTest extends TestCase
 			->willReturn([]);
 
 		static::assertEmpty($this->nodesRepository->getNode($node_id));
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	#[Group('units')]
+	public function testGetUserRootNodeReturnsCorrectData(): void
+	{
+		$UID = 3;
+		$expectedResult = ['UID' => 3, 'company_id' => 2, 'node_id' => 10, 'root_id' => 0];
+
+		$this->connectionMock->expects($this->once())->method('createQueryBuilder')
+			->willReturn($this->queryBuilderMock);
+		$select = 'mediapool_nodes.UID, company_id, node_id, root_id';
+
+		$this->queryBuilderMock->expects($this->once())->method('select')
+			->with($select)
+			->willReturn($this->queryBuilderMock);
+
+		$this->queryBuilderMock->expects($this->once())->method('from')
+			->with('mediapool_nodes')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('leftJoin')
+			->with('mediapool_nodes', 'user_main', 'user_main', 'mediapool_nodes.UID = user_main.UID');
+		$this->queryBuilderMock->expects($this->exactly(3))->method('andWhere')
+			->willReturnMap([
+				['mediapool_nodes.UID = :mediapool_nodesUID', $this->queryBuilderMock],
+				['parent_id = :parent_id', $this->queryBuilderMock],
+				['is_user_folder = :is_user_folder', $this->queryBuilderMock]
+			]);
+
+		$this->queryBuilderMock->expects($this->exactly(3))->method('setParameter')
+			->willReturnMap([
+				['mediapool_nodesUID', $UID, $this->queryBuilderMock],
+				['parent_id', 0, $this->queryBuilderMock],
+				['is_user_folder', 1, $this->queryBuilderMock]
+			]);
+
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())->method('fetchAllAssociative')
+			->willReturn([$expectedResult]);
+
+		static::assertEquals($expectedResult, $this->nodesRepository->getUserRootNode($UID));
 	}
 
 	/**
@@ -147,4 +187,7 @@ class NodesRepositoryTest extends TestCase
 
 		$this->nodesRepository->findNodeOwner($nodeId);
 	}
+
+
+
 }
