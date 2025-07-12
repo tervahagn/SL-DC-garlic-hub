@@ -234,6 +234,9 @@ CREATE TABLE player (
     refresh INTEGER NOT NULL DEFAULT 900,
     licence_id INTEGER NOT NULL DEFAULT 1,
     model INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    port INTEGER NOT NULL,
+    is_intranet BOOLEAN DEFAULT FALSE,
+    ip_address BLOB NOT NULL,
     uuid BLOB(16) NOT NULL,
     commands TEXT DEFAULT NULL DEFAULT '', -- set in mysql
     reports TEXT DEFAULT NULL DEFAULT '', -- set in mysql
