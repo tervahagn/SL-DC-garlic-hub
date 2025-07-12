@@ -85,9 +85,8 @@ class PlayerEntity
 
 	/**
 	 * @param array<string,mixed> $data
-	 * @param array<string,int,string,bool> $networkData
 	 */
-	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data, array $networkData = [])
+	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
 	{
 		$format = 'Y-m-d H:i:s';
 		$default = '2025-01-01 00:00:00';
