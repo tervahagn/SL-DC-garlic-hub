@@ -64,7 +64,6 @@ class IndexResponseHandler
 		$this->fileUtils = $fileUtils;
 	}
 
-
 	/**
 	 * @param array<string,mixed> $server
 	 * @throws ModuleException

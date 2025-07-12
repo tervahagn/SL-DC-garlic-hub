@@ -59,7 +59,10 @@ class PlayerIndexService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
-	public function handleIndexRequest(string $userAgent, bool $localPlayer): string
+	/**
+	 * @param array<string,string> $server
+	 */
+	public function handleIndexRequest(string $userAgent, array $server, bool $localPlayer): string
 	{
 		try
 		{
@@ -67,6 +70,7 @@ class PlayerIndexService extends AbstractBaseService
 
 			if ($this->playerDataAssembler->parseUserAgent($userAgent))
 			{
+				$this->playerDataAssembler->setServerData($server);
 				$this->determinePlayerEntities($localPlayer);
 				$this->handlePlayerStats();
 			}

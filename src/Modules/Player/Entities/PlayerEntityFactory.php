@@ -39,7 +39,7 @@ readonly class PlayerEntityFactory
 	/**
 	 * @param array<string,mixed> $data
 	 */
-	function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
+	public function create(array $data, UserAgentHandler $userAgentHandler): PlayerEntity
 	{
 		return new PlayerEntity($this->config, $userAgentHandler, $data);
 	}

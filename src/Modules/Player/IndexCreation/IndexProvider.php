@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace App\Modules\Player\IndexCreation;
 
 use App\Framework\Core\Config\Config;
-use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Entities\PlayerEntity;
 use League\Flysystem\FilesystemException;
@@ -40,7 +39,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleForbidden(): void
 	{
@@ -49,7 +47,6 @@ class IndexProvider
 
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleNew(): void
 	{
@@ -58,7 +55,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleUnreleased(): void
 	{
@@ -68,7 +64,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws ModuleException
 	 * @throws FilesystemException
 	 */
@@ -87,7 +82,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleTestSMil(): void
 	{
@@ -95,7 +89,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleCorrectSMil(): void
 	{
@@ -103,7 +96,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleCorruptSMIL(): void
 	{
@@ -111,7 +103,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleCorruptContent(): void
 	{
@@ -119,7 +110,6 @@ class IndexProvider
 	}
 
 	/**
-	 * @throws CoreException
 	 */
 	public function handleCorruptPrefetchContent(): void
 	{

@@ -39,6 +39,9 @@ class PlayerEntity
 	private int $refresh;
 	private int $licenceId;
 	private PlayerModel $model;
+	private bool $isIntranet;
+	private string $ipAddress;
+	private int $port;
 	private string $uuid;
 	/**
 	 * @var array<string,mixed>
@@ -82,8 +85,9 @@ class PlayerEntity
 
 	/**
 	 * @param array<string,mixed> $data
+	 * @param array<string,int,string,bool> $networkData
 	 */
-	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data)
+	public function __construct(Config $config, UserAgentHandler $userAgentHandler, array $data, array $networkData = [])
 	{
 		$format = 'Y-m-d H:i:s';
 		$default = '2025-01-01 00:00:00';
@@ -107,6 +111,9 @@ class PlayerEntity
 		$this->refresh              = $data['refresh'] ?? 900;
 		$this->licenceId            = $data['licence_id'] ?? 0;
 		$this->model                = $userAgentHandler->getModel();
+		$this->isIntranet           = $data['is_intranet'] ?? false;
+		$this->ipAddress            = $data['ip_address'] ?? '';
+		$this->port                 = $data['port'] ?? 8080;
 		$this->uuid                 = $userAgentHandler->getUuid();
 		$this->commands             = $data['commands'] ?? [];
 		$this->reports              = $data['reports'] ?? [];
@@ -177,6 +184,22 @@ class PlayerEntity
 	{
 		return $this->model;
 	}
+
+	public function isIntranet(): bool
+	{
+		return $this->isIntranet;
+	}
+
+	public function getIpAddress(): string
+	{
+		return $this->ipAddress;
+	}
+
+	public function getPort(): int
+	{
+		return $this->port;
+	}
+
 
 	public function getUuid(): string
 	{

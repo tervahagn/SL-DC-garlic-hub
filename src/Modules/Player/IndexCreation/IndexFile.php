@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 
 class IndexFile
 {
-	private readonly FileSystem $fileSystem;
+	private readonly Filesystem $fileSystem;
 	private LoggerInterface $logger;
 	private string $indexFilePath;
 

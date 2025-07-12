@@ -64,7 +64,7 @@ readonly class PlayerIndexController
 		else
 			$localPlayer = false;
 
-		$filePath = $this->indexService->handleIndexRequest($userAgent, $localPlayer);
+		$filePath = $this->indexService->handleIndexRequest($userAgent, $server, $localPlayer);
 		if (empty($filePath))
 			return $response->withHeader('Content-Type', 'application/smil+xml')->withStatus(404);
 

@@ -32,6 +32,11 @@ use Doctrine\DBAL\Exception;
 
 class PlayerDataAssembler
 {
+	/**
+	 * @var array<string,string>
+	 */
+	private array $serverData;
+
 	private UserAgentHandler $userAgentHandler;
 	private readonly PlayerIndexRepository $playerRepository;
 	private readonly Config $config;
@@ -48,6 +53,7 @@ class PlayerDataAssembler
 		$this->playerEntityFactory = $playerEntityFactory;
 	}
 
+
 	public function parseUserAgent(string $userAgent): bool
 	{
 		$this->userAgentHandler->parseUserAgent($userAgent);
@@ -55,6 +61,11 @@ class PlayerDataAssembler
 			return false;
 
 		return true;
+	}
+
+	public function setServerData(array $serverData): void
+	{
+		$this->serverData = $serverData;
 	}
 
 	/**
@@ -69,7 +80,7 @@ class PlayerDataAssembler
 		{
 			$saveData = $this->buildInsertArray();
 			// we need this to init playerEntity not with normal default values.
-			$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'licence_id' => 1];
+			$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'is_intranet' => true, 'licence_id' => 1];
 
 			$id = $this->playerRepository->insertPlayer(array_merge($saveData, $result));
 			if ($id === 0)
@@ -78,7 +89,7 @@ class PlayerDataAssembler
 		else if ($result['uuid'] !== $this->userAgentHandler->getUuid())
 			throw new ModuleException('player_index', 'Wrong Uuid for local player: '. $result['uuid'] .' != Agent'. $this->userAgentHandler->getUuid());
 
-		$this->playerRepository->updateLastAccess(1);
+		$this->playerRepository->updateLastAccess(1, $this->serverData['REMOTE_ADDR']);
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
@@ -110,8 +121,8 @@ class PlayerDataAssembler
 	{
 		$result = $this->playerRepository->findPlayerByUuid($this->userAgentHandler->getUuid());
 
-		if (!empty($result))
-			$this->playerRepository->updateLastAccess((int) $result['player_id']);
+		if ($result !== [])
+			$this->playerRepository->updateLastAccess((int) $result['player_id'], $this->serverData['REMOTE_ADDR']);
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
@@ -122,6 +133,7 @@ class PlayerDataAssembler
 	private function buildInsertArray(int $ownerId = 1): array
 	{
 		return [
+			'ip_address'  => $this->serverData['REMOTE_ADDR'],
 			'uuid'        => $this->userAgentHandler->getUuid(),
 			'player_name' => $this->userAgentHandler->getName(),
 			'firmware'    => $this->userAgentHandler->getFirmware(),

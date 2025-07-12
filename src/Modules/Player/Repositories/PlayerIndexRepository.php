@@ -54,10 +54,13 @@ class PlayerIndexRepository extends SqlBase
 	/**
 	 * @throws Exception
 	 */
-	public function updateLastAccess(int $id): void
+	public function updateLastAccess(int $id, string $ipAddress = ''): void
 	{
+		$time = 'last_access = CURRENT_TIMESTAMP, ';
+		$ip   = 'ip_address = '.inet_pton($ipAddress);
+
 		$this->connection->executeStatement(
-			'UPDATE '.$this->table.' SET last_access = CURRENT_TIMESTAMP WHERE player_id = '.$id
+			'UPDATE '.$this->table.' SET '.$time.$ip.' WHERE player_id = '.$id
 		);
 	}
 
@@ -99,7 +102,7 @@ class PlayerIndexRepository extends SqlBase
 
 	private function buildQueryForIndex(QueryBuilder $queryBuilder): void
 	{
-		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times');
+		$queryBuilder->select('player_id, status, licence_id, '.$this->table.'.UID, uuid, '.$this->table.'.player_name,  commands, reports, location_data, location_longitude, ip_address, location_latitude, '.$this->table.'.playlist_id, '.$this->table.'.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times');
 		$queryBuilder->from($this->table);
 		$queryBuilder->leftJoin($this->table, 'playlists', '', 'playlists.playlist_id = ' . $this->table . '.playlist_id');
 	}
@@ -111,6 +114,7 @@ class PlayerIndexRepository extends SqlBase
 	private function expandResult(array $result): array
 	{
 		$result['commands']              = $this->secureExplode($result['commands']);
+		$result['ipaddress']             = inet_ntop($result['ipaddress']);
 		$result['reports']               = $this->secureExplode($result['reports']);
 		$result['location_data']         = $this->secureUnserialize($result['location_data']);
 		$result['properties']            = $this->secureUnserialize($result['properties']);
@@ -135,6 +139,7 @@ class PlayerIndexRepository extends SqlBase
 		$result['remote_administration'] = $this->secureSerialize($result['remote_administration']);
 		$result['categories']            = $this->secureSerialize($result['categories']);
 		$result['screen_times']          = $this->secureSerialize($result['screen_times']);
+		$result['ipaddress']             = inet_pton($result['ipaddress']);
 
 		return $result;
 	}
