@@ -23,19 +23,24 @@ namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\BaseValidator;
 use App\Framework\Core\CsrfToken;
+use App\Framework\Core\Translate\Translator;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class BaseValidatorTest extends TestCase
 {
+	private Translator $translatorMock;
+	private CsrfToken&MockObject $csrfTokenMock;
 	private BaseValidator $baseValidator;
-	private CsrfToken&\PHPUnit\Framework\MockObject\MockObject $csrfTokenMock;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
+		$this->translatorMock = $this->createMock(Translator::class);
 		$this->csrfTokenMock = $this->createMock(CsrfToken::class);
-		$this->baseValidator = new BaseValidator($this->csrfTokenMock);
+
+		$this->baseValidator = new BaseValidator($this->translatorMock, $this->csrfTokenMock);
 	}
 
 	#[Group('units')]
