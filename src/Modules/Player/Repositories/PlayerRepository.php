@@ -99,7 +99,6 @@ class PlayerRepository extends FilterBase
 	}
 
 
-
 	protected function prepareSelectFiltered(): array
 	{
 		return ['player_id',

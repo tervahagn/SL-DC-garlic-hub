@@ -61,6 +61,14 @@ class PlayerService extends AbstractBaseService
 		return $ret;
 	}
 
+	/**
+	 * @param array{api_endpoint:string, is_intranet: int} $saveData
+	 * @throws Exception
+	 */
+	public function updatePlayer(int $playerId, array $saveData): int
+	{
+		return $this->playerRepository->update($playerId, $saveData);
+	}
 
 	/**
 	 * @return array<string,mixed>
@@ -69,7 +77,10 @@ class PlayerService extends AbstractBaseService
 	{
 		try
 		{
-			$this->fetchPlayer($playerId);
+			$player = $this->fetchPlayer($playerId);
+			if ($player === [])
+				throw new ModuleException('player', 'Error loading player: Is not editable');
+
 			$playlistName = '';
 			if ($playlistId > 0)
 			{
@@ -90,27 +101,29 @@ class PlayerService extends AbstractBaseService
 			$this->addErrorMessage($e->getMessage());
 			return [];
 		}
-
 	}
 
 	/**
 	 * @return array<string,mixed>
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws PhpfastcacheSimpleCacheException|ModuleException
-	 * @throws FrameworkException
 	 */
 	public function fetchPlayer(int $playerId): array
 	{
 		$player = $this->playerRepository->findFirstById($playerId);
-		if (empty($player))
-			throw new ModuleException('player', 'Error loading player: Is not editable');
+		if ($player === [])
+		{
+			$this->logger->error('Error loading player: '.$playerId.' is not found.');
+			return [];
+		}
 
 		/** @var array{UID: int, company_id: int, player_id: int, ...} $player */
 		if (!$this->playerValidator->isPlayerEditable($this->UID, $player))
-			throw new ModuleException('player', 'Error loading player: Is not editable');
+		{
+			$this->logger->error('Error loading player: '.$playerId.' is not editable for User '.$this->UID.'.');
+			return [];
+		}
 
 		return $player;
 	}
+
 
 }

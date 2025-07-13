@@ -53,11 +53,11 @@ class Validator extends BaseValidator
 	{
 		$errors = $this->validateFormCsrfToken($this->networkParameters);
 
-		if ($this->networkParameters->getValueOfParameter(Parameters::PARAMETER_IP_ADDRESS) === '')
-			$errors[] = $this->translator->translate('no_ip_address', 'player');
+		$isIntranet  = $this->networkParameters->getValueOfParameter(Parameters::PARAMETER_IS_INTRANET);
+		$apiEndpoint = $this->networkParameters->getValueOfParameter(Parameters::PARAMETER_API_ENDPOINT);
 
-		if ($this->networkParameters->getValueOfParameter(Parameters::PARAMETER_PORT) === '')
-			$errors[] = $this->translator->translate('no_port', 'player');
+		if ($isIntranet === 1 && $apiEndpoint === '')
+			$errors[] = $this->translator->translate('no_api_endpoint', 'player');
 
 		return $errors;
 	}

@@ -2,7 +2,7 @@
 /*
  garlic-hub: Digital Signage Management Platform
 
- Copyright (C) 2024 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
  This file is part of the garlic-hub source code
 
  This program is free software: you can redistribute it and/or modify
@@ -21,18 +21,30 @@ declare(strict_types=1);
 
 namespace App\Framework\Utils\Html;
 
-class CheckboxRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
+class UrlField extends AbstractInputField
 {
-	public function render(CheckboxField|FieldInterface $field): string
+	private string $placeholder;
+	private string $pattern;
+
+	public function setPlaceholder(string $placeholder): UrlField
 	{
-		$this->field = $field;
-		if (!($this->field instanceof CheckboxField))
-			return '';
+		$this->placeholder = $placeholder;
+		return $this;
+	}
 
-		$id = $this->field->getId();
-		$checked = $this->field->getValue(); // is empty or has cheked
+	public function getPlaceholder(): string
+	{
+		return $this->placeholder;
+	}
 
-		return '<input type="checkbox" id="'.$id.'" name="'.$id.'" '.$checked.' aria-describedby="error_'.$id.'"> '.$this->field->getTitle();
+	public function setPattern(string $pattern): static
+	{
+		$this->pattern = $pattern;
+		return $this;
+	}
 
+	public function getPattern(): string
+	{
+		return $this->pattern;
 	}
 }

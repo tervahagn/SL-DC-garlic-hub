@@ -28,7 +28,7 @@ class AbstractInputField implements FieldInterface
 	private string $id;
 	private string $title;
 	private FieldType $type;
-	private string|int $value;
+	protected string|int $value;
 	private string|int $defaultValue;
 	/** @var array<string,mixed>  */
 	private array $attributes;
