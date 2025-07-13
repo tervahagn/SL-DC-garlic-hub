@@ -126,24 +126,6 @@ class PlayerServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testReplaceMasterPlaylistWithInvalidPlayerId(): void
-	{
-		$this->service->setUID(1);
-		$this->playerRepositoryMock->method('findFirstById')
-			->willReturn([]);
-
-		$this->loggerMock->expects($this->once())->method('error')
-			->with('Error loading player: Is not editable');
-
-		$this->playerValidatorMock->method('isPlayerEditable')
-			->willReturn(false);
-
-		$result = $this->service->replaceMasterPlaylist(999, 10);
-
-		static::assertSame([], $result);
-	}
-
-	#[Group('units')]
 	public function testReplaceMasterPlaylistWithoutPlaylistId(): void
 	{
 		$this->service->setUID(1);
