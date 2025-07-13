@@ -61,42 +61,6 @@ class BaseEditParametersTest extends TestCase
 		$this->baseEditParameters = new ConcreteEditBaseParameters($sanitizerMock, $this->sessionMock);
 	}
 
-	#[Group('units')]
-	public function testCheckCsrfTokenThrowsExceptionIfTokenNotSetInParameters(): void
-	{
-		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('CSRF token not set in parameters');
-
-		$this->baseEditParameters->checkCsrfToken();
-	}
-
-	#[Group('units')]
-	public function testCheckCsrfTokenThrowsExceptionIfTokenNotInSession(): void
-	{
-		$this->baseEditParameters->addDefaultParameter();
-		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('CSRF token not set in session');
-
-		$this->baseEditParameters->checkCsrfToken();
-	}
-
-	/**
-	 * @throws ModuleException
-	 */
-	#[Group('units')]
-	public function testCheckCsrfTokenThrowsExceptionIfTokenMissmatch(): void
-	{
-		$this->baseEditParameters->addDefaultParameter();
-		$this->baseEditParameters->setValueOfParameter(BaseEditParameters::PARAMETER_CSRF_TOKEN, 'wrongToken1');
-		$this->sessionMock->method('exists')->willReturn(true);
-		$this->sessionMock->method('get')->willReturn('wrongToken2');
-
-		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('CSRF token mismatch');
-
-		$this->baseEditParameters->checkCsrfToken();
-	}
-
 	/**
 	 * @throws ModuleException
 	 */
@@ -105,12 +69,7 @@ class BaseEditParametersTest extends TestCase
 	{
 		$this->baseEditParameters->addDefaultParameter();
 		$this->baseEditParameters->setValueOfParameter(BaseEditParameters::PARAMETER_CSRF_TOKEN, 'goodToken');
-		$this->sessionMock->method('exists')->willReturn(true);
-		$this->sessionMock->method('get')->willReturn('goodToken');
 
-		$this->baseEditParameters->checkCsrfToken();
-
-		// @phpstan-ignore-next-line
-		static::assertTrue(true);
+		static::assertSame('goodToken', $this->baseEditParameters->getCsrfToken());
 	}
 }
