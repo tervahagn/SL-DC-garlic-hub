@@ -21,18 +21,16 @@ declare(strict_types=1);
 
 namespace App\Framework\Utils\Html;
 
-enum FieldType: string
+class CheckboxField extends AbstractInputField
 {
-	case TEXT         = 'text';
-	case AUTOCOMPLETE = 'autocomplete';
-	case NUMBER       = 'number';
-	case DROPDOWN     = 'dropdown';
-	case CHECKBOX     = 'checkbox';
-	case URL          = 'url';
-	case DATE     = 'date';
-	case PASSWORD = 'password';
-	case EMAIL    = 'email';
-	case CSRF     = 'csrf';
-	case CLIPBOARD_TEXT = 'clipboard_text';
-	case HIDDEN   = 'hidden';
+
+	public function getValue(): string|int
+	{
+		$value = (int) parent::getValue();
+		if ($value > 0)
+			return 'checked';
+
+		return '';
+	}
+
 }

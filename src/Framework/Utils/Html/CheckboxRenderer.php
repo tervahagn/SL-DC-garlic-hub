@@ -21,18 +21,18 @@ declare(strict_types=1);
 
 namespace App\Framework\Utils\Html;
 
-enum FieldType: string
+class CheckboxRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
-	case TEXT         = 'text';
-	case AUTOCOMPLETE = 'autocomplete';
-	case NUMBER       = 'number';
-	case DROPDOWN     = 'dropdown';
-	case CHECKBOX     = 'checkbox';
-	case URL          = 'url';
-	case DATE     = 'date';
-	case PASSWORD = 'password';
-	case EMAIL    = 'email';
-	case CSRF     = 'csrf';
-	case CLIPBOARD_TEXT = 'clipboard_text';
-	case HIDDEN   = 'hidden';
+	public function render(CheckboxField|FieldInterface $field): string
+	{
+		$this->field = $field;
+		if (!($this->field instanceof CheckboxField))
+			return '';
+
+		$id = $this->field->getId();
+		$checked = $this->field->getValue(); // is empty or has cheked
+
+		return '<input type="checkbox" id="'.$id.'" name="'.$id.'" '.$checked.' aria-describedby="error_'.$id.'">';
+
+	}
 }

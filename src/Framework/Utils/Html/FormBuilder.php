@@ -75,12 +75,14 @@ class FormBuilder
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function createField(array $attributes = []): FieldInterface|ClipboardTextField
+	public function createField(array $attributes = []): FieldInterface|ClipboardTextField|UrlField
 	{
 		return match ($attributes['type']) {
 			FieldType::TEXT           => $this->fieldsFactory->createTextField($attributes),
 			FieldType::NUMBER         => $this->fieldsFactory->createNumberField($attributes),
 			FieldType::DROPDOWN       => $this->fieldsFactory->createDropdownField($attributes),
+			FieldType::URL            => $this->fieldsFactory->createUrlField($attributes),
+			FieldType::CHECKBOX       => $this->fieldsFactory->createCheckboxField($attributes),
 			FieldType::AUTOCOMPLETE   => $this->fieldsFactory->createAutocompleteField($attributes),
 			FieldType::PASSWORD       => $this->fieldsFactory->createPasswordField($attributes),
 			FieldType::EMAIL          => $this->fieldsFactory->createEmailField($attributes),

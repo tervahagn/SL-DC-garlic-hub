@@ -40,6 +40,8 @@ class FieldsRenderFactory
 			$field instanceof PasswordField      => $this->getCachedRenderer(PasswordRenderer::class)->render($field),
 			$field instanceof HiddenField        => $this->getCachedRenderer(HiddenRenderer::class)->render($field),
 			$field instanceof ClipboardTextField => $this->getCachedRenderer(ClipboardTextRenderer::class)->render($field),
+			$field instanceof UrlField           => $this->getCachedRenderer(UrlRenderer::class)->render($field),
+			$field instanceof CheckboxField      => $this->getCachedRenderer(CheckboxRenderer::class)->render($field),
 			$field instanceof CsrfTokenField     => $this->getCachedRenderer(CsrfTokenRenderer::class)->render($field),
 			default => throw new InvalidArgumentException('Unsupported field type: ' . get_class($field)),
 		};

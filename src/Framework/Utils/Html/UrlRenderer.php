@@ -21,18 +21,15 @@ declare(strict_types=1);
 
 namespace App\Framework\Utils\Html;
 
-enum FieldType: string
+class UrlRenderer extends AbstractInputFieldRenderer implements FieldRenderInterface
 {
-	case TEXT         = 'text';
-	case AUTOCOMPLETE = 'autocomplete';
-	case NUMBER       = 'number';
-	case DROPDOWN     = 'dropdown';
-	case CHECKBOX     = 'checkbox';
-	case URL          = 'url';
-	case DATE     = 'date';
-	case PASSWORD = 'password';
-	case EMAIL    = 'email';
-	case CSRF     = 'csrf';
-	case CLIPBOARD_TEXT = 'clipboard_text';
-	case HIDDEN   = 'hidden';
+	public function render(UrlField|FieldInterface $field): string
+	{
+		$this->field = $field;
+		if (!($this->field instanceof UrlField))
+			return '';
+
+		return '<input type="text" '.$this->buildAttributes().' placeholder="'.$this->field->getPlaceholder().'" aria-describedby="error_'.$this->field->getId().'">';
+
+	}
 }

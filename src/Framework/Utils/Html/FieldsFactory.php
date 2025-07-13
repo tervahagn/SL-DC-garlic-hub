@@ -92,6 +92,22 @@ class FieldsFactory
 		return new ClipboardTextField($attributes);
 	}
 
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
+	public function createUrlField(array $attributes): UrlField
+	{
+		return new UrlField($attributes);
+	}
+
+	/**
+	 * @param array<string,mixed> $attributes
+	 */
+	public function createCheckboxField(array $attributes): CheckboxField
+	{
+		return new CheckboxField($attributes);
+	}
+
 
 	/**
 	 * @param array<string,mixed> $attributes
