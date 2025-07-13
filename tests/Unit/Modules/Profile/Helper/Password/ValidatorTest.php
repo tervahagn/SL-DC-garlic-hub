@@ -69,7 +69,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithMissingPasswordAndConfirm(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->expects($this->once())->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_PASSWORD, ''],
@@ -100,7 +100,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithInvalidPasswordPattern(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_PASSWORD, 'short'],
@@ -128,7 +128,7 @@ class ValidatorTest extends TestCase
 	public function testValidateNoMatch(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_PASSWORD, 'securePAASword123'],
@@ -145,4 +145,12 @@ class ValidatorTest extends TestCase
 		static::assertSame(['No match.'], $errors);
 	}
 
+	private function checkCsrfTokenTrue(): void
+	{
+		$this->parametersMock->expects($this->once())->method('getCsrfToken')
+			->willReturn('test');
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')
+			->with('test')
+			->willReturn(true);
+	}
 }

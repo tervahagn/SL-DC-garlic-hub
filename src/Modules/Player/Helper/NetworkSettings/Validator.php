@@ -19,7 +19,7 @@
 */
 declare(strict_types=1);
 
-namespace App\Modules\Playlists\Helper\Settings;
+namespace App\Modules\Player\Helper\NetworkSettings;
 
 use App\Framework\Core\BaseValidator;
 use App\Framework\Core\CsrfToken;
@@ -27,22 +27,21 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
-use App\Modules\Playlists\Helper\PlaylistMode;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class Validator extends BaseValidator
 {
-	private Parameters $inputEditParameters;
+	private Parameters $networkParameters;
 
-	public function __construct(Translator $translator, Parameters $inputEditParameters, CsrfToken $csrfToken)
+	public function __construct(Translator $translator, Parameters $networkParameters, CsrfToken $csrfToken)
 	{
 		parent::__construct($translator, $csrfToken);
-		$this->inputEditParameters = $inputEditParameters;
+		$this->translator = $translator;
+		$this->networkParameters = $networkParameters;
 	}
 
 	/**
-	 * @param array<string, mixed> $post
 	 * @return string[]
 	 * @throws ModuleException
 	 * @throws CoreException
@@ -50,29 +49,18 @@ class Validator extends BaseValidator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
 	 */
-	public function validateUserInput(array $post): array
+	public function validateUserInput(): array
 	{
-		$errors = $this->validateFormCsrfToken($this->inputEditParameters);
+		$errors = $this->validateFormCsrfToken($this->networkParameters);
 
-		if (empty($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_PLAYLIST_NAME)))
-			$errors[] = $this->translator->translate('no_playlist_name', 'playlists');
+		if ($this->networkParameters->getValueOfParameter(Parameters::PARAMETER_IP_ADDRESS) === '')
+			$errors[] = $this->translator->translate('no_ip_address', 'player');
 
-		// we need userInput here as getValueOfParameter will throw an exception if not set
-		if (!isset($post[Parameters::PARAMETER_PLAYLIST_MODE]) && !isset($post[Parameters::PARAMETER_PLAYLIST_ID]))
-			$errors[] = $this->translator->translate('parameters_missing', 'playlists');
-
-		if (isset($post[Parameters::PARAMETER_PLAYLIST_MODE]) && !$this->checkPlaylistMode($post))
-			$errors[] = sprintf($this->translator->translate('playlist_mode_unsupported', 'playlists'), $post['playlist_mode']);
+		if ($this->networkParameters->getValueOfParameter(Parameters::PARAMETER_PORT) === '')
+			$errors[] = $this->translator->translate('no_port', 'player');
 
 		return $errors;
 	}
 
-	/**
-	 * @param array<string,mixed> $userInputs
-	 */
-	private function checkPlaylistMode(array $userInputs): bool
-	{
-		return in_array($userInputs[Parameters::PARAMETER_PLAYLIST_MODE], array_column(PlaylistMode::cases(), 'value'), true);
-	}
 
 }

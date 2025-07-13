@@ -21,15 +21,26 @@ declare(strict_types=1);
 
 namespace App\Framework\Core;
 
+use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseEditParameters;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\SimpleCache\InvalidArgumentException;
+
 class BaseValidator
 {
+	protected Translator $translator;
+
 	protected readonly CsrfToken $csrfToken;
 
 	/**
 	 * @param CsrfToken $csrfToken
 	 */
-	public function __construct(CsrfToken $csrfToken)
+	public function __construct(Translator $translator, CsrfToken $csrfToken)
 	{
+		$this->translator = $translator;
 		$this->csrfToken = $csrfToken;
 	}
 
@@ -58,4 +69,24 @@ class BaseValidator
 	{
 		return $this->csrfToken->validateToken($receivedToken);
 	}
+
+	/**
+	 * @return string[]
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 */
+	public function validateFormCsrfToken(BaseEditParameters $baseEditParameters): array
+	{
+		$receivedToken = $baseEditParameters->getCsrfToken();
+
+		$error = [];
+		if ($receivedToken === '' || !$this->validateCsrfToken($receivedToken))
+			$error[] = $this->translator->translate('csrf_token_mismatch', 'security');
+
+		return $error;
+	}
+
 }

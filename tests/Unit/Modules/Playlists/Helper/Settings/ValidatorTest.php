@@ -65,6 +65,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateUserInputWithErrors(): void
 	{
+		$this->checkCsrfTokenTrue();
 		$this->parametersMock->method('getValueOfParameter')
 			->with(Parameters::PARAMETER_PLAYLIST_NAME)
 			->willReturn(null);
@@ -94,6 +95,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateUserInputWithErrors2(): void
 	{
+		$this->checkCsrfTokenTrue();
 		$this->parametersMock->method('getValueOfParameter')
 			->with(Parameters::PARAMETER_PLAYLIST_NAME)
 			->willReturn(null);
@@ -123,6 +125,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateUserInputPasses(): void
 	{
+		$this->checkCsrfTokenTrue();
 		$this->parametersMock->method('getValueOfParameter')
 			->with(Parameters::PARAMETER_PLAYLIST_NAME)
 			->willReturn('Playlist name');
@@ -139,4 +142,12 @@ class ValidatorTest extends TestCase
 		static::assertEmpty($errors);
 	}
 
+	private function checkCsrfTokenTrue(): void
+	{
+		$this->parametersMock->expects($this->once())->method('getCsrfToken')
+			->willReturn('test');
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')
+			->with('test')
+			->willReturn(true);
+	}
 }

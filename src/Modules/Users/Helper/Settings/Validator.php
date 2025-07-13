@@ -32,13 +32,11 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class Validator extends BaseValidator
 {
-	private Translator $translator;
 	private Parameters $inputEditParameters;
 
 	public function __construct(Translator $translator, Parameters $inputEditParameters, CsrfToken $csrfToken)
 	{
-		parent::__construct($csrfToken);
-		$this->translator = $translator;
+		parent::__construct($translator, $csrfToken);
 		$this->inputEditParameters = $inputEditParameters;
 	}
 
@@ -52,9 +50,8 @@ class Validator extends BaseValidator
 	 */
 	public function validateUserInput(): array
 	{
-		$this->inputEditParameters->checkCsrfToken();
+		$errors = $this->validateFormCsrfToken($this->inputEditParameters);
 
-		$errors = [];
 		if ($this->inputEditParameters->getValueOfParameter(Parameters::PARAMETER_USER_NAME) === '')
 			$errors[] = $this->translator->translate('no_username', 'users');
 

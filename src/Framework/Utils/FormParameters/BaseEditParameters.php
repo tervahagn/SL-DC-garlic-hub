@@ -42,23 +42,13 @@ abstract class BaseEditParameters extends BaseParameters
 	}
 
 	/**
-	 * Remark: This violates SRP. If we have more security checks, we
-	 * will create our own class.
-	 *
 	 * @throws ModuleException
 	 */
-	public function checkCsrfToken(): void
+	public function getCsrfToken(): string
 	{
-		if (!isset($this->currentParameters[self::PARAMETER_CSRF_TOKEN]))
-			throw new ModuleException($this->moduleName,'CSRF token not set in parameters');
+		if (!$this->hasParameter(self::PARAMETER_CSRF_TOKEN))
+			return '';
 
-		if (!$this->session->exists(self::PARAMETER_CSRF_TOKEN))
-			throw new ModuleException($this->moduleName,'CSRF token not set in session');
-
-		if (!array_key_exists('value', $this->currentParameters[self::PARAMETER_CSRF_TOKEN]))
-			throw new ModuleException($this->moduleName,'CSRF token mismatch - No value set in parameters');
-
-		if ($this->session->get(self::PARAMETER_CSRF_TOKEN) !== $this->currentParameters[self::PARAMETER_CSRF_TOKEN]['value'])
-			throw new ModuleException($this->moduleName,'CSRF token mismatch');
+		return $this->getValueOfParameter(self::PARAMETER_CSRF_TOKEN);
 	}
 }

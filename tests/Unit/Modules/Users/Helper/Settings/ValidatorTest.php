@@ -27,6 +27,7 @@ use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
+use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Modules\Users\Helper\Settings\Parameters;
 use App\Modules\Users\Helper\Settings\Validator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -66,7 +67,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateSucceed(): void
 	{
-		$this->parametersMock->expects($this->once())->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')
 			->willReturnMap([
@@ -89,7 +90,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateFailsEmpty(): void
 	{
-		$this->parametersMock->expects($this->once())->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->expects($this->exactly(2))->method('getValueOfParameter')
 			->willReturnMap([
@@ -116,7 +117,7 @@ class ValidatorTest extends TestCase
 	#[Group('units')]
 	public function testValidateFailsWrongMail(): void
 	{
-		$this->parametersMock->expects($this->once())->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->expects($this->exactly(2))->method('getValueOfParameter')
 			->willReturnMap([
@@ -132,5 +133,13 @@ class ValidatorTest extends TestCase
 		static::assertNotEmpty($this->validator->validateUserInput());
 	}
 
+	private function checkCsrfTokenTrue(): void
+	{
+		$this->parametersMock->expects($this->once())->method('getCsrfToken')
+			->willReturn('test');
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')
+			->with('test')
+			->willReturn(true);
+	}
 
 }

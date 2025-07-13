@@ -67,7 +67,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithValidData(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->expects($this->exactly(4))->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -92,7 +92,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithMissingAdminName(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, ''],
@@ -120,7 +120,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithInvalidEmail(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -148,7 +148,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithMissingPassword(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -181,7 +181,7 @@ class ValidatorTest extends TestCase
 	public function testValidatePasswordNoConfirm(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -213,7 +213,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithUnmatchedPasswords(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -241,7 +241,7 @@ class ValidatorTest extends TestCase
 	public function testValidateUserInputWithInvalidPassword(): void
 	{
 		$passwordPattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-		$this->parametersMock->method('checkCsrfToken');
+		$this->checkCsrfTokenTrue();
 
 		$this->parametersMock->method('getValueOfParameter')->willReturnMap([
 			[Parameters::PARAMETER_ADMIN_NAME, 'Admin'],
@@ -256,5 +256,14 @@ class ValidatorTest extends TestCase
 
 		static::assertCount(1, $errors);
 		static::assertSame('Invalid password.', $errors[0]);
+	}
+
+	private function checkCsrfTokenTrue(): void
+	{
+		$this->parametersMock->expects($this->once())->method('getCsrfToken')
+			->willReturn('test');
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')
+			->with('test')
+			->willReturn(true);
 	}
 }
