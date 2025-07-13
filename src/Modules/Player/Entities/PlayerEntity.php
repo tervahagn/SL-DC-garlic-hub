@@ -40,8 +40,7 @@ class PlayerEntity
 	private int $licenceId;
 	private PlayerModel $model;
 	private bool $isIntranet;
-	private string $ipAddress;
-	private int $port;
+	private string $apiEndpoint;
 	private string $uuid;
 	/**
 	 * @var array<string,mixed>
@@ -111,8 +110,7 @@ class PlayerEntity
 		$this->licenceId            = $data['licence_id'] ?? 0;
 		$this->model                = $userAgentHandler->getModel();
 		$this->isIntranet           = $data['is_intranet'] ?? false;
-		$this->ipAddress            = $data['ip_address'] ?? '';
-		$this->port                 = $data['port'] ?? 8080;
+		$this->apiEndpoint          = $data['api_endpoint'] ?? '';
 		$this->uuid                 = $userAgentHandler->getUuid();
 		$this->commands             = $data['commands'] ?? [];
 		$this->reports              = $data['reports'] ?? [];
@@ -189,16 +187,10 @@ class PlayerEntity
 		return $this->isIntranet;
 	}
 
-	public function getIpAddress(): string
+	public function getApiEndpoint(): string
 	{
-		return $this->ipAddress;
+		return $this->apiEndpoint;
 	}
-
-	public function getPort(): int
-	{
-		return $this->port;
-	}
-
 
 	public function getUuid(): string
 	{

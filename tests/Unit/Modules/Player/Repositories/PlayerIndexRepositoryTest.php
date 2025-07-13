@@ -75,8 +75,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'properties' => ['key' => 'value'],
 			'remote_administration' => ['admin' => true],
 			'categories' => [1, 2, 3],
-			'screen_times' => ['duration' => 3600],
-			'ip_address' => '192.168.10.10'
+			'screen_times' => ['duration' => 3600]
 		];
 
 		$processedData = [
@@ -87,8 +86,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'properties' => 'a:1:{s:3:"key";s:5:"value";}',
 			'remote_administration' => 'a:1:{s:5:"admin";b:1;}',
 			'categories' => 'a:3:{i:0;i:1;i:1;i:2;i:2;i:3;}',
-			'screen_times' => 'a:1:{s:8:"duration";i:3600;}',
-			'ip_address' => inet_pton('192.168.10.10')
+			'screen_times' => 'a:1:{s:8:"duration";i:3600;}'
 		];
 		$this->connectionMock->method('insert')
 			->with('player', $processedData);
@@ -131,8 +129,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => 'a:0:{}',
 			'categories' => 'a:0:{}',
 			'screen_times' => 'a:0:{}',
-			'multizone'  => '',
-			'ip_address' => inet_pton('192.168.10.12')
+			'multizone'  => ''
 		];
 
 		$expandedData = [
@@ -144,8 +141,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => [],
 			'categories' => [],
 			'screen_times' => [],
-			'multizone'  => [],
-			'ip_address' => '192.168.10.12'
+			'multizone'  => []
 		];
 
 		$this->mockQueryBuilder();
@@ -165,12 +161,11 @@ class PlayerIndexRepositoryTest extends TestCase
 	public function testUpdateLastAccessSuccessfully(): void
 	{
 		$id = 123;
-		$ip = inet_pton('192.168.10.12');
 		$this->connectionMock->expects($this->once())
 			->method('executeStatement')
-			->with("UPDATE player SET last_access = CURRENT_TIMESTAMP, ip_address = '$ip' WHERE player_id = " . $id);
+			->with('UPDATE player SET last_access = CURRENT_TIMESTAMP WHERE player_id = ' . $id);
 
-		$this->repository->updateLastAccess($id, '192.168.10.12');;
+		$this->repository->updateLastAccess($id);
 	}
 
 	/**
@@ -202,8 +197,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => 'a:0:{}',
 			'categories' => 'a:0:{}',
 			'screen_times' => 'a:0:{}',
-			'multizone'  => '',
-			'ip_address' => inet_pton('192.168.10.12')
+			'multizone'  => ''
 		];
 
 		$expectedData = [
@@ -215,8 +209,7 @@ class PlayerIndexRepositoryTest extends TestCase
 			'remote_administration' => [],
 			'categories' => [],
 			'screen_times' => [],
-			'multizone'  => [],
-			'ip_address' => '192.168.10.12'
+			'multizone'  => []
 		];
 
 		$this->mockQueryBuilder();
@@ -230,7 +223,7 @@ class PlayerIndexRepositoryTest extends TestCase
 	private function mockQueryBuilder(): void
 	{
 		$this->queryBuilderMock->method('select')->with(
-			'player_id, status, licence_id, player.UID, ip_address, uuid, player.player_name,  commands, reports, location_data, location_longitude, location_latitude, player.playlist_id, player.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times'
+			'player_id, status, licence_id, player.UID, uuid, player.player_name,  commands, reports, location_data, location_longitude, location_latitude, player.playlist_id, player.last_update as updated_player, properties, playlist_mode, playlist_name, multizone,playlists.last_update as last_update_playlist, categories, remote_administration, screen_times'
 		);
 		$this->queryBuilderMock->method('from')
 			->with('player');

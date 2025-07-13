@@ -35,6 +35,7 @@ class PlayerDataAssembler
 	/**
 	 * @var array<string,string>
 	 */
+	// @phpstan-ignore-next-line
 	private array $serverData;
 
 	private UserAgentHandler $userAgentHandler;
@@ -79,20 +80,26 @@ class PlayerDataAssembler
 	{
 		$result = $this->playerRepository->findPlayerById(1);
 
-		if (empty($result))
+		if ($result === [])
 		{
 			$saveData = $this->buildInsertArray();
 			// we need this to init playerEntity not with normal default values.
-			$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'is_intranet' => true, 'licence_id' => 1];
+			$result   = [
+				'player_id'  => 1,
+				'status' => PlayerStatus::RELEASED->value,
+				'api_endpoint' => 'http://localhost:8080/v2',
+				'is_intranet' => true,
+				'licence_id' => 1
+			];
 
 			$id = $this->playerRepository->insertPlayer(array_merge($saveData, $result));
 			if ($id === 0)
 				throw new ModuleException('player_index', 'Failed to insert local player');
 		}
-		else if ($result['uuid'] !== $this->userAgentHandler->getUuid())
+		elseif ($result['uuid'] !== $this->userAgentHandler->getUuid())
 			throw new ModuleException('player_index', 'Wrong Uuid for local player: '. $result['uuid'] .' != Agent'. $this->userAgentHandler->getUuid());
 
-		$this->playerRepository->updateLastAccess(1, $this->serverData['REMOTE_ADDR']);
+		$this->playerRepository->updateLastAccess(1);
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
@@ -125,7 +132,7 @@ class PlayerDataAssembler
 		$result = $this->playerRepository->findPlayerByUuid($this->userAgentHandler->getUuid());
 
 		if ($result !== [])
-			$this->playerRepository->updateLastAccess((int) $result['player_id'], $this->serverData['REMOTE_ADDR']);
+			$this->playerRepository->updateLastAccess((int) $result['player_id']);
 
 		return $this->playerEntityFactory->create($result, $this->userAgentHandler);
 	}
@@ -136,8 +143,6 @@ class PlayerDataAssembler
 	private function buildInsertArray(int $ownerId = 1): array
 	{
 		return [
-			'port'        => 8080,
-			'ip_address'  => $this->serverData['REMOTE_ADDR'],
 			'uuid'        => $this->userAgentHandler->getUuid(),
 			'player_name' => $this->userAgentHandler->getName(),
 			'firmware'    => $this->userAgentHandler->getFirmware(),

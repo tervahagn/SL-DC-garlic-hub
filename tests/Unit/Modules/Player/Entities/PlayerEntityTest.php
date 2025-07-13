@@ -88,6 +88,8 @@ class PlayerEntityTest extends TestCase
 
 		$this->playerEntity = new PlayerEntity($this->configMock, $this->userAgentHandlerMock, $data);
 
+		static::assertFalse($this->playerEntity->isIntranet());
+		static::assertEmpty($this->playerEntity->getApiEndpoint());
 		static::assertSame(10, $this->playerEntity->getPlayerId());
 		static::assertSame(20, $this->playerEntity->getPlaylistId());
 		static::assertSame(12345, $this->playerEntity->getUID());

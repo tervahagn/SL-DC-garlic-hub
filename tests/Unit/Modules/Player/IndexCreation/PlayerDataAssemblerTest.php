@@ -136,8 +136,6 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::IADEA_XMP1X0);
 		$insertData =  [
 			'player_id' => 1,
-			'port'		 => 8080,
-			'ip_address' => '192.168.10.9',
 			'uuid'        => 'u-u-i-d',
 			'player_name' => 'PlayerName',
 			'firmware'    => 'firmware',
@@ -157,8 +155,15 @@ class PlayerDataAssemblerTest extends TestCase
 			'remote_administration' => [],
 			'screen_times' => [],
 			'is_intranet' => true,
+			'api_endpoint' => 'http://localhost:8080/v2'
 		];
-		$result   = ['player_id'  => 1, 'status' => PlayerStatus::RELEASED->value, 'licence_id' => 1, 'is_intranet' => true];
+		$result   = [
+			'player_id'  => 1,
+			'status' => PlayerStatus::RELEASED->value,
+			'licence_id' => 1,
+			'is_intranet' => true,
+			'api_endpoint' => 'http://localhost:8080/v2'
+			];
 
 		$this->playerRepositoryMock->expects($this->once())->method('insertPlayer')
 			->with($insertData)
@@ -194,8 +199,7 @@ class PlayerDataAssemblerTest extends TestCase
 			->willReturn(PlayerModel::IADEA_XMP1X0);
 		$insertData =  [
 			'player_id' => 1,
-			'port'		 => 8080,
-			'ip_address' => '192.168.10.9',
+			'api_endpoint' => 'http://localhost:8080/v2',
 			'uuid'        => 'u-u-i-d',
 			'player_name' => 'PlayerName',
 			'firmware'    => 'firmware',
@@ -264,8 +268,6 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
-			'port' => '8080',
-			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -310,8 +312,6 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
-			'port' => '8080',
-			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -359,8 +359,6 @@ class PlayerDataAssemblerTest extends TestCase
 	{
 		$ownerId = 1;
 		$saveData = [
-			'port' => '8080',
-			'ip_address' => '192.168.10.9',
 			'uuid' => 'test-uuid',
 			'player_name' => 'Test Player',
 			'firmware' => '1.0.0',
@@ -393,9 +391,6 @@ class PlayerDataAssemblerTest extends TestCase
 		$this->playerEntityFactoryMock->expects($this->once())->method('create')
 			->with($saveData, $this->userAgentHandlerMock)
 			->willReturn($this->createMock(PlayerEntity::class));
-
-		$serverData = ['REMOTE_ADDR' => '192.168.10.9'];
-		$this->assembler->setServerData($serverData);
 
 		$this->assembler->insertNewPlayer($ownerId);
 	}
