@@ -227,19 +227,18 @@ CREATE INDEX idx_item_type_resource ON playlists_items (item_type, file_resource
 CREATE TABLE player (
     player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     playlist_id INTEGER NOT NULL DEFAULT 0,
-    UID INTEGER UNSIGNED NOT NULL DEFAULT 0,
+    UID INTEGER NOT NULL DEFAULT 0,
     last_access TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status INTEGER NOT NULL DEFAULT 1,
     refresh INTEGER NOT NULL DEFAULT 900,
     licence_id INTEGER NOT NULL DEFAULT 1,
-    model INTEGER UNSIGNED NOT NULL DEFAULT 0,
-    port INTEGER NOT NULL,
+    model INTEGER NOT NULL DEFAULT 0,
     is_intranet BOOLEAN DEFAULT FALSE,
-    ip_address BLOB NOT NULL,
     uuid BLOB(16) NOT NULL,
-    commands TEXT DEFAULT NULL DEFAULT '', -- set in mysql
-    reports TEXT DEFAULT NULL DEFAULT '', -- set in mysql
+    api_endpoint TEXT NOT NULL DEFAULT '',
+    commands TEXT NOT NULL DEFAULT '', -- set in mysql
+    reports TEXT NOT NULL DEFAULT '', -- set in mysql
     firmware TEXT NOT NULL DEFAULT '',
     player_name TEXT NOT NULL DEFAULT '',
     location_data TEXT DEFAULT NULL,
