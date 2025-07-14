@@ -254,7 +254,7 @@ CREATE INDEX uuid ON player (uuid);
 CREATE INDEX UID ON player (UID);
 
 CREATE TABLE IF NOT EXISTS player_tokens (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_id INTEGER NOT NULL,
     access_token TEXT NOT NULL,
     token_type VARCHAR(50) DEFAULT 'Bearer',

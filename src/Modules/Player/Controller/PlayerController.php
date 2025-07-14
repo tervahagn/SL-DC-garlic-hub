@@ -63,4 +63,40 @@ class PlayerController extends AbstractAsyncController
 		return $this->jsonResponse($response, ['success' => true, 'playlist_name' => $data['playlist_name']]);
 	}
 
+	public function pushPlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		/** @var array<string,string> $post */
+		$post = $request->getParsedBody();
+
+		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
+		{
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+		}
+
+		$playerId = (int)($post['player_id'] ?? 0);
+		if ($playerId === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player ID not valid.']);
+
+		$session = $request->getAttribute('session');
+		$this->playerService->setUID($session->get('user')['UID']);
+
+		$player = $this->playerService->fetchPlayer($playerId);
+		if ($player === [])
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player not found.']);
+
+		if ($player['is_intranet'] === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player is not reachable.']);
+
+		if ($player['playlist_id'] === 0)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player has no playlist assigned.']);
+
+		// player token abfragen
+
+
+		return $this->jsonResponse($response, ['success' => true, 'message' => 'Playlist pushed successfully to '.$player['player_name'].'.']);
+
+	}
+
+
+
 }
