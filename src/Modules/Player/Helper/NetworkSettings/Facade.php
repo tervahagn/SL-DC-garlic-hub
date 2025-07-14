@@ -25,6 +25,7 @@ use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Modules\Player\Services\PlayerService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -48,9 +49,6 @@ class Facade
 		$this->settingsParameters  = $settingsParameters;
 	}
 
-	/**
-	 * @param Translator $translator
-	 */
 	public function init(Translator $translator, Session $session): void
 	{
 		$this->translator = $translator;
@@ -77,9 +75,33 @@ class Facade
 	}
 
 	/**
+	 * @param array{player_id:int, player_name:string, is_intranet:int, api_endpoint:string}|array<empty,empty> $post
+	 * @return string[]
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function configureFormParameter(array $post): array
+	{
+		if (isset($post['player_id']) && $post['player_id'] > 0)
+		{
+			$this->loadPlayerForEdit((int) $post['player_id']);
+			if ($this->player === [])
+				return [$this->translator->translate('player_not_found', 'player')];
+
+			/** @var array{player_id:int, player_name:string, is_intranet:int, api_endpoint:string} $post */
+			return $this->settingsFormBuilder->handleUserInput($post);
+		}
+
+		return [$this->translator->translate('player_not_found', 'player')];
+	}
+
+	/**
 	 * @throws Exception
 	 */
-	public function storeNetworkData(int $playerId): int
+	public function storeNetworkData(): int
 	{
 		/** @var array{api_endpoint:string, is_intranet: int} $saveData */
 		$saveData  = array_combine(
@@ -87,7 +109,7 @@ class Facade
 			$this->settingsParameters->getInputValuesArray()
 		);
 
-		return $this->playerService->updatePlayer($playerId, $saveData);
+		return $this->playerService->updatePlayer((int) $this->player['player_id'], $saveData);
 	}
 
 	/**

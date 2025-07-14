@@ -24,6 +24,7 @@ namespace App\Modules\Player\Helper\NetworkSettings;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Utils\Forms\AbstractBaseFormElementsCreator;
+use App\Framework\Utils\Html\CheckboxField;
 use App\Framework\Utils\Html\FieldInterface;
 use App\Framework\Utils\Html\FieldType;
 use App\Framework\Utils\Html\FormBuilder;
@@ -64,16 +65,19 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function createIsIntranet(int $value): FieldInterface
+	public function createIsIntranet(bool $checked): FieldInterface
 	{
-		return $this->formBuilder->createField([
+		$field =  $this->formBuilder->createField([
 			'type' => FieldType::CHECKBOX,
 			'id' => Parameters::PARAMETER_IS_INTRANET,
 			'name' => Parameters::PARAMETER_IS_INTRANET,
-			'title' => $this->translator->translate(Parameters::PARAMETER_IS_INTRANET, 'player'),
-			'value' => $value,
+			'title' => $this->translator->translate(Parameters::PARAMETER_IS_INTRANET, 'player')
 		]);
 
+		/** @var CheckboxField $field */
+		$field->setChecked($checked);
+
+		return $field;
 	}
 
 	/**

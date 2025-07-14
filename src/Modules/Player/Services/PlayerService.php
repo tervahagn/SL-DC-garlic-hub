@@ -67,7 +67,7 @@ class PlayerService extends AbstractBaseService
 	 */
 	public function updatePlayer(int $playerId, array $saveData): int
 	{
-		return $this->playerRepository->update($playerId, $saveData);
+		return $this->playerRepository->update($playerId, $this->collectData($saveData));
 	}
 
 	/**
@@ -125,5 +125,19 @@ class PlayerService extends AbstractBaseService
 		return $player;
 	}
 
+	/**
+	 * @param array<string, string> $saveData
+	 * @return array<string, string>
+	 */
+	private function collectData(array $saveData): array
+	{
+		$ret = [];
+		if (isset($saveData['api_endpoint']))
+			$ret['api_endpoint'] = $saveData['api_endpoint'];
+		if (isset($saveData['is_intranet']))
+			$ret['is_intranet'] = $saveData['is_intranet'];
+
+		return $ret;
+	}
 
 }

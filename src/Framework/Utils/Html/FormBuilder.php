@@ -75,7 +75,7 @@ class FormBuilder
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function createField(array $attributes = []): FieldInterface|ClipboardTextField|UrlField
+	public function createField(array $attributes = []): FieldInterface|ClipboardTextField|UrlField|CheckboxField
 	{
 		return match ($attributes['type']) {
 			FieldType::TEXT           => $this->fieldsFactory->createTextField($attributes),

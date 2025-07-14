@@ -67,14 +67,14 @@ class Builder
 	{
 		$form       = [];
 		$form[Parameters::PARAMETER_IS_INTRANET] = $this->formElementsCreator->createIsIntranet(
-			$networkData[Parameters::PARAMETER_IS_INTRANET] ?? $networkData['is_intranet'] ?? 0,
+			(bool)$networkData[Parameters::PARAMETER_IS_INTRANET] ?? false,
 		);
 
 		$form[Parameters::PARAMETER_API_ENDPOINT] = $this->formElementsCreator->createApiEndpointField(
-			$networkData[Parameters::PARAMETER_API_ENDPOINT] ?? $networkData['api_endpoint'] ?? ''
+			$networkData[Parameters::PARAMETER_API_ENDPOINT] ?? ''
 		);
 
-		$form['player_id'] = $this->formElementsCreator->createHiddenPlayerIdField($networkData['player_id']);
+		$form['player_id'] = $this->formElementsCreator->createHiddenPlayerIdField((int) $networkData['player_id']);
 		$form[BaseEditParameters::PARAMETER_CSRF_TOKEN] = $this->formElementsCreator->createCSRFTokenField();
 
 		return $this->formElementsCreator->prepareForm($form);
@@ -82,8 +82,8 @@ class Builder
 
 
 	/**
-	 * @param array<string,mixed> $post
-	 * @return array<string,mixed>
+	 * @param array{player_id:int, player_name:string, is_intranet:int, api_endpoint:string} $post
+	 * @return string[]
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws InvalidArgumentException

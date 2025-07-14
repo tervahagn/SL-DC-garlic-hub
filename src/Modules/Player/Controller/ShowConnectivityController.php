@@ -24,8 +24,10 @@ namespace App\Modules\Player\Controller;
 
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Forms\FormTemplatePreparer;
 use App\Modules\Player\Helper\NetworkSettings\Facade;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -69,7 +71,42 @@ class ShowConnectivityController
 	}
 
 	/**
-	 * @param array{player_id:int, player_name:string, model:int, is_intranet:int, api_endpoint:string} $player
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function store(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		/** @var array{player_id:int, player_name:string, is_intranet:int, api_endpoint:string}|array<empty,empty>  $post */
+		$post = $request->getParsedBody();
+
+		$this->initFacade($request);
+
+		$errors = $this->facade->configureFormParameter($post);
+		foreach ($errors as $errorText)
+		{
+			$this->flash->addMessageNow('error', $errorText);
+		}
+
+		/** @var array{player_id?:int, player_name?:string, model?:int, is_intranet?:int, api_endpoint?:string} $post */
+		if (!empty($errors))
+			return $this->outputRenderedForm($response, $post);
+
+		$id = $this->facade->storeNetworkData();
+		if ($id > 0)
+		{
+			$this->flash->addMessage('success', 'Player connectivity data successfully stored.');
+			return $response->withHeader('Location', '/player')->withStatus(302);
+		}
+
+		return $this->outputRenderedForm($response, $post);
+	}
+
+	/**
+	 * @param array{player_id?:int, player_name?:string, model?:int, is_intranet?:int, api_endpoint?:string} $player
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException

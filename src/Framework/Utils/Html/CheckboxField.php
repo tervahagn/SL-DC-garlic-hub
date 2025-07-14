@@ -23,14 +23,18 @@ namespace App\Framework\Utils\Html;
 
 class CheckboxField extends AbstractInputField
 {
+	private bool $checked = false;
 
-	public function getValue(): string|int
+	public function setChecked(bool $checked): CheckboxField
 	{
-		$value = (int) parent::getValue();
-		if ($value > 0)
-			return 'checked';
-
-		return '';
+		$this->checked = $checked;
+		return $this;
 	}
+
+	public function isChecked(): bool
+	{
+		return $this->checked;
+	}
+
 
 }

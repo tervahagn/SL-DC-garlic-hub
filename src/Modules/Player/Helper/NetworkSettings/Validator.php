@@ -56,7 +56,7 @@ class Validator extends BaseValidator
 		$isIntranet  = $this->networkParameters->getValueOfParameter(Parameters::PARAMETER_IS_INTRANET);
 		$apiEndpoint = $this->networkParameters->getValueOfParameter(Parameters::PARAMETER_API_ENDPOINT);
 
-		if ($isIntranet === 1 && $apiEndpoint === '')
+		if ($isIntranet === true && $apiEndpoint === '')
 			$errors[] = $this->translator->translate('no_api_endpoint', 'player');
 
 		return $errors;
