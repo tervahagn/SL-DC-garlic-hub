@@ -62,6 +62,16 @@ class BodyPreparer
 		];
 	}
 
+	public function formatButton(string $value, string $title, string $valueId, string $cssClass = ''): array
+	{
+		return [
+			'CONTROL_BUTTON_VALUE'  => $value,
+			'CONTROL_BUTTON_TITLE' => $title,
+			'CONTROL_BUTTON_ID' => $valueId,
+			'CONTROL_BUTTON_CLASS' => $cssClass
+		];
+	}
+
 	/**
 	 * @return array{OWNER_UID: int, OWNER_NAME: string}
 	 */

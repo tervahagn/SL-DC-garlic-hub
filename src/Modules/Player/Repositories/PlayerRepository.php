@@ -103,7 +103,7 @@ class PlayerRepository extends FilterBase
 	{
 		return ['player_id',
 				$this->table.'.playlist_id',
-				'playlist_name',
+				'playlist_name', 'is_intranet',
 				'firmware', $this->table.'.status', 'model',
 				'commands',	'reports',
 				$this->table.'.last_access',

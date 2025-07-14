@@ -116,6 +116,15 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						else
 							$resultElements['is_text'] = '';
 						break;
+					case 'player_name':
+						$resultElements['is_button'] = $this->prepareService->getBodyPreparer()->formatButton(
+							'',
+							$this->translator->translate('player_settings_menu', 'player'),
+							'contextmenu-'.$player['player_id'],
+							'player-contextmenu bi bi-three-dots',
+						);
+						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText('<span>'.$player[$innerKey].'</span>');
+						break;
 					default:
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText($player[$innerKey]);
 						break;
@@ -136,6 +145,13 @@ class DatatablePreparer extends AbstractDatatablePreparer
 					$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
 						$translation, '#','playlist', $player['playlist_id'], 'x-circle remove-playlist'
 					);
+					if ($player['is_intranet'] > 0)
+					{
+						$translation = $this->translator->translate('push_playlist', 'player');
+						$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
+							$translation, '#','push', $player['playlist_id'], 'arrow-left-circle-fill push-playlist'
+						);
+					}
 
 					$translation = $this->translator->translate('goto_playlist', 'player');
 					$link = '/playlists/compose/' . $player['playlist_id'];

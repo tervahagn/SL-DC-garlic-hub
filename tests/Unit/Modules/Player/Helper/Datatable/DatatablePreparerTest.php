@@ -320,11 +320,12 @@ class DatatablePreparerTest extends TestCase
 			->willReturnMap([
 				['select_playlist', 'player', [], 'Select playlist'],
 				['remove_playlist', 'player', [], 'Remove playlist'],
+				['player_settings_menu', 'player', [], 'Player settings menu'],
 				['goto_playlist', 'player', [], 'Goto playlist']
 			]);
 
 		$this->bodyPreparerMock->expects($this->once())->method('formatText')
-			->with('Player name');
+			->with('<span>Player name</span>');
 
 		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
 			->willReturnMap([
@@ -332,6 +333,9 @@ class DatatablePreparerTest extends TestCase
 				['Remove playlist', '#', 'playlist', '123', 'x-circle remove-playlist', []],
 				['Goto playlist', '/playlists/compose/123', 'playlist', '123', 'music-note-list playlist-link', []]
 			]);
+
+		$this->bodyPreparerMock->expects($this->exactly(1))->method('formatButton')
+			->with('', 'Player settings menu', 'contextmenu-1', 'player-contextmenu bi bi-three-dots');
 
 		$result = $this->datatablePreparer->prepareTableBody(
 			[
@@ -594,16 +598,18 @@ class DatatablePreparerTest extends TestCase
 			->willReturnMap([
 				['select_playlist', 'player', [], 'Select playlist'],
 				['remove_playlist', 'player', [], 'Remove playlist'],
+				['push_playlist', 'player', [], 'Push playlist'],
 				['goto_playlist', 'player', [], 'Goto playlist']
 			]);
 
 		$this->bodyPreparerMock->expects($this->once())->method('formatText')
 			->with('Playlist name');
 
-		$this->bodyPreparerMock->expects($this->exactly(3))->method('formatAction')
+		$this->bodyPreparerMock->expects($this->exactly(4))->method('formatAction')
 			->willReturnMap([
 				['Select playlist', '#', 'edit', 123, 'pencil select-playlist', []],
 				['Remove playlist', '#', 'playlist', 123, 'x-circle remove-playlist', []],
+				['Push playlist', '#', 'push', 123, 'arrow-left-circle-fill push-playlist', []],
 				['Goto playlist', '/playlists/compose/123', 'playlist', 123, 'music-note-list playlist-link', []]
 			]);
 
@@ -612,6 +618,7 @@ class DatatablePreparerTest extends TestCase
 				[
 					'player_id' => 1,
 					'UID' => 13,
+					'is_intranet' => 1,
 					'status' => PlayerStatus::RELEASED->value,
 					'player_name' => 'Player name',
 					'model' => PlayerModel::GARLIC->value,
