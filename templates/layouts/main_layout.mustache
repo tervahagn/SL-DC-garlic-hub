@@ -20,11 +20,9 @@
 	<template id="flashMessageTemplate">
 		<div class="message-bar message-bar--{{MESSAGE_TYPE}}">
 			<span>{{MESSAGE_TEXT}}</span>
-			{{#has_close_button}}
 				<button class="close-button" onclick="this.parentElement.style.display='none';">
 					<i>&times;</i>
 				</button>
-			{{/has_close_button}}
 		</div>
 	</template>
 

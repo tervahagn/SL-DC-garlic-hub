@@ -41,14 +41,9 @@ export class BaseService
 			options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
 		}
 
-		const result  = await this.#fetchClient.fetchData(url, options).catch(error => {
+		return await this.#fetchClient.fetchData(url, options).catch(error => {
 			throw new Error(error.message);
 		});
-
-		if (!result || !result.success)
-			throw new Error(result.error_message);
-
-		return result;
 	}
 
 	#detectCsrfTokenInMetaTag()

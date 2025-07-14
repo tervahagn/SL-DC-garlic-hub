@@ -42,7 +42,7 @@ export class PushHandler
 				if (result.success === true)
 					this.#messageHandler.showSuccess(result.message);
 				else
-					this.#messageHandler.showSuccess(result.error_message);
+					this.#messageHandler.showError(result.error_message);
 			});
 
 		}
