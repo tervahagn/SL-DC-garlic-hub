@@ -252,3 +252,15 @@ CREATE TABLE player (
 
 CREATE INDEX uuid ON player (uuid);
 CREATE INDEX UID ON player (UID);
+
+CREATE TABLE IF NOT EXISTS player_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_id INTEGER NOT NULL,
+    access_token TEXT NOT NULL,
+    token_type VARCHAR(50) DEFAULT 'Bearer',
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (player_id) REFERENCES player(player_id) ON DELETE CASCADE,
+    UNIQUE(player_id)
+);
