@@ -133,7 +133,7 @@ class Builder
 		}
 
 		if (isset($user[Parameters::PARAMETER_USER_ID]))
-			$form['UID'] = $this->formElementsCreator->createHiddenUIDField($user[Parameters::PARAMETER_USER_ID]);
+			$form['UID'] = $this->formElementsCreator->createHiddenUIDField((int) $user[Parameters::PARAMETER_USER_ID]);
 
 		$form['csrf_token'] = $this->formElementsCreator->createCSRFTokenField();
 

@@ -234,17 +234,28 @@ class UsersAdminService extends AbstractBaseService
 		if ($result === [])
 			return true;
 
+		// if there is similar user we need to check ig the UID is identically
+		// it could be possible that user is try to edit the username and or email
+		// of an existing user.
+		// In this case it should be possible
+
 		/** @var array{UID: int, username:string, email:string} $existing */
 		foreach ($result as $existing)
 		{
 			if ($existing['username'] === $username && (int) $existing['UID'] !== $UID)
+			{
 				$this->addErrorMessage('username_exists');
+				return false;
+			}
 
 			if ($existing['email'] === $email && (int) $existing['UID'] !== $UID)
+			{
 				$this->addErrorMessage('email_exists');
+				return false;
+			}
 		}
 
-		return false;
+		return true;
 	}
 
 }

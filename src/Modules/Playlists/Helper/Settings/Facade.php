@@ -81,7 +81,7 @@ class Facade
 	{
 		if (isset($post['playlist_id']) && $post['playlist_id'] > 0)
 		{
-			$this->oldPlaylist = $this->playlistsService->loadPlaylistForEdit($post['playlist_id']);
+			$this->oldPlaylist = $this->playlistsService->loadPlaylistForEdit((int) $post['playlist_id']);
 			if (empty($this->oldPlaylist))
 				throw new ModuleException('No playlist found for editing');
 
