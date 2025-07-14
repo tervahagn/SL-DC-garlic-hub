@@ -10,6 +10,7 @@
 .results-listing .status {width:10%;}
 .results-listing .model {width:10%;}
 .results-listing .playlist_id {width:30%;}
+.results-listing .results-body .playlist_id {text-align: right;}
 .results-listing .actions {width:5rem;}
 
 .player-active{background: url("/images/bullets/green.png") no-repeat 0 center;padding-left:20px;}
