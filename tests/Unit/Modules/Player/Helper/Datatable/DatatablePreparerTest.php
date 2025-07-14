@@ -338,7 +338,7 @@ class DatatablePreparerTest extends TestCase
 			]);
 
 		$this->bodyPreparerMock->expects($this->exactly(1))->method('formatButton')
-			->with('', 'Player settings menu', 'contextmenu-1', 'player-contextmenu bi bi-three-dots');
+			->with('', 'Player settings menu', '1', 'player-contextmenu bi bi-three-dots');
 
 		$result = $this->datatablePreparer->prepareTableBody(
 			[

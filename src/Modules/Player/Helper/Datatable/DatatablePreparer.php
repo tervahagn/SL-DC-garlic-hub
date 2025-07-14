@@ -120,7 +120,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 						$resultElements['is_button'] = $this->prepareService->getBodyPreparer()->formatButton(
 							'',
 							$this->translator->translate('player_settings_menu', 'player'),
-							'contextmenu-'.$player['player_id'],
+							(string) $player['player_id'],
 							'player-contextmenu bi bi-three-dots',
 						);
 						$resultElements['is_text'] = $this->prepareService->getBodyPreparer()->formatText('<span>'.$player[$innerKey].'</span>');
