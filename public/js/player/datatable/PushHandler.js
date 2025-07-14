@@ -16,29 +16,29 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+'use strict'; 
 
-import { BaseService } from "../core/Base/BaseService.js";
-import { PlayerApiConfig } from "./PlayerApiConfig.js";
-
-export class PlayerService extends BaseService
+export class PushHandler
 {
-    async replacePlaylist(playerId, playlistId)
-    {
-        const url = PlayerApiConfig.PLAYLIST_URI;
-        const data = {
-            player_id: playerId,
-            playlist_id: playlistId
-        };
-        return await this._sendRequest(url, "PATCH", data);
-    }
+	#playerService = null;
 
-	async pushPlaylist(playerId)
+	constructor(PlayerService)
 	{
-		const url = PlayerApiConfig.PUSH_URI;
-		const data = {
-			player_id: playerId,
-		};
-		return await this._sendRequest(url, "PATCH", data);
+		this.#playerService = PlayerService;
 	}
 
+	init(pushPlaylists)
+	{
+		for (let i = 0; i < pushPlaylists.length; i++)
+		{
+			pushPlaylists[i].addEventListener('click', async (event) =>
+			{
+				const currentId = event.target.dataset.actionId;
+
+				const result = await this.#playerService.pushPlaylist(currentId);
+
+			});
+
+		}
+	}
 }

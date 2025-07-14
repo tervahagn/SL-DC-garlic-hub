@@ -149,7 +149,7 @@ class DatatablePreparer extends AbstractDatatablePreparer
 					{
 						$translation = $this->translator->translate('push_playlist', 'player');
 						$list['has_action'][] = $this->prepareService->getBodyPreparer()->formatAction(
-							$translation, '#','push', $player['playlist_id'], 'arrow-left-circle-fill push-playlist'
+							$translation, '#','push', $player['player_id'], 'arrow-left-circle-fill push-playlists'
 						);
 					}
 

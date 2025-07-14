@@ -17,7 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export class PlayerActions
+export class PlaylistAssignActions
 {
     #selectPlaylist = document.getElementsByClassName("select-playlist");
     #removePlaylist = document.getElementsByClassName("remove-playlist");
@@ -91,6 +91,8 @@ export class PlayerActions
            this.#addRemoveEventListener(this.#removePlaylist[i]);
 	   }
     }
+
+
 
     #addRemoveEventListener(element)
     {

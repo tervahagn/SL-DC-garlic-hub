@@ -27,8 +27,6 @@ export class PlayerSettingsContextMenu
 
 	init(openActions)
 	{
-		const elementsArray = Array.from(openActions); // Konvertiert die HTMLCollection in ein Array
-
 		for (let i = 0; i < openActions.length; i++)
 		{
 			openActions[i].addEventListener('click', (event) => {

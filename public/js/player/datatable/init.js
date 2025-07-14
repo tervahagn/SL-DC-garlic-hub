@@ -17,22 +17,26 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {PlayerActions} from "./PlayerActions.js";
-import {PlayerService} from "../PlayerService.js";
+import {PlaylistAssignActions} from "./PlaylistAssignActions.js";
+import {PlayerService}         from "../PlayerService.js";
 import {FetchClient} from "../../core/FetchClient.js";
 import {AutocompleteFactory} from "../../core/AutocompleteFactory.js";
-import {CreateContextMenu} from "../../playlists/overview/CreateContextMenu.js";
 import {PlayerSettingsContextMenu} from "./PlayerSettingsContextMenu.js";
+import {PushHandler} from "./PushHandler.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
 	const contextMenu = new PlayerSettingsContextMenu(
 		document.getElementById("playerSettingsContextMenuTemplate")
 	);
-	contextMenu.init(document.getElementsByClassName("player-contextmenu"),);
+	contextMenu.init(document.getElementsByClassName("player-contextmenu"));
 
 	const playerService = new PlayerService(new FetchClient())
     const autocompleteFactory = new AutocompleteFactory();
-    const playerActions =  new PlayerActions(autocompleteFactory, playerService);
-    playerActions.init();
+    const playlistAssignActions =  new PlaylistAssignActions(autocompleteFactory, playerService);
+	playlistAssignActions.init();
+
+	const pushHandler = new PushHandler(playerService);
+	pushHandler.init(document.getElementsByClassName("push-playlists"));
+
 });

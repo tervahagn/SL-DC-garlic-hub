@@ -158,6 +158,7 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->patch('/playlists/widget/save', resolve([WidgetsController::class, 'save'], $container));
 
 	$group->patch('/player/playlist', resolve([PlayerController::class, 'replacePlaylist'], $container));
+	$group->patch('/player/push', resolve([PlayerController::class, 'pushPlaylist'], $container));
 
 	$group->get('/users/find/{username}', resolve([UsersController::class, 'findByName'], $container));
 
