@@ -49,7 +49,7 @@ use Slim\Psr7\Stream;
 class FinalRenderMiddleware implements MiddlewareInterface
 {
 	private Translator $translator;
-	// @phpstan-ignore-next-line // wil be needed in future versions
+	// @phpstan-ignore-next-line // will be needed in future versions
 	private Config $config;
 	private Locales $locales;
 	private Session $session;
@@ -144,7 +144,7 @@ class FinalRenderMiddleware implements MiddlewareInterface
 		/** @var Messages $flash */
 		$flash    = $request->getAttribute('flash');
 		$messages = [];
-		// errors have a close button, successes close after 5s (set in css)
+		// errors have a close button; successes close after 5 s (set in CSS)
 
 		foreach (['error' => true, 'success' => false] as $type => $hasCloseButton)
 		{
@@ -233,6 +233,10 @@ class FinalRenderMiddleware implements MiddlewareInterface
 
 	/**
 	 * @return list<array<string,string>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function createLanguageSelect(): array
 	{
