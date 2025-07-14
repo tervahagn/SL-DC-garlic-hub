@@ -21,9 +21,11 @@
 export class PushHandler
 {
 	#playerService = null;
+	#messageHandler = null;
 
-	constructor(PlayerService)
+	constructor(messageHandler, PlayerService)
 	{
+		this.#messageHandler = messageHandler;
 		this.#playerService = PlayerService;
 	}
 
@@ -36,7 +38,11 @@ export class PushHandler
 				const currentId = event.target.dataset.actionId;
 
 				const result = await this.#playerService.pushPlaylist(currentId);
-
+				this.#messageHandler.clearAllMessages();
+				if (result.success === true)
+					this.#messageHandler.showSuccess(result.message);
+				else
+					this.#messageHandler.showSuccess(result.error_message);
 			});
 
 		}
