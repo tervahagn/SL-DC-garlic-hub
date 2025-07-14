@@ -104,7 +104,12 @@ class PlayerService extends AbstractBaseService
 	}
 
 	/**
+	 * @param int $playerId
 	 * @return array<string,mixed>
+	 * @throws Exception
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function fetchPlayer(int $playerId): array
 	{
@@ -126,8 +131,8 @@ class PlayerService extends AbstractBaseService
 	}
 
 	/**
-	 * @param array<string, string> $saveData
-	 * @return array<string, string>
+	 * @param array<string, int|string> $saveData
+	 * @return array<string, int|string>
 	 */
 	private function collectData(array $saveData): array
 	{

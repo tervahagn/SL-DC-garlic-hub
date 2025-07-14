@@ -187,14 +187,14 @@ class DatatablePreparer extends AbstractDatatablePreparer
 	 */
 	public function formatPlayerContextMenu(): array
 	{
-		$list = $this->translator->translateArrayForOptions('settings_selects', 'player');
+		$list = $this->translator->translateArrayForOptions('player_settings_selects', 'player');
 		$data = [];
-		//$edition = $this->aclValidator->getConfig()->getEdition();
+
 		foreach ($list as $key => $value)
 		{
 			$data[] = [
-				'PLAYER_SETTINGS' => $key,
-				'LANG_PLAYER_SETTINGS' => $value
+				'PLAYER_SETTING' => $key,
+				'LANG_PLAYER_SETTING' => $value
 			];
 		}
 		return $data;

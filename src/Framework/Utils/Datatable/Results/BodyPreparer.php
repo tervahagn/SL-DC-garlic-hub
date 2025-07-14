@@ -62,6 +62,9 @@ class BodyPreparer
 		];
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function formatButton(string $value, string $title, string $valueId, string $cssClass = ''): array
 	{
 		return [

@@ -27,7 +27,6 @@ use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Modules\Player\Services\AclValidator;
-use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -67,7 +66,7 @@ class Builder
 	{
 		$form       = [];
 		$form[Parameters::PARAMETER_IS_INTRANET] = $this->formElementsCreator->createIsIntranet(
-			(bool)$networkData[Parameters::PARAMETER_IS_INTRANET] ?? false,
+			(bool)($networkData[Parameters::PARAMETER_IS_INTRANET] ?? false),
 		);
 
 		$form[Parameters::PARAMETER_API_ENDPOINT] = $this->formElementsCreator->createApiEndpointField(

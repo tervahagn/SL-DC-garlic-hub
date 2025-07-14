@@ -96,6 +96,10 @@ class ControllerFacade implements DatatableFacadeInterface
 
 	/**
 	 * @return list<array<string,mixed>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function preparePlayerSettingsContextMenu(): array
 	{
@@ -132,6 +136,7 @@ class ControllerFacade implements DatatableFacadeInterface
 			'page'      		  => $this->datatablePreparer->preparePage()
 		];
 	}
+
 
 	/**
 	 *

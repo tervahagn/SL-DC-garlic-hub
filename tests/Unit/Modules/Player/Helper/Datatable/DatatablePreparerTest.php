@@ -143,6 +143,7 @@ class DatatablePreparerTest extends TestCase
 					'last_access' => '2025-01-01 00:00:00',
 					'status' => PlayerStatus::RELEASED->value,
 					'refresh' => '900',
+					'is_intranet' => 0,
 					'model' => PlayerModel::GARLIC->value,
 					'playlist_id' => '123',
 				]
@@ -214,6 +215,7 @@ class DatatablePreparerTest extends TestCase
 					'last_access' => '2025-01-01 00:00:00',
 					'status' => PlayerStatus::RELEASED->value,
 					'refresh' => '900',
+					'is_intranet' => 0,
 					'model' => PlayerModel::GARLIC->value,
 					'playlist_id' => 123,
 				]
@@ -285,6 +287,7 @@ class DatatablePreparerTest extends TestCase
 					'last_access' => '2025-01-01 00:00:00',
 					'status' => PlayerStatus::RELEASED->value,
 					'refresh' => '900',
+					'is_intranet' => 0,
 					'model' => PlayerModel::GARLIC->value,
 					'playlist_id' => '123',
 				]
@@ -344,6 +347,7 @@ class DatatablePreparerTest extends TestCase
 					'UID' => 13,
 					'status' => PlayerStatus::RELEASED->value,
 					'player_name' => 'Player name',
+					'is_intranet' => 0,
 					'model' => PlayerModel::GARLIC->value,
 					'playlist_id' => '123',
 				]
@@ -693,7 +697,7 @@ class DatatablePreparerTest extends TestCase
 //		$this->aclValidatorMock->method('getConfig')->willReturn($configMock);
 //		$configMock->method('getEdition')->willReturn(Config::PLATFORM_EDITION_EDGE);
 		$this->translatorMock->method('translateArrayForOptions')
-			->with('settings_selects', 'player')
+			->with('player_settings_selects', 'player')
 			->willReturn(['edit' => 'Edit', 'delete' => 'Delete']);
 
 		$result = $this->datatablePreparer->formatPlayerContextMenu();
@@ -701,8 +705,8 @@ class DatatablePreparerTest extends TestCase
 		static::assertCount(2, $result);
 		static::assertEquals(
 			[
-				['PLAYER_SETTINGS' => 'edit', 'LANG_PLAYER_SETTINGS' => 'Edit'],
-				['PLAYER_SETTINGS' => 'delete', 'LANG_PLAYER_SETTINGS' => 'Delete']
+				['PLAYER_SETTING' => 'edit', 'LANG_PLAYER_SETTING' => 'Edit'],
+				['PLAYER_SETTING' => 'delete', 'LANG_PLAYER_SETTING' => 'Delete']
 			],
 			$result
 		);

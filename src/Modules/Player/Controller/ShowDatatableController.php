@@ -25,7 +25,9 @@ use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
-use App\Framework\Utils\Datatable\DatatableFacadeInterface;
+use App\Modules\Player\Helper\Datatable\ControllerFacade;
+use DateMalformedStringException;
+use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,20 +35,25 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 readonly class ShowDatatableController
 {
-	private DatatableFacadeInterface $facade;
+	private ControllerFacade $facade;
 	private DatatableTemplatePreparer $templateFormatter;
-	public function __construct(DatatableFacadeInterface $facade, DatatableTemplatePreparer $templateFormatter)
+	public function __construct(ControllerFacade $facade, DatatableTemplatePreparer $templateFormatter)
 	{
 		$this->facade            = $facade;
 		$this->templateFormatter = $templateFormatter;
 	}
 
 	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface
 	 * @throws CoreException
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
 	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
+	 * @throws DateMalformedStringException
+	 * @throws Exception
 	 */
 	public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
@@ -57,7 +64,7 @@ readonly class ShowDatatableController
 		$dataGrid = $this->facade->prepareUITemplate();
 
 		$templateData = $this->templateFormatter->preparerUITemplate($dataGrid);
-	//	$templateData['this_layout']['data']['create_player_settings_contextmenu'] = $this->facade->preparePlayerSettingsContextMenu();
+		$templateData['this_layout']['data']['create_player_settings_contextmenu'] = $this->facade->preparePlayerSettingsContextMenu();
 		$response->getBody()->write(serialize($templateData));
 
 		return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
