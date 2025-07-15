@@ -22,23 +22,38 @@ declare(strict_types=1);
 
 namespace App\Framework;
 
+use App\Framework\Services\AbstractBaseService;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class SimpleApiExecutor
+class SimpleApiExecutor extends AbstractBaseService
 {
-	public function __construct(
-		protected readonly Client $httpClient,
-		protected readonly LoggerInterface $logger
-	) {}
+	private string $bodyContents = '';
+
+	public function __construct(protected readonly Client $httpClient, LoggerInterface $logger)
+	{
+		parent::__construct($logger);
+	}
+
+	public function getBodyContents(): string
+	{
+		return $this->bodyContents;
+	}
+
+	/**
+	 * @return array<string,mixed>
+	 */
+	public function getBodyContentsArray(): array
+	{
+		return json_decode($this->bodyContents, true) ?? [];
+	}
 
 
 	/**
 	 * @param array<string,int|string> $options
-	 * @return array{success:bool, error?:string, data?:string}
 	 */
-	public function executeApiRequest(string $method, string $endpoint, string $token, array $options = []): array
+	public function executeApiRequest(string $method, string $endpoint, string $token, array $options = []): bool
 	{
 		try
 		{
@@ -48,29 +63,26 @@ class SimpleApiExecutor
 			if ($response->getStatusCode() !== 200)
 			{
 				$error = "API request failed: {$response->getStatusCode()}";
-				$this->logger->error($error, [
-					'endpoint' => $endpoint,
-					'body' => $response->getBody()->getContents()
-				]);
-				return ['success' => false, 'error' => $error];
+				$this->handleHttpError($error, $endpoint, $response->getBody()->getContents());
+				return false;
 			}
 
-			$data = json_decode($response->getBody()->getContents(), true) ?? [];
-			return ['success' => true, 'data' => $data];
+			$this->bodyContents = json_decode($response->getBody()->getContents(), true) ?? [];
+			return true;
 
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error("API request error: {$e->getMessage()}");
-			return ['success' => false, 'error' => $e->getMessage()];
+			$this->addErrorMessage($e->getMessage());
+			return false;
 		}
 	}
 
 	/**
 	 * @param array<string,int|string> $options
-	 * @return array{success:bool, error?:string, data?:string}
 	 */
-	public function executeAuth(string $endpoint,  array $options = []): array
+	public function executeAuth(string $endpoint,  array $options = []): bool
 	{
 		try
 		{
@@ -78,23 +90,30 @@ class SimpleApiExecutor
 
 			if ($response->getStatusCode() !== 200)
 			{
-				$error = "API request failed: {$response->getStatusCode()}";
-				$this->logger->error($error, [
-					'endpoint' => $endpoint,
-					'body' => $response->getBody()->getContents()
-				]);
-				return ['success' => false, 'error' => $error];
+				$error = "Auth request failed: {$response->getStatusCode()}";
+				$this->handleHttpError($error, $endpoint, $response->getBody()->getContents());
+				return false;
 			}
 
-			$data = json_decode($response->getBody()->getContents(), true) ?? [];
-			return ['success' => true, 'data' => $data];
+			$this->bodyContents = json_decode($response->getBody()->getContents(), true) ?? [];
+			return true;
 
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error("API request error: {$e->getMessage()}");
-			return ['success' => false, 'error' => $e->getMessage()];
+			$this->addErrorMessage($e->getMessage());
+			return false;
 		}
+	}
+
+	private function handleHttpError(string $error, string $endpoint, string $body): void
+	{
+		$this->addErrorMessage($error);
+		$this->logger->error($error, [
+			'endpoint' => $endpoint,
+			'body' => $body
+		]);
 	}
 
 }
