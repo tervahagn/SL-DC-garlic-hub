@@ -42,7 +42,7 @@ class SimpleApiExecutor extends AbstractBaseService
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 */
 	public function getBodyContentsArray(): array
 	{
