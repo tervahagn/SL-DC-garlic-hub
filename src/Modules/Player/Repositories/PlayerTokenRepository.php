@@ -25,6 +25,7 @@ use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class PlayerTokenRepository extends SqlBase
 {
@@ -34,6 +35,55 @@ class PlayerTokenRepository extends SqlBase
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'player_tokens', 'token_id');
+	}
+
+	/**
+	 * @return array<string,mixed>|array<empty,empty>
+	 * @throws Exception
+	 */
+	public function findByPlayerId(int $playerId): array
+	{
+		return $this->getFirstDataSet($this->findAllBy(['player_id' => $playerId]));
+	}
+
+	/**
+	 * @return list<array<string,mixed>>
+	 * @throws Exception
+	 */
+	public function findValidTokens(): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('*')
+			->from($this->table)
+			->where('expires_at > :now')
+			->setParameter('now', date('Y-m-d H:i:s'));
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
+	}
+
+	/**
+	 * @return list<array<string,mixed>>
+	 * @throws Exception
+	 */
+	public function findExpiredTokens(): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('*')
+			->from($this->table)
+			->where('expires_at <= :now')
+			->setParameter('now', date('Y-m-d H:i:s'));
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
+	}
+
+	/**
+	 * @param array<string,mixed> $data
+	 * @throws Exception
+	 */
+	public function updateForPlayer(int $playerId, array $data): int
+	{
+		$data['updated_at'] = date('Y-m-d H:i:s');
+		return $this->updateWithWhere($data, ['player_id' => $playerId]);
 	}
 
 }
