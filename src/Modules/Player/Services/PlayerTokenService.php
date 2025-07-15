@@ -75,7 +75,7 @@ class PlayerTokenService extends AbstractBaseService
     }
 
 	/**
-	 * @return array{access_token:string, token_type:string, expired_at:string}|array<empty,empty>
+	 * @return array{access_token:string, UID:int, token_type:string, expired_at:string}|array<empty,empty>
 	 */
     public function getToken(int $playerId): array
     {
