@@ -47,7 +47,7 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 	/**
 	 * @return array<string,mixed>
 	 */
-	private function replaceRootLayout(string $width, string $height): array
+	private function replaceRootLayout(string|int $width, string|int $height): array
 	{
 		return [
 			'ROOT_LAYOUT_WIDTH' => $width,
