@@ -14,7 +14,6 @@ else
     echo "Create crypto keys..."
     openssl genpkey -algorithm RSA -out var/keys/private.key -pkeyopt rsa_keygen_bits:2048
     openssl rsa -pubout -in var/keys/private.key -out var/keys/public.key
-    head -c 32 /dev/urandom | base64 > var/keys/encryption.key
     echo "Keys successfully created!"
 fi
 
