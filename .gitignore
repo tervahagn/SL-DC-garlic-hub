@@ -8,3 +8,4 @@
 /public/clover
 /.phpunit.cache/
 /public/var/
+.DS_Store
