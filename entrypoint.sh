@@ -23,7 +23,7 @@ fi
 
 if ! grep -q '^CONTAINER=' /var/www/.env; then
     echo "Setting CONTAINER environment variable..."
-    echo "CONTAINER=docker" >> /var/www/.env
+    echo "APP_CONTAINER=docker" >> /var/www/.env
 fi
 
 if [[ -f var/keys/private.key && -f var/keys/public.key && -f var/keys/encryption.key ]]; then

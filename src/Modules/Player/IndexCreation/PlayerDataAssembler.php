@@ -84,10 +84,15 @@ class PlayerDataAssembler
 		{
 			$saveData = $this->buildInsertArray();
 			// we need this to init playerEntity not with normal default values.
+			if ($this->config->getEnv('APP_CONTAINER') === Config::APP_CONTAINER_DOCKER)
+				$apiEndpoint = 'http://host.docker.internal:8080/v2';
+			else
+				$apiEndpoint = 'http://localhost:8080/v2';
+
 			$result   = [
 				'player_id'  => 1,
 				'status' => PlayerStatus::RELEASED->value,
-				'api_endpoint' => 'http://localhost:8080/v2',
+				'api_endpoint' => $apiEndpoint,
 				'is_intranet' => true,
 				'licence_id' => 1
 			];
