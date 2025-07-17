@@ -23,18 +23,25 @@ namespace App\Modules\Player\Controller;
 
 use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Modules\Player\Services\PlayerRestAPIService;
 use App\Modules\Player\Services\PlayerService;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PlayerController extends AbstractAsyncController
 {
 	private readonly PlayerService $playerService;
+	private readonly PlayerRestAPIService $playerRestAPIService;
 	private readonly CsrfToken $csrfToken;
 
-	public function __construct(PlayerService $indexService, CsrfToken $csrfToken)
+	public function __construct(PlayerService $indexService, PlayerRestAPIService $playerRestAPIService, CsrfToken $csrfToken)
 	{
 		$this->playerService  = $indexService;
+		$this->playerRestAPIService = $playerRestAPIService;
 		$this->csrfToken = $csrfToken;
 	}
 
@@ -63,6 +70,12 @@ class PlayerController extends AbstractAsyncController
 		return $this->jsonResponse($response, ['success' => true, 'playlist_name' => $data['playlist_name']]);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	public function pushPlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,string> $post */
@@ -90,8 +103,19 @@ class PlayerController extends AbstractAsyncController
 		if ($player['playlist_id'] === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player has no playlist assigned.']);
 
-		// player token abfragen
+		$session = $request->getAttribute('session');
+		$this->playerService->setUID($session->get('user')['UID']);
+		$player = $this->playerService->fetchPlayer($playerId);
+		if ($player === [])
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Player is not accesible.']);
 
+		$hasToken = $this->playerRestAPIService->authenticate($player['api_endpoint'], 'admin', '', $playerId);
+		if (!$hasToken)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => ($this->playerRestAPIService->getErrorMessages()[0] ?? 'unknown player token error')]);
+
+		$succeed = $this->playerRestAPIService->switchToDefaultContentUrl($player['api_endpoint'], $playerId);
+		if (!$succeed)
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => ($this->playerRestAPIService->getErrorMessages()[0] ?? 'unknown player token error')]);
 
 		return $this->jsonResponse($response, ['success' => true, 'message' => 'Playlist pushed successfully to '.$player['player_name'].'.']);
 

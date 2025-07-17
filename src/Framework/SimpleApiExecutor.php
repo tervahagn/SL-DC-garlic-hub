@@ -24,6 +24,7 @@ namespace App\Framework;
 
 use App\Framework\Services\AbstractBaseService;
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -49,7 +50,6 @@ class SimpleApiExecutor extends AbstractBaseService
 		return json_decode($this->bodyContents, true) ?? [];
 	}
 
-
 	/**
 	 * @param array<string,int|string> $options
 	 */
@@ -58,7 +58,7 @@ class SimpleApiExecutor extends AbstractBaseService
 		try
 		{
 			$endpoint .= '?access_token='. $token;
-			$response = $this->httpClient->request($method, $endpoint, $options);
+			$response = $this->httpClient->request($method, $endpoint, [RequestOptions::JSON => $options]);
 
 			if ($response->getStatusCode() !== 200)
 			{
@@ -67,7 +67,7 @@ class SimpleApiExecutor extends AbstractBaseService
 				return false;
 			}
 
-			$this->bodyContents = json_decode($response->getBody()->getContents(), true) ?? [];
+			$this->bodyContents = $response->getBody()->getContents();
 			return true;
 
 		}
@@ -86,7 +86,7 @@ class SimpleApiExecutor extends AbstractBaseService
 	{
 		try
 		{
-			$response = $this->httpClient->request('GET', $endpoint, $options);
+			$response = $this->httpClient->post($endpoint, [RequestOptions::JSON => $options]);
 
 			if ($response->getStatusCode() !== 200)
 			{
@@ -95,7 +95,7 @@ class SimpleApiExecutor extends AbstractBaseService
 				return false;
 			}
 
-			$this->bodyContents = json_decode($response->getBody()->getContents(), true) ?? [];
+			$this->bodyContents = $response->getBody()->getContents();
 			return true;
 
 		}

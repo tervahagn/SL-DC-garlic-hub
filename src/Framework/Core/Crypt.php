@@ -3,10 +3,23 @@ declare(strict_types=1);
 
 namespace App\Framework\Core;
 
+use Defuse\Crypto\Key;
 use Exception;
 
 class Crypt
 {
+	private readonly Key $encryptionKey;
+
+	public function __construct(Key $encryptionKey)
+	{
+		$this->encryptionKey = $encryptionKey;
+	}
+
+	public function getEncryptionKey(): Key
+	{
+		return $this->encryptionKey;
+	}
+
 	/**
 	 * @throws Exception
 	 */

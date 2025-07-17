@@ -40,6 +40,7 @@ use App\Framework\Database\Migration\Repository;
 use App\Framework\Database\Migration\Runner;
 use App\Framework\Database\NestedSets\Calculator;
 use App\Framework\Database\NestedSets\Service;
+use App\Framework\Exceptions\CoreException;
 use App\Framework\Middleware\FinalRenderMiddleware;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\TemplateEngine\MustacheAdapter;
@@ -60,6 +61,7 @@ use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Auth\UserSession;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersService;
+use Defuse\Crypto\Key;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -117,7 +119,22 @@ $dependencies[Session::class] = DI\factory(function ()
 	return $session;
 });
 $dependencies[Messages::class] = DI\factory(function (){return new Messages();});
-$dependencies[Crypt::class] = DI\factory(function (){return new Crypt();});
+$dependencies[Crypt::class] = DI\factory(function (ContainerInterface $container)
+{
+	/** @var Config $config */
+	$config = $container->get(Config::class);
+	$keyString = file_get_contents($config->getPaths('varDir').'/keys/encryption.key');
+	if (!$keyString)
+		throw new CoreException('Encryption key file not found');
+	$cleanKeyString = trim($keyString);
+	try {
+		$key = Key::loadFromAsciiSafeString($cleanKeyString);
+	} catch (\Exception $e) {
+		throw new CoreException('Failed to load encryption key: ' . $e->getMessage());
+	}
+
+	return new Crypt($key);
+});
 $dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new Cookie($container->get(Crypt::class));

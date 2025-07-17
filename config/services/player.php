@@ -21,10 +21,12 @@ declare(strict_types=1);
 
 use App\Framework\Core\Acl\AclHelper;
 use App\Framework\Core\Config\Config;
+use App\Framework\Core\Crypt;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\SimpleApiExecutor;
 use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
@@ -51,13 +53,17 @@ use App\Modules\Player\IndexCreation\PlayerDetector;
 use App\Modules\Player\IndexCreation\UserAgentHandler;
 use App\Modules\Player\Repositories\PlayerIndexRepository;
 use App\Modules\Player\Repositories\PlayerRepository;
+use App\Modules\Player\Repositories\PlayerTokenRepository;
 use App\Modules\Player\Services\AclValidator;
 use App\Modules\Player\Helper\Datatable\DatatablePreparer;
 use App\Modules\Player\Services\PlayerDatatableService;
 use App\Modules\Player\Services\PlayerIndexService;
+use App\Modules\Player\Services\PlayerRestAPIService;
 use App\Modules\Player\Services\PlayerService;
+use App\Modules\Player\Services\PlayerTokenService;
 use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use App\Modules\Playlists\Services\PlaylistsService;
+use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 
 $dependencies = [];
@@ -81,10 +87,6 @@ $dependencies[PlayerIndexController::class] = DI\factory(function (ContainerInte
 		new IndexResponseHandler(new FileUtils()),
 		$container->get(Sanitizer::class)
 	);
-});
-$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
-{
-	return new PlayerController($container->get(PlayerService::class), $container->get(CsrfToken::class));
 });
 $dependencies[IndexCreator::class] = DI\factory(function (ContainerInterface $container)
 {
@@ -180,6 +182,25 @@ $dependencies[PlayerDashboard::class] = DI\factory(function (ContainerInterface 
 		$container->get(PlayerService::class),
 		$container->get(Translator::class)
 	);
+});
+$dependencies[PlayerRestAPIService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerRestAPIService(
+		new SimpleApiExecutor(new Client(), $container->get('ModuleLogger')),
+		new PlayerTokenService(
+			new PlayerTokenRepository($container->get('SqlConnection')),
+			$container->get(Crypt::class),
+			$container->get('ModuleLogger')
+		),
+		$container->get('ModuleLogger'),
+	);
+});
+$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new PlayerController(
+		$container->get(PlayerService::class),
+		$container->get(PlayerRestAPIService::class),
+		$container->get(CsrfToken::class));
 });
 
 

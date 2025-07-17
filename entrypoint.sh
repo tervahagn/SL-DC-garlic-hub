@@ -31,6 +31,8 @@ else
 fi
 
 php bin/console.php db:migrate
+php -r "require 'vendor/autoload.php'; use Defuse\Crypto\Key; file_put_contents('var/keys/encryption.key', Key::createNewRandomKey()->saveToAsciiSafeString());"
+
 
 # Installation when db missing
 #if [ ! -f /var/www/var/garlic-hub.sqlite ]; then

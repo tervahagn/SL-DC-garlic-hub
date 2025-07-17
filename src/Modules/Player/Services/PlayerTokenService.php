@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Player\Services;
 
+use App\Framework\Core\Crypt;
 use App\Framework\Services\AbstractBaseService;
 use App\Modules\Player\Repositories\PlayerTokenRepository;
 use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Key;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
@@ -33,12 +33,12 @@ use Throwable;
 class PlayerTokenService extends AbstractBaseService
 {
     private readonly PlayerTokenRepository $playerTokenRepository;
-    private readonly Key $encryptionKey;
+    private readonly Crypt $crypt;
 
-    public function __construct(PlayerTokenRepository $playerTokenRepository, Key $encryptionKey, LoggerInterface $logger)
+    public function __construct(PlayerTokenRepository $playerTokenRepository, Crypt $crypt, LoggerInterface $logger)
     {
         $this->playerTokenRepository = $playerTokenRepository;
-        $this->encryptionKey = $encryptionKey;
+        $this->crypt = $crypt;
         parent::__construct($logger);
     }
     
@@ -46,7 +46,7 @@ class PlayerTokenService extends AbstractBaseService
     {
         try
 		{
-            $encryptedToken = Crypto::encrypt($accessToken, $this->encryptionKey);
+            $encryptedToken = Crypto::encrypt($accessToken, $this->crypt->getEncryptionKey());
             
             $data = [
                 'player_id' => $playerId,
@@ -75,6 +75,8 @@ class PlayerTokenService extends AbstractBaseService
     }
 
 	/**
+	 * Look for token and delete it if it is expired
+	 *
 	 * @return array{access_token:string, UID:int, token_type:string, expired_at:string}|array<empty,empty>
 	 */
     public function getToken(int $playerId): array
@@ -86,15 +88,18 @@ class PlayerTokenService extends AbstractBaseService
             if ($tokenData === [])
                 return [];
 
-            // is expired?
-            $expiresAt = new DateTime($tokenData['expires_at']);
-            if ($expiresAt <= new DateTime())
+            // is expired? xcept some IAdea player do not deliver an expiry date.
+			if ($tokenData['expires_at'] !== '')
 			{
-                $this->playerTokenRepository->delete($playerId);
-                return [];
-            }
-            
-            $decryptedToken = Crypto::decrypt($tokenData['access_token'], $this->encryptionKey);
+				$expiresAt = new DateTime($tokenData['expires_at']);
+				if ($expiresAt <= new DateTime())
+				{
+					$this->playerTokenRepository->delete($playerId);
+					return [];
+				}
+			}
+
+            $decryptedToken = Crypto::decrypt($tokenData['access_token'], $this->crypt->getEncryptionKey());
             
             return [
                 'access_token' => $decryptedToken,

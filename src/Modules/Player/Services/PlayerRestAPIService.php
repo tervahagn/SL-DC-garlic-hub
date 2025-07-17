@@ -50,6 +50,9 @@ class PlayerRestAPIService extends AbstractBaseService
 
     public function authenticate(string $baseUrl, string $username, string $password, int $playerId): bool
     {
+		if ($this->playerTokenService->hasValidToken($playerId))
+			return true;
+
 		$endpoint = $baseUrl . '/oauth2/token';
 		$body = [
 			'grant_type' => 'password',
@@ -115,7 +118,7 @@ class PlayerRestAPIService extends AbstractBaseService
 			return false;
 
 		$body = ['uri'=> $uri];
-		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/playback/exec', $token, $body);
+		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/app/exec', $token, $body);
 		if (!$isExecuted)
 		{
 			$this->errorMessages = $this->apiExecutor->getErrorMessages();
@@ -141,7 +144,7 @@ class PlayerRestAPIService extends AbstractBaseService
 			return false;
 
 		$body = ['uri'=> $uri];
-		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/playback/start', $token, $body);
+		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/app/start', $token, $body);
 		if (!$isExecuted)
 		{
 			$this->errorMessages = $this->apiExecutor->getErrorMessages();
@@ -168,7 +171,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$body = ['mode'=> 'start'];
 
-		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/playback/switch', $token, $body);
+		$isExecuted = $this->apiExecutor->executeApiRequest('POST', $baseUrl . '/app/switch', $token, $body);
 		if (!$isExecuted)
 		{
 			$this->errorMessages = $this->apiExecutor->getErrorMessages();
