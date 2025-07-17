@@ -126,14 +126,10 @@ $dependencies[Crypt::class] = DI\factory(function (ContainerInterface $container
 	$keyString = file_get_contents($config->getPaths('varDir').'/keys/encryption.key');
 	if (!$keyString)
 		throw new CoreException('Encryption key file not found');
-	$cleanKeyString = trim($keyString);
-	try {
-		$key = Key::loadFromAsciiSafeString($cleanKeyString);
-	} catch (\Exception $e) {
-		throw new CoreException('Failed to load encryption key: ' . $e->getMessage());
-	}
 
-	return new Crypt($key);
+	$cleanKeyString = trim($keyString);
+
+	return new Crypt($cleanKeyString);
 });
 $dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
 {

@@ -22,18 +22,30 @@ declare(strict_types=1);
 namespace Tests\Unit\Framework\Core;
 
 use App\Framework\Core\Crypt;
+use Defuse\Crypto\Key;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class CryptTest extends TestCase
 {
+
+	private String $testkey = 'def00000c3cfd8b3bbd0317e9283e4f77afdf78f506c38c5f500a15817ea0ac6588daf39685118a3fec8997e4fe6dc2cd23dc5ba434885a4bd63966ed53ec7a510984595';
 	private Crypt $crypt;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->crypt = new Crypt();
+		$this->crypt = new Crypt($this->testkey);
+	}
+
+	#[Group('units')]
+	public function testGetEncryptionKey(): void
+	{
+		 $expected = Key::loadFromAsciiSafeString($this->testkey);
+		 $actual = $this->crypt->getEncryptionKey();
+
+		 static::assertEquals($expected, $actual);
 	}
 
 	/**

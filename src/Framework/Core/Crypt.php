@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Framework\Core;
 
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Exception;
 
@@ -10,9 +12,13 @@ class Crypt
 {
 	private readonly Key $encryptionKey;
 
-	public function __construct(Key $encryptionKey)
+	/**
+	 * @throws BadFormatException
+	 * @throws EnvironmentIsBrokenException
+	 */
+	public function __construct(String $encryptionKey)
 	{
-		$this->encryptionKey = $encryptionKey;
+		$this->encryptionKey = Key::loadFromAsciiSafeString($encryptionKey);
 	}
 
 	public function getEncryptionKey(): Key
