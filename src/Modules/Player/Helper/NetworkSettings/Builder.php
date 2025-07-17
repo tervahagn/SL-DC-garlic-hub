@@ -21,37 +21,23 @@ declare(strict_types=1);
 
 namespace App\Modules\Player\Helper\NetworkSettings;
 
-use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
-use App\Modules\Player\Services\AclValidator;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class Builder
+readonly class Builder
 {
-	private readonly FormElementsCreator $formElementsCreator;
-	private readonly AclValidator $aclValidator;
-	private readonly Validator $validator;
-	private readonly Parameters $parameters;
-	private int $UID;
-	public function __construct(AclValidator $aclValidator, Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
+	private FormElementsCreator $formElementsCreator;
+	private Validator $validator;
+	private Parameters $parameters;
+	public function __construct(Parameters $parameters, Validator $validator, FormElementsCreator $formElementsCreator)
 	{
-		$this->aclValidator         = $aclValidator;
 		$this->parameters           = $parameters;
 		$this->validator            = $validator;
 		$this->formElementsCreator  = $formElementsCreator;
-	}
-
-	public function init(Session $session): static
-	{
-		/** @var array{UID: int} $user */
-		$user = $session->get('user');
-		$this->UID      = $user['UID'];
-
-		return $this;
 	}
 
 	/**

@@ -75,7 +75,7 @@ class PlayerTokenService extends AbstractBaseService
     }
 
 	/**
-	 * Look for token and delete it if it is expired
+	 * Look for a token and delete it if it is expired
 	 *
 	 * @return array{access_token:string, UID:int, token_type:string, expired_at:string}|array<empty,empty>
 	 */
@@ -88,7 +88,7 @@ class PlayerTokenService extends AbstractBaseService
             if ($tokenData === [])
                 return [];
 
-            // is expired? xcept some IAdea player do not deliver an expiry date.
+            // is expired? except some IAdea player does not deliver an expiry date.
 			if ($tokenData['expires_at'] !== '')
 			{
 				$expiresAt = new DateTime($tokenData['expires_at']);
@@ -128,7 +128,7 @@ class PlayerTokenService extends AbstractBaseService
     }
 
 	/**
-	 * @param array{access_toke:string, expires_at:string, token_type:string} $newTokenData
+	 * @param array{access_token:string, expires_at:string, token_type:string} $newTokenData
 	 */
     public function refreshToken(int $playerId, array $newTokenData): bool
     {
@@ -136,7 +136,7 @@ class PlayerTokenService extends AbstractBaseService
             $playerId,
             $newTokenData['access_token'],
             $newTokenData['expires_at'],
-            $newTokenData['token_type'] ?? 'Bearer'
+            $newTokenData['token_type']
         );
     }
 }
