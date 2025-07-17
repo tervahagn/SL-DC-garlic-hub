@@ -33,18 +33,22 @@ export class PushHandler
 	{
 		for (let i = 0; i < pushPlaylists.length; i++)
 		{
-			pushPlaylists[i].addEventListener('click', async (event) =>
-			{
-				const currentId = event.target.dataset.actionId;
-
-				const result = await this.#playerService.pushPlaylist(currentId);
-				this.#messageHandler.clearAllMessages();
-				if (result.success === true)
-					this.#messageHandler.showSuccess(result.message);
-				else
-					this.#messageHandler.showError(result.error_message);
-			});
-
+			this.addPushPlaylistListener(pushPlaylists[i]);
 		}
+	}
+
+	addPushPlaylistListener(pushPlaylist)
+	{
+		pushPlaylist.addEventListener('click', async (event) =>
+		{
+			const currentId = event.target.dataset.actionId;
+
+			const result = await this.#playerService.pushPlaylist(currentId);
+			this.#messageHandler.clearAllMessages();
+			if (result.success === true)
+				this.#messageHandler.showSuccess(result.message);
+			else
+				this.#messageHandler.showError(result.error_message);
+		});
 	}
 }

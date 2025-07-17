@@ -118,7 +118,6 @@ class PlayerController extends AbstractAsyncController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => ($this->playerRestAPIService->getErrorMessages()[0] ?? 'unknown player token error')]);
 
 		return $this->jsonResponse($response, ['success' => true, 'message' => 'Playlist pushed successfully to '.$player['player_name'].'.']);
-
 	}
 
 

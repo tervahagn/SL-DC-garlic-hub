@@ -20,15 +20,18 @@
 export class PlaylistAssignActions
 {
     #selectPlaylist = document.getElementsByClassName("select-playlist");
-    #removePlaylist = document.getElementsByClassName("remove-playlist");
     #autocompleteFactory = null;
+	#pushHandler = null;
+	#removeHandler = null;
     #playerNameAutocomplete = null;
 
     #playerService = null;
-    constructor(autoCompleteFactory, PlayerService)
+    constructor(autoCompleteFactory, pushHandler, removeHandler, PlayerService)
     {
         this.#autocompleteFactory = autoCompleteFactory;
-        this.#playerService = PlayerService;
+		this.#pushHandler         = pushHandler;
+		this.#removeHandler       = removeHandler;
+        this.#playerService       = PlayerService;
     }
 
    init()
@@ -37,7 +40,7 @@ export class PlaylistAssignActions
 		{
             const element = this.#selectPlaylist[i];
             element.addEventListener("click", async (event) => {
-                let parentWithDataId = this.#findDataIdInResultsBody(event.target)
+                let parentWithDataId = this.#removeHandler.findDataIdInResultsBody(event.target)
                 let playerId = 0;
                 if (parentWithDataId !== null)
                     playerId = parentWithDataId.dataset.id;
@@ -56,7 +59,7 @@ export class PlaylistAssignActions
 						this.#playerNameAutocomplete.restore(result.playlist_name);
 						let removePlaylist = parentWithDataId.querySelector(".remove-playlist");
 						const actions = parentWithDataId.querySelector(".actions ul");
-						if (removePlaylist === null)
+						if (removePlaylist === null) // new playlist
 						{
 							const li1 = document.createElement("li");
 							removePlaylist = document.createElement("a");
@@ -64,69 +67,42 @@ export class PlaylistAssignActions
 							removePlaylist.dataset.action = "playlist";
 							removePlaylist.className = "bi bi-x-circle remove-playlist";
 							li1.appendChild(removePlaylist);
-							this.#addRemoveEventListener(removePlaylist);
 							actions.appendChild(li1);
+							this.#removeHandler.addRemoveEventListener(removePlaylist);
 						}
 						removePlaylist.dataset.actionId = playlist_id;
+
+						let pushPlaylist = parentWithDataId.querySelector(".push-playlist");
+						if (pushPlaylist === null)
+						{
+							const li2 = document.createElement("li");
+							pushPlaylist = document.createElement("a");
+							pushPlaylist.href = "#";
+							pushPlaylist.dataset.action   = "push";
+							pushPlaylist.className = "bi bi-arrow-left-circle-fill push-playlist";
+							li2.appendChild(pushPlaylist);
+							actions.appendChild(li2);
+							this.#pushHandler.addPushPlaylistListener(pushPlaylist)
+						}
+						pushPlaylist.dataset.actionId = playerId;
 
 						let linkPlaylist = parentWithDataId.querySelector(".playlist-link");
 						if (linkPlaylist === null)
 						{
-							const li2 = document.createElement("li");
+							const li3 = document.createElement("li");
 							linkPlaylist = document.createElement("a");
 							linkPlaylist.dataset.action   = "playlist";
 							linkPlaylist.className = "bi bi-music-note-list playlist-link";
-							li2.appendChild(linkPlaylist);
-							actions.appendChild(li2);
- 						}
+							li3.appendChild(linkPlaylist);
+							actions.appendChild(li3);
+						}
 						linkPlaylist.dataset.actionId = playlist_id;
 						linkPlaylist.href = "/playlists/compose/" + playlist_id;
 					}
 				});
             });
         }
-
-       for (let i = 0; i < this.#removePlaylist.length; i++)
-	   {
-           this.#addRemoveEventListener(this.#removePlaylist[i]);
-	   }
     }
 
-
-
-    #addRemoveEventListener(element)
-    {
-        element.addEventListener("click", async (event) => {
-            let parentWithDataId = this.#findDataIdInResultsBody(event.target)
-            let playerId = 0;
-            if (parentWithDataId !== null)
-                playerId = parentWithDataId.dataset.id;
-            else
-                return;
-            const result = await this.#playerService.replacePlaylist(playerId, 0);
-            if (!result.success)
-                return;
-
-            parentWithDataId.querySelector(".playlist_id").innerText = result.playlist_name;
-            parentWithDataId.querySelector(".playlist-link").parentElement.remove();
-            event.target.parentElement.remove();
-        });
-    }
-
-    #findDataIdInResultsBody(element)
-    {
-        let currentElement = element;
-
-        while (currentElement)
-        {
-            if (currentElement.classList && currentElement.classList.contains('results-body'))
-            {
-                return currentElement;
-            }
-            currentElement = currentElement.parentElement;
-        }
-
-        return null;
-    }
 
 }

@@ -22,8 +22,9 @@ import {PlayerService}         from "../PlayerService.js";
 import {FetchClient} from "../../core/FetchClient.js";
 import {AutocompleteFactory} from "../../core/AutocompleteFactory.js";
 import {PlayerSettingsContextMenu} from "./PlayerSettingsContextMenu.js";
-import {PushHandler}         from "./PushHandler.js";
+import {PushHandler}               from "./ActionHandler/PushHandler.js";
 import {FlashMessageHandler} from "../../core/FlashMessageHandler.js";
+import {RemoveHandler}       from "./ActionHandler/RemoveHandler.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -34,10 +35,13 @@ document.addEventListener("DOMContentLoaded", function()
 
 	const playerService = new PlayerService(new FetchClient())
     const autocompleteFactory = new AutocompleteFactory();
-    const playlistAssignActions =  new PlaylistAssignActions(autocompleteFactory, playerService);
+	const flashMessageHandler = new FlashMessageHandler();
+	const pushHandler = new PushHandler(flashMessageHandler, playerService);
+	pushHandler.init(document.getElementsByClassName("push-playlist"));
+	const removeHandler = new RemoveHandler(playerService);
+	removeHandler.init(document.getElementsByClassName("remove-playlist"));
+    const playlistAssignActions =  new PlaylistAssignActions(autocompleteFactory, pushHandler, removeHandler, playerService);
 	playlistAssignActions.init();
 
-	const pushHandler = new PushHandler(new FlashMessageHandler("body"), playerService);
-	pushHandler.init(document.getElementsByClassName("push-playlists"));
 
 });
