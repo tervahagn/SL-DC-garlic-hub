@@ -25,6 +25,7 @@ namespace Tests\Unit\Modules\Player\Controller;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Services\PlayerRestAPIService;
 use App\Modules\Player\Services\PlayerService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -42,6 +43,7 @@ class PlayerControllerTest extends TestCase
 	private Session&MockObject $sessionMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
 	private CsrfToken&MockObject $csrfTokenMock;
+	private PlayerRestAPIService $playerRestAPIServiceMock;
 	private PlayerController $playerController;
 
 	/**
@@ -50,14 +52,15 @@ class PlayerControllerTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->playerServiceMock = $this->createMock(PlayerService::class);
+		$this->playerServiceMock        = $this->createMock(PlayerService::class);
+		$this->playerRestAPIServiceMock = $this->createMock(PlayerRestAPIService::class);
+		$this->csrfTokenMock            = $this->createMock(CsrfToken::class);
 		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
 		$this->sessionMock  = $this->createMock(Session::class);
-		$this->csrfTokenMock    = $this->createMock(CsrfToken::class);
 		$this->streamInterfaceMock = $this->createMock(StreamInterface::class);
 
-		$this->playerController = new PlayerController($this->playerServiceMock, $this->csrfTokenMock);
+		$this->playerController = new PlayerController($this->playerServiceMock, $this->playerRestAPIServiceMock, $this->csrfTokenMock);
 	}
 
 	#[Group('units')]
