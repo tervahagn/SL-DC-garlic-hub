@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: garlic-hub
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8090:80"
     volumes:
