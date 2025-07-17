@@ -21,6 +21,11 @@ if ! grep -q '^APP_SECRET=' /var/www/.env; then
     echo "APP_SECRET=$(openssl rand -hex 16)" >> /var/www/.env
 fi
 
+if ! grep -q '^CONTAINER=' /var/www/.env; then
+    echo "Setting CONTAINER environment variable..."
+    echo "CONTAINER=docker" >> /var/www/.env
+fi
+
 if [[ -f var/keys/private.key && -f var/keys/public.key && -f var/keys/encryption.key ]]; then
     echo "Keys already exist. Skipping generation."
 else
