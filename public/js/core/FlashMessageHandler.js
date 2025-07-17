@@ -65,11 +65,7 @@ export class FlashMessageHandler
 
 	#insertMessage(messageElement)
 	{
-		const header = this.container.querySelector('header');
-		if (header)
-			header.insertAdjacentElement('afterend', messageElement);
-		 else
-			this.container.insertAdjacentElement('afterbegin', messageElement);
+		this.container.insertAdjacentElement('afterbegin', messageElement);
 	}
 
 	clearAllMessages()
