@@ -9,6 +9,11 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 
 > **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback.
 
+> **Feature Freeze! Currently Working on:**
+>- writing unit tests
+>- fixing errors
+>- Refactoring ugly classes
+
 ![Garlic-Hub Mediapool Screenshot](docs/media/showcase.gif)
 
 ## Quick Start
@@ -39,7 +44,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 | **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                               |
 | **Media Management**     | ✅      | Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key) |
 | **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                       |
-| **Push support**         | 🚧      | Push playlist to a local player                                                                                                       |
+| **Push support**         | ✅      | Push playlist to a local player                                                                                                       |
 | **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                           |
 | **Local Player Support** | ✅      | Integration with one local media player                                                                                               |
 | **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English complete, German complete)                                                   |
@@ -58,8 +63,8 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 ### Stack
 - PHP 8.4 with strict types 
 - SLIM 4 Framework
-- Phpstan Level 8 with zero errors
-- PHPUnit 12 targeting >95% test coverage)
+- Phpstan Level 8 targeting 0 errors
+- PHPUnit 12 targeting >95% test coverage
 - Vanilla JavaScript and external libraries
 - Composer libraries
 
