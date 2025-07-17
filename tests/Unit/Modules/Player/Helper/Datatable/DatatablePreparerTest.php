@@ -613,7 +613,7 @@ class DatatablePreparerTest extends TestCase
 			->willReturnMap([
 				['Select playlist', '#', 'edit', 123, 'pencil select-playlist', []],
 				['Remove playlist', '#', 'playlist', 123, 'x-circle remove-playlist', []],
-				['Push playlist', '#', 'push', 1, 'arrow-left-circle-fill push-playlists', []],
+				['Push playlist', '#', 'push', 1, 'arrow-left-circle-fill push-playlist', []],
 				['Goto playlist', '/playlists/compose/123', 'playlist', 123, 'music-note-list playlist-link', []]
 			]);
 
