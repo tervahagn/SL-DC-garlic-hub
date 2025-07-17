@@ -207,7 +207,7 @@ class PlaylistMetricsCalculator
 				$duration = $remaining_duration;
 		}
 
-		return $duration;
+		return (int) round($duration);
 	}
 
 	/**
