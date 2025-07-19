@@ -34,7 +34,7 @@ class PlayerTokenRepository extends SqlBase
 
 	public function __construct(Connection $connection)
 	{
-		parent::__construct($connection,'player_tokens', 'token_id');
+		parent::__construct($connection,'player_tokens', 'id');
 	}
 
 	/**

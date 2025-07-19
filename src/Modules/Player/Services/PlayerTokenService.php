@@ -60,7 +60,7 @@ class PlayerTokenService extends AbstractBaseService
             $existingToken = $this->playerTokenRepository->findByPlayerId($playerId);
             
             if ($existingToken !== [])
-                $this->playerTokenRepository->update($existingToken['token_id'], $data);
+                $this->playerTokenRepository->update($existingToken['id'], $data);
              else
                 $this->playerTokenRepository->insert($data);
 
