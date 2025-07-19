@@ -162,7 +162,7 @@ class ItemsController extends AbstractAsyncController
 	 */
 	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
 	{
-		$itemId = $args['item_id'] ?? 0;
+		$itemId = (int) ($args['item_id'] ?? 0);
 		if ($itemId === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
 
