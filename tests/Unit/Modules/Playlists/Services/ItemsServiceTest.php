@@ -291,7 +291,8 @@ class ItemsServiceTest extends TestCase
 		$itemId = 456;
 		$itemData = [
 			'item_id' => $itemId,
-			'playlist_id' => 2,
+			'playlist_id' => 4,
+			'file_resource' => '7',
 			'item_type' => 'playlist'
 		];
 
@@ -303,10 +304,19 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')
 			->with(1);
 
-		$playlist = ['duration' => 150];
-		$this->playlistsServiceMock->expects($this->exactly(2))->method('loadPureById')
-			->with($itemData['playlist_id'])
+		$playlist = ['playlist_id' => 7];
+		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
+			->with($itemData['playlist_id']);
+
+		$this->playlistsServiceMock->expects($this->once())->method('fetchById')
+			->with($itemData['file_resource'])
 			->willReturn($playlist);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->with($playlist)
+			->willReturnSelf();
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getDuration')
+			->willReturn(150);
 
 		$result = $this->itemsService->fetchItemById($itemId);
 

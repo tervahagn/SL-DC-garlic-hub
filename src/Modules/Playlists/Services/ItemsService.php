@@ -122,8 +122,8 @@ class ItemsService extends AbstractBaseService
 					$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
 				break;
 			case ItemType::PLAYLIST->value:
-				$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // check rights
-				$item['default_duration'] = $playlist['duration'];
+				$playlist = $this->playlistsService->fetchById((int) $item['file_resource']); // check rights
+				$item['default_duration'] = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getDuration();
 				break;
 			default:
 				$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
