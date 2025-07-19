@@ -22,8 +22,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Player\Controller;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Player\Controller\PlayerPlaylistController;
-use App\Modules\Player\Helper\PlayerPlaylist\InputHandler;
+use App\Modules\Player\Helper\PlayerPlaylist\Orchestrator;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,7 +40,7 @@ class PlayerPlaylistControllerTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private ServerRequestInterface&MockObject $requestMock;
 	private StreamInterface&MockObject $streamInterfaceMock;
-	private InputHandler&MockObject $inputHandlerMock;
+	private Orchestrator&MockObject $orchestratorMock;
 	private PlayerPlaylistController $controller;
 
 	/**
@@ -46,11 +49,11 @@ class PlayerPlaylistControllerTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->inputHandlerMock = $this->createMock(InputHandler::class);
-		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
-		$this->responseMock = $this->createMock(ResponseInterface::class);
+		$this->orchestratorMock = $this->createMock(Orchestrator::class);
+		$this->requestMock      = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock     = $this->createMock(ResponseInterface::class);
 
-		$this->controller = new PlayerPlaylistController($this->inputHandlerMock);
+		$this->controller = new PlayerPlaylistController($this->orchestratorMock);
 	}
 
 	#[Group('units')]
@@ -63,11 +66,11 @@ class PlayerPlaylistControllerTest extends TestCase
 
 		$expectedResponse = $this->createMock(ResponseInterface::class);
 
-		$this->inputHandlerMock->expects($this->once())->method('setInput')
+		$this->orchestratorMock->expects($this->once())->method('setInput')
 			->with($inputData)
 			->willReturnSelf();
 
-		$this->inputHandlerMock->expects($this->once())->method('validateForReplacePlaylist')
+		$this->orchestratorMock->expects($this->once())->method('validateForReplacePlaylist')
 			->with($this->responseMock)
 			->willReturn($expectedResponse);
 
@@ -83,17 +86,17 @@ class PlayerPlaylistControllerTest extends TestCase
 		$this->requestMock->expects($this->once())->method('getParsedBody')
 			->willReturn($inputData);
 
-		$this->inputHandlerMock->expects($this->once())->method('setInput')
+		$this->orchestratorMock->expects($this->once())->method('setInput')
 			->with($inputData)
 			->willReturnSelf();
 
-		$this->inputHandlerMock->expects($this->once())->method('validateForReplacePlaylist')
+		$this->orchestratorMock->expects($this->once())->method('validateForReplacePlaylist')
 			->with($this->responseMock)
 			->willReturn(null);
 
 		$expectedResponse = $this->createMock(ResponseInterface::class);
 
-		$this->inputHandlerMock->expects($this->once())->method('replaceMasterPlaylist')
+		$this->orchestratorMock->expects($this->once())->method('replaceMasterPlaylist')
 			->with($this->responseMock)
 			->willReturn($expectedResponse);
 
@@ -111,11 +114,11 @@ class PlayerPlaylistControllerTest extends TestCase
 
 		$expectedResponse = $this->createMock(ResponseInterface::class);
 
-		$this->inputHandlerMock->expects($this->once())->method('setInput')
+		$this->orchestratorMock->expects($this->once())->method('setInput')
 			->with($inputData)
 			->willReturnSelf();
 
-		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+		$this->orchestratorMock->expects($this->once())->method('validateStandardInput')
 			->with($this->responseMock)
 			->willReturn($expectedResponse);
 
@@ -124,6 +127,13 @@ class PlayerPlaylistControllerTest extends TestCase
 		static::assertSame($expectedResponse, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws Exception
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPushPlaylistReturnsResponseWhenCheckPlayerReturnsResponse(): void
 	{
@@ -132,17 +142,17 @@ class PlayerPlaylistControllerTest extends TestCase
 		$this->requestMock->expects($this->once())->method('getParsedBody')
 			->willReturn($inputData);
 
-		$this->inputHandlerMock->expects($this->once())->method('setInput')
+		$this->orchestratorMock->expects($this->once())->method('setInput')
 			->with($inputData)
 			->willReturnSelf();
 
-		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+		$this->orchestratorMock->expects($this->once())->method('validateStandardInput')
 			->with($this->responseMock)
 			->willReturn(null);
 
 		$expectedResponse = $this->createMock(ResponseInterface::class);
 
-		$this->inputHandlerMock->expects($this->once())->method('checkPlayer')
+		$this->orchestratorMock->expects($this->once())->method('checkPlayer')
 			->with($this->responseMock)
 			->willReturn($expectedResponse);
 
@@ -159,21 +169,21 @@ class PlayerPlaylistControllerTest extends TestCase
 		$this->requestMock->expects($this->once())->method('getParsedBody')
 			->willReturn($inputData);
 
-		$this->inputHandlerMock->expects($this->once())->method('setInput')
+		$this->orchestratorMock->expects($this->once())->method('setInput')
 			->with($inputData)
 			->willReturnSelf();
 
-		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+		$this->orchestratorMock->expects($this->once())->method('validateStandardInput')
 			->with($this->responseMock)
 			->willReturn(null);
 
-		$this->inputHandlerMock->expects($this->once())->method('checkPlayer')
+		$this->orchestratorMock->expects($this->once())->method('checkPlayer')
 			->with($this->responseMock)
 			->willReturn(null);
 
 		$expectedResponse = $this->createMock(ResponseInterface::class);
 
-		$this->inputHandlerMock->expects($this->once())->method('pushPlaylist')
+		$this->orchestratorMock->expects($this->once())->method('pushPlaylist')
 			->with($this->responseMock)
 			->willReturn($expectedResponse);
 

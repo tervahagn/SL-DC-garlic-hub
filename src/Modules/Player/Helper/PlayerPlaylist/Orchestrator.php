@@ -35,7 +35,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class InputHandler
+class Orchestrator
 {
 	/** @var array<string,string>  */
 	private array $input;

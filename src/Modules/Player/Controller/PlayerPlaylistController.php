@@ -25,7 +25,7 @@ use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
-use App\Modules\Player\Helper\PlayerPlaylist\InputHandler;
+use App\Modules\Player\Helper\PlayerPlaylist\Orchestrator;
 use App\Modules\Player\Services\PlayerRestAPIService;
 use App\Modules\Player\Services\PlayerService;
 use Doctrine\DBAL\Exception;
@@ -35,7 +35,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class PlayerPlaylistController extends AbstractAsyncController
 {
-	public function __construct(private readonly InputHandler $inputHandler)
+	public function __construct(private readonly Orchestrator $orchestrator)
 	{
 	}
 
@@ -44,11 +44,11 @@ class PlayerPlaylistController extends AbstractAsyncController
 		/** @var array<string,string> $input */
 		$input = $request->getParsedBody();
 
-		$answer = $this->inputHandler->setInput($input)->validateForReplacePlaylist($response);
+		$answer = $this->orchestrator->setInput($input)->validateForReplacePlaylist($response);
 		if ($answer !== null)
 			return $answer;
 
-		return $this->inputHandler->replaceMasterPlaylist($response);
+		return $this->orchestrator->replaceMasterPlaylist($response);
 	}
 
 	/**
@@ -62,15 +62,15 @@ class PlayerPlaylistController extends AbstractAsyncController
 		/** @var array<string,string> $input */
 		$input = $request->getParsedBody();
 
-		$answer = $this->inputHandler->setInput($input)->validateStandardInput($response);
+		$answer = $this->orchestrator->setInput($input)->validateStandardInput($response);
 		if ($answer !== null)
 			return $answer;
 
-		$answer = $this->inputHandler->checkPlayer($response);
+		$answer = $this->orchestrator->checkPlayer($response);
 		if ($answer !== null)
 			return $answer;
 
-		return $this->inputHandler->pushPlaylist($response);
+		return $this->orchestrator->pushPlaylist($response);
 	}
 
 
