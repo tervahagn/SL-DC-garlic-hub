@@ -31,18 +31,11 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class BaseValidator
 {
-	protected Translator $translator;
-
-	protected readonly CsrfToken $csrfToken;
-
-	/**
-	 * @param CsrfToken $csrfToken
-	 */
-	public function __construct(Translator $translator, CsrfToken $csrfToken)
-	{
-		$this->translator = $translator;
-		$this->csrfToken = $csrfToken;
-	}
+	public function __construct(
+		protected readonly Translator $translator,
+		protected readonly CsrfToken $csrfToken
+	)
+	{}
 
 	public function isEmail(string $value): bool
 	{

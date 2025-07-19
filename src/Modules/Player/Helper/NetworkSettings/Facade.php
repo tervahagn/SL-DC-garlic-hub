@@ -60,7 +60,7 @@ class Facade
 	public function loadPlayerForEdit(int $playerId): static
 	{
 		/** @var array{player_id:int, player_name:string, model:int, is_intranet:int, api_endpoint:string}|array<empty,empty> $player */
-		$player = $this->playerService->fetchPlayer($playerId);
+		$player = $this->playerService->fetchAclCheckedPlayerData($playerId);
 		$this->player = $player;
 
 		return $this;

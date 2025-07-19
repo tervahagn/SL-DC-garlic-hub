@@ -49,6 +49,11 @@ abstract class AbstractBaseService
 		return $this->errorMessages;
 	}
 
+	public function getErrorMessagesAsString(): string
+	{
+		return implode(' | ', $this->errorMessages);
+	}
+
 	public function hasErrorMessages(): bool
 	{
 		return !empty($this->errorMessages);

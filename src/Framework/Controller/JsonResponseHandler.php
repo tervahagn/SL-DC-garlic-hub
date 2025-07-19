@@ -49,4 +49,9 @@ class JsonResponseHandler
     {
         return $this->jsonResponse($response, ['success' => false, 'error_message' => $message], $status);
     }
+
+	public function jsonErrors(ResponseInterface $response, string $message, int $status = 400): ResponseInterface
+	{
+		return $this->jsonResponse($response, ['success' => false, 'error_message' => $message], $status);
+	}
 }

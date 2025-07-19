@@ -24,7 +24,7 @@ namespace Tests\Unit\Modules\Player\Controller;
 
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
-use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Controller\PlayerPlaylistController;
 use App\Modules\Player\Services\PlayerRestAPIService;
 use App\Modules\Player\Services\PlayerService;
 use PHPUnit\Framework\Attributes\Group;
@@ -44,7 +44,7 @@ class PlayerControllerTest extends TestCase
 	private StreamInterface&MockObject $streamInterfaceMock;
 	private CsrfToken&MockObject $csrfTokenMock;
 	private PlayerRestAPIService $playerRestAPIServiceMock;
-	private PlayerController $playerController;
+	private PlayerPlaylistController $playerController;
 
 	/**
 	 * @throws Exception
@@ -60,7 +60,7 @@ class PlayerControllerTest extends TestCase
 		$this->sessionMock  = $this->createMock(Session::class);
 		$this->streamInterfaceMock = $this->createMock(StreamInterface::class);
 
-		$this->playerController = new PlayerController($this->playerServiceMock, $this->playerRestAPIServiceMock, $this->csrfTokenMock);
+		$this->playerController = new PlayerPlaylistController($this->playerServiceMock, $this->playerRestAPIServiceMock, $this->csrfTokenMock);
 	}
 
 	#[Group('units')]

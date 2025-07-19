@@ -27,7 +27,7 @@ use App\Modules\Mediapool\Controller\MediaController;
 use App\Modules\Mediapool\Controller\NodesController;
 use App\Modules\Mediapool\Controller\ShowController;
 use App\Modules\Mediapool\Controller\UploadController;
-use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Controller\PlayerPlaylistController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowConnectivityController;
 use App\Modules\Playlists\Controller\ExportController;
@@ -157,8 +157,8 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->get('/playlists/widget/fetch/{item_id:\d+}', resolve([WidgetsController::class, 'fetch'], $container));
 	$group->patch('/playlists/widget/save', resolve([WidgetsController::class, 'save'], $container));
 
-	$group->patch('/player/playlist', resolve([PlayerController::class, 'replacePlaylist'], $container));
-	$group->patch('/player/push', resolve([PlayerController::class, 'pushPlaylist'], $container));
+	$group->patch('/player/playlist', resolve([PlayerPlaylistController::class, 'replacePlaylist'], $container));
+	$group->patch('/player/push', resolve([PlayerPlaylistController::class, 'pushPlaylist'], $container));
 
 	$group->get('/users/find/{username}', resolve([UsersController::class, 'findByName'], $container));
 

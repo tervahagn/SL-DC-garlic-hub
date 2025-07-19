@@ -77,7 +77,7 @@ class PlayerService extends AbstractBaseService
 	{
 		try
 		{
-			$player = $this->fetchPlayer($playerId);
+			$player = $this->fetchAclCheckedPlayerData($playerId);
 			if ($player === [])
 				throw new ModuleException('player', 'Error loading player: Is not editable');
 
@@ -105,13 +105,13 @@ class PlayerService extends AbstractBaseService
 
 	/**
 	 * @param int $playerId
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|array<empty,empty>
 	 * @throws Exception
 	 * @throws CoreException
 	 * @throws FrameworkException
 	 * @throws PhpfastcacheSimpleCacheException
 	 */
-	public function fetchPlayer(int $playerId): array
+	public function fetchAclCheckedPlayerData(int $playerId): array
 	{
 		$player = $this->playerRepository->findFirstById($playerId);
 		if ($player === [])

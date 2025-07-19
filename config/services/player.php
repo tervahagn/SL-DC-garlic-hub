@@ -32,7 +32,7 @@ use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
-use App\Modules\Player\Controller\PlayerController;
+use App\Modules\Player\Controller\PlayerPlaylistController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowDatatableController;
 use App\Modules\Player\Dashboard\PlayerDashboard;
@@ -195,9 +195,9 @@ $dependencies[PlayerRestAPIService::class] = DI\factory(function (ContainerInter
 		$container->get('ModuleLogger'),
 	);
 });
-$dependencies[PlayerController::class] = DI\factory(function (ContainerInterface $container)
+$dependencies[PlayerPlaylistController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerController(
+	return new PlayerPlaylistController(
 		$container->get(PlayerService::class),
 		$container->get(PlayerRestAPIService::class),
 		$container->get(CsrfToken::class));
