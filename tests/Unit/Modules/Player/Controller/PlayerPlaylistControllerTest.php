@@ -1,0 +1,185 @@
+<?php
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+declare(strict_types=1);
+
+
+namespace Tests\Unit\Modules\Player\Controller;
+
+use App\Modules\Player\Controller\PlayerPlaylistController;
+use App\Modules\Player\Helper\PlayerPlaylist\InputHandler;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+
+class PlayerPlaylistControllerTest extends TestCase
+{
+	private ResponseInterface&MockObject $responseMock;
+	private ServerRequestInterface&MockObject $requestMock;
+	private StreamInterface&MockObject $streamInterfaceMock;
+	private InputHandler&MockObject $inputHandlerMock;
+	private PlayerPlaylistController $controller;
+
+	/**
+	 * @throws Exception
+	 */
+	protected function setUp(): void
+	{
+		parent::setUp();
+		$this->inputHandlerMock = $this->createMock(InputHandler::class);
+		$this->requestMock  = $this->createMock(ServerRequestInterface::class);
+		$this->responseMock = $this->createMock(ResponseInterface::class);
+
+		$this->controller = new PlayerPlaylistController($this->inputHandlerMock);
+	}
+
+	#[Group('units')]
+	public function testReplacePlaylistReturnsResponseWhenValidateForReplacePlaylistReturnsResponse(): void
+	{
+		$inputData = ['key' => 'value'];
+		$this->requestMock->expects($this->once())
+			->method('getParsedBody')
+			->willReturn($inputData);
+
+		$expectedResponse = $this->createMock(ResponseInterface::class);
+
+		$this->inputHandlerMock->expects($this->once())->method('setInput')
+			->with($inputData)
+			->willReturnSelf();
+
+		$this->inputHandlerMock->expects($this->once())->method('validateForReplacePlaylist')
+			->with($this->responseMock)
+			->willReturn($expectedResponse);
+
+		$result = $this->controller->replacePlaylist($this->requestMock, $this->responseMock);
+
+		static::assertSame($expectedResponse, $result);
+	}
+
+	#[Group('units')]
+	public function testReplacePlaylistCallsReplaceMasterPlaylistWhenValidationReturnsNull(): void
+	{
+		$inputData = ['key' => 'value'];
+		$this->requestMock->expects($this->once())->method('getParsedBody')
+			->willReturn($inputData);
+
+		$this->inputHandlerMock->expects($this->once())->method('setInput')
+			->with($inputData)
+			->willReturnSelf();
+
+		$this->inputHandlerMock->expects($this->once())->method('validateForReplacePlaylist')
+			->with($this->responseMock)
+			->willReturn(null);
+
+		$expectedResponse = $this->createMock(ResponseInterface::class);
+
+		$this->inputHandlerMock->expects($this->once())->method('replaceMasterPlaylist')
+			->with($this->responseMock)
+			->willReturn($expectedResponse);
+
+		$result = $this->controller->replacePlaylist($this->requestMock, $this->responseMock);
+
+		static::assertSame($expectedResponse, $result);
+	}
+
+	#[Group('units')]
+	public function testPushPlaylistReturnsResponseWhenValidateStandardInputReturnsResponse(): void
+	{
+		$inputData = ['key' => 'value'];
+		$this->requestMock->expects($this->once())->method('getParsedBody')
+			->willReturn($inputData);
+
+		$expectedResponse = $this->createMock(ResponseInterface::class);
+
+		$this->inputHandlerMock->expects($this->once())->method('setInput')
+			->with($inputData)
+			->willReturnSelf();
+
+		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+			->with($this->responseMock)
+			->willReturn($expectedResponse);
+
+		$result = $this->controller->pushPlaylist($this->requestMock, $this->responseMock);
+
+		static::assertSame($expectedResponse, $result);
+	}
+
+	#[Group('units')]
+	public function testPushPlaylistReturnsResponseWhenCheckPlayerReturnsResponse(): void
+	{
+		$inputData = ['key' => 'value'];
+
+		$this->requestMock->expects($this->once())->method('getParsedBody')
+			->willReturn($inputData);
+
+		$this->inputHandlerMock->expects($this->once())->method('setInput')
+			->with($inputData)
+			->willReturnSelf();
+
+		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+			->with($this->responseMock)
+			->willReturn(null);
+
+		$expectedResponse = $this->createMock(ResponseInterface::class);
+
+		$this->inputHandlerMock->expects($this->once())->method('checkPlayer')
+			->with($this->responseMock)
+			->willReturn($expectedResponse);
+
+		$result = $this->controller->pushPlaylist($this->requestMock, $this->responseMock);
+
+		static::assertSame($expectedResponse, $result);
+	}
+
+	#[Group('units')]
+	public function testPushPlaylistCallsPushPlaylistWhenAllValidationsPass(): void
+	{
+		$inputData = ['key' => 'value'];
+
+		$this->requestMock->expects($this->once())->method('getParsedBody')
+			->willReturn($inputData);
+
+		$this->inputHandlerMock->expects($this->once())->method('setInput')
+			->with($inputData)
+			->willReturnSelf();
+
+		$this->inputHandlerMock->expects($this->once())->method('validateStandardInput')
+			->with($this->responseMock)
+			->willReturn(null);
+
+		$this->inputHandlerMock->expects($this->once())->method('checkPlayer')
+			->with($this->responseMock)
+			->willReturn(null);
+
+		$expectedResponse = $this->createMock(ResponseInterface::class);
+
+		$this->inputHandlerMock->expects($this->once())->method('pushPlaylist')
+			->with($this->responseMock)
+			->willReturn($expectedResponse);
+
+		$result = $this->controller->pushPlaylist($this->requestMock, $this->responseMock);
+
+		static::assertSame($expectedResponse, $result);
+	}
+
+}
