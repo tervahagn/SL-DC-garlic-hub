@@ -21,24 +21,29 @@ declare(strict_types=1);
 
 namespace App\Modules\Player\Controller;
 
-use App\Framework\Controller\AbstractAsyncController;
-use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Player\Helper\PlayerPlaylist\Orchestrator;
-use App\Modules\Player\Services\PlayerRestAPIService;
-use App\Modules\Player\Services\PlayerService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
-class PlayerPlaylistController extends AbstractAsyncController
+readonly class PlayerPlaylistController
 {
-	public function __construct(private readonly Orchestrator $orchestrator)
+	public function __construct(private Orchestrator $orchestrator)
 	{
 	}
 
+	/**
+	 * @throws UserException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function replacePlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{
 		/** @var array<string,string> $input */
@@ -56,6 +61,7 @@ class PlayerPlaylistController extends AbstractAsyncController
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException|UserException
 	 */
 	public function pushPlaylist(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 	{

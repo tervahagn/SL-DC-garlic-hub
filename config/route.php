@@ -65,7 +65,7 @@ function resolve(array $controllerCallable, ContainerInterface $container): Clos
 		return $controller->{$methodName}($request, $response, $args);
 	};
 }
-// Do not catch any exeption here. This job is dome by the Slim Middleware!
+// Do not catch any exception here. This job is done by the Slim Middleware!
 /* @var App $app */
 /** @phpstan-ignore-next-line */
 assert($app instanceof App);

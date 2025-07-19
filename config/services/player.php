@@ -19,10 +19,11 @@
 */
 declare(strict_types=1);
 
+use App\Framework\Controller\JsonResponseHandler;
 use App\Framework\Core\Acl\AclHelper;
+use App\Framework\Core\BaseValidator;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Crypt;
-use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
@@ -32,6 +33,7 @@ use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
 use App\Framework\Utils\Datatable\TimeUnitsCalculator;
+use App\Modules\Auth\UserSession;
 use App\Modules\Player\Controller\PlayerPlaylistController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowDatatableController;
@@ -42,6 +44,8 @@ use App\Modules\Player\Helper\Datatable\DatatableBuilder;
 use App\Modules\Player\Helper\Datatable\Parameters;
 use App\Modules\Player\Helper\Index\FileUtils;
 use App\Modules\Player\Helper\Index\IndexResponseHandler;
+use App\Modules\Player\Helper\PlayerPlaylist\Orchestrator;
+use App\Modules\Player\Helper\PlayerPlaylist\ResponseBuilder;
 use App\Modules\Player\IndexCreation\Builder\Preparers\PreparerFactory;
 use App\Modules\Player\IndexCreation\Builder\TemplatePreparer;
 use App\Modules\Player\IndexCreation\IndexCreator;
@@ -195,12 +199,19 @@ $dependencies[PlayerRestAPIService::class] = DI\factory(function (ContainerInter
 		$container->get('ModuleLogger'),
 	);
 });
+$dependencies[Orchestrator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new Orchestrator(
+		new ResponseBuilder($container->get(JsonResponseHandler::class), $container->get(Translator::class)),
+		$container->get(UserSession::class),
+		$container->get(BaseValidator::class),
+		$container->get(PlayerService::class),
+		$container->get(PlayerRestAPIService::class)
+	);
+});
 $dependencies[PlayerPlaylistController::class] = DI\factory(function (ContainerInterface $container)
 {
-	return new PlayerPlaylistController(
-		$container->get(PlayerService::class),
-		$container->get(PlayerRestAPIService::class),
-		$container->get(CsrfToken::class));
+	return new PlayerPlaylistController($container->get(Orchestrator::class));
 });
 
 

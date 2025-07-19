@@ -20,7 +20,9 @@
 declare(strict_types=1);
 
 use App\Commands\MigrateCommand;
+use App\Framework\Controller\JsonResponseHandler;
 use App\Framework\Core\Acl\AclHelper;
+use App\Framework\Core\BaseValidator;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\Cookie;
 use App\Framework\Core\Crypt;
@@ -61,7 +63,6 @@ use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Auth\UserSession;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersService;
-use Defuse\Crypto\Key;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -314,9 +315,17 @@ $dependencies[CsrfToken::class] = DI\factory(function (ContainerInterface $conta
 		$container->get(Session::class),
 	);
 });
+$dependencies[JsonResponseHandler::class] = DI\factory(function ()
+{
+	return new JsonResponseHandler();
+});
 $dependencies[UserSession::class] = DI\factory(function (ContainerInterface $container)
 {
 	return new UserSession($container->get(Session::class));
+});
+$dependencies[BaseValidator::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new BaseValidator($container->get(Translator::class), $container->get(CsrfToken::class));
 });
 
 

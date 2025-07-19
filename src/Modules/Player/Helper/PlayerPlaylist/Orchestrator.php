@@ -120,6 +120,7 @@ class Orchestrator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
 	 */
 	public function checkPlayer(ResponseInterface $response): ?ResponseInterface
 	{
