@@ -39,7 +39,6 @@ class PlayerPlaylistControllerTest extends TestCase
 {
 	private ResponseInterface&MockObject $responseMock;
 	private ServerRequestInterface&MockObject $requestMock;
-	private StreamInterface&MockObject $streamInterfaceMock;
 	private Orchestrator&MockObject $orchestratorMock;
 	private PlayerPlaylistController $controller;
 

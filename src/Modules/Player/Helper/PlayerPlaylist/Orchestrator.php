@@ -137,6 +137,7 @@ class Orchestrator
 		if ($player['playlist_id'] === 0)
 			return $this->responseBuilder->noPlaylistAssigned($response);
 
+		/** @var array{is_intranet:int, playlist_id:int, api_endpoint:string, player_name:string, ...} $player */
 		$this->player = $player;
 		return null;
 	}

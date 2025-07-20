@@ -54,11 +54,6 @@ abstract class BaseResponseBuilder
 		return $this->jsonResponseHandler->jsonError($response, $message);
 	}
 
-	public function generalErrors(ResponseInterface $response, array $messages): ResponseInterface
-	{
-		return $this->jsonResponseHandler->jsonError($response, $message);
-	}
-
 	/**
 	 * @param array<string,mixed> $message
 	 */

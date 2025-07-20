@@ -228,7 +228,7 @@ class ItemsService extends AbstractBaseService
 
 	/**
 	 * @param int $playlistId
-	 * @param array<string,string> $itemsOrder
+	 * @param array<int,string> $itemsOrder
 	 * @return bool
 	 * @throws Exception
 	 * @throws FrameworkException
@@ -243,7 +243,7 @@ class ItemsService extends AbstractBaseService
 
 			foreach ($itemsOrder as $key => $itemId)
 			{
-				if ($this->itemsRepository->updateItemOrder((int)$itemId, (int) $key) === 0)
+				if ($this->itemsRepository->updateItemOrder((int)$itemId, $key) === 0)
 					throw new ModuleException('items', 'Item order for item_id '.$itemId.' could not be updated');
 			}
 			$this->itemsRepository->commitTransaction();

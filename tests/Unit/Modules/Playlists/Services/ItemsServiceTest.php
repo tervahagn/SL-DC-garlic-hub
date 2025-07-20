@@ -304,7 +304,7 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')
 			->with(1);
 
-		$playlist = ['playlist_id' => 7];
+		$playlist = ['playlist_id' => 7, 'time_limit' => 150];
 		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
 			->with($itemData['playlist_id']);
 
@@ -582,7 +582,7 @@ class ItemsServiceTest extends TestCase
 
 		$this->itemsService->setUID(10);
 
-		$itemData = ['playlist_id' => $playlistId];
+		$itemData = ['playlist_id' => $playlistId, 'item_type' => 'playlist'];
 		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
 			->with($itemId)
 			->willReturn($itemData);
@@ -612,7 +612,7 @@ class ItemsServiceTest extends TestCase
 	public function testUpdateItemOrderSuccess(): void
 	{
 		$playlistId = 10;
-		$itemsOrder = [5 => 3, 3 => 1, 8 => 2];
+		$itemsOrder = ['5' => '3', '3' => '1', '8' => '2']; // hp treat this  as array<int,string>
 
 		$this->itemsService->setUID(1);
 		$this->itemsRepositoryMock->expects($this->once())->method('beginTransaction');
@@ -641,7 +641,10 @@ class ItemsServiceTest extends TestCase
 	public function testUpdateItemOrderThrowsExceptionForInvalidPlaylist(): void
 	{
 		$playlistId = 10;
-		$itemsOrder = [5 => 3, 3 => 1, 8 => 2];
+		$itemsOrder = [];
+		$itemsOrder['5'] = '3';  // Explizite String-Zuweisung
+		$itemsOrder['3'] = '1';
+		$itemsOrder['8'] = '2';
 
 		$this->itemsService->setUID(1);
 		$this->itemsRepositoryMock->expects($this->once())->method('beginTransaction');
