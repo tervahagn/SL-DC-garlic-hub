@@ -38,17 +38,19 @@ export class InsertContextMenu
 			});
 		}
 
-		this.#insertPlaylists.addEventListener("click",  async () =>
+		if (this.#insertPlaylists !== null)
 		{
-			const selector = this.#selectorFactory.create("playlists");
-			await selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.source = "playlists";
-			this.#dragDropHandler.items = selector.items;
-			const container = selector.getItemsContainer();
-			this.#dragDropHandler.addDropSource(container);
-			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
-		});
-
+			this.#insertPlaylists.addEventListener("click", async () =>
+			{
+				const selector = this.#selectorFactory.create("playlists");
+				await selector.showSelector(this.#itemSelectContainer);
+				this.#dragDropHandler.source = "playlists";
+				this.#dragDropHandler.items = selector.items;
+				const container = selector.getItemsContainer();
+				this.#dragDropHandler.addDropSource(container);
+				//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
+			});
+		}
 		if (this.#insertExternalPlaylists !== null)
 		{
 			this.#insertExternalPlaylists.addEventListener("click", () =>
