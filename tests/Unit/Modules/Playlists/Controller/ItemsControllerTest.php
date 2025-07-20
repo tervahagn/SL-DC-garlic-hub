@@ -221,7 +221,7 @@ class ItemsControllerTest extends TestCase
 			->with(123, 'item_name', 'New Name')
 			->willReturn(1);
 
-		$this->mockJsonResponse(['success' => true]);
+		$this->mockJsonResponse(['success' => true, 'data' => '']);
 
 		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
@@ -245,8 +245,9 @@ class ItemsControllerTest extends TestCase
 			->method('updateField')
 			->with(123, 'item_duration', 300)
 			->willReturn(1);
+		$this->itemsServiceMock->expects($this->once())->method('getItemDuration')->willReturn(300);
 
-		$this->mockJsonResponse(['success' => true]);
+		$this->mockJsonResponse(['success' => true, 'data' => 300]);
 
 		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
