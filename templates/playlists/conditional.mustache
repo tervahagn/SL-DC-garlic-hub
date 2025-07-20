@@ -1,0 +1,66 @@
+<input type="hidden" name="conditional_play_item_id" id="edit_item_id" value="{{{CONDITIONAL_PLAY_ITEM_ID}}}" />
+
+<ul class="form_edit">
+	<li>
+		<label for="enable_conditional_play">
+			<input type="checkbox" id="enable_conditional_play" value="1" {{{CONDITIONAL_PLAY_CHECKED}}} /> {{{LANG_CONDITIONAL_PLAY}}}
+		</label>
+	</li>
+	<li id="edit_conditional_play">
+		<ul>
+			<li>
+				<label for="enable_date_period">
+					<input type="checkbox" id="enable_date_period" value="1" {{{DATE_PERIOD_CHECKED}}} /> {{{LANG_DATE_PERIOD}}}
+				</label>
+				<p id="edit_date_period">
+					<label for="date_from">
+					{{{LANG_FROM_DATE}}} <input type="date" id="date_from" value="{{{DATE_FROM}}}" />
+					</label>
+					<label for="date_until">
+						{{{LANG_UNTIL_DATE}}} <input type="date" id="date_until" value="{{{DATE_UNTIL}}}" />
+					</label>
+				</p>
+			</li>
+			<li>
+				<label for="enable_time_period">
+					<input type="checkbox" id="enable_time_period" value="1" {{{TIME_PERIOD_CHECKED}}} /> {{{LANG_DAILY}}}
+				</label>
+				<p id="edit_time_period">
+					<label for="time_from">
+						{{{LANG_FROM_TIME}}} <input type="time" id="time_from" value="{{{TIME_FROM}}}" />
+					</label>
+					<label for="time_until">
+						{{{LANG_UNTIL_TIME}}} <input type="time" id="time_until" value="{{{TIME_UNTIL}}}" />
+					</label>
+				</p>
+			</li>
+			<li>
+				<div id="checkboxes_weekdays">
+					<p class="weekdays_header">{{{LANG_WEEKDAYS}}}</p>
+
+					{{#list_weekdays}}
+					<ul class="list_weekday" id="week_day_{{{WEEKDAY_NUMBER}}}">
+						<li class="label_weekday">
+							<label for="enable_weekday_{{{WEEKDAY_NUMBER}}}">{{{WEEKDAY}}}</label>
+						</li>
+						<li class="checkbox_weekday">
+							<input type="checkbox" value="{{{WEEKDAY_NUMBER}}}" id="enable_weekday_{{{WEEKDAY_NUMBER}}}" {{{WEEK_DAY_CHECKED}}} class="enable_weekdays"/>
+						</li>
+						<li class="slider">
+							<input type="hidden" id="hidden_range_from_{{{WEEKDAY_NUMBER}}}" value="{{{HIDDEN_RANGE_FROM}}}" />
+							<input type="hidden" id="hidden_range_until_{{{WEEKDAY_NUMBER}}}" value="{{{HIDDEN_RANGE_UNTIL}}}" />
+							<span id="range1_from_{{{WEEKDAY_NUMBER}}}"></span> - <span id="range1_until_{{{WEEKDAY_NUMBER}}}"></span>
+							<div class="slider-range" id="slider_{{{WEEKDAY_NUMBER}}}"></div>
+						</li>
+					</ul>
+					{{/list_weekdays}}
+				</div>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<ul class="form_action">
+	<li><button id="save">{{{LANG_SAVE}}}</button></li>
+	<li><button id="cancel">{{{LANG_CANCEL}}}</button></li>
+</ul>

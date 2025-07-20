@@ -16,21 +16,21 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+'use strict';
 
 import {BaseService} from "../../../../core/Base/BaseService.js";
 
-export class WidgetsService extends BaseService
+export class ConditionalPlayService extends BaseService
 {
-	fetchClient = null;
-
-	async fetchConfiguration(id)
+	async fetchEditor(id)
 	{
-		let url = "/async/playlists/widget/fetch/" + id;
+		let url = "/async/playlists/conditional-play/fetch/" + id;
 		return await this._sendRequest(url, "GET");
 	}
-	async saveWidgetValues(id, data)
+
+	async saveValues(id, data)
 	{
-		let url = "/async/playlists/widget/save";
+		let url = "/async/playlists/conditional-play/save";
 		data["item_id"] = id;
 
 		return await this._sendRequest(url, "PATCH", data);

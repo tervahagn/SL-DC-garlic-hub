@@ -1,3 +1,4 @@
+<?php
 /*
  garlic-hub: Digital Signage Management Platform
 
@@ -16,23 +17,30 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
-import {BaseService} from "../../../../core/Base/BaseService.js";
 
-export class WidgetsService extends BaseService
+namespace App\Modules\Playlists\Controller;
+
+use App\Modules\Playlists\Helper\ConditionalPlay\Orchestrator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class ConditionalPlayController
 {
-	fetchClient = null;
 
-	async fetchConfiguration(id)
-	{
-		let url = "/async/playlists/widget/fetch/" + id;
-		return await this._sendRequest(url, "GET");
-	}
-	async saveWidgetValues(id, data)
-	{
-		let url = "/async/playlists/widget/save";
-		data["item_id"] = id;
+	public function __construct(private readonly Orchestrator $orchestrator) {}
 
-		return await this._sendRequest(url, "PATCH", data);
+	/**
+	 * @param array<string,string> $args
+	 */
+	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	{
+		$answer = $this->orchestrator->setInput($args)->validate($response);
+		if ($answer !== null)
+			return $answer;
+
+		return $this->orchestrator->fetch($response);
 	}
+
 }

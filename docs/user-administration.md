@@ -23,7 +23,7 @@ Every module with own user administration abilities shoud derivate from class [A
 - **Responsibilities:**
     - Manage and configure entities only within their designated scope.
 
-### 3. **Editor**
+### 3. **ConditionalPlayEditor**
 - **Permissions:**
     - Can view, utilize, and edit assigned entities within the module.
 - **Responsibilities:**
@@ -41,6 +41,6 @@ Every module with own user administration abilities shoud derivate from class [A
 |-----------------|---------------|---------------|----------------------|--------------------|
 | Module Admin    | ✓            | ✓            | ✓                 | All entities in the module |
 | SubAdmin        | ✓            | ✓            |                      | Reseller-specific   |
-| Editor          | ✓            | ✓            |                      | Assigned entities   |
+| ConditionalPlayEditor          | ✓            | ✓            |                      | Assigned entities   |
 | Viewer          | ✓            |               |                      | Assigned entities   |
 
