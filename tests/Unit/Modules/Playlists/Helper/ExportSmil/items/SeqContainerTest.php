@@ -54,13 +54,12 @@ class SeqContainerTest extends TestCase
 		$this->propertiesMock = $this->createMock(Properties::class);
 	}
 
-
 	#[Group('units')]
 	public function testGetSmilElementTag(): void
 	{
 		$this->beginMock->method('hasTriggers')->willReturn(false);
 
-		$item = ['item_id' => 1, 'item_name' => 'foo', 'file_resource' => '12345'];
+		$item = ['item_id' => 1, 'item_name' => 'foo', 'file_resource' => '12345', 'time_limit' => null];
 
 		$this->seqContainer = new SeqContainer(
 			$this->configMock,
@@ -72,6 +71,29 @@ class SeqContainerTest extends TestCase
 		);
 
 		$expected = Base::TABSTOPS_TAG . '<seq xml:id="1" title="foo" >' . "\n" .
+			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		static::assertSame($expected, $this->seqContainer->getSmilElementTag());
+	}
+
+	#[Group('units')]
+	public function testGetSmilElementTagWithDur(): void
+	{
+		$this->beginMock->method('hasTriggers')->willReturn(false);
+
+		$item = ['item_id' => 1, 'item_name' => 'foo', 'file_resource' => '12345', 'time_limit' => 15, 'owner_duration' => 20];
+
+		$this->seqContainer = new SeqContainer(
+			$this->configMock,
+			$item,
+			$this->propertiesMock,
+			$this->beginMock,
+			$this->endMock,
+			$this->conditionalMock
+		);
+
+		$expected = Base::TABSTOPS_TAG . '<seq xml:id="1" title="foo" dur="15s" >' . "\n" .
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
