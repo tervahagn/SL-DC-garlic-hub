@@ -124,7 +124,9 @@ class ItemsService extends AbstractBaseService
 			case ItemType::PLAYLIST->value:
 				$playlist = $this->playlistsService->fetchById((int) $item['file_resource']); // check rights
 				$this->playlistMetricsCalculator->setUID($this->UID);
-				$item['default_duration'] = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getDuration();
+				$defaultDuration = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getDuration();
+				if ($playlist['time_limit'] > 0 && $defaultDuration > $playlist['time_limit'])
+					$item['default_duration'] = $playlist['time_limit'];
 				break;
 			default:
 				$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
@@ -198,7 +200,17 @@ class ItemsService extends AbstractBaseService
 	{
 		$this->playlistsService->setUID($this->UID);
 		$item = $this->itemsRepository->findFirstById($itemId);
+		if ($item === [])
+			return 0;
 		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
+
+		// Todo: Make this more elegant in the a future reafcatoring
+		if ($item['item_type'] === ItemType::PLAYLIST->value && $fieldName === 'item_duration')
+		{
+			$playlist = $this->playlistsService->fetchById((int) $item['file_resource']);
+			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
+				$fieldValue = $playlist['time_limit'];
+		}
 
 		$saveData = [strip_tags($fieldName) => strip_tags((string)$fieldValue)];
 
