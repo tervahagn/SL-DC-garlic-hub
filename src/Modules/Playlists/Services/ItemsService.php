@@ -123,6 +123,7 @@ class ItemsService extends AbstractBaseService
 				break;
 			case ItemType::PLAYLIST->value:
 				$playlist = $this->playlistsService->fetchById((int) $item['file_resource']); // check rights
+				$this->playlistMetricsCalculator->setUID($this->UID);
 				$item['default_duration'] = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getDuration();
 				break;
 			default:
