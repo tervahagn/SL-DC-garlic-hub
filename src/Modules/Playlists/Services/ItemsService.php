@@ -180,6 +180,7 @@ class ItemsService extends AbstractBaseService
 			}
 		}
 
+		$this->playlistMetricsCalculator->setUID($this->UID);
 		$playlistMetrics = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlistData)->getMetricsForFrontend();
 
 		return ['playlist_metrics' =>  $playlistMetrics, 'playlist' => $playlistData, 'items' => $items];
