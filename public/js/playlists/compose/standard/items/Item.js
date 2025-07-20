@@ -213,8 +213,8 @@ export class Item
 		if (!result.success)
 			return;
 
-		this.#itemDuration.dataset.seconds = inputElement.value;
-		this.#itemDuration.textContent = Utils.formatSecondsToTime(inputElement.value);
+		this.#itemDuration.dataset.seconds = result.data;
+		this.#itemDuration.textContent = Utils.formatSecondsToTime(result.data);
 
 		inputElement.parentNode.replaceChild(this.#itemDuration, inputElement);
 		inputElement.remove();

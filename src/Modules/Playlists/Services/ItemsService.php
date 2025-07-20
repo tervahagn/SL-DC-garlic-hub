@@ -43,6 +43,7 @@ class ItemsService extends AbstractBaseService
 	private readonly PlaylistsService $playlistsService;
 	private readonly MediaService $mediaService;
 	private readonly PlaylistMetricsCalculator $playlistMetricsCalculator;
+	private int $itemDuration = 0;
 
 	public function __construct(ItemsRepository $itemsRepository,
 								MediaService $mediaService,
@@ -92,6 +93,11 @@ class ItemsService extends AbstractBaseService
 			->getMetricsForPlaylistTable();
 
 		return ['playlist_metrics' =>  $playlistMetrics, 'items' => $items];
+	}
+
+	public function getItemDuration(): int
+	{
+		return $this->itemDuration;
 	}
 
 	/**
@@ -212,6 +218,7 @@ class ItemsService extends AbstractBaseService
 			$playlist = $this->playlistsService->fetchById((int) $item['file_resource']);
 			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
 				$fieldValue = $playlist['time_limit'];
+			$this->itemDuration = (int) $fieldValue;
 		}
 
 		$saveData = [strip_tags($fieldName) => strip_tags((string)$fieldValue)];

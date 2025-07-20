@@ -131,6 +131,7 @@ class ItemsController extends AbstractAsyncController
 
 		$this->setServiceUID($request);
 
+		$data = '';
 		switch ($requestData['name'])
 		{
 			case 'item_name':
@@ -138,6 +139,7 @@ class ItemsController extends AbstractAsyncController
 				break;
 			case 'item_duration':
 				$affected = $this->itemsService->updateField($requestData['item_id'], $requestData['name'], (int) $requestData['value']);
+				$data = $this->itemsService->getItemDuration();
 				break;
 			default:
 				return $this->jsonResponse($response, ['success' => false, 'error_message' => 'No valid parametername.']);
@@ -146,7 +148,7 @@ class ItemsController extends AbstractAsyncController
 		if ($affected === 0)
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Error updating item field: '.$requestData['name']. '.']);
 
-		return $this->jsonResponse($response, ['success' => true]);
+		return $this->jsonResponse($response, ['success' => true, 'data' => $data]);
 	}
 
 	/**
