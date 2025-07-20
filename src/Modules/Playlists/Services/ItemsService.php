@@ -127,6 +127,8 @@ class ItemsService extends AbstractBaseService
 				$defaultDuration = $this->playlistMetricsCalculator->calculateFromPlaylistData($playlist)->getDuration();
 				if ($playlist['time_limit'] > 0 && $defaultDuration > $playlist['time_limit'])
 					$item['default_duration'] = $playlist['time_limit'];
+				else
+					$item['default_duration'] = $defaultDuration;
 				break;
 			default:
 				$item['default_duration'] = $this->playlistMetricsCalculator->getDefaultDuration();
