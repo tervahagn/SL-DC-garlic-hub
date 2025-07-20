@@ -32,12 +32,13 @@ use Doctrine\DBAL\Exception;
 
 class ItemsRepository extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 
-/*	later CONST int FLAG_DISABLED = 1;
-	CONST  int FLAG_LOCKED   = 2;
-	CONST  int FLAG_LOGGABLE  = 4;
-*/
+	/*	later CONST int FLAG_DISABLED = 1;
+		CONST  int FLAG_LOCKED   = 2;
+		CONST  int FLAG_LOGGABLE  = 4;
+	*/
 	use TransactionsTrait;
 	use FindOperationsTrait;
 
@@ -66,7 +67,7 @@ class ItemsRepository extends SqlBase
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
 		$queryBuilder->from($this->table);
-		$queryBuilder->where('playlist_id = :playlistId');
+		$queryBuilder->where('playlists_items.playlist_id = :playlistId');
 		$queryBuilder->setParameter('playlistId', $playlistId);
 		$queryBuilder->orderBy('item_order', 'ASC');
 		$queryBuilder->leftJoin(
@@ -76,7 +77,14 @@ class ItemsRepository extends SqlBase
 			'playlists_items.file_resource = mediapool_files.checksum'
 		);
 
-		$select = 'item_id, flags, playlist_id, playlists_items.UID, item_type, item_order, file_resource, datasource, item_duration, item_filesize, playlists_items.mimetype, item_name, properties, conditional, categories, content_data, begin_trigger, end_trigger, mediapool_files.extension';
+		$queryBuilder->leftJoin(
+			'playlists_items',
+			'playlists',
+			'nested_playlist',
+			'playlists_items.file_resource = nested_playlist.playlist_id'
+		);
+
+		$select = 'item_id, flags, playlists_items.playlist_id, playlists_items.UID, item_type, item_order, file_resource, datasource, item_duration, item_filesize, playlists_items.mimetype, item_name, properties, conditional, categories, content_data, begin_trigger, end_trigger, mediapool_files.extension, nested_playlist.time_limit, nested_playlist.owner_duration';
 
 		if ($edition === Config::PLATFORM_EDITION_CORE || $edition === Config::PLATFORM_EDITION_ENTERPRISE)
 		{
@@ -102,7 +110,7 @@ class ItemsRepository extends SqlBase
 
 		$queryBuilder->select($select);
 		// important! otherwise left join will grab an additional mediapool_files.checksum if exists
-		// remember: mediapool recognise double files.
+		// remember: mediapool recognises double files.
 		$queryBuilder->groupBy('playlists_items.item_id');
 
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
@@ -149,7 +157,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
-	 *  This method finds all playlists which has nested the playlistId
+	 *  This method finds all playlists that have nested the playlistId
 	 *
 	 * @return list<array<string, mixed>>
 	 * @throws Exception

@@ -40,9 +40,8 @@ class SeqContainer extends Base implements ItemInterface
 
 	protected function collectPlaylistAttributes(): string
 	{
-		return $this->collectAttributes().$this->determineDuration();
+		return $this->collectAttributes().$this->determinePlaylistDuration();
 	}
-
 
 	public function getElementLink(): string
 	{
@@ -54,4 +53,12 @@ class SeqContainer extends Base implements ItemInterface
 		return  self::TABSTOPS_TAG.'{PREFETCH_'.$this->item['file_resource'].'}'."\n";
 	}
 
+
+	protected function determinePlaylistDuration(): string
+	{
+		if ($this->item['time_limit'] !== null && $this->item['time_limit'] > 0 && $this->item['time_limit'] < $this->item['owner_duration'])
+			return 'dur="'.$this->item['time_limit'].'s" ';
+
+		return '';
+	}
 }

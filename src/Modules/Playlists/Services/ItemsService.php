@@ -205,7 +205,7 @@ class ItemsService extends AbstractBaseService
 
 	/**
 	 * @param int $playlistId
-	 * @param array<int,int> $itemsOrder
+	 * @param array<string,string> $itemsOrder
 	 * @return bool
 	 * @throws Exception
 	 * @throws FrameworkException
@@ -220,7 +220,7 @@ class ItemsService extends AbstractBaseService
 
 			foreach ($itemsOrder as $key => $itemId)
 			{
-				if ($this->itemsRepository->updateItemOrder($itemId, $key) === 0)
+				if ($this->itemsRepository->updateItemOrder((int)$itemId, (int) $key) === 0)
 					throw new ModuleException('items', 'Item order for item_id '.$itemId.' could not be updated');
 			}
 			$this->itemsRepository->commitTransaction();
@@ -279,7 +279,7 @@ class ItemsService extends AbstractBaseService
 	{
 		$saveItem = [
 			'item_duration' => $this->playlistMetricsCalculator->getDuration(),
-			'item_filesize' => $this->playlistMetricsCalculator->getFilesize()
+			'item_filesize' => $this->playlistMetricsCalculator->getFileSize()
 		];
 		$this->itemsRepository->updateWithWhere($saveItem, ['file_resource' => $playlistId]);
 	}
