@@ -98,7 +98,7 @@ class ItemsRepositoryTest extends TestCase
 	public function testFindAllByPlaylistIdWithJoinsWithCoreEdition(): void
 	{
 		$this->queryBuilderMock
-			->expects($this->exactly(2))
+			->expects($this->exactly(3))
 			->method('leftJoin')
 			->willReturnMap([
 				['playlists_items',
@@ -106,6 +106,12 @@ class ItemsRepositoryTest extends TestCase
 					'',
 					'playlists_items.file_resource = mediapool_files.checksum',
 					$this->queryBuilderMock
+				],
+				[
+					'playlists_items',
+					'playlists',
+					'nested_playlist',
+					'playlists_items.file_resource = nested_playlist.playlist_id', $this->queryBuilderMock
 				],
 				[
 					'playlists_items',
@@ -118,7 +124,7 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->once())->method('select');
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('playlists_items');
-		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlist_id = :playlistId');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlists_items.playlist_id = :playlistId');
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('playlistId', 1);
 		$this->queryBuilderMock->expects($this->once())->method('orderBy')->with('item_order', 'ASC');
 		$this->queryBuilderMock->expects($this->once())->method('groupBy')->with('playlists_items.item_id');
@@ -136,7 +142,7 @@ class ItemsRepositoryTest extends TestCase
 	public function testFindAllByPlaylistIdWithJoinsWithEnterpriseEdition(): void
 	{
 		$this->queryBuilderMock
-			->expects($this->exactly(3))
+			->expects($this->exactly(4))
 			->method('leftJoin')
 			->willReturnMap([
 				[
@@ -145,6 +151,12 @@ class ItemsRepositoryTest extends TestCase
 					'',
 					'playlists_items.file_resource = mediapool_files.checksum',
 					$this->queryBuilderMock
+				],
+				[
+					'playlists_items',
+					'playlists',
+					'nested_playlist',
+					'playlists_items.file_resource = nested_playlist.playlist_id', $this->queryBuilderMock
 				],
 				[
 					'playlists_items',
@@ -164,7 +176,7 @@ class ItemsRepositoryTest extends TestCase
 
 		$this->queryBuilderMock->expects($this->once())->method('select');
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('playlists_items');
-		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlist_id = :playlistId');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlists_items.playlist_id = :playlistId');
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('playlistId', 1);
 		$this->queryBuilderMock->expects($this->once())->method('orderBy')->with('item_order', 'ASC');
 		$this->queryBuilderMock->expects($this->once())->method('groupBy')->with('playlists_items.item_id');
@@ -182,18 +194,23 @@ class ItemsRepositoryTest extends TestCase
 	public function testFindAllByPlaylistIdWithJoinsWithUnknownEdition(): void
 	{
 		$this->queryBuilderMock
-			->expects($this->once())
+			->expects($this->exactly(2))
 			->method('leftJoin')
-			->with(
-				'playlists_items',
+			->willReturnMap([
+				['playlists_items',
 				'mediapool_files',
 				'',
-				'playlists_items.file_resource = mediapool_files.checksum'
-			);
+				'playlists_items.file_resource = mediapool_files.checksum', null, $this->queryBuilderMock],
+				[
+				'playlists_items',
+			'playlists',
+			'nested_playlist',
+			'playlists_items.file_resource = nested_playlist.playlist_id', null, $this->queryBuilderMock]
+			]);
 
 		$this->queryBuilderMock->expects($this->once())->method('select');
 		$this->queryBuilderMock->expects($this->once())->method('from')->with('playlists_items');
-		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlist_id = :playlistId');
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlists_items.playlist_id = :playlistId');
 		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('playlistId', 1);
 		$this->queryBuilderMock->expects($this->once())->method('orderBy')->with('item_order', 'ASC');
 		$this->queryBuilderMock->expects($this->once())->method('groupBy')->with('playlists_items.item_id');
