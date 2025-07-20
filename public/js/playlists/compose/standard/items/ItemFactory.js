@@ -22,15 +22,17 @@ import {Item} from "./Item.js";
 export class ItemFactory
 {
 	#widgetFactory = null;
+	#conditionalPlayFactory = null;
 
 
-	constructor(widgetFactory)
+	constructor(widgetFactory, conditionalPlayFactory)
 	{
 		this.#widgetFactory = widgetFactory;
+		this.#conditionalPlayFactory = conditionalPlayFactory;
 	}
 
 	create(itemData, itemsService)
 	{
-		return new Item(itemData, itemsService, this.#widgetFactory);
+		return new Item(itemData, itemsService, this.#widgetFactory, this.#conditionalPlayFactory);
 	}
 }

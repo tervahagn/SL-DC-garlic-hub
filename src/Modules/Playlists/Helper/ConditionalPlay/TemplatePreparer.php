@@ -57,7 +57,7 @@ class TemplatePreparer
 		$timeFrom  = $conditionalPlayData['time_from'] ?? '';
 		$timeUntil = $conditionalPlayData['time_until'] ?? '';
 		$weekdays  = $conditionalPlayData['weekdays'] ?? 0;
-		$weektimes = $conditionalPlayData['weektimes'] ?? 0;
+		$weektimes = $conditionalPlayData['weektimes'] ?? [];
 
 		$this->templateData = [
 			'LANG_CONDITIONAL_PLAY' => $this->translator->translate('conditional_play', 'playlists'),
@@ -66,8 +66,6 @@ class TemplatePreparer
 			'LANG_WEEKDAYS' => $this->translator->translate('weekdays', 'playlists'),
 			'LANG_FROM'   => $this->translator->translate('from', 'main'),
 			'LANG_UNTIL'  => $this->translator->translate('until', 'main'),
-			'LANG_SAVE'   => $this->translator->translate('save', 'main'),
-			'LANG_CANCEL' => $this->translator->translate('cancel', 'main'),
 			'CONDITIONAL_PLAY_ITEM_ID' => $itemId,
 			'DATE_FROM'  => $dateFrom,
 			'DATE_UNTIL' => $dateUtil,
@@ -100,7 +98,7 @@ class TemplatePreparer
 
 	public function render(): string
 	{
-		return $this->template->render('player/conditional', $this->templateData);
+		return $this->template->render('playlists/conditional-play', $this->templateData);
 	}
 
 	private function determineWeekdays(int $weekdays, array $weektimes): array

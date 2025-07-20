@@ -59,6 +59,14 @@ class Orchestrator
 		return $this;
 	}
 
+	public function validateSave(ResponseInterface $response): ?ResponseInterface
+	{
+		if (!$this->validator->validateCsrfToken($this->input[BaseEditParameters::PARAMETER_CSRF_TOKEN]))
+			return $this->responseBuilder->csrfTokenMismatch($response);
+
+		return $this->validate($response);
+	}
+
 	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -67,9 +75,6 @@ class Orchestrator
 	 */
 	public function validate(ResponseInterface $response): ?ResponseInterface
 	{
-		if (!$this->validator->validateCsrfToken($this->input[BaseEditParameters::PARAMETER_CSRF_TOKEN]))
-			return $this->responseBuilder->csrfTokenMismatch($response);
-
 		$this->itemId = (int) ($this->input['item_id'] ?? 0);
 		if ($this->itemId === 0)
 			return $this->responseBuilder->invalidItemId($response);

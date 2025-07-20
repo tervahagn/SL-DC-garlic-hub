@@ -16,17 +16,18 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import {WidgetsService} from "./WidgetsService.js";
-import {FetchClient}    from "../../../../core/FetchClient.js";
-import {WidgetForm}     from "./WidgetForm.js";
-import {EditDialog}     from "./EditDialog.js";
-import {Widget}         from "./Widget.js";
 
-export class WidgetFactory
+import {ConditionalPlayService} from "./ConditionalPlayService.js";
+import {FetchClient}    from "../../../../core/FetchClient.js";
+import {ConditionalPlayForm}     from "./ConditionalPlayForm.js";
+import {ConditionalPlay}     from "./ConditionalPlay.js";
+import {EditDialog}     from "./EditDialog.js";
+
+export class ConditionalPlayFactory
 {
 	create()
 	{
-		return new Widget(new EditDialog(), new WidgetForm(), new WidgetsService(new FetchClient()))
+		return new ConditionalPlay(new EditDialog(), new ConditionalPlayForm(), new ConditionalPlayService(new FetchClient()))
 	}
 
 }

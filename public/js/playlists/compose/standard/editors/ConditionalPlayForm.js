@@ -1,8 +1,27 @@
-let MyConditionalPlayForm;
-class CreateConditionalPlayForm
+/*
+ garlic-hub: Digital Signage Management Platform
+
+ Copyright (C) 2025 Nikolaos Sagiadinos <garlic@saghiadinos.de>
+ This file is part of the garlic-hub source code
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License, version 3,
+ as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+'use strict';
+
+export class ConditionalPlayForm
 {
 	html_form = "";
-	title = "";
+
 	enable_conditional_play = null;
 	edit_conditional_play   = null;
 	enable_date_period      = null;
@@ -13,11 +32,12 @@ class CreateConditionalPlayForm
 	edit_time_period        = null;
 	time_from               = null;
 	time_until              = null;
-	constructor(html, title)
+
+	init(html, title)
 	{
 		this.html_form = html
-		this.title     = title;
 	}
+
 	handleConditionalPlayCheckBox()
 	{
 		if (this.enable_conditional_play.checked)
@@ -219,6 +239,7 @@ class CreateConditionalPlayForm
 	{
 		return this.getDateTimeFromHTML() + this.getWeekdaysFromHTML();
 	}
+
 	getDateTimeFromHTML()
 	{
 		let	date_from_val  = "0000-00-00";
@@ -245,6 +266,7 @@ class CreateConditionalPlayForm
 			url_separator + "time_from="+time_from_val +
 			url_separator + "time_until="+time_until_val;
 	}
+
 	getWeekdaysFromHTML()
 	{
 		let edit_weekdays   = 0;
@@ -264,135 +286,5 @@ class CreateConditionalPlayForm
 			url_separator + "weektimes_from=" + weektimes_from.substr(0, weektimes_from.length-1) +
 			url_separator + "weektimes_until=" + weektimes_until.substr(0, weektimes_until.length-1);
 	}
-	openOverlay(MyView)
-	{
-		MyView.setContentSize(600, 400);
-		MyView.setContent(this.html_form);
-		MyView.setTitle(this.title);
-		MyView.open();
-
-		this.initDatePeriod();
-		this.handleDatePeriodCheckBox()
-		this.initTimePeriod();
-		this.handleTimePeriodCheckBox();
-		this.initWeekDays();
-		this.initConditionalPlay();
-		this.handleConditionalPlayCheckBox()
-
-		let save = document.getElementById("save");
-		save.onclick  = () =>
-		{
-			let result = this.collectValues();
-			ConditionalPlayEditor.saveValues(result);
-		}
-		let cancel = document.getElementById("cancel");
-		cancel.onclick = function ()
-		{
-			MyView.close();
-		}
-	}
 
 }
-
-ConditionalPlay = {
-
-	item_id : 0,
-	MyModalEdit : {},
-	load: function (element)
-	{
-		item_id = getUnitIdFromAttrId(element.id, 1);
-
-		this.retrieveTimerDialog();
-	},
-	retrieveTimerDialog: function()
-	{
-		try
-		{
-			let url = ThymianConfig.main_site + "?site=playlists_async_conditional_play"
-				+ url_separator + "item_id=" + item_id + url_separator + "action=retrieve"
-			;
-
-			let MyRequest = new XMLHttpRequest();
-			MyRequest.open("GET", url, true);
-			MyRequest.onload = function ()
-			{
-				if (MyRequest.status !== 200)
-				{
-					jThymian.printError(MyRequest.statusText);
-				}
-				else
-				{
-					let jsonResponse = JSON.parse(MyRequest.responseText);
-					MyConditionalPlayForm = new CreateConditionalPlayForm(jsonResponse.html, jsonResponse.title);
-					MyModalEdit = new TModalContainer('');
-
-					MyConditionalPlayForm.openOverlay(MyModalEdit);
-				}
-			};
-			MyRequest.onerror = function ()
-			{
-				jThymian.printError(MyRequest.statusText);
-				ThymianLog.log(MyRequest.statusText, 0, window.location.pathname)
-			};
-			MyRequest.send(null);
-		}
-		catch (err)
-		{
-			ThymianLog.logException(err);
-			jThymian.printError(err);
-		}
-	},
-	saveValues: function(values)
-	{
-		try
-		{
-			let url = ThymianConfig.main_site + "?site=playlists_async_conditional_play"
-				+ url_separator + "item_id=" + item_id + url_separator + "action=save" + values;
-
-			let MyRequest = new XMLHttpRequest();
-			MyRequest.open("GET", url, true);
-			MyRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			MyRequest.onload = function ()
-			{
-				if (MyRequest.status !== 200)
-				{
-					jThymian.printError(MyRequest.statusText);
-				}
-				else
-				{
-					let jsonResponse = JSON.parse(MyRequest.responseText);
-					if (jsonResponse.success === false)
-					{
-						MyModalEdit.setErrorText(jsonResponse.message);
-					}
-					else
-					{
-						MyModalEdit.close();
-						let icon = document.getElementById("conditional_play_id_" + item_id);
-						if (MyConditionalPlayForm.enable_conditional_play.checked)
-						{
-							icon.classList.add("icon_values_setted");
-						}
-						else
-						{
-							icon.classList.remove("icon_values_setted");
-						}
-						jPlaylist.setSaveAlert();
-					}
-				}
-			};
-			MyRequest.onerror = function ()
-			{
-				jThymian.printError(MyRequest.statusText);
-				ThymianLog.log(MyRequest.statusText, 0, window.location.pathname)
-			};
-
-			MyRequest.send(null);
-		}
-		catch (err)
-		{
-			ThymianLog.logException(err);
-			jThymian.printError(err);
-		}
-	}
-};

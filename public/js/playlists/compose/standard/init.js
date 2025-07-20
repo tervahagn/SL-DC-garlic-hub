@@ -27,10 +27,10 @@ import {ItemFactory}       from "./items/ItemFactory.js";
 import {DragDropHandler}   from "./DragDropHandler.js";
 import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
 import {PlaylistsService} from "./playlists/PlaylistsService.js";
-import {WidgetsService}   from "./editors/WidgetsService.js";
 import {WidgetFactory} from "./editors/WidgetFactory.js";
+import {ConditionalPlayFactory} from "./editors/ConditionalPlayFactory.js";
 
-document.addEventListener("DOMContentLoaded", function ()
+document.addEventListener("DOMContentLoaded", async function ()
 {
 	const dropTarget = document.getElementById("thePlaylist");
 	const playlistId = document.getElementById("playlist_id").value;
@@ -38,36 +38,18 @@ document.addEventListener("DOMContentLoaded", function ()
 	const playlistsService    = new PlaylistsService(new FetchClient());
 	const itemsService        = new ItemsService(new FetchClient());
 	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
-	const itemsList           = new ItemList(new ItemFactory(new WidgetFactory()), itemsService, dropTarget, playlistsProperties);
+	const itemFactory         = new ItemFactory(new WidgetFactory(), new ConditionalPlayFactory());
+	const itemsList           = new ItemList(itemFactory, itemsService, dropTarget, playlistsProperties);
 	const dragDropHandler     = new DragDropHandler(dropTarget, itemsService, itemsList);
 	dragDropHandler.playlistId = playlistId;
 
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
 	insertContextMenu.init(playlistId);
-	itemsList.buildPlaylist(playlistId);
+	await itemsList.buildPlaylist(playlistId);
 
 	playlistsProperties.init(playlistId);
 
-	const widgetEdit = document.getElementsByClassName("edit-widget");
-	for (let i = 0; i < widgetEdit.length; i++)
-	{
-		widgetEdit[i].onclick = function ()
-		{
-			let widgetService = new WidgetsService(new FetchClient());
-			let widgetData =  widgetService.fetchConfiguration(widgetEdit[i].parentElement.dataset.itemid);
-
-			/*
-	let jsonResponse = JSON.parse(MyRequest.responseText);
-
-	this.MyWidgetForm = new CreateWidgetForm(jsonResponse.preferences, jsonResponse.values, jsonResponse.translations);
-	this.MyWidgetForm.parsePreferences();
-	this.MyModalEdit = new TModalContainer('');
-	this.MyWidgetForm.openOverlay(this.MyModalEdit);
-	*/
-
-		}
-	}
 
 
 });

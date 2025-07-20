@@ -19,12 +19,15 @@
 */
 declare(strict_types=1);
 
+use App\Framework\Controller\JsonResponseHandler;
 use App\Framework\Core\Acl\AclHelper;
+use App\Framework\Core\BaseValidator;
 use App\Framework\Core\Config\Config;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Sanitizer;
 use App\Framework\Core\Session;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\TemplateEngine\AdapterInterface;
 use App\Framework\Utils\Datatable\BuildService;
 use App\Framework\Utils\Datatable\DatatableTemplatePreparer;
 use App\Framework\Utils\Datatable\PrepareService;
@@ -39,6 +42,7 @@ use App\Modules\Playlists\Collector\Builder\PlaylistBuilderFactory;
 use App\Modules\Playlists\Collector\ContentReader;
 use App\Modules\Playlists\Collector\ExternalContentReader;
 use App\Modules\Playlists\Collector\SimplePlaylistStructureFactory;
+use App\Modules\Playlists\Controller\ConditionalPlayController;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -48,6 +52,9 @@ use App\Modules\Playlists\Controller\ShowSettingsController;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Playlists\Helper\Compose\RightsChecker;
 use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
+use App\Modules\Playlists\Helper\ConditionalPlay\Orchestrator;
+use App\Modules\Playlists\Helper\ConditionalPlay\ResponseBuilder;
+use App\Modules\Playlists\Helper\ConditionalPlay\TemplatePreparer;
 use App\Modules\Playlists\Helper\Datatable\ControllerFacade;
 use App\Modules\Playlists\Helper\Datatable\DatatableBuilder;
 use App\Modules\Playlists\Helper\Datatable\DatatablePreparer;
@@ -63,6 +70,7 @@ use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
+use App\Modules\Playlists\Services\ConditionalPlayService;
 use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\ExportService;
@@ -306,5 +314,25 @@ $dependencies[WidgetsController::class] = DI\factory(function (ContainerInterfac
 		$container->get(CsrfToken::class),
 	);
 });
+$dependencies[ConditionalPlayService::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ConditionalPlayService(
+		$container->get(ItemsService::class),
+		$container->get('ModuleLogger')
+	);
+});
+$dependencies[ConditionalPlayController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new ConditionalPlayController(
+		new Orchestrator(
+			new ResponseBuilder($container->get(JsonResponseHandler::class), $container->get(Translator::class)),
+			$container->get(UserSession::class),
+			$container->get(BaseValidator::class),
+			new TemplatePreparer($container->get(Translator::class), $container->get(AdapterInterface::class)),
+			$container->get(ConditionalPlayService::class),
+		)
+	);
+});
+
 
 return $dependencies;

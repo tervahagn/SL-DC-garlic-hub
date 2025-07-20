@@ -30,6 +30,7 @@ use App\Modules\Mediapool\Controller\UploadController;
 use App\Modules\Player\Controller\PlayerPlaylistController;
 use App\Modules\Player\Controller\PlayerIndexController;
 use App\Modules\Player\Controller\ShowConnectivityController;
+use App\Modules\Playlists\Controller\ConditionalPlayController;
 use App\Modules\Playlists\Controller\ExportController;
 use App\Modules\Playlists\Controller\ItemsController;
 use App\Modules\Playlists\Controller\PlaylistsController;
@@ -154,8 +155,11 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->patch('/playlists/items', resolve([ItemsController::class, 'updateItemOrders'], $container));
 	$group->get('/playlists/item/{item_id:\d+}', resolve([ItemsController::class, 'fetch'], $container));
 	$group->patch('/playlists/item', resolve([ItemsController::class, 'edit'], $container));
+
 	$group->get('/playlists/widget/fetch/{item_id:\d+}', resolve([WidgetsController::class, 'fetch'], $container));
 	$group->patch('/playlists/widget/save', resolve([WidgetsController::class, 'save'], $container));
+	$group->get('/playlists/item/conditional-play/{item_id:\d+}', resolve([ConditionalPlayController::class, 'fetch'], $container));
+	$group->patch('/playlists/item/conditional-play', resolve([ConditionalPlayController::class, 'save'], $container));
 
 	$group->patch('/player/playlist', resolve([PlayerPlaylistController::class, 'replacePlaylist'], $container));
 	$group->patch('/player/push', resolve([PlayerPlaylistController::class, 'pushPlaylist'], $container));

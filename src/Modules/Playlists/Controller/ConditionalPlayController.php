@@ -28,7 +28,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ConditionalPlayController
 {
-
 	public function __construct(private readonly Orchestrator $orchestrator) {}
 
 	/**

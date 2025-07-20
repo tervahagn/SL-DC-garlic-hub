@@ -18,17 +18,13 @@
 */
 
 import {Utils} from "../../../../core/Utils.js";
-import {WidgetsService} from "../editors/WidgetsService.js";
-import {FetchClient} from "../../../../core/FetchClient.js";
-import {WidgetForm}  from "../editors/WidgetForm.js";
-import {EditDialog}  from "../editors/EditDialog.js";
-import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class Item
 {
 	#itemData = null
 	#itemsService = null;
 	#widgetFactory = null;
+	#conditionalPlayFactory = null;
 	#playlistItem = null;
 	#cmsEdition = document.getElementById("cms_edition").value;
 
@@ -45,11 +41,12 @@ export class Item
 	#itemDuration = null;
 	#isItemDurationInProcess = false;
 
-	constructor(itemData, itemsService, widgetFactory)
+	constructor(itemData, itemsService, widgetFactory, conditionalPlayFactory)
 	{
 		this.#itemData = itemData;
 		this.#itemsService = itemsService;
 		this.#widgetFactory = widgetFactory;
+		this.#conditionalPlayFactory = conditionalPlayFactory;
 	}
 
 
@@ -238,16 +235,26 @@ export class Item
 
 		if (this.#cmsEdition !== "edge")
 		{
-			this.#conditionalPlayAction = this.#playlistItem.querySelector('.conditional-play');
 			this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
 			this.#editSettingsAction    = this.#playlistItem.querySelector('.edit-settings');
 		}
 		else
 		{
-			this.#playlistItem.querySelector('.conditional-play').remove();
+			this.#conditionalPlayAction = this.#playlistItem.querySelector('.conditional-play');
 			this.#playlistItem.querySelector('.edit-trigger').remove();
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
+
+		if (this.#conditionalPlayAction !== null)
+		{
+			this.#conditionalPlayAction.addEventListener("click", async () =>
+			{
+				let conditionalPlay = this.#conditionalPlayFactory.create();
+				await conditionalPlay.fetch(this.#itemData.item_id);
+				conditionalPlay.initDialog();
+			});
+		}
+
 
 		if (this.#itemData.mimetype === "application/widget" && this.#itemData.content_data !== "")
 		{

@@ -24,13 +24,13 @@ export class ConditionalPlayService extends BaseService
 {
 	async fetchEditor(id)
 	{
-		let url = "/async/playlists/conditional-play/fetch/" + id;
+		let url = "/async/playlists/item/conditional-play/" + id;
 		return await this._sendRequest(url, "GET");
 	}
 
 	async saveValues(id, data)
 	{
-		let url = "/async/playlists/conditional-play/save";
+		let url = "/async/playlists/item/conditional-play";
 		data["item_id"] = id;
 
 		return await this._sendRequest(url, "PATCH", data);
