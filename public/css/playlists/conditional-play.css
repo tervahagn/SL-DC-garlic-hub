@@ -1,15 +1,11 @@
 /* conditional play  timer */
 
-#edit_conditional_play
-{
-	padding:0;
-	margin:0;
-}
-	#edit_conditional_play > li
-	{
-		padding:1em 0;
-		margin:0;
-	}
+.form-group{margin:0 0 0.5rem 0;display: flex; gap:0.5rem;align-items: center;}
+    .form-group div{gap:0.5rem; align-items: center;}
+    .form-group label{display: inline;padding:0;margin:0;}
+    .form-group > label{width:10rem;}
+.form-group input[type=date], [type=time]{width:8rem;}
+
 
 .weekdays_header
 {
@@ -18,7 +14,7 @@
 	margin:0;
 }
 
-.list_weekday
+.list_weekday^
 {
 	list-style: none;
 	display: flex;
@@ -30,12 +26,6 @@
 	height:32px;
 }
 
-.list_weekday li *
-{
-	padding: 0;
-	margin: 0;
-}
 
-.label_weekday {width: 15%;height:12px;}
-.checkbox_weekday {width: 5%;height:12px;}
+.checkbox-weekday {width: 5%;height:12px;}
 .slider {width: 70%;text-align: center; height:30px;}
