@@ -18,19 +18,28 @@
 */
 'use strict';
 
+const SUN = 1;
+const MON = 2;
+const TUE = 4;
+const WED = 8;
+const THU = 16;
+const FRI = 32;
+const SAT = 64;
+
 export class ConditionalPlayForm
 {
 	#enable_conditional_play = null;
 	#edit_conditional_play   = null;
 	enable_date_period      = null;
 	edit_date_period        = null;
-	date_from               = null;
-	date_until              = null;
+	#dateFrom               = null;
+	#dateUntil              = null;
+	#timeFrom               = null;
+	#timeUntil              = null;
 	enable_time_period      = null;
 	edit_time_period        = null;
-	time_from               = null;
-	time_until              = null;
 	#conditionalPlaySliderFactory = null;
+	#weekdays = {};
 
 
 	constructor(conditionalPlaySliderFactory)
@@ -52,6 +61,26 @@ export class ConditionalPlayForm
 		this.handleConditionalPlayCheckBox()
 	}
 
+	initConditionalPlay()
+	{
+		this.#enable_conditional_play.onclick = () =>
+		{
+			this.handleConditionalPlayCheckBox();
+		}
+	}
+
+	initDatePeriod()
+	{
+		this.enable_date_period = document.getElementById("enable_date_period");
+		this.edit_date_period   = document.getElementById("edit_date_period");
+		this.#dateFrom          = document.getElementById("date_from");
+		this.#dateUntil         = document.getElementById("date_until");
+		this.enable_date_period.onclick = () =>
+		{
+			this.#handleDatePeriodCheckBox();
+		}
+	}
+
 	handleConditionalPlayCheckBox()
 	{
 		if (this.#enable_conditional_play.checked)
@@ -71,33 +100,16 @@ export class ConditionalPlayForm
 			}
 		}
 	}
-	initConditionalPlay()
-	{
-		this.#enable_conditional_play.onclick = () =>
-		{
-			this.handleConditionalPlayCheckBox();
-		}
-	}
+
 	#handleDatePeriodCheckBox()
 	{
 		if (this.enable_date_period.checked)
 			this.edit_date_period.style.display = "flex";
 		else
 		{
-			this.date_from.value    = "";
-			this.date_until.value   = "";
+			this.#dateFrom.value    = "";
+			this.#dateUntil.value   = "";
 			this.edit_date_period.style.display = "none";
-		}
-	}
-	initDatePeriod()
-	{
-		this.enable_date_period = document.getElementById("enable_date_period");
-		this.edit_date_period   = document.getElementById("edit_date_period");
-		this.date_from          = document.getElementById("date_from");
-		this.date_until         = document.getElementById("date_until");
-		this.enable_date_period.onclick = () =>
-		{
-			this.#handleDatePeriodCheckBox();
 		}
 	}
 
@@ -107,8 +119,8 @@ export class ConditionalPlayForm
 			this.edit_time_period.style.display = "flex";
 		else
 		{
-			this.time_from.value    = "00:00";
-			this.time_until.value   = "00:00";
+			this.#timeFrom.value    = "00:00";
+			this.#timeUntil.value   = "00:00";
 			this.edit_time_period.style.display = "none";
 		}
 	}
@@ -116,8 +128,8 @@ export class ConditionalPlayForm
 	{
 		this.enable_time_period = document.getElementById("enable_time_period");
 		this.edit_time_period   = document.getElementById("edit_time_period");
-		this.time_from    = document.getElementById("time_from");
-		this.time_until   = document.getElementById("time_until");
+		this.#timeFrom    = document.getElementById("time_from");
+		this.#timeUntil   = document.getElementById("time_until");
 		this.enable_time_period.onclick = () =>
 		{
 			this.#handleTimePeriodCheckBox();
@@ -126,13 +138,15 @@ export class ConditionalPlayForm
 
 	initWeekDays()
 	{
-		let sunday    = this.#createWeekdaySliderGroup(1);
-		let monday    = this.#createWeekdaySliderGroup(2);
-		let tuesday   = this.#createWeekdaySliderGroup(4);
-		let wednesday = this.#createWeekdaySliderGroup(8);
-		let thursday  = this.#createWeekdaySliderGroup(16);
-		let friday    = this.#createWeekdaySliderGroup(32);
-		let saturday  = this.#createWeekdaySliderGroup(64);
+		this.#weekdays = {
+			[SUN]: this.#createWeekdaySliderGroup(SUN),
+			[MON]: this.#createWeekdaySliderGroup(MON),
+			[TUE]: this.#createWeekdaySliderGroup(TUE),
+			[WED]: this.#createWeekdaySliderGroup(WED),
+			[THU]: this.#createWeekdaySliderGroup(THU),
+			[FRI]: this.#createWeekdaySliderGroup(FRI),
+			[SAT]: this.#createWeekdaySliderGroup(SAT)
+		}
 	}
 
 	#createWeekdaySliderGroup(weekdayId, from = 0, until = 96)
@@ -142,55 +156,58 @@ export class ConditionalPlayForm
 
 	collectValues()
 	{
-		return this.getDateTimeFromHTML() + this.getWeekdaysFromHTML();
+		let ret         = this.#getDateAndTime();
+		ret["weekdays"] = this.#getWeekdays();
+
+		return ret;
 	}
 
-	getDateTimeFromHTML()
+	#getDateAndTime()
 	{
+		if (!this.#enable_conditional_play.checked)
+			return {};
+
 		let	date_from_val  = "0000-00-00";
 		let	date_until_val = "0000-00-00";
 		let	time_from_val  = "00:00";
 		let	time_until_val = "00:00";
-		if (this.#enable_conditional_play.checked)
+		if (this.enable_date_period.checked)
 		{
-			if (this.enable_date_period.checked)
-			{
-				if (date_from.value !== "")
-					date_from_val  = date_from.value;
-				if (date_until.value !== "")
-					date_until_val = date_until.value;
-			}
-			if (this.enable_time_period.checked)
-			{
-				time_from_val  = time_from.value;
-				time_until_val = time_until.value;
-			}
+			if (this.#dateFrom.value !== "")
+				date_from_val  = this.#dateFrom.value;
+			if (this.#dateUntil.value !== "")
+				date_until_val = this.#dateUntil.value;
 		}
-		return url_separator + "date_from=" +date_from_val +
-			url_separator + "date_until="+date_until_val +
-			url_separator + "time_from="+time_from_val +
-			url_separator + "time_until="+time_until_val;
+		if (this.enable_time_period.checked)
+		{
+			time_from_val  = this.#timeFrom.value;
+			time_until_val = this.#timeUntil.value;
+		}
+
+		return {
+			"date": {"from": date_from_val, "until": date_until_val},
+			"time": {"from": time_from_val, "until": time_until_val}
+		};
 	}
 
-	getWeekdaysFromHTML()
+	#getWeekdays()
 	{
-		let edit_weekdays   = 0;
-		let weektimes_from  = "";
-		let weektimes_until = "";
-		if (this.#enable_conditional_play.checked)
-		{
-			$('#checkboxes_weekdays :checked').each(function ()
+		if (!this.#enable_conditional_play.checked)
+			return {};
+
+		let weekdays = {};
+		Object.entries(this.#weekdays).forEach(([weekday, sliderGroup]) => {
+			if (sliderGroup.isEnabled())
 			{
-				var i = parseInt($(this).val());
-				edit_weekdays += i;
-				weektimes_from += $("#slider_" + i).slider("values", 0) + "|";
-				weektimes_until += $("#slider_" + i).slider("values", 1) + "|";
-			});
-		}
-		return url_separator + "weekdays="	+ edit_weekdays +
-			url_separator + "weektimes_from=" + weektimes_from.substr(0, weektimes_from.length-1) +
-			url_separator + "weektimes_until=" + weektimes_until.substr(0, weektimes_until.length-1);
+				const pos = sliderGroup.getHandlePositions()
+				weekdays[weekday] = {"from":parseInt(pos[0], 10), "until": parseInt(pos[1])}
+			}
+
+		});
+
+		return weekdays;
 	}
+
 
 
 

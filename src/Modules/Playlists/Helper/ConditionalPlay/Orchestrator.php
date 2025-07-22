@@ -25,6 +25,7 @@ namespace App\Modules\Playlists\Helper\ConditionalPlay;
 use App\Framework\Core\BaseValidator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Exceptions\UserException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Modules\Auth\UserSession;
@@ -82,6 +83,19 @@ class Orchestrator
 		return null;
 	}
 
+	public function validateForSave(ResponseInterface $response): ?ResponseInterface
+	{
+		$answer = $this->validate($response);
+		if ($answer !== null)
+			return $answer;
+
+		// todo validate array
+
+		return null;
+	}
+
+
+
 	/**
 	 * @throws UserException
 	 * @throws CoreException
@@ -111,17 +125,22 @@ class Orchestrator
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 * @throws FrameworkException
-	 * @throws InvalidArgumentException
+	 * @throws ModuleException
 	 */
 	public function save(ResponseInterface $response): ?ResponseInterface
 	{
 		$this->conditionalPlayService->setUID($this->userSession->getUID());
 
+		unset($this->input['csrf_token']);
+		unset($this->input['item_id']);
+
 		$item = $this->conditionalPlayService->fetchAccesibleItem($this->itemId);
 		if ($item === [])
 			return $this->responseBuilder->itemNotFound($response);
 
-		return null;
+		$this->conditionalPlayService->saveConditionalPlay($this->itemId, $this->input);
+
+		return $this->responseBuilder->generalSuccess($response, []);
 	}
 
 

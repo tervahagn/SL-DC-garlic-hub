@@ -73,9 +73,14 @@ class ConditionalPlayService extends AbstractBaseService
 	{
 		try
 		{
-			$item            = $this->fetchAccesibleItem($itemId);
-			$requestData     = $this->prepareContentData($item['conditional'], $requestData);
-			$this->itemService->updateField($itemId, 'conditional', $requestData);
+			$item = $this->fetchAccesibleItem($itemId);
+			if (empty($item))
+				throw new ModuleException('items', 'No item found.');
+
+			$affected = $this->itemService->updateField($itemId, 'conditional', @serialize($requestData));
+			if ($affected === 0)
+				throw new ModuleException('items', 'Could not save conditional play for item .');
+
 			return true;
 		}
 		catch (Throwable $e)
@@ -86,6 +91,7 @@ class ConditionalPlayService extends AbstractBaseService
 	}
 
 	/**
+	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException

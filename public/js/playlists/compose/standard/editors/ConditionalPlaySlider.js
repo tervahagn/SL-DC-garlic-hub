@@ -31,8 +31,9 @@ export class ConditionalPlaySlider
 	enable()
 	{
 		this.#slider.noUiSlider.enable();
-		this.#rangeFrom.innerHTML = this.#convertMinutesToTime(from * 15)
-		this.#rangeUntil.innerHTML = this.#convertMinutesToTime(until * 15)
+		const positions = this.getHandlePositions();
+		this.#rangeFrom.innerHTML = this.#convertMinutesToTime(Number(positions[0]) * 15)
+		this.#rangeUntil.innerHTML = this.#convertMinutesToTime(Number(positions[1]) * 15)
 	}
 
 	disable()
@@ -40,6 +41,16 @@ export class ConditionalPlaySlider
 		this.#slider.noUiSlider.disable();
 		this.#rangeFrom.innerHTML = ""
 		this.#rangeUntil.innerHTML = ""
+	}
+
+	getHandlePositions()
+	{
+		return this.#slider.noUiSlider.get(true);
+	}
+
+	isEnabled()
+	{
+		return this.#enabler.checked;
 	}
 
 	create(weekdayId, start, end)
@@ -58,7 +69,7 @@ export class ConditionalPlaySlider
 
 		this.#rangeFrom  = document.getElementById("range_from_"+weekdayId );
 		this.#rangeUntil = document.getElementById("range_until_"+weekdayId );
-		this.#enabler = document.getElementById("enable_weekday_"+weekdayId);
+		this.#enabler    = document.getElementById("enable_weekday_"+weekdayId);
 		this.#toggleEnabled(this.#enabler.checked);
 		this.#eventListenToEnabler();
 
@@ -69,6 +80,7 @@ export class ConditionalPlaySlider
 				that.#rangeUntil.innerHTML = that.#convertMinutesToTime(values[1] * 15);
 		});
 	}
+
 
 	#eventListenToEnabler()
 	{

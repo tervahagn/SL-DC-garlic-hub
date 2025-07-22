@@ -42,4 +42,14 @@ class ConditionalPlayController
 		return $this->orchestrator->fetch($response);
 	}
 
+	public function save(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		$inputValues = $request->getParsedBody();
+		$answer = $this->orchestrator->setInput($inputValues)->validate($response);
+		if ($answer !== null)
+			return $answer;
+
+		return $this->orchestrator->save($response);
+	}
+
 }
