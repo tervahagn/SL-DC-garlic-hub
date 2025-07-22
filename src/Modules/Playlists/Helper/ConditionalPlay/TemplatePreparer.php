@@ -63,7 +63,7 @@ class TemplatePreparer
 			'LANG_CONDITIONAL_PLAY' => $this->translator->translate('conditional_play', 'playlists'),
 			'LANG_DATE_PERIOD' => $this->translator->translate('validity_period', 'playlists'),
 			'LANG_DAILY' => $this->translator->translate('daily', 'main'),
-			'LANG_WEEKDAYS' => $this->translator->translate('weekdays', 'playlists'),
+			'LANG_WEEKDAYS' => $this->translator->translate('weekdays', 'main'),
 			'LANG_FROM'   => $this->translator->translate('from', 'main'),
 			'LANG_UNTIL'  => $this->translator->translate('until', 'main'),
 			'CONDITIONAL_PLAY_ITEM_ID' => $itemId,
