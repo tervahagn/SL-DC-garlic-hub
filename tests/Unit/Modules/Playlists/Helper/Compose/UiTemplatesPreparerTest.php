@@ -270,6 +270,7 @@ class UiTemplatesPreparerTest extends TestCase
 					'/css/external/dragula.min.css',
 					'/css/mediapool/selector.css',
 					'/css/playlists/composer.css',
+					'/css/external/nouislider.min.css',
 					'/css/playlists/conditional-play.css'
 				],
 				'footer_modules' => ['/js/external/dragula.min.js', '/js/playlists/compose/standard/init.js'],
