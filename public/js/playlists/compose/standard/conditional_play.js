@@ -369,7 +369,7 @@ ConditionalPlay = {
 					{
 						MyModalEdit.close();
 						let icon = document.getElementById("conditional_play_id_" + item_id);
-						if (MyConditionalPlayForm.enable_conditional_play.checked)
+						if (MyConditionalPlayForm.#enable_conditional_play.checked)
 						{
 							icon.classList.add("icon_values_setted");
 						}

@@ -17,21 +17,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 'use strict';
-import noUiSlider from "../../../../external/nouislider.min.mjs";
+
+import {ConditionalPlaySlider} from "./ConditionalPlaySlider.js";
 
 export class ConditionalPlaySliderFactory
 {
-	create(element, start, end)
+	create(weekdayId, start, end)
 	{
-		return noUiSlider.create(element, {
-			start: [start, end],
-			step: 1,
-			snap: true,
-			connect: true,
-			range: {
-				'min': [0],
-				'max': [96]
-			}
-		});
+		const Slider = new ConditionalPlaySlider();
+		Slider.create(weekdayId, start, end);
+		return Slider;
 	}
+
+
 }

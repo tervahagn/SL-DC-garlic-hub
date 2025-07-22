@@ -22,12 +22,17 @@ import {FetchClient}    from "../../../../core/FetchClient.js";
 import {ConditionalPlayForm}     from "./ConditionalPlayForm.js";
 import {ConditionalPlay}     from "./ConditionalPlay.js";
 import {EditDialog}     from "./EditDialog.js";
+import {ConditionalPlaySliderFactory} from "./ConditionalPlaySliderFactory.js";
 
 export class ConditionalPlayFactory
 {
 	create()
 	{
-		return new ConditionalPlay(new EditDialog(), new ConditionalPlayForm(), new ConditionalPlayService(new FetchClient()))
+		return new ConditionalPlay(
+			new EditDialog(),
+			new ConditionalPlayForm(new ConditionalPlaySliderFactory()),
+			new ConditionalPlayService(new FetchClient())
+		)
 	}
 
 }

@@ -21,15 +21,15 @@
 export class ConditionalPlay
 {
 	#editDialog = null;
-	#conditionPlayForm = null;
+	#conditionalPlayForm = null;
 	#conditionalPlayService = null;
 	#itemData = null;
 	#html = null;
 
-	constructor(editDialog, conditionPlayForm, conditionalPlayService)
+	constructor(editDialog, conditionalPlayForm, conditionalPlayService)
 	{
-		this.#editDialog = editDialog;
-		this.#conditionPlayForm = conditionPlayForm;
+		this.#editDialog             = editDialog;
+		this.#conditionalPlayForm    = conditionalPlayForm;
 		this.#conditionalPlayService = conditionalPlayService;
 	}
 
@@ -47,13 +47,14 @@ export class ConditionalPlay
 	{
 		this.#editDialog.setTitle(this.#itemData.item_name);
 		this.#editDialog.setId(this.#itemData.item_id);
-		this.#conditionPlayForm.parsePreferences(this.#widgetData.data.preferences, this.#widgetData.data.values);
 		this.#editDialog.setContent(this.#html);
+
+		this.#conditionalPlayForm.init();
 
 		let saveCallBack = async (e) =>
 		{
 			e.preventDefault();
-			let values = this.#conditionPlayForm.collectValues();
+			let values = this.#conditionalPlayForm.collectValues();
 			let result = await this.#conditionalPlayService.saveValues(this.#itemData.data.item_id, values);
 			if (result.success === false)
 			{

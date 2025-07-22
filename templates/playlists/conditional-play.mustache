@@ -23,18 +23,12 @@
 		</div>
 		<div id="checkboxes_weekdays">
 			<strong>{{{LANG_WEEKDAYS}}}</strong>
-
 			{{#list_weekdays}}
-			<div class="list_weekday" id="week_day_{{{WEEKDAY_NUMBER}}}">
-				<div class="checkbox-weekday">
-					<label for="enable_weekday_{{{WEEKDAY_NUMBER}}}">
-						<input type="checkbox" value="{{{WEEKDAY_NUMBER}}}" id="enable_weekday_{{{WEEKDAY_NUMBER}}}" {{{WEEK_DAY_CHECKED}}} class="enable_weekdays"/> {{{WEEKDAY}}}
-					</label>
-				</div>
+			<div class="sliders-group" id="week_day_{{{WEEKDAY_NUMBER}}}">
+				<input type="checkbox" value="{{{WEEKDAY_NUMBER}}}" id="enable_weekday_{{{WEEKDAY_NUMBER}}}" {{{WEEK_DAY_CHECKED}}} class="enable_weekdays"/>
+				<label for="enable_weekday_{{{WEEKDAY_NUMBER}}}">{{{WEEKDAY}}}</label>
 				<div class="slider">
-					<input type="hidden" id="hidden_range_from_{{{WEEKDAY_NUMBER}}}" value="{{{HIDDEN_RANGE_FROM}}}" />
-					<input type="hidden" id="hidden_range_until_{{{WEEKDAY_NUMBER}}}" value="{{{HIDDEN_RANGE_UNTIL}}}" />
-					<span id="range1_from_{{{WEEKDAY_NUMBER}}}"></span> - <span id="range1_until_{{{WEEKDAY_NUMBER}}}"></span>
+					<span id="range_from_{{{WEEKDAY_NUMBER}}}"></span> - <span id="range_until_{{{WEEKDAY_NUMBER}}}"></span>
 					<div class="slider-range" id="slider_{{{WEEKDAY_NUMBER}}}"></div>
 				</div>
 			</div>

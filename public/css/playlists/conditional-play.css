@@ -7,6 +7,17 @@
 .form-group input[type=date], [type=time]{width:8rem;}
 
 
+.sliders-group{margin:0;padding:0.5rem;display: flex; gap:0.5rem;align-items:center;height:55px}
+.sliders-group:nth-child(odd) {background-color: #f1f1f1;}
+.sliders-group > label{width:8rem;}
+.sliders-group label{display: inline;padding:0;margin:0;}
+
+.slider {width:70%;text-align: center; height:55px;}
+
+.noUi-handle {background: var(--gh-secondary-color);}
+
+.noUi-connect {background: var(--gh-third-color);}
+
 .weekdays_header
 {
 	font-weight: bold;
@@ -14,18 +25,4 @@
 	margin:0;
 }
 
-.list_weekday^
-{
-	list-style: none;
-	display: flex;
-	gap:0.5em;
-	align-items: flex-end;
-	padding: 0;
-	margin: 0;
-	position: relative;
-	height:32px;
-}
 
-
-.checkbox-weekday {width: 5%;height:12px;}
-.slider {width: 70%;text-align: center; height:30px;}
