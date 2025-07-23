@@ -49,7 +49,7 @@ export class ConditionalPlay
 		this.#editDialog.setId(this.#itemData.item_id);
 		this.#editDialog.setContent(this.#html);
 
-		this.#conditionalPlayForm.init();
+		this.#conditionalPlayForm.init(this.#itemData.conditional);
 
 		let saveCallBack = async (e) =>
 		{

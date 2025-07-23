@@ -76,8 +76,11 @@ export class ConditionalPlaySlider
 		const that = this;
 		this.#slider.noUiSlider.on('update', function (values)
 		{
+			if (that.isEnabled()) // to prevent a set on init
+			{
 				that.#rangeFrom.innerHTML = that.#convertMinutesToTime(values[0] * 15);
 				that.#rangeUntil.innerHTML = that.#convertMinutesToTime(values[1] * 15);
+			}
 		});
 	}
 

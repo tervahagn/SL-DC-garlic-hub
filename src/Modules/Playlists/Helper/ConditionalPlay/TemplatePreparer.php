@@ -52,12 +52,11 @@ class TemplatePreparer
 	 */
 	public function prepare(int $itemId, array $conditionalPlayData): void
 	{
-		$dateFrom  = $conditionalPlayData['date_from'] ?? '';
-		$dateUtil  = $conditionalPlayData['date_until'] ?? '';
-		$timeFrom  = $conditionalPlayData['time_from'] ?? '';
-		$timeUntil = $conditionalPlayData['time_until'] ?? '';
-		$weekdays  = $conditionalPlayData['weekdays'] ?? 0;
-		$weektimes = $conditionalPlayData['weektimes'] ?? [];
+		$dateFrom  = $conditionalPlayData['date']['from'] ?? '';
+		$dateUtil  = $conditionalPlayData['date']['until'] ?? '';
+		$timeFrom  = $conditionalPlayData['time']['from'] ?? '';
+		$timeUntil = $conditionalPlayData['time']['until'] ?? '';
+		$weekdays  = $conditionalPlayData['weekdays'] ?? [];
 
 		$this->templateData = [
 			'LANG_CONDITIONAL_PLAY' => $this->translator->translate('conditional_play', 'playlists'),
@@ -84,16 +83,10 @@ class TemplatePreparer
 			$this->conditionalPlay = true;
 		}
 
-		$this->templateData['list_weekdays'] = $this->determineWeekdays($weekdays, $weektimes);
+		$this->templateData['list_weekdays'] = $this->determineWeekdays($weekdays);
 
 		if ($this->conditionalPlay)
 			$this->templateData['CONDITIONAL_PLAY_CHECKED'] = 'checked';
-
-		/*
-			'item_id' => $item_id,
-			'title'   => $this->translator->translate('conditional_play_edit', 'playlists'),
-			'html'    => $DlgTpl->get()
-*/
 	}
 
 	public function render(): string
@@ -101,7 +94,10 @@ class TemplatePreparer
 		return $this->template->render('playlists/conditional-play', $this->templateData);
 	}
 
-	private function determineWeekdays(int $weekdays, array $weektimes): array
+	/**
+	 * @param array<string,mixed> $weekdays
+	 */
+	private function determineWeekdays(array $weekdays): array
 	{
 		$listWeekdays = [];
 		foreach($this->translator->translateArrayForOptions('weekday_selects', 'main') as $key => $inner_value)
@@ -112,22 +108,11 @@ class TemplatePreparer
 				'WEEKDAY' => $inner_value,
 			];
 
-			if (($bin & $weekdays) > 0)
+			if (array_key_exists($bin, $weekdays))
 			{
 				$weekday['WEEK_DAY_CHECKED'] = 'checked';
 				$this->conditionalPlay = true;
 			}
-
-			$from = 0;
-			$until = 0;
-			if (array_key_exists($bin, $weektimes))
-			{
-				$from = $weektimes[$bin]['from'];
-				$until = $weektimes[$bin]['until'];
-			}
-			$weekday['HIDDEN_RANGE_FROM']  = $from;
-			$weekday['HIDDEN_RANGE_UNTIL'] = $until;
-
 			$listWeekdays[] = $weekday;
 		}
 

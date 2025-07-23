@@ -40,6 +40,7 @@ export class ConditionalPlayForm
 	edit_time_period        = null;
 	#conditionalPlaySliderFactory = null;
 	#weekdays = {};
+	#conditional = {};
 
 
 	constructor(conditionalPlaySliderFactory)
@@ -47,8 +48,9 @@ export class ConditionalPlayForm
 		this.#conditionalPlaySliderFactory = conditionalPlaySliderFactory;
 	}
 
-	init()
+	init(conditional)
 	{
+		this.#conditional = conditional;
 		this.#enable_conditional_play = document.getElementById("enable_conditional_play");
 		this.#edit_conditional_play   = document.getElementById("edit_conditional_play");
 
@@ -119,8 +121,8 @@ export class ConditionalPlayForm
 			this.edit_time_period.style.display = "flex";
 		else
 		{
-			this.#timeFrom.value    = "00:00";
-			this.#timeUntil.value   = "00:00";
+			this.#timeFrom.value    = "";
+			this.#timeUntil.value   = "";
 			this.edit_time_period.style.display = "none";
 		}
 	}
@@ -138,6 +140,7 @@ export class ConditionalPlayForm
 
 	initWeekDays()
 	{
+
 		this.#weekdays = {
 			[SUN]: this.#createWeekdaySliderGroup(SUN),
 			[MON]: this.#createWeekdaySliderGroup(MON),
@@ -149,8 +152,16 @@ export class ConditionalPlayForm
 		}
 	}
 
-	#createWeekdaySliderGroup(weekdayId, from = 0, until = 96)
+	#createWeekdaySliderGroup(weekdayId)
 	{
+		let from = 0;
+		let until = 96;
+		if (this.#conditional.weekdays && this.#conditional.weekdays[weekdayId])
+		{
+			from = this.#conditional.weekdays[weekdayId].from;
+			until = this.#conditional.weekdays[weekdayId].until;
+		}
+
 		return this.#conditionalPlaySliderFactory.create(weekdayId, from, until);
 	}
 
@@ -167,10 +178,10 @@ export class ConditionalPlayForm
 		if (!this.#enable_conditional_play.checked)
 			return {};
 
-		let	date_from_val  = "0000-00-00";
-		let	date_until_val = "0000-00-00";
-		let	time_from_val  = "00:00";
-		let	time_until_val = "00:00";
+		let	date_from_val  = "";
+		let	date_until_val = "";
+		let	time_from_val  = "";
+		let	time_until_val = "";
 		if (this.enable_date_period.checked)
 		{
 			if (this.#dateFrom.value !== "")
