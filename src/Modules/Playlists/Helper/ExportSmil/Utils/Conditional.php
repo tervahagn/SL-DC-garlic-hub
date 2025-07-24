@@ -45,39 +45,38 @@ class Conditional
 			return '';
 
 		$expr = '';
-		if ($this->conditional['date_from'] != '0000-00-00')
+		if ($this->conditional['date']['from'] != '')
 		{
-			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->conditional['date_from']."')&gt;=0";
+			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->conditional['date']['from']."')&gt;=0";
 		}
-		if ($this->conditional['date_until'] != '0000-00-00')
+		if ($this->conditional['date']['until'] != '')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
 
-			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->conditional['date_until']."')&lt;=0";
+			$expr .= "adapi-compare(substring-before(adapi-date(), 'T'), '".$this->conditional['date']['until']."')&lt;=0";
 		}
-		if ($this->conditional['time_from'] != '00:00:00')
+		if ($this->conditional['time']['from'] != '00:00:00')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
 
-			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$this->conditional['time_from']."')&gt;=0";
+			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$this->conditional['time']['from']."')&gt;=0";
 		}
 
-		$time_until = $this->conditional['time_until'] == '00:00:00' ? '23:59:59' : $this->conditional['time_until'];
-		if ($this->conditional['time_until'] != '00:00:00')
+		$time_until = $this->conditional['time']['until'] == '00:00:00' ? '23:59:59' : $this->conditional['time']['until'];
+		if ($this->conditional['time']['until'] != '')
 		{
 			if ($expr != '')
 				$expr .= ' and ';
 
-			$time_until = $this->conditional['time_until'];
+			$time_until = $this->conditional['time']['until'];
 			$expr .= "adapi-compare(substring-after(adapi-date(), 'T'), '".$time_until."')&lt;=0";
 		}
-		$weektimes = '';
+		$weekdays = '';
 
-		$this->initialiseWeekTimes();
 
-		if (count($this->conditional['weektimes']) > 0)
+		if ($this->conditional['weekdays'] !== [])
 		{
 			if ($expr != '')
 				$expr .= ' and ';
@@ -85,22 +84,22 @@ class Conditional
 			$j = 0;
 			for ($i = 0; $j < 128; $j=pow(2, $i++))
 			{
-				if(isset($this->conditional['weektimes'][$j]))
+				if(isset($this->conditional['weekdays'][$j]))
 				{
-					if ($weektimes != '')
-						$weektimes .= ' or ';
+					if ($weekdays != '')
+						$weekdays .= ' or ';
 
-					$from =  gmdate('H:i:s',$this->conditional['weektimes'][$j]['from']*15*60);
-					$until = gmdate('H:i:s',$this->conditional['weektimes'][$j]['until']*15*60);
+					$from =  gmdate('H:i:s',$this->conditional['weekdays'][$j]['from']*15*60);
+					$until = gmdate('H:i:s',$this->conditional['weekdays'][$j]['until']*15*60);
 					if ($until == '00:00:00')
 						$until = '23:59:59';
-					$weektimes .= '(' .($i-1)."=adapi-weekday() and adapi-compare(substring-after(adapi-date(), 'T'), '$from')&gt;=0 and adapi-compare(substring-after(adapi-date(), 'T'), '$until')&lt;=0)";
+					$weekdays .= '(' .($i-1)."=adapi-weekday() and adapi-compare(substring-after(adapi-date(), 'T'), '$from')&gt;=0 and adapi-compare(substring-after(adapi-date(), 'T'), '$until')&lt;=0)";
 				}
 			}
-			if ($weektimes != '')
-				$weektimes = '('.$weektimes.')';
+			if ($weekdays != '')
+				$weekdays = '('.$weekdays.')';
 		}
-		$expr = $expr.$weektimes;
+		$expr = $expr.$weekdays;
 
 		if ($expr != '')
 			$expr = 'expr="'.$expr.'" ';
@@ -108,9 +107,4 @@ class Conditional
 		return $expr;
 	}
 
-	private function initialiseWeekTimes(): void
-	{
-		if (!is_array($this->conditional['weektimes']) || empty($this->conditional['weektimes']))
-			$this->conditional['weektimes'] = [];
-	}
 }
