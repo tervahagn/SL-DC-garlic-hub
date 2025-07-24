@@ -241,6 +241,11 @@ export class Item
 		else
 		{
 			this.#conditionalPlayAction = this.#playlistItem.querySelector('.conditional-play');
+			if (this.#itemData.conditional === "" || this.#itemData.conditional === "a:0:{}")
+				this.#conditionalPlayAction.classList.remove("icon-values-setted");
+			else
+				this.#conditionalPlayAction.classList.add("icon-values-setted");
+
 			this.#playlistItem.querySelector('.edit-trigger').remove();
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
