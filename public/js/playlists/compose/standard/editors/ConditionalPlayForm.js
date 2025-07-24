@@ -167,21 +167,26 @@ export class ConditionalPlayForm
 
 	collectValues()
 	{
-		let ret         = this.#getDateAndTime();
-		ret["weekdays"] = this.#getWeekdays();
+		let ret = {
+			"date": this.#getDate(),
+			"time":	this.#getTime(),
+			"weekdays": this.#getWeekdays()
+		};
+
+		if (Object.keys(ret["date"]).length === 0 && Object.keys(ret["time"]).length === 0
+			&& Object.keys(ret["weekdays"]).length === 0 )
+			return {};
 
 		return ret;
 	}
 
-	#getDateAndTime()
+	#getDate()
 	{
 		if (!this.#enable_conditional_play.checked)
 			return {};
 
 		let	date_from_val  = "";
 		let	date_until_val = "";
-		let	time_from_val  = "";
-		let	time_until_val = "";
 		if (this.enable_date_period.checked)
 		{
 			if (this.#dateFrom.value !== "")
@@ -189,17 +194,26 @@ export class ConditionalPlayForm
 			if (this.#dateUntil.value !== "")
 				date_until_val = this.#dateUntil.value;
 		}
+
+		return {"from": date_from_val, "until": date_until_val};
+	}
+
+	#getTime()
+	{
+		if (!this.#enable_conditional_play.checked)
+			return {};
+
+		let	time_from_val  = "";
+		let	time_until_val = "";
 		if (this.enable_time_period.checked)
 		{
 			time_from_val  = this.#timeFrom.value;
 			time_until_val = this.#timeUntil.value;
 		}
 
-		return {
-			"date": {"from": date_from_val, "until": date_until_val},
-			"time": {"from": time_from_val, "until": time_until_val}
-		};
+		return {"from": time_from_val, "until": time_until_val};
 	}
+
 
 	#getWeekdays()
 	{
