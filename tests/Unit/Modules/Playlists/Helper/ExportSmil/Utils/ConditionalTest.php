@@ -49,7 +49,7 @@ class ConditionalTest extends TestCase
 	{
 		$conditions = [
 			'date' => ['from' => '2023-11-01', 'until' => '2023-12-31'],
-			'time' => ['from' => '00:00:00', 'until' => '00:00:00'],
+			'time' => [],
 			'weekdays' => []
 		];
 
@@ -64,10 +64,8 @@ class ConditionalTest extends TestCase
 	public function testDetermineExprAttributeWithDateTimeConditions(): void
 	{
 		$conditions = [
-			'date_from' => '2023-11-01',
-			'date_until' => '2023-12-31',
-			'time_from' => '04:00:00',
-			'time_until' => '12:00:00',
+			'date' => ['from' => '2023-11-01', 'until' => '2023-12-31'],
+			'time' => ['from' => '04:00:00', 'until' => '12:00:00'],
 			'weekdays' => []
 		];
 
@@ -83,10 +81,8 @@ class ConditionalTest extends TestCase
 	public function testDetermineExprAttributeWithTimeConditions(): void
 	{
 		$conditions = [
-			'date_from' => '0000-00-00',
-			'date_until' => '0000-00-00',
-			'time_from' => '08:00:00',
-			'time_until' => '18:00:00',
+			'date' => [],
+			'time' => ['from' => '08:00:00', 'until' => '18:00:00'],
 			'weekdays' => []
 		];
 
@@ -101,10 +97,8 @@ class ConditionalTest extends TestCase
 	public function testDetermineExprAttributeWithWeektimesConditions(): void
 	{
 		$conditions = [
-			'date_from' => '0000-00-00',
-			'date_until' => '0000-00-00',
-			'time_from' => '00:00:00',
-			'time_until' => '00:00:00',
+			'date' => [],
+			'time' => [],
 			'weekdays' => [
 				1 => ['from' => 32, 'until' => 48], // 08:00:00 to 12:00:00
 				2 => ['from' => 64, 'until' => 80]  // 16:00:00 to 20:00:00
@@ -124,10 +118,8 @@ class ConditionalTest extends TestCase
 	public function testDetermineExprAttributeWithWeektimesDateimeCombination(): void
 	{
 		$conditions = [
-			'date_from' => '2024-02-01',
-			'date_until' => '2024-05-31',
-			'time_from' => '00:00:00',
-			'time_until' => '00:00:00',
+			'date' => ['from' => '2024-02-01', 'until' => '2024-05-31'],
+			'time' => [],
 			'weekdays' => [
 				1 => ['from' => 0, 'until' => 96]
 			]
