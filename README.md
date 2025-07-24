@@ -10,7 +10,6 @@ Garlic-Hub is a comprehensive Digital Signage Management solution that handles c
 > **Note**: Garlic-Hub is under active development. This version is intended for evaluation and testing purposes. For production use, we recommend closely monitoring progress and providing feedback.
 
 > **Feature Freeze is near. Currently Working on:**
-> - Conditional Play
 > - Trigger
 >- writing unit tests
 >- fixing errors
@@ -48,7 +47,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 | **SMIL Playlists**       | ✅       | Playlist management and export in industry-standard SMIL format                                                                        |
 | **Push support**         | ✅       | Push playlist to a local player                                                                                                        |
 | **Multi-Zone Content**   | ✅       | Graphic display zone editor                                                                                                            |
-| **Conditional Play**     | working | Define datetime conditions for media playback                                                                                          |
+| **Conditional Play**     | ✅       | Define datetime conditions for media playback                                                                                          |
 | **Trigger**              | planned | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                          |
 | **Multi-Zone Content**   | ✅       | Graphic display zone editor                                                                                                            |
 | **Local Player Support** | ✅       | Integration with one local media player                                                                                                |
