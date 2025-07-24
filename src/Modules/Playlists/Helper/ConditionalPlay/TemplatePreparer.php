@@ -53,7 +53,7 @@ class TemplatePreparer
 	public function prepare(int $itemId, array $conditionalPlayData): void
 	{
 		$dateFrom  = $conditionalPlayData['date']['from'] ?? '';
-		$dateUtil  = $conditionalPlayData['date']['until'] ?? '';
+		$dateUntil = $conditionalPlayData['date']['until'] ?? '';
 		$timeFrom  = $conditionalPlayData['time']['from'] ?? '';
 		$timeUntil = $conditionalPlayData['time']['until'] ?? '';
 		$weekdays  = $conditionalPlayData['weekdays'] ?? [];
@@ -67,11 +67,11 @@ class TemplatePreparer
 			'LANG_UNTIL'  => $this->translator->translate('until', 'main'),
 			'CONDITIONAL_PLAY_ITEM_ID' => $itemId,
 			'DATE_FROM'  => $dateFrom,
-			'DATE_UNTIL' => $dateUtil,
+			'DATE_UNTIL' => $dateUntil,
 			'TIME_FROM'  => $timeFrom,
 			'TIME_UNTIL' => $timeUntil
 		];
-		if ($dateFrom !== '' || $dateFrom != '')
+		if ($dateFrom !== '' || $dateUntil != '')
 		{
 			$this->templateData['DATE_PERIOD_CHECKED'] = 'checked';
 			$this->conditionalPlay = true;
@@ -96,6 +96,11 @@ class TemplatePreparer
 
 	/**
 	 * @param array<string,mixed> $weekdays
+	 * @return list<array<string,mixed>>
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	private function determineWeekdays(array $weekdays): array
 	{

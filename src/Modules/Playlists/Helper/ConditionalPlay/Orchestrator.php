@@ -40,8 +40,6 @@ class Orchestrator
 	/** @var array<string,string>  */
 	private array $input;
 	private int $itemId;
-	private int $playlistId;
-	private array $itemData;
 
 	public function __construct(
 		private readonly ResponseBuilder        $responseBuilder,
@@ -60,6 +58,12 @@ class Orchestrator
 		return $this;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function validateSave(ResponseInterface $response): ?ResponseInterface
 	{
 		if (!$this->validator->validateCsrfToken($this->input[BaseEditParameters::PARAMETER_CSRF_TOKEN]))
@@ -83,6 +87,12 @@ class Orchestrator
 		return null;
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	public function validateForSave(ResponseInterface $response): ?ResponseInterface
 	{
 		$answer = $this->validate($response);
@@ -120,12 +130,15 @@ class Orchestrator
 
 
 	/**
+	 * @param ResponseInterface $response
+	 * @return ResponseInterface|null
 	 * @throws CoreException
-	 * @throws UserException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
 	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
 	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws UserException
 	 */
 	public function save(ResponseInterface $response): ?ResponseInterface
 	{

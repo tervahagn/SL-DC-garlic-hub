@@ -22,18 +22,30 @@ declare(strict_types=1);
 
 namespace App\Modules\Playlists\Controller;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
+use App\Framework\Exceptions\UserException;
 use App\Modules\Playlists\Helper\ConditionalPlay\Orchestrator;
+use Doctrine\DBAL\Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
-class ConditionalPlayController
+readonly class ConditionalPlayController
 {
-	public function __construct(private readonly Orchestrator $orchestrator) {}
+	public function __construct(private Orchestrator $orchestrator) {}
 
 	/**
 	 * @param array<string,string> $args
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
 	 */
-	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+	public function fetch(ServerRequestInterface $request, ResponseInterface $response, array $args): ?ResponseInterface
 	{
 		$answer = $this->orchestrator->setInput($args)->validate($response);
 		if ($answer !== null)
@@ -42,8 +54,18 @@ class ConditionalPlayController
 		return $this->orchestrator->fetch($response);
 	}
 
-	public function save(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function save(ServerRequestInterface $request, ResponseInterface $response): ?ResponseInterface
 	{
+		/** @var array<string,string> $inputValues */
 		$inputValues = $request->getParsedBody();
 		$answer = $this->orchestrator->setInput($inputValues)->validate($response);
 		if ($answer !== null)

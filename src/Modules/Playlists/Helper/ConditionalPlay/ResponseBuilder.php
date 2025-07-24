@@ -38,7 +38,13 @@ class ResponseBuilder extends BaseResponseBuilder
 		);
     }
 
-	public function itemNotFound(ResponseInterface $response)
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
+	public function itemNotFound(ResponseInterface $response): ResponseInterface
 	{
 		return $this->jsonResponseHandler->jsonError(
 			$response, $this->translator->translate('item_not_found', 'playlists')
