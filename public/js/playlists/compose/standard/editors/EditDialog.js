@@ -23,6 +23,7 @@ export class EditDialog
 	#itemNameElement      = document.getElementById("editItemName");
 	#itemContentElement   = document.getElementById("editItemContent");
 	#editItemForm         = document.getElementById("editItemForm");
+	#closeEditDialog      = document.getElementById("closeEditDialog");
 	#editItemErrorMessage = document.getElementById("editItemErrorMessage");
 	#cancelButton         = this.#dialogElement.querySelector('button[value="cancel"]');
 	#saveCallback         = null;
@@ -82,6 +83,7 @@ export class EditDialog
 			this.closeDialog();
 		};
 		this.#cancelButton.addEventListener("click", this.cancelHandler);
+		this.#closeEditDialog.addEventListener("click", this.cancelHandler);
 	}
 
 
