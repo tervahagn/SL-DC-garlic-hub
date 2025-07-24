@@ -17,10 +17,6 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {WidgetsService} from "./WidgetsService.js";
-import {FetchClient}    from "../../../../core/FetchClient.js";
-import {WidgetForm}     from "./WidgetForm.js";
-import {EditDialog}     from "./EditDialog.js";
 import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class Widget
