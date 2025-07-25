@@ -23,17 +23,18 @@ export class FetchClient
 
     async fetchData(url, options = {})
     {
-        const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' } };
-        const config          = { ...defaultOptions, ...options };
-        const response        = await fetch(url, config);
 
-        this.#checkResponse(response);
+		const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' } };
+		const config          = { ...defaultOptions, ...options };
+		const response        = await fetch(url, config);
+
+		this.#checkResponse(response);
 
 		// do not use const response.headers.get('Content-Type'); as
 		// supposed alternative.
 		// It is not trustable as server could send wrong content type.
-        try
-        {
+		try
+		{
             return await response.json()
 		}
         catch (e)
@@ -133,7 +134,7 @@ export class FetchClient
         else if (response.status === 500)
             throw new Error('Server error - Try again later.');
         else if (!response.ok)
-            throw new Error(`HTTP-Error: ${response.status}`);
+            throw new Error(`HTTP-Error: ${response.status}.`);
 
     }
 }
