@@ -126,7 +126,7 @@ class MediaController extends AbstractAsyncController
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'media id or node is missing']);
 
 		$this->mediaService->setUID($request->getAttribute('session')->get('user')['UID']);
-		$count = $this->mediaService->moveMedia($bodyParams['media_id'], $bodyParams['node_id']);
+		$count = $this->mediaService->moveMedia($bodyParams['media_id'], (int)$bodyParams['node_id']);
 		return $this->jsonResponse($response, ['success' => true, 'data' => ['deleted_media' => $count]]);
 	}
 
