@@ -179,7 +179,7 @@ class PlayerRestAPIService extends AbstractBaseService
 		}
 
 		$response = $this->apiExecutor->getBodyContentsArray();
-		if ($response['uri'] === '')
+		if (!isset($response['uri']) || $response['uri'] === '')
 			return $this->handleErrors('Switch play default content uri failed');
 
 		$this->contentArray = $response;
