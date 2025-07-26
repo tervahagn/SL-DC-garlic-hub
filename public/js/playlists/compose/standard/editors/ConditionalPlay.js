@@ -18,7 +18,6 @@
 */
 'use strict';
 
-
 import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class ConditionalPlay
