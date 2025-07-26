@@ -48,7 +48,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 | **Push support**         | ✅       | Push playlist to a local player                                                                                                        |
 | **Multi-Zone Content**   | ✅       | Graphic display zone editor                                                                                                            |
 | **Conditional Play**     | ✅       | Define datetime conditions for media playback                                                                                          |
-| **Trigger**              | planned | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                          |
+| **Trigger**              | working | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                          |
 | **Multi-Zone Content**   | ✅       | Graphic display zone editor                                                                                                            |
 | **Local Player Support** | ✅       | Integration with one local media player                                                                                                |
 | **Internationalization** | ✅       | Locale-specific configurations and adaptable UI (English complete, German complete)                                                    |
