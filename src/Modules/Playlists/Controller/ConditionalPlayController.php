@@ -19,7 +19,6 @@
 */
 declare(strict_types=1);
 
-
 namespace App\Modules\Playlists\Controller;
 
 use App\Framework\Exceptions\CoreException;
