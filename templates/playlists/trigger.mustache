@@ -1,0 +1,141 @@
+<ul id="trigger">
+	<li>
+		<input type="hidden" name="trigger_item_id" id="edit_item_id" value="{{{TRIGGER_ITEM_ID}}}" />
+		<a href="#" title="{{{LANG_ADD_WALLCLOCK}}}" class="thymian-icon-add" id="add_wallclock">
+			{{{LANG_WALLCLOCK}}}
+		</a>
+	<li id="wallclocks">
+		{{#wallclock_trigger}}
+		<ul id="wallclock_{{{WALLCLOCK_COUNT}}}">
+			<li>
+				<p>
+					<a href="#" title="{{{LANG_REMOVE_WALLCLOCK}}}" class="thymian-icon-remove" id="remove_wallclock_{{{WALLCLOCK_COUNT}}}">{{{LANG_REMOVE_1}}}</a>
+				</p>
+				<label for="edit_weekday_{{{WALLCLOCK_COUNT}}}">{{{LANG_WEEKDAY}}}
+					<select id="edit_weekday_{{{WALLCLOCK_COUNT}}}" class="edit_weekday">
+						{{#wallclock_weekday}}
+						<option value="{{{WEEKDAY_NUMBER}}}" {{{WEEKDAY_NUMBER_SELECTED}}}>{{{WEEKDAY_NAME}}}</option>
+						{{/wallclock_weekday}}
+					</select>
+				</label>
+				<label for="edit_weekday_prefix_{{{WALLCLOCK_COUNT}}}" >{{{LANG_WEEKDAY_PREFEIX}}}
+					<select id="edit_weekday_prefix_{{{WALLCLOCK_COUNT}}}" class="edit_weekday_prefix" style="{{{WEEKDAY_PREFIX_DISPLAY}}}">
+						<option value="+" {{{SELECT_WEEKDAY_AFTER}}}>{{{WEEKDAY_AFTER}}}</option>
+						<option value="-" {{{SELECT_WEEKDAY_BEFORE}}}>{{{WEEKDAY_BEFORE}}}</option>
+					</select>
+				</label>
+				<label for="edit_datetime_{{{WALLCLOCK_COUNT}}}">{{{LANG_DATETIME}}}
+					<input type="datetime-local" id="edit_datetime_{{{WALLCLOCK_COUNT}}}" class="edit_date_time" step="1" value="{{{DATETIME}}}" />
+				</label>
+			</li>
+			<li>
+				<p>{{{LANG_REPEATS}}}</p>
+				<label for="select_no_repeats_{{{WALLCLOCK_COUNT}}}">
+					<input type="radio" id="select_no_repeats_{{{WALLCLOCK_COUNT}}}" value="-1" name="select_repeats_{{{WALLCLOCK_COUNT}}}" {{{NO_REPEATS_SELECT}}}/> {{{LANG_NO_REPEATS}}}
+				</label>
+				<label for="select_infinite_repeats_{{{WALLCLOCK_COUNT}}}">
+					<input type="radio" id="select_indefinite_repeats_{{{WALLCLOCK_COUNT}}}" value="0" name="select_repeats_{{{WALLCLOCK_COUNT}}}" {{{INFINITE_REPEATS_SELECT}}} /> {{{LANG_INFINITE_REPEATS}}}
+				</label>
+				<label for="select_number_repeats_{{{WALLCLOCK_COUNT}}}">
+					<input type="radio" id="select_number_repeats_{{{WALLCLOCK_COUNT}}}" value="1" name="select_repeats_{{{WALLCLOCK_COUNT}}}" {{{NUMBER_REPEATS_SELECT}}} /> {{{LANG_NUMBER_REPEATS}}}
+					<input type="number" id="numbers_repeats_{{{WALLCLOCK_COUNT}}}" min="1" max="9999" value="{{{NUMBER_REPEATS_VALUE}}}" style="{{{NUMBER_REPEATS_DISPLAY}}}"/>
+				</label>
+			</li>
+
+			<li id="repeats_{{{WALLCLOCK_COUNT}}}" class="repeats" style="{{{REPEATS_VISIBILITY}}}">
+				{{{LANG_EVERY}}}:
+				<ul>
+					<li>
+						<label for="repeat_minutes_{{{WALLCLOCK_COUNT}}}">
+							<input type="number" id="repeat_minutes_{{{WALLCLOCK_COUNT}}}" class="repeat_minutes" min="0" max="59" value="{{{REPEAT_MINUTES}}}" /><br /> {{{LANG_REPEAT_MINUTES}}}
+						</label>
+					</li>
+					<li>
+						<label for="repeat_hours_{{{WALLCLOCK_COUNT}}}">
+							<input type="number" id="repeat_hours_{{{WALLCLOCK_COUNT}}}" class="repeat_hours" min="0" max="23" value="{{{REPEAT_HOURS}}}" /><br /> {{{LANG_REPEAT_HOURS}}}
+						</label>
+					</li>
+					<li>
+						<label for="repeat_days">
+							<input type="number" id="repeat_days_{{{WALLCLOCK_COUNT}}}" class="repeat_days" min="0" max="7" value="{{{REPEAT_DAYS}}}" /><br /> {{{LANG_REPEAT_DAYS}}}
+						</label>
+					</li>
+					<li>
+						<label for="repeat_weeks">
+							<input type="number" id="repeat_weeks_{{{WALLCLOCK_COUNT}}}" class="repeat_weeks" min="0" max="4" value="{{{REPEAT_WEEKS}}}" /><br /> {{{LANG_REPEAT_WEEKS}}}
+						</label>
+					</li>
+					<li>
+						<label for="repeat_months">
+							<input type="number"  id="repeat_months_{{{WALLCLOCK_COUNT}}}" class="repeat_months" min="0" max="11" value="{{{REPEAT_MONTHS}}}" /><br /> {{{LANG_REPEAT_MONTHS}}}
+						</label>
+					</li>
+					<li>
+						<label for="repeat_years_{{{WALLCLOCK_COUNT}}}">
+							<input type="number" id="repeat_years_{{{WALLCLOCK_COUNT}}}" class="repeat_years" min="0" max="11"  value="{{{REPEAT_YEARS}}}" /><br /> {{{LANG_REPEAT_YEARS}}}
+						</label>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		{{/wallclock_trigger}}
+	</li>
+	<li>
+		<a href="#" title="{{{LANG_ADD_ACCESSKEY}}}" class="thymian-icon-add"  id="add_accesskey">
+			{{{LANG_ACCESSKEY}}}
+		</a>
+	</li>
+	<li id="accesskeys">
+		{{#accesskey_trigger}}
+			<ul id="accesskey_{{{ACCESSKEY_COUNT}}}">
+				<li>
+					<p>
+						<a href="#" title="{{{LANG_REMOVE_ACCESSKEY}}}" class="thymian-icon-remove" id="remove_accesskey_{{{ACCESSKEY_COUNT}}}">{{{LANG_REMOVE_2}}}</a>
+					</p>
+					<label>
+						 <input type="text" id="edit_accesskey_{{{ACCESSKEY_COUNT}}}" class="edit_accesskey" maxlength="1" value="{{{ACCESSKEY}}}" title="{{{LANG_ONLY_ALPHANUMERIC}}}" />
+					</label>
+			</ul>
+		{{/accesskey_trigger}}
+	</li>
+	<li>
+		<a href="#" title="{{{LANG_ADD_TOUCH}}}" class="thymian-icon-add" id="add_touch">
+			{{{LANG_TOUCH}}}
+		</a>
+	</li>
+	<li id="touches">
+		{{#touch_trigger}}
+		<ul id="touch_{{{TOUCH_COUNT}}}">
+			<li>
+				<p>
+					<a href="#" title="{{{LANG_REMOVE_TOUCH}}}" class="thymian-icon-remove" id="remove_touch_{{{TOUCH_COUNT}}}">{{{LANG_REMOVE_3}}}</a>
+				</p>
+				<label>
+					<select id="edit_touch_item_{{{TOUCH_COUNT}}}" class="edit_touch_item">
+						{{#touch_items}}
+						<option value="{{{TOUCH_ITEM_ID}}}" {{{TOUCH_ITEM_SELECTED}}}>{{{TOUCH_ITEM_NAME}}}</option>
+						{{/touch_items}}
+					</select>
+				</label>
+		</ul>
+		{{/touch_trigger}}
+	</li>
+	<li>
+		<a href="#" title="{{{LANG_ADD_NOTIFY}}}" class="thymian-icon-add" id="add_notify">
+			{{{LANG_NOTIFY}}}
+		</a>
+	</li>
+	<li id="notifies">
+		{{#notify_trigger}}
+		<ul id="notify_{{{NOTIFY_COUNT}}}">
+			<li>
+				<p>
+					<a href="#" title="{{{LANG_REMOVE_NOTIFY}}}" class="thymian-icon-remove" id="remove_notify_{{{NOTIFY_COUNT}}}">{{{LANG_REMOVE_4}}}</a>
+				</p>
+				<label>
+					<input type="text" id="edit_notify_{{{NOTIFY_COUNT}}}" class="edit_notify" value="{{{NOTIFY}}}" title="{{{LANG_ONLY_ALPHANUMERIC_NOTIFY}}}" />
+				</label>
+		</ul>
+		{{/notify_trigger}}
+	</li>
+</ul>
