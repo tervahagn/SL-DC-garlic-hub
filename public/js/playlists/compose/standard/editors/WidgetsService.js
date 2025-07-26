@@ -28,7 +28,7 @@ export class WidgetsService extends BaseService
 		let url = "/async/playlists/widget/fetch/" + id;
 		return await this._sendRequest(url, "GET");
 	}
-	async saveWidgetValues(id, data)
+	async storeWidgetValues(id, data)
 	{
 		let url = "/async/playlists/widget/save";
 		data["item_id"] = id;

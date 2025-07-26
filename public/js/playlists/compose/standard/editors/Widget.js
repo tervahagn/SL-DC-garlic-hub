@@ -49,7 +49,7 @@ export class Widget
 		{
 			e.preventDefault();
 			let values = this.#widgetForm.collectValues();
-			let result = await this.#widgetsService.saveWidgetValues(this.#widgetData.data.item_id, values);
+			let result = await this.#widgetsService.storeWidgetValues(this.#widgetData.data.item_id, values);
 			if (result.success === false)
 			{
 				this.#editDialog.setErrorMessage(result.error_message);
