@@ -58,7 +58,7 @@ export class ConditionalPlay
 		{
 			e.preventDefault();
 			let values = this.#conditionalPlayForm.collectValues();
-			let result = await this.#conditionalPlayService.saveValues(this.#itemData.item_id, values);
+			let result = await this.#conditionalPlayService.store(this.#itemData.item_id, values);
 			if (result.success === false)
 			{
 				this.#editDialog.setErrorMessage(result.error_message);

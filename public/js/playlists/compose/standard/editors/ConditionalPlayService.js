@@ -28,7 +28,7 @@ export class ConditionalPlayService extends BaseService
 		return await this._sendRequest(url, "GET");
 	}
 
-	async saveValues(id, data)
+	async store(id, data)
 	{
 		let url = "/async/playlists/item/conditional-play";
 		data["item_id"] = id;
