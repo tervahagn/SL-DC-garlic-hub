@@ -154,6 +154,7 @@ readonly class UiTemplatesPreparer
 					'/css/mediapool/selector.css',
 					'/css/external/nouislider.min.css',
 					'/css/playlists/composer.css',
+					'/css/playlists/trigger.css',
 					'/css/playlists/conditional-play.css'
 				],
 				'footer_modules' => ['/js/external/dragula.min.js','/js/playlists/compose/standard/init.js']
