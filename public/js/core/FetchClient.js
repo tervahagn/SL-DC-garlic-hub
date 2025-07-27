@@ -20,27 +20,47 @@
 export class FetchClient
 {
     #xhr = null;
+	#timeout = 6000;
 
     async fetchData(url, options = {})
     {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), this.#timeout);
 
-		const defaultOptions  = {method: 'GET', headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' } };
+		const defaultOptions  = {
+			method: 'GET',
+			headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+			signal: controller.signal
+		};
 		const config          = { ...defaultOptions, ...options };
-		const response        = await fetch(url, config);
 
-		this.#checkResponse(response);
-
-		// do not use const response.headers.get('Content-Type'); as
-		// supposed alternative.
-		// It is not trustable as server could send wrong content type.
 		try
 		{
-            return await response.json()
+			const response = await fetch(url, config);
+			this.#checkResponse(response);
+
+			// do not use const response.headers.get('Content-Type'); as
+			// supposed alternative.
+			// It is not trustable as the server could send the wrong content type.
+			try
+			{
+				return await response.json()
+			} catch (e)
+			{
+				return await response.text();
+			}
 		}
-        catch (e)
-        {
-            return await response.text();
-        }
+		catch (error)
+		{
+			if (error.name === 'AbortError')
+				throw new Error('Timeout: Server did not respond.');
+			else
+				throw new Error('Network error: ' + error.message);
+		}
+		finally
+		{
+			clearTimeout(timeoutId);
+		}
     }
 
     initUploadWithProgress()
