@@ -46,6 +46,22 @@ export class BaseService
 		});
 	}
 
+	_sendRequestAsync(url, method, data)
+	{
+		let options;
+
+		if (method === "GET")
+			options = {method, headers: { 'Content-Type': 'application/json' }};
+		else
+		{
+			data.csrf_token = this.#detectCsrfTokenInMetaTag();
+
+			options = {method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)};
+		}
+
+		return this.#fetchClient.fetchData(url, options);
+	}
+
 	#detectCsrfTokenInMetaTag()
 	{
 		const metaTag = document.querySelector('meta[name="csrf-token"]');
