@@ -240,13 +240,13 @@ export class Item
 		else
 		{
 			this.#conditionalPlayAction = this.#playlistItem.querySelector('.conditional-play');
-			if (this.#itemData.conditional === "" || this.#itemData.conditional === "a:0:{}")
+			if (this.#itemData.conditional === undefined || this.#itemData.conditional === "" || this.#itemData.conditional === "a:0:{}")
 				this.#conditionalPlayAction.classList.remove("icon-values-setted");
 			else
 				this.#conditionalPlayAction.classList.add("icon-values-setted");
 
 			this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
-			if (this.#itemData.conditional === "" || this.#itemData.conditional === "a:0:{}")
+			if (this.#itemData.begin_trigger === undefined || this.#itemData.begin_trigger === "" || this.#itemData.begin_trigger === "a:0:{}")
 				this.#editTriggerAction.classList.remove("icon-values-setted");
 			else
 				this.#editTriggerAction.classList.add("icon-values-setted");
