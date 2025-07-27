@@ -29,6 +29,7 @@ import {PlaylistsProperties} from "./playlists/PlaylistsProperties.js";
 import {PlaylistsService} from "./playlists/PlaylistsService.js";
 import {WidgetFactory} from "./editors/WidgetFactory.js";
 import {ConditionalPlayFactory} from "./editors/ConditionalPlayFactory.js";
+import {TriggerFactory} from "./editors/TriggerFactory.js";
 
 document.addEventListener("DOMContentLoaded", async function ()
 {
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function ()
 	const playlistsService    = new PlaylistsService(new FetchClient());
 	const itemsService        = new ItemsService(new FetchClient());
 	const playlistsProperties = new PlaylistsProperties(playlistsService, lang);
-	const itemFactory         = new ItemFactory(new WidgetFactory(), new ConditionalPlayFactory());
+	const itemFactory         = new ItemFactory(new WidgetFactory(), new ConditionalPlayFactory(), new TriggerFactory());
 	const itemsList           = new ItemList(itemFactory, itemsService, dropTarget, playlistsProperties);
 	const dragDropHandler     = new DragDropHandler(dropTarget, itemsService, itemsList);
 	dragDropHandler.playlistId = playlistId;

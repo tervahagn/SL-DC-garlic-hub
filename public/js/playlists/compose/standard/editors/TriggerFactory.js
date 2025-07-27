@@ -20,7 +20,9 @@
 
 import {EditDialog} from "./EditDialog.js";
 import {TriggerForm} from "./TriggerForm.js";
+import {TriggerService} from "./TriggerService.js";
 import {FetchClient} from "../../../../core/FetchClient.js";
+import {Trigger} from "./Trigger.js";
 
 export class TriggerFactory
 {
@@ -28,7 +30,7 @@ export class TriggerFactory
 	{
 		return new Trigger(
 			new EditDialog(),
-			new TriggerForm(new ConditionalPlaySliderFactory()),
+			new TriggerForm(),
 			new TriggerService(new FetchClient())
 		)
 	}

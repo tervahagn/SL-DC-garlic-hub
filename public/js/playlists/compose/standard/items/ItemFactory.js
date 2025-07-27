@@ -23,16 +23,17 @@ export class ItemFactory
 {
 	#widgetFactory = null;
 	#conditionalPlayFactory = null;
+	#triggerFactory = null;
 
-
-	constructor(widgetFactory, conditionalPlayFactory)
+	constructor(widgetFactory, conditionalPlayFactory, triggerFactory)
 	{
 		this.#widgetFactory = widgetFactory;
 		this.#conditionalPlayFactory = conditionalPlayFactory;
+		this.#triggerFactory = triggerFactory;
 	}
 
 	create(itemData, itemsService)
 	{
-		return new Item(itemData, itemsService, this.#widgetFactory, this.#conditionalPlayFactory);
+		return new Item(itemData, itemsService, this.#widgetFactory, this.#conditionalPlayFactory, this.#triggerFactory);
 	}
 }

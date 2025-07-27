@@ -25,6 +25,7 @@ export class Item
 	#itemsService = null;
 	#widgetFactory = null;
 	#conditionalPlayFactory = null;
+	#triggerFactory = null;
 	#playlistItem = null;
 	#cmsEdition = document.getElementById("cms_edition").value;
 
@@ -41,12 +42,13 @@ export class Item
 	#itemDuration = null;
 	#isItemDurationInProcess = false;
 
-	constructor(itemData, itemsService, widgetFactory, conditionalPlayFactory)
+	constructor(itemData, itemsService, widgetFactory, conditionalPlayFactory, triggerFactory)
 	{
 		this.#itemData = itemData;
 		this.#itemsService = itemsService;
 		this.#widgetFactory = widgetFactory;
 		this.#conditionalPlayFactory = conditionalPlayFactory;
+		this.#triggerFactory = triggerFactory;
 	}
 
 
@@ -264,6 +266,15 @@ export class Item
 			});
 		}
 
+		if (this.#editTriggerAction !== null)
+		{
+			this.#editTriggerAction.addEventListener("click", async () =>
+			{
+				let trigger = this.#triggerFactory.create();
+				await trigger.fetchBeginTrigger(this.#itemData.item_id);
+				trigger.initDialog();
+			});
+		}
 
 		if (this.#itemData.mimetype === "application/widget" && this.#itemData.content_data !== "")
 		{

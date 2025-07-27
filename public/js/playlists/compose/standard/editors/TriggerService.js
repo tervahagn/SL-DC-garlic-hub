@@ -18,7 +18,9 @@
 */
 'use strict';
 
-class TriggerService
+import {BaseService} from "../../../../core/Base/BaseService.js";
+
+export class TriggerService extends BaseService
 {
 	async fetchBeginTrigger(id)
 	{
