@@ -35,6 +35,11 @@ export class FlashMessageHandler
 		this.#showMessage(message, 'success');
 	}
 
+	showInformation(message)
+	{
+		this.#showMessage(message, 'information');
+	}
+
 	showError(message)
 	{
 		this.#showMessage(message, 'error');

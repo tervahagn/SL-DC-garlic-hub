@@ -166,9 +166,9 @@ footer nav ul #compile_time {margin-left: auto;}
 	font-weight: bold;
 	color: #fff;
 }
-	.message-bar--success {background-color: green; animation: fade-out 5s forwards;}
+	.message-bar--success {background-color: green; animation: fade-out 6s forwards;}
 	.message-bar--error {background-color: red; }
-	.message-bar--info {background-color: blue; }
+	.message-bar--information {background-color: blue; animation: fade-out 6s forwards;}
 	@keyframes fade-out {
 		0% { opacity: 1; }
 		80% { opacity: 1; }
