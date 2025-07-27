@@ -61,7 +61,7 @@ class ConditionalPlayService extends AbstractBaseService
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error('Error widget fetch: ' . $e->getMessage());
+			$this->logger->error('Error conditional fetch: ' . $e->getMessage());
 			return [];
 		}
 	}

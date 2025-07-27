@@ -66,7 +66,7 @@ readonly class ConditionalPlayController
 	{
 		/** @var array<string,string> $inputValues */
 		$inputValues = $request->getParsedBody();
-		$answer = $this->orchestrator->setInput($inputValues)->validate($response);
+		$answer = $this->orchestrator->setInput($inputValues)->validateSave($response);
 		if ($answer !== null)
 			return $answer;
 
