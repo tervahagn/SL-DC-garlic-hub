@@ -49,6 +49,7 @@ use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Controller\TriggerController;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Playlists\Helper\Compose\RightsChecker;
 use App\Modules\Playlists\Helper\Compose\UiTemplatesPreparer;
@@ -66,18 +67,20 @@ use App\Modules\Playlists\Helper\Settings\Facade;
 use App\Modules\Playlists\Helper\Settings\FormElementsCreator;
 use App\Modules\Playlists\Helper\Settings\Parameters;
 use App\Modules\Playlists\Helper\Settings\Validator;
+use App\Modules\Playlists\Helper\Trigger\TriggerPreparer;
 use App\Modules\Playlists\Helper\Widgets\ContentDataPreparer;
 use App\Modules\Playlists\Repositories\ItemsRepository;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
 use App\Modules\Playlists\Services\ConditionalPlayService;
-use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
-use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\ExportService;
+use App\Modules\Playlists\Services\InsertItems\InsertItemFactory;
 use App\Modules\Playlists\Services\ItemsService;
+use App\Modules\Playlists\Services\PlaylistMetricsCalculator;
 use App\Modules\Playlists\Services\PlaylistsDatatableService;
 use App\Modules\Playlists\Services\PlaylistsService;
 use App\Modules\Playlists\Services\PlaylistUsageService;
+use App\Modules\Playlists\Services\TriggerService;
 use App\Modules\Playlists\Services\WidgetsService;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
@@ -330,6 +333,20 @@ $dependencies[ConditionalPlayController::class] = DI\factory(function (Container
 			$container->get(BaseValidator::class),
 			new TemplatePreparer($container->get(Translator::class), $container->get(AdapterInterface::class)),
 			$container->get(ConditionalPlayService::class),
+		)
+	);
+});
+
+
+$dependencies[TriggerController::class] = DI\factory(function (ContainerInterface $container)
+{
+	return new TriggerController(
+		new \App\Modules\Playlists\Helper\Trigger\Orchestrator(
+			new ResponseBuilder($container->get(JsonResponseHandler::class), $container->get(Translator::class)),
+			$container->get(UserSession::class),
+			$container->get(BaseValidator::class),
+			new \App\Modules\Playlists\Helper\Trigger\TemplatePreparer($container->get(AdapterInterface::class), new TriggerPreparer($container->get(Translator::class))),
+			new TriggerService($container->get(ItemsService::class), $container->get('ModuleLogger'))
 		)
 	);
 });

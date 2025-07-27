@@ -37,6 +37,7 @@ use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Controller\ShowComposeController;
 use App\Modules\Playlists\Controller\ShowDatatableController;
 use App\Modules\Playlists\Controller\ShowSettingsController;
+use App\Modules\Playlists\Controller\TriggerController;
 use App\Modules\Playlists\Controller\WidgetsController;
 use App\Modules\Profile\Controller\EditLocalesController;
 use App\Modules\Profile\Controller\ShowPasswordController;
@@ -160,6 +161,8 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->patch('/playlists/widget/save', resolve([WidgetsController::class, 'save'], $container));
 	$group->get('/playlists/item/conditional-play/{item_id:\d+}', resolve([ConditionalPlayController::class, 'fetch'], $container));
 	$group->patch('/playlists/item/conditional-play', resolve([ConditionalPlayController::class, 'save'], $container));
+	$group->get('/playlists/item/begin-trigger/{item_id:\d+}', resolve([TriggerController::class, 'fetch'], $container));
+	$group->patch('/playlists/item/begin-trigger', resolve([TriggerController::class, 'save'], $container));
 
 	$group->patch('/player/playlist', resolve([PlayerPlaylistController::class, 'replacePlaylist'], $container));
 	$group->patch('/player/push', resolve([PlayerPlaylistController::class, 'pushPlaylist'], $container));
