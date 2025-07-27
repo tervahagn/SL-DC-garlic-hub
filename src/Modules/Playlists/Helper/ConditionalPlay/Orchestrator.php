@@ -88,25 +88,6 @@ class Orchestrator
 	}
 
 	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
-	public function validateForSave(ResponseInterface $response): ?ResponseInterface
-	{
-		$answer = $this->validate($response);
-		if ($answer !== null)
-			return $answer;
-
-		// todo validate array
-
-		return null;
-	}
-
-
-
-	/**
 	 * @throws UserException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
@@ -127,7 +108,6 @@ class Orchestrator
 		return $this->responseBuilder->generalSuccess($response, ['data' => $itemData, 'html' => $html]);
 
 	}
-
 
 	/**
 	 * @param ResponseInterface $response

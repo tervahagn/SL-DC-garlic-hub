@@ -31,17 +31,14 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class TemplatePreparer
 {
-	private readonly Translator $translator;
-	private readonly AdapterInterface $template;
 	/** @var array<string,mixed>  */
 	private array $templateData;
 	private bool $conditionalPlay = false;
 
-	public function __construct(Translator $translator, AdapterInterface $template)
-	{
-		$this->translator = $translator;
-		$this->template = $template;
-	}
+	public function __construct(
+		private readonly Translator $translator,
+		private readonly AdapterInterface $template)
+	{}
 
 	/**
 	 * @param array<string,mixed> $conditionalPlayData
