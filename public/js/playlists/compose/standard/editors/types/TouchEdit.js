@@ -18,22 +18,24 @@
 */
 'use strict';
 
-import {EditDialog} from "./EditDialog.js";
-import {TriggerForm} from "./TriggerForm.js";
-import {TriggerService} from "./TriggerService.js";
-import {FetchClient} from "../../../../core/FetchClient.js";
-import {Trigger} from "./Trigger.js";
-import {TypeFactory} from "./types/TypeFactory.js";
-
-export class TriggerFactory
+export class TouchEdit
 {
-	create()
+	#template = document.getElementById("touchTemplate");
+	#node = null;
+
+	init()
 	{
-		return new Trigger(
-			new EditDialog(),
-			new TriggerForm(new TypeFactory()),
-			new TriggerService(new FetchClient())
-		)
+		this.#node = this.#template.content.cloneNode(true)
+		this.#node.querySelector(".remove").addEventListener("click", function(event)
+		{
+			event.preventDefault();
+			event.target.closest('ul').remove();
+		});
+	}
+
+	getEditor()
+	{
+		return this.#node;
 	}
 
 }

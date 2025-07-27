@@ -18,22 +18,27 @@
 */
 'use strict';
 
-import {EditDialog} from "./EditDialog.js";
-import {TriggerForm} from "./TriggerForm.js";
-import {TriggerService} from "./TriggerService.js";
-import {FetchClient} from "../../../../core/FetchClient.js";
-import {Trigger} from "./Trigger.js";
-import {TypeFactory} from "./types/TypeFactory.js";
+import {NotifyEdit} from "./NotifyEdit.js";
+import {TouchEdit}  from "./TouchEdit.js";
+import {AccesskeyEdit} from "./AccesskeyEdit.js";
+import {WallclockEdit} from "./WallclockEdit.js";
 
-export class TriggerFactory
+export class TypeFactory
 {
-	create()
+
+	create(type)
 	{
-		return new Trigger(
-			new EditDialog(),
-			new TriggerForm(new TypeFactory()),
-			new TriggerService(new FetchClient())
-		)
+		switch (type)
+		{
+			case "wallclock":
+				return new WallclockEdit();
+			case "accesskey":
+				return new AccesskeyEdit();
+			case "touch":
+				return new TouchEdit();
+			case "notify":
+				return new NotifyEdit();
+		}
 	}
 
 }

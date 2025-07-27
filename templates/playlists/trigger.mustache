@@ -1,34 +1,34 @@
 <ul id="trigger">
 	<li>
 		<input type="hidden" name="trigger_item_id" id="edit_item_id" value="{{{TRIGGER_ITEM_ID}}}" />
-		<a href="#" title="{{{LANG_ADD_WALLCLOCK}}}" class="bi bi-plus-circle" id="add_wallclock">
+		<button type="button"  title="{{{LANG_ADD_WALLCLOCK}}}" class="bi bi-plus-circle naked-button" id="addWallclock">
 			{{{LANG_WALLCLOCK}}}
-		</a>
-	<li id="wallclocks"></li>
+		</button>
+	<li id="wallclocksContainer"></li>
 	<li>
-		<a href="#" title="{{{LANG_ADD_ACCESSKEY}}}" class="bi bi-plus-circle"  id="add_accesskey">
+		<button type="button"  title="{{{LANG_ADD_ACCESSKEY}}}" class="bi bi-plus-circle naked-button"  id="addAccesskey">
 			{{{LANG_ACCESSKEY}}}
-		</a>
+		</button>
 	</li>
-	<li id="accesskeys"></li>
+	<li id="accesskeysContainer"></li>
 	<li>
-		<a href="#" title="{{{LANG_ADD_TOUCH}}}" class="bi bi-plus-circle" id="add_touch">
+		<button type="button"  title="{{{LANG_ADD_TOUCH}}}" class="bi bi-plus-circle naked-button" id="addTouch">
 			{{{LANG_TOUCH}}}
-		</a>
+		</button>
 	</li>
-	<li id="touches"></li>
+	<li id="touchesContainer"></li>
 	<li>
-		<a href="#" title="{{{LANG_ADD_NOTIFY}}}" class="bi bi-plus-circle" id="add_notify">
+		<button type="button" title="{{{LANG_ADD_NOTIFY}}}" class="bi bi-plus-circle naked-button" id="addNotify">
 			{{{LANG_NOTIFY}}}
-		</a>
+		</button>
 	</li>
-	<li id="notifies"></li>
+	<li id="notifiesContainer"></li>
 </ul>
 <template id="wallclockTemplate">
 		<ul>
 			<li>
 				<p>
-					<a href="#" title="{{{LANG_REMOVE_WALLCLOCK}}}" class="bi bi-trash" >{{{LANG_REMOVE_WALLCLOCK}}}</a>
+					<button type="button" title="{{{LANG_REMOVE_WALLCLOCK}}}" class="bi bi-trash remove naked-button"> {{{LANG_REMOVE_WALLCLOCK}}}</button>
 				</p>
 				<label>{{{LANG_WEEKDAY}}}
 					<select class="edit_weekday">
@@ -66,32 +66,32 @@
 				<ul>
 					<li>
 						<label>
-							<input type="number"  class="repeat_minutes" min="0" max="59"><br /> {{{LANG_REPEAT_MINUTES}}}
+							<input type="number" class="repeat_minutes" min="0" max="59"><br> {{{LANG_REPEAT_MINUTES}}}
 						</label>
 					</li>
 					<li>
 						<label>
-							<input type="number" class="repeat_hours" min="0" max="23"><br /> {{{LANG_REPEAT_HOURS}}}
+							<input type="number" class="repeat_hours" min="0" max="23"><br> {{{LANG_REPEAT_HOURS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_days">
-							<input type="number" class="repeat_days" min="0" max="7"><br /> {{{LANG_REPEAT_DAYS}}}
+							<input type="number" class="repeat_days" min="0" max="7"><br> {{{LANG_REPEAT_DAYS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_weeks">
-							<input type="number" class="repeat_weeks" min="0" max="4"><br /> {{{LANG_REPEAT_WEEKS}}}
+							<input type="number" class="repeat_weeks" min="0" max="4"><br> {{{LANG_REPEAT_WEEKS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_months">
-							<input type="number" class="repeat_months" min="0" max="11"><br /> {{{LANG_REPEAT_MONTHS}}}
+							<input type="number" class="repeat_months" min="0" max="11"><br> {{{LANG_REPEAT_MONTHS}}}
 						</label>
 					</li>
 					<li>
 						<label>
-							<input type="number" class="repeat_years" min="0" max="11"  value="{{{REPEAT_YEARS}}}" /><br /> {{{LANG_REPEAT_YEARS}}}
+							<input type="number" class="repeat_years" min="0" max="11"><br> {{{LANG_REPEAT_YEARS}}}
 						</label>
 					</li>
 				</ul>
@@ -99,11 +99,11 @@
 		</ul>
 </template>
 
-<template id="accesskeysTemplate">
+<template id="accesskeyTemplate">
 	<ul>
 		<li>
 			<p>
-				<a href="#" title="{{{LANG_REMOVE_ACCESSKEY}}}" class="bi bi-trash" >{{{LANG_REMOVE_ACCESSKEY}}}</a>
+				<button type="button" title="{{{LANG_REMOVE_ACCESSKEY}}}" class="bi bi-trash remove naked-button"> {{{LANG_REMOVE_ACCESSKEY}}}</button>
 			</p>
 			<label>
 				 <input type="text" class="edit_accesskey" maxlength="1" pattern="[a-zA-Z0-9]*" title="{{{LANG_ONLY_ALPHANUMERIC}}}">
@@ -111,11 +111,11 @@
 		</li>
 	</ul>
 </template>
-<template id=touchesTemplate">
+<template id="touchTemplate">
 	<ul>
 		<li>
 			<p>
-				<a href="#" title="{{{LANG_REMOVE_TOUCH}}}" class="bi bi-trash" data-id>{{{LANG_REMOVE_TOUCH}}}</a>
+				<button type="button" title="{{{LANG_REMOVE_TOUCH}}}" class="bi bi-trash remove naked-button"> {{{LANG_REMOVE_TOUCH}}}</button>
 			</p>
 			<label>
 				<select id="edit_touch_item_{{{TOUCH_COUNT}}}" class="edit_touch_item">
@@ -125,11 +125,11 @@
 		</li>
 	</ul>
 </template>
-<template id="notifiesTemplate">
-	<ul data-nodify-count="notify_{{{NOTIFY_COUNT}}}">
+<template id="notifyTemplate">
+	<ul>
 		<li>
 			<p>
-				<a href="#" title="{{{LANG_REMOVE_NOTIFY}}}" class="bi bi-trash">{{{LANG_REMOVE_NOTIFY}}}</a>
+				<button type="button" title="{{{LANG_REMOVE_NOTIFY}}}" class="bi bi-trash remove naked-button"> {{{LANG_REMOVE_NOTIFY}}}</button>
 			</p>
 			<label>
 				<input type="text" class="edit_notify" pattern="[a-zA-Z0-9]*" title="{{{LANG_ONLY_ALPHANUMERIC}}}">

@@ -20,14 +20,56 @@
 
 export class TriggerForm
 {
-	html_form = "";
-	title = "";
-	has_save_errors = false;
+	#triggerTypeFactory = null;
+	#triggerData = null;
+	#addWallclock = null;
+	#wallclocksContainer = null;
+	#addAccesskey = null;
+	#accesskeysContainer = null;
+	#addTouch = null;
+	#touchesContainer = null;
+	#addNotify = null;
+	#notifiesContainer = null;
+	#notifyEditors = [];
 
-	constructor(html, title)
+	constructor(triggertypeFactory)
 	{
-		this.html_form = html
-		this.title     = title;
+		this.#triggerTypeFactory = triggertypeFactory;
+	}
+
+	init(triggerData)
+	{
+		this.#triggerData  = triggerData;
+		this.#addWallclock = document.getElementById("addWallclock");
+		this.#wallclocksContainer = document.getElementById("wallclocksContainer");
+		this.#addWallclock.addEventListener("click", () => {
+			const editor = this.#triggerTypeFactory.create("wallclock");
+			editor.init();
+			this.#wallclocksContainer.appendChild(editor.getEditor());
+		});
+		this.#addAccesskey = document.getElementById("addAccesskey");
+		this.#accesskeysContainer = document.getElementById("accesskeysContainer");
+		this.#addAccesskey.addEventListener("click", () => {
+			const editor = this.#triggerTypeFactory.create("accesskey");
+			editor.init();
+			this.#accesskeysContainer.appendChild(editor.getEditor());
+		});
+		this.#addTouch     = document.getElementById("addTouch");
+		this.#touchesContainer = document.getElementById("touchesContainer");
+		this.#addTouch.addEventListener("click", () => {
+			const editor = this.#triggerTypeFactory.create("touch");
+			editor.init();
+			this.#touchesContainer.appendChild(editor.getEditor());
+		});
+		this.#addNotify    = document.getElementById("addNotify");
+		this.#notifiesContainer = document.getElementById("notifiesContainer");
+		this.#addNotify.addEventListener("click", () => {
+			const editor = this.#triggerTypeFactory.create("notify");
+			editor.init();
+			this.#notifiesContainer.appendChild(editor.getEditor());
+			this.#notifyEditors.push(editor);
+
+		});
 	}
 
 	initDateTimeTriggerFunctions(item_id)
