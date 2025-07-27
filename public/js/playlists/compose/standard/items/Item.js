@@ -235,7 +235,6 @@ export class Item
 
 		if (this.#cmsEdition !== "edge")
 		{
-			this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
 			this.#editSettingsAction    = this.#playlistItem.querySelector('.edit-settings');
 		}
 		else
@@ -246,7 +245,12 @@ export class Item
 			else
 				this.#conditionalPlayAction.classList.add("icon-values-setted");
 
-			this.#playlistItem.querySelector('.edit-trigger').remove();
+			this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
+			if (this.#itemData.conditional === "" || this.#itemData.conditional === "a:0:{}")
+				this.#editTriggerAction.classList.remove("icon-values-setted");
+			else
+				this.#editTriggerAction.classList.add("icon-values-setted");
+
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
 

@@ -32,13 +32,13 @@ export class PlayerService extends BaseService
         return await this._sendRequest(url, "PATCH", data);
     }
 
-	async pushPlaylist(playerId)
+	pushPlaylist(playerId)
 	{
 		const url = PlayerApiConfig.PUSH_URI;
 		const data = {
 			player_id: playerId,
 		};
-		return await this._sendRequest(url, "PATCH", data);
+		return this._sendRequestAsync(url, "PATCH", data);
 	}
 
 }

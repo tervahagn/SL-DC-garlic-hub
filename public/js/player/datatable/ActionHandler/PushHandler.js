@@ -22,11 +22,13 @@ export class PushHandler
 {
 	#playerService = null;
 	#messageHandler = null;
+	#waitOverlay = null;
 
-	constructor(messageHandler, PlayerService)
+	constructor(messageHandler, PlayerService, waitOverlay)
 	{
 		this.#messageHandler = messageHandler;
 		this.#playerService = PlayerService;
+		this.#waitOverlay = waitOverlay;
 	}
 
 	init(pushPlaylists)
@@ -41,18 +43,27 @@ export class PushHandler
 	{
 		pushPlaylist.addEventListener('click', async (event) =>
 		{
-			const currentId = event.target.dataset.actionId;
 			try
 			{
-				const result = await this.#playerService.pushPlaylist(currentId);
-				this.#messageHandler.clearAllMessages();
-				if (result.success === true)
-					this.#messageHandler.showSuccess(result.message);
-				else
-					this.#messageHandler.showError(result.error_message);
+				const currentId = event.target.dataset.actionId;
+				this.#playerService.pushPlaylist(currentId)
+				.then(result => {
+					this.#waitOverlay.stop();
+					this.#messageHandler.clearAllMessages();
+					if (result.success === true)
+						this.#messageHandler.showSuccess(result.message);
+					else
+						this.#messageHandler.showError(result.error_message);
+				})
+				.catch(e => {
+					this.#waitOverlay.stop();
+					this.#messageHandler.showError(e.message);
+				});
+				this.#waitOverlay.start();
 			}
 			catch (e)
 			{
+				this.#waitOverlay.stop();
 				this.#messageHandler.showError(e.message);
 			}
 		});

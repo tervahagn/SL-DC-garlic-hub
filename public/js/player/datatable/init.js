@@ -25,6 +25,7 @@ import {PlayerSettingsContextMenu} from "./PlayerSettingsContextMenu.js";
 import {PushHandler}               from "./ActionHandler/PushHandler.js";
 import {FlashMessageHandler} from "../../core/FlashMessageHandler.js";
 import {RemoveHandler}       from "./ActionHandler/RemoveHandler.js";
+import {WaitOverlay} from "../../core/WaitOverlay.js";
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function()
 	const playerService = new PlayerService(new FetchClient())
     const autocompleteFactory = new AutocompleteFactory();
 	const flashMessageHandler = new FlashMessageHandler();
-	const pushHandler = new PushHandler(flashMessageHandler, playerService);
+	const pushHandler = new PushHandler(flashMessageHandler, playerService, new WaitOverlay());
 	pushHandler.init(document.getElementsByClassName("push-playlist"));
 	const removeHandler = new RemoveHandler(playerService);
 	removeHandler.init(document.getElementsByClassName("remove-playlist"));
