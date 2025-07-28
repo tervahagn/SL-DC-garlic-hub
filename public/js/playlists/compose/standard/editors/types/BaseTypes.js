@@ -18,27 +18,34 @@
 */
 'use strict';
 
-import {BaseTypes} from "./BaseTypes.js";
-
-export class TouchEdit extends BaseTypes
+export class BaseTypes
 {
-	#valueField = null;
+	exists = false;
+	node = null;
 
-	init()
+	get exists()
 	{
-		this.cloneNode("touchTemplate")
-		this.addRemoveListener();
+		return this.exists;
+	}
 
-		this.#valueField = this.node.querySelector(".edit-touch-item");
-		this.node.querySelector(".remove").addEventListener("click", function(event)
-		{
+	cloneNode(elementName)
+	{
+		const template = document.getElementById(elementName);
+		this.node = template.content.cloneNode(true);
+	}
+
+	addRemoveListener()
+	{
+		this.exists = true;
+		this.node.querySelector(".remove").addEventListener("click", (event) => {
+			this.exists = false;
 			event.target.closest('ul').remove();
 		});
 	}
 
-	getValues()
+	getEditor()
 	{
-		return this.#valueField.value;
+		return this.node;
 	}
 
 }

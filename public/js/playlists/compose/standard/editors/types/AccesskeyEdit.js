@@ -18,23 +18,28 @@
 */
 'use strict';
 
-export class AccesskeyEdit
+import {BaseTypes} from "./BaseTypes.js";
+
+export class AccesskeyEdit extends BaseTypes
 {
-	#template = document.getElementById("accesskeyTemplate");
-	#node = null;
+	#valueField = null;
 
 	init()
 	{
-		this.#node = this.#template.content.cloneNode(true)
-		this.#node.querySelector(".remove").addEventListener("click", function(event)
+		this.cloneNode("accesskeyTemplate");
+		this.addRemoveListener();
+
+		this.#valueField = this.node.querySelector(".edit-accesskey");
+		this.#valueField.addEventListener("keypress", (evt) =>
 		{
-			event.preventDefault();
-			event.target.closest('ul').remove();
+			if (/[a-zA-Z0-9]/i.test(evt.key) === false)
+				evt.preventDefault()
 		});
 	}
 
-	getEditor()
+	getValues()
 	{
-		return this.#node;
+		return this.#valueField.value;
 	}
+
 }

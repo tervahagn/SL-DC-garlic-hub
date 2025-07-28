@@ -18,24 +18,16 @@
 */
 'use strict';
 
-export class WallclockEdit
-{
-	#template = document.getElementById("wallclockTemplate");
-	#node = null;
+import {BaseTypes} from "./BaseTypes.js";
 
+export class WallclockEdit extends BaseTypes
+{
 	init()
 	{
-		this.#node = this.#template.content.cloneNode(true)
-		this.#node.querySelector(".remove").addEventListener("click", function(event)
-		{
-			event.preventDefault();
-			event.target.closest('ul').remove();
-		});
+		this.cloneNode("wallclockTemplate");
+		this.addRemoveListener();
+
 	}
 
-	getEditor()
-	{
-		return this.#node;
-	}
 
 }

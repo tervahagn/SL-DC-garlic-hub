@@ -24,6 +24,7 @@ import {TriggerService} from "./TriggerService.js";
 import {FetchClient} from "../../../../core/FetchClient.js";
 import {Trigger} from "./Trigger.js";
 import {TypeFactory} from "./types/TypeFactory.js";
+import {RegisterEditors} from "./types/RegisterEditors.js";
 
 export class TriggerFactory
 {
@@ -31,7 +32,7 @@ export class TriggerFactory
 	{
 		return new Trigger(
 			new EditDialog(),
-			new TriggerForm(new TypeFactory()),
+			new TriggerForm(new TypeFactory(new FetchClient()), new RegisterEditors()),
 			new TriggerService(new FetchClient())
 		)
 	}

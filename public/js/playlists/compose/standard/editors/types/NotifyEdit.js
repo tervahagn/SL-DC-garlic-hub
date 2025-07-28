@@ -18,24 +18,31 @@
 */
 'use strict';
 
-export class NotifyEdit
+import * as event from "../../../../../external/nouislider.js";
+import {BaseTypes} from "./BaseTypes.js";
+
+export class NotifyEdit extends BaseTypes
 {
-	#template = document.getElementById("notifyTemplate");
-	#node = null;
+	#valueField = null;
 
 	init()
 	{
-		this.#node = this.#template.content.cloneNode(true)
-		this.#node.querySelector(".remove").addEventListener("click", function(event)
+		this.cloneNode("notifyTemplate");
+		this.addRemoveListener();
+
+		this.#valueField = this.node.querySelector(".edit-notify");
+		this.#valueField.addEventListener("keypress", (evt) =>
 		{
-			event.preventDefault();
-			event.target.closest('ul').remove();
+			if (/[a-zA-Z0-9]/i.test(evt.key) === false)
+				evt.preventDefault()
 		});
 	}
 
-	getEditor()
+
+
+	getValues()
 	{
-		return this.#node;
+		return this.#valueField.value;
 	}
 
 }
