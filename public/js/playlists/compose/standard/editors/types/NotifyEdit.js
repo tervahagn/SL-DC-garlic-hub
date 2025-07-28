@@ -18,7 +18,6 @@
 */
 'use strict';
 
-import * as event from "../../../../../external/nouislider.js";
 import {BaseTypes} from "./BaseTypes.js";
 
 export class NotifyEdit extends BaseTypes

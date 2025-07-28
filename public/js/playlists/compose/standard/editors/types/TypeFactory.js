@@ -22,7 +22,6 @@ import {NotifyEdit} from "./NotifyEdit.js";
 import {TouchEdit}  from "./TouchEdit.js";
 import {AccesskeyEdit} from "./AccesskeyEdit.js";
 import {WallclockEdit} from "./WallclockEdit.js";
-import {type} from "util";
 
 export class TypeFactory
 {
