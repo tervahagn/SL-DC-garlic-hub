@@ -22,6 +22,17 @@ export class BaseTypes
 {
 	exists = false;
 	node = null;
+	#id = 0;
+
+	set id(value)
+	{
+		this.#id = value;
+	}
+
+	get id()
+	{
+		return this.#id;
+	}
 
 	get exists()
 	{

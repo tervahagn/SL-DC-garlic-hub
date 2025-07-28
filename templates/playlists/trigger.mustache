@@ -31,7 +31,7 @@
 					<button type="button" title="{{{LANG_REMOVE_WALLCLOCK}}}" class="bi bi-trash remove naked-button"> {{{LANG_REMOVE_WALLCLOCK}}}</button>
 				</p>
 				<label>{{{LANG_WEEKDAY}}}
-					<select class="edit_weekday">
+					<select class="edit-weekday">
 						<option value="0">-</option>
 						{{#wallclock_weekdays}}
 							<option value="{{{WEEKDAY_NUMBER}}}">{{{LANG_WEEKDAY_NAME}}}</option>
@@ -39,26 +39,26 @@
 					</select>
 				</label>
 				<label>
-					<select class="edit_weekday_prefix">
+					<select class="edit-weekday-prefix">
 						<option value="+">{{{LANG_WEEKDAY_AFTER}}}</option>
 						<option value="-">{{{LANG_WEEKDAY_BEFORE}}}</option>
 					</select>
 				</label>
 				<label>{{{LANG_DATETIME}}}
-					<input type="datetime-local" class="edit_date_time" step="1">
+					<input type="datetime-local" class="edit-datetime" step="1">
 				</label>
 			</li>
 			<li>
 				<p>{{{LANG_REPEATS}}}</p>
 				<label>
-					<input type="radio" value="-1" class="no-repeats"> {{{LANG_NO_REPEATS}}}
+					<input type="radio" value="-1" class="no-repeats-select"> {{{LANG_NO_REPEATS}}}
 				</label>
 				<label>
-					<input type="radio"  value="0" class="infinite_repeats" {{{INFINITE_REPEATS_SELECT}}} /> {{{LANG_INFINITE_REPEATS}}}
+					<input type="radio"  value="0" class="infinite-repeats-select"> {{{LANG_INFINITE_REPEATS}}}
 				</label>
 				<label>
-					<input type="radio" value="1" name="select_repeats_{{{WALLCLOCK_COUNT}}}" {{{NUMBER_REPEATS_SELECT}}} /> {{{LANG_NUMBER_REPEATS}}}
-					<input type="number" min="1" max="9999">
+					<input type="radio" value="1" class="number-repeats-select"> {{{LANG_NUMBER_REPEATS}}}
+					<input type="number" class="number-repeats" min="1" max="9999">
 				</label>
 			</li>
 			<li class="repeats">
@@ -66,32 +66,32 @@
 				<ul>
 					<li>
 						<label>
-							<input type="number" class="repeat_minutes" min="0" max="59"><br> {{{LANG_REPEAT_MINUTES}}}
+							<input type="number" class="repeat-minutes" min="0" max="59"><br> {{{LANG_REPEAT_MINUTES}}}
 						</label>
 					</li>
 					<li>
 						<label>
-							<input type="number" class="repeat_hours" min="0" max="23"><br> {{{LANG_REPEAT_HOURS}}}
+							<input type="number" class="repeat-hours" min="0" max="23"><br> {{{LANG_REPEAT_HOURS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_days">
-							<input type="number" class="repeat_days" min="0" max="7"><br> {{{LANG_REPEAT_DAYS}}}
+							<input type="number" class="repeat-days" min="0" max="7"><br> {{{LANG_REPEAT_DAYS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_weeks">
-							<input type="number" class="repeat_weeks" min="0" max="4"><br> {{{LANG_REPEAT_WEEKS}}}
+							<input type="number" class="repeat-weeks" min="0" max="4"><br> {{{LANG_REPEAT_WEEKS}}}
 						</label>
 					</li>
 					<li>
 						<label for="repeat_months">
-							<input type="number" class="repeat_months" min="0" max="11"><br> {{{LANG_REPEAT_MONTHS}}}
+							<input type="number" class="repeat-months" min="0" max="11"><br> {{{LANG_REPEAT_MONTHS}}}
 						</label>
 					</li>
 					<li>
 						<label>
-							<input type="number" class="repeat_years" min="0" max="11"><br> {{{LANG_REPEAT_YEARS}}}
+							<input type="number" class="repeat-years" min="0" max="11"><br> {{{LANG_REPEAT_YEARS}}}
 						</label>
 					</li>
 				</ul>

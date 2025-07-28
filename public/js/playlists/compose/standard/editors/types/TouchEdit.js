@@ -38,7 +38,10 @@ export class TouchEdit extends BaseTypes
 
 	getValues()
 	{
-		return this.#valueField.value;
+		let obj = {}
+		obj.touch_item_id  = this.#valueField.value;
+
+		return obj;
 	}
 
 }

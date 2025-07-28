@@ -39,7 +39,10 @@ export class AccesskeyEdit extends BaseTypes
 
 	getValues()
 	{
-		return this.#valueField.value;
+		let obj = {};
+		obj.accesskey = this.#valueField.value;
+
+		return obj;
 	}
 
 }

@@ -24,7 +24,7 @@ export class NotifyEdit extends BaseTypes
 {
 	#valueField = null;
 
-	init()
+	init(data)
 	{
 		this.cloneNode("notifyTemplate");
 		this.addRemoveListener();
@@ -35,13 +35,19 @@ export class NotifyEdit extends BaseTypes
 			if (/[a-zA-Z0-9]/i.test(evt.key) === false)
 				evt.preventDefault()
 		});
+
+		if (data.hasOwnProperty("notify"))
+			this.#valueField.value = data.notify;
 	}
 
 
 
 	getValues()
 	{
-		return this.#valueField.value;
+		let obj = {}
+		obj.notify = this.#valueField.value;
+
+		return obj;
 	}
 
 }

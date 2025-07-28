@@ -21,7 +21,6 @@
 export class TriggerForm
 {
 	#triggerTypeFactory = null;
-	#triggerData = null;
 	#addWallclock = null;
 	#wallclocksContainer = null;
 	#addAccesskey = null;
@@ -30,49 +29,59 @@ export class TriggerForm
 	#touchesContainer = null;
 	#addNotify = null;
 	#notifiesContainer = null;
-	#registerEditors = null;
+	#editorsManager = null;
 
-	constructor(triggertypeFactory, registerEditors)
+	constructor(triggertypeFactory, editorsManager)
 	{
 		this.#triggerTypeFactory = triggertypeFactory;
-		this.#registerEditors = registerEditors;
+		this.#editorsManager = editorsManager;
 	}
 
 	init(triggerData)
 	{
-		this.#triggerData  = triggerData;
+		this.#editorsManager.triggerData  = triggerData;
 		this.#addWallclock = document.getElementById("addWallclock");
 		this.#wallclocksContainer = document.getElementById("wallclocksContainer");
 		this.#addWallclock.addEventListener("click", () => {
 			const editor = this.#triggerTypeFactory.create("wallclock");
-			editor.init();
-			this.#wallclocksContainer.appendChild(editor.getEditor());
-			this.#registerEditors.addWallclockEditor(editor);
+			const html   = this.#editorsManager.registerWallclockEditor(editor);
+			this.#wallclocksContainer.appendChild(html);
 		});
+
 		this.#addAccesskey = document.getElementById("addAccesskey");
 		this.#accesskeysContainer = document.getElementById("accesskeysContainer");
 		this.#addAccesskey.addEventListener("click", () => {
 			const editor = this.#triggerTypeFactory.create("accesskey");
-			editor.init();
-			this.#accesskeysContainer.appendChild(editor.getEditor());
-			this.#registerEditors.addAccesskeyEditor(editor);
+			const html   = this.#editorsManager.addAccesskeyEditor(editor);
+			this.#accesskeysContainer.appendChild(html);
 		});
+
 		this.#addTouch     = document.getElementById("addTouch");
 		this.#touchesContainer = document.getElementById("touchesContainer");
 		this.#addTouch.addEventListener("click", () => {
 			const editor = this.#triggerTypeFactory.create("touch");
-			editor.init();
-			this.#touchesContainer.appendChild(editor.getEditor());
-			this.#registerEditors.addTouchEditor(editor);
+			const html   = this.#editorsManager.addTouchEditor(editor);
+			this.#touchesContainer.appendChild(html);
 		});
+
 		this.#addNotify    = document.getElementById("addNotify");
 		this.#notifiesContainer = document.getElementById("notifiesContainer");
 		this.#addNotify.addEventListener("click", () => {
 			const editor = this.#triggerTypeFactory.create("notify");
-			editor.init();
-			this.#notifiesContainer.appendChild(editor.getEditor());
-			this.#registerEditors.addNotifyEditor(editor);
+			const html = this.#editorsManager.addNotifyEditor(editor);
+			this.#notifiesContainer.appendChild(html);
 		});
+
+		// init existing from data
+		if (triggerData.hasOwnProperty("notifies"))
+		{
+			for (let i = 0; i < triggerData.notifies.length; i++)
+			{
+				const editor = this.#triggerTypeFactory.create("notify");
+				const html = this.#editorsManager.addNotifyEditor(editor);
+				this.#notifiesContainer.appendChild(html);
+			}
+		}
 	}
 
 	initDateTimeTriggerFunctions(item_id)
@@ -134,129 +143,22 @@ export class TriggerForm
 	{
 		let triggers = {}
 
-		let wallclocks = this.collectWallclockValues();
+		let wallclocks = this.#editorsManager.collectWallclockValues();
 		if (Object.keys(wallclocks).length > 0)
 			triggers.wallclocks = wallclocks;
 
-		let accesskeys = this.collectAccesskeyValues();
+		let accesskeys = this.#editorsManager.collectAccesskeyValues();
 		if (Object.keys(accesskeys).length > 0)
 			triggers.accesskeys = accesskeys;
 
-		let touches = this.collectTouchValues();
+		let touches = this.#editorsManager.collectTouchValues();
 		if (Object.keys(touches).length > 0)
 			triggers.touches = touches;
 
-		let notifies = this.#registerEditors.collectNotifyValues();
+		let notifies = this.#editorsManager.collectNotifyValues();
 		if (Object.keys(notifies).length > 0)
 			triggers.notifies = notifies;
 
 		return triggers;
 	}
-
-	collectWallclockValues()
-	{
-		let wallclocks = document.getElementById("wallclocks").children;
-		let ar_return = [];
-		for (let i = 0; i < wallclocks.length; i++)
-		{
-			let ar = {}
-			let wallclock_id        = getUnitIdFromAttrId(wallclocks[i].id);
-			ar.iso_date  = document.getElementById("edit_datetime_" + wallclock_id).value;
-			if (ar.iso_date === "")
-			{
-				document.getElementById("edit_datetime_" + wallclock_id).style.color = "red";
-				this.has_save_errors = true;
-			}
-			else
-			{
-				document.getElementById("edit_datetime_" + wallclock_id).style.color = "black";
-			}
-			// datetime-local did not commit seconds when 0. Let's add it here to get a valid ISO-date.
-			if (ar.iso_date.length < 17)
-				ar.iso_date += ':00';
-
-			let weekday             = document.getElementById("edit_weekday_" + wallclock_id).value;
-			if (weekday === "0")
-				ar.weekday = 0;
-			else
-			{
-				let prefix       = document.getElementById("edit_weekday_prefix_" + wallclock_id).value;
-				if (prefix === "-")
-					ar.weekday = "-" + weekday;
-				else
-					ar.weekday = "+" + weekday;
-			}
-			let el = document.getElementsByName('select_repeats_' +wallclock_id);
-			let repeat = "-1";
-			for(let j = 0; j < el.length; j++)
-			{
-				if (el[j].checked)
-					repeat = el[j].value
-			}
-
-			if (repeat > 0)
-				ar.repeat_counts = document.getElementById('numbers_repeats_' + wallclock_id).value;
-			else
-				ar.repeat_counts = repeat;
-
-			if (repeat === "-1")
-			{
-				ar.repeat_minutes = 0;
-				ar.repeat_hours   = 0;
-				ar.repeat_days    = 0;
-				ar.repeat_weeks   = 0;
-				ar.repeat_months  = 0;
-				ar.repeat_years   = 0;
-			}
-			else
-			{
-				ar.repeat_minutes = document.getElementById('repeat_minutes_' + wallclock_id).value;
-				ar.repeat_hours   = document.getElementById('repeat_hours_' + wallclock_id).value;
-				ar.repeat_days    = document.getElementById('repeat_days_' + wallclock_id).value;
-				ar.repeat_weeks   = document.getElementById('repeat_weeks_' + wallclock_id).value;
-				ar.repeat_months  = document.getElementById('repeat_months_' + wallclock_id).value;
-				ar.repeat_years   = document.getElementById('repeat_years_' + wallclock_id).value;
-			}
-
-			ar_return.push(ar);
-		}
-
-		return ar_return;
-	}
-	collectAccesskeyValues()
-	{
-		let accesskeys = document.getElementById("accesskeys").children;
-		let ar_return = [];
-		for (let i = 0; i < accesskeys.length; i++)
-		{
-			let ar = {}
-			let accesskeys_id = getUnitIdFromAttrId(accesskeys[i].id);
-			let accesskey = document.getElementById("edit_accesskey_" + accesskeys_id).value
-			if (accesskey !== "") {
-				ar.accesskey = accesskey;
-				ar_return.push(ar);
-			}
-		}
-		return ar_return;
-	}
-
-	collectTouchValues()
-	{
-		let touches = document.getElementById("touches").children;
-		let ar_return = [];
-		for (let i = 0; i < touches.length; i++)
-		{
-			let ar = {}
-			let touches_id    = getUnitIdFromAttrId(touches[i].id);
-			let touch_item_id = document.getElementById("edit_touch_item_" + touches_id).value
-			if (touch_item_id !== "0")
-			{
-				ar.touch_item_id  = touch_item_id;
-				ar_return.push(ar);
-			}
-		}
-
-		return ar_return;
-	}
-
 }
