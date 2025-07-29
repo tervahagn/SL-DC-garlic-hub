@@ -84,61 +84,6 @@ export class TriggerForm
 		}
 	}
 
-	initDateTimeTriggerFunctions(item_id)
-	{
-		document.getElementById("edit_weekday_" + item_id).onchange = function ()
-		{
-			if (document.getElementById("edit_weekday_" + item_id).value !== "0")
-				document.getElementById("edit_weekday_prefix_" + item_id).style.visibility = "visible";
-			else
-				document.getElementById("edit_weekday_prefix_" + item_id).style.visibility = "hidden";
-		}
-		document.getElementById("remove_wallclock_" + item_id).onclick = function ()
-		{
-			document.getElementById("wallclock_" + item_id).remove();
-		}
-		document.getElementById("select_no_repeats_" + item_id).onclick = function ()
-		{
-			document.getElementById("numbers_repeats_" + item_id).style.visibility = "hidden";
-			document.getElementById("repeats_" + item_id).style.visibility = "hidden";
-		}
-		document.getElementById("select_indefinite_repeats_" + item_id).onclick = function ()
-		{
-			document.getElementById("numbers_repeats_" + item_id).style.visibility = "hidden";
-			document.getElementById("repeats_" + item_id).style.visibility = "visible";
-		}
-		document.getElementById("select_number_repeats_" + item_id).onclick = function ()
-		{
-			document.getElementById("numbers_repeats_" + item_id).style.visibility = "visible";
-			document.getElementById("repeats_" + item_id).style.visibility = "visible";
-		}
-
-	}
-
-	initFunctionsGlobals()
-	{
-		let edit_weekday = document.getElementsByClassName("edit_weekday");
-		for (let i = 0; i < edit_weekday.length; i++)
-		{
-			this.initDateTimeTriggerFunctions(getUnitIdFromAttrId(edit_weekday[i].id, 1));
-		}
-		let edit_accesskey = document.getElementsByClassName("edit_accesskey");
-		for (let i = 0; i < edit_accesskey.length; i++)
-		{
-			this.initAccessKeyTriggerFunctions(getUnitIdFromAttrId(edit_accesskey[i].id, 1));
-		}
-		let edit_touch_item = document.getElementsByClassName("edit_touch_item");
-		for (let i = 0; i < edit_touch_item.length; i++)
-		{
-			this.initTouchTriggerFunctions(getUnitIdFromAttrId(edit_touch_item[i].id, 1));
-		}
-		let edit_notify = document.getElementsByClassName("edit_notify");
-		for (let i = 0; i < edit_notify.length; i++)
-		{
-			this.initNotifyTriggerFunctions(getUnitIdFromAttrId(edit_notify[i].id, 1));
-		}
-	}
-
 	collectValues()
 	{
 		let triggers = {}

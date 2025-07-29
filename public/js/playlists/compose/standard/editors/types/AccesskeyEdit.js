@@ -24,7 +24,7 @@ export class AccesskeyEdit extends BaseTypes
 {
 	#valueField = null;
 
-	init()
+	init(data)
 	{
 		this.cloneNode("accesskeyTemplate");
 		this.addRemoveListener();
@@ -35,6 +35,9 @@ export class AccesskeyEdit extends BaseTypes
 			if (/[a-zA-Z0-9]/i.test(evt.key) === false)
 				evt.preventDefault()
 		});
+
+		if (data.hasOwnProperty("accesskey"))
+			this.#valueField.value = data.accesskey;
 	}
 
 	getValues()

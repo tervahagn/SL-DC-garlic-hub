@@ -31,6 +31,7 @@ export class WallclockEdit extends BaseTypes
 	#infiniteRepeatSelect = null;
 	#numberRepeatsSelect = null;
 	#numberRepeats = 0;
+	#repeatsSection = null;
 	#repeatMinutes = 0;
 	#repeatHours = 0;
 	#repeatDays = 0;
@@ -41,7 +42,7 @@ export class WallclockEdit extends BaseTypes
 	#has_save_errors = false;
 
 
-	init()
+	init(data)
 	{
 		this.cloneNode("wallclockTemplate");
 		this.addRemoveListener();
@@ -56,12 +57,17 @@ export class WallclockEdit extends BaseTypes
 		this.#numberRepeatsSelect  = this.node.querySelector(".number-repeats-select");
 		this.#numberRepeatsSelect.name = this.#REPEATS_NAME +this.id;
 		this.#numberRepeats  = this.node.querySelector(".number-repeats");
+
+		this.#repeatsSection  = this.node.querySelector(".repeats-section");
 		this.#repeatMinutes  = this.node.querySelector(".repeat-minutes");
 		this.#repeatHours  = this.node.querySelector(".repeat-hours");
 		this.#repeatDays  = this.node.querySelector(".repeat-days");
 		this.#repeatWeeks  = this.node.querySelector(".repeat-weeks");
 		this.#repeatMonths  = this.node.querySelector(".repeat-months");
 		this.#repeatYears  = this.node.querySelector(".repeat-years");
+
+		this.#initActions();
+
 	}
 
 
@@ -129,6 +135,29 @@ export class WallclockEdit extends BaseTypes
 		}
 
 		return ar;
+	}
+
+	#initActions()
+	{
+		this.#editWeekday.addEventListener("change", () =>
+		{
+			if (this.#editWeekday.value !== "0")
+				this.#editWeekdayPrefix.style.visibility = "visible";
+			else
+				this.#editWeekdayPrefix.style.visibility = "hidden";
+		});
+		this.#noRepeatSelect.addEventListener("click", () => {
+			this.#repeatsSection.style.visibility = "hidden";
+			this.#numberRepeats.style.visibility = "hidden";
+		});
+		this.#infiniteRepeatSelect.addEventListener("click", () => {
+			this.#repeatsSection.style.visibility = "visible";
+			this.#numberRepeats.style.visibility = "hidden";
+		});
+		this.#numberRepeatsSelect.addEventListener("click", () => {
+			this.#repeatsSection.style.visibility = "visible";
+			this.#numberRepeats.style.visibility = "visible";
+		});
 	}
 
 }

@@ -41,7 +41,6 @@ export class NotifyEdit extends BaseTypes
 	}
 
 
-
 	getValues()
 	{
 		let obj = {}

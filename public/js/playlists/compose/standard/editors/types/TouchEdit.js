@@ -24,7 +24,7 @@ export class TouchEdit extends BaseTypes
 {
 	#valueField = null;
 
-	init()
+	init(data)
 	{
 		this.cloneNode("touchTemplate")
 		this.addRemoveListener();
@@ -34,6 +34,11 @@ export class TouchEdit extends BaseTypes
 		{
 			event.target.closest('ul').remove();
 		});
+
+		// Todo get selectable values from database
+		if (data.hasOwnProperty("touch_item_id"))
+			this.#valueField.value = data.touch_item_id;
+
 	}
 
 	getValues()
