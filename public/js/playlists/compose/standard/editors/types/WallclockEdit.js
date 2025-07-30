@@ -42,7 +42,7 @@ export class WallclockEdit extends BaseTypes
 	#has_save_errors = false;
 
 
-	init(data)
+	init()
 	{
 		this.cloneNode("wallclockTemplate");
 		this.addRemoveListener();
@@ -98,13 +98,13 @@ export class WallclockEdit extends BaseTypes
 			this.#editDatetime.style.color = "black";
 		}
 
-		// datetime-local did not commit seconds when 0. Let's add it here to get a valid ISO-date.
+		// datetime-local did not commit seconds when 0. Let's add it here to get a valid ISO date.
 		if (ar.iso_date.length < 17)
 			ar.iso_date += ':00';
 
 		let el = document.getElementsByName(this.#REPEATS_NAME + this.id);
 		let repeat = "-1";
-		for(let i = 0; i < el.length; j++)
+		for(let i = 0; i < el.length; i++)
 		{
 			if (el[i].checked)
 				repeat = el[i].value
