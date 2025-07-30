@@ -219,7 +219,6 @@ export class Item
 		inputElement.remove();
 	}
 
-
 	#initActions()
 	{
 		if (this.#itemData.item_type === "playlist")
@@ -262,7 +261,7 @@ export class Item
 			{
 				let conditionalPlay = this.#conditionalPlayFactory.create();
 				await conditionalPlay.fetch(this.#itemData.item_id);
-				conditionalPlay.initDialog();
+				conditionalPlay.initDialog(this.#conditionalPlayAction);
 			});
 		}
 
@@ -272,7 +271,7 @@ export class Item
 			{
 				let trigger = this.#triggerFactory.create();
 				await trigger.fetchBeginTrigger(this.#itemData.item_id);
-				trigger.initDialog();
+				trigger.initDialog(this.#editTriggerAction);
 			});
 		}
 

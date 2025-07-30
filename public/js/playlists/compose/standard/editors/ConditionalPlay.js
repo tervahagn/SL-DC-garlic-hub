@@ -45,7 +45,7 @@ export class ConditionalPlay
 		}
 	}
 
-	initDialog()
+	initDialog(actionButton)
 	{
 		this.#editDialog.setTitle(this.#itemData.item_name);
 		this.#editDialog.setId(this.#itemData.item_id);
@@ -66,8 +66,11 @@ export class ConditionalPlay
 			{
 				this.#editDialog.closeDialog();
 				PlaylistsProperties.notifySave();
+				if (values.hasOwnProperty("date"))
+					actionButton.classList.add("icon-values-setted");
+				else
+					actionButton.classList.remove("icon-values-setted");
 			}
-
 		}
 
 		this.#editDialog.onSave(saveCallBack);

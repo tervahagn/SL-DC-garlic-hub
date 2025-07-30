@@ -45,7 +45,7 @@ export class Trigger
 		}
 	}
 
-	initDialog()
+	initDialog(actionButton)
 	{
 		this.#editDialog.setTitle(this.#itemData.item_name);
 		this.#editDialog.setId(this.#itemData.item_id);
@@ -66,6 +66,10 @@ export class Trigger
 			{
 				this.#editDialog.closeDialog();
 				PlaylistsProperties.notifySave();
+				if (values.hasOwnProperty("wallclocks") || values.hasOwnProperty("accesskeys") || values.hasOwnProperty("touches") || values.hasOwnProperty("notifies"))
+					actionButton.classList.add("icon-values-setted");
+				else
+					actionButton.classList.remove("icon-values-setted");
 			}
 
 		}
