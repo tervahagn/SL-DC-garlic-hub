@@ -161,7 +161,7 @@ class Trigger
 		if ($wallclock['weekday'] != 0 && $wallclock['weekday'] >= -7 && $wallclock['weekday'] <= 7)
 		{
 			$sign = $wallclock['weekday'] < 0 ? '-' : '+';
-			$weekday = $sign . 'w' . abs($wallclock['weekday']);
+			$weekday = $sign . 'w' . abs((int) $wallclock['weekday']);
 			$iso = str_replace('T', $weekday. 'T', $wallclock['iso_date']);
 		}
 		else
