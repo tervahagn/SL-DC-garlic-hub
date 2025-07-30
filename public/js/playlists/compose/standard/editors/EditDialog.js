@@ -35,6 +35,11 @@ export class EditDialog
 		this.#dialogElement.showModal();
 	}
 
+	setWidth(percent)
+	{
+		this.#dialogElement.style.width = percent;
+	}
+
 	closeDialog()
 	{
 		this.#dialogElement.close();

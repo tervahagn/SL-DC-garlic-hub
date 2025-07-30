@@ -72,7 +72,7 @@ export class Trigger
 
 		this.#editDialog.onSave(saveCallBack);
 		this.#editDialog.onCancel();
-
+		this.#editDialog.setWidth("80%")
 		this.#editDialog.openDialog();
 
 	}
