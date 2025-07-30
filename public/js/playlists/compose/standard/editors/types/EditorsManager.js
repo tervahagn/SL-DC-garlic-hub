@@ -49,7 +49,7 @@ export class EditorsManager
 		{
 			if (this.#wallclocksEditors[i].exists)
 			{
-				values.push(this.#wallclocksEditors.getValues());
+				values.push(this.#wallclocksEditors[i].getValues());
 			}
 		}
 		return values;
@@ -125,7 +125,7 @@ export class EditorsManager
 	#determineInitDataForEditor(editor, triggerName)
 	{
 		let data = {};
-		if (this.#triggerData.hasOwnProperty("notifies") && this.#triggerData[triggerName].hasOwnProperty(editor.id))
+		if (this.#triggerData.hasOwnProperty(triggerName) && this.#triggerData[triggerName].hasOwnProperty(editor.id))
 			data = this.#triggerData[triggerName][editor.id];
 
 		editor.init(data);
