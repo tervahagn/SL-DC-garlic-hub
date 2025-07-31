@@ -44,7 +44,7 @@ export class TriggerForm
 		this.#wallclocksContainer = document.getElementById("wallclocksContainer");
 		this.#addWallclock.addEventListener("click", () => {
 			const editor = this.#triggerTypeFactory.create("wallclock");
-			const html   = this.#editorsManager.registerWallclockEditor(editor);
+			const html   = this.#editorsManager.addWallclockEditor(editor);
 			this.#wallclocksContainer.appendChild(html);
 		});
 
@@ -73,6 +73,33 @@ export class TriggerForm
 		});
 
 		// init existing from data
+		if (triggerData.hasOwnProperty("wallclocks"))
+		{
+			for (let i = 0; i < triggerData.wallclocks.length; i++)
+			{
+				const editor = this.#triggerTypeFactory.create("wallclock");
+				const html = this.#editorsManager.addWallclockEditor(editor);
+				this.#wallclocksContainer.appendChild(html);
+			}
+		}
+		if (triggerData.hasOwnProperty("accesskeys"))
+		{
+			for (let i = 0; i < triggerData.accesskeys.length; i++)
+			{
+				const editor = this.#triggerTypeFactory.create("accesskey");
+				const html = this.#editorsManager.addAccesskeyEditor(editor);
+				this.#accesskeysContainer.appendChild(html);
+			}
+		}
+		if (triggerData.hasOwnProperty("touches"))
+		{
+			for (let i = 0; i < triggerData.touches.length; i++)
+			{
+				const editor = this.#triggerTypeFactory.create("toiches");
+				const html = this.#editorsManager.addTouchEditor(editor);
+				this.#touchesContainer.appendChild(html);
+			}
+		}
 		if (triggerData.hasOwnProperty("notifies"))
 		{
 			for (let i = 0; i < triggerData.notifies.length; i++)

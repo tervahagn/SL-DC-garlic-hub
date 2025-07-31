@@ -42,7 +42,7 @@ export class WallclockEdit extends BaseTypes
 	#has_save_errors = false;
 
 
-	init()
+	init(data)
 	{
 		this.cloneNode("wallclockTemplate");
 		this.addRemoveListener();

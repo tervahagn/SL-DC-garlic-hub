@@ -33,7 +33,7 @@ export class EditorsManager
 	}
 
 
-	registerWallclockEditor(editor)
+	addWallclockEditor(editor)
 	{
 		editor.id = this.#wallclocksEditors.length;
 		this.#determineInitDataForEditor(editor, "wallclocks");
