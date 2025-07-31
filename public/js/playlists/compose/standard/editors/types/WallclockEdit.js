@@ -31,7 +31,7 @@ export class WallclockEdit extends BaseTypes
 	#infiniteRepeatSelect = null;
 	#numberRepeatsSelect = null;
 	#numberRepeats = 0;
-	#repeatsSection = null;
+	#repeatsPeriods = null;
 	#repeatMinutes = 0;
 	#repeatHours = 0;
 	#repeatDays = 0;
@@ -47,8 +47,21 @@ export class WallclockEdit extends BaseTypes
 		this.cloneNode("wallclockTemplate");
 		this.addRemoveListener();
 		this.#editDatetime = this.node.querySelector(".edit-datetime");
+		if (data.hasOwnProperty("iso_date"))
+			this.#editDatetime.value = data.iso_date;
+
 		this.#editWeekday  = this.node.querySelector(".edit-weekday");
+		if (data.hasOwnProperty("weekday"))
+			this.#editWeekday.value = data.weekday;
+		else
+			this.#editWeekday.value = "0";
+
 		this.#editWeekdayPrefix = this.node.querySelector(".edit-weekday-prefix");
+		if (data.hasOwnProperty("weekday_prefix"))
+			this.#editWeekdayPrefix.value = data.weekday_prefix;
+
+		if (this.#editWeekday.value === "0")
+			this.#editWeekdayPrefix.style.visibility = "hidden";
 
 		this.#noRepeatSelect  = this.node.querySelector(".no-repeats-select");
 		this.#noRepeatSelect.name = this.#REPEATS_NAME +this.id;
@@ -57,14 +70,54 @@ export class WallclockEdit extends BaseTypes
 		this.#numberRepeatsSelect  = this.node.querySelector(".number-repeats-select");
 		this.#numberRepeatsSelect.name = this.#REPEATS_NAME +this.id;
 		this.#numberRepeats  = this.node.querySelector(".number-repeats");
+		this.#repeatsPeriods  = this.node.querySelector(".edit-repeat-periods");
+		if (data.hasOwnProperty("repeat_counts"))
+		{
+			switch (data.repeat_counts)
+			{
+				case "-1":
+					this.#noRepeatSelect.checked = true;
+					this.#repeatsPeriods.style.visibility = "hidden";
+					this.#numberRepeats.style.visibility = "hidden";
+					break;
+				case "0":
+					this.#infiniteRepeatSelect.checked = true;
+					this.#repeatsPeriods.style.visibility = "visible";
+					this.#numberRepeats.style.visibility = "hidden";
+					break;
+				default:
+					this.#numberRepeatsSelect.checked = true;
+					this.#repeatsPeriods.style.visibility = "visible";
+					this.#numberRepeats.style.visibility = "visible";
+					if (data.hasOwnProperty("repeat_counts"))
+						this.#numberRepeats.value =  data.repeat_counts;
+					break;
+			}
+		}
 
-		this.#repeatsSection  = this.node.querySelector(".repeats-section");
 		this.#repeatMinutes  = this.node.querySelector(".repeat-minutes");
+		if (data.hasOwnProperty("repeat_minutes"))
+			this.#repeatMinutes.value = parseInt(data.repeat_minutes);
+
 		this.#repeatHours  = this.node.querySelector(".repeat-hours");
+		if (data.hasOwnProperty("repeat_hours"))
+			this.#repeatHours.value = data.repeat_hours;
+
 		this.#repeatDays  = this.node.querySelector(".repeat-days");
+		if (data.hasOwnProperty("repeat_days"))
+			this.#repeatDays.value = data.repeat_days;
+
 		this.#repeatWeeks  = this.node.querySelector(".repeat-weeks");
+		if (data.hasOwnProperty("repeat_weeks"))
+			this.#repeatWeeks.value = data.repeat_weeks;
+
 		this.#repeatMonths  = this.node.querySelector(".repeat-months");
+		if (data.hasOwnProperty("repeat_months"))
+			this.#repeatMonths.value = data.repeat_months;
+
 		this.#repeatYears  = this.node.querySelector(".repeat-years");
+		if (data.hasOwnProperty("repeat_years"))
+			this.#repeatYears.value = data.repeat_years;
 
 		this.#initActions();
 
@@ -147,15 +200,15 @@ export class WallclockEdit extends BaseTypes
 				this.#editWeekdayPrefix.style.visibility = "hidden";
 		});
 		this.#noRepeatSelect.addEventListener("click", () => {
-			this.#repeatsSection.style.visibility = "hidden";
+			this.#repeatsPeriods.style.visibility = "hidden";
 			this.#numberRepeats.style.visibility = "hidden";
 		});
 		this.#infiniteRepeatSelect.addEventListener("click", () => {
-			this.#repeatsSection.style.visibility = "visible";
+			this.#repeatsPeriods.style.visibility = "visible";
 			this.#numberRepeats.style.visibility = "hidden";
 		});
 		this.#numberRepeatsSelect.addEventListener("click", () => {
-			this.#repeatsSection.style.visibility = "visible";
+			this.#repeatsPeriods.style.visibility = "visible";
 			this.#numberRepeats.style.visibility = "visible";
 		});
 	}

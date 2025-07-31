@@ -27,7 +27,7 @@
     #trigger .edit-repeats{display:flex;gap:1rem;padding:0;margin:0;align-items: center}
         #trigger .edit-repeats label{flex-direction: unset;}
 
-    #trigger .edit-repeat-periods {display: flex; gap:0.5rem;}
+    #trigger .edit-repeat-periods div {display: flex; gap:0.5rem;}
     #trigger .edit-repeat-periods label{width:4.4rem;}
 
     #trigger .edit-accesskey
