@@ -74,7 +74,7 @@ class SeqContainerTest extends TestCase
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
-		static::assertSame($expected, $this->seqContainer->getSmilElementTag());
+		static::assertSame($expected, $this->seqContainer->createSmilTag());
 	}
 
 	#[Group('units')]
@@ -97,7 +97,7 @@ class SeqContainerTest extends TestCase
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
-		static::assertSame($expected, $this->seqContainer->getSmilElementTag());
+		static::assertSame($expected, $this->seqContainer->createSmilTag());
 	}
 
 	#[Group('units')]

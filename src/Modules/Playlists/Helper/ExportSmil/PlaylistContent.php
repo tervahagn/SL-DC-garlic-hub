@@ -149,7 +149,7 @@ class PlaylistContent
 
 		$item->setLink($link);
 
-		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
+		$this->addContentParts($itemData, $item->createSmilTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	/**
@@ -163,7 +163,7 @@ class PlaylistContent
 		$contentData = @unserialize($itemData['content_data']);
 		$item->setLink(str_replace('&', '&amp;', $contentData['url']));
 
-		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
+		$this->addContentParts($itemData, $item->createSmilTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 	/**
@@ -175,7 +175,7 @@ class PlaylistContent
 		/** @var SeqContainer $item */
 		$item = $this->itemsFactory->createItem($itemData);
 
-		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
+		$this->addContentParts($itemData, $item->createSmilTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
 
 /*

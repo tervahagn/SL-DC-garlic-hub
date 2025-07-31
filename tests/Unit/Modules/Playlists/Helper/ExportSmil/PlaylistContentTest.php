@@ -87,7 +87,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
+		$videoMock->method('createSmilTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -126,7 +126,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
+		$videoMock->method('createSmilTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -166,7 +166,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
+		$videoMock->method('createSmilTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -203,7 +203,7 @@ class PlaylistContentTest extends TestCase
 
 		$videoMock->method('setLink')->with('https://acme.com/stream.mp4');
 
-		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
+		$videoMock->method('createSmilTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -236,7 +236,7 @@ class PlaylistContentTest extends TestCase
 
 		$videoMock->method('setLink')->with('https://acme.com/stream.mp4');
 
-		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
+		$videoMock->method('createSmilTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -269,7 +269,7 @@ class PlaylistContentTest extends TestCase
 			->with($itemData[0])
 			->willReturn($playlistMock);
 
-		$playlistMock->method('getSmilElementTag')->willReturn('smilTag');
+		$playlistMock->method('createSmilTag')->willReturn('smilTag');
 		$playlistMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$playlistMock->method('getExclusive')->willReturn('exclusiveTag');
 

@@ -35,7 +35,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConcreteMedia extends Media
 {
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
 		return 'mediaTag';
 	}
@@ -54,7 +54,6 @@ class ConcreteMedia extends Media
 	{
 		return $this->checkLoggable();
 	}
-
 }
 
 class MediaTest extends TestCase

@@ -72,7 +72,7 @@ class WidgetTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 
-		static::assertSame($expected, $this->widget->getSmilElementTag());
+		static::assertSame($expected, $this->widget->createSmilTag());
 	}
 
 	#[Group('units')]
@@ -95,7 +95,7 @@ class WidgetTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="key2" value="value2" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 
-		static::assertSame($expected, $this->widget->getSmilElementTag());
+		static::assertSame($expected, $this->widget->createSmilTag());
 	}
 
 	#[Group('units')]
@@ -116,7 +116,7 @@ class WidgetTest extends TestCase
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 
-		static::assertSame($expected, $this->widget->getSmilElementTag());
+		static::assertSame($expected, $this->widget->createSmilTag());
 	}
 
 }

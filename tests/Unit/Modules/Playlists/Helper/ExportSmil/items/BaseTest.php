@@ -33,13 +33,12 @@ use PHPUnit\Framework\TestCase;
 
 cLass ConcreteBase extends Base
 {
-
 	public function getPrefetchTag(): string
 	{
 		return 'prefetch';
 	}
 
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
 		return 'smilElementTag';
 	}
