@@ -50,7 +50,7 @@ export class BaseTypes
 		this.exists = true;
 		this.node.querySelector(".remove").addEventListener("click", (event) => {
 			this.exists = false;
-			event.target.closest('ul').remove();
+			event.target.closest('.trigger-form').remove();
 		});
 	}
 
