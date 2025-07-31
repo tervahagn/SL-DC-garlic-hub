@@ -1,60 +1,38 @@
-#trigger
-{
-	padding:0;
-	margin:0;
-}
-	#trigger > li
-	{
-		padding:0.5em 0;
-		margin:0;
-	}
+#trigger {padding:0;margin:0;width:20rem;}
 
-	#trigger #wallclocks, #trigger #accesskeys, #trigger #touches, #trigger #notifies
+
+	#trigger .trigger-form-container
 	{
 		display:flex;
 		flex-direction: row;
-		gap:1em;
-		padding:0;
-		margin:0;
+		gap: 0.5rem;
+        padding: 0;
+        margin:  0;
 	}
-		#trigger #wallclocks ul, #trigger #accesskeys ul, #trigger #touches ul, #trigger #notifies ul
-		{
-			background-color:#eee;
-			padding: 1em;
-			margin:  0;
-		}
-		#trigger #wallclocks ul li
-		{
-			white-space: nowrap;
-		}
+    #trigger .trigger-form
+    {
+        background-color:#eee;
+        padding: 0.25rem 0.5rem;
+    }
 
-		#trigger #wallclocks .repeats ul
-		{
-			display:flex;
-			flex-direction: row;
-			gap:0.5em;
-			justify-content:flex-start;
-			align-items:center;
-			padding:0;
-			margin:0;
-		}
 
-	#trigger .edit_accesskey
+    #trigger .edit-point {display: flex; gap:0.5rem;}
+        #trigger .edit-weekday {width:8rem;}
+        #trigger .edit-weekday-prefix {width:7rem;}
+        #trigger .edit-datetime {width:13rem;}
+
+
+    #trigger .edit-repeats{display:flex;gap:1rem;padding:0;margin:0;align-items: center}
+        #trigger .edit-repeats label{flex-direction: unset;}
+
+    #trigger .edit-repeat-periods {display: flex; gap:0.5rem;}
+    #trigger .edit-repeat-periods label{width:4.4rem;}
+
+    #trigger .edit-accesskey
 	{
 		width:3em;
 	}
-	#trigger .edit_notify
+	#trigger .edit-notify
 	{
 		width:18em;
 	}
-
-#trigger .thymian-icon-add, #trigger .thymian-icon-remove
-{
-	display:block;
-	padding-left:2em;
-	background-repeat: no-repeat;
-}
-#trigger .thymian-icon-remove
-{
-	width:10em;
-}
