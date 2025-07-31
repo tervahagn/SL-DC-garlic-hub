@@ -74,6 +74,28 @@ abstract class Base implements ItemInterface
 		return $ret;
 	}
 
+	public function getSmilElementTag(): string
+	{
+		if ($this->begin->hasTriggers())
+			return '';
+
+		return $this->createSmilTag();
+	}
+
+	public function getExclusive(): string
+	{
+		if (!$this->begin->hasTriggers())
+			return '';
+
+		$this->trigger = $this->determineBeginEndTrigger();
+		$ret           = self::TABSTOPS_PRIORITY.'<priorityClass>'."\n";
+		$ret          .= $this->createSmilTag();
+		$ret           .= self::TABSTOPS_PRIORITY.'</priorityClass>'."\n";
+		$this->trigger = '';
+
+		return $ret;
+	}
+
 	protected function collectAttributes(): string
 	{
 		return $this->insertXmlId().
@@ -88,20 +110,6 @@ abstract class Base implements ItemInterface
 			return 'xml:id="'.$this->item['item_id'].'" ';
 
 		return 'xml:id="'.self::MASTER_ID_PREFIX.$this->item['item_id'].'" ';
-	}
-
-	public function getExclusive(): string
-	{
-		if (!$this->begin->hasTriggers())
-			return '';
-
-		$this->trigger = $this->determineBeginEndTrigger();
-		$ret           = self::TABSTOPS_PRIORITY.'<priorityClass>'."\n";
-		$ret          .= $this->getSmilElementTag();
-		$ret           .= self::TABSTOPS_PRIORITY.'</priorityClass>'."\n";
-		$this->trigger = '';
-
-		return $ret;
 	}
 
 	/**

@@ -26,7 +26,7 @@ use App\Modules\Playlists\Helper\ItemDatasource;
 class Video extends Media
 {
 
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
 		$ret  = self::TABSTOPS_TAG.'<video '.$this->collectVideoAttributes().'>'."\n";
 		$ret .= $this->collectParameters();

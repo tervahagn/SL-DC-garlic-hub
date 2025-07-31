@@ -27,11 +27,8 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
 class SeqContainer extends Base implements ItemInterface
 {
 
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
-		if ($this->begin->hasTriggers())
-			return '';
-
 		return self::TABSTOPS_TAG.'<seq '.$this->collectPlaylistAttributes().'>'."\n".
 			self::TABSTOPS_PARAMETER.'{ITEMS_'. $this->item['file_resource'].'}'."\n".
 			self::TABSTOPS_TAG.'</seq>'."\n";

@@ -24,7 +24,7 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
 class Text extends Media
 {
 
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
 		$ret  = self::TABSTOPS_TAG.'<ref ' . $this->collectMediaAttributes(). '>' . "\n";
 		$ret .= $this->checkLoggable();

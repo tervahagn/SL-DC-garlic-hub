@@ -24,7 +24,7 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
 class Image extends Media
 {
 
-	public function getSmilElementTag(): string
+	public function createSmilTag(): string
 	{
 		$ret  = self::TABSTOPS_TAG.'<img '.$this->collectMediaAttributes().'>'."\n";
 		$ret .= $this->collectParameters();

@@ -27,4 +27,5 @@ interface ItemInterface
 	public function getSmilElementTag(): string;
 	public function getExclusive(): string;
 	// public function getElementForPreview();
+	public function createSmilTag(): string;
 }
