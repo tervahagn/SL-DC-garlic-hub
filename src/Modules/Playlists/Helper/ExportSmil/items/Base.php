@@ -28,18 +28,19 @@ use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 
 abstract class Base implements ItemInterface
 {
-	const string MASTER_ID_PREFIX        = 'm';
-	const string TABSTOPS_TAG       = "\t\t\t\t\t\t\t";
-	const string TABSTOPS_PARAMETER = "\t\t\t\t\t\t\t\t";
-	const string TABSTOPS_PRIORITY  = "\t\t\t\t";
+	public const string ID_PREFIX        = 'triggerMediaId-';
+	public const string TABSTOPS_TAG = "\t\t\t\t\t\t\t";
+	public const string TABSTOPS_PARAMETER = "\t\t\t\t\t\t\t\t";
+	public const string TABSTOPS_PRIORITY  = "\t\t\t\t";
 	/** @var array<string,mixed>  */
 	protected array $item = [];
 	protected readonly Config $config;
 	protected readonly Trigger $begin;
 	protected readonly Trigger $end;
 	protected readonly Conditional $conditional;
+	/** @var array<int,int>|array<empty,empty>  */
+	protected array $touches = [];
 
-	protected bool $isMaster = false;
 	protected string $trigger = '';
 	protected Properties $properties;
 
@@ -56,10 +57,12 @@ abstract class Base implements ItemInterface
 		$this->conditional = $conditional;
 	}
 
-	public function setIsMasterPlaylist(bool $is): static
+	/**
+	 * @param array<int,int>|array<empty,empty> $touches
+	 */
+	public function setTouches(array $touches): void
 	{
-		$this->isMaster = $is;
-		return $this;
+		$this->touches = $touches;
 	}
 
 	protected function determineBeginEndTrigger(): string
@@ -106,14 +109,17 @@ abstract class Base implements ItemInterface
 
 	protected function insertXmlId(): string
 	{
-		if (!$this->isMaster)
-			return 'xml:id="'.$this->item['item_id'].'" ';
+		// We need the ID set explicitly when there is a touch trigger for this item.
+		// As playlists can be nested we create otherwise too much double ID
+		if (!array_key_exists($this->item['item_id'], $this->touches))
+			return '';
 
-		return 'xml:id="'.self::MASTER_ID_PREFIX.$this->item['item_id'].'" ';
+		return 'xml:id="'.self::ID_PREFIX.$this->item['item_id'].'" ';
+
 	}
 
 	/**
-	 * Ampersand (&) in title tag can cause an XML validation error
+	 * Ampersand (&) in the title tag can cause an XML validation error
 	 * Bug occurred in garlic-player Android Rewe 2021-09-17
 	 */
 	protected function encodeItemNameForTitleTag(): string

@@ -27,8 +27,6 @@ use App\Modules\Playlists\Helper\ItemFlags;
 abstract class Media extends Base
 {
 	protected string $link = '';
-	const string MEDIA_ID_PREFIX        = '';
-
 	public function setLink(string $link):static
 	{
 		// ltrim required because the media path has a training slash

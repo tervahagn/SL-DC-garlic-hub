@@ -152,7 +152,6 @@ class BaseTest extends TestCase
 	#[Group('units')]
 	public function testInsertXmlIdForMasterPlaylist(): void
 	{
-		$this->concreteBase->setIsMasterPlaylist(true);
 		$result = $this->concreteBase->testInsertXmlId();
 		static::assertSame('xml:id="m1" ', $result);
 	}
@@ -162,7 +161,6 @@ class BaseTest extends TestCase
 	{
 		$this->beginMock->method('hasTriggers')->willReturn(true);
 		$this->beginMock->method('determineTrigger')->willReturn('trigger_begin');
-		$this->concreteBase->setIsMasterPlaylist(true);
 
 		$result = $this->concreteBase->getExclusive();
 

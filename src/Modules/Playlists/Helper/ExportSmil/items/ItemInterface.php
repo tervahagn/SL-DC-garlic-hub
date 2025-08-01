@@ -23,9 +23,17 @@ namespace App\Modules\Playlists\Helper\ExportSmil\items;
 
 interface ItemInterface
 {
-    public function getPrefetchTag(): string;
+	/**
+	 * @param array<int,int>|array<empty,empty> $touches
+	 */
+	public function setTouches(array $touches): void;
+
+	public function getPrefetchTag(): string;
+
 	public function getSmilElementTag(): string;
+
 	public function getExclusive(): string;
+
 	// public function getElementForPreview();
 	public function createSmilTag(): string;
 }

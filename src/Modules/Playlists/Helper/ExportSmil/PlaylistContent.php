@@ -32,7 +32,6 @@ use App\Modules\Playlists\Helper\ExportSmil\items\SeqContainer;
 use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 use App\Modules\Playlists\Helper\ItemType;
-use App\Modules\Playlists\Helper\PlaylistMode;
 
 class PlaylistContent
 {
@@ -46,6 +45,8 @@ class PlaylistContent
 	private array $playlist  = [];
 	/** @var list<array<string,mixed>>  */
 	private array $items = [];
+	/** @var array<int,int>|array<empty,empty>  */
+	private array $touchTrigger = [];
 
 	public function __construct(ItemsFactory $itemsFactory, Config $config)
 	{
@@ -91,6 +92,19 @@ class PlaylistContent
 	 */
 	public function build(): static
 	{
+		$this->touchTrigger = [];
+		// prepare Source for Touch trigger
+		foreach ($this->items as $item)
+		{
+			if (array_key_exists('touches', $item['begin_trigger']))
+			{
+				foreach ($item['begin_trigger']['touches'] as $touch)
+				{
+					$this->touchTrigger[(int)$touch['touch_item_id']] = (int)$item['item_id'];
+				}
+			}
+		}
+
 		foreach ($this->items as $item)
 		{
 			switch ($item['item_type'])
@@ -138,11 +152,9 @@ class PlaylistContent
 	{
 		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
-		$item->setIsMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
-
-		/** @var string $serverUrl */
+		$item->setTouches($this->touchTrigger);
 		$serverUrl = $this->config->getConfigValue('content_server_url', 'mediapool');
-		/** @var string $originalPath */
+
 		$originalPath = $this->config->getConfigValue('originals', 'mediapool', 'directories');
 		$link = $serverUrl.'/'.str_replace('public/', '', $originalPath).'/'.
 				$itemData['file_resource'].'.'. $itemData['extension'];
@@ -160,6 +172,7 @@ class PlaylistContent
 	{
 		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setTouches($this->touchTrigger);
 		$contentData = @unserialize($itemData['content_data']);
 		$item->setLink(str_replace('&', '&amp;', $contentData['url']));
 
@@ -206,7 +219,7 @@ class PlaylistContent
 		if ($this->playlist['shuffle'] == 0 || $this->countEnabled == 0)
 			return;
 
-		// make sure, that the picking value is always <= than enabled media
+		// make sure that the picking value is always <= than enabled media
 		$picking = min($this->countEnabled, $this->playlist['shuffle_picking']);
 
 		if ($picking == 0)
@@ -222,10 +235,10 @@ class PlaylistContent
 	}
 
 	/**
-	 * this handles the feature, that we want sometimes disabled items in prefetch
+	 * this handles the feature that we want sometimes disabled items in prefetch
 	 * and sometimes not.
 	 * see comments, where the cases are explained
-	 * The default is: add prefetch if item is disabled, add all other parts, if not disabled
+	 * The default is: add prefetch if the item is disabled, add all other parts, if not disabled
 	 *
 	 * @param array<string,mixed> $item
 	 */

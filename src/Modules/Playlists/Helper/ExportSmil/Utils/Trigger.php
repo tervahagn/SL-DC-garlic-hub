@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Playlists\Helper\ExportSmil\Utils;
 
+use App\Modules\Playlists\Helper\ExportSmil\items\Base;
+
 class Trigger
 {
 	/** @var array<string,string>  */
@@ -100,7 +102,7 @@ class Trigger
 		$determined = [];
 		foreach ($touches as $touch)
 		{
-			$determined[] = $touch['touch_item_id'].'.activateEvent';
+			$determined[] = Base::ID_PREFIX.$touch['touch_item_id'].'.activateEvent';
 		}
 
 		return $determined;
