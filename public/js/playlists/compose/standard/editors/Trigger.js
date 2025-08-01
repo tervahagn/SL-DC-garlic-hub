@@ -26,6 +26,7 @@ export class Trigger
 	#triggerForm = null;
 	#triggerService = null;
 	#itemData = null;
+	#touchableMedialist = null;
 	#html = null;
 
 	constructor(editDialog, triggerForm, triggerService)
@@ -40,7 +41,8 @@ export class Trigger
 		const result = await this.#triggerService.fetchBeginTrigger(itemId);
 		if (result.success === true)
 		{
-			this.#itemData = result.data;
+			this.#itemData = result.item_data;
+			this.#touchableMedialist = result.touchable_medialist;
 			this.#html = result.html;
 		}
 	}
@@ -51,7 +53,7 @@ export class Trigger
 		this.#editDialog.setId(this.#itemData.item_id);
 		this.#editDialog.setContent(this.#html);
 
-		this.#triggerForm.init(this.#itemData.begin_trigger);
+		this.#triggerForm.init(this.#itemData.begin_trigger, this.#touchableMedialist);
 
 		let saveCallBack = async (e) =>
 		{

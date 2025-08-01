@@ -21,7 +21,7 @@
 export class EditorsManager
 {
 	#triggerData = null;
-
+	#touchableMedialist = null;
 	#wallclocksEditors = [];
 	#accesskeysEditors = [];
 	#touchesEditors = [];
@@ -32,6 +32,10 @@ export class EditorsManager
 		this.#triggerData = value;
 	}
 
+	set touchableMedialist(value)
+	{
+		this.#touchableMedialist = value;
+	}
 
 	addWallclockEditor(editor)
 	{

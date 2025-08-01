@@ -105,15 +105,9 @@ class ItemsService extends AbstractBaseService
 	 * @throws ModuleException
 	 * @throws Exception
 	 */
-	public function findMediaInPlaylist(int $itemId): array
+	public function findMediaInPlaylist(int $playlistId): array
 	{
-		$item = $this->itemsRepository->findFirstById($itemId);
-		if ($item === [])
-			throw new ModuleException('items', 'Item not found.');
-
-		$this->checkPlaylistAcl($item['playlist_id']);
-
-		return $this->itemsRepository->findMediaInPlaylistId($item['playlist_id']);
+		return $this->itemsRepository->findMediaInPlaylistId($playlistId);
 	}
 
 	/**

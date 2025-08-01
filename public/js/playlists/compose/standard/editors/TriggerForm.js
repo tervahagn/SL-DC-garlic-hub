@@ -37,9 +37,10 @@ export class TriggerForm
 		this.#editorsManager = editorsManager;
 	}
 
-	init(triggerData)
+	init(triggerData, touchableMedialist)
 	{
 		this.#editorsManager.triggerData  = triggerData;
+		this.#editorsManager.touchableMedialist = touchableMedialist;
 		this.#addWallclock = document.getElementById("addWallclock");
 		this.#wallclocksContainer = document.getElementById("wallclocksContainer");
 		this.#addWallclock.addEventListener("click", () => {

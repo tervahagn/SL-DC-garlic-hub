@@ -25,11 +25,11 @@ import {WallclockEdit} from "./WallclockEdit.js";
 
 export class TypeFactory
 {
-	#fetchClient = null;
+	#triggerService = null;
 
-	constructor(fetchClient)
+	constructor(triggerService)
 	{
-		this.#fetchClient = fetchClient;
+		this.#triggerService = triggerService;
 	}
 
 	create(type)

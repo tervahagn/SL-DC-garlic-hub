@@ -32,33 +32,31 @@ use Throwable;
 
 class TriggerService extends AbstractBaseService
 {
+	/**
+	 * @var array<string,mixed>|array<empty,empty>
+	 */
+	private array $itemData = [];
+	/**
+	 * @var list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 */
+	private array $touchableMedia = [];
+
 	public function __construct(private readonly ItemsService $itemService, LoggerInterface $logger)
 	{
 		parent::__construct($logger);
 	}
 
-	/**
-	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
-	 */
-	public function findClickableMedia(int $itemId): array
+	public function getItemData(): array
 	{
-		try
-		{
-			$this->itemService->setUID($this->UID);
-
-			return $this->itemService->findMediaInPlaylist($itemId);
-		}
-		catch (Throwable $e)
-		{
-			$this->logger->error('Error begin trigger fetch: ' . $e->getMessage());
-			return [];
-		}
+		return $this->itemData;
 	}
 
-	/**
-	 * @return array<string,mixed>
-	 */
-	public function fetchBeginTriggerByItemId(int $itemId): array
+	public function getTouchableMedia(): array
+	{
+		return $this->touchableMedia;
+	}
+
+	public function fetchBeginTriggerByItemId(int $itemId): static
 	{
 		try
 		{
@@ -73,13 +71,15 @@ class TriggerService extends AbstractBaseService
 			}
 			$item['begin_trigger'] = $conditional;
 
-			return $item;
+			$this->touchableMedia = $this->itemService->findMediaInPlaylist($item['playlist_id']);
+			$this->itemData = $item;
 		}
 		catch (Throwable $e)
 		{
 			$this->logger->error('Error begin trigger fetch: ' . $e->getMessage());
-			return [];
 		}
+
+		return $this;
 	}
 
 	/**

@@ -36,16 +36,6 @@ readonly class TriggerController
 {
 	public function __construct(private readonly Orchestrator $orchestrator) {}
 
-	public function fetchMedia(ServerRequestInterface $request, ResponseInterface $response, array $args): ?ResponseInterface
-	{
-		$answer = $this->orchestrator->setInput($args)->validateWithToken($response);
-		if ($answer !== null)
-			return $answer;
-
-		return $this->orchestrator->findMediaForTouch($response);
-	}
-
-
 	/**
 	 * @param array<string,string> $args
 	 * @throws CoreException

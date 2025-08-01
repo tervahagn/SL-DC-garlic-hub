@@ -74,18 +74,6 @@ class Orchestrator
 	}
 
 	/**
-	 * @throws UserException
-	 */
-	public function findMediaForTouch(ResponseInterface $response): ResponseInterface
-	{
-		$this->triggerService->setUID($this->userSession->getUID());
-		$mediaData = $this->triggerService->findClickableMedia($this->itemId);
-
-		return $this->responseBuilder->generalSuccess($response, ['data' => $mediaData]);
-
-	}
-
-	/**
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
@@ -110,15 +98,19 @@ class Orchestrator
 	public function fetch(ResponseInterface $response): ?ResponseInterface
 	{
 		$this->triggerService->setUID($this->userSession->getUID());
-
-		$itemData = $this->triggerService->fetchBeginTriggerByItemId($this->itemId);
+		$itemData = $this->triggerService->fetchBeginTriggerByItemId($this->itemId)->getItemData();
 		if ($itemData === [])
 			return $this->responseBuilder->itemNotFound($response);
 
 		$this->templatePreparer->prepare($this->itemId);
 
-		$html = $this->templatePreparer->render();
-		return $this->responseBuilder->generalSuccess($response, ['data' => $itemData, 'html' => $html]);
+		$data = [
+			'item_data' => $itemData,
+			'touchable_media' => $this->triggerService->getTouchableMedia(),
+			'html' => $this->templatePreparer->render()
+		];
+
+		return $this->responseBuilder->generalSuccess($response, $data);
 	}
 
 
