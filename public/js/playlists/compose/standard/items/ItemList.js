@@ -23,6 +23,7 @@ export class ItemList
 	#itemFactory = null;
 	#dropTarget = null;
 	#itemsService = null;
+	#isMasterPlaylist = false;
 	#itemsList   = {};
 	#playlistProperties = null;
 	#playlistId = 0;
@@ -42,6 +43,7 @@ export class ItemList
 		if (!results.success)
 			return;
 
+		this.#isMasterPlaylist = (results.data.playlist.playlist_mode === "master");
 		for (const item of results.data.items)
 		{
 			this.createPlaylistItem(item);
@@ -60,8 +62,9 @@ export class ItemList
 	createPlaylistItem(itemData, position = null)
 	{
 		const item = this.#itemFactory.create(itemData, this.#itemsService);
+		item.belongsToMasterPlaylist = this.#isMasterPlaylist;
 		this.#itemsList[itemData.item_id] = item;
-
+		
 		// console.log('Listenlänge', this.#dropTarget.children.length, 'Position', position);
 
 		if (position === null || this.#dropTarget.children.length < position)

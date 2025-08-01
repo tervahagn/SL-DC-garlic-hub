@@ -28,7 +28,7 @@ export class Item
 	#triggerFactory = null;
 	#playlistItem = null;
 	#cmsEdition = document.getElementById("cms_edition").value;
-
+	#belongsToMasterPlaylist = false;
 	#linkPlaylistAction    = null;
 	#editTemplateAction    = null;
 	#conditionalPlayAction = null;
@@ -51,6 +51,11 @@ export class Item
 		this.#triggerFactory = triggerFactory;
 	}
 
+
+	set belongsToMasterPlaylist(value)
+	{
+		this.#belongsToMasterPlaylist = value;
+	}
 
 	get linkPlaylistAction()
 	{
@@ -246,11 +251,18 @@ export class Item
 			else
 				this.#conditionalPlayAction.classList.add("icon-values-setted");
 
-			this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
-			if (this.#itemData.begin_trigger === undefined || this.#itemData.begin_trigger === "" || this.#itemData.begin_trigger === "a:0:{}")
-				this.#editTriggerAction.classList.remove("icon-values-setted");
+			if (this.#belongsToMasterPlaylist)
+			{
+				this.#editTriggerAction     = this.#playlistItem.querySelector('.edit-trigger');
+				if (this.#itemData.begin_trigger === undefined || this.#itemData.begin_trigger === "" || this.#itemData.begin_trigger === "a:0:{}")
+					this.#editTriggerAction.classList.remove("icon-values-setted");
+				else
+					this.#editTriggerAction.classList.add("icon-values-setted");
+			}
 			else
-				this.#editTriggerAction.classList.add("icon-values-setted");
+			{
+				this.#playlistItem.querySelector('.edit-trigger').remove();
+			}
 
 			this.#playlistItem.querySelector('.edit-settings').remove();
 		}
