@@ -41,6 +41,7 @@ export class TriggerForm
 	{
 		this.#editorsManager.triggerData  = triggerData;
 		this.#editorsManager.touchableMedialist = touchableMedialist;
+
 		this.#addWallclock = document.getElementById("addWallclock");
 		this.#wallclocksContainer = document.getElementById("wallclocksContainer");
 		this.#addWallclock.addEventListener("click", () => {
@@ -96,7 +97,7 @@ export class TriggerForm
 		{
 			for (let i = 0; i < triggerData.touches.length; i++)
 			{
-				const editor = this.#triggerTypeFactory.create("toiches");
+				const editor = this.#triggerTypeFactory.create("touch");
 				const html = this.#editorsManager.addTouchEditor(editor);
 				this.#touchesContainer.appendChild(html);
 			}
