@@ -38,7 +38,7 @@ cLass ConcreteBase extends Base
 		return 'prefetch';
 	}
 
-	public function createSmilTag(): string
+	public function getSmilElementTag(): string
 	{
 		return 'smilElementTag';
 	}

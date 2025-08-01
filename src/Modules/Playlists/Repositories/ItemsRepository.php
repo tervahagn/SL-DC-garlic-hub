@@ -60,6 +60,25 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
+	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 * @throws Exception
+	 */
+	public function findMediaInPlaylistId(int $playlistId): array
+	{
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('item_id, item_name')
+			->from($this->table)
+			->where('playlists_items.playlist_id = :playlistId')
+			->andWhere('item_type in ('.ItemType::MEDIAPOOL->value.', '.ItemType::MEDIA_EXTERN->value.', '.ItemType::TEMPLATE->value.')')
+			->andWhere("mime_type LIKE 'image%' OR mime_type LIKE 'video%'")
+			->setParameter('playlistId', $playlistId);
+		;
+
+		return $queryBuilder->executeQuery()->fetchAllAssociative();
+	}
+
+
+	/**
 	 * @return list<array<string,mixed>>
 	 * @throws Exception
 	 */

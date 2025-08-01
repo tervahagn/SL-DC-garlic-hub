@@ -65,12 +65,24 @@ class Orchestrator
 	 * @throws InvalidArgumentException
 	 * @throws FrameworkException
 	 */
-	public function validateSave(ResponseInterface $response): ?ResponseInterface
+	public function validateWithToken(ResponseInterface $response): ?ResponseInterface
 	{
 		if (!$this->validator->validateCsrfToken($this->input[BaseEditParameters::PARAMETER_CSRF_TOKEN]))
 			return $this->responseBuilder->csrfTokenMismatch($response);
 
 		return $this->validate($response);
+	}
+
+	/**
+	 * @throws UserException
+	 */
+	public function findMediaForTouch(ResponseInterface $response): ResponseInterface
+	{
+		$this->triggerService->setUID($this->userSession->getUID());
+		$mediaData = $this->triggerService->findClickableMedia($this->itemId);
+
+		return $this->responseBuilder->generalSuccess($response, ['data' => $mediaData]);
+
 	}
 
 	/**
@@ -87,24 +99,6 @@ class Orchestrator
 
 		return null;
 	}
-
-	/**
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws InvalidArgumentException
-	 * @throws FrameworkException
-	 */
-	public function add(ResponseInterface $response): ?ResponseInterface
-	{
-		$answer = $this->templatePreparer->addNew($response);
-
-		$html = $this->templatePreparer->renderPart();
-
-
-		return null;
-	}
-
-
 
 	/**
 	 * @throws UserException
@@ -125,7 +119,6 @@ class Orchestrator
 
 		$html = $this->templatePreparer->render();
 		return $this->responseBuilder->generalSuccess($response, ['data' => $itemData, 'html' => $html]);
-
 	}
 
 

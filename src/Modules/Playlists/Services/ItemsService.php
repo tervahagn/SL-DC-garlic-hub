@@ -101,6 +101,22 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
+	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 * @throws ModuleException
+	 * @throws Exception
+	 */
+	public function findMediaInPlaylist(int $itemId): array
+	{
+		$item = $this->itemsRepository->findFirstById($itemId);
+		if ($item === [])
+			throw new ModuleException('items', 'Item not found.');
+
+		$this->checkPlaylistAcl($item['playlist_id']);
+
+		return $this->itemsRepository->findMediaInPlaylistId($item['playlist_id']);
+	}
+
+	/**
 	 * @return array<string,mixed>
 	 * @throws ModuleException
 	 * @throws CoreException
@@ -212,7 +228,7 @@ class ItemsService extends AbstractBaseService
 			return 0;
 		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
 
-		// Todo: Make this more elegant in the a future reafcatoring
+		// Todo: Make this more elegant in the a future refactoring
 		if ($item['item_type'] === ItemType::PLAYLIST->value && $fieldName === 'item_duration')
 		{
 			$playlist = $this->playlistsService->fetchById((int) $item['file_resource']);

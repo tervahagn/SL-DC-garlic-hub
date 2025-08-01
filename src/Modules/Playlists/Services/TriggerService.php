@@ -38,6 +38,24 @@ class TriggerService extends AbstractBaseService
 	}
 
 	/**
+	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 */
+	public function findClickableMedia(int $itemId): array
+	{
+		try
+		{
+			$this->itemService->setUID($this->UID);
+
+			return $this->itemService->findMediaInPlaylist($itemId);
+		}
+		catch (Throwable $e)
+		{
+			$this->logger->error('Error begin trigger fetch: ' . $e->getMessage());
+			return [];
+		}
+	}
+
+	/**
 	 * @return array<string,mixed>
 	 */
 	public function fetchBeginTriggerByItemId(int $itemId): array

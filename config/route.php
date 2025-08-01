@@ -161,7 +161,8 @@ $app->group('/async', function (RouteCollectorProxy $group) use ($container)
 	$group->patch('/playlists/widget/save', resolve([WidgetsController::class, 'save'], $container));
 	$group->get('/playlists/item/conditional-play/{item_id:\d+}', resolve([ConditionalPlayController::class, 'fetch'], $container));
 	$group->patch('/playlists/item/conditional-play', resolve([ConditionalPlayController::class, 'save'], $container));
-	$group->get('/playlists/item/begin-trigger/{item_id:\d+}', resolve([TriggerController::class, 'fetch'], $container));
+	$group->get('/playlists/item/touch-media/{item_id:\d+}', resolve([TriggerController::class, 'fetchMedia'], $container));
+	$group->get('/playlists/item/begin-trigger/{item_id:\d+}', resolve([TriggerController::class, 'fetchTrigger'], $container));
 	$group->patch('/playlists/item/begin-trigger', resolve([TriggerController::class, 'save'], $container));
 
 	$group->patch('/player/playlist', resolve([PlayerPlaylistController::class, 'replacePlaylist'], $container));
