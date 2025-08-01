@@ -40,7 +40,7 @@ cLass ConcreteBase extends Base
 
 	public function getSmilElementTag(): string
 	{
-		return 'smilElementTag';
+		return $this->createSmilTag();
 	}
 
 	public function testTrigger(): string
@@ -66,6 +66,11 @@ cLass ConcreteBase extends Base
 	public function testDetermineDuration(): string
 	{
 		return $this->determineDuration();
+	}
+
+	public function createSmilTag(): string
+	{
+		return 'smilElementTag';
 	}
 }
 
