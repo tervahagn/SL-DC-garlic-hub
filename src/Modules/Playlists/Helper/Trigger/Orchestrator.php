@@ -106,7 +106,7 @@ class Orchestrator
 
 		$data = [
 			'item_data' => $itemData,
-			'touchable_media' => $this->triggerService->getTouchableMedia(),
+			'touchable_medialist' => $this->triggerService->getTouchableMedia(),
 			'html' => $this->templatePreparer->render()
 		];
 
@@ -132,7 +132,7 @@ class Orchestrator
 		unset($this->input['csrf_token']);
 		unset($this->input['item_id']);
 
-		$item = $this->triggerService->fetchAccesibleItem($this->itemId);
+		$item = $this->triggerService->fetchAccessibleItem($this->itemId);
 		if ($item === [])
 			return $this->responseBuilder->itemNotFound($response);
 

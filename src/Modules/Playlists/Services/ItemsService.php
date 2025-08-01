@@ -101,8 +101,7 @@ class ItemsService extends AbstractBaseService
 	}
 
 	/**
-	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
-	 * @throws ModuleException
+	 * @return list<array{item_id:int, item_name:string}>
 	 * @throws Exception
 	 */
 	public function findMediaInPlaylist(int $playlistId): array

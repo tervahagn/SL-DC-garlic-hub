@@ -37,7 +37,7 @@ class TriggerService extends AbstractBaseService
 	 */
 	private array $itemData = [];
 	/**
-	 * @var list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 * @var list<array{item_id:int, item_name:string}>
 	 */
 	private array $touchableMedia = [];
 
@@ -46,11 +46,17 @@ class TriggerService extends AbstractBaseService
 		parent::__construct($logger);
 	}
 
+	/**
+	 * @return array<string,mixed>|array<empty,empty>
+	 */
 	public function getItemData(): array
 	{
 		return $this->itemData;
 	}
 
+	/**
+	 * @return array<string,mixed>|array<empty,empty>
+	 */
 	public function getTouchableMedia(): array
 	{
 		return $this->touchableMedia;
@@ -60,9 +66,9 @@ class TriggerService extends AbstractBaseService
 	{
 		try
 		{
-			$item = $this->fetchAccesibleItem($itemId);
+			$item = $this->fetchAccessibleItem($itemId);
 
-			$conditional = [];
+			$trigger = [];
 			if ($item['begin_trigger'] !== '')
 			{
 				$tmp = @unserialize($item['begin_trigger']);
@@ -71,7 +77,8 @@ class TriggerService extends AbstractBaseService
 			}
 			$item['begin_trigger'] = $trigger;
 
-			$this->touchableMedia = $this->itemService->findMediaInPlaylist($item['playlist_id']);
+			$this->prepareTouchableMedia($item['playlist_id'], $itemId);
+
 			$this->itemData = $item;
 		}
 		catch (Throwable $e)
@@ -89,7 +96,7 @@ class TriggerService extends AbstractBaseService
 	{
 		try
 		{
-			$item = $this->fetchAccesibleItem($itemId);
+			$item = $this->fetchAccessibleItem($itemId);
 			if (empty($item))
 				throw new ModuleException('items', 'No item found.');
 
@@ -114,11 +121,29 @@ class TriggerService extends AbstractBaseService
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function fetchAccesibleItem(int $itemId): array
+	public function fetchAccessibleItem(int $itemId): array
 	{
 		$this->itemService->setUID($this->UID);
 		return $this->itemService->fetchItemById($itemId); // check rights on playlists, too
 	}
 
+	/**
+	 * @throws Exception
+	 */
+	private function prepareTouchableMedia(int $playlistId, int $itemId): void
+	{
+		$media = $this->itemService->findMediaInPlaylist($playlistId);
+		if ($media === [])
+			return;
+
+		$tmp = [];
+		foreach ($media as $mediaItem)
+		{
+			if ($mediaItem['item_id'] !== $itemId)
+				$tmp[] = $mediaItem;
+
+		}
+		$this->touchableMedia = $tmp;
+	}
 
 }

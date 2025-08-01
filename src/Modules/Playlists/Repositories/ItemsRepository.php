@@ -60,7 +60,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
-	 * @return list<array{item_id:int, item_name:string}>|array<empty,empty>
+	 * @return array<int, array{item_id:int, item_name:string}>|array<empty,empty>
 	 * @throws Exception
 	 */
 	public function findMediaInPlaylistId(int $playlistId): array

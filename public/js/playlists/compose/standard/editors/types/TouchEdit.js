@@ -23,6 +23,12 @@ import {BaseTypes} from "./BaseTypes.js";
 export class TouchEdit extends BaseTypes
 {
 	#valueField = null;
+	#touchableMedialist =null;
+	
+	set touchableMedialist(value)
+	{
+		this.#touchableMedialist = value;
+	}
 
 	init(data)
 	{
@@ -35,7 +41,14 @@ export class TouchEdit extends BaseTypes
 			event.target.closest('ul').remove();
 		});
 
-		// Todo get selectable values from database
+		for (const item of this.#touchableMedialist)
+		{
+			const option = document.createElement('option');
+			option.value = item.item_id;
+			option.textContent = item.item_name;
+			this.#valueField.appendChild(option);
+		}
+
 		if (data.hasOwnProperty("touch_item_id"))
 			this.#valueField.value = data.touch_item_id;
 

@@ -84,6 +84,7 @@ export class EditorsManager
 	addTouchEditor(editor)
 	{
 		editor.id = this.#touchesEditors.length;
+		editor.touchableMedialist = this.#touchableMedialist;
 		this.#determineInitDataForEditor(editor, "touches");
 		this.#touchesEditors.push(editor);
 
