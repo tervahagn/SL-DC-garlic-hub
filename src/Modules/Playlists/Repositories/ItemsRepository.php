@@ -69,8 +69,8 @@ class ItemsRepository extends SqlBase
 		$queryBuilder->select('item_id, item_name')
 			->from($this->table)
 			->where('playlists_items.playlist_id = :playlistId')
-			->andWhere('item_type in ('.ItemType::MEDIAPOOL->value.', '.ItemType::MEDIA_EXTERN->value.', '.ItemType::TEMPLATE->value.')')
-			->andWhere("mime_type LIKE 'image%' OR mime_type LIKE 'video%'")
+			->andWhere('item_type in (\''.ItemType::MEDIAPOOL->value.'\', \''.ItemType::MEDIA_EXTERN->value.'\', \''.ItemType::TEMPLATE->value.'\')')
+			->andWhere("mimetype LIKE 'image%' OR mimetype LIKE 'video%'")
 			->setParameter('playlistId', $playlistId);
 		;
 

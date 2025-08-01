@@ -67,9 +67,9 @@ class TriggerService extends AbstractBaseService
 			{
 				$tmp = @unserialize($item['begin_trigger']);
 				if (is_array($tmp))
-					$conditional = $tmp;
+					$trigger = $tmp;
 			}
-			$item['begin_trigger'] = $conditional;
+			$item['begin_trigger'] = $trigger;
 
 			$this->touchableMedia = $this->itemService->findMediaInPlaylist($item['playlist_id']);
 			$this->itemData = $item;
