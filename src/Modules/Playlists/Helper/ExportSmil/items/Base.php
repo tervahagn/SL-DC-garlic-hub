@@ -34,6 +34,7 @@ abstract class Base implements ItemInterface
 	public const string TABSTOPS_PRIORITY  = "\t\t\t\t";
 	/** @var array<string,mixed>  */
 	protected array $item = [];
+	protected bool $belongsToMasterPlaylist = false;
 	protected readonly Config $config;
 	protected readonly Trigger $begin;
 	protected readonly Trigger $end;
@@ -65,6 +66,13 @@ abstract class Base implements ItemInterface
 		$this->touches = $touches;
 	}
 
+	public function setBelongsToMasterPlaylist(bool $belongsToMasterPlaylist): void
+	{
+		$this->belongsToMasterPlaylist = $belongsToMasterPlaylist;
+	}
+
+
+
 	protected function determineBeginEndTrigger(): string
 	{
 		$ret = '';
@@ -79,7 +87,7 @@ abstract class Base implements ItemInterface
 
 	public function getSmilElementTag(): string
 	{
-		if ($this->begin->hasTriggers())
+		if ($this->belongsToMasterPlaylist && $this->begin->hasTriggers())
 			return '';
 
 		return $this->createSmilTag();
@@ -87,7 +95,7 @@ abstract class Base implements ItemInterface
 
 	public function getExclusive(): string
 	{
-		if (!$this->begin->hasTriggers())
+		if (!$this->begin->hasTriggers() || !$this->belongsToMasterPlaylist)
 			return '';
 
 		$this->trigger = $this->determineBeginEndTrigger();
@@ -111,7 +119,7 @@ abstract class Base implements ItemInterface
 	{
 		// We need the ID set explicitly when there is a touch trigger for this item.
 		// As playlists can be nested we create otherwise too much double ID
-		if (!array_key_exists($this->item['item_id'], $this->touches))
+		if (!array_key_exists($this->item['item_id'], $this->touches) || !$this->belongsToMasterPlaylist)
 			return '';
 
 		return 'xml:id="'.self::ID_PREFIX.$this->item['item_id'].'" ';

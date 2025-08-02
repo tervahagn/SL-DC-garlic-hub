@@ -32,6 +32,7 @@ use App\Modules\Playlists\Helper\ExportSmil\items\SeqContainer;
 use App\Modules\Playlists\Helper\ItemDatasource;
 use App\Modules\Playlists\Helper\ItemFlags;
 use App\Modules\Playlists\Helper\ItemType;
+use App\Modules\Playlists\Helper\PlaylistMode;
 
 class PlaylistContent
 {
@@ -152,6 +153,7 @@ class PlaylistContent
 	{
 		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 		$item->setTouches($this->touchTrigger);
 		$serverUrl = $this->config->getConfigValue('content_server_url', 'mediapool');
 
@@ -172,6 +174,7 @@ class PlaylistContent
 	{
 		/** @var Media $item */
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 		$item->setTouches($this->touchTrigger);
 		$contentData = @unserialize($itemData['content_data']);
 		$item->setLink(str_replace('&', '&amp;', $contentData['url']));
@@ -187,6 +190,7 @@ class PlaylistContent
 	{
 		/** @var SeqContainer $item */
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
@@ -195,6 +199,7 @@ class PlaylistContent
 	private function buildPlaylistExternal(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
 		$this->addContentParts($itemData, $item->getElementLink(), '', '');
 	}
@@ -202,6 +207,7 @@ class PlaylistContent
 	private function buildTemplate(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 		$item->setPlaylistPath($this->export_base_path.$this->playlist['playlist_id'].'/'); // do the link to media inside class
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
@@ -210,6 +216,7 @@ class PlaylistContent
 	private function buildChannel(array $itemData): void
 	{
 		$item = $this->itemsFactory->createItem($itemData);
+		$item->setBelongsToMasterPlaylist($this->playlist['playlist_mode'] === PlaylistMode::MASTER);
 
 		$this->addContentParts($itemData, $item->getSmilElementTag(), $item->getPrefetchTag(), $item->getExclusive());
 	}
