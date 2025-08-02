@@ -63,6 +63,7 @@ use App\Framework\Utils\Html\FormBuilder;
 use App\Modules\Auth\UserSession;
 use App\Modules\Users\Services\AclValidator;
 use App\Modules\Users\Services\UsersService;
+use Defuse\Crypto\Key;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
@@ -128,9 +129,8 @@ $dependencies[Crypt::class] = DI\factory(function (ContainerInterface $container
 	if (!$keyString)
 		throw new CoreException('Encryption key file not found');
 
-	$cleanKeyString = trim($keyString);
-
-	return new Crypt($cleanKeyString);
+	$keyString = Key::loadFromAsciiSafeString(trim($keyString));
+	return new Crypt($keyString);
 });
 $dependencies[Cookie::class] = DI\factory(function (ContainerInterface $container)
 {
