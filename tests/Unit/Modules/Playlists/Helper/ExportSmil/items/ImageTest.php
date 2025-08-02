@@ -64,7 +64,7 @@ class ImageTest extends TestCase
 
 		$this->image->setLink('/path/to//image.jpg');
 
-		$expected  = Base::TABSTOPS_TAG.'<img xml:id="1" title="Sample Item" region="screen" src="path/to//image.jpg" dur="500s" >'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<img title="Sample Item" region="screen" src="path/to//image.jpg" dur="500s" >'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</img>'."\n";
 

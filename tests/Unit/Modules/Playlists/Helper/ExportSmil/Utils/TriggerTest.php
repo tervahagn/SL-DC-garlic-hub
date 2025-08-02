@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Playlists\Helper\ExportSmil\Utils;
 
+use App\Modules\Playlists\Helper\ExportSmil\items\Base;
 use App\Modules\Playlists\Helper\ExportSmil\Utils\Trigger;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -248,7 +249,7 @@ class TriggerTest extends TestCase
 		$touches = [['touch_item_id' => '123']];
 		$triggers = new Trigger(['touches' => $touches]);
 		$result = $triggers->determineTrigger();
-		static::assertEquals('123.activateEvent', $result);
+		static::assertEquals(Base::ID_PREFIX.'123.activateEvent', $result);
 	}
 
 	#[Group('units')]

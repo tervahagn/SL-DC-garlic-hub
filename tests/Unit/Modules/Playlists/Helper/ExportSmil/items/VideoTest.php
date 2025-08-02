@@ -68,7 +68,7 @@ class VideoTest extends TestCase
 
 		$this->video->setLink('/path/to/video.webm');
 
-		$expected  = Base::TABSTOPS_TAG.'<video xml:id="1" title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<video title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</video>'."\n";
 
@@ -88,7 +88,7 @@ class VideoTest extends TestCase
 
 		$this->video->setLink('/path/to/video.webm');
 
-		$expected  = Base::TABSTOPS_TAG.'<video xml:id="1" title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<video title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="stream" value="true" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</video>'."\n";
 

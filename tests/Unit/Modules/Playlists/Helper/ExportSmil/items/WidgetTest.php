@@ -68,7 +68,7 @@ class WidgetTest extends TestCase
 
 		$this->widget->setLink('/path/to/widget.wgt');
 
-		$expected  = Base::TABSTOPS_TAG.'<ref xml:id="1" title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<ref title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 
@@ -89,7 +89,7 @@ class WidgetTest extends TestCase
 
 		$this->widget->setLink('/path/to/widget.wgt');
 
-		$expected  = Base::TABSTOPS_TAG.'<ref xml:id="1" title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<ref title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="key" value="value" />'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="key2" value="value2" />'."\n";
@@ -112,7 +112,7 @@ class WidgetTest extends TestCase
 
 		$this->widget->setLink('/path/to/widget.wgt');
 
-		$expected  = Base::TABSTOPS_TAG.'<ref xml:id="1" title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<ref title="Sample widget" region="screen" src="path/to/widget.wgt" dur="50s"  type="application/widget">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</ref>'."\n";
 

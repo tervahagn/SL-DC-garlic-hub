@@ -96,7 +96,19 @@ class BaseTest extends TestCase
 		$this->conditionalMock = $this->createMock(Conditional::class);
 
 		$item = ['item_id' => 1, 'item_name' => 'Example Title', 'item_duration' => 1000];
-		$this->concreteBase = new ConcreteBase($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock, );
+		$this->concreteBase = new ConcreteBase($this->configMock, $item, $this->propertiesMock, $this->beginMock, $this->endMock, $this->conditionalMock);
+	}
+
+	#[Group('units')]
+	public function testDetermineBeginEndTriggerNoMaster(): void
+	{
+		$this->beginMock->method('hasTriggers')->willReturn(true);
+		$this->beginMock->method('determineTrigger')->willReturn('trigger_begin');
+		$this->endMock->method('hasTriggers')->willReturn(true);
+		$this->endMock->method('determineTrigger')->willReturn('trigger_end');
+
+		$result = $this->concreteBase->testTrigger();
+		static::assertEmpty($result);
 	}
 
 	#[Group('units')]
@@ -107,6 +119,7 @@ class BaseTest extends TestCase
 		$this->endMock->method('hasTriggers')->willReturn(true);
 		$this->endMock->method('determineTrigger')->willReturn('trigger_end');
 
+		$this->concreteBase->setBelongsToMasterPlaylist(true);
 		$result = $this->concreteBase->testTrigger();
 		static::assertSame('begin="trigger_begin" end="trigger_end" ', $result);
 	}
@@ -118,6 +131,7 @@ class BaseTest extends TestCase
 		$this->beginMock->method('determineTrigger')->willReturn('trigger_begin');
 		$this->endMock->method('hasTriggers')->willReturn(false);
 
+		$this->concreteBase->setBelongsToMasterPlaylist(true);
 		$result = $this->concreteBase->testTrigger();
 		static::assertSame('begin="trigger_begin" ', $result);
 	}
@@ -129,6 +143,7 @@ class BaseTest extends TestCase
 		$this->endMock->method('hasTriggers')->willReturn(true);
 		$this->endMock->method('determineTrigger')->willReturn('trigger_end');
 
+		$this->concreteBase->setBelongsToMasterPlaylist(true);
 		$result = $this->concreteBase->testTrigger();
 		static::assertSame('end="trigger_end" ', $result);
 	}
@@ -139,26 +154,31 @@ class BaseTest extends TestCase
 		$this->conditionalMock->method('determineExprAttribute')->willReturn('expr="" ');
 
 		$result = $this->concreteBase->testCollectAttributes();
-		static::assertSame('xml:id="1" expr="" title="Example Title" ', $result);
+		static::assertSame('expr="" title="Example Title" ', $result);
 	}
 
 	#[Group('units')]
 	public function testInsertXmlIdForNonMasterPlaylist(): void
 	{
+		// master is default false
 		$result = $this->concreteBase->testInsertXmlId();
-		static::assertSame('xml:id="1" ', $result);
+		static::assertEmpty($result);
 	}
 
 	#[Group('units')]
 	public function testInsertXmlIdForMasterPlaylist(): void
 	{
+		$this->concreteBase->setTouches([1 => 12]);
+		$this->concreteBase->setBelongsToMasterPlaylist(true);
 		$result = $this->concreteBase->testInsertXmlId();
-		static::assertSame('xml:id="m1" ', $result);
+
+		static::assertSame('xml:id="'.Base::ID_PREFIX.'1" ', $result);
 	}
 
 	#[Group('units')]
 	public function testGetExclusiveWithTriggers(): void
 	{
+		$this->concreteBase->setBelongsToMasterPlaylist(true);
 		$this->beginMock->method('hasTriggers')->willReturn(true);
 		$this->beginMock->method('determineTrigger')->willReturn('trigger_begin');
 
@@ -168,6 +188,16 @@ class BaseTest extends TestCase
 		static::assertStringContainsString('smilElementTag', $result);
 		static::assertStringContainsString('</priorityClass>', $result);
 	}
+
+	public function testGetExclusiveWithTriggersNoMaster(): void
+	{
+		$this->beginMock->method('hasTriggers')->willReturn(true);
+		$this->beginMock->method('determineTrigger')->willReturn('trigger_begin');
+
+		$result = $this->concreteBase->getExclusive();
+		static::assertEmpty($result);
+	}
+
 
 	#[Group('units')]
 	public function testGetExclusiveWithoutTriggers(): void

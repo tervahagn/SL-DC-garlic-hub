@@ -67,6 +67,7 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_type' => ItemType::MEDIAPOOL->value,
+				'begin_trigger' => [],
 				'flags' => 0,
 				'datasource' => ItemDatasource::FILE->value,
 				'file_resource' => 'file',
@@ -87,7 +88,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('createSmilTag')->willReturn('smilTag');
+		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -106,6 +107,7 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_type' => ItemType::MEDIAPOOL->value,
+				'begin_trigger' => [],
 				'flags' => 0,
 				'datasource' => ItemDatasource::FILE->value,
 				'file_resource' => 'file',
@@ -126,7 +128,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('createSmilTag')->willReturn('smilTag');
+		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -146,6 +148,7 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_type' => ItemType::MEDIAPOOL->value,
+				'begin_trigger' => [],
 				'flags' => 0,
 				'datasource' => ItemDatasource::FILE->value,
 				'file_resource' => 'file',
@@ -166,7 +169,7 @@ class PlaylistContentTest extends TestCase
 		$link = 'https://content.server.com/path/to/originals/file.mp4';
 		$videoMock->method('setLink')->with($link);
 
-		$videoMock->method('createSmilTag')->willReturn('smilTag');
+		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -190,6 +193,7 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_type' => ItemType::MEDIA_EXTERN->value,
+				'begin_trigger' => [],
 				'flags' => 0,
 				'datasource' => ItemDatasource::STREAM->value,
 				'content_data' => serialize(['url' => 'https://acme.com/stream.mp4'])
@@ -203,7 +207,7 @@ class PlaylistContentTest extends TestCase
 
 		$videoMock->method('setLink')->with('https://acme.com/stream.mp4');
 
-		$videoMock->method('createSmilTag')->willReturn('smilTag');
+		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -222,6 +226,7 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_type' => ItemType::MEDIA_EXTERN->value,
+				'begin_trigger' => [],
 				'flags' => 0,
 				'datasource' => ItemDatasource::FILE->value,
 				'mimetype'   => 'video/mp4',
@@ -236,7 +241,7 @@ class PlaylistContentTest extends TestCase
 
 		$videoMock->method('setLink')->with('https://acme.com/stream.mp4');
 
-		$videoMock->method('createSmilTag')->willReturn('smilTag');
+		$videoMock->method('getSmilElementTag')->willReturn('smilTag');
 		$videoMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$videoMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -259,6 +264,7 @@ class PlaylistContentTest extends TestCase
 		$playlist = ['shuffle' => 0, 'playlist_mode' => PlaylistMode::MASTER->value];
 		$itemData = [
 			[
+				'begin_trigger' => [],
 				'flags' => 0,
 				'item_type' => ItemType::PLAYLIST->value
 			]
@@ -269,7 +275,7 @@ class PlaylistContentTest extends TestCase
 			->with($itemData[0])
 			->willReturn($playlistMock);
 
-		$playlistMock->method('createSmilTag')->willReturn('smilTag');
+		$playlistMock->method('getSmilElementTag')->willReturn('smilTag');
 		$playlistMock->method('getPrefetchTag')->willReturn('prefetchTag');
 		$playlistMock->method('getExclusive')->willReturn('exclusiveTag');
 
@@ -291,7 +297,8 @@ class PlaylistContentTest extends TestCase
 		$itemData = [
 			[
 				'item_id' => 2,
-				'item_type' => 'unknown'
+				'item_type' => 'unknown',
+				'begin_trigger' => []
 			]
 		];
 

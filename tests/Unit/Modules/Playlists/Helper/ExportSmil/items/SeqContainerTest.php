@@ -70,7 +70,7 @@ class SeqContainerTest extends TestCase
 			$this->conditionalMock
 		);
 
-		$expected = Base::TABSTOPS_TAG . '<seq xml:id="1" title="foo" >' . "\n" .
+		$expected = Base::TABSTOPS_TAG . '<seq title="foo" >' . "\n" .
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
@@ -93,7 +93,7 @@ class SeqContainerTest extends TestCase
 			$this->conditionalMock
 		);
 
-		$expected = Base::TABSTOPS_TAG . '<seq xml:id="1" title="foo" dur="15s" >' . "\n" .
+		$expected = Base::TABSTOPS_TAG . '<seq title="foo" dur="15s" >' . "\n" .
 			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
 			Base::TABSTOPS_TAG . '</seq>' . "\n";
 
@@ -104,17 +104,42 @@ class SeqContainerTest extends TestCase
 	public function testGetSmilElementTagWithTriggers(): void
 	{
 		$this->beginMock->method('hasTriggers')->willReturn(true);
+		$item = ['item_id' => 1, 'item_name' => 'boo', 'file_resource' => '12345', 'time_limit' => 0, 'owner_duration' => 20];
 
 		$this->seqContainer = new SeqContainer(
 		$this->configMock,
-			[],
+			$item,
 			$this->propertiesMock,
 			$this->beginMock,
 			$this->endMock,
 			$this->conditionalMock
 		);
+		$this->seqContainer->setBelongsToMasterPlaylist(true);
 
 		static::assertSame('', $this->seqContainer->getSmilElementTag());
+	}
+
+	#[Group('units')]
+	public function testGetSmilElementTagWithTriggersNoMaster(): void
+	{
+		$this->beginMock->method('hasTriggers')->willReturn(true);
+		$item = ['item_id' => 1, 'item_name' => 'boo', 'file_resource' => '12345', 'time_limit' => 0, 'owner_duration' => 20];
+
+		$this->seqContainer = new SeqContainer(
+			$this->configMock,
+			$item,
+			$this->propertiesMock,
+			$this->beginMock,
+			$this->endMock,
+			$this->conditionalMock
+		);
+		$this->seqContainer->setBelongsToMasterPlaylist(false);
+
+		$expected = Base::TABSTOPS_TAG . '<seq title="boo" >' . "\n" .
+			Base::TABSTOPS_PARAMETER . '{ITEMS_12345}' . "\n" .
+			Base::TABSTOPS_TAG . '</seq>' . "\n";
+
+		static::assertSame($expected, $this->seqContainer->getSmilElementTag());
 	}
 
 	#[Group('units')]

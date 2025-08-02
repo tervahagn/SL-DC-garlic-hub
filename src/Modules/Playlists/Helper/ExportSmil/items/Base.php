@@ -75,6 +75,9 @@ abstract class Base implements ItemInterface
 
 	protected function determineBeginEndTrigger(): string
 	{
+		if (!$this->belongsToMasterPlaylist)
+			return '';
+
 		$ret = '';
 		if ($this->begin->hasTriggers())
 			$ret .= 'begin="'.$this->begin->determineTrigger().'" ';

@@ -67,7 +67,7 @@ class AudioTest extends TestCase
 
 		$audio->setLink('/path/to/video.webm');
 
-		$expected  = Base::TABSTOPS_TAG.'<audio xml:id="1" title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
+		$expected  = Base::TABSTOPS_TAG.'<audio title="Sample Item" region="screen" src="path/to/video.webm" dur="500s" soundLevel="100">'."\n";
 		$expected .= Base::TABSTOPS_PARAMETER.'<param name="cacheControl" value="onlyIfCached" />'."\n";
 		$expected .= Base::TABSTOPS_TAG.'</audio>'."\n";
 

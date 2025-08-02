@@ -114,7 +114,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectAttributes();
 
-		static::assertSame('xml:id="1" title="Sample Item" region="screen" src="test/path" dur="5000s" fit="fill" align="center" ', $result);
+		static::assertSame('title="Sample Item" region="screen" src="test/path" dur="5000s" fit="fill" align="center" ', $result);
 	}
 
 	#[Group('units')]
@@ -129,7 +129,7 @@ class MediaTest extends TestCase
 
 		$result = $this->concreteMedia->testCollectAttributes();
 
-		static::assertSame('xml:id="1" title="Sample Item" region="screen" src="empty/path" dur="5000s" ', $result);
+		static::assertSame('title="Sample Item" region="screen" src="empty/path" dur="5000s" ', $result);
 	}
 
 	#[Group('units')]
