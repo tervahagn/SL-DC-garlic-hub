@@ -43,7 +43,13 @@ class PlayerTokenRepository extends SqlBase
 	 */
 	public function findByPlayerId(int $playerId): array
 	{
-		return $this->getFirstDataSet($this->findAllBy(['player_id' => $playerId]));
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->select('*')
+			->from($this->table)
+			->where('player_id = :player_id')
+			->setParameter('player_id', $playerId);
+
+		return $this->fetchAssociative($queryBuilder);
 	}
 
 	/**
@@ -82,8 +88,13 @@ class PlayerTokenRepository extends SqlBase
 	 */
 	public function updateForPlayer(int $playerId, array $data): int
 	{
-		$data['updated_at'] = date('Y-m-d H:i:s');
-		return $this->updateWithWhere($data, ['player_id' => $playerId]);
+		$queryBuilder = $this->connection->createQueryBuilder();
+		$queryBuilder->update($this->getTable());
+		$queryBuilder->set('updated_at', "'".date('Y-m-d H:i:s')."'");
+		$queryBuilder->where('player_id = :player_id');
+		$queryBuilder->setParameter('player_id', $playerId);
+
+		return (int) $queryBuilder->executeStatement();
 	}
 
 }
