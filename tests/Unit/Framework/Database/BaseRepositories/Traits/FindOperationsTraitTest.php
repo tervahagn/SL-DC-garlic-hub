@@ -40,10 +40,10 @@ class ConcreteTrait extends SqlBase
 }
 class FindOperationsTraitTest extends TestCase
 {
+	private Result&MockObject $resultMock;
 	private Connection&MockObject $connectionMock;
 	private QueryBuilder&MockObject $queryBuilderMock;
 	private ConcreteTrait $repository;
-	private Result&MockObject $resultMock;
 
 	/**
 	 * @throws \PHPUnit\Framework\MockObject\Exception

@@ -21,11 +21,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Player\Services;
 
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Player\Repositories\PlayerRepository;
 use App\Modules\Player\Services\AclValidator;
 use App\Modules\Player\Services\PlayerService;
 use App\Modules\Playlists\Helper\PlaylistMode;
 use App\Modules\Playlists\Services\PlaylistsService;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -80,6 +83,24 @@ class PlayerServiceTest extends TestCase
 		$result = $this->service->findAllForDashboard();
 
 		static::assertSame(['active' => 0, 'inactive' => 0, 'pending' => 0], $result);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdatePlayerSuccessfullyUpdatesData(): void
+	{
+		$playerId = 1;
+		$saveData = ['api_endpoint' => 'http://example.com', 'is_intranet' => 1];
+
+		$this->playerRepositoryMock->expects($this->once())->method('update')
+			->with($playerId, $saveData)
+			->willReturn(1);
+
+		$result = $this->service->updatePlayer($playerId, $saveData);
+
+		static::assertSame(1, $result);
 	}
 
 	#[Group('units')]
@@ -143,5 +164,99 @@ class PlayerServiceTest extends TestCase
 		static::assertSame(['affected' => 1, 'playlist_name' => ''], $result);
 	}
 
+	#[Group('units')]
+	public function testReplaceMasterPlaylistPlaylistsFails(): void
+	{
+		$this->service->setUID(1);
+		$this->playerRepositoryMock->method('findFirstById')
+			->willReturn([]);
 
+		$this->playerValidatorMock->expects($this->never())->method('isPlayerEditable');
+
+		$this->playerRepositoryMock->expects($this->never())->method('update');
+
+		$result = $this->service->replaceMasterPlaylist(1, 0);
+
+		static::assertEmpty($result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFetchAclCheckedPlayerDataSucceed(): void
+	{
+		$playerId = 1;
+		$playerData = ['UID' => 1, 'company_id' => 101, 'player_id' => $playerId, 'name' => 'Player Name'];
+
+		$this->playerRepositoryMock->method('findFirstById')
+			->with($playerId)
+			->willReturn($playerData);
+
+		$this->playerValidatorMock->method('isPlayerEditable')
+			->with(12, $playerData)
+			->willReturn(true);
+
+		$this->service->setUID(12);
+		$result = $this->service->fetchAclCheckedPlayerData($playerId);
+
+		static::assertSame($playerData, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testFetchAclCheckedPlayerDataReturnsEmptyIfPlayerNotFound(): void
+	{
+		$playerId = 2;
+
+		$this->playerRepositoryMock->method('findFirstById')
+			->with($playerId)
+			->willReturn([]);
+
+		$this->loggerMock->expects($this->once())
+			->method('error')
+			->with('Error loading player: ' . $playerId . ' is not found.');
+
+		$result = $this->service->fetchAclCheckedPlayerData($playerId);
+
+		static::assertSame([], $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
+	public function testFetchAclCheckedPlayerDataReturnsEmptyIfPlayerNotEditable(): void
+	{
+		$playerId = 3;
+		$playerData = ['UID' => 2, 'company_id' => 102, 'player_id' => $playerId, 'name' => 'Player Demo'];
+
+		$this->playerRepositoryMock->method('findFirstById')
+			->with($playerId)
+			->willReturn($playerData);
+
+		$this->playerValidatorMock->method('isPlayerEditable')
+			->with(12, $playerData)
+			->willReturn(false);
+
+		$this->loggerMock->expects($this->once())
+			->method('error')
+			->with('Error loading player: ' . $playerId . ' is not editable for User ' . 12 . '.');
+
+		$this->service->setUID(12);
+		$result = $this->service->fetchAclCheckedPlayerData($playerId);
+
+		static::assertSame([], $result);
+	}
 }

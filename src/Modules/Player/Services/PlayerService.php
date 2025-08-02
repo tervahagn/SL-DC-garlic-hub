@@ -79,7 +79,7 @@ class PlayerService extends AbstractBaseService
 		{
 			$player = $this->fetchAclCheckedPlayerData($playerId);
 			if ($player === [])
-				throw new ModuleException('player', 'Error loading player: Is not editable');
+				return []; // error is handled in fetchAclCheckedPlayerData
 
 			$playlistName = '';
 			if ($playlistId > 0)
@@ -117,6 +117,8 @@ class PlayerService extends AbstractBaseService
 		if ($player === [])
 		{
 			$this->logger->error('Error loading player: '.$playerId.' is not found.');
+			$this->addErrorMessage('Error loading player: '.$playerId.' is not found.');
+
 			return [];
 		}
 

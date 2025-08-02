@@ -30,23 +30,12 @@ class PlayerRestAPIService extends AbstractBaseService
     private readonly SimpleApiExecutor $apiExecutor;
     private readonly PlayerTokenService $playerTokenService;
 
-	/** @var array<string,string>|array<empty,empty>  */
-	private array $contentArray = [];
-
 	public function __construct(SimpleApiExecutor $apiExecutor, PlayerTokenService $playerTokenService, LoggerInterface $logger)
 	{
         $this->apiExecutor = $apiExecutor;
         $this->playerTokenService = $playerTokenService;
         parent::__construct($logger);
     }
-
-	/**
-	 * @return array<string,string>|array<empty,empty>
-	 */
-	public function getContentArray(): array
-	{
-		return $this->contentArray;
-	}
 
     public function authenticate(string $baseUrl, string $username, string $password, int $playerId): bool
     {
@@ -69,9 +58,7 @@ class PlayerRestAPIService extends AbstractBaseService
 		$response = $this->apiExecutor->getBodyContentsArray();
 
 		if (!isset($response['access_token'], $response['expires_in'], $response['token_type']))
-			return $this->handleErrors('Invalid authentication response');
-
-		$this->contentArray = $response;
+			return $this->handleErrors('Invalid authentication response', $response);
 
 		return $this->playerTokenService->storeToken($playerId, $response['access_token'], $response['expires_in'], $response['token_type']);
     }
@@ -84,7 +71,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$size = filesize($filePath);
 		if ($size === false)
-			return $this->handleErrors('Filepath '.$filePath.' does not exist.');
+			return $this->handleErrors('Filepath '.$filePath.' does not exist.', []);
 
 		$body = [
 			'downloadPath' => $filePath,
@@ -101,9 +88,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$response = $this->apiExecutor->getBodyContentsArray();
 		if ($response['completed'] === false)
-			return $this->handleErrors('Upload file failed');
-
-		$this->contentArray = $response;
+			return $this->handleErrors('Upload file failed', $response);
 
 		return true;
 	}
@@ -127,9 +112,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$response = $this->apiExecutor->getBodyContentsArray();
 		if ($response['uri'] !== $uri)
-			return $this->handleErrors('Start playback failed');
-
-		$this->contentArray = $response;
+			return $this->handleErrors('Start playback failed', $response);
 
 		return true;
     }
@@ -153,9 +136,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$response = $this->apiExecutor->getBodyContentsArray();
 		if ($response['uri'] !== $uri)
-			return $this->handleErrors('Set default content uri failed');
-
-		$this->contentArray = $response;
+			return $this->handleErrors('Set default content uri failed', $response);
 
 		return true;
 	}
@@ -180,9 +161,7 @@ class PlayerRestAPIService extends AbstractBaseService
 
 		$response = $this->apiExecutor->getBodyContentsArray();
 		if (!isset($response['uri']) || $response['uri'] === '')
-			return $this->handleErrors('Switch play default content uri failed');
-
-		$this->contentArray = $response;
+			return $this->handleErrors('Switch play default content uri failed', $response);
 
 		return true;
 	}
@@ -217,9 +196,12 @@ class PlayerRestAPIService extends AbstractBaseService
 		return $data;
 	}
 
-	private function handleErrors(string $message): bool
+	/**
+	 * @param array<string,mixed>|array<empty,empty> $response
+	 */
+	private function handleErrors(string $message, array $response): bool
 	{
-		$this->logger->error($message, ['response' => $this->apiExecutor->getBodyContentsArray()]);
+		$this->logger->error($message, ['response' => $response]);
 		$this->addErrorMessage($message.': '. $this->apiExecutor->getBodyContents());
 		return false;
 
