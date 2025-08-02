@@ -25,7 +25,7 @@ class CheckboxField extends AbstractInputField
 {
 	private bool $checked = false;
 
-	public function setChecked(bool $checked): CheckboxField
+	public function setChecked(bool $checked): static
 	{
 		$this->checked = $checked;
 		return $this;

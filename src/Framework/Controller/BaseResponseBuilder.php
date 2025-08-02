@@ -62,6 +62,4 @@ abstract class BaseResponseBuilder
 		return $this->jsonResponseHandler->jsonSuccess($response, $message);
 	}
 
-
-
 }

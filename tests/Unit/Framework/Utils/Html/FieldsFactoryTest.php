@@ -122,16 +122,6 @@ class FieldsFactoryTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testCreateHiddenField(): void
-	{
-		$attributes = ['id' => 'username', 'type' => FieldType::HIDDEN, 'name' => 'user_name'];
-
-		$field = $this->fieldsFactory->createHiddenField($attributes);
-
-		static::assertSame('username', $field->getId());
-		static::assertSame('user_name', $field->getName());
-	}
-	#[Group('units')]
 	public function testCreateClipboardTextField(): void
 	{
 		$attributes = ['id' => 'clipboard', 'type' => FieldType::CLIPBOARD_TEXT, 'name' => 'clipboard-text'];
@@ -141,4 +131,38 @@ class FieldsFactoryTest extends TestCase
 		static::assertSame('clipboard', $field->getId());
 		static::assertSame('clipboard-text', $field->getName());
 	}
+
+	#[Group('units')]
+	public function testCreateUrlField(): void
+	{
+		$attributes = ['id' => 'url', 'type' => FieldType::URL, 'name' => 'url_link'];
+
+		$field = $this->fieldsFactory->createUrlField($attributes);
+
+		static::assertSame('url', $field->getId());
+		static::assertSame('url_link', $field->getName());
+	}
+
+	#[Group('units')]
+	public function testCheckboxField(): void
+	{
+		$attributes = ['id' => 'check', 'type' => FieldType::URL, 'name' => 'checkbox'];
+
+		$field = $this->fieldsFactory->createCheckboxField($attributes);
+
+		static::assertSame('check', $field->getId());
+		static::assertSame('checkbox', $field->getName());
+	}
+
+	#[Group('units')]
+	public function testCreateHiddenField(): void
+	{
+		$attributes = ['id' => 'username', 'type' => FieldType::HIDDEN, 'name' => 'user_name'];
+
+		$field = $this->fieldsFactory->createHiddenField($attributes);
+
+		static::assertSame('username', $field->getId());
+		static::assertSame('user_name', $field->getName());
+	}
+
 }

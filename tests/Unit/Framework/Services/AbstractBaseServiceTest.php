@@ -33,6 +33,12 @@ class ConcreteService extends AbstractBaseService
 	{
 		$this->addErrorMessage('This is an Error');
 	}
+	public function addMultipleErrors(): void
+	{
+		$this->addErrorMessage('This is an Error');
+		$this->addErrorMessage('Another error');
+
+	}
 
 	public function getUID(): int
 	{
@@ -71,6 +77,16 @@ class AbstractBaseServiceTest extends TestCase
 		$this->service->setUID(123);
 
 		static::assertSame(123, $this->service->getUID());
+	}
+
+	#[Group('units')]
+	public function testGetErrorMessagesAsString(): void
+	{
+		static::assertSame('', $this->service->getErrorMessagesAsString());
+
+		$this->service->addMultipleErrors();
+
+		static::assertSame('This is an Error | Another error', $this->service->getErrorMessagesAsString());
 	}
 
 

@@ -27,7 +27,6 @@ use App\Framework\Exceptions\ModuleException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 
@@ -42,11 +41,14 @@ class ConcreteEditBaseParameters extends BaseEditParameters
 	{
 		$this->currentParameters = $this->defaultParameters;
 	}
+	public function addNoParameter(): void
+	{
+		$this->currentParameters = [];
+	}
 }
 
 class BaseEditParametersTest extends TestCase
 {
-	private Session&MockObject $sessionMock;
 	private ConcreteEditBaseParameters $baseEditParameters;
 
 	/**
@@ -56,9 +58,9 @@ class BaseEditParametersTest extends TestCase
 	{
 		parent::setUp();
 		$sanitizerMock = $this->createMock(Sanitizer::class);
-		$this->sessionMock = $this->createMock(Session::class);
+		$sessionMock = $this->createMock(Session::class);
 
-		$this->baseEditParameters = new ConcreteEditBaseParameters($sanitizerMock, $this->sessionMock);
+		$this->baseEditParameters = new ConcreteEditBaseParameters($sanitizerMock, $sessionMock);
 	}
 
 	/**
@@ -71,5 +73,15 @@ class BaseEditParametersTest extends TestCase
 		$this->baseEditParameters->setValueOfParameter(BaseEditParameters::PARAMETER_CSRF_TOKEN, 'goodToken');
 
 		static::assertSame('goodToken', $this->baseEditParameters->getCsrfToken());
+	}
+
+	/**
+	 * @throws ModuleException
+	 */
+	#[Group('units')]
+	public function testCheckCsrfTokenFails(): void
+	{
+		$this->baseEditParameters->addNoParameter();
+		static::assertEmpty($this->baseEditParameters->getCsrfToken());
 	}
 }

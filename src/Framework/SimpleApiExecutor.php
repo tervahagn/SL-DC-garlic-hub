@@ -59,10 +59,10 @@ class SimpleApiExecutor extends AbstractBaseService
 		{
 			$endpoint .= '?access_token='. $token;
 			$response = $this->httpClient->request($method, $endpoint, [RequestOptions::JSON => $options]);
-
-			if ($response->getStatusCode() !== 200)
+			$statusCode = $response->getStatusCode();
+			if ($statusCode !== 200)
 			{
-				$error = "API request failed: {$response->getStatusCode()}";
+				$error = "API request failed: $statusCode";
 				$this->handleHttpError($error, $endpoint, $response->getBody()->getContents());
 				return false;
 			}
@@ -88,9 +88,10 @@ class SimpleApiExecutor extends AbstractBaseService
 		{
 			$response = $this->httpClient->post($endpoint, [RequestOptions::JSON => $options]);
 
-			if ($response->getStatusCode() !== 200)
+			$statusCode = $response->getStatusCode();
+			if ($statusCode !== 200)
 			{
-				$error = "Auth request failed: {$response->getStatusCode()}";
+				$error = "Auth request failed: $statusCode";
 				$this->handleHttpError($error, $endpoint, $response->getBody()->getContents());
 				return false;
 			}
