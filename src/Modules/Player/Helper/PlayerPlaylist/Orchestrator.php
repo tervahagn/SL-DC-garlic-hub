@@ -138,9 +138,19 @@ class Orchestrator
 			return $this->responseBuilder->noPlaylistAssigned($response);
 
 		/** @var array{is_intranet:int, playlist_id:int, api_endpoint:string, player_name:string, ...} $player */
-		$this->player = $player;
+		$this->setPlayer($player);
 		return null;
 	}
+
+	/**
+	 * @param array{is_intranet:int, playlist_id:int, api_endpoint:string, player_name:string, ...} $player
+	 */
+	public function setPlayer(array $player): void
+	{
+		$this->player = $player;
+	}
+
+
 
 	/**
 	 * @throws UserException
