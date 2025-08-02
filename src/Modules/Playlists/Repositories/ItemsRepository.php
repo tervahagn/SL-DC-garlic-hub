@@ -60,7 +60,7 @@ class ItemsRepository extends SqlBase
 	}
 
 	/**
-	 * @return array<int, array{item_id:int, item_name:string}>|array<empty,empty>
+	 * @return list<array{item_id:int, item_name:string}>
 	 * @throws Exception
 	 */
 	public function findMediaInPlaylistId(int $playlistId): array
@@ -72,8 +72,8 @@ class ItemsRepository extends SqlBase
 			->andWhere('item_type in (\''.ItemType::MEDIAPOOL->value.'\', \''.ItemType::MEDIA_EXTERN->value.'\', \''.ItemType::TEMPLATE->value.'\')')
 			->andWhere("mimetype LIKE 'image%' OR mimetype LIKE 'video%'")
 			->setParameter('playlistId', $playlistId);
-		;
 
+		// @phpstan-ignore-next-line // we clearly define our result in select
 		return $queryBuilder->executeQuery()->fetchAllAssociative();
 	}
 

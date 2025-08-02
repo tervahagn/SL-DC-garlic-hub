@@ -22,28 +22,24 @@ declare(strict_types=1);
 
 namespace App\Modules\Playlists\Helper\Trigger;
 
-use App\Framework\Core\Translate\Translator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
 use App\Framework\TemplateEngine\AdapterInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\SimpleCache\InvalidArgumentException;
 
-class TemplatePreparer
+readonly class TemplatePreparer
 {
-	/** @var array<string,mixed>  */
-	private array $templateData;
-
-	public function __construct(private readonly AdapterInterface $template, private readonly TriggerPreparer $triggerPreparer)
+	public function __construct(private AdapterInterface $template, private TriggerPreparer $triggerPreparer)
 	{
 	}
 
 	/**
-	 * @param array<string,mixed> $triggerData
+	 * @param int $itemId
 	 * @throws CoreException
 	 * @throws FrameworkException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	public function prepare(int $itemId): void
 	{
