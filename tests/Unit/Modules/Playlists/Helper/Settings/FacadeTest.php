@@ -41,8 +41,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 class FacadeTest extends TestCase
 {
 	private Builder&MockObject $settingsFormBuilderMock;
-	private PlaylistsService&MockObject $playlistsService;
-	private Parameters&MockObject $settingsParameters;
+	private PlaylistsService&MockObject $playlistsServiceMock;
+	private Parameters&MockObject $settingsParametersMock;
 	private Translator&MockObject $translatorMock;
 	private Facade $facade;
 
@@ -53,13 +53,13 @@ class FacadeTest extends TestCase
 	{
 		parent::setUp();
 		$this->settingsFormBuilderMock = $this->createMock(Builder::class);
-		$this->playlistsService    = $this->createMock(PlaylistsService::class);
-		$this->settingsParameters  = $this->createMock(Parameters::class);
+		$this->playlistsServiceMock    = $this->createMock(PlaylistsService::class);
+		$this->settingsParametersMock  = $this->createMock(Parameters::class);
 		$this->translatorMock      = $this->createMock(Translator::class);
 		$this->facade = new Facade(
 			$this->settingsFormBuilderMock,
-			$this->playlistsService,
-			$this->settingsParameters,
+			$this->playlistsServiceMock,
+			$this->settingsParametersMock,
 		);
 	}
 
@@ -80,7 +80,7 @@ class FacadeTest extends TestCase
 			->method('init')
 			->with($sessionMock);
 
-		$this->playlistsService->expects($this->once())
+		$this->playlistsServiceMock->expects($this->once())
 			->method('setUID')
 			->with(123);
 
@@ -95,7 +95,7 @@ class FacadeTest extends TestCase
 		$playlistId = 42;
 		$expectedPlaylist = ['id' => $playlistId, 'name' => 'My Playlist'];
 
-		$this->playlistsService->expects($this->once())
+		$this->playlistsServiceMock->expects($this->once())
 			->method('loadPlaylistForEdit')
 			->with($playlistId)
 			->willReturn($expectedPlaylist);
@@ -120,7 +120,7 @@ class FacadeTest extends TestCase
 		$expectedPlaylist = ['id' => 42, 'name' => 'My Playlist'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
-		$this->playlistsService->expects($this->once())
+		$this->playlistsServiceMock->expects($this->once())
 			->method('loadPlaylistForEdit')
 			->with(42)
 			->willReturn($expectedPlaylist);
@@ -182,15 +182,15 @@ class FacadeTest extends TestCase
 		$expectedValues = [42, 'Updated Playlist'];
 		$expectedId = 42;
 
-		$this->settingsParameters->expects($this->once())
+		$this->settingsParametersMock->expects($this->once())
 			->method('getInputParametersKeys')
 			->willReturn($expectedKeys);
 
-		$this->settingsParameters->expects($this->once())
+		$this->settingsParametersMock->expects($this->once())
 			->method('getInputValuesArray')
 			->willReturn($expectedValues);
 
-		$this->playlistsService->expects($this->once())
+		$this->playlistsServiceMock->expects($this->once())
 			->method('updateSecure')
 			->with(['id' => 42, 'name' => 'Updated Playlist'])
 			->willReturn($expectedId);
@@ -215,15 +215,15 @@ class FacadeTest extends TestCase
 		$expectedValues = ['New Playlist'];
 		$expectedId = 99;
 
-		$this->settingsParameters->expects($this->once())
+		$this->settingsParametersMock->expects($this->once())
 			->method('getInputParametersKeys')
 			->willReturn($expectedKeys);
 
-		$this->settingsParameters->expects($this->once())
+		$this->settingsParametersMock->expects($this->once())
 			->method('getInputValuesArray')
 			->willReturn($expectedValues);
 
-		$this->playlistsService->expects($this->once())
+		$this->playlistsServiceMock->expects($this->once())
 			->method('createNew')
 			->with(['name' => 'New Playlist'])
 			->willReturn($expectedId);
