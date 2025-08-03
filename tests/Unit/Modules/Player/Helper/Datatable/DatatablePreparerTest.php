@@ -686,6 +686,48 @@ class DatatablePreparerTest extends TestCase
 		static::assertArrayHasKey('UNIT_ID', $result[0]);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws DateMalformedStringException
+	 * @throws FrameworkException
+	 * @throws InvalidArgumentException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \PHPUnit\Framework\MockObject\Exception
+	 */
+	#[Group('units')]
+	public function testPrepareTableBodyWithDefault(): void
+	{
+		$this->datatablePreparer->setTranslator($this->translatorMock);
+		$fields = [$this->createMock(HeaderField::class)];
+		$fields[0]->method('getName')->willReturn('unknown');
+		$fields[0]->method('isSortable')->willReturn(false);
+
+		$this->prepareServiceMock->method('getBodyPreparer')
+			->willReturn($this->bodyPreparerMock);
+
+		$this->bodyPreparerMock->expects($this->once())->method('formatText');
+
+		$result = $this->datatablePreparer->prepareTableBody(
+			[
+				[
+					'player_id' => 1,
+					'UID' => 13,
+					'unknown' => 'unknown value',
+					'status' => PlayerStatus::UNRELEASED->value,
+					'player_name' => 'Player name',
+					'model' => PlayerModel::GARLIC->value,
+					'playlist_id' => 123,
+					'playlist_name' => 'Playlist name',
+				]
+			],
+			$fields,
+			123
+		);
+
+		static::assertCount(1, $result);
+		static::assertArrayHasKey('UNIT_ID', $result[0]);
+	}
+
 
 	/**
 	 */
