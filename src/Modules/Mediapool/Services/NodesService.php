@@ -304,7 +304,7 @@ class NodesService
 			throw new ModuleException('mediapool', 'Parent node not found');
 
 		$rights      = $this->determineRights($parentNode);
-		if (!$rights['edit'])
+		if (!$rights['create'])
 			throw new ModuleException('mediapool', 'No rights to add node under: ' . $parentNode['name']);
 
 		return $this->nestedSetsService->addSubNode($this->UID, $name, $parentNode);
@@ -320,21 +320,31 @@ class NodesService
 	 */
 	private function determineRights(array $node): array
 	{
-		$delete     = false;
-		$edit       = false;
 		$rights     = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 
 		if(!$rights['read'])
 			return ['create' => false, 'edit' => false, 'delete' => false, 'share' => ''];
 
-		if ($rights['edit'])
+		$create = false;
+		$edit = false;
+		$delete = false;
+		// only admin can edit and delete and root nodes
+		if ($node['parent_id'] === 0)
 		{
-			if ($node['parent_id'] > 0 || $this->aclValidator->isModuleAdmin($this->UID))
+			if ($this->aclValidator->isModuleAdmin($this->UID))
+				return ['create' => true, 'edit' => true, 'delete' => true, 'share' => $rights['share']];
+			else if ($this->UID == $node['UID']) // only User dirs
 			{
-				$delete = true;
-				$edit   = true;
+				$create = true;
 			}
 		}
-		return ['create' => $rights['create'], 'edit' => $edit, 'delete' => $delete, 'share' => $rights['share']];
+		else
+		{
+			$create = $rights['create'];
+			$edit = $rights['edit'];
+			$delete = $rights['create'];
+		}
+
+		return ['create' => $create, 'edit' => $edit, 'delete' => $delete, 'share' => $rights['share']];
 	}
 }

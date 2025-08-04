@@ -25,13 +25,13 @@ use App\Framework\Controller\AbstractAsyncController;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\DatabaseException;
-use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Services\NodesService;
 use Doctrine\DBAL\Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class NodesController extends AbstractAsyncController
 {
@@ -92,7 +92,7 @@ class NodesController extends AbstractAsyncController
 				'data' => ['id' => $new_node_id, 'new_name' => $bodyParams['name']]
 			]);
 		}
-		catch (Exception | ModuleException $e)
+		catch (Throwable $e)
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
@@ -127,7 +127,7 @@ class NodesController extends AbstractAsyncController
 				]
 			]);
 		}
-		catch (CoreException | PhpfastcacheSimpleCacheException | Exception | ModuleException $e)
+		catch (Throwable $e)
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
@@ -153,7 +153,7 @@ class NodesController extends AbstractAsyncController
 			$count = $this->nodesService->moveNode((int) $bodyParams['src_node_id'], (int) $bodyParams['target_node_id'], $bodyParams['target_region']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
-		catch (Exception | ModuleException $e)
+		catch (Throwable $e)
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
@@ -183,7 +183,7 @@ class NodesController extends AbstractAsyncController
 			$count = $this->nodesService->deleteNode((int) $bodyParams['node_id']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
-		catch (Exception | FrameworkException | ModuleException $e)
+		catch (Throwable $e)
 		{
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => $e->getMessage()]);
 		}
