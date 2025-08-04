@@ -90,6 +90,7 @@ $dependencies[UploadService::class] = DI\factory(function (ContainerInterface $c
 {
 	return new UploadService(
 		$container->get(MediaHandlerFactory::class),
+		$container->get(NodesService::class),
 		new Client(),
 		new FilesRepository($container->get('SqlConnection')),
 		new MimeTypeDetector(new FileInfoWrapper()),
