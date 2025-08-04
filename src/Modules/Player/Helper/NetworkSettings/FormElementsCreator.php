@@ -43,12 +43,13 @@ class FormElementsCreator extends AbstractBaseFormElementsCreator
 	 */
 	public function createApiEndpointField(string $value): UrlField
 	{
+		$title = $this->translator->translate(Parameters::PARAMETER_API_ENDPOINT, 'player');
 		$field = $this->formBuilder->createField([
 			'type'  => FieldType::URL,
 			'id'    => Parameters::PARAMETER_API_ENDPOINT,
 			'name'  => Parameters::PARAMETER_API_ENDPOINT,
-			'title' => $this->translator->translate(Parameters::PARAMETER_API_ENDPOINT, 'player'),
-			'label' => $this->translator->translate(Parameters::PARAMETER_API_ENDPOINT, 'player'),
+			'title' => $title,
+			'label' => $title,
 			'value' => $value
 		]);
 

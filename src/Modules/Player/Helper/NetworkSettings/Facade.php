@@ -57,6 +57,12 @@ class Facade
 		$this->playerService->setUID($user['UID']);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 * @throws FrameworkException
+	 */
 	public function loadPlayerForEdit(int $playerId): static
 	{
 		/** @var array{player_id:int, player_name:string, model:int, is_intranet:int, api_endpoint:string}|array<empty,empty> $player */
