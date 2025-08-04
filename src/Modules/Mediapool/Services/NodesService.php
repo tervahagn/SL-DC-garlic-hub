@@ -59,6 +59,23 @@ class NodesService
 	}
 
 	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function isNodeUploadable(int $nodeId): bool
+	{
+		$node = $this->nodesRepository->getNode($nodeId);
+		if ($node === [])
+			throw new ModuleException('mediapool','Node Id: '.$nodeId.' not exists.');
+
+		$rights = $this->determineRights($node);
+
+		return $rights['create'];
+	}
+
+	/**
 	 * @return list<array<string,mixed>>
 	 * @throws CoreException
 	 * @throws Exception
@@ -73,6 +90,12 @@ class NodesService
 			$nodes = $this->nestedSetsService->findAllChildNodesByParentNode($parent_id);
 
 		$tree = [];
+		/** @var array{
+		 * UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
+		 * parent_id:int, level:int, lft:int, rgt:int,
+		 * last_updated:string, create_date:string, name:string, media_location:string,
+		 * children:int
+		 * } $node */
 		foreach ($nodes as $node)
 		{
 			$rights = $this->determineRights($node);
@@ -151,7 +174,6 @@ class NodesService
 		if ($node === [])
 			throw new ModuleException('mediapool', 'Parent node not found');
 
-		/** @var array<string,mixed> $node */ // because phpstan acts idiotic
 		$rights = $this->determineRights($node);
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to edit node ' . $node['name']);
@@ -211,7 +233,6 @@ class NodesService
 		if (empty($node))
 			throw new ModuleException('mediapool', 'Can not find a node for node_id ' . $nodeId);
 
-		/** @var array<string,mixed> $node */
 		$rights = $this->determineRights($node);
 		if (!$rights['delete'])
 			throw new ModuleException('mediapool', 'No rights to delete node ' . $nodeId);
@@ -228,7 +249,12 @@ class NodesService
 	}
 
 	/**
-	 * @param array<string,string> $node
+	 * @param array{
+	 *      UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
+	 *       parent_id:int, level:int, lft:int, rgt:int,
+	 *      last_updated:string, create_date:string, name:string, media_location:string,
+	 *      children:int
+	 *  } $node
 	 * @param array<string,bool|string> $rights
 	 * @return array<string,mixed>
 	 */
@@ -277,7 +303,6 @@ class NodesService
 		if (count($parentNode) === 0)
 			throw new ModuleException('mediapool', 'Parent node not found');
 
-		/** @var array<string,mixed> $parentNode */
 		$rights      = $this->determineRights($parentNode);
 		if (!$rights['edit'])
 			throw new ModuleException('mediapool', 'No rights to add node under: ' . $parentNode['name']);
@@ -286,7 +311,12 @@ class NodesService
 	}
 
 	/**
-	 * @param array<string,mixed> $node
+	 * @param array{
+	 *      UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
+	 *       parent_id:int, level:int, lft:int, rgt:int,
+	 *      last_updated:string, create_date:string, name:string, media_location:string,
+	 *      children:int
+	 *  } $node
 	 * @return array{create:bool, edit:bool, delete:bool, share:string}
 	 * @throws CoreException
 	 * @throws Exception

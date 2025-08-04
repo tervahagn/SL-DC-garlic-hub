@@ -30,7 +30,8 @@ use Doctrine\DBAL\Exception;
 
 class NodesRepository  extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{
@@ -38,7 +39,12 @@ class NodesRepository  extends SqlBase
 	}
 
 	/**
-	 * @return array<string,mixed>|array<empty,empty>
+	 * @return array{
+	 *     UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
+	 *      parent_id:int, level:int, lft:int, rgt:int,
+	 *     last_updated:string, create_date:string, name:string, media_location:string,
+	 *     children:int
+	 * }
 	 * @throws Exception
 	 */
 	public function getNode(int $nodeId): array
@@ -47,7 +53,14 @@ class NodesRepository  extends SqlBase
 		$where = ['node_id' => $this->generateWhereClause($nodeId)];
 		$join  = ['user_main' => $this->table.'.UID = user_main.UID'];
 
-		return  $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		/** @var array{
+		 * UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
+		 * parent_id:int, level:int, lft:int, rgt:int,
+		 * last_updated:string, create_date:string, name:string, media_location:string,
+		 * children:int
+		 * } $result */
+		$result = $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		return $result;
 	}
 
 	/**

@@ -29,36 +29,24 @@ use App\Modules\Mediapool\Utils\MediaHandlerFactory;
 use App\Modules\Mediapool\Utils\MimeTypeDetector;
 use Doctrine\DBAL\Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use League\Flysystem\FilesystemException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Psr7\UploadedFile;
+use Throwable;
 
-class UploadService
+readonly class UploadService
 {
-	private MediaHandlerFactory $mediaHandlerFactory;
-	private FilesRepository $mediaRepository;
-	private MimeTypeDetector $mimeTypeDetector;
-	private Client $client;
-	private LoggerInterface $logger;
-
-	/**
-	 * @param MediaHandlerFactory $mediaHandlerFactory
-	 * @param Client $client
-	 * @param FilesRepository $mediaRepository
-	 * @param MimeTypeDetector $mimeTypeDetector
-	 * @param LoggerInterface $logger
-	 */
-	public function __construct(MediaHandlerFactory $mediaHandlerFactory, Client $client, FilesRepository
-$mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
+	public function __construct(
+		private MediaHandlerFactory $mediaHandlerFactory,
+		private NodesService        $nodeService,
+		private Client              $client,
+		private FilesRepository     $mediaRepository,
+		private MimeTypeDetector    $mimeTypeDetector,
+		private LoggerInterface     $logger)
 	{
-		$this->mediaHandlerFactory = $mediaHandlerFactory;
-		$this->client              = $client;
-		$this->mediaRepository     = $mediaRepository;
-		$this->mimeTypeDetector    = $mimeTypeDetector;
-		$this->logger              = $logger;
 	}
 
 	/**
@@ -78,22 +66,23 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	}
 
 	/**
-	 * Upload Media and insert them into database. The filename is a sh256 hash of the file
+	 * Upload Media and insert them into a database. The filename is a sh256 hash of the file
 	 *
-	 * if this method finds a media already uploaded it will create only an entry into the database
+	 * if this method finds a media already uploaded, it will create only an entry into the database
 	 * and delete the new uploaded file.
 	 *
 	 * media_id is a UUID to make it more difficult to guess
 	 *
 	 * @param array<string,int|string> $metadata
 	 * @return list<array<string,mixed>>
-	 * @throws Exception
 	 */
 	public function uploadMediaFiles(int $nodeId, int $UID, UploadedFile $uploadedFile, array $metadata): array
 	{
 		$ret = [];
 		try
 		{
+			$this->checkNodeUploadable($nodeId, $UID);
+
 			$preMimeType      = $uploadedFile->getClientMediaType();
 			if ($preMimeType === null)
 				throw new ModuleException('mediapool', 'Not able to detect mime type.');
@@ -111,7 +100,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 
 			$ret[] = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID);
 		}
-		catch(\Exception | FilesystemException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('UploadService Error: '.$e->getMessage());
 			$ret[] = ['success' => false, 'error_message' => $e->getMessage()];
@@ -127,6 +116,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 	{
 		try
 		{
+			$this->checkNodeUploadable($nodeId, $UID);
 			$response      = $this->client->head($externalLink);
 			$preMimeType   = $response->getHeaderLine('Content-Type');
 			// workaround if no content-type sent
@@ -141,7 +131,7 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 
 			$ret = $this->insertDataset($mediaHandler, $uploadPath, $nodeId, $UID, $extMetadata);
 		}
-		catch (ClientException|GuzzleException|CoreException|ModuleException|Exception|FilesystemException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('UploadService Error: '.$e->getMessage());
 			$ret = ['success' => false, 'error_message' => $e->getMessage()];
@@ -261,6 +251,21 @@ $mediaRepository, MimeTypeDetector $mimeTypeDetector, LoggerInterface $logger)
 		}
 
 		return $metadata;
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	private function checkNodeUploadable(int $nodeId, int $UID): void
+	{
+		$this->nodeService->UID = $UID;
+		if (!$this->nodeService->isNodeUploadable($nodeId))
+			throw new ModuleException(
+				'mediapool','User '.$UID.' has no upload rights for node '.$UID.'.');
+
 	}
 
 }

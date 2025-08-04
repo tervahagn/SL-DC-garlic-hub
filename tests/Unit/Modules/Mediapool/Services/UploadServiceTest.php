@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Modules\Mediapool\Services;
 
 use App\Modules\Mediapool\Repositories\FilesRepository;
+use App\Modules\Mediapool\Services\NodesService;
 use App\Modules\Mediapool\Services\UploadService;
 use App\Modules\Mediapool\Utils\AbstractMediaHandler;
 use App\Modules\Mediapool\Utils\MediaHandlerFactory;
@@ -43,6 +44,7 @@ class UploadServiceTest extends TestCase
 {
 	private UploadService $uploadService;
 	private MediaHandlerFactory&MockObject $mediaHandlerFactoryMock;
+	private NodesService&MockObject $nodeServiceMock;
 	private Client&MockObject $clientMock;
 	private FilesRepository&MockObject $mediaRepositoryMock;
 	private MimeTypeDetector&MockObject $mimeTypeDetectorMock;
@@ -55,6 +57,7 @@ class UploadServiceTest extends TestCase
 	{
 		parent::setUp();
 		$this->mediaHandlerFactoryMock = $this->createMock(MediaHandlerFactory::class);
+		$this->nodeServiceMock = $this->createMock(NodesService::class);
 		$this->clientMock = $this->createMock(Client::class);
 		$this->mediaRepositoryMock = $this->createMock(FilesRepository::class);
 		$this->mimeTypeDetectorMock = $this->createMock(MimeTypeDetector::class);
@@ -62,6 +65,7 @@ class UploadServiceTest extends TestCase
 
 		$this->uploadService = new UploadService(
 			$this->mediaHandlerFactoryMock,
+			$this->nodeServiceMock,
 			$this->clientMock,
 			$this->mediaRepositoryMock,
 			$this->mimeTypeDetectorMock,
@@ -134,7 +138,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesSuccess(): void
@@ -145,40 +148,31 @@ class UploadServiceTest extends TestCase
 
 		$uploadedFile = $this->createMock(UploadedFile::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		// Mock uploaded file methods
-		$uploadedFile
-			->method('getError')
+		$uploadedFile->method('getError')
 			->willReturn(UPLOAD_ERR_OK);
-		$uploadedFile
-			->method('getClientMediaType')
+		$uploadedFile->method('getClientMediaType')
 			->willReturn('image/jpeg');
-		$uploadedFile
-			->method('getSize')
+		$uploadedFile->method('getSize')
 			->willReturn(1024);
 
 		// Mock media handler
-		$this->mediaHandlerFactoryMock
-			->expects($this->once())
-			->method('createHandler')
+		$this->mediaHandlerFactoryMock->expects($this->once())->method('createHandler')
 			->with('image/jpeg')
 			->willReturn($mediaHandler);
 
-		$mediaHandler
-			->expects($this->once())
-			->method('uploadFromLocal')
+		$mediaHandler->expects($this->once())->method('uploadFromLocal')
 			->willReturn('/tmp/test.jpg');
 
-		$mediaHandler
-			->method('determineNewFilename')
+		$mediaHandler->method('determineNewFilename')
 			->willReturn('abc123');
 
-		$mediaHandler
-			->method('getMetadata')
+		$mediaHandler->method('getMetadata')
 			->willReturn([]);
 
-		$this->mediaRepositoryMock
-			->method('findFirstBy')
+		$this->mediaRepositoryMock->method('findFirstBy')
 			->willReturn([]);
 
 		$this->mimeTypeDetectorMock
@@ -192,7 +186,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesSuccessWithMetaDataDuration(): void
@@ -202,6 +195,7 @@ class UploadServiceTest extends TestCase
 
 		$uploadedFileMock = $this->createMock(UploadedFile::class);
 		$mediaHandlerMock = $this->createMock(AbstractMediaHandler::class);
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		// Mock uploaded file methods
 		$uploadedFileMock->method('getError')->willReturn(UPLOAD_ERR_OK);
@@ -209,15 +203,11 @@ class UploadServiceTest extends TestCase
 		$uploadedFileMock->method('getSize')->willReturn(1024);
 
 		// Mock media handler
-		$this->mediaHandlerFactoryMock
-			->expects($this->once())
-			->method('createHandler')
+		$this->mediaHandlerFactoryMock->expects($this->once())->method('createHandler')
 			->with('video/mp4')
 			->willReturn($mediaHandlerMock);
 
-		$mediaHandlerMock
-			->expects($this->once())
-			->method('uploadFromLocal')
+		$mediaHandlerMock->expects($this->once())->method('uploadFromLocal')
 			->willReturn('/tmp/video.mp4');
 
 		$mediaHandlerMock->method('determineNewFilename')->willReturn('abc123');
@@ -236,12 +226,12 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorNull(): void
 	{
 		$uploadedFile = $this->createMock(UploadedFile::class);
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 		$uploadedFile->method('getClientMediaType')->willReturn(null);
 		$this->loggerMock->expects($this->once())->method('error');
 		$result = $this->uploadService->uploadMediaFiles(1, 1, $uploadedFile, []);
@@ -251,7 +241,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorIniSize(): void
@@ -267,7 +256,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorFormSize(): void
@@ -283,7 +271,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorPartial(): void
@@ -299,7 +286,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorNoFile(): void
@@ -315,7 +301,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorNoFTmpDir(): void
@@ -331,7 +316,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorCantWrite(): void
@@ -347,7 +331,6 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorByExtension(): void
@@ -364,19 +347,17 @@ class UploadServiceTest extends TestCase
 
 	/**
 	 * @throws Exception
-	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
 	public function testUploadMediaFilesWithErrorGetSizeNull(): void
 	{
 		$uploadedFileMock = $this->createMock(UploadedFile::class);
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 		$uploadedFileMock->method('getClientMediaType')->willReturn('video/mp4');
 		$uploadedFileMock->method('getError')->willReturn(UPLOAD_ERR_OK);
 
 		$mediaHandlerMock = $this->createMock(AbstractMediaHandler::class);
-		$this->mediaHandlerFactoryMock
-			->expects($this->once())
-			->method('createHandler')
+		$this->mediaHandlerFactoryMock->expects($this->once())->method('createHandler')
 			->with('video/mp4')
 			->willReturn($mediaHandlerMock);
 
@@ -404,6 +385,7 @@ class UploadServiceTest extends TestCase
 
 		$responseMock = $this->createMock(ResponseInterface::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		$responseMock->method('getHeaderLine')
 			->willReturnOnConsecutiveCalls('image/jpeg', '1234');
@@ -430,6 +412,7 @@ class UploadServiceTest extends TestCase
 		$uid = 1;
 		$externalLink = 'https://example.com/image.jpg';
 		$extMetadata = ['title' => 'a title', 'description' => 'Test file'];
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		$responseMock = $this->createMock(ResponseInterface::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);
@@ -460,6 +443,7 @@ class UploadServiceTest extends TestCase
 		$uid = 1;
 		$externalLink = 'https://example.com/video.webm';
 		$extMetadata = [];
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		$responseMock = $this->createMock(ResponseInterface::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);
@@ -489,6 +473,7 @@ class UploadServiceTest extends TestCase
 		$uid = 1;
 		$externalLink = 'https://example.com/video.webm';
 		$extMetadata = [];
+		$this->nodeServiceMock->method('isNodeUploadable')->willReturn(true);
 
 		$responseMock = $this->createMock(ResponseInterface::class);
 		$mediaHandler = $this->createMock(AbstractMediaHandler::class);
@@ -523,8 +508,7 @@ class UploadServiceTest extends TestCase
 		$extMetadata = [];
 		$responseMock = $this->createMock(ResponseInterface::class);
 
-		$this->clientMock
-			->method('head')
+		$this->clientMock->method('head')
 			->willThrowException(new ClientException(
 				'Not found',
 				$this->createMock(RequestInterface::class),
