@@ -248,8 +248,6 @@ class UsersAdminServiceTest extends TestCase
 
 
 	/**
-	 * Tests that deleteUser deletes the user successfully.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -274,8 +272,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that deleteUser fails because the user has no permission.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -298,8 +294,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that deleteUser fails due to a database deletion error.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -325,8 +319,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that deleteUser handles exceptions, logs errors, and rolls back.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -352,8 +344,6 @@ class UsersAdminServiceTest extends TestCase
 
 
 	/**
-	 * Tests that createPasswordResetToken returns an empty string when tokens already exist.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -372,8 +362,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that createPasswordResetToken fails and returns an empty string when password update fails.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -399,8 +387,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that createPasswordResetToken fails and returns an empty string when token insertion fails.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -432,8 +418,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that createPasswordResetToken succeeds and returns a valid token ID.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -464,8 +448,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that createPasswordResetToken handles exceptions, logs errors, and rolls back.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -493,8 +475,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that updateUser returns 0 when username or email is not unique.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -518,8 +498,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that updateUser successfully updates user data and returns 1.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -547,8 +525,6 @@ class UsersAdminServiceTest extends TestCase
 	}
 
 	/**
-	 * Tests that updateUser fails and returns 0 when update fails.
-	 *
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
@@ -574,4 +550,121 @@ class UsersAdminServiceTest extends TestCase
 
 		self::assertSame(0, $result);
 	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateUserFailsExistsUserName(): void
+	{
+		$UID = 123;
+		$postData = [
+			'username' => 'testuser',
+			'email' => 'test@example.com',
+			'locale' => 'en_US',
+			'status' => 1,
+		];
+		$existingUserData = [
+			['UID' => '124', 'username' => 'testuser', 'email' => 'test2@example.com']
+		];
+
+		$this->userMainRepositoryMock->expects($this->once())->method('findExistingUser')
+			->with($postData['username'], $postData['email'])
+			->willReturn($existingUserData);
+
+		$this->userMainRepositoryMock->expects($this->never())->method('update');
+
+		$result = $this->usersAdminService->updateUser($UID, $postData);
+		self::assertSame(0, $result);
+		self::assertSame('username_exists', $this->usersAdminService->getErrorMessages()[0]);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateUserFailsExistsEmail(): void
+	{
+		$UID = 123;
+		$postData = [
+			'username' => 'testuser',
+			'email' => 'test@example.com',
+			'locale' => 'en_US',
+			'status' => 1,
+		];
+		$existingUserData = [
+			['UID' => '124', 'username' => 'testuser2', 'email' => 'test@example.com']
+		];
+
+		$this->userMainRepositoryMock->expects($this->once())->method('findExistingUser')
+			->with($postData['username'], $postData['email'])
+			->willReturn($existingUserData);
+
+		$this->userMainRepositoryMock->expects($this->never())->method('update');
+
+		$result = $this->usersAdminService->updateUser($UID, $postData);
+		self::assertSame(0, $result);
+		self::assertSame('email_exists', $this->usersAdminService->getErrorMessages()[0]);
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateUserSucceedSameUserExistsUsername(): void
+	{
+		$UID = 123;
+		$postData = [
+			'username' => 'testuser',
+			'email' => 'test2@example.com',
+			'locale' => 'en_US',
+			'status' => 1,
+		];
+		$existingUserData = [
+			['UID' => '123', 'username' => 'testuser', 'email' => 'test@example.com']
+		];
+
+		$this->userMainRepositoryMock->expects($this->once())->method('findExistingUser')
+			->with($postData['username'], $postData['email'])
+			->willReturn($existingUserData);
+
+		$this->userMainRepositoryMock->expects($this->once())->method('update')
+			->with($UID, $postData)
+			->willReturn(1);
+
+		$result = $this->usersAdminService->updateUser($UID, $postData);
+		self::assertSame(1, $result);
+		self::assertEmpty($this->usersAdminService->getErrorMessages());
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateUserSucceedSameUserExistsMail(): void
+	{
+		$UID = 123;
+		$postData = [
+			'username' => 'testuser2',
+			'email' => 'test@example.com',
+			'locale' => 'en_US',
+			'status' => 1,
+		];
+		$existingUserData = [
+			['UID' => '123', 'username' => 'testuser', 'email' => 'test@example.com']
+		];
+
+		$this->userMainRepositoryMock->expects($this->once())->method('findExistingUser')
+			->with($postData['username'], $postData['email'])
+			->willReturn($existingUserData);
+
+		$this->userMainRepositoryMock->expects($this->once())->method('update')
+			->with($UID, $postData)
+			->willReturn(1);
+
+		$result = $this->usersAdminService->updateUser($UID, $postData);
+		self::assertSame(1, $result);
+		self::assertEmpty($this->usersAdminService->getErrorMessages());
+	}
+
 }

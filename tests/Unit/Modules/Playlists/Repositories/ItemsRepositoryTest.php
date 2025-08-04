@@ -95,6 +95,52 @@ class ItemsRepositoryTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
+	public function testFindMediaInPlaylistIdReturnsValidMedia(): void
+	{
+		$playlistId = 42;
+
+		$this->queryBuilderMock->expects($this->once())->method('select')->with('item_id, item_name')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('from')->with('playlists_items')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('where')->with('playlists_items.playlist_id = :playlistId')
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->exactly(2))->method('andWhere')->willReturnMap([
+			[
+				"item_type in ('mediapool', 'media_url', 'template')",
+				$this->queryBuilderMock
+			],
+			[
+				"mimetype LIKE 'image%' OR mimetype LIKE 'video%'",
+				$this->queryBuilderMock
+			]
+		]);
+		$this->queryBuilderMock->expects($this->once())->method('setParameter')->with('playlistId', $playlistId)
+			->willReturn($this->queryBuilderMock);
+		$this->queryBuilderMock->expects($this->once())->method('executeQuery')
+			->willReturn($this->resultMock);
+
+		$this->resultMock->expects($this->once())
+			->method('fetchAllAssociative')
+			->willReturn([
+				['item_id' => 1, 'item_name' => 'Image1.jpg'],
+				['item_id' => 2, 'item_name' => 'Video1.mp4']
+			]);
+
+		static::assertEquals(
+			[
+				['item_id' => 1, 'item_name' => 'Image1.jpg'],
+				['item_id' => 2, 'item_name' => 'Video1.mp4']
+			],
+			$this->repository->findMediaInPlaylistId($playlistId)
+		);
+	}
+
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
 	public function testFindAllByPlaylistIdWithJoinsWithCoreEdition(): void
 	{
 		$this->queryBuilderMock
