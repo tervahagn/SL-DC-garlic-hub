@@ -85,6 +85,24 @@ class ExportControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
+	public function testExportWithInvalidCsrfToken(): void
+	{
+		$post = [];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->exportServiceMock->expects($this->never())->method('exportToSmil');
+		$this->mockJsonResponse(['success' => false, 'error_message' =>  'CSRF token mismatch.']);
+
+		$this->exportController->export($this->requestMock, $this->responseMock);
+	}
+
+
+	/**
+	 * @throws UserException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
 	public function testExportWithInvalidPlaylistId(): void
 	{
 		$post = [];

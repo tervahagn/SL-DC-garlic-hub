@@ -24,6 +24,7 @@ namespace Tests\Unit\Modules\Playlists\Controller;
 use App\Framework\Core\CsrfToken;
 use App\Framework\Core\Session;
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Controller\PlaylistsController;
 use App\Modules\Playlists\Helper\Datatable\Parameters;
@@ -73,6 +74,7 @@ class PlaylistControllerTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testDelete(): void
@@ -91,10 +93,31 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteInvalidCsrf(): void
+	{
+		$post =  [];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+		$this->playlistsServiceMock->expects($this->never())->method('delete');
+
+		$this->controller->delete($this->requestMock, $this->responseMock);
+	}
+
+	/**
 	 * @throws ModuleException
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testDeleteInvalidPlaylistId(): void
@@ -111,8 +134,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -134,8 +158,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -159,8 +184,29 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testToggleShuffleInvalidCsrf(): void
+	{
+		$post =  [];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+		$this->playlistsServiceMock->expects($this->never())->method('toggleShuffle');
+
+		$this->controller->toggleShuffle($this->requestMock, $this->responseMock);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -179,8 +225,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -205,8 +252,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -231,8 +279,30 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testShufflePickingInvalidCsrf(): void
+	{
+		$post =  ['playlist_id' => 11];
+		$this->requestMock->method('getParsedBody')->willReturn($post);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->playlistsServiceMock->expects($this->never())->method('shufflePicking');
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->controller->shufflePicking($this->requestMock, $this->responseMock);
+	}
+
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -250,8 +320,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -269,8 +340,9 @@ class PlaylistControllerTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
 	 */
@@ -360,6 +432,7 @@ class PlaylistControllerTest extends TestCase
 		$this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
 	}
 
+
 	#[Group('units')]
 	public function testSaveZoneInvalidPlaylistId(): void
 	{
@@ -374,6 +447,22 @@ class PlaylistControllerTest extends TestCase
 		$this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 0]);
 	}
 
+	#[Group('units')]
+	public function testSaveZoneInvalidCsrf(): void
+	{
+		$this->requestMock->method('getAttribute')->with('session')->willReturn($this->sessionMock);
+		$this->sessionMock->method('get')->with('user')->willReturn(['UID' => 456]);
+
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')->with(456);
+
+		$this->requestMock->method('getParsedBody')->willReturn(['save_zone_stuff']);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+		$this->playlistsServiceMock->expects($this->never())->method('saveZones');
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->controller->saveZone($this->requestMock, $this->responseMock, ['playlist_id' => 14]);
+	}
 	#[Group('units')]
 	public function testNotSaveZone(): void
 	{

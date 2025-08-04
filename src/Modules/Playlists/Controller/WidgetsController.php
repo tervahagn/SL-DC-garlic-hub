@@ -62,7 +62,7 @@ class WidgetsController extends AbstractAsyncController
 		$requestData = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$itemId = (int) ($requestData['item_id'] ?? 0);
 		if ($itemId === 0)

@@ -24,11 +24,16 @@ namespace Tests\Unit\Modules\Playlists\Helper\ConditionalPlay;
 
 use App\Framework\Controller\JsonResponseHandler;
 use App\Framework\Core\Translate\Translator;
+use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Modules\Playlists\Helper\ConditionalPlay\ResponseBuilder;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class ResponseBuilderTest extends TestCase
 {
@@ -37,8 +42,12 @@ class ResponseBuilderTest extends TestCase
 	private ResponseInterface&MockObject $responseMock;
 	private ResponseBuilder $responseBuilder;
 
+	/**
+	 * @throws Exception
+	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
 		$this->jsonResponseHandlerMock = $this->createMock(JsonResponseHandler::class);
 		$this->translatorMock = $this->createMock(Translator::class);
 		$this->responseMock = $this->createMock(ResponseInterface::class);
@@ -49,6 +58,12 @@ class ResponseBuilderTest extends TestCase
 		);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testInvalidItemId(): void
 	{
@@ -66,6 +81,12 @@ class ResponseBuilderTest extends TestCase
 		self::assertSame($this->responseMock, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testPlaylistNotFound(): void
 	{
@@ -83,6 +104,12 @@ class ResponseBuilderTest extends TestCase
 		self::assertSame($this->responseMock, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testItemNotFound(): void
 	{

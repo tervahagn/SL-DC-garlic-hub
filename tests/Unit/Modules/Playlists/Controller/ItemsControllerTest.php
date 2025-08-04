@@ -136,6 +136,20 @@ class ItemsControllerTest extends TestCase
 	}
 
 	#[Group('units')]
+	public function testInsertInvalidCsrfToken(): void
+	{
+		$requestData = [];
+		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->insertItemFactoryMock->expects($this->never())->method('create');
+
+		$this->itemsController->insert($this->requestMock, $this->responseMock);
+	}
+
+
+	#[Group('units')]
 	public function testInsertInvalidPlaylistId(): void
 	{
 		$requestData = [];
@@ -209,7 +223,7 @@ class ItemsControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testEditWithValidItemName(): void
+	public function testEdit(): void
 	{
 		$requestData = ['item_id' => 123, 'name' => 'item_name', 'value' => 'New Name'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
@@ -225,6 +239,7 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
+
 
 	/**
 	 * @throws CoreException
@@ -276,6 +291,26 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsController->edit($this->requestMock, $this->responseMock);
 	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testEditWithInvalidCsrf(): void
+	{
+		$requestData = ['name' => 'item_name', 'value' => 'New Name'];
+		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->itemsController->edit($this->requestMock, $this->responseMock);
+	}
+
 
 	/**
 	 * @throws CoreException
@@ -425,7 +460,7 @@ class ItemsControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testUpdateItemOrdersWithValidData(): void
+	public function testUpdateItemOrders(): void
 	{
 		$requestData = ['playlist_id' => 1, 'items_positions' => [['id' => 1, 'position' => 2], ['id' => 2, 'position' => 1]]];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
@@ -441,6 +476,25 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
 	}
+
+	/**
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateItemOrdersWithInvalidCsrf(): void
+	{
+		$requestData = ['items_positions' => [['id' => 1, 'position' => 2], ['id' => 2, 'position' => 1]]];
+		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->itemsServiceMock->expects($this->never())->method('updateItemOrder');
+
+		$this->itemsController->updateItemOrders($this->requestMock, $this->responseMock);
+	}
+
 
 	/**
 	 * @throws FrameworkException
@@ -482,7 +536,7 @@ class ItemsControllerTest extends TestCase
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	#[Group('units')]
-	public function testDeleteWithValidData(): void
+	public function testDeleteSucceed(): void
 	{
 		$requestData = ['playlist_id' => 1, 'item_id' => 123];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
@@ -500,6 +554,24 @@ class ItemsControllerTest extends TestCase
 
 		$this->itemsController->delete($this->requestMock, $this->responseMock);
 	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteInvalidCsrf(): void
+	{
+		$requestData = ['item_id' => 123];
+		$this->requestMock->method('getParsedBody')->willReturn($requestData);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->itemsServiceMock->expects($this->never())->method('delete');
+
+		$this->itemsController->delete($this->requestMock, $this->responseMock);
+	}
+
 
 	/**
 	 * @throws \Doctrine\DBAL\Exception

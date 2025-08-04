@@ -75,7 +75,7 @@ class ItemsController extends AbstractAsyncController
 		$requestData = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		if (empty($requestData['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -118,7 +118,7 @@ class ItemsController extends AbstractAsyncController
 		$requestData = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		if (empty($requestData['item_id'])) // more performant as isset and check for 0 or ''
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Item ID not valid.']);
@@ -186,7 +186,7 @@ class ItemsController extends AbstractAsyncController
 		/** @var array<string,mixed> $requestData */
 		$requestData = $request->getParsedBody();
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$playlistId = (int) ($requestData['playlist_id'] ?? 0);
 		if ($playlistId === 0)
@@ -211,7 +211,7 @@ class ItemsController extends AbstractAsyncController
 		$requestData = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($requestData['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$playlistId = (int) ($requestData['playlist_id'] ?? 0);
 		if ($playlistId === 0)

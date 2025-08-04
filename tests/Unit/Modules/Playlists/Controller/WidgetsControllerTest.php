@@ -100,6 +100,20 @@ class WidgetsControllerTest extends TestCase
 		$this->controller->fetch($this->requestMock, $this->responseMock, $args);
 	}
 
+	#[Group('units')]
+	public function testSaveWithInvalidCsrf(): void
+	{
+		$this->widgetsServiceMock->expects($this->never())->method('setUID');
+		$this->widgetsServiceMock->expects($this->never())->method('saveWidget');
+
+		$this->requestMock->method('getParsedBody')->willReturn([]);
+		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(false);
+
+		$this->mockJsonResponse(['success' => false, 'error_message' => 'CSRF token mismatch.']);
+
+		$this->controller->save($this->requestMock, $this->responseMock);
+	}
+
 
 	#[Group('units')]
 	public function testSaveWithInvalidItemId(): void

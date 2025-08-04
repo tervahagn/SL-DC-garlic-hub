@@ -65,7 +65,7 @@ class PlaylistsController extends AbstractAsyncController
 		$post = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$playlistId = (int) ($post['playlist_id'] ?? 0);
 		if ($playlistId === 0)
@@ -93,7 +93,7 @@ class PlaylistsController extends AbstractAsyncController
 		/** @var array<string,mixed> $post */
 		$post = $request->getParsedBody();
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$playlistId = (int) ($post['playlist_id'] ?? 0);
 		if ($playlistId === 0)
@@ -120,7 +120,7 @@ class PlaylistsController extends AbstractAsyncController
 		$post = $request->getParsedBody();
 
 		if (!$this->csrfToken->validateToken($post['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		if (empty($post['playlist_id']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Playlist ID not valid.']);
@@ -167,7 +167,7 @@ class PlaylistsController extends AbstractAsyncController
 		/** @var array<string,mixed> $parsedBody */
 		$parsedBody = $request->getParsedBody();
 		if (!$this->csrfToken->validateToken($parsedBody['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CsrF token mismatch.']);
+			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'CSRF token mismatch.']);
 
 		$count = $this->playlistsService->saveZones($playlistId, $parsedBody);
 		if ($count === 0)

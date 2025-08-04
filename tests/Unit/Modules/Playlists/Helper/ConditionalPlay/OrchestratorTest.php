@@ -25,6 +25,7 @@ namespace Tests\Unit\Modules\Playlists\Helper\ConditionalPlay;
 use App\Framework\Core\BaseValidator;
 use App\Framework\Exceptions\CoreException;
 use App\Framework\Exceptions\FrameworkException;
+use App\Framework\Exceptions\ModuleException;
 use App\Framework\Exceptions\UserException;
 use App\Framework\Utils\FormParameters\BaseEditParameters;
 use App\Modules\Auth\UserSession;
@@ -43,7 +44,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 class OrchestratorTest extends TestCase
 {
 	private ResponseBuilder&MockObject $responseBuilderMock;
-	private UserSession&MockObject $userSessionMock;
 	private BaseValidator&MockObject $validatorMock;
 	private TemplatePreparer&MockObject $templatePreparerMock;
 	private ResponseInterface&MockObject $responseMock;
@@ -52,12 +52,13 @@ class OrchestratorTest extends TestCase
 
 	/**
 	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\Exception
 	 */
 	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->responseBuilderMock = $this->createMock(ResponseBuilder::class);
-		$this->userSessionMock = $this->createMock(UserSession::class);
+		$userSessionMock = $this->createMock(UserSession::class);
 		$this->validatorMock = $this->createMock(BaseValidator::class);
 		$this->templatePreparerMock = $this->createMock(TemplatePreparer::class);
 		$this->conditionalPlayServiceMock = $this->createMock(ConditionalPlayService::class);
@@ -66,13 +67,19 @@ class OrchestratorTest extends TestCase
 
 		$this->orchestrator = new Orchestrator(
 			$this->responseBuilderMock,
-			$this->userSessionMock,
+			$userSessionMock,
 			$this->validatorMock,
 			$this->templatePreparerMock,
 			$this->conditionalPlayServiceMock
 		);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateWithTokenCsrfMismatch(): void
 	{
@@ -90,6 +97,12 @@ class OrchestratorTest extends TestCase
 	}
 
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateWithTokenFailsNoItemId(): void
 	{
@@ -106,6 +119,12 @@ class OrchestratorTest extends TestCase
 		$this->orchestrator->validateSave($this->responseMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testValidateWithTokenCallsValidate(): void
 	{
@@ -118,6 +137,13 @@ class OrchestratorTest extends TestCase
 		$this->orchestrator->validateSave($this->responseMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws UserException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	#[Group('units')]
 	public function testFetchSuccess(): void
 	{
@@ -152,6 +178,15 @@ class OrchestratorTest extends TestCase
 		static::assertInstanceOf(ResponseInterface::class, $result);
 	}
 
+	/**
+	 * @throws ModuleException
+	 * @throws UserException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
 	#[Group('units')]
 	public function testSaveSuccess(): void
 	{
@@ -176,7 +211,7 @@ class OrchestratorTest extends TestCase
 	 * @throws InvalidArgumentException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws UserException
+	 * @throws UserException|ModuleException
 	 */
 	#[Group('units')]
 	public function testSaveItemNotFound(): void
@@ -194,6 +229,12 @@ class OrchestratorTest extends TestCase
 		$this->orchestrator->save($this->responseMock);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws FrameworkException
+	 */
 	private function initMocks():void
 	{
 		$this->orchestrator->setInput(['item_id' => '123', 'key' => 'value', BaseEditParameters::PARAMETER_CSRF_TOKEN => 'invalid_token']);

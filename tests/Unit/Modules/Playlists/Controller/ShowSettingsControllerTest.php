@@ -153,6 +153,41 @@ class ShowSettingsControllerTest extends TestCase
 	 * @throws Exception
 	 */
 	#[Group('units')]
+	public function testEditPlaylistFormWithInvalidPlaylistId(): void
+	{
+
+		$this->setStandardMocks();
+
+		$this->flashMock->expects($this->once())->method('addMessage')
+			->with('error', 'Playlist ID not valid.');
+
+
+		$this->responseMock->expects($this->once())->method('withHeader')
+			->with('Location', '/playlists')
+			->willReturnSelf();
+
+		$this->responseMock->expects($this->once())->method('withStatus')
+			->with(302)
+			->willReturnSelf();
+
+		$this->facadeMock->expects($this->never())->method('loadPlaylistForEdit')
+			->with(1)
+			->willReturn([]);
+
+		$this->controller->editPlaylistForm($this->requestMock, $this->responseMock, []);
+	}
+
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	#[Group('units')]
 	public function testEditPlaylistFormWithNonExistentPlaylist(): void
 	{
 		$args = ['playlist_id' => '1', 'playlist_mode' => 'master'];
@@ -365,10 +400,8 @@ class ShowSettingsControllerTest extends TestCase
 			->with('Content-Type', 'text/html')
 			->willReturnSelf();
 
-
 		$this->controller->store($this->requestMock, $this->responseMock);
 	}
-
 
 	/**
 	 * @throws Exception
