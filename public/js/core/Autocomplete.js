@@ -59,7 +59,8 @@ export class Autocomplete
 	initWithExistingFields()
 	{
 		this.#autocompleteView.initExisting(this.#fieldName);
-		this.#addListener();
+		if (this.#autocompleteView.exists)
+			this.#addListener();
 	}
 
 	initWithCreateFields(parent)

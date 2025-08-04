@@ -24,6 +24,7 @@ export class AutocompleteView
     #datalistElement = null;
     #li              = null;
     #oldParent       = null;
+	#exists          = false;
 
     get inputElement()
     {
@@ -40,11 +41,19 @@ export class AutocompleteView
         return this.#datalistElement;
     }
 
-    initExisting(fieldName)
+	get exists()
+	{
+		return this.#exists;
+	}
+
+	initExisting(fieldName)
     {
         this.#inputElement    = document.getElementById(fieldName  + "_search");
         this.#datalistElement = document.getElementById(fieldName + "_suggestions");
         this.#hiddenElement   = document.getElementById(fieldName);
+
+		if (this.#inputElement !== null && this.#datalistElement !== null && this.#hiddenElement !== null)
+			this.exists = true;
     }
 
     initCreate(parent, fieldName)
