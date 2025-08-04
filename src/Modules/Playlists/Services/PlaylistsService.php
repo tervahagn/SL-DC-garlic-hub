@@ -291,7 +291,7 @@ class PlaylistsService extends AbstractBaseService
 	}
 
 	/**
-	 * @return array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty, empty>
+	 * @return array{"UID": int, "company_id": int, playlist_mode: string,...}|array<empty,empty>
 	 */
 	public function loadPlaylistForEdit(int $playlistId): array
 	{

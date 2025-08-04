@@ -120,17 +120,14 @@ class FacadeTest extends TestCase
 		$expectedPlaylist = ['id' => 42, 'name' => 'My Playlist'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
-		$this->playlistsServiceMock->expects($this->once())
-			->method('loadPlaylistForEdit')
+		$this->playlistsServiceMock->expects($this->once())->method('loadPlaylistForEdit')
 			->with(42)
 			->willReturn($expectedPlaylist);
 
-		$this->settingsFormBuilderMock->expects($this->once())
-			->method('configEditParameter')
+		$this->settingsFormBuilderMock->expects($this->once())->method('configEditParameter')
 			->with($expectedPlaylist);
 
-		$this->settingsFormBuilderMock->expects($this->once())
-			->method('handleUserInput')
+		$this->settingsFormBuilderMock->expects($this->once())->method('handleUserInput')
 			->with($post)
 			->willReturn($expectedResult);
 
@@ -148,17 +145,44 @@ class FacadeTest extends TestCase
 	 * @throws FrameworkException
 	 */
 	#[Group('units')]
+	public function testConfigurePlaylistFormParameterWithEmptyPlaylist(): void
+	{
+		$post = ['playlist_id' => 42, 'playlist_name' => 'hurz', 'playlist_mode' => PlaylistMode::MASTER->value, 'other_key' => 'value'];
+		$expectedResult = ['processed_input_key' => 'processed_value'];
+
+		$this->playlistsServiceMock->expects($this->once())->method('loadPlaylistForEdit')
+			->with(42)
+			->willReturn([]);
+
+		$this->settingsFormBuilderMock->expects($this->never())->method('configEditParameter');
+
+		$this->settingsFormBuilderMock->expects($this->never())->method('handleUserInput');
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('No playlist found for editing.');
+
+		$this->facade->configurePlaylistFormParameter($post);
+
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws InvalidArgumentException
+	 * @throws \Doctrine\DBAL\Exception
+	 * @throws FrameworkException
+	 */
+	#[Group('units')]
 	public function testConfigurePlaylistFormParameterWithoutPlaylistId(): void
 	{
 		$post = ['playlist_mode' => 'new_mode', 'playlist_name' => 'Name', 'other_key' => 'value'];
 		$expectedResult = ['processed_input_key' => 'processed_value'];
 
-		$this->settingsFormBuilderMock->expects($this->once())
-			->method('configNewParameter')
+		$this->settingsFormBuilderMock->expects($this->once())->method('configNewParameter')
 			->with('new_mode');
 
-		$this->settingsFormBuilderMock->expects($this->once())
-			->method('handleUserInput')
+		$this->settingsFormBuilderMock->expects($this->once())->method('handleUserInput')
 			->with($post)
 			->willReturn($expectedResult);
 
