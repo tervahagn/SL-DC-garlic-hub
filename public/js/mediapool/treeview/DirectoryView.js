@@ -38,7 +38,7 @@ export class DirectoryView
 	static workaroundShitForMediaIdBecauseOfChrome = "";
 
 	#tree               = {};
-	#treeViewElements    = null;
+	#treeViewElements   = null;
     #activeNode         = null;
     #mediaList          = null;
 	#treeViewService	= null;
@@ -81,10 +81,8 @@ export class DirectoryView
                 const parentList = e.node.getParentList(false, true);
                 let keyList = parentList.map(parent => parent.key);
                 localStorage.setItem('parent_list', keyList);
-                this.#loadMediaInDirectory(e.node.key);
-
-				UploadDialogElements.openUploadDialog.disabled = false;
-            },
+                this.#loadMediaInDirectory(e.node);
+			},
             filter: {autoApply: true, mode: "hide"},
             dnd: {
                 effectAllowed: "move",
@@ -170,7 +168,7 @@ export class DirectoryView
 
     reloadCurrentNode()
     {
-        this.#loadMediaInDirectory(this.#activeNode.key);
+        this.#loadMediaInDirectory(this.#activeNode);
     }
 
     setActiveTitle(title)
@@ -258,11 +256,12 @@ export class DirectoryView
         this.#tree.getActiveNode().addChildren({ key:  key, title: folder_name, isFolder: true, rights: rights });
     }
 
-    async #loadMediaInDirectory(key)
+    async #loadMediaInDirectory(node)
     {
         try
         {
-			await this.#mediaList.loadMediaListByNode(key);
+			UploadDialogElements.openUploadDialog.disabled = !node.data.rights.create;
+			await this.#mediaList.loadMediaListByNode(node.key);
         }
         catch (err)
         {

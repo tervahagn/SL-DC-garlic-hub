@@ -29,7 +29,7 @@ export class UploadDialogElements
 
 	get uploaderDialog() { return this.#uploaderDialog; }
 
-	static get openUploadDialog() {return this.#openUploadDialog; }
+	static get openUploadDialog() {return UploadDialogElements.#openUploadDialog; }
 
 	get openUploadDialog() { return UploadDialogElements.#openUploadDialog; }
 
