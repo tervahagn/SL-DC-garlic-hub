@@ -43,13 +43,13 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class OrchestratorTest extends TestCase
 {
-	private Orchestrator $orchestrator;
 	private ResponseBuilder&MockObject $responseBuilderMock;
 	private UserSession&MockObject $userSessionMock;
 	private BaseValidator&MockObject $validatorMock;
 	private TemplatePreparer&MockObject $templatePreparerMock;
 	private ResponseInterface&MockObject $responseMock;
 	private TriggerService&MockObject $triggerServiceMock;
+	private Orchestrator $orchestrator;
 
 	/**
 	 * @throws Exception

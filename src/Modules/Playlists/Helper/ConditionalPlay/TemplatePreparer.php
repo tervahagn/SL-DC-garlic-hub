@@ -31,8 +31,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class TemplatePreparer
 {
-	/** @var array<string,mixed>  */
-	private array $templateData;
+	/** @var array<string,mixed>|array<empty,empty>  */
+	private array $templateData = [];
 	private bool $conditionalPlay = false;
 
 	public function __construct(

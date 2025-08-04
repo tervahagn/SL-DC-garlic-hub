@@ -35,8 +35,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 
 class TriggerPreparerTest extends TestCase
 {
-	private TriggerPreparer $triggerPreparer;
 	private Translator&MockObject $translatorMock;
+	private TriggerPreparer $triggerPreparer;
 
 	/**
 	 * @throws Exception
