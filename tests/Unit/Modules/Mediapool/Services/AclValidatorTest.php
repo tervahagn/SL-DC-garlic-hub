@@ -56,9 +56,9 @@ class AclValidatorTest extends TestCase
 	public function testCheckDirectoryPermissionsFailsNoUID(): void
 	{
 		$UID       = 1;
-		$directory = [];
+		$directory = ['foo' => 'bar'];
 		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('Missing UID in media directory data struct.');
+		$this->expectExceptionMessage('Missing important values in media directory data struct.');
 
 		$this->aclValidator->checkDirectoryPermissions($UID, $directory);
 
@@ -86,7 +86,6 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsModuleAdmin(): void
@@ -108,7 +107,6 @@ class AclValidatorTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsSubAdminWrongAccess(): void
@@ -130,11 +128,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsSubAdminSucceedRootDir(): void
@@ -156,11 +153,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsEditorWrongAccess(): void
@@ -182,11 +178,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsSubAdminSucceedNormalDir(): void
@@ -208,11 +203,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsEditorSucceed(): void
@@ -234,11 +228,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsViewerWrongNode(): void
@@ -260,11 +253,10 @@ class AclValidatorTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
+	 * @throws ModuleException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws \Doctrine\DBAL\Exception
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testCheckDirectoryPermissionsIsViewerSucceed(): void

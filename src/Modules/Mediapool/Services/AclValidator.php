@@ -39,7 +39,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array{UID:int, node_id:int, parent_id:int, name:string, company_id:int, visibility:int} $directory
+	 * @param array{UID?:int, node_id?:int, company_id?:int, visibility?:int, parent_id?:int, ...}$directory
 	 * @return array{create:bool, read:bool, edit:bool, share:string}
 	 * @throws CoreException
 	 * @throws ModuleException
@@ -48,8 +48,10 @@ class AclValidator extends AbstractAclValidator
 	 */
 	public function checkDirectoryPermissions(int $UID, array $directory): array
 	{
-		if (!array_key_exists('UID', $directory))
-			throw new ModuleException($this->moduleName, 'Missing UID in media directory data struct.');
+		if (!array_key_exists('UID', $directory) || !array_key_exists('company_id', $directory)
+			|| !array_key_exists('node_id', $directory) || !array_key_exists('parent_id', $directory)
+			|| !array_key_exists('visibility', $directory))
+			throw new ModuleException($this->moduleName, 'Missing important values in media directory data struct.');
 
 		$permissions = ['create' => false, 'read' => false, 'edit' => false, 'share' => ''];
 
