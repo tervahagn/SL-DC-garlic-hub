@@ -261,7 +261,7 @@ export class DirectoryView
         try
         {
 			UploadDialogElements.openUploadDialog.disabled = !node.data.rights.create;
-			await this.#mediaList.loadMediaListByNode(node.key);
+			await this.#mediaList.loadMediaListByNode(node.key, node.data.rights);
         }
         catch (err)
         {

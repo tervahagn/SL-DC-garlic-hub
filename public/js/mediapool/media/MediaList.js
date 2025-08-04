@@ -27,6 +27,7 @@ export class MediaList
 	#mediaService = null;
 	#setListView = document.getElementById("setListView");
 	#setGridView = document.getElementById("setGridView");
+	#rights = null;
 
     constructor(mediaListElement, mediaFactory, contextMenuFactory, mediaService)
     {
@@ -38,8 +39,10 @@ export class MediaList
 		this.#setViewActions();
     }
 
-	async loadMediaListByNode(nodeId)
+	async loadMediaListByNode(nodeId, rights)
 	{
+		this.#rights = rights;
+
 		const results = await this.#mediaService.loadMediaByNodeId(nodeId);
 
 		this.render(results);
@@ -100,9 +103,21 @@ export class MediaList
             contextMenu.show(event);
 
 			contextMenu.addInfoEvent(document.getElementById("infoMedia"));
-            contextMenu.addRemoveEvent(document.getElementById("removeMedia"));
-            contextMenu.addEditEvent(document.getElementById("editMedia"));
-            contextMenu.addCloneEvent(document.getElementById("cloneMedia"), this.#addMediaToList.bind(this));
+			const remove = document.getElementById("removeMedia");
+			const edit   = document.getElementById("editMedia");
+			const clone  = document.getElementById("cloneMedia");
+			if (this.#rights.create !== null && this.#rights.create === true)
+			{
+				contextMenu.addRemoveEvent(remove);
+				contextMenu.addEditEvent(edit);
+				contextMenu.addCloneEvent(clone, this.#addMediaToList.bind(this));
+			}
+			else
+			{
+				remove.remove();
+				edit.remove();
+				clone.remove();
+			}
         });
     }
 
