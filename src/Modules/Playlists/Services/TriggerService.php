@@ -102,13 +102,13 @@ class TriggerService extends AbstractBaseService
 
 			$affected = $this->itemService->updateField($itemId, 'begin_trigger', @serialize($requestData));
 			if ($affected === 0)
-				throw new ModuleException('items', 'Could not save begin trigger for item .');
+				throw new ModuleException('items', 'Could not save begin trigger.');
 
 			return true;
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error('Error save widget: ' . $e->getMessage());
+			$this->logger->error('Error save trigger: ' . $e->getMessage());
 			return false;
 		}
 	}
@@ -130,7 +130,7 @@ class TriggerService extends AbstractBaseService
 	/**
 	 * @throws Exception
 	 */
-	private function prepareTouchableMedia(int $playlistId, int $itemId): void
+	public function prepareTouchableMedia(int $playlistId, int $itemId): void
 	{
 		$media = $this->itemService->findMediaInPlaylist($playlistId);
 		if ($media === [])

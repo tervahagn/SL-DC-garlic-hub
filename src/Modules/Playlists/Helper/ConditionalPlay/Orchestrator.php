@@ -127,7 +127,7 @@ class Orchestrator
 		unset($this->input['csrf_token']);
 		unset($this->input['item_id']);
 
-		$item = $this->conditionalPlayService->fetchAccesibleItem($this->itemId);
+		$item = $this->conditionalPlayService->fetchAccessibleItem($this->itemId);
 		if ($item === [])
 			return $this->responseBuilder->itemNotFound($response);
 

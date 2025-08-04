@@ -46,7 +46,7 @@ class ConditionalPlayService extends AbstractBaseService
 	{
 		try
 		{
-			$item = $this->fetchAccesibleItem($itemId);
+			$item = $this->fetchAccessibleItem($itemId);
 
 			$conditional = [];
 			if ($item['conditional'] !== '')
@@ -73,7 +73,7 @@ class ConditionalPlayService extends AbstractBaseService
 	{
 		try
 		{
-			$item = $this->fetchAccesibleItem($itemId);
+			$item = $this->fetchAccessibleItem($itemId);
 			if (empty($item))
 				throw new ModuleException('items', 'No item found.');
 
@@ -98,7 +98,7 @@ class ConditionalPlayService extends AbstractBaseService
 	 * @throws FrameworkException
 	 * @throws Exception
 	 */
-	public function fetchAccesibleItem(int $itemId): array
+	public function fetchAccessibleItem(int $itemId): array
 	{
 		$this->itemService->setUID($this->UID);
 		return $this->itemService->fetchItemById($itemId); // check rights on playlists, too
