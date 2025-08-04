@@ -81,7 +81,7 @@ class NodesRepository  extends SqlBase
 	}
 
 	/**
-	 * @return array<string, mixed>
+	 * @return array{UID:int, node_id:int, parent_id:int, name:string, company_id:int, visibility:int}
 	 * @throws Exception|DatabaseException
 	 */
 	public function findNodeOwner(int $nodeId): array
@@ -97,6 +97,7 @@ class NodesRepository  extends SqlBase
 			->orderBy('lft', 'ASC')
 			->setParameter('id', $nodeId);
 
+		/** @var array{UID:int, node_id:int, parent_id:int, name:int, company_id:int, visibility:int}|false $ret */
 		$ret = $queryBuilder->executeQuery()->fetchAssociative();
 		if ($ret === false)
 			throw new DatabaseException('Node not found');

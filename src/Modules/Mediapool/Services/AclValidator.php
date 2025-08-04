@@ -39,12 +39,7 @@ class AclValidator extends AbstractAclValidator
 	}
 
 	/**
-	 * @param array{
-	 *      UID:int, username:string, company_id:int, node_id:int, visibility:int, root_id:int, is_user_folder:int,
-	 *       parent_id:int, level:int, lft:int, rgt:int,
-	 *      last_updated:string, create_date:string, name:string, media_location:string,
-	 *      children:int
-	 *  } $directory
+	 * @param array{UID:int, node_id:int, parent_id:int, name:string, company_id:int, visibility:int} $directory
 	 * @return array{create:bool, read:bool, edit:bool, share:string}
 	 * @throws CoreException
 	 * @throws ModuleException

@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace App\Modules\Mediapool\Services;
 
 use App\Framework\Exceptions\CoreException;
-use App\Framework\Exceptions\DatabaseException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Mediapool\Repositories\FilesRepository;
 use App\Modules\Mediapool\Repositories\NodesRepository;
@@ -30,6 +29,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Ramsey\Uuid\Uuid;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class MediaService
 {
@@ -43,7 +43,10 @@ class MediaService
 	private string $pathThumbnails;
 
 	/**
-	 * @throws CoreException
+	 * @param FilesRepository $mediaRepository
+	 * @param NodesRepository $nodesRepository
+	 * @param AclValidator $aclValidator
+	 * @param LoggerInterface $logger
 	 */
 	public function __construct(FilesRepository $mediaRepository, NodesRepository $nodesRepository, AclValidator $aclValidator, LoggerInterface $logger)
 	{
@@ -98,7 +101,7 @@ class MediaService
 
 			return $result;
 		}
-		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException | DatabaseException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('Error listing media: ' . $e->getMessage());
 			return [];
@@ -181,6 +184,7 @@ class MediaService
 		$this->mediaRepository->updateWithWhere($fields, $condition);
 	}
 
+
 	public function deleteMedia(string $mediaId): int
 	{
 		try
@@ -189,8 +193,9 @@ class MediaService
 			if (empty($media))
 				throw new ModuleException('mediapool', 'No media found.');
 
-			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
-			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			$node = $this->nodesRepository->findNodeOwner($media['node_id']);
+
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 			if (!$permissions['edit'])
 				throw new ModuleException('mediapool', 'No edit permissions in this directory: '. $media['node_id']);
 
@@ -199,7 +204,7 @@ class MediaService
 
 			return $this->mediaRepository->updateWithWhere($field, $condition);
 		}
-		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('Error deleting media: ' . $e->getMessage());
 			return 0;
@@ -214,8 +219,9 @@ class MediaService
 			if (empty($media))
 				throw new ModuleException('mediapool', 'No media found.');
 
-			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
-			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
+			$node = $this->nodesRepository->findNodeOwner($media['node_id']);
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
+
 			if (!$permissions['read'])
 				throw new ModuleException('mediapool', 'No read permissions in this directory: '. $media['node_id']);
 
@@ -229,7 +235,7 @@ class MediaService
 
 			return $this->mediaRepository->updateWithWhere($field, $condition);
 		}
-		catch (Exception | CoreException | ModuleException | DatabaseException | PhpfastcacheSimpleCacheException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('Error moving media: ' . $e->getMessage());
 			return 0;
@@ -237,6 +243,7 @@ class MediaService
 	}
 
 	/**
+	 * @param string $mediaId
 	 * @return array<string,mixed>
 	 */
 	public function cloneMedia(string $mediaId): array
@@ -244,12 +251,12 @@ class MediaService
 		try
 		{
 			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if (empty($media))
+			if ($media === [])
 				throw new ModuleException('mediapool', 'No media found.');
+			$node = $this->nodesRepository->findNodeOwner($media['node_id']);
 
-			// @phpstan-ignore-next-line // because it is ridiculous after the empty check
-			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $media);
-			if (!$permissions['read'] || !$permissions['edit'])
+			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
+			if (!$permissions['edit'])
 				throw new ModuleException('mediapool', 'No permissions on this directory: '. $media['node_id']);
 
 			$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
@@ -263,7 +270,7 @@ class MediaService
 
 			return $dataSet;
 		}
-		catch (Exception | CoreException | ModuleException | PhpfastcacheSimpleCacheException $e)
+		catch (Throwable $e)
 		{
 			$this->logger->error('Error cloning media: ' . $e->getMessage());
 			return [];
