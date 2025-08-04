@@ -114,7 +114,7 @@ class NodesController extends AbstractAsyncController
 			$visibility = $bodyParams['visibility'] ?? null;
 
 			$this->nodesService->UID = $request->getAttribute('session')->get('user')['UID'];
-			$count = $this->nodesService->editNode($bodyParams['node_id'], $bodyParams['name'], $visibility);
+			$count = $this->nodesService->editNode((int) $bodyParams['node_id'], $bodyParams['name'], $visibility);
 			if ($count === 0)
 				throw new ModuleException('mediapool', 'Edit node failed');
 
@@ -150,7 +150,7 @@ class NodesController extends AbstractAsyncController
 				throw new ModuleException('mediapool','Source node, target node, or target region is missing');
 
 			$this->nodesService->UID = $request->getAttribute('session')->get('user')['UID'];
-			$count = $this->nodesService->moveNode($bodyParams['src_node_id'], $bodyParams['target_node_id'], $bodyParams['target_region']);
+			$count = $this->nodesService->moveNode((int) $bodyParams['src_node_id'], (int) $bodyParams['target_node_id'], $bodyParams['target_region']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
 		catch (Exception | ModuleException $e)
@@ -180,7 +180,7 @@ class NodesController extends AbstractAsyncController
 			/** @var array{UID: int} $user */
 			$user = $request->getAttribute('session')->get('user');
 			$this->nodesService->UID = (int)$user['UID'];
-			$count = $this->nodesService->deleteNode($bodyParams['node_id']);
+			$count = $this->nodesService->deleteNode((int) $bodyParams['node_id']);
 			return $this->jsonResponse($response, ['success' => true, 'data' => ['count_deleted_nodes' => $count]]);
 		}
 		catch (Exception | FrameworkException | ModuleException $e)

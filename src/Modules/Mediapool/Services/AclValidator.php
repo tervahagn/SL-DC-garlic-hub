@@ -31,7 +31,7 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 class AclValidator extends AbstractAclValidator
 {
-	const int VISIBILITY_PUBLIC = 1;
+	const int VISIBILITY_PUBLIC = 2;
 
 	public function __construct(AclHelper $aclHelper)
 	{
@@ -67,7 +67,7 @@ class AclValidator extends AbstractAclValidator
 		if ($this->isViewerWithAccessOnUnit($UID, $directory['node_id']))
 			$permissions['read'] = true;
 
-		if ($directory['visibility'] === self::VISIBILITY_PUBLIC)
+		if (($directory['visibility'] & self::VISIBILITY_PUBLIC) > 0)
 			$permissions['read'] = true;
 
 		// Only moduleadmin can edit root directories

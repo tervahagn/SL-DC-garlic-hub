@@ -74,7 +74,7 @@ class NodesRepository  extends SqlBase
 	public function findNodeOwner(int $nodeId): array
 	{
 		$queryBuilder = $this->connection->createQueryBuilder();
-		$queryBuilder->select('user_main.UID, node_id, name, company_id')
+		$queryBuilder->select('user_main.UID, node_id, parent_id, name, company_id, visibility')
 			->from($this->table)
 			->leftJoin($this->table,
 				'user_main',
