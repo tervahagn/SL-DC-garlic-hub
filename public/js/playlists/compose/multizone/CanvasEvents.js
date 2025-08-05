@@ -293,12 +293,6 @@ export class CanvasEvents
 			this.MyZonesModel.saveToDataBase();
 			this.MyCanvasView.setChanged(false);
 		});
-		document.getElementById("playerExport").addEventListener('click', async () =>
-		{
-			const playlistId = document.getElementById("playlist_id").value;
-			await this.#playlistsService.export(playlistId);
-		});
-
 	}
 
 	#initCloseEvent()

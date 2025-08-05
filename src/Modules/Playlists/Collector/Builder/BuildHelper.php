@@ -54,7 +54,7 @@ class BuildHelper
 
 					if (is_int($subPlaylistId) && $subPlaylistId > 0)
 					{
-						$recurse = $this->collectItems($subPlaylistId);
+						$recurse = $this->collectItems((int) $subPlaylistId);
 						if (!empty($recurse))
 							$items = str_replace('{ITEMS_'.$subPlaylistId.'}', "\n".$recurse."\n", $items);
 						else

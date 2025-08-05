@@ -18,6 +18,7 @@
 */
 
 import {Utils} from "../../../../core/Utils.js";
+import {PlaylistsProperties} from "../playlists/PlaylistsProperties.js";
 
 export class Item
 {
@@ -136,6 +137,7 @@ export class Item
 					this.#itemsService.editItem(this.#itemData.item_id, 'item_name', this.#itemName.textContent)
 					this.#editItemName = false;
 					this.#itemName.blur();
+					PlaylistsProperties.notifySave();
 				}
 			});
 			this.#itemName.addEventListener('focus', () => {
@@ -146,6 +148,7 @@ export class Item
 				{
 					this.#itemsService.editItem(this.#itemData.item_id, 'item_name', this.#itemName.textContent)
 					this.#editItemName = false;
+					PlaylistsProperties.notifySave();
 				}
 			});
 		}
@@ -222,6 +225,7 @@ export class Item
 
 		inputElement.parentNode.replaceChild(this.#itemDuration, inputElement);
 		inputElement.remove();
+		PlaylistsProperties.notifySave();
 	}
 
 	#initActions()

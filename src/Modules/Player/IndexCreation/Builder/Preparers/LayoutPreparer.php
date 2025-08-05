@@ -39,7 +39,7 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 		}
 		else
 		{
-			$layout['regions'][] = $this->replaceRegion('', '0', '0', $properties['width'], $properties['height'], 0);
+			$layout['regions'][] = $this->replaceRegion('', '0', '0', $properties['width'], $properties['height'], '0');
 		}
 		return [$layout];
 	}
@@ -85,7 +85,7 @@ class LayoutPreparer extends AbstractPreparer implements PreparerInterface
 	/**
 	 * @return array<string,string|int>
 	 */
-	private function replaceRegion(string $screenId, string|int $top, string|int $left, string|int $width, string|int $height, int $zIndex, string $bgColor = 'transparent'): array
+	private function replaceRegion(string|int $screenId, string|int $top, string|int $left, string|int $width, string|int $height, string|int $zIndex, string $bgColor = 'transparent'): array
 	{
 		return [
 			'SCREEN_ID' => $screenId,

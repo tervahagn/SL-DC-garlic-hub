@@ -114,7 +114,6 @@ readonly class UiTemplatesPreparer
 					'LANG_HEIGHT' => $this->translator->translate('zone_height', self::MODULE_NAME),
 					'LANG_INSERT' => $this->translator->translate('insert', 'main'),
 					'LANG_SAVE'  => $this->translator->translate('save', 'main'),
-					'LANG_PLAYER_EXPORT' => $this->translator->translate('player_export', self::MODULE_NAME),
 					'LANG_CLOSE' => $this->translator->translate('close', 'main'),
 					'LANG_CANCEL' => $this->translator->translate('cancel', 'main'),
 					'LANG_TRANSFER' => $this->translator->translate('transfer', 'main'),
