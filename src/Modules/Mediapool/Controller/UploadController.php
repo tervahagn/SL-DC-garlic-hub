@@ -53,7 +53,7 @@ class UploadController extends AbstractAsyncController
 		if (!isset($bodyParams['api_url']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'api_url missing']);
 
-		$headers = $bodyParams['headers'] ?? null;
+		$headers = $bodyParams['headers'] ?? [];
 		$body    = $this->uploadService->requestApi($bodyParams['api_url'], $headers);
 		return $this->jsonResponse($response, ['success' => true, 'data' => $body]);
 	}
