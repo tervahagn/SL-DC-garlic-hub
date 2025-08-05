@@ -227,8 +227,14 @@ class ItemsService extends AbstractBaseService
 			$playlist = $this->playlistsService->fetchById((int) $item['file_resource']);
 			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
 				$fieldValue = $playlist['time_limit'];
-			$this->itemDuration = (int) $fieldValue;
 		}
+		else
+		{
+			$playlist = $this->playlistsService->fetchById((int) $item['playlist_id']);
+			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
+				$fieldValue = $playlist['time_limit'];
+		}
+		$this->itemDuration = (int) $fieldValue;
 
 		$saveData = [strip_tags($fieldName) => strip_tags((string)$fieldValue)];
 
