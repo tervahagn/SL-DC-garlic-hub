@@ -53,7 +53,7 @@ export class AutocompleteView
         this.#hiddenElement   = document.getElementById(fieldName);
 
 		if (this.#inputElement !== null && this.#datalistElement !== null && this.#hiddenElement !== null)
-			this.exists = true;
+			this.#exists = true;
     }
 
     initCreate(parent, fieldName)
