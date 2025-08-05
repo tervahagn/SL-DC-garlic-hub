@@ -375,7 +375,7 @@ class NodesServiceTest extends TestCase
 		$name = 'Updated Node Name';
 		$this->nodesService->UID = 12;
 		$visibility = 1;
-		$node = ['node_id' => 1, 'parent__id' => 1, 'name' => 'Node to Edit', 'children' => 0, 'UID' => 123, 'visibility' => 0];
+		$node = ['node_id' => 1, 'parent_id' => 1, 'name' => 'Node to Edit', 'children' => 0, 'UID' => 123, 'visibility' => 0];
 		$this->nodesRepositoryMock->expects($this->once())
 			->method('getNode')
 			->with($nodeId)

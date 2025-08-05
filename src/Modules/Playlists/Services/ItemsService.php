@@ -219,27 +219,46 @@ class ItemsService extends AbstractBaseService
 		$item = $this->itemsRepository->findFirstById($itemId);
 		if ($item === [])
 			return 0;
-		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
 
-		// Todo: Make this more elegant in the a future refactoring
-		if ($item['item_type'] === ItemType::PLAYLIST->value && $fieldName === 'item_duration')
-		{
-			$playlist = $this->playlistsService->fetchById((int) $item['file_resource']);
-			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
-				$fieldValue = $playlist['time_limit'];
-		}
-		else
-		{
-			$playlist = $this->playlistsService->fetchById((int) $item['playlist_id']);
-			if ($playlist['time_limit'] > 0 && $fieldValue > $playlist['time_limit'])
-				$fieldValue = $playlist['time_limit'];
-		}
-		$this->itemDuration = (int) $fieldValue;
+		$this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
 
 		$saveData = [strip_tags($fieldName) => strip_tags((string)$fieldValue)];
 
 		return $this->itemsRepository->update($itemId, $saveData);
 	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
+	 * @throws Exception
+	 */
+	public function updateItemDuration(int $itemId, int $wantedDuration): int
+	{
+		$this->playlistMetricsCalculator->setUID($this->UID);
+		$this->playlistsService->setUID($this->UID);
+		$item = $this->itemsRepository->findFirstById($itemId);
+		if ($item === [])
+			return 0;
+
+		$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
+		// if an item is a playlist, we need to get this limit first
+		$this->playlistMetricsCalculator->setUID($this->UID);
+		if ($item['item_type'] === ItemType::PLAYLIST->value)
+		{
+			$itemPlaylist = $this->playlistsService->fetchById((int) $item['file_resource']);
+			$wantedDuration   = $this->playlistMetricsCalculator->calculateRemainingDuration($itemPlaylist, $wantedDuration);
+		}
+
+		$this->itemDuration = $this->playlistMetricsCalculator->calculateRemainingDuration($playlist, $wantedDuration);
+
+		$saveData = ['item_duration' => $this->itemDuration];
+
+		return $this->itemsRepository->update($itemId, $saveData);
+	}
+
+
 
 	/**
 	 * @param int $playlistId

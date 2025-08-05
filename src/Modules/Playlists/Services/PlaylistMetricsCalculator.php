@@ -196,19 +196,32 @@ class PlaylistMetricsCalculator
 		// this is only used, when inserting new items
 		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $this->getDefaultDuration();
 
+		return $this->calculateRemainingDuration($playlist, $duration);
+	}
+
+	/**
+	 * @param array<string,mixed> $playlist
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws Exception
+	 */
+	public function calculateRemainingDuration(array $playlist, int $wantedDuration): int
+	{
 		if ($playlist['time_limit'] > 0 && !$this->aclValidator->isSimpleAdmin($this->UID))
 		{
 			$this->calculateFromPlaylistData($playlist);
 			$remaining_duration = $playlist['time_limit'] - $this->getOwnerDuration();
 
 			if ($remaining_duration <= 0)
-				$duration = 0;
-			elseif ($remaining_duration < $duration)
-				$duration = $remaining_duration;
+				$wantedDuration = 0;
+			elseif ($remaining_duration < $wantedDuration)
+				$wantedDuration = $remaining_duration;
 		}
 
-		return (int) round($duration);
+		return (int) round($wantedDuration);
 	}
+
 
 	/**
 	 * @param array<string,mixed> $playlist

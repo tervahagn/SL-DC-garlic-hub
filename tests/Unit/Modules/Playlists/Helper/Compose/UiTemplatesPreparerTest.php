@@ -106,7 +106,7 @@ class UiTemplatesPreparerTest extends TestCase
 	{
 		$playlist = ['playlist_id' => 456, 'playlist_name' => 'Multizone Playlist'];
 
-		$this->translatorMock->expects($this->exactly(30))
+		$this->translatorMock->expects($this->exactly(29))
 			->method('translate')
 			->willReturnMap([
 				['zone_edit', UiTemplatesPreparer::MODULE_NAME, [], 'Zone Editor'],
@@ -124,7 +124,6 @@ class UiTemplatesPreparerTest extends TestCase
 				['zone_height', UiTemplatesPreparer::MODULE_NAME, [], 'Height'],
 				['insert', 'main', [], 'Insert'],
 				['save', 'main', [], 'Save'],
-				['player_export', UiTemplatesPreparer::MODULE_NAME, [], 'Player Export'],
 				['close', 'main', [], 'Close'],
 				['cancel', 'main', [], 'Cancel'],
 				['transfer', 'main', [], 'Transfer'],

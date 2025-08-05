@@ -590,8 +590,10 @@ class ItemsServiceTest extends TestCase
 		$this->playlistsServiceMock->expects($this->once())->method('setUID')
 			->with(10);
 
+		$playlistData = ['playlist_id' => $playlistId, 'time_limit' => 0];
 		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
-			->with($playlistId);
+			->willReturn($playlistData);;
+
 
 		$saveData = ['name' => 'New Playlist Name'];
 		$this->itemsRepositoryMock->expects($this->once())->method('update')

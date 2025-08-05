@@ -251,14 +251,14 @@ class ItemsControllerTest extends TestCase
 	#[Group('units')]
 	public function testEditWithValidItemDuration(): void
 	{
-		$requestData = ['item_id' => 123, 'name' => 'item_duration', 'value' => '300'];
+		$requestData = ['item_id' => '123', 'name' => 'item_duration', 'value' => '300'];
 		$this->requestMock->method('getParsedBody')->willReturn($requestData);
 		$this->csrfTokenMock->expects($this->once())->method('validateToken')->willReturn(true);
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
-			->method('updateField')
-			->with(123, 'item_duration', 300)
+			->method('updateItemDuration')
+			->with(123, 300)
 			->willReturn(1);
 		$this->itemsServiceMock->expects($this->once())->method('getItemDuration')->willReturn(300);
 
@@ -283,8 +283,8 @@ class ItemsControllerTest extends TestCase
 
 		$this->setServiceUIDMocks();
 		$this->itemsServiceMock->expects($this->once())
-			->method('updateField')
-			->with(123, 'item_duration', 300)
+			->method('updateItemDuration')
+			->with(123, 300)
 			->willReturn(0);
 
 		$this->mockJsonResponse(['success' => false, 'error_message' => 'Error updating item field: '.$requestData['name']. '.']);
