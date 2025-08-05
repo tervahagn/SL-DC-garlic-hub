@@ -108,11 +108,6 @@ main .composer-header
         text-align: center;
     }
 
-.notify-save
-{
-    background-color: red;
-    color: white;
-}
 .icon-values-setted{background-color: #c0e8bb;}
 
 .item-name[contenteditable="true"]{cursor: text;}

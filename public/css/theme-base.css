@@ -25,6 +25,16 @@
     --gh-secondary-color: rgb(0, 122, 80);
     --gh-third-color: rgba(0, 122, 80, 0.32);
 	--gh-primary-text-color: #000;
+    --gh-alert-color: #ff0000;
+    --gh-success-color: #00ff00;
+    --gh-warning-color: #ff00ff;
+    --gh-info-color: #00ffff;
+    --gh-danger-color: #ff0000;
+    --gh-light-color: #f2f3f6;
+    --gh-dark-color: #000;
+    --gh-link-color: #000;
+    --gh-link-hover-color: #000;
+    --gh-link-visited-color: #000;
 	--gh-link-text-color: #03393a;
 	--gh-primary-bgcolor: rgba(0, 122, 80, 0.05);
 	--gh-border-radius: 6px;
@@ -169,7 +179,7 @@ footer nav ul #compile_time {margin-left: auto;}
 	color: #fff;
 }
 	.message-bar--success {background-color: green; animation: fade-out 6s forwards;}
-	.message-bar--error {background-color: red; }
+	.message-bar--error {background-color: var(--gh-alert-color); }
 	.message-bar--information {background-color: blue; animation: fade-out 6s forwards;}
 	@keyframes fade-out {
 		0% { opacity: 1; }
@@ -293,6 +303,11 @@ footer nav ul #compile_time {margin-left: auto;}
     width:   100%;
     background: #fff url("/images/icons/ajax-loader.gif") no-repeat center center;
     opacity: 0.8;
+}
+.notify-save
+{
+    background-color: var(--gh-alert-color);
+    color: white;
 }
 
 .dashboards{display: flex; gap: 1rem; padding: 0; margin: 0;}
