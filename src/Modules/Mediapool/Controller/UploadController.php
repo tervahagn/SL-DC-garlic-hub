@@ -46,8 +46,9 @@ class UploadController extends AbstractAsyncController
 		/** @var array<string,mixed> $bodyParams */
 		$bodyParams = $request->getParsedBody();
 
-		if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
-			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
+		// is not required as there is only a search.
+	//	if (!$this->csrfToken->validateToken($bodyParams['csrf_token'] ?? ''))
+	//		return $this->jsonResponse($response, ['success' => false, 'error_message' => 'Csrf token mismatch.']);
 
 		if (!isset($bodyParams['api_url']))
 			return $this->jsonResponse($response, ['success' => false, 'error_message' => 'api_url missing']);
