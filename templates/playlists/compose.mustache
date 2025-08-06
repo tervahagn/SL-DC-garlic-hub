@@ -3,25 +3,26 @@
 			<input type="hidden" id="playlist_id" value="{{{PLAYLIST_ID}}}" />
 			<input type="hidden" id="cms_edition" value="{{{CMS_EDITION}}}" />
 			<div id="insertMenu" tabindex="0" title="{{{LANG_INSERT}}}">
-				<i title="{{{LANG_INSERT}}}" class="bi bi-plus-circle"></i>
-				<ul class="context-menu">
-					<li id="insertMedia">{{{LANG_INSERT_MEDIA}}}</li>
-					{{#can_external_media}}
-						<li id="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</li>
-					{{/can_external_media}}
-					{{#can_playlists}}
-						<li id="insertPlaylists">{{{LANG_INSERT_PLAYLISTS}}}</li>
-					{{/can_playlists}}
-					{{#can_external_playlists}}
-						<li id="insertExternalPlaylists">{{{LANG_INSERT_EXTERNAL_PLAYLISTS}}}</li>
-					{{/can_external_playlists}}
-					{{#can_templates}}
-						<li id="insertTemplates">{{{LANG_INSERT_TEMPLATES}}}</li>
-					{{/can_templates}}
-					{{#can_channels}}
-						<li id="insertChannels">{{{LANG_INSERT_CHANNELS}}}</li>
-					{{/can_channels}}
-				</ul>
+				<label><i title="{{{LANG_INSERT}}}" class="bi bi-plus-circle"></i>
+					<select id="insertMenuSelect">
+						<option value="insertMedia">{{{LANG_INSERT_MEDIA}}}</option>
+						{{#can_external_media}}
+							<option value="insertExternalMedia">{{{LANG_INSERT_EXTERNAL_MEDIA}}}</option>
+						{{/can_external_media}}
+						{{#can_playlists}}
+							<option value="insertPlaylists">{{{LANG_INSERT_PLAYLISTS}}}</option>
+						{{/can_playlists}}
+						{{#can_external_playlists}}
+							<option value="insertExternalPlaylists">{{{LANG_INSERT_EXTERNAL_PLAYLISTS}}}</option>
+						{{/can_external_playlists}}
+						{{#can_templates}}
+							<option value="insertTemplates">{{{LANG_INSERT_TEMPLATES}}}</option>
+						{{/can_templates}}
+						{{#can_channels}}
+							<option value="insertChannels">{{{LANG_INSERT_CHANNELS}}}</option>
+						{{/can_channels}}
+					</select>
+					</label>
 			</div>
 			<section class="information">
 				<div>{{{LANG_PLAYLIST_DURATION}}}: <strong id="playlistDuration">00:00:00</strong></div>

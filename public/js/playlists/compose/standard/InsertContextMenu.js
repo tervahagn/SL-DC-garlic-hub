@@ -1,12 +1,6 @@
 export class InsertContextMenu
 {
-	#insertMedia             = document.getElementById("insertMedia");
-	#insertExternalMedia     = document.getElementById("insertExternalMedia");
-	#insertPlaylists         = document.getElementById("insertPlaylists");
-	#insertExternalPlaylists = document.getElementById("insertExternalPlaylists");
-	#insertTemplates         = document.getElementById("insertTemplates");
-	#insertChannels          = document.getElementById("insertChannels");
-	// unused? #insertMenu              = document.getElementById("insertMenu");
+	#insertMenuSelect        = document.getElementById("insertMenuSelect");
 	#selectorFactory         = null;
 	#dragDropHandler         = null;
 	#itemSelectContainer     = document.getElementById("itemSelectContainer");
@@ -19,58 +13,72 @@ export class InsertContextMenu
 
 	init()
 	{
-		this.#insertMedia.addEventListener("click", async () =>
+		this.#insertMenuSelect.addEventListener("change",  (e) =>
 		{
-			const selector = this.#selectorFactory.create("mediapool");
-			await selector.showSelector(this.#itemSelectContainer);
-			this.#dragDropHandler.source = "mediapool";
-			this.#dragDropHandler.items = selector.getMediaItems();
-			const container = selector.getMediaItemsContainer();
-			this.#dragDropHandler.addDropSource(container);
-			//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
+			const selectedValue = e.target.value;
+
+			switch (selectedValue)
+			{
+				case "insertMedia":
+					this.#insertMedia()
+					break;
+				case "insertExternalMedia":
+					this.#insertExternalMedia()
+					break;
+				case "insertPlaylists":
+					this.#insertPlaylists();
+					break;
+				case "insertExternalPlaylists":
+					this.#insertExternalPlaylists()
+					break;
+				case "insertTemplates":
+					this.#insertTemplates();
+					break
+				case "insertChannels":
+					this.#insertChannels();
+					break;
+				default:
+					throw new Error("Unknown insert menu option");
+			}
 		});
+	}
 
-		if (this.#insertExternalMedia !== null)
-		{
-			this.#insertExternalMedia.addEventListener("click", () =>
-			{
-				alert("Insert external media");
-			});
-		}
+	async #insertMedia()
+	{
+		const selector = this.#selectorFactory.create("mediapool");
+		await selector.showSelector(this.#itemSelectContainer);
+		this.#dragDropHandler.source = "mediapool";
+		this.#dragDropHandler.items = selector.getMediaItems();
+		const container = selector.getMediaItemsContainer();
+		this.#dragDropHandler.addDropSource(container);
+	}
 
-		if (this.#insertPlaylists !== null)
-		{
-			this.#insertPlaylists.addEventListener("click", async () =>
-			{
-				const selector = this.#selectorFactory.create("playlists");
-				await selector.showSelector(this.#itemSelectContainer);
-				this.#dragDropHandler.source = "playlists";
-				this.#dragDropHandler.items = selector.items;
-				const container = selector.getItemsContainer();
-				this.#dragDropHandler.addDropSource(container);
-				//	this.#insertMenu.querySelector(".context-menu").style.display = "none";
-			});
-		}
-		if (this.#insertExternalPlaylists !== null)
-		{
-			this.#insertExternalPlaylists.addEventListener("click", () =>
-			{
-				alert("Insert external playlists");
-			});
-		}
-		if (this.#insertTemplates !== null)
-		{
-			this.#insertTemplates.addEventListener("click", () =>
-			{
-				alert("insert Templates");
-			});
-		}
-		if (this.#insertChannels !== null)
-		{
-			this.#insertChannels.addEventListener("click", () =>
-			{
-				alert("Insert channels");
-			});
-		}
+	async #insertExternalMedia()
+	{
+		alert("Insert external media");
+	}
+
+	async #insertPlaylists()
+	{
+		const selector = this.#selectorFactory.create("playlists");
+		await selector.showSelector(this.#itemSelectContainer);
+		this.#dragDropHandler.source = "playlists";
+		this.#dragDropHandler.items = selector.items;
+		const container = selector.getItemsContainer();
+		this.#dragDropHandler.addDropSource(container);
+	}
+
+	async #insertExternalPlaylists()
+	{
+		alert("Insert external playlists");
+	}
+
+	async #insertTemplates()
+	{
+		alert("insert Templates");
+	}
+	async #insertChannels()
+	{
+		alert("Insert channels");
 	}
 }

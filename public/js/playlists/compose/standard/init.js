@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function ()
 
 	const insertContextMenu = new InsertContextMenu(new SelectorFactory(playlistsService), dragDropHandler);
 
-	insertContextMenu.init(playlistId);
+	insertContextMenu.init();
 	await itemsList.buildPlaylist(playlistId);
 
 	playlistsProperties.init(playlistId);
