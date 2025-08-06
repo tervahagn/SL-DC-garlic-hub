@@ -13,6 +13,7 @@ export class InsertContextMenu
 
 	init()
 	{
+		this.#insertMedia();
 		this.#insertMenuSelect.addEventListener("change",  (e) =>
 		{
 			const selectedValue = e.target.value;
