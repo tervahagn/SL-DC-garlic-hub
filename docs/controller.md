@@ -16,5 +16,4 @@ By keeping sanitization tasks simple, we ensure that the controller stays focuse
 - Validate that email matches a specific domain.
 - Replace commas with periods for consistent decimal formatting.
 
-More complex logic, such as deep validation or data transformation, belongs in dedicated services or other layers of the application to maintain
-clear separation of concerns and keep the controller lightweight and maintainable.
+More complex logic, such as deep validation or data transformation, belongs in dedicated services or other layers of the application to maintain clear separation of concerns and keep the controller lightweight and maintainable.

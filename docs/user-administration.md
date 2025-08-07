@@ -4,7 +4,7 @@ The user administration concept supports four distinct roles for each module. Th
 and permissions for managing module-specific entities. The different modules include entities like Players, Playlists, 
 Templates, Channels, associated Users, and more.
 
-Every module with own user administration abilities shoud derivate from class [AbstractAclValidator](
+Every module with its own user administration abilities should derivate from the class [AbstractAclValidator](
 ..%2Fsrc%2FFramework%2FCore%2FAcl%2FAbstractAclValidator.php).
 
 ## Role Types
@@ -41,6 +41,5 @@ Every module with own user administration abilities shoud derivate from class [A
 |-----------------|---------------|---------------|----------------------|--------------------|
 | Module Admin    | ✓            | ✓            | ✓                 | All entities in the module |
 | SubAdmin        | ✓            | ✓            |                      | Reseller-specific   |
-| ConditionalPlayEditor          | ✓            | ✓            |                      | Assigned entities   |
 | Viewer          | ✓            |               |                      | Assigned entities   |
 
