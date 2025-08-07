@@ -32,21 +32,21 @@ Garlic-Hub is being developed in three phases, each delivering a distinct editio
 Each edition builds upon previous features, ensuring a smooth upgrade path as Garlic-Hub evolves into a comprehensive, SMIL-based digital signage solution.
 
 ### Current Features (Edge Edition)
-| Section                  | Status | description                                                                                                                           |
-|--------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------|
-| **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                     |
-| **Initial admin user**   | ✅      | Set initial admin user after installation                                                                                             |
-| **User management**      | ✅      | Basic user management                                                                                                                 |
-| **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                               |
+| Section                  | Status | description                                                                                                                            |
+|--------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------|
+| **Core Framework**       | ✅      | Database, migrations, logging, routing, middleware and error handling with SLIM 4                                                      |
+| **Initial admin user**   | ✅      | Set initial admin user after installation                                                                                              |
+| **User management**      | ✅      | Basic user management                                                                                                                  |
+| **Authentication**       | ✅      | Session-based login with remember-me functionality and basic OAuth2 token authorization                                                |
 | **Media Management**     | ✅      | Hierarchical content organization with multi-source uploads (local, external links, screencasts, camera, stock platforms with API-key) |
-| **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                       |
-| **Push support**         | ✅      | Push playlist to a local player                                                                                                       |
-| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                           |
-| **Conditional Play**     | ✅      | Define datetime conditions for media playback                                                                                         |
-| **Trigger**              | ✅      | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                         |
-| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                           |
-| **Local Player Support** | ✅      | Integration with one local media player                                                                                               |
-| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English, German)                                                    |
+| **SMIL Playlists**       | ✅      | Playlist management and export in industry-standard SMIL format                                                                        |
+| **Push support**         | ✅      | Push playlist to a local player                                                                                                        |
+| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                            |
+| **Conditional Play**     | ✅      | Define datetime conditions for media playback                                                                                          |
+| **Trigger**              | ✅      | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                          |
+| **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                            |
+| **Local Player Support** | ✅      | Integration with one local media player                                                                                                |
+| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English, Spanish, German)                                                             |
 
 ### Coming In Future Releases 
 - Online documentation
@@ -55,7 +55,6 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 - Image templating engine
 - Raspberry Pi Player / CMS Bundle
 - Scalable deployment options
-- add multiple languages (French, Russian, Spanish, Greek)
 
 ### Tech-Stack
 - PHP 8.4 with strict types enabled 
