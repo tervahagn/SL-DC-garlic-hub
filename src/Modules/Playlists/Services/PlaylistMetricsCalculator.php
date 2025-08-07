@@ -196,7 +196,7 @@ class PlaylistMetricsCalculator
 		// this is only used, when inserting new items
 		$duration = (array_key_exists('duration', $media['metadata']) && $media['metadata']['duration'] > 0) ? $media['metadata']['duration'] : $this->getDefaultDuration();
 
-		return $this->calculateRemainingDuration($playlist, $duration);
+		return $this->calculateRemainingDuration($playlist, (int) round($duration));
 	}
 
 	/**

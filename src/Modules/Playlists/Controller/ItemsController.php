@@ -138,7 +138,8 @@ class ItemsController extends AbstractAsyncController
 				$affected = $this->itemsService->updateField($requestData['item_id'], $requestData['name'], $requestData['value']);
 				break;
 			case 'item_duration':
-				$affected = $this->itemsService->updateItemDuration((int) $requestData['item_id'], (int) $requestData['value']);
+				$round = (int) round((float) $requestData['value']);
+				$affected = $this->itemsService->updateItemDuration((int) $requestData['item_id'], $round);
 				$data = $this->itemsService->getItemDuration();
 				break;
 			default:
