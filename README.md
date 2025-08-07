@@ -46,7 +46,7 @@ Each edition builds upon previous features, ensuring a smooth upgrade path as Ga
 | **Trigger**              | ✅      | Trigger to play media or nested playlists by priority based on Accesskeys, Touch/Click, Datetime, and Network                          |
 | **Multi-Zone Content**   | ✅      | Graphic display zone editor                                                                                                            |
 | **Local Player Support** | ✅      | Integration with one local media player                                                                                                |
-| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English, Spanish, French, German)                                                     |
+| **Internationalization** | ✅      | Locale-specific configurations and adaptable UI (English, Spanish, French, Russian, German)                                            |
 
 ### Coming In Future Releases 
 - Online documentation
