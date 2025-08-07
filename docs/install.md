@@ -2,7 +2,7 @@
 
 ## Prerequisites
 Ensure your environment meets the following requirements:
-- **PHP** 8.3 or higher
+- **PHP** 8.4 or higher
 - **Composer** for dependency management
 - **Web Server**: Apache, Nginx, or other PHP-compatible server
 - **Database**: MariaDB or SQLite for smaller deployments (compatible with other SQL databases)

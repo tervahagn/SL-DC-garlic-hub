@@ -55,27 +55,8 @@ docker stop garlic-hub-container
 docker restart garlic-hub-container
 ```
 
-## Admin User
-
-There is an admin user created:
-
-login: admin
-
-password: thymian
-
 ## Docker Volume Structure
 
 There are two `var` directories used as Docker managed named volumes:
 - One located in the system root
 - Another in the `htdocs` root (public)
-
-## Important Notice
-
-> **⚠️ WARNING: Testing Release Only**
->
-> This is a testing release and is subject to change. Please note the following limitations:
-> - No update migration is provided
->
-> **DO NOT use in production environments.**
-
-

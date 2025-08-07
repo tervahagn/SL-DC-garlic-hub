@@ -10,7 +10,7 @@ In the future there will be asyncronous updates. Currently, every click reloads 
 
 **Remark: the Software is in status of developing. Docs can change**
 
-Unfortunately this is a complex topic. You had to create four helper classes plus the controller as there are only partly generic functionalities. Especially the list elements part is mostly individual. 
+Unfortunately, this is a complex topic. You had to create four helper classes plus the controller as there are only partly generic functionalities. Especially the list elements part is mostly individual. 
 
 ## Required Files and Directories
 It is recommended to follow the scripted way and use name the classes identically to make it as easy as possible.
