@@ -24,7 +24,9 @@ namespace App\Modules\Users\Repositories\Edge;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
+use App\Framework\Exceptions\UserException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class UserAclRepository extends SqlBase
 {
@@ -39,5 +41,19 @@ class UserAclRepository extends SqlBase
 	public function __construct(Connection $connection)
 	{
 		parent::__construct($connection,'user_acl', 'UID');
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function addFirstAdmin(): array
+	{
+		$sql = "INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 2, 'users');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'mediapool');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'player');
+INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'playlists');
+";
+		if (!$this->connection->fetchAssociative($sql))
+			throw new UserException('Admin user could not be created.');
 	}
 }
