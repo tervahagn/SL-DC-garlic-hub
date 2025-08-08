@@ -39,6 +39,7 @@ class NodesServiceTest extends TestCase
 {
 	private NodesRepository&MockObject $nodesRepositoryMock;
 	private Service&MockObject $nestedSetServiceMock;
+	private MediaService&MockObject $mediaServiceMock;
 	private AclValidator&MockObject $aclValidatorMock;
 	private NodesService $nodesService;
 
@@ -51,10 +52,10 @@ class NodesServiceTest extends TestCase
 		$this->nodesRepositoryMock = $this->createMock(NodesRepository::class);
 		$this->aclValidatorMock = $this->createMock(AclValidator::class);
 		$this->nestedSetServiceMock = $this->createMock(Service::class);
-		$mediaServiceMock = $this->createMock(MediaService::class);
+		$this->mediaServiceMock = $this->createMock(MediaService::class);
 
 		$this->nodesService = new NodesService(
-			$this->nodesRepositoryMock, $this->nestedSetServiceMock, $mediaServiceMock,$this->aclValidatorMock
+			$this->nodesRepositoryMock, $this->nestedSetServiceMock, $this->mediaServiceMock,$this->aclValidatorMock
 		);
 	}
 
@@ -74,6 +75,53 @@ class NodesServiceTest extends TestCase
 
 		$result = $this->nodesService->isModuleAdmin($uid);
 		static::assertTrue($result);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testIsNodeUploadable(): void
+	{
+		$nodeId = 123;
+		$node = ['node_id' => 123, 'UID' => 456, 'parent_id' => 0];
+		$rights = ['create' => true, 'read' => true, 'edit' => true, 'share' => 'global'];
+		$this->nodesService->UID = 456;
+
+		$this->nodesRepositoryMock->expects($this->once())->method('getNode')
+			->with($nodeId)
+			->willReturn($node);
+
+		$this->aclValidatorMock->expects($this->once())->method('checkDirectoryPermissions')
+			->with($this->nodesService->UID, $node)
+			->willReturn($rights);
+
+		$result = $this->nodesService->isNodeUploadable($nodeId);
+		static::assertTrue($result);
+	}
+
+	/**
+	 * @throws ModuleException
+	 * @throws CoreException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testIsNodeUploadableThrowsException(): void
+	{
+		$nodeId = 123;
+
+		$this->nodesRepositoryMock->expects($this->once())->method('getNode')
+			->with($nodeId)
+			->willReturn([]);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Node Id: ' . $nodeId . ' not exists.');
+
+		$this->nodesService->isNodeUploadable($nodeId);
 	}
 
 	/**
@@ -330,6 +378,163 @@ class NodesServiceTest extends TestCase
 		$result = $this->nodesService->editNode($nodeId, $name, $visibility);
 		static::assertEquals(1, $result);
 	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testAddUserDirectory(): void
+	{
+		$UID = 1234;
+		$name = 'User Directory';
+		$expectedNodeId = 5678;
+
+		$this->nestedSetServiceMock->expects($this->once())->method('addRootNode')
+			->with($UID, $name, true)
+			->willReturn($expectedNodeId);
+
+		$result = $this->nodesService->addUserDirectory($UID, $name);
+
+		static::assertEquals($expectedNodeId, $result);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteUserDirectorySuccess(): void
+	{
+		$UID = 123;
+		$this->nodesService->UID = $UID;
+		$this->nodesRepositoryMock->expects($this->once())->method('getUserRootNode')
+			->with($UID)
+			->willReturn(['UID' => $UID, 'root_id' => 456, 'node_id' => 789]);
+
+		$this->aclValidatorMock->expects($this->once())->method('isModuleAdmin')
+			->with($this->nodesService->UID)
+			->willReturn(true);
+
+		$condition = ['root_id' => ['test' => 2]];
+		$this->nodesRepositoryMock->expects($this->once())->method('generateWhereClause')
+			->with(456)
+			->willReturn(['test' => 2]);
+
+		$this->nodesRepositoryMock->expects($this->once())->method('findAllBy')
+			->with ($condition)
+			->willReturn([['node_id' => 1], ['node_id' => 2]]);
+
+		$this->mediaServiceMock->expects($this->exactly(2))
+			->method('markDeleteMediaByNodeId')
+			->willReturnMap([[1], [2]]);
+
+		$this->nodesRepositoryMock->expects($this->once())->method('deleteBy')
+			->with($condition)
+			->willReturn(1);
+
+		$this->nodesService->deleteUserDirectory($UID);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteUserDirectoryNoActionWhenNotExist(): void
+	{
+		$UID = 123;
+		$this->nodesRepositoryMock->expects($this->once())->method('getUserRootNode')
+			->with($UID)
+			->willReturn([]);
+
+		$this->aclValidatorMock->expects($this->never())->method('isModuleAdmin');
+		$this->nodesRepositoryMock->expects($this->never())->method('generateWhereClause');
+
+		$this->nodesRepositoryMock->expects($this->never())
+			->method('deleteBy');
+
+		$this->nodesService->deleteUserDirectory($UID);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteUserDirectoryFailsByNoRights(): void
+	{
+		$UID = 123;
+		$this->nodesService->UID = $UID;
+		$this->nodesRepositoryMock->expects($this->once())->method('getUserRootNode')
+			->with($UID)
+			->willReturn(['UID' => $UID, 'root_id' => 456, 'node_id' => 789]);
+
+		$this->aclValidatorMock->expects($this->once())->method('isModuleAdmin')
+			->with($this->nodesService->UID)
+			->willReturn(false);
+
+		$this->nodesRepositoryMock->expects($this->never())->method('generateWhereClause');
+		$this->nodesRepositoryMock->expects($this->never())->method('findAllBy');
+		$this->mediaServiceMock->expects($this->never())->method('markDeleteMediaByNodeId');
+		$this->nodesRepositoryMock->expects($this->never())->method('deleteBy');
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('No rights to delete user root node.');
+
+		$this->nodesService->deleteUserDirectory($UID);
+	}
+
+	/**
+	 * @throws CoreException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testDeleteUserDirectoryFailsByDeleteFailure(): void
+	{
+		$UID = 123;
+		$this->nodesService->UID = $UID;
+		$this->nodesRepositoryMock->expects($this->once())->method('getUserRootNode')
+			->with($UID)
+			->willReturn(['UID' => $UID, 'root_id' => 456, 'node_id' => 789]);
+
+		$this->aclValidatorMock->expects($this->once())->method('isModuleAdmin')
+			->with($this->nodesService->UID)
+			->willReturn(true);
+
+		$condition = ['root_id' => ['test' => 2]];
+		$this->nodesRepositoryMock->expects($this->once())
+			->method('generateWhereClause')
+			->with(456)
+			->willReturn(['test' => 2]);
+
+		$this->nodesRepositoryMock->expects($this->once())->method('findAllBy')
+			->with($condition)
+			->willReturn([
+				['node_id' => 1],
+				['node_id' => 2]
+			]);
+
+		$this->mediaServiceMock->expects($this->exactly(2))->method('markDeleteMediaByNodeId')
+			->willReturnMap([[1], [2]]);
+
+		$this->nodesRepositoryMock->expects($this->once())->method('deleteBy')
+			->with($condition)
+			->willReturn(0);
+
+		$this->expectException(ModuleException::class);
+		$this->expectExceptionMessage('Delete nodes by root id failed.');
+
+		$this->nodesService->deleteUserDirectory($UID);
+	}
+
 
 	/**
 	 * @throws PhpfastcacheSimpleCacheException
