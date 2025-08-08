@@ -244,7 +244,6 @@ class ItemsService extends AbstractBaseService
 
 		$playlist = $this->playlistsService->loadPureById($item['playlist_id']); // will check for rights
 		// if an item is a playlist, we need to get this limit first
-		$this->playlistMetricsCalculator->setUID($this->UID);
 		if ($item['item_type'] === ItemType::PLAYLIST->value)
 		{
 			$itemPlaylist = $this->playlistsService->fetchById((int) $item['file_resource']);

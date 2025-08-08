@@ -149,6 +149,31 @@ class ItemsServiceTest extends TestCase
 		static::assertEquals(['metric1' => 'value1'], $result['playlist_metrics']);
 		static::assertCount(0, $result['items']);
 	}
+	#[Group('units')]
+	public function testItemDuration(): void
+	{
+		static::assertSame(0, $this->itemsService->getItemDuration());
+	}
+
+	/**
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFindMediaInPlaylist(): void
+	{
+		$playlistId = 1;
+		$expected = [
+			['item_id' => 1, 'item_name' => 'Item 1'],
+			['item_id' => 2, 'item_name' => 'Item 2']
+		];
+
+		$this->itemsRepositoryMock->expects($this->once())->method('findMediaInPlaylistId')
+			->with($playlistId)
+			->willReturn($expected);
+
+		static::assertSame($expected, $this->itemsService->findMediaInPlaylist($playlistId));
+	}
+
 
 	/**
 	 * @throws CoreException
@@ -323,6 +348,53 @@ class ItemsServiceTest extends TestCase
 		static::assertArrayHasKey('default_duration', $result);
 		static::assertEquals(150, $result['default_duration']);
 	}
+
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testFetchItemByIdForPlaylistItemWithTimeLimitAndBiggeDefualtDuration(): void
+	{
+		$itemId = 456;
+		$itemData = [
+			'item_id' => $itemId,
+			'playlist_id' => 4,
+			'file_resource' => '7',
+			'item_type' => 'playlist'
+		];
+
+		$this->itemsService->setUID(1);
+		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
+			->with($itemId)
+			->willReturn($itemData);
+
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')
+			->with(1);
+
+		$playlist = ['playlist_id' => 7, 'time_limit' => 150];
+		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
+			->with($itemData['playlist_id']);
+
+		$this->playlistsServiceMock->expects($this->once())->method('fetchById')
+			->with($itemData['file_resource'])
+			->willReturn($playlist);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateFromPlaylistData')
+			->with($playlist)
+			->willReturnSelf();
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('getDuration')
+			->willReturn(200);
+
+		$result = $this->itemsService->fetchItemById($itemId);
+
+		static::assertArrayHasKey('default_duration', $result);
+		static::assertEquals(150, $result['default_duration']);
+	}
+
 
 
 	/**
@@ -592,7 +664,7 @@ class ItemsServiceTest extends TestCase
 
 		$playlistData = ['playlist_id' => $playlistId, 'time_limit' => 0];
 		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
-			->willReturn($playlistData);;
+			->willReturn($playlistData);
 
 
 		$saveData = ['name' => 'New Playlist Name'];
@@ -605,6 +677,142 @@ class ItemsServiceTest extends TestCase
 		static::assertEquals(1, $result);
 	}
 
+	/**
+	 * @throws CoreException
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws \Doctrine\DBAL\Exception
+	 */
+	#[Group('units')]
+	public function testUpdateFieldFails(): void
+	{
+		$itemId = 1;
+		$fieldName = 'name';
+		$fieldValue = 'New Playlist Name';
+
+		$this->itemsService->setUID(10);
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')
+			->with(10);
+		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
+			->with($itemId)
+			->willReturn([]);
+
+		$this->playlistsServiceMock->expects($this->never())->method('loadPureById');
+		$this->itemsRepositoryMock->expects($this->never())->method('update');
+
+		$result = $this->itemsService->updateField($itemId, $fieldName, $fieldValue);
+
+		static::assertEquals(0, $result);
+	}
+
+
+	#[Group('units')]
+	public function testUpdateItemDurationSuccess(): void
+	{
+		$itemId = 5;
+		$wantedDuration = 120;
+		$playlistId = 7;
+
+		$itemData = ['item_id' => $itemId, 'playlist_id' => $playlistId, 'item_type' => 'default'];
+		$playlistData = ['playlist_id' => $playlistId];
+		$calculatedDuration = 100;
+
+		$this->itemsService->setUID(1);
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('setUID')
+			->with(1);
+
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')
+			->with(1);
+
+		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
+			->with($itemId)
+			->willReturn($itemData);
+
+		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
+			->with($playlistId)
+			->willReturn($playlistData);
+
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('calculateRemainingDuration')
+			->with($playlistData, $wantedDuration)
+			->willReturn($calculatedDuration);
+
+		$saveData = ['item_duration' => $calculatedDuration];
+		$this->itemsRepositoryMock->expects($this->once())->method('update')
+			->with($itemId, $saveData)
+			->willReturn(1);
+
+		static::assertEquals(1, $this->itemsService->updateItemDuration($itemId, $wantedDuration));
+	}
+
+	#[Group('units')]
+	public function testUpdateItemDurationItemNotFound(): void
+	{
+		$itemId = 5;
+		$wantedDuration = 120;
+
+		$this->itemsService->setUID(1);
+		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
+			->with($itemId)
+			->willReturn([]);
+
+		$this->playlistsServiceMock->expects($this->never())->method('loadPureById');
+
+		$this->playlistMetricsCalculatorMock->expects($this->never())->method('calculateRemainingDuration');
+		$this->itemsRepositoryMock->expects($this->never())->method('update');
+
+		static::assertEquals(0, $this->itemsService->updateItemDuration($itemId, $wantedDuration));
+	}
+
+	#[Group('units')]
+	public function testUpdateItemDurationForPlaylist(): void
+	{
+		$itemId           = 5;
+		$wantedDuration   = 300;
+		$playlistId       = 7;
+		$nestedPlaylistId = 8;
+
+		$itemData     = [
+			'item_id' => $itemId, 'playlist_id' => $playlistId,
+			'item_type' => ItemType::PLAYLIST->value, 'file_resource' => (string)$nestedPlaylistId
+		];
+		$playlistData            = ['playlist_id' => $playlistId];
+		$nestedPlaylistData      = ['playlist_id' => $nestedPlaylistId];
+		$remainingNestedDuration = 250;
+		$calculatedDuration      = 200;
+
+		$this->itemsService->setUID(1);
+		$this->playlistMetricsCalculatorMock->expects($this->once())->method('setUID')
+			->with(1);
+		$this->playlistsServiceMock->expects($this->once())->method('setUID')
+			->with(1);
+
+		$this->itemsRepositoryMock->expects($this->once())->method('findFirstById')
+			->with($itemId)
+			->willReturn($itemData);
+
+		$this->playlistsServiceMock->expects($this->once())->method('loadPureById')
+			->with($playlistId)
+			->willReturn($playlistData);
+
+		$this->playlistsServiceMock->expects($this->once())->method('fetchById')
+			->with($nestedPlaylistId)
+			->willReturn($nestedPlaylistData);
+
+		$this->playlistMetricsCalculatorMock->expects($this->exactly(2))->method('calculateRemainingDuration')
+			->willReturnMap([
+				[$nestedPlaylistData, $wantedDuration, $remainingNestedDuration],
+				[$playlistData, $remainingNestedDuration, $calculatedDuration]
+			]);
+
+
+		$saveData = ['item_duration' => $calculatedDuration];
+		$this->itemsRepositoryMock->expects($this->once())->method('update')
+			->with($itemId, $saveData)
+			->willReturn(1);
+
+		static::assertEquals(1, $this->itemsService->updateItemDuration($itemId, $wantedDuration));
+	}
 
 	/**
 	 * @throws FrameworkException
@@ -614,7 +822,7 @@ class ItemsServiceTest extends TestCase
 	public function testUpdateItemOrderSuccess(): void
 	{
 		$playlistId = 10;
-		$itemsOrder = ['5' => '3', '3' => '1', '8' => '2']; // hp treat this  as array<int,string>
+		$itemsOrder = ['5' => '3', '3' => '1', '8' => '2']; // phpstan treats this as array<int,string>
 
 		$this->itemsService->setUID(1);
 		$this->itemsRepositoryMock->expects($this->once())->method('beginTransaction');
