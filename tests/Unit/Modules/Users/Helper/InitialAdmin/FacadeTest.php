@@ -241,8 +241,8 @@ class FacadeTest extends TestCase
 
 		$expectedResult = array_merge($formData, [
 			'title' => 'Create Admin User',
-			'additional_css' => ['/css/users/edit.css'],
-			'footer_modules' => [],
+			'additional_css' => ['/css/users/edit.css', '/css/profile/password.css'],
+			'footer_modules' => ['/js/profile/password/init.js'],
 			'template_name' => 'users/edit',
 			'form_action' => '/create-initial',
 			'save_button_label' => 'Save',
