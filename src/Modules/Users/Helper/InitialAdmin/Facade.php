@@ -102,7 +102,7 @@ class Facade
 			$this->settingsParameters->getInputValuesArray()
 		);
 
-		return $this->usersAdminService->insertNewAdminUser($saveData);
+		return $this->usersAdminService->insertNewAdminUser($saveData, $this->config);
 	}
 
 	/**

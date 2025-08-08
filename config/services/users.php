@@ -180,6 +180,7 @@ $dependencies[UsersAdminCreateService::class] = DI\factory(function (ContainerIn
 
 	return new UsersAdminCreateService(
 		$repositories['main'],
+		$repositories['acl'],
 		$container->get(NodesService::class),
 		$container->get(Transactions::class),
 		$container->get('ModuleLogger')

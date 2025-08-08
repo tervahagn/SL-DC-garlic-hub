@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Modules\Users\Services;
 
+use App\Framework\Core\Config\Config;
 use App\Framework\Database\BaseRepositories\Transactions;
 use App\Modules\Mediapool\Services\NodesService;
+use App\Modules\Users\Repositories\Edge\UserAclRepository;
 use App\Modules\Users\Repositories\Edge\UserMainRepository;
 use App\Modules\Users\Services\UsersAdminCreateService;
 use phpmock\phpunit\PHPMock;
@@ -38,9 +40,11 @@ class UsersAdminCreateServiceTest extends TestCase
 {
 	use PHPMock;
 
-	private UserMainRepository&MockObject $userMainRepository;
-	private NodesService&MockObject $nodesService;
+	private UserMainRepository&MockObject $userMainRepositoryMock;
+	private UserAclRepository&MockObject $userAclRepositoryMock;
+	private NodesService&MockObject $nodesServiceMock;
 	private Transactions&MockObject $transactionsMock;
+	private Config&MockObject $configMock;
 	private LoggerInterface&MockObject $loggerMock;
 	private UsersAdminCreateService $service;
 
@@ -50,13 +54,16 @@ class UsersAdminCreateServiceTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->userMainRepository = $this->createMock(UserMainRepository::class);
-		$this->nodesService = $this->createMock(NodesService::class);
+		$this->userMainRepositoryMock = $this->createMock(UserMainRepository::class);
+		$this->userAclRepositoryMock = $this->createMock(UserAclRepository::class);
+		$this->nodesServiceMock = $this->createMock(NodesService::class);
 		$this->transactionsMock = $this->createMock(Transactions::class);
 		$this->loggerMock = $this->createMock(LoggerInterface::class);
 
+		$this->configMock = $this->createMock(Config::class);
+
 		$this->service = new UsersAdminCreateService(
-			$this->userMainRepository, $this->nodesService, $this->transactionsMock, $this->loggerMock
+			$this->userMainRepositoryMock, $this->userAclRepositoryMock, $this->nodesServiceMock, $this->transactionsMock, $this->loggerMock
 		);
 	}
 
@@ -66,7 +73,7 @@ class UsersAdminCreateServiceTest extends TestCase
 	#[Group('units')]
 	public function testHasAdminUserReturnsTrueWhenAdminExists(): void
 	{
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')
 			->with(1)
 			->willReturn(['id' => 1, 'username' => 'admin']);
 
@@ -81,7 +88,7 @@ class UsersAdminCreateServiceTest extends TestCase
 	#[Group('units')]
 	public function testHasAdminUserReturnsFalseWhenAdminDoesNotExist(): void
 	{
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')
 			->with(1)
 			->willReturn([]);
 
@@ -143,19 +150,20 @@ class UsersAdminCreateServiceTest extends TestCase
 		$filePutContentsMock->expects($this->once())
 			->with('/mock/path/install.lock', static::isString())
 			->willReturn(6980);
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')
 			->with(1)
 			->willReturn([]);
-		$this->userMainRepository->expects($this->once())->method('insert')
+		$this->userMainRepositoryMock->expects($this->once())->method('insert')
 			->willReturn(1);
-		$this->nodesService->expects($this->once())->method('addUserDirectory')
+		$this->nodesServiceMock->expects($this->once())->method('addUserDirectory')
 			->with(1, 'admin')
 			->willReturn(123);
-
+		$this->userAclRepositoryMock->expects($this->once())->method('addAdminRights')
+			->with($this->configMock, 1);
 
 		$this->transactionsMock->expects($this->once())->method('commit');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(1, $result);
 	}
@@ -176,12 +184,13 @@ class UsersAdminCreateServiceTest extends TestCase
 			->with('/mock/path/install.lock')
 			->willReturn(true);
 
-		$this->userMainRepository->expects($this->never())->method('findByIdSecured');
+		$this->userMainRepositoryMock->expects($this->never())->method('findByIdSecured');
+		$this->userAclRepositoryMock->expects($this->never())->method('addAdminRights');
 
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 		$this->loggerMock->expects($this->once())->method('error')->with('There is an existing lockfile already.');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(0, $result);
 	}
@@ -201,12 +210,12 @@ class UsersAdminCreateServiceTest extends TestCase
 			->with('/mock/path/install.lock')
 			->willReturn(false);
 
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')->with(1)->willReturn(['id' => 1, 'username' => 'admin']);
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with(1)->willReturn(['id' => 1, 'username' => 'admin']);
 
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 		$this->loggerMock->expects($this->once())->method('error')->with('There is an admin user already.');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(0, $result);
 	}
@@ -225,13 +234,13 @@ class UsersAdminCreateServiceTest extends TestCase
 		$filePutContentsMock->expects($this->once())
 			->with('/mock/path/install.lock')
 			->willReturn(false);
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
-		$this->userMainRepository->expects($this->once())->method('insert')->willReturn(0);
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
+		$this->userMainRepositoryMock->expects($this->once())->method('insert')->willReturn(0);
 
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 		$this->loggerMock->expects($this->once())->method('error')->with('Insert admin user failed.');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(0, $result);
 	}
@@ -250,14 +259,14 @@ class UsersAdminCreateServiceTest extends TestCase
 		$filePutContentsMock->expects($this->once())
 			->with('/mock/path/install.lock')
 			->willReturn(false);
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
-		$this->userMainRepository->expects($this->once())->method('insert')->willReturn(1);
-		$this->nodesService->expects($this->once())->method('addUserDirectory')->with(1, 'admin')->willReturn(0);
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
+		$this->userMainRepositoryMock->expects($this->once())->method('insert')->willReturn(1);
+		$this->nodesServiceMock->expects($this->once())->method('addUserDirectory')->with(1, 'admin')->willReturn(0);
 
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 		$this->loggerMock->expects($this->once())->method('error')->with('Create mediapool admin user directory failed.');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(0, $result);
 	}
@@ -276,9 +285,9 @@ class UsersAdminCreateServiceTest extends TestCase
 		$filePutContentsMock->expects($this->once())
 			->with('/mock/path/install.lock')
 			->willReturn(false);
-		$this->userMainRepository->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
-		$this->userMainRepository->expects($this->once())->method('insert')->willReturn(1);
-		$this->nodesService->expects($this->once())->method('addUserDirectory')->with(1, 'admin')->willReturn(123);
+		$this->userMainRepositoryMock->expects($this->once())->method('findByIdSecured')->with(1)->willReturn([]);
+		$this->userMainRepositoryMock->expects($this->once())->method('insert')->willReturn(1);
+		$this->nodesServiceMock->expects($this->once())->method('addUserDirectory')->with(1, 'admin')->willReturn(123);
 
 		$filePutContentsMock = $this->getFunctionMock('App\Modules\Users\Services', 'file_put_contents');
 		$filePutContentsMock->expects($this->once())
@@ -287,7 +296,7 @@ class UsersAdminCreateServiceTest extends TestCase
 		$this->transactionsMock->expects($this->once())->method('rollBack');
 		$this->loggerMock->expects($this->once())->method('error')->with('Lockfile could not created.');
 
-		$result = $this->service->insertNewAdminUser($postData);
+		$result = $this->service->insertNewAdminUser($postData, $this->configMock);
 
 		static::assertSame(0, $result);
 	}

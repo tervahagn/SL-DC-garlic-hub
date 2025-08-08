@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Users\Repositories\Edge;
 
+use App\Framework\Core\Acl\EditionAclModules;
+use App\Framework\Core\Config\Config;
 use App\Framework\Database\BaseRepositories\SqlBase;
 use App\Framework\Database\BaseRepositories\Traits\CrudTraits;
 use App\Framework\Database\BaseRepositories\Traits\FindOperationsTrait;
@@ -45,15 +47,20 @@ class UserAclRepository extends SqlBase
 
 	/**
 	 * @throws Exception
+	 * @throws UserException
 	 */
-	public function addFirstAdmin(): array
+	public function addAdminRights(Config $config, int $UID = 1): void
 	{
-		$sql = "INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 2, 'users');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'mediapool');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'player');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'playlists');
-";
-		if (!$this->connection->fetchAssociative($sql))
-			throw new UserException('Admin user could not be created.');
+		$modules = EditionAclModules::getModules($config->getEdition());
+
+		$this->connection->executeStatement('PRAGMA foreign_keys = OFF;');
+	//	$this->connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0;');
+
+		foreach ($modules as $module)
+		{
+			$adminRights = (int) $config->getConfigValue('moduleadmin', $module,'GlobalACLs');
+			$this->connection->executeStatement("INSERT INTO user_acl (UID, acl, module) VALUES ($UID, $adminRights, '$module');");
+		}
+		$this->connection->executeStatement('PRAGMA foreign_keys = ON;');
 	}
 }
