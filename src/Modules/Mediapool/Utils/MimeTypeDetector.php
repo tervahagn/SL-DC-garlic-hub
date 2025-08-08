@@ -30,6 +30,7 @@ class MimeTypeDetector
 	private array $preferredMimeTypes = [
 		// Images
 		'image/jpeg'            => 'jpg',
+		'image/avif'            => 'avif',
 		'image/png'             => 'png',
 		'image/gif'             => 'gif',
 		'image/webp'            => 'webp',
