@@ -138,8 +138,8 @@ class Facade
 		$title = $this->translator->translate('create_admin', 'users');
 		$dataSections                      = $this->settingsFormBuilder->buildForm($post, $passwordPattern);
 		$dataSections['title']             = $title;
-		$dataSections['additional_css']    = ['/css/users/edit.css'];
-		$dataSections['footer_modules']    = [];
+		$dataSections['additional_css']    = ['/css/users/edit.css', '/css/profile/password.css'];
+		$dataSections['footer_modules']    = ['/js/profile/password/init.js'];
 		$dataSections['template_name']     = 'users/edit';
 		$dataSections['form_action']       = '/create-initial';
 		$dataSections['save_button_label'] = $this->translator->translate('save', 'main');
