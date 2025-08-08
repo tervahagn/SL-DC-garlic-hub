@@ -178,18 +178,61 @@ class MediaServiceTest extends TestCase
 	}
 
 	#[Group('units')]
-	public function testDeleteMediaDeletesMedia(): void
+	public function testMarkDeleteMediaByNodeIdUpdatesMedia(): void
+	{
+		$nodeId = 1;
+
+		$this->mediaRepositoryMock->expects($this->once())->method('updateWithWhere')
+			->with(['deleted' => 1], ['node_id' => $nodeId])
+			->willReturn(1);
+
+		$this->mediaService->markDeleteMediaByNodeId($nodeId);
+	}
+
+	#[Group('units')]
+	public function testMarkDeleteMediaByNodeIdHandlesNoMedia(): void
+	{
+		$nodeId = 1;
+
+		$this->mediaRepositoryMock->expects($this->once())->method('updateWithWhere')
+			->with(['deleted' => 1], ['node_id' => $nodeId])
+			->willReturn(0);
+
+		$this->mediaService->markDeleteMediaByNodeId($nodeId);
+	}
+
+	#[Group('units')]
+	public function testDeleteMedia(): void
 	{
 		$mediaId = 'media-1';
 		$media = ['id' => $mediaId, 'node_id' => 1];
 
-		$this->mediaRepositoryMock->method('findAllWithOwnerById')->willReturn($media);
-		$this->aclValidatorMock->method('checkDirectoryPermissions')->willReturn(['edit' => true]);
-		$this->mediaRepositoryMock->method('updateWithWhere')->willReturn(1);
+		$this->mediaRepositoryMock->expects($this->once())->method('findAllWithOwnerById')
+			->willReturn($media);
+		$this->aclValidatorMock->expects($this->once())->method('checkDirectoryPermissions')
+			->willReturn(['edit' => true]);
+		$this->mediaRepositoryMock->expects($this->once())->method('updateWithWhere')
+			->willReturn(1);
 
 		$result = $this->mediaService->deleteMedia($mediaId);
 
 		static::assertEquals(1, $result);
+	}
+
+	#[Group('units')]
+	public function testDeleteMediaEmpty(): void
+	{
+		$mediaId = 'media-1';
+		$this->mediaRepositoryMock->expects($this->once())->method('findAllWithOwnerById')
+			->willReturn([]);
+		$this->aclValidatorMock->expects($this->never())->method('checkDirectoryPermissions');
+		$this->mediaRepositoryMock->expects($this->never())->method('updateWithWhere');
+		$this->loggerMock->expects($this->once())->method('error')
+			->with('Error deleting media: No media found.');
+
+		$result = $this->mediaService->deleteMedia($mediaId);
+
+		static::assertEquals(0, $result);
 	}
 
 	#[Group('units')]

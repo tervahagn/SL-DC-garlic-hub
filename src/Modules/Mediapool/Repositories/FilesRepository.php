@@ -29,7 +29,8 @@ use Doctrine\DBAL\Exception;
 
 class FilesRepository extends SqlBase
 {
-	use CrudTraits, FindOperationsTrait;
+	use CrudTraits;
+	use FindOperationsTrait;
 
 	public function __construct(Connection $connection)
 	{
@@ -37,7 +38,11 @@ class FilesRepository extends SqlBase
 	}
 
 	/**
-	 * @return array<string,mixed>|array<empty,empty>
+	 * @return array{
+	 *     username: string, company_id:int, media_id:string, UID:int, node_id:int,
+	 *      upload_time:string, checksum:string, mimetype:string, metadata:string, tags:string,
+	 *      filename:string, extension:string, thumb_extension:string, media_description:string,
+	 *     config_data:string}
 	 * @throws Exception
 	 */
 	public function findAllWithOwnerById(string $mediaId): array
@@ -49,7 +54,14 @@ class FilesRepository extends SqlBase
 			'deleted' => $this->generateWhereClause(0)
 		];
 
-		return $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+		/** @var array{
+		 * username: string, company_id:int, media_id:string, UID:int, node_id:int,
+		 * upload_time:string, checksum:string, mimetype:string, metadata:string, tags:string,
+		 * filename:string, extension:string, thumb_extension:string, media_description:string,
+		 * config_data:string} $result */
+		$result = $this->getFirstDataSet($this->findAllByWithFields($select, $where, $join));
+
+		return $result;
 	}
 
 	/**

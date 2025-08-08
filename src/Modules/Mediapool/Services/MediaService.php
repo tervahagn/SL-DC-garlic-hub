@@ -118,10 +118,7 @@ class MediaService
 	{
 		try
 		{
-			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if (empty($media))
-				throw new ModuleException('mediapool', 'No media found.');
-
+			$media       = $this->fetchMediaById($mediaId);
 			$node        = $this->nodesRepository->findNodeOwner($media['node_id']);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 			if (!$permissions['read'])
@@ -161,9 +158,7 @@ class MediaService
 	{
 		try
 		{
-			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if (empty($media))
-				throw new ModuleException('mediapool', 'No media found.');
+			$media = $this->fetchMediaById($mediaId);
 
 			$node        = $this->nodesRepository->findNodeOwner($media['node_id']);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
@@ -190,15 +185,11 @@ class MediaService
 		$this->mediaRepository->updateWithWhere($fields, $condition);
 	}
 
-
 	public function deleteMedia(string $mediaId): int
 	{
 		try
 		{
-			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if (empty($media))
-				throw new ModuleException('mediapool', 'No media found.');
-
+			$media = $this->fetchMediaById($mediaId);
 			$node        = $this->nodesRepository->findNodeOwner($media['node_id']);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 			if (!$permissions['edit'])
@@ -220,9 +211,7 @@ class MediaService
 	{
 		try
 		{
-			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if (empty($media))
-				throw new ModuleException('mediapool', 'No media found.');
+			$media = $this->fetchMediaById($mediaId);
 
 			$node = $this->nodesRepository->findNodeOwner($media['node_id']);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
@@ -255,18 +244,14 @@ class MediaService
 	{
 		try
 		{
-			$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
-			if ($media === [])
-				throw new ModuleException('mediapool', 'No media found.');
-
-			$node = $this->nodesRepository->findNodeOwner($media['node_id']);
+			$media = $this->fetchMediaById($mediaId);
+			$node  = $this->nodesRepository->findNodeOwner($media['node_id']);
 			$permissions = $this->aclValidator->checkDirectoryPermissions($this->UID, $node);
 			if (!$permissions['edit'])
 				throw new ModuleException('mediapool', 'No permissions on this directory: '. $media['node_id']);
 
-			$dataSet             = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
-			if (empty($dataSet))
-				throw new ModuleException('mediapool', 'No media: '. $media['node_id']);
+			// no need to check this as it is only the complete dataset which we checked with fetchMediaById
+			$dataSet = $this->mediaRepository->getFirstDataSet($this->mediaRepository->findById($mediaId));
 
 			$dataSet['media_id'] = Uuid::uuid4()->toString();
 			$dataSet['UID']      = $this->UID;
@@ -280,5 +265,24 @@ class MediaService
 			$this->logger->error('Error cloning media: ' . $e->getMessage());
 			return [];
 		}
+	}
+
+	/**
+	 * @return array{
+	 *  username: string, company_id:int, media_id:string, UID:int, node_id:int,
+	 *  upload_time:string, checksum:string, mimetype:string, metadata:string, tags:string,
+	 *  filename:string, extension:string, thumb_extension:string, media_description:string,
+	 *  config_data:string}
+	 * @throws Exception
+	 * @throws ModuleException
+	 */
+	private function fetchMediaById(string $mediaId): array
+	{
+		$media = $this->mediaRepository->findAllWithOwnerById($mediaId);
+		if ($media === [])
+			throw new ModuleException('mediapool', 'No media found.');
+
+		return $media;
+
 	}
 }
