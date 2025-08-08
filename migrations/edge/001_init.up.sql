@@ -22,10 +22,6 @@ CREATE TABLE `user_acl` (
     `module` VARCHAR(20) DEFAULT NULL,
     FOREIGN KEY (`UID`) REFERENCES `user_main` (`UID`) ON DELETE CASCADE
 );
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 2, 'users');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'mediapool');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'player');
-INSERT INTO `user_acl` (`UID`, `acl`, `module`) VALUES (1, 8, 'playlists');
 
 CREATE TABLE user_tokens (
      token BLOB(32) PRIMARY KEY,
