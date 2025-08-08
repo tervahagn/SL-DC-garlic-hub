@@ -79,13 +79,13 @@ class ConditionalPlayService extends AbstractBaseService
 
 			$affected = $this->itemService->updateField($itemId, 'conditional', @serialize($requestData));
 			if ($affected === 0)
-				throw new ModuleException('items', 'Could not save conditional play for item .');
+				throw new ModuleException('items', 'Could not save for item.');
 
 			return true;
 		}
 		catch (Throwable $e)
 		{
-			$this->logger->error('Error save widget: ' . $e->getMessage());
+			$this->logger->error('Error save conditional play: ' . $e->getMessage());
 			return false;
 		}
 	}

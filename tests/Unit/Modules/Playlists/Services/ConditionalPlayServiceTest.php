@@ -136,13 +136,40 @@ class ConditionalPlayServiceTest extends TestCase
 			->willReturn([]);
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with(static::stringContains('Error save widget: No item found.'));
+			->with(static::stringContains('Error save conditional play: No item found.'));
 
 		$this->conditionalPlayService->setUID(2);
 		$result = $this->conditionalPlayService->saveConditionalPlay($itemId, $requestData);
 
 		static::assertFalse($result);
 	}
+
+	#[Group('units')]
+	public function testSaveConditionalPlayFailsOnUpdate(): void
+	{
+		$itemId = 1;
+		$requestData = ['key' => 'value'];
+
+		$itemMockData = ['id' => 1, 'conditional' => serialize(['key' => 'value'])];
+
+		$this->itemServiceMock->expects($this->once())->method('fetchItemById')
+			->with($itemId)
+			->willReturn($itemMockData);
+
+		$this->itemServiceMock->expects($this->once())->method('updateField')
+			->with($itemId, 'conditional', serialize($requestData))
+			->willReturn(0);
+
+		$this->loggerMock->expects($this->once())->method('error')
+			->with(static::stringContains('Error save conditional play: Could not save for item.'));
+
+		$this->conditionalPlayService->setUID(2);
+		$result = $this->conditionalPlayService->saveConditionalPlay($itemId, $requestData);
+
+		static::assertFalse($result);
+	}
+
+
 
 	/**
 	 * @throws Exception
@@ -158,7 +185,7 @@ class ConditionalPlayServiceTest extends TestCase
 			->willThrowException($this->createMock(Throwable::class));
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with(static::stringContains('Error save widget:'));
+			->with(static::stringContains('Error save conditional play:'));
 
 		$this->conditionalPlayService->setUID(2);
 		$result = $this->conditionalPlayService->saveConditionalPlay($itemId, $requestData);
