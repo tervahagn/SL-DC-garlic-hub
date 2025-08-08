@@ -139,8 +139,9 @@ label:has(input:disabled)
 .platform-mask
 {
     display: flex;
+    align-items: center;
     gap: 1em;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
 }
     .platform-mask button
     {
@@ -158,7 +159,7 @@ label:has(input:disabled)
     grid-template-columns: repeat(auto-fill, 150px);
     gap: 1em;
     box-sizing: border-box;
-    height:350px;
+    height:170px;
     overflow: scroll;
     margin: 1rem 0;
 }
