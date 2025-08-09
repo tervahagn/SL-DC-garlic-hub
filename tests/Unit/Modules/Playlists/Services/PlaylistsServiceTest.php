@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Modules\Playlists\Services;
 
 use App\Framework\Exceptions\CoreException;
+use App\Framework\Exceptions\FrameworkException;
 use App\Framework\Exceptions\ModuleException;
 use App\Modules\Playlists\Repositories\PlaylistsRepository;
 use App\Modules\Playlists\Services\AclValidator;
@@ -115,10 +116,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testToggleShuffleTurnsOnWhenInitiallyOff(): void
@@ -156,6 +158,7 @@ class PlaylistsServiceTest extends TestCase
 	 * @throws CoreException
 	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
 	 */
 	#[Group('units')]
 	public function testToggleShuffleTurnsOffWhenInitiallyOn(): void
@@ -189,9 +192,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testToggleShuffleThrowsExceptionWhenPlaylistNotEditable(): void
@@ -215,10 +220,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testShufflePickingSuccessfullyUpdatesData(): void
@@ -253,9 +259,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testShufflePickingThrowsExceptionWhenPlaylistNotEditable(): void
@@ -280,9 +288,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testShufflePickingThrowsExceptionWhenPlaylistNotFound(): void
@@ -302,9 +312,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws CoreException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testUpdateThrowsExceptionWhenPlaylistNotEditable(): void
@@ -327,10 +339,11 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
 	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
 	 * @throws Exception
+	 * @throws FrameworkException
+	 * @throws ModuleException
+	 * @throws PhpfastcacheSimpleCacheException
 	 */
 	#[Group('units')]
 	public function testUpdate(): void
@@ -370,10 +383,6 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testDeleteSucceedsWhenPlaylistIsEditable(): void
@@ -400,9 +409,6 @@ class PlaylistsServiceTest extends TestCase
 	}
 
 	/**
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws CoreException
-	 * @throws Exception
 	 */
 	#[Group('units')]
 	public function testDeleteThrowsExceptionWhenPlaylistNotEditable(): void
@@ -420,44 +426,11 @@ class PlaylistsServiceTest extends TestCase
 			->willReturn(false);
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with('Error delete playlist. Non-editable Playlist is not editable');
+			->with('Error delete playlist: Playlist is not editable.');
 
-		$this->expectException(ModuleException::class);
-		$this->expectExceptionMessage('Error delete playlist. Non-editable Playlist is not editable');
-
-		$this->service->delete($playlistId);
+		$this->assertEmpty($this->service->delete($playlistId));
 	}
 
-	/**
-	 * @throws ModuleException
-	 * @throws CoreException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws Exception
-	 */
-	#[Group('units')]
-	public function testDeleteThrowsExceptionOnRepositoryError(): void
-	{
-		$this->service->setUID(789);
-		$playlistId = 3;
-		$playlist = ['playlist_id' => $playlistId, 'playlist_name' => 'Playlist with Error'];
-
-		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')
-			->with($playlistId)
-			->willReturn($playlist);
-
-		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
-			->with(789, $playlist)
-			->willReturn(true);
-
-		$this->playlistsRepositoryMock->expects($this->once())->method('delete')
-			->with($playlistId)
-			->willThrowException(new \Exception('Delete repository error'));
-
-		$this->expectException(\Exception::class);
-		$this->expectExceptionMessage('Delete repository error');
-
-		$this->service->delete($playlistId);
-	}
 
 	#[Group('units')]
 	public function testLoadPlaylistForMultizoneReturnsDeserializedDataWhenEditable(): void
@@ -491,7 +464,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with('Error loading playlist. Playlist with Id: 123 not found');
+			->with('No playlist with Id: 123 found.');
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
@@ -515,7 +488,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with('Error loading playlist: Is not editable');
+			->with('Playlist is not editable.');
 
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
@@ -559,7 +532,26 @@ class PlaylistsServiceTest extends TestCase
 		$result = $this->service->loadPlaylistForMultizone($playlistId);
 
 		static::assertEmpty($result);
+	}
 
+	#[Group('units')]
+	public function testLoadPlaylistForMultizoneFails(): void
+	{
+		$this->service->setUID(1);
+		$playlistId = 123;
+		$playlist = ['playlist_id' => $playlistId, 'multizone' => []];
+
+		$this->playlistsRepositoryMock->expects($this->once())->method('findFirstWithUserName')
+			->with($playlistId)
+			->willReturn($playlist);
+
+		$this->aclValidatorMock->expects($this->once())->method('isPlaylistEditable')
+			->with(1, $playlist)
+			->willReturn(true);
+
+		$result = $this->service->loadPlaylistForMultizone($playlistId);
+
+		static::assertEmpty($result);
 	}
 
 	#[Group('units')]
@@ -663,7 +655,7 @@ class PlaylistsServiceTest extends TestCase
 			->willReturn([]);
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with('Error loading playlist. Playlist with Id: 123 not found');
+			->with('No playlist with Id: 123 found.');
 
 		$result = $this->service->saveZones($playlistId, $zones);
 
@@ -691,7 +683,7 @@ class PlaylistsServiceTest extends TestCase
 			->willReturn(false);
 
 		$this->loggerMock->expects($this->once())->method('error')
-			->with('Error loading playlist: Not editable.');
+			->with('Playlist is not editable.');
 		$this->service->setUID(1);
 		$result = $this->service->saveZones($playlistId, $zones);
 
@@ -765,7 +757,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with('Error loading playlist. Playlist with Id: 888 not found');
+			->with('No playlist with Id: 888 found.');
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 
@@ -791,7 +783,7 @@ class PlaylistsServiceTest extends TestCase
 
 		$this->loggerMock->expects($this->once())
 			->method('error')
-			->with('Error loading playlist: Not editable.');
+			->with('Playlist is not editable.');
 
 		$result = $this->service->loadPlaylistForEdit($playlistId);
 

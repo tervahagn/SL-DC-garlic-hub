@@ -33,15 +33,11 @@ use Throwable;
 
 class PlaylistsService extends AbstractBaseService
 {
-	private readonly PlaylistsRepository $playlistsRepository;
-	private readonly PlaylistMetricsCalculator $playlistMetricsCalculator;
-	private readonly AclValidator $aclValidator;
-
-	public function __construct(PlaylistsRepository $playlistsRepository, PlaylistMetricsCalculator $playlistMetricsCalculator, AclValidator $aclValidator, LoggerInterface $logger)
+	public function __construct(private readonly PlaylistsRepository $playlistsRepository,
+								private readonly PlaylistMetricsCalculator $playlistMetricsCalculator,
+								private readonly AclValidator $aclValidator,
+								LoggerInterface $logger)
 	{
-		$this->playlistsRepository = $playlistsRepository;
-		$this->playlistMetricsCalculator = $playlistMetricsCalculator;
-		$this->aclValidator        = $aclValidator;
 		parent::__construct($logger);
 	}
 
@@ -111,9 +107,7 @@ class PlaylistsService extends AbstractBaseService
 	public function updateSecure(array $postData): int
 	{
 		$playlistId = $postData['playlist_id'];
-
 		$this->loadWithUserById($playlistId);
-
 		$saveData = $this->collectDataForUpdate($postData);
 
 		return $this->update($playlistId, $saveData);
@@ -140,26 +134,22 @@ class PlaylistsService extends AbstractBaseService
 	/**
 	 * @param int $playlistId
 	 * @return int
-	 * @throws CoreException
-	 * @throws Exception
-	 * @throws ModuleException
-	 * @throws PhpfastcacheSimpleCacheException
-	 * @throws FrameworkException
 	 */
 	public function delete(int $playlistId): int
 	{
-		/** @var array{UID: int, company_id: int, playlist_name:string, playlist_id: int, ...}|array{} $playlist */
-		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-		if (empty($playlist))
-			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
-
-		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
+		try
 		{
-			$this->logger->error('Error delete playlist. '.$playlist['playlist_name'].' is not editable');
-			throw new ModuleException('playlists', 'Error delete playlist. '.$playlist['playlist_name'].' is not editable');
+			$this->loadWithUserById($playlistId);
+
+			return $this->playlistsRepository->delete($playlistId);
+		}
+		catch(Throwable $e)
+		{
+			$this->logger->error('Error delete playlist: '.$e->getMessage());
+			$this->addErrorMessage($e->getMessage());
+			return 0;
 		}
 
-		return $this->playlistsRepository->delete($playlistId);
 	}
 
 	/**
@@ -169,20 +159,15 @@ class PlaylistsService extends AbstractBaseService
 	{
 		try
 		{
-			/** @var array{UID: int, company_id: int, multizone:mixed, playlist_id: int, ...}|array{} $playlist */
-			$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-			if (empty($playlist))
-				throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+			/** @var array{UID: int, company_id: int, playlist_id: int, multizone:string, ...} $playlist */
+			$playlist = $this->loadWithUserById($playlistId);
 
-			if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-				throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
-
-			if (!empty($playlist['multizone']))
+			if ($playlist['multizone'] !== [])
 				return unserialize($playlist['multizone']);
 
 			return [];
 		}
-		catch(\Exception | Exception $e)
+		catch(Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->addErrorMessage($e->getMessage());
@@ -201,10 +186,8 @@ class PlaylistsService extends AbstractBaseService
 	 */
 	public function loadPureById(int $playlistId): array
 	{
-		/** @var array{UID: int, company_id: int, playlist_id: int, ...}|array{} $playlist */
-		$playlist = $this->fetchById($playlistId);
-		if (empty($playlist))
-			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+		/** @var array{UID: int, company_id: int, playlist_id: int, ...} $playlist */
+		$playlist = $this->fetchById($playlistId); // the playlist is sure not empty here
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
 			throw new ModuleException('playlists', 'Error loading playlist: Is not editable');
@@ -221,7 +204,7 @@ class PlaylistsService extends AbstractBaseService
 	{
 		/** @var array<string,mixed> $playlist */
 		$playlist = $this->playlistsRepository->findFirstBy(['playlist_id' => $playlistId]);
-		if (empty($playlist))
+		if ($playlist === [])
 			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
 
 		return $playlist;
@@ -237,13 +220,13 @@ class PlaylistsService extends AbstractBaseService
 	 */
 	public function loadWithUserById(int $playlistId): array
 	{
-		/** @var array{UID: int, company_id: int, playlist_id: int, ...}|array{} $playlist */
+		/** @var array{UID: int, company_id: int, playlist_id: int, ...} $playlist */
 		$playlist = $this->playlistsRepository->findFirstWithUserName($playlistId);
-		if (empty($playlist))
-			throw new ModuleException('playlists', 'Error loading playlist. Playlist with Id: '.$playlistId.' not found');
+		if ($playlist === [])
+			throw new ModuleException('playlists', 'No playlist with Id: '.$playlistId.' found.');
 
 		if (!$this->aclValidator->isPlaylistEditable($this->UID, $playlist))
-			throw new ModuleException('playlists', 'Error loading playlist: Not editable.');
+			throw new ModuleException('playlists', 'Playlist is not editable.');
 
 		return $playlist;
 	}
@@ -259,7 +242,7 @@ class PlaylistsService extends AbstractBaseService
 
 			return ['playlist_id' => $playlistId, 'name' => $playlist['playlist_name']];
 		}
-		catch(\Exception | Exception $e)
+		catch(Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->addErrorMessage($e->getMessage());
@@ -277,12 +260,12 @@ class PlaylistsService extends AbstractBaseService
 			$count = 0;
 			$playlist = $this->loadWithUserById($playlistId);
 
-			if (!empty($zones))
+			if ($zones !== [])
 				$count = $this->playlistsRepository->update($playlist['playlist_id'], ['multizone' => serialize($zones)]);
 
 			return $count;
 		}
-		catch(\Exception | Exception $e)
+		catch(Throwable $e)
 		{
 			$this->logger->error($e->getMessage());
 			$this->addErrorMessage($e->getMessage());
