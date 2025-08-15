@@ -36,52 +36,55 @@
 			{{/has_close_button}}
 		</div>
 	{{/messages}}
-	<header>
-		<nav>
-			<div>
-				<a href="/"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
-			</div>
-			<ul class="menu main-menu">
-				{{#main_menu}}
+		<header>
+			<nav aria-label="Main Navigation">
+				<div class="logo">
+					<a href="/" aria-label="{{APP_NAME}} home"><img width="150" src="/images/logo.svg" alt="garlic-hub logo"></a>
+				</div>
+				<button class="mobile-menu-toggle naked-button" aria-controls="mainMenu" aria-expanded="false" id="mobileMenuToggle" aria-label="Toggle navigation">
+					<span class="bi bi-list"></span>
+				</button>
+				<ul id="mainMenu" role="menubar">
+					{{#main_menu}}
+						<li role="none">
+							<a role="menuitem" href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+						</li>
+					{{/main_menu}}
+				</ul>
+				<ul id="language_select" aria-label="Language selector">
 					<li>
-						<a href="{{URL}}" title="{{LANG_MENU_POINT}}">{{LANG_MENU_POINT}}</a>
+						<button class="naked-button" aria-haspopup="true" aria-expanded="false">{{CURRENT_LOCALE_UPPER}} 5be</button>
+						<ul role="menu">
+							{{#language_select}}
+								<li role="menuitem">
+									<a href="/set-locales/{{LOCALE_LONG}}" title="{{LOCALE_SMALL}}">{{LANGUAGE_NAME}}</a>
+								</li>
+							{{/language_select}}
+						</ul>
 					</li>
-				{{/main_menu}}
-			</ul>
-			<ul id="language_select" class="menu">
-				<li>
-					{{CURRENT_LOCALE_UPPER}}
-					<ul>
-						{{#language_select}}
-							<li>
-								<a href="/set-locales/{{LOCALE_LONG}}" title="{{LOCALE_SMALL}}">{{LANGUAGE_NAME}}</a>
+				</ul>
+				{{#user_menu}}
+				<ul id="user_menu" aria-label="User menu">
+					<li>
+						<button class="naked-button" aria-haspopup="true" aria-expanded="false">{{LANG_LOGIN_AS}}: {{USERNAME}} 5be</button>
+						<ul role="menu">
+							{{#has_user_access}}
+							<li role="menuitem">
+								<a class="dropdown-item" href="{{{LINK_USER_ACCESS}}}">{{LANG_USER_ACCESS}}</a>
 							</li>
-						{{/language_select}}
-					</ul>
-				</li>
-			</ul>
-			{{#user_menu}}
-			<ul class="menu" id="user_menu">
-				<li>
-					{{LANG_LOGIN_AS}}: {{USERNAME}}
-					<ul>
-						{{#has_user_access}}
-						<li>
-							<a class="dropdown-item" href="{{{LINK_USER_ACCESS}}}">{{LANG_USER_ACCESS}}</a>
-						</li>
-						{{/has_user_access}}
-						<li>
-							<a class="dropdown-item" href="/profile/settings">{{LANG_MANAGE_ACCOUNT}}</a>
-						</li>
-						<li>
-							<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-			{{/user_menu}}
-		</nav>
-	</header>
+							{{/has_user_access}}
+							<li role="menuitem">
+								<a class="dropdown-item" href="/profile/settings">{{LANG_MANAGE_ACCOUNT}}</a>
+							</li>
+							<li role="menuitem">
+								<a class="dropdown-item" href="/logout">{{LANG_LOGOUT}}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				{{/user_menu}}
+			</nav>
+		</header>
 	<main>
 		{{{MAIN_CONTENT}}}
 	</main>
@@ -108,6 +111,8 @@
 		import "/js/main.js";
 	{{#footer_modules}}
 		import "{{.}}";
+		// auto-loaded UI modules
+		import "/js/playlist-dnd.js";
 	{{/footer_modules}}
 	</script>
 

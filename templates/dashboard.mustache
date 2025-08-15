@@ -1,6 +1,35 @@
-<ul>
-	<li><strong>{{{LANG_SERVER_SPACE}}}:</strong> <span>{{{SERVER_SPACE}}}</span></li>
-	<li><strong>{{{LANG_SERVER_MEMORY}}}:</strong> <span>{{{SERVER_MEMORY}}}</span></li>
-	<li><strong>{{{LANG_SERVER_LOAD}}}:</strong> <span>{{{SERVER_LOAD}}}</span></li>
-	<li><strong>{{{LANG_SERVER_IP}}}:</strong> <span>{{{SERVER_IP}}}</span></li>
-</ul>
+<div class="container">
+  <section class="page-header">
+	<div class="page-header-inner">
+		<h1>{{{LANG_PAGE_HEADER}}}</h1>
+	</div>
+  </section>
+
+  <section class="dashboards">
+	<div class="dashboard">
+		<div class="dashboard-header">
+			<h2>{{{LANG_OVERVIEW}}}</h2>
+		</div>
+		<div class="dashboard-body">
+			<div class="dashboard-stats">
+				<div class="stat-item">
+					<div class="stat-value">{{{SERVER_SPACE}}}</div>
+					<div class="stat-label">{{{LANG_SERVER_SPACE}}}</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{{{SERVER_MEMORY}}}</div>
+					<div class="stat-label">{{{LANG_SERVER_MEMORY}}}</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{{{SERVER_LOAD}}}</div>
+					<div class="stat-label">{{{LANG_SERVER_LOAD}}}</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{{{SERVER_IP}}}</div>
+					<div class="stat-label">{{{LANG_SERVER_IP}}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </section>
+</div>
